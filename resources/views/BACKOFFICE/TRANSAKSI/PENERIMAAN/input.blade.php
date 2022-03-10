@@ -5,8 +5,8 @@
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-md-11">
-                <fieldset class="card">
-                    <legend  class="w-auto ml-5">IGR BO PENERIMAAN</legend>
+                <div class="card cardForm">
+{{--                    <legend  class="w-auto ml-5">IGR BO PENERIMAAN</legend>--}}
                     <div class="card-body cardForm">
                         <div class="row">
                             <div class="col-sm-8">
@@ -108,6 +108,7 @@
                                         </form>
                                     </div>
                                 </div>
+                                <h4 class="font-weight-bold mt-3" id="model-form">Tambah</h4>
                             </div>
                         </div>
 
@@ -328,7 +329,7 @@
                                            <div class="form-group row mb-0 mt-3">
                                                <label class="col-sm-1 col-form-label text-right">Keterangan</label>
                                                <div class="col-sm-6">
-                                                   <input type="text" class="form-control text-uppercase" id="i_keterangan">
+                                                   <input type="text" class="form-control text-uppercase" placeholder="Tekan Enter untuk rekam" id="i_keterangan">
                                                </div>
 
                                                <label class="col-sm-2 col-form-label text-right">PPN</label>
@@ -476,7 +477,7 @@
                             </div>
                         </div>
                     </div>
-                </fieldset>
+                </div>
             </div>
         </div>
     </div>
@@ -750,6 +751,7 @@
         let tempDataBTB     = [];
         let tempDataPLU     = [];
         let tempDataSave    = '';
+        let modelForm       = $('#model-form');
         let modalThName1    = $('#modalThName1');
         let modalThName2    = $('#modalThName2');
         let modalThName3    = $('#modalThName3');
@@ -825,13 +827,17 @@
         let isiBeliForm = $('.i_isibeli'); //Tidak dimunculkan karna isibeli <> niisib di proc ChK_gets tidak di difine
 
         $(document).ready(function () {
-            startAlert();
+            // startAlert();
             $('#cardInput2').hide();
             isiBeliForm.hide()
+            modelForm.text('')
+            modelForm.text('* Tambah')
 
-            // typeTrn = 'B'
+            typeTrn = 'B'
+            getNewNoBTB()
             // showPO('');
-            // chooseBTB('0420000612', 'GH6H71391')
+            // chooseBTB('0880000001', '2H3M95904')
+            // chooseBTB('2460000001', '3H3M29811')
             // choosePO('UH1L08295')
             // choosePO('5H1L79346')
             // showPlu('');
@@ -864,10 +870,12 @@
                 switch (confirm) {
                     case true:
                         typeTrn = 'B';
+                        modelForm.text("* Tambah")
                         break;
 
                     case "lain":
                         typeTrn = 'L';
+                        modelForm.text("* Tambah")
                         break;
 
                     default:
@@ -947,6 +955,7 @@
                 },
                 success: function (result) {
                     $('#modal-loader').modal('hide');
+                    i_plu.attr('disabled', false);
                     tempDataBTB = result.data; console.log(result.data)
 
                     if (result.kode == 0){
@@ -954,38 +963,6 @@
                         $('#cardInput2').hide();
                         $('#cardInput1').show();
                     } else {
-                        // for (let i = 0; i< result.data.length; i++){
-                        //     value = result.data[i];
-                        //
-                        //     $('.tbodyTableDetail').append(`<tr class="rowTbodyTableDetail"  onclick="editDeletePlu()">
-                        //                                         <td class="sticky-cell">`+ value.trbo_prdcd +`</td>
-                        //                                         <td class="sticky-cell">`+ value.prd_deskripsipanjang +`</td>
-                        //                                         <td class="sticky-cell text-right" >`+ value.qty +`</td>
-                        //                                         <td class="sticky-cell text-right" >`+ (value.trbo_qty - (value.qty * value.prd_frac)) +`</td>
-                        //                                         <td class="sticky-cell text-right" >`+ convertToRupiah(value.trbo_hrgsatuan)+`</td>
-                        //                                         <td class="sticky-cell text-center" >/`+ value.prd_frac +`</td>
-                        //                                         <td>`+value.prd_kodetag+`</td>
-                        //                                         <td>`+value.prd_flagbkp1+`</td>
-                        //                                         <td  class="text-right">`+value.trbo_qtybonus1+`</td>
-                        //                                         <td  class="text-right">`+value.trbo_qtybonus2+`</td>
-                        //                                         <td  class="text-right">`+convertToRupiah(value.trbo_persendisc1)+`</td>
-                        //                                         <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc1)+`</td>
-                        //                                         <td  class="text-right">`+value.trbo_persendisc2+`</td>
-                        //                                         <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc2)+`</td>
-                        //                                         <td  class="text-right">`+value.trbo_persendisc2ii+`</td>
-                        //                                         <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc2ii)+`</td>
-                        //                                         <td  class="text-right">`+value.trbo_persendisc2iii+`</td>
-                        //                                         <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc2iii)+`</td>
-                        //                                         <td  class="text-right">`+value.trbo_persendisc3+`</td>
-                        //                                         <td  class="text-right">`+convertToRupiah(value.trbo_rphdisc3)+`</td>
-                        //                                         <td  class="text-right">`+value.trbo_persendisc4+`</td>
-                        //                                         <td  class="text-right">`+convertToRupiah2(value.trbo_rphdisc4)+`</td>
-                        //                                         <td  class="text-right">`+convertToRupiah2(value.trbo_gross)+`</td>
-                        //                                         <td  class="text-right">`+convertToRupiah2(value.trbo_ppnrph)+`</td>
-                        //                                         <td  class="text-right">`+convertToRupiah(value.trbo_averagecost)+`</td>
-                        //                                         <td  class="text-right">`+convertToRupiah(value.trbo_oldcost)+`</td>
-                        //                                     </tr>`);
-                        // }
                         setValueTableDetail(result.data)
 
                         noBTB.val(result.data[0].trbo_nodoc);
@@ -1292,12 +1269,16 @@
 
                         modalHelpPluDetail.modal('show');
                     } else {
-                        $('.modalRow').remove();
-                        for (let i = 0; i< result.length; i++){
-                            $('#tbodyModalHelpPlu').append("<tr onclick=choosePlu('"+ result[i].prd_prdcd +"') class='modalRow'><td>"+ result[i].prd_deskripsipanjang +"</td><td>"+ result[i].prd_prdcd +"</td></tr>")
-                        }
+                        if (result.length < 1){
+                            swal("Warning !!", "Data PLU tidak di temukan!", 'warning')
+                        } else {
+                            $('.modalRow').remove();
+                            for (let i = 0; i< result.length; i++){
+                                $('#tbodyModalHelpPlu').append("<tr onclick=choosePlu('"+ result[i].prd_prdcd +"') class='modalRow'><td>"+ result[i].prd_deskripsipanjang +"</td><td>"+ result[i].prd_prdcd +"</td></tr>")
+                            }
 
-                        modalHelpPlu.modal('show');
+                            modalHelpPlu.modal('show');
+                        }
                     }
 
                 },  error: function (err) {
@@ -1573,6 +1554,7 @@
 
                     if (result.kode == 0){
                         swal('', result.msg, 'warning');
+                        window.location.reload(); // Di refresh akrna di ias keluar dari menu input penerimaan
                     } else {
                         tempDataSave = result.data;
 
@@ -1691,7 +1673,7 @@
             });
 
 
-            clearRightFirstField();
+            // clearRightFirstField();
             if(data){
                 // tempDataPLU = data;
                 setValueFromTempDataSave(data);
@@ -1763,7 +1745,8 @@
             $.ajax({
                 url: '{{ url()->current() }}/savedata',
                 type: 'post',
-                data: {noBTB:noBTB.val(), tglBTB:tglBTB.datepicker({ dateFormat: 'mm-dd-yy' }).val(), noPO : noPO.val(), tglPO:tglPO.val(), supplier:kodeSupp.val(), noFaktur:noFaktur.val(), tglFaktur:tglFaktur.val(), tempDataSave:tempDataSave},
+                data: { noBTB:noBTB.val(), tglBTB:tglBTB.datepicker({ dateFormat: 'mm-dd-yy' }).val(), noPO : noPO.val(), tglPO:tglPO.val(),
+                        supplier:kodeSupp.val(), noFaktur:noFaktur.val(), tglFaktur:tglFaktur.val(), tempDataSave:tempDataSave,  typeTrn:typeTrn},
                 beforeSend : () =>{
                     $('#modal-loader').modal('show');
                 },
@@ -1862,39 +1845,39 @@
             console.log(data);
             i_plu.val(data.trbo_prdcd);
             i_deskripsi.val(data.barang);
-            i_kemasan.val(data.kemasan);
+            i_kemasan.val(data.kemasan ?? '/'+data.trbo_frac);
             i_tag.val(data.trbo_kodetag);
             i_bkp.val(data.trbo_bkp);
             i_bandrol.val(data.i_bandrol);
             i_hrgbeli.val(convertToRupiah(data.trbo_hrgsatuan));
             i_lcost.val(convertToRupiah(data.trbo_lcost));
             i_acost.val(convertToRupiah((data.trbo_unit == 'KG') ? data.trbo_averagecost / 1 : data.trbo_averagecost / data.trbo_frac));
-            i_qty.val(data.qty);
-            i_qtyk.val(data.qtyk);
+            i_qty.val(parseInt(parseFloat(data.qty)));
+            i_qtyk.val(data.trbo_qty - (parseInt(parseFloat(data.qty)) * data.trbo_frac));
             i_isibeli.val(convertToRupiah(data.isibeli));
             i_bonus1.val(data.trbo_qtybonus1);
             i_bonus2.val(data.trbo_qtybonus2);
             i_gross.val(convertToRupiah(data.trbo_gross));
 
-            i_persendis1.val(convertToRupiah(data.trbo_persendis1));
+            i_persendis1.val(convertToRupiah(data.trbo_persendisc1));
             i_rphdisc1.val(convertToRupiah(data.trbo_rphdisc1));
             i_flagdisc1.val(data.trbo_flagdisc1);
             i_disc1.val(convertToRupiah(data.trbo_disc1));
-            i_persendis2.val(convertToRupiah(data.trbo_persendis2));
+            i_persendis2.val(convertToRupiah(data.trbo_persendisc2));
             i_rphdisc2.val(convertToRupiah(data.i_rphdisc2));
             i_flagdisc2.val(data.trbo_flagdisc2);
             i_disc2.val(convertToRupiah(data.trbo_disc2));
-            i_persendis2a.val(convertToRupiah(data.trbo_persendis2i));
+            i_persendis2a.val(convertToRupiah(data.trbo_persendisc2i));
             i_rphdisc2a.val(convertToRupiah(data.trbo_rphdisc2i));
             i_disc2a.val(convertToRupiah(data.trbo_disc2i));
-            i_persendis2b.val(convertToRupiah(data.trbo_persendis2ii));
+            i_persendis2b.val(convertToRupiah(data.trbo_persendisc2ii));
             i_rphdisc2b.val(convertToRupiah(data.trbo_rphdisc2ii));
             i_disc2b.val(convertToRupiah(data.trbo_disc2ii));
-            i_persendis3.val(convertToRupiah(data.trbo_persendis3));
+            i_persendis3.val(convertToRupiah(data.trbo_persendisc3));
             i_rphdisc3.val(convertToRupiah(data.trbo_rphdisc3));
             i_flagdisc3.val(data.trbo_flagdisc3 );
             i_disc3.val(convertToRupiah(data.trbo_disc3));
-            i_persendis4.val(convertToRupiah((data.trbo_persendis4)));
+            i_persendis4.val(convertToRupiah((data.trbo_persendisc4)));
             i_rphdisc4.val(convertToRupiah((data.trbo_rphdisc4)));
             i_flagdisc4.val(data.trbo_flagdisc4);
             i_disc4.val(convertToRupiah((data.trbo_disc4)));
@@ -1927,7 +1910,7 @@
 
             if (data[0].trbo_recordid == 2){
                 flagRecordId = 'Y';
-                $('#btnCloseCardInput2').hide();
+                $('#btnCloseCardInput2').show();
             }
 
             //--------- Untuk menampilkan data di right side
@@ -1947,16 +1930,15 @@
                 ppbbm   = parseInt(ppbbm) +  parseInt(value.trbo_ppnbmrph);
                 ppnbotol = parseInt(ppnbotol) +  parseInt(value.trbo_ppnbtlrph);
                 // grantTotal = parseInt(grantTotal) + parseInt(value.total_rph);
-                grantTotal = parseInt(grantTotal) + (gross + ppn);
+                grantTotal = parseInt(grantTotal) + (gross + ppn + ppbbm + ppnbotol - discount);
 
-                console.log(grantTotal)
-
+                console.log(gross, discount, ppn, ppbbm,ppnbotol)
 
                 $('.tbodyTableDetail').append(`<tr class="rowTbodyTableDetail"  onclick="editDeletePlu('`+ value.trbo_prdcd +`')">
                                                                 <td class="sticky-cell">`+ value.trbo_prdcd +`</td>
                                                                 <td class="sticky-cell">`+ value.barang +`</td>
-                                                                <td class="sticky-cell text-right" >`+ value.qty +`</td>
-                                                                <td class="sticky-cell text-right" >`+ (value.trbo_qty - (value.qty * value.trbo_frac)) +`</td>
+                                                                <td class="sticky-cell text-right" >`+ parseInt(parseFloat(value.qty)) +`</td>
+                                                                <td class="sticky-cell text-right" >`+ (value.trbo_qty - (parseInt(parseFloat(value.qty)) * value.trbo_frac)) +`</td>
                                                                 <td class="sticky-cell text-right" >`+ convertToRupiah(value.trbo_hrgsatuan)+`</td>
                                                                 <td class="sticky-cell text-center" >/`+ value.trbo_frac +`</td>
                                                                 <td>`+nvl(value.trbo_kodetag, ' ')+`</td>
@@ -2058,11 +2040,11 @@
 
         noPO.keypress(function (e) {
             if (e.which === 13) {
-                // choosePO('VHAH93164');
-
                 let val = $(this).val();
 
                 if(!val){
+                    kodeSupp.attr('disabled', false)
+                    $('.btnLOVSupplier').attr('disabled', false);
                     kodeSupp.focus();
                 } else {
                     choosePO(val)
@@ -2073,11 +2055,61 @@
         kodeSupp.keypress(function (e) {
             if (e.which === 13) {
                 if(typeTrn == 'L'){
-                    swal('','Kode Supplier Tidak Boleh Diisi !!', 'warning')
-                    kodeSupp.val('');
-                    namaSupp.val('');
+                    if (kodeSupp.val().length > 0){
+                        swal('','Kode Supplier Tidak Boleh Diisi !!', 'warning')
+                        kodeSupp.val('');
+                        namaSupp.val('');
+                        noFaktur.focus();
+                        return  false;
+                    }
                 }
-                noFaktur.focus();
+
+                if(typeTrn == 'B' && modelForm.text() == '* Tambah'){
+                    let kodeSupplier = kodeSupp.val()
+
+                    ajaxSetup();
+                    $.ajax({
+                        url: '{{ url()->current() }}/check-kode-supplier',
+                        type: 'post',
+                        data: {kodeSupplier},
+                        beforeSend: () => {
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (result) {
+                            $('#modal-loader').modal('hide');
+
+                            if(result.kode == 1){
+                                namaSupp.val(result.data.supplier);
+                                topPo.val(result.data.sup_top);
+                                pkp.val(result.data.sup_pkp);
+                                i_plu.attr('disabled', false);
+
+                                noFaktur.focus()
+                            } else {
+                                i_plu.attr('disabled', true);
+                                namaSupp.val('');
+                                topPo.val('');
+                                pkp.val('');
+
+                                swalWithTime('Warning !!', result.message, 'warning', 2000);
+                                setTimeout(() => {kodeSupp.focus()}, 2000)
+                            }
+
+
+
+                        },  error: function (err) {
+                            $('#modal-loader').modal('hide');
+                            console.log(err.responseJSON.message.substr(0,100));
+                            alertError(err.statusText, err.responseJSON.message);
+                        }
+                    })
+                }
+            }
+        });
+
+        noFaktur.keypress(function (e) {
+            if (e.which === 13) {
+                tglFaktur.focus();
             }
         });
 

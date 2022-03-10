@@ -6,7 +6,8 @@ use Carbon\Carbon;
 use Dompdf\Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Yajra\DataTables\DataTables;
@@ -106,9 +107,10 @@ class RegisterLPPController extends Controller
 
     public function cetak(Request $request)
     {
+        set_time_limit(0);
         $menu = $request->menu;
-        $periode1 = $request->periode1;
-        $periode2 = $request->periode2;
+        $tgl1 = $request->periode1;
+        $tgl2 = $request->periode2;
         $prdcd1 = $request->prdcd1;
         $prdcd2 = $request->prdcd2;
         $dep1 = $request->dep1;
@@ -120,7 +122,7 @@ class RegisterLPPController extends Controller
         $sup1 = $request->sup1;
         $sup2 = $request->sup2;
         $tipe = $request->tipe;
-        $banyakitem = $request->banyakitem;
+        $banyakitem = $request->banyakitem==''?99999:$request->banyakitem;
 
         $and_tipe = '';
         $and_plu = '';
@@ -174,31 +176,31 @@ class RegisterLPPController extends Controller
             $p_nilaiidmacost = DB::connection(Session::get('connection'))->select("SELECT SUM (NILAI) rph
       FROM (SELECT BTD_PRDCD, ST_LOKASI, ((BTD_PRICE * 0.97) * BTD_QTY) NILAI
               FROM TBTR_BATOKO_H, TBTR_BATOKO_D, TBMASTER_STOCK
-             WHERE TRUNC (BTH_TGLDOC) BETWEEN TRUNC (to_date('" . $periode1 . "','dd/mm/yyyy')) AND TRUNC (to_date('" . $periode2 . "','dd/mm/yyyy'))
+             WHERE TRUNC (BTH_TGLDOC) BETWEEN TRUNC (to_date('" . $tgl1 . "','dd/mm/yyyy')) AND TRUNC (to_date('" . $tgl2 . "','dd/mm/yyyy'))
                AND BTD_ID = BTH_ID
             AND ST_PRDCD = SUBSTR (BTD_PRDCD, 1, 6) || '0'
             AND ST_LOKASI = '01') A")[0]->rph;
 
             $p_nilaiidmprice = DB::connection(Session::get('connection'))->select("SELECT SUM (NILAI) rph
       FROM (SELECT BTD_PRDCD, ST_LOKASI, ((BTD_PRICE * BTD_QTY) + BTD_PPN) NILAI FROM TBTR_BATOKO_H, TBTR_BATOKO_D, TBMASTER_STOCK
-             WHERE TRUNC (BTH_TGLDOC) BETWEEN TRUNC (to_date('" . $periode1 . "','dd/mm/yyyy')) AND TRUNC (to_date('" . $periode2 . "','dd/mm/yyyy'))
+             WHERE TRUNC (BTH_TGLDOC) BETWEEN TRUNC (to_date('" . $tgl1 . "','dd/mm/yyyy')) AND TRUNC (to_date('" . $tgl2 . "','dd/mm/yyyy'))
                AND BTD_ID = BTH_ID
             AND ST_PRDCD = SUBSTR (BTD_PRDCD, 1, 6) || '0'
             AND ST_LOKASI = '01') A")[0]->rph;
 
             $p_nilaihbvtrfin = DB::connection(Session::get('connection'))->select("SELECT SUM (rph) rph FROM (SELECT trjd_PRDCD, CASE WHEN TRJD_TRANSACTIONTYPE = 'S' THEN TRJD_QUANTITY ELSE TRJD_QUANTITY * -1 END QTY,
 CASE WHEN TRJD_TRANSACTIONTYPE = 'S' THEN (TRJD_QUANTITY * TRJD_BASEPRICE) ELSE (TRJD_QUANTITY * TRJD_BASEPRICE) * -1 END RPH
-FROM TBTR_JUALDETAIL, TBMASTER_PRODMAST WHERE TRJD_KODEIGR = " . Session::get('kdigr') . " AND TRUNC (TRJD_TRANSACTIONDATE) BETWEEN TRUNC (to_date('" . $periode1 . "','dd/mm/yyyy')) AND TRUNC (to_date('" . $periode2 . "','dd/mm/yyyy'))
+FROM TBTR_JUALDETAIL, TBMASTER_PRODMAST WHERE TRJD_KODEIGR = " . Session::get('kdigr') . " AND TRUNC (TRJD_TRANSACTIONDATE) BETWEEN TRUNC (to_date('" . $tgl1 . "','dd/mm/yyyy')) AND TRUNC (to_date('" . $tgl2 . "','dd/mm/yyyy'))
 AND (   TRJD_DIVISIONCODE <> '5' OR SUBSTR (TRJD_DIVISION, 1, 2) <> '39') AND TRJD_RECORDID IS NULL AND PRD_KODEIGR = TRJD_KODEIGR AND PRD_PRDCD = TRJD_PRDCD AND NVL (prd_flaghbv, 'N') = 'Y') aa")[0]->rph;
 
             $p_nilaihbvtrfout = DB::connection(Session::get('connection'))->select("SELECT SUM (nilai) rph FROM (SELECT trjd_prdcd, qty, hbv_prdcd_brd, hbv_qty_gram, hbv_qty_gram * qty, st_avgcost, ( (NVL (hbv_qty_gram * qty, 0) * st_avgcost) / 1000) nilai
 FROM ( SELECT trjd_prdcd, SUM (trjd_quantity) qty FROM TBTR_JUALDETAIL, TBMASTER_PRODMAST
-WHERE TRJD_KODEIGR = " . Session::get('kdigr') . " AND TRUNC (TRJD_TRANSACTIONDATE) BETWEEN TRUNC (to_date('" . $periode1 . "','dd/mm/yyyy')) AND TRUNC (to_date('" . $periode2 . "','dd/mm/yyyy'))
+WHERE TRJD_KODEIGR = " . Session::get('kdigr') . " AND TRUNC (TRJD_TRANSACTIONDATE) BETWEEN TRUNC (to_date('" . $tgl1 . "','dd/mm/yyyy')) AND TRUNC (to_date('" . $tgl2 . "','dd/mm/yyyy'))
 AND ( TRJD_DIVISIONCODE <> '5' OR SUBSTR (TRJD_DIVISION, 1, 2) <> '39') AND TRJD_RECORDID IS NULL AND PRD_KODEIGR = TRJD_KODEIGR
             AND PRD_PRDCD = TRJD_PRDCD AND NVL (prd_flaghbv, 'N') = 'Y' GROUP BY trjd_prdcd) aa, tbmaster_formula_hbv, tbmaster_stock
 WHERE SUBSTR (hbv_prdcd_brj, 1, 6) = SUBSTR (trjd_prdcd, 1, 6) AND st_prdcd = hbv_prdcd_brd AND st_lokasi = '01') bb")[0]->rph;
 
-            $datas = DB::connection(Session::get('connection'))->select("SELECT lpp_kodedivisi,
+            $data = DB::connection(Session::get('connection'))->select("SELECT lpp_kodedivisi,
          div_namadivisi,
          lpp_kodedepartemen,
          dep_namadepartement,
@@ -288,8 +290,8 @@ WHERE SUBSTR (hbv_prdcd_brj, 1, 6) = SUBSTR (trjd_prdcd, 1, 6) AND st_prdcd = hb
                    tbmaster_kategori,
                    tbmaster_perusahaan
              WHERE     lpp_kodeigr = " . Session::get('kdigr') . "
-                   AND lpp_tgl1 >= to_date('" . $periode1 . "','dd/mm/yyyy')
-                   AND lpp_tgl2 <= to_date('" . $periode2 . "','dd/mm/yyyy')
+                   AND lpp_tgl1 >= to_date('" . $tgl1 . "','dd/mm/yyyy')
+                   AND lpp_tgl2 <= to_date('" . $tgl2 . "','dd/mm/yyyy')
                    AND prd_kodeigr(+) = lpp_kodeigr
                    AND prd_prdcd(+) = lpp_prdcd
                    AND div_kodeigr(+) = lpp_kodeigr
@@ -314,42 +316,15 @@ WHERE SUBSTR (hbv_prdcd_brj, 1, 6) = SUBSTR (trjd_prdcd, 1, 6) AND st_prdcd = hb
             ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg");
 
             $title = '** POSISI & MUTASI PERSEDIAAN BARANG BAIK **';
-            $data = [
-                'title' => $title,
-                'perusahaan' => $perusahaan,
-                'datas' => $datas,
-                'tgl1' => $periode1,
-                'tgl2' => $periode2,
-                'p_nilaiidmacost' => $p_nilaiidmacost,
-                'p_nilaiidmprice' => $p_nilaiidmprice,
-                'p_nilaihbvtrfin' => $p_nilaihbvtrfin,
-                'p_nilaihbvtrfout' => $p_nilaihbvtrfout
-            ];
 
-            $now = Carbon::now('Asia/Jakarta');
-            $now = date_format($now, 'd-m-Y H-i-s');
-
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid, $data);
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-            $pdf->output();
-
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(825, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream($title . ' ' . $periode1 . ' - ' . $periode2 . '.pdf');
-        }
-        else if ($menu == 'LPP02') {
+            return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2', 'p_nilaiidmacost', 'p_nilaiidmprice', 'p_nilaihbvtrfin', 'p_nilaihbvtrfout']));
+        } else if ($menu == 'LPP02') {
             $p_prog = 'LPP02';
             $repid = 'RPT_LPP02';
             $rep_name = 'IGR_BO_LPPRCDDK.jsp';
 
-            $datas = DB::connection(Session::get('connection'))->select("SELECT lpp_kodedivisi,
+            $data = DB::connection(Session::get('connection'))
+                ->select("SELECT lpp_kodedivisi,
          div_namadivisi,
          lpp_kodedepartemen,
          dep_namadepartement,
@@ -498,8 +473,8 @@ WHERE SUBSTR (hbv_prdcd_brj, 1, 6) = SUBSTR (trjd_prdcd, 1, 6) AND st_prdcd = hb
                  tbmaster_kategori,
                  tbmaster_perusahaan
            WHERE lpp_kodeigr = " . Session::get('kdigr') . "
-        AND lpp_tgl1 >= to_date('" . $periode1 . "','dd/mm/yyyy')
-        AND lpp_tgl2 <= to_date('" . $periode2 . "','dd/mm/yyyy')
+        AND lpp_tgl1 >= to_date('" . $tgl1 . "','dd/mm/yyyy')
+        AND lpp_tgl2 <= to_date('" . $tgl2 . "','dd/mm/yyyy')
         AND prd_kodeigr(+) = lpp_kodeigr
         AND prd_prdcd(+) = lpp_prdcd
         AND div_kodeigr(+) = lpp_kodeigr
@@ -533,38 +508,14 @@ ORDER BY lpp_kodedivisi,
          lpp_prdcd");
 
             $title = '** POSISI & MUTASI PERSEDIAAN BARANG BAIK **';
-            $data = [
-                'title' => $title,
-                'perusahaan' => $perusahaan,
-                'datas' => $datas,
-                'tgl1' => $periode1,
-                'tgl2' => $periode2
-            ];
+            return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $now = Carbon::now('Asia/Jakarta');
-            $now = date_format($now, 'd-m-Y H-i-s');
-
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid, $data);
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-            $pdf->output();
-
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(825, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream($datas[0]->judul . ' ' . $periode1 . ' - ' . $periode2 . '.pdf');
-        }
-        else if ($menu == 'LPP03') {
+        } else if ($menu == 'LPP03') {
             $p_prog = 'LPP03';
             $repid = 'RPT_LPP03';
             $rep_name = 'IGR_BO_LPPBAIKRCDDK.jsp';
 
-            $datas = DB::connection(Session::get('connection'))->select("SELECT lpp_kodedivisi, div_namadivisi,
+            $data = DB::connection(Session::get('connection'))->select("SELECT lpp_kodedivisi, div_namadivisi,
         lpp_kodedepartemen, dep_namadepartement,
         lpp_kategoribrg, kat_namakategori, lpp_prdcd, prd_deskripsipanjang, kemasan,
         judul, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -597,8 +548,8 @@ FROM (SELECT lpp_kodedivisi, div_namadivisi, lpp_kodedepartemen, dep_namadeparte
 FROM tbtr_lpp, tbmaster_prodmast, tbmaster_divisi,
         tbmaster_departement,tbmaster_kategori, tbmaster_perusahaan
 WHERE lpp_kodeigr = " . Session::get('kdigr') . "
-        AND lpp_tgl1 >= to_date('" . $periode1 . "','dd/mm/yyyy')
-        AND lpp_tgl2 <= to_date('" . $periode2 . "','dd/mm/yyyy')
+        AND lpp_tgl1 >= to_date('" . $tgl1 . "','dd/mm/yyyy')
+        AND lpp_tgl2 <= to_date('" . $tgl2 . "','dd/mm/yyyy')
         AND prd_kodeigr(+) = lpp_kodeigr
         AND prd_prdcd(+) = lpp_prdcd
         AND div_kodeigr(+) = lpp_kodeigr
@@ -623,39 +574,14 @@ GROUP BY lpp_kodedivisi, div_namadivisi,
 ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
 
             $title = '** POSISI & MUTASI PERSEDIAAN BARANG BAIK **';
-            $data = [
-                'title' => $title,
-                'perusahaan' => $perusahaan,
-                'datas' => $datas,
-                'tgl1' => $periode1,
-                'tgl2' => $periode2
-            ];
-
-            $now = Carbon::now('Asia/Jakarta');
-            $now = date_format($now, 'd-m-Y H-i-s');
-
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid, $data);
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-            $pdf->output();
-
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(825, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream($datas[0]->judul . ' ' . $periode1 . ' - ' . $periode2 . '.pdf');
-        }
-        else if ($menu == 'LPP04') {
+            return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
+        } else if ($menu == 'LPP04') {
             $p_prog = 'LPP04';
             $repid = 'RPT_LPP04';
             $rep_name = 'IGR_BO_LPPBAIKRCPPB.jsp';
 
 
-            $datas = DB::connection(Session::get('connection'))->select("SELECT lpp_kodedivisi, div_namadivisi,
+            $data = DB::connection(Session::get('connection'))->select("SELECT lpp_kodedivisi, div_namadivisi,
         lpp_kodedepartemen, dep_namadepartement,
         lpp_kategoribrg, kat_namakategori, lpp_prdcd, prd_deskripsipanjang, kemasan,
         judul, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -688,8 +614,8 @@ FROM (SELECT lpp_kodedivisi, div_namadivisi, lpp_kodedepartemen, dep_namadeparte
 FROM tbtr_lpp, tbmaster_prodmast, tbmaster_divisi,
         tbmaster_departement,tbmaster_kategori, tbmaster_perusahaan
 WHERE lpp_kodeigr = " . Session::get('kdigr') . "
-        AND lpp_tgl1 >= to_date('" . $periode1 . "','dd/mm/yyyy')
-        AND lpp_tgl2 <= to_date('" . $periode2 . "','dd/mm/yyyy')
+        AND lpp_tgl1 >= to_date('" . $tgl1 . "','dd/mm/yyyy')
+        AND lpp_tgl2 <= to_date('" . $tgl2 . "','dd/mm/yyyy')
         AND (lpp_qtyadj <> 0 OR lpp_rphadj <> 0)
         AND prd_kodeigr(+) = lpp_kodeigr
         AND prd_prdcd(+) = lpp_prdcd
@@ -714,43 +640,18 @@ GROUP BY lpp_kodedivisi, div_namadivisi,
 ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
 
             $title = '';
-            $data = [
-                'title' => $title,
-                'perusahaan' => $perusahaan,
-                'datas' => $datas,
-                'tgl1' => $periode1,
-                'tgl2' => $periode2
-            ];
-
-            $now = Carbon::now('Asia/Jakarta');
-            $now = date_format($now, 'd-m-Y H-i-s');
-
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid, $data);
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-            $pdf->output();
-
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(825, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream($datas[0]->judul . ' ' . $periode1 . ' - ' . $periode2 . '.pdf');
-        }
-        else if ($menu == 'LPP05') {
+            return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
+        } else if ($menu == 'LPP05') {
             $p_prog = 'LPP05';
             $title = '';
-            $datas = '';
+            $data = '';
 
             if (trim($tipe) == '1') {
                 $repid = 'RPT_LPP05A';
                 $rep_name = 'IGR_BO_LPPBAIKPKOR_MIN.jsp';
                 $title = 'LPP RINCIAN PRODUK YG TERDAPAT KOREKSI BARANG BAIK (MINUS)';
 
-                $datas = DB::connection(Session::get('connection'))->select("SELECT   A.*
+                $data = DB::connection(Session::get('connection'))->select("SELECT   A.*
     FROM (SELECT LPP_KODEDIVISI, DIV_NAMADIVISI, LPP_KODEDEPARTEMEN, DEP_NAMADEPARTEMENT,
                  LPP_KATEGORIBRG, KAT_NAMAKATEGORI, LPP_PRDCD, PRD_DESKRIPSIPANJANG,
                  PRD_UNIT || '/' || PRD_FRAC KEMASAN, LPP_QTYBEGBAL, LPP_RPHBEGBAL, LPP_QTYBELI,
@@ -811,8 +712,8 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
                  TBMASTER_KATEGORI,
                  TBMASTER_PERUSAHAAN
            WHERE LPP_KODEIGR = " . Session::get('kdigr') . "
-             AND LPP_TGL1 >= to_date('" . $periode1 . "','dd/mm/yyyy')
-             AND LPP_TGL2 <= to_date('" . $periode2 . "','dd/mm/yyyy')
+             AND LPP_TGL1 >= to_date('" . $tgl1 . "','dd/mm/yyyy')
+             AND LPP_TGL2 <= to_date('" . $tgl2 . "','dd/mm/yyyy')
              AND PRD_KODEIGR(+) = LPP_KODEIGR
              AND PRD_PRDCD(+) = LPP_PRDCD
              AND DIV_KODEIGR(+) = LPP_KODEIGR
@@ -850,13 +751,15 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
 WHERE ROWNUM <= " . $banyakitem . "
 ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
 
-            } else if (trim($tipe) == '2') {
-                $repid = 'RPT_LPP05B';
+            }
+            else if (trim($tipe) == '2') {
+//                $repid = 'RPT_LPP05B';
+                $repid = 'RPT_LPP05A';
                 $rep_name = 'IGR_BO_LPPBAIKPKOR_PLUS.jsp';
 
                 $title = 'LPP RINCIAN PRODUK YG TERDAPAT KOREKSI BARANG BAIK (PLUS)';
 
-                $datas = DB::connection(Session::get('connection'))->select("SELECT   A.*
+                $data = DB::connection(Session::get('connection'))->select("SELECT   A.*
     FROM (SELECT LPP_KODEDIVISI, DIV_NAMADIVISI, LPP_KODEDEPARTEMEN, DEP_NAMADEPARTEMENT,
                  LPP_KATEGORIBRG, KAT_NAMAKATEGORI, LPP_PRDCD, PRD_DESKRIPSIPANJANG,
                  PRD_UNIT || '/' || PRD_FRAC KEMASAN, LPP_QTYBEGBAL, LPP_RPHBEGBAL, LPP_QTYBELI,
@@ -917,8 +820,8 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
                  TBMASTER_KATEGORI,
                  TBMASTER_PERUSAHAAN
            WHERE LPP_KODEIGR = " . Session::get('kdigr') . "
-             AND LPP_TGL1 >= to_date('" . $periode1 . "','dd/mm/yyyy')
-             AND LPP_TGL2 <= to_date('" . $periode2 . "','dd/mm/yyyy')
+             AND LPP_TGL1 >= to_date('" . $tgl1 . "','dd/mm/yyyy')
+             AND LPP_TGL2 <= to_date('" . $tgl2 . "','dd/mm/yyyy')
              AND PRD_KODEIGR(+) = LPP_KODEIGR
              AND PRD_PRDCD(+) = LPP_PRDCD
              AND DIV_KODEIGR(+) = LPP_KODEIGR
@@ -954,13 +857,15 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
 	 ORDER BY KOREKSI DESC) A
 WHERE ROWNUM <= " . $banyakitem . "
 ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
-            } else {
-                $repid = 'RPT_LPP05C';
+            }
+            else {
+//                $repid = 'RPT_LPP05C';
+                $repid = 'RPT_LPP05A';
                 $rep_name = 'IGR_BO_LPPBAIKPKOR.jsp';
 
                 $title = 'LPP RINCIAN PRODUK YG TERDAPAT KOREKSI BARANG BAIK';
 
-                $datas = DB::connection(Session::get('connection'))->select("SELECT   A.*
+                $data = DB::connection(Session::get('connection'))->select("SELECT   A.*
     FROM (SELECT LPP_KODEDIVISI, DIV_NAMADIVISI, LPP_KODEDEPARTEMEN, DEP_NAMADEPARTEMENT,
                  LPP_KATEGORIBRG, KAT_NAMAKATEGORI, LPP_PRDCD, PRD_DESKRIPSIPANJANG,
                  PRD_UNIT || '/' || PRD_FRAC KEMASAN, LPP_QTYBEGBAL, LPP_RPHBEGBAL, LPP_QTYBELI,
@@ -1002,9 +907,9 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
                  TBMASTER_DEPARTEMENT,
                  TBMASTER_KATEGORI,
                  TBMASTER_PERUSAHAAN
-           WHERE LPP_KODEIGR = " . Session::get('kdigr') . "
-             AND LPP_TGL1 >= to_date('" . $periode1 . "','dd/mm/yyyy')
-             AND LPP_TGL2 <= to_date('" . $periode2 . "','dd/mm/yyyy')
+           WHERE LPP_KODEIGR = '" . Session::get('kdigr') . "'
+             AND LPP_TGL1 >= to_date('" . $tgl1 . "','dd/mm/yyyy')
+             AND LPP_TGL2 <= to_date('" . $tgl2 . "','dd/mm/yyyy')
              AND PRD_KODEIGR(+) = LPP_KODEIGR
              AND PRD_PRDCD(+) = LPP_PRDCD
              AND DIV_KODEIGR(+) = LPP_KODEIGR
@@ -1059,35 +964,11 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
 	 ) A
 WHERE ROWNUM <= " . $banyakitem . "
 ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
+
             }
 
-            $data = [
-                'title' => $title,
-                'perusahaan' => $perusahaan,
-                'datas' => $datas,
-                'tgl1' => $periode1,
-                'tgl2' => $periode2
-            ];
-
-            $now = Carbon::now('Asia/Jakarta');
-            $now = date_format($now, 'd-m-Y H-i-s');
-
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid, $data);
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-            $pdf->output();
-
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(825, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream($title . ' ' . $periode1 . ' - ' . $periode2 . '.pdf');
-        }
-        else if ($menu == 'LPP06') {
+            return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
+        } else if ($menu == 'LPP06') {
             DB::connection(Session::get('connection'))->table('TEMP_LPP06')->truncate();
             Self::PROSES_LPP06();
 
@@ -1097,7 +978,7 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
 
             $title = '** REKONSILIASI SALDO AWAL VS SALDO AKHIR **';
 
-            $datas = DB::connection(Session::get('connection'))->select("Select
+            $data = DB::connection(Session::get('connection'))->select("Select
                             prs_namaperusahaan,
                             prs_namacabang,
                             prs_namawilayah,
@@ -1116,38 +997,15 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
                         and dep_kodedepartement = prd_kodedepartement
                         and div_kodedivisi = prd_kodedivisi
                         ORDER BY DIV,DEPT,KATB");
-            $data = [
-                'title' => $title,
-                'perusahaan' => $perusahaan,
-                'datas' => $datas,
-                'tgl1' => $periode1,
-                'tgl2' => $periode2
-            ];
 
-            $now = Carbon::now('Asia/Jakarta');
-            $now = date_format($now, 'd-m-Y H-i-s');
+            return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid, $data);
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-            $pdf->output();
-
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(825, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream($title . ' ' . $periode1 . ' - ' . $periode2 . '.pdf');
-        }
-        else if ($menu == 'LPP07') {
+        } else if ($menu == 'LPP07') {
             $p_prog = 'LPP07';
             $repid = 'RPT_LPP07';
             $rep_name = 'IGR_BO_LPPMONP.jsp';
 
-            $datas = DB::connection(Session::get('connection'))->select("SELECT mpl_kodemonitoring, mpl_namamonitoring, mpl_prdcd, prd_deskripsipanjang, kemasan,
+            $data = DB::connection(Session::get('connection'))->select("SELECT mpl_kodemonitoring, mpl_namamonitoring, mpl_prdcd, prd_deskripsipanjang, kemasan,
         judul, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
         SUM(lpp_qtybegbal) sawalqty, SUM(lpp_rphbegbal) sawalrph, SUM(lpp_qtybeli) beliqty,
         SUM(lpp_rphbeli) belirph, SUM(lpp_qtybonus) bonusqty, SUM(lpp_rphbonus) bonusrph,
@@ -1175,8 +1033,8 @@ FROM (SELECT mpl_kodemonitoring, mpl_namamonitoring, mpl_prdcd, prd_deskripsipan
         prs_namaperusahaan, prs_namacabang, prs_namawilayah
 FROM tbtr_lpp, tbmaster_prodmast, tbtr_monitoringplu, tbmaster_perusahaan
 WHERE lpp_kodeigr = " . Session::get('kdigr') . "
-         AND lpp_tgl1 >= to_date('" . $periode1 . "','dd/mm/yyyy')
-         AND lpp_tgl2 <= to_date('" . $periode2 . "','dd/mm/yyyy')
+         AND lpp_tgl1 >= to_date('" . $tgl1 . "','dd/mm/yyyy')
+         AND lpp_tgl2 <= to_date('" . $tgl2 . "','dd/mm/yyyy')
         AND (lpp_qtyadj <> 0 OR lpp_rphadj <> 0)
         AND prd_kodeigr(+) = lpp_kodeigr
         AND prd_prdcd(+) = lpp_prdcd
@@ -1190,41 +1048,16 @@ GROUP BY mpl_kodemonitoring, mpl_namamonitoring, mpl_prdcd, prd_deskripsipanjang
         prs_namaperusahaan, prs_namacabang, prs_namawilayah
 ORDER BY mpl_kodemonitoring, mpl_prdcd");
 
-            $title = $datas[0]->judul;
+            $title = $data[0]->judul;
 
-            $data = [
-                'title' => $title,
-                'perusahaan' => $perusahaan,
-                'datas' => $datas,
-                'tgl1' => $periode1,
-                'tgl2' => $periode2
-            ];
+            return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $now = Carbon::now('Asia/Jakarta');
-            $now = date_format($now, 'd-m-Y H-i-s');
-
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid, $data);
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-            $pdf->output();
-
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(825, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream($title . ' ' . $periode1 . ' - ' . $periode2 . '.pdf');
-
-        }
-        else if ($menu == 'LPP08') {
+        } else if ($menu == 'LPP08') {
             $p_prog = 'LPP08';
             $repid = 'RPT_LPP08';
             $rep_name = 'IGR_BO_LPPRETURKAT.jsp';
 
-            $datas = DB::connection(Session::get('connection'))->select("SELECT lrt_kodedivisi, div_namadivisi,
+            $data = DB::connection(Session::get('connection'))->select("SELECT lrt_kodedivisi, div_namadivisi,
         lrt_kodedepartemen, dep_namadepartement,
         lrt_kategoribrg, kat_namakategori,
         prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -1240,8 +1073,8 @@ FROM (SELECT lrt_kodedivisi, div_namadivisi, lrt_kodedepartemen, dep_namadeparte
         prs_namaperusahaan, prs_namacabang, prs_namawilayah
 FROM tbtr_lpprt, tbmaster_divisi, tbmaster_departement,tbmaster_kategori, tbmaster_perusahaan
 WHERE lrt_kodeigr = " . Session::get('kdigr') . "
-         AND lrt_tgl1 >= to_date('" . $periode1 . "','dd/mm/yyyy')
-         AND lrt_tgl2 <= to_date('" . $periode2 . "','dd/mm/yyyy')
+         AND lrt_tgl1 >= to_date('" . $tgl1 . "','dd/mm/yyyy')
+         AND lrt_tgl2 <= to_date('" . $tgl2 . "','dd/mm/yyyy')
         AND div_kodeigr(+) = lrt_kodeigr
         AND div_kodedivisi(+) = lrt_kodedivisi
         AND dep_kodeigr(+) = lrt_kodeigr
@@ -1260,41 +1093,27 @@ ORDER BY lrt_kodedivisi, lrt_kodedepartemen, lrt_kategoribrg");
 
             $title = "** POSISI & MUTASI PERSEDIAAN BARANG RETUR **";
 
-            $data = [
-                'title' => $title,
-                'perusahaan' => $perusahaan,
-                'datas' => $datas,
-                'tgl1' => $periode1,
-                'tgl2' => $periode2
-            ];
+            return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $now = Carbon::now('Asia/Jakarta');
-            $now = date_format($now, 'd-m-Y H-i-s');
-
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid, $data);
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-            $pdf->output();
-
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(825, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream($title . ' ' . $periode1 . ' - ' . $periode2 . '.pdf');
         }
         else if ($menu == 'LPP09') {
-                $p_prog = 'LPP09';
-                $repid = 'RPT_LPP09';
-                $rep_name = 'IGR_BO_LPPRETURRCDDK.jsp';
-                if (isset($prdcd1) && isset($prdcd2)) {
-                    $and_plu = " and lrt_prdcd between '" . $prdcd1 . "' and '" . $prdcd2 . "'";
-                }
+            $p_prog = 'LPP09';
+            $repid = 'RPT_LPP09';
+            $rep_name = 'IGR_BO_LPPRETURRCDDK.jsp';
+            if (isset($prdcd1) && isset($prdcd2)) {
+                $and_plu = " and lrt_prdcd between '" . $prdcd1 . "' and '" . $prdcd2 . "'";
+            }
 
-                $datas = DB::connection(Session::get('connection'))->select("SELECT lrt_kodedivisi, div_namadivisi,
+            if ($tipe=='1') {
+                $and_tipe = ' and lrt_rphakhir < 0';
+            }else if ($tipe=='2') {
+                $and_tipe = ' and lrt_rphakhir >= 0';
+            }else {
+                $and_tipe = ' ';
+            }
+
+            $data = DB::connection(Session::get('connection'))
+                ->select("SELECT lrt_kodedivisi, div_namadivisi,
         lrt_kodedepartemen, dep_namadepartement,
         lrt_kategoribrg, kat_namakategori, lrt_prdcd, prd_deskripsipanjang, kemasan,
         judul, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -1321,8 +1140,8 @@ FROM (SELECT lrt_kodedivisi, div_namadivisi, lrt_kodedepartemen, dep_namadeparte
 FROM tbtr_lpprt, tbmaster_prodmast, tbmaster_divisi,
         tbmaster_departement, tbmaster_kategori, tbmaster_perusahaan
 WHERE lrt_kodeigr = " . Session::get('kdigr') . "
-         AND lrt_tgl1 >= to_date('" . $periode1 . "','dd/mm/yyyy')
-         AND lrt_tgl2 <= to_date('" . $periode2 . "','dd/mm/yyyy')
+         AND lrt_tgl1 >= to_date('" . $tgl1 . "','dd/mm/yyyy')
+         AND lrt_tgl2 <= to_date('" . $tgl2 . "','dd/mm/yyyy')
         AND prd_kodeigr(+) = lrt_kodeigr
         AND prd_prdcd(+) = lrt_prdcd
         AND div_kodeigr(+) = lrt_kodeigr
@@ -1346,40 +1165,16 @@ GROUP BY lrt_kodedivisi, div_namadivisi,
         prs_namaperusahaan, prs_namacabang, prs_namawilayah
 ORDER BY lrt_kodedivisi, lrt_kodedepartemen, lrt_kategoribrg, lrt_prdcd");
 
-                $title = $datas[0]->judul;
+            $title = $data[0]->judul;
 
-                $data = [
-                    'title' => $title,
-                    'perusahaan' => $perusahaan,
-                    'datas' => $datas,
-                    'tgl1' => $periode1,
-                    'tgl2' => $periode2
-                ];
+            return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 
-                $now = Carbon::now('Asia/Jakarta');
-                $now = date_format($now, 'd-m-Y H-i-s');
-
-                $dompdf = new PDF();
-
-                $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid, $data);
-
-                error_reporting(E_ALL ^ E_DEPRECATED);
-                $pdf->output();
-
-                $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-                $canvas = $dompdf->get_canvas();
-                $canvas->page_text(825, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-                $dompdf = $pdf;
-
-                return $dompdf->stream($title . ' ' . $periode1 . ' - ' . $periode2 . '.pdf');
-            }
-        else if ($menu == 'LPP10') {
+        } else if ($menu == 'LPP10') {
             $p_prog = 'LPP10';
             $repid = 'RPT_LPP10';
             $rep_name = 'IGR_BO_LPPRUSAKKAT.jsp';
 
-            $datas = DB::connection(Session::get('connection'))->select("SELECT lrs_kodedivisi, div_namadivisi,
+            $data = DB::connection(Session::get('connection'))->select("SELECT lrs_kodedivisi, div_namadivisi,
     lrs_kodedepartemen, dep_namadepartement,
     lrs_kategoribrg, kat_namakategori,
     prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -1396,8 +1191,8 @@ FROM (SELECT lrs_kodedivisi, div_namadivisi, lrs_kodedepartemen, dep_namadeparte
     prs_namaperusahaan, prs_namacabang, prs_namawilayah
 FROM tbtr_lpprs, tbmaster_divisi, tbmaster_departement,tbmaster_kategori, tbmaster_perusahaan
 WHERE lrs_kodeigr = " . Session::get('kdigr') . "
-     AND lrs_tgl1 >= to_date('" . $periode1 . "','dd/mm/yyyy')
-     AND lrs_tgl2 <= to_date('" . $periode2 . "','dd/mm/yyyy')
+     AND lrs_tgl1 >= to_date('" . $tgl1 . "','dd/mm/yyyy')
+     AND lrs_tgl2 <= to_date('" . $tgl2 . "','dd/mm/yyyy')
     AND div_kodeigr(+) = lrs_kodeigr
     AND div_kodedivisi(+) = lrs_kodedivisi
     AND dep_kodeigr(+) = lrs_kodeigr
@@ -1416,40 +1211,23 @@ ORDER BY lrs_kodedivisi, lrs_kodedepartemen, lrs_kategoribrg");
 
             $title = "** POSISI & MUTASI PERSEDIAAN BARANG RUSAK **";
 
-            $data = [
-                'title' => $title,
-                'perusahaan' => $perusahaan,
-                'datas' => $datas,
-                'tgl1' => $periode1,
-                'tgl2' => $periode2
-            ];
+            return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $now = Carbon::now('Asia/Jakarta');
-            $now = date_format($now, 'd-m-Y H-i-s');
-
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid, $data);
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-            $pdf->output();
-
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(825, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream($title . ' ' . $periode1 . ' - ' . $periode2 . '.pdf');
-        }
-        else if ($menu == 'LPP11') {
+        } else if ($menu == 'LPP11') {
             $p_prog = 'LPP11';
             $repid = 'RPT_LPP11';
             $rep_name = 'IGR_BO_LPPRUSAKRCDDK.jsp';
+            if ($tipe=='1') {
+                $and_tipe = ' and lrs_rphakhir < 0';
+            }else if ($tipe=='2') {
+                $and_tipe = ' and lrs_rphakhir >= 0';
+            }else {
+                $and_tipe = ' ';
+            }
             if (isset($prdcd1) && isset($prdcd2)) {
                 $and_plu = " and lrs_prdcd between '" . $prdcd1 . "' and '" . $prdcd2 . "'";
             }
-            $datas = DB::connection(Session::get('connection'))->select("SELECT lrs_kodedivisi, div_namadivisi,
+            $data = DB::connection(Session::get('connection'))->select("SELECT lrs_kodedivisi, div_namadivisi,
     lrs_kodedepartemen, dep_namadepartement,
     lrs_kategoribrg, kat_namakategori, lrs_prdcd, prd_deskripsipanjang, kemasan,
     judul, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -1477,8 +1255,8 @@ FROM (SELECT lrs_kodedivisi, div_namadivisi, lrs_kodedepartemen, dep_namadeparte
 FROM tbtr_lpprs, tbmaster_prodmast, tbmaster_divisi,
     tbmaster_departement,tbmaster_kategori, tbmaster_perusahaan
 WHERE lrs_kodeigr =  " . Session::get('kdigr') . "
-    AND lrs_tgl1 >= to_date('" . $periode1 . "','dd/mm/yyyy')
-    AND lrs_tgl2 <= to_date('" . $periode2 . "','dd/mm/yyyy')
+    AND lrs_tgl1 >= to_date('" . $tgl1 . "','dd/mm/yyyy')
+    AND lrs_tgl2 <= to_date('" . $tgl2 . "','dd/mm/yyyy')
     AND prd_kodeigr(+) = lrs_kodeigr
     AND prd_prdcd(+) = lrs_prdcd
     AND div_kodeigr(+) = lrs_kodeigr
@@ -1502,39 +1280,15 @@ GROUP BY lrs_kodedivisi, div_namadivisi,
     prs_namaperusahaan, prs_namacabang, prs_namawilayah
 ORDER BY lrs_kodedivisi, lrs_kodedepartemen, lrs_kategoribrg, lrs_prdcd");
 
-            $title = $datas[0]->judul;
+            $title = $data[0]->judul;
 
-            $data = [
-                'title' => $title,
-                'perusahaan' => $perusahaan,
-                'datas' => $datas,
-                'tgl1' => $periode1,
-                'tgl2' => $periode2
-            ];
+            return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $now = Carbon::now('Asia/Jakarta');
-            $now = date_format($now, 'd-m-Y H-i-s');
-
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid, $data);
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-            $pdf->output();
-
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(825, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream($title . ' ' . $periode1 . ' - ' . $periode2 . '.pdf');
-        }
-        else if ($menu == 'LPP12') {
+        } else if ($menu == 'LPP12') {
             $p_prog = 'LPP12';
             $repid = 'RPT_LPP12';
             $rep_name = 'IGR_BO_LPPGAB.jsp';
-            $datas = DB::connection(Session::get('connection'))->select("SELECT lpp_kodedivisi, div_namadivisi,
+            $data = DB::connection(Session::get('connection'))->select("SELECT lpp_kodedivisi, div_namadivisi,
     lpp_kodedepartemen, dep_namadepartement,
     lpp_kategoribrg, kat_namakategori,
     prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -1581,8 +1335,8 @@ FROM (SELECT lpp_kodedivisi, div_namadivisi,
 FROM tbtr_lpp, tbtr_lpprt, tbtr_lpprs, tbmaster_prodmast, tbmaster_divisi,
     tbmaster_departement,tbmaster_kategori, tbmaster_perusahaan
 WHERE lpp_kodeigr = " . Session::get('kdigr') . "
-    AND lpp_tgl1 >= to_date('" . $periode1 . "','dd/mm/yyyy')
-    AND lpp_tgl2 <= to_date('" . $periode2 . "','dd/mm/yyyy')
+    AND lpp_tgl1 >= to_date('" . $tgl1 . "','dd/mm/yyyy')
+    AND lpp_tgl2 <= to_date('" . $tgl2 . "','dd/mm/yyyy')
     AND prd_kodeigr = lpp_kodeigr
     AND prd_prdcd = lpp_prdcd
     AND div_kodeigr = prd_kodeigr
@@ -1607,37 +1361,13 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg");
 
             $title = "** POSISI & MUTASI PERSEDIAAN BARANG GABUNGAN **";
 
-            $data = [
-                'title' => $title,
-                'perusahaan' => $perusahaan,
-                'datas' => $datas,
-                'tgl1' => $periode1,
-                'tgl2' => $periode2
-            ];
+            return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $now = Carbon::now('Asia/Jakarta');
-            $now = date_format($now, 'd-m-Y H-i-s');
-
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid, $data);
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-            $pdf->output();
-
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(825, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream($title . ' ' . $periode1 . ' - ' . $periode2 . '.pdf');
-        }
-        else if ($menu == 'LPP13') {
+        } else if ($menu == 'LPP13') {
             $p_prog = 'LPP13';
             $repid = 'RPT_LPP13';
             $rep_name = 'IGR_BO_LPPSUPBAIK.jsp';
-            $datas = DB::connection(Session::get('connection'))->select("SELECT sup_kodesupplier, sup_namasupplier, lpp_prdcd, prd_deskripsipanjang, kemasan,
+            $data = DB::connection(Session::get('connection'))->select("SELECT sup_kodesupplier, sup_namasupplier, lpp_prdcd, prd_deskripsipanjang, kemasan,
     prs_namaperusahaan, prs_namacabang, prs_namawilayah,
     SUM(lpp_qtybegbal) sawalqty, SUM(lpp_rphbegbal) sawalrph, SUM(lpp_qtybeli) beliqty,
     SUM(lpp_rphbeli) belirph, SUM(lpp_qtybonus) bonusqty, SUM(lpp_rphbonus) bonusrph,
@@ -1661,8 +1391,8 @@ FROM (SELECT sup_kodesupplier, sup_namasupplier, lpp_prdcd, prd_deskripsipanjang
     prs_namaperusahaan, prs_namacabang, prs_namawilayah
 FROM tbtr_lpp, tbmaster_prodmast, tbmaster_perusahaan, tbmaster_supplier
 WHERE lpp_kodeigr = " . Session::get('kdigr') . "
-    AND lpp_tgl1 >= to_date('" . $periode1 . "','dd/mm/yyyy')
-    AND lpp_tgl2 <= to_date('" . $periode2 . "','dd/mm/yyyy')
+    AND lpp_tgl1 >= to_date('" . $tgl1 . "','dd/mm/yyyy')
+    AND lpp_tgl2 <= to_date('" . $tgl2 . "','dd/mm/yyyy')
     AND prd_kodeigr(+) = lpp_kodeigr
     AND prd_prdcd(+) = lpp_prdcd
     AND prs_kodeigr = lpp_kodeigr
@@ -1677,37 +1407,13 @@ ORDER BY sup_kodesupplier, lpp_prdcd");
 
             $title = "POSISI DAN MUTASI PERSEDIAAN BARANG BAIK PER SUPPLIER";
 
-            $data = [
-                'title' => $title,
-                'perusahaan' => $perusahaan,
-                'datas' => $datas,
-                'tgl1' => $periode1,
-                'tgl2' => $periode2
-            ];
+            return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $now = Carbon::now('Asia/Jakarta');
-            $now = date_format($now, 'd-m-Y H-i-s');
-
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid, $data);
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-            $pdf->output();
-
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(825, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream($title . ' ' . $periode1 . ' - ' . $periode2 . '.pdf');
-        }
-        else if ($menu == 'LPP14') {
+        } else if ($menu == 'LPP14') {
             $p_prog = 'LPP14';
             $repid = 'RPT_LPP14';
             $rep_name = 'IGR_BO_LPPSUPRETR.jsp';
-            $datas = DB::connection(Session::get('connection'))->select("SELECT sup_kodesupplier, sup_namasupplier, lrt_prdcd, prd_deskripsipanjang, kemasan,
+            $data = DB::connection(Session::get('connection'))->select("SELECT sup_kodesupplier, sup_namasupplier, lrt_prdcd, prd_deskripsipanjang, kemasan,
     prs_namaperusahaan, prs_namacabang, prs_namawilayah,
     SUM(lrt_qtybegbal) sawalqty, SUM(lrt_rphbegbal) sawalrph, SUM(lrt_qtybaik) baikqty,
     SUM(lrt_rphbaik) baikrph, SUM(lrt_qtyrusak) rusakqty, SUM(lrt_rphrusak) rusakrph,
@@ -1725,8 +1431,8 @@ FROM (SELECT sup_kodesupplier, sup_namasupplier, lrt_prdcd, prd_deskripsipanjang
     prs_namaperusahaan, prs_namacabang, prs_namawilayah
 FROM tbtr_lpprt, tbmaster_prodmast, tbmaster_perusahaan, tbmaster_supplier
 WHERE lrt_kodeigr = " . Session::get('kdigr') . "
-    AND lrt_tgl1 >= to_date('" . $periode1 . "','dd/mm/yyyy')
-    AND lrt_tgl2 <= to_date('" . $periode2 . "','dd/mm/yyyy')
+    AND lrt_tgl1 >= to_date('" . $tgl1 . "','dd/mm/yyyy')
+    AND lrt_tgl2 <= to_date('" . $tgl2 . "','dd/mm/yyyy')
     AND prd_kodeigr(+) = lrt_kodeigr
     AND prd_prdcd(+) = lrt_prdcd
     AND prs_kodeigr = lrt_kodeigr
@@ -1741,37 +1447,13 @@ ORDER BY sup_kodesupplier, lrt_prdcd");
 
             $title = "POSISI DAN MUTASI PERSEDIAAN BARANG RETUR PER SUPPLIER";
 
-            $data = [
-                'title' => $title,
-                'perusahaan' => $perusahaan,
-                'datas' => $datas,
-                'tgl1' => $periode1,
-                'tgl2' => $periode2
-            ];
+            return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $now = Carbon::now('Asia/Jakarta');
-            $now = date_format($now, 'd-m-Y H-i-s');
-
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid, $data);
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-            $pdf->output();
-
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(825, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream($title . ' ' . $periode1 . ' - ' . $periode2 . '.pdf');
-        }
-        else if ($menu == 'LPP15') {
-                $p_prog = 'LPP15';
-                $repid = 'RPT_LPP15';
-                $rep_name = 'IGR_BO_LPPSUPRUSK.jsp';
-                $datas = DB::connection(Session::get('connection'))->select("SELECT sup_kodesupplier, sup_namasupplier, lrs_prdcd, prd_deskripsipanjang, kemasan,
+        } else if ($menu == 'LPP15') {
+            $p_prog = 'LPP15';
+            $repid = 'RPT_LPP15';
+            $rep_name = 'IGR_BO_LPPSUPRUSK.jsp';
+            $data = DB::connection(Session::get('connection'))->select("SELECT sup_kodesupplier, sup_namasupplier, lrs_prdcd, prd_deskripsipanjang, kemasan,
         prs_namaperusahaan, prs_namacabang, prs_namawilayah,
         SUM(lrs_qtybegbal) sawalqty, SUM(lrs_rphbegbal) sawalrph, SUM(lrs_qtybaik) baikqty,
         SUM(lrs_rphbaik) baikrph, SUM(lrs_qtyretur) returqty, SUM(lrs_rphretur) returrph,
@@ -1789,8 +1471,8 @@ FROM (SELECT sup_kodesupplier, sup_namasupplier, lrs_prdcd, prd_deskripsipanjang
         prs_namaperusahaan, prs_namacabang, prs_namawilayah
 FROM tbtr_lpprs, tbmaster_prodmast, tbmaster_perusahaan, tbmaster_supplier
 WHERE lrs_kodeigr = " . Session::get('kdigr') . "
-        AND lrs_tgl1 >= to_date('" . $periode1 . "','dd/mm/yyyy')
-        AND lrs_tgl2 <= to_date('" . $periode2 . "','dd/mm/yyyy')
+        AND lrs_tgl1 >= to_date('" . $tgl1 . "','dd/mm/yyyy')
+        AND lrs_tgl2 <= to_date('" . $tgl2 . "','dd/mm/yyyy')
         AND prd_kodeigr(+) = lrs_kodeigr
         AND prd_prdcd(+) = lrs_prdcd
         AND prs_kodeigr = lrs_kodeigr
@@ -1803,44 +1485,20 @@ GROUP BY sup_kodesupplier, sup_namasupplier,
         prs_namaperusahaan, prs_namacabang, prs_namawilayah
 ORDER BY sup_kodesupplier, lrs_prdcd");
 
-                $title = "POSISI DAN MUTASI PERSEDIAAN BARANG RUSAK PER SUPPLIER";
+            $title = "POSISI DAN MUTASI PERSEDIAAN BARANG RUSAK PER SUPPLIER";
 
-                $data = [
-                    'title' => $title,
-                    'perusahaan' => $perusahaan,
-                    'datas' => $datas,
-                    'tgl1' => $periode1,
-                    'tgl2' => $periode2
-                ];
+            return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 
-                $now = Carbon::now('Asia/Jakarta');
-                $now = date_format($now, 'd-m-Y H-i-s');
-
-                $dompdf = new PDF();
-
-                $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid, $data);
-
-                error_reporting(E_ALL ^ E_DEPRECATED);
-                $pdf->output();
-
-                $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-                $canvas = $dompdf->get_canvas();
-                $canvas->page_text(825, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-                $dompdf = $pdf;
-
-                return $dompdf->stream($title . ' ' . $periode1 . ' - ' . $periode2 . '.pdf');
-            }
-
-
+        }
 
 
     }
 
-    function cetak_bagian_2(Request $request){
+    function cetak_bagian_2(Request $request)
+    {
         $menu = $request->menu;
-        $periode1 = $request->periode1;
-        $periode2 = $request->periode2;
+        $tgl1 = $request->periode1;
+        $tgl2 = $request->periode2;
         $prdcd1 = $request->prdcd1;
         $prdcd2 = $request->prdcd2;
         $dep1 = $request->dep1;
@@ -1902,7 +1560,8 @@ ORDER BY sup_kodesupplier, lrs_prdcd");
             $p_prog = 'LPP01';
             $repid = 'RPT_LPP01A';
             $rep_name = 'IGR_BO_LPPRDDK_SO.jsp';
-            $datas = DB::connection(Session::get('connection'))->select("SELECT prd_kodedivisi,
+            $data = DB::connection(Session::get('connection'))
+                ->select("SELECT prd_kodedivisi,
          div_namadivisi,
          prd_kodedepartement,
          dep_namadepartement,
@@ -1928,8 +1587,8 @@ ORDER BY sup_kodesupplier, lrs_prdcd");
                            0 qty_so,
                            0 rph_so
                       FROM tbtr_reset_soic
-                     WHERE     TRUNC (rso_tglso) BETWEEN TRUNC ( to_date('" . $periode1 . "','dd/mm/yyyy'))
-                                                     AND TRUNC ( to_date('" . $periode2 . "','dd/mm/yyyy'))
+                     WHERE     TRUNC (rso_tglso) BETWEEN TRUNC ( to_date('" . $tgl1 . "','dd/mm/yyyy'))
+                                                     AND TRUNC ( to_date('" . $tgl2 . "','dd/mm/yyyy'))
                            AND NVL (rso_qtyreset, 0) <> 0
                     UNION ALL
                     SELECT SUBSTR (SOP_PRDCD, 1, 6) || '0' rso_prdcd,
@@ -1955,7 +1614,7 @@ ORDER BY sup_kodesupplier, lrs_prdcd");
                                   (SELECT MAX (sop_tglso)
                                      FROM tbtr_ba_stockopname
                                     WHERE TO_CHAR (sop_tglso, 'MMyyyy') =
-                                             TO_CHAR ( to_date('" . $periode2 . "','dd/mm/yyyy'), 'MMyyyy'))
+                                             TO_CHAR ( to_date('" . $tgl2 . "','dd/mm/yyyy'), 'MMyyyy'))
                            AND sop_lokasi = '01'
                            AND TRUNC (adj_tglso(+)) = TRUNC (sop_tglso)
                            AND adj_lokasi(+) = sop_lokasi
@@ -1992,33 +1651,9 @@ order by prd_kodedivisi,
 
             $title = "LAPORAN REKAP ADJUSTMENT STOCK OPNAME";
 
-            $data = [
-                'title' => $title,
-                'perusahaan' => $perusahaan,
-                'datas' => $datas,
-                'tgl1' => $periode1,
-                'tgl2' => $periode2
-            ];
+            return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $now = Carbon::now('Asia/Jakarta');
-            $now = date_format($now, 'd-m-Y H-i-s');
-
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid, $data);
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-            $pdf->output();
-
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(825, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream($title . ' ' . $periode1 . ' - ' . $periode2 . '.pdf');
-        }
-        else if ($menu == 'LPP02') {
+        } else if ($menu == 'LPP02') {
             $p_prog = 'LPP02';
             $repid = 'RPT_LPP02A';
             $rep_name = 'IGR_BO_LPPRCDDK_SO.jsp';
@@ -2027,7 +1662,7 @@ order by prd_kodedivisi,
                 $and_plu = " and rso_prdcd between '" . $prdcd1 . "' and '" . $prdcd2 . "'";
             }
 
-            $datas = DB::connection(Session::get('connection'))->select("SELECT
+            $data = DB::connection(Session::get('connection'))->select("SELECT
          prd_kodedepartement,
          dep_namadepartement,
          prd_kodekategoribarang,
@@ -2057,8 +1692,8 @@ order by prd_kodedivisi,
                            0 qty_so,
                            0 rph_so
                       FROM tbtr_reset_soic
-                     WHERE     TRUNC (rso_tglso) BETWEEN TRUNC ( to_date('" . $periode1 . "','dd/mm/yyyy'))
-                                                     AND TRUNC ( to_date('" . $periode2 . "','dd/mm/yyyy'))
+                     WHERE     TRUNC (rso_tglso) BETWEEN TRUNC ( to_date('" . $tgl1 . "','dd/mm/yyyy'))
+                                                     AND TRUNC ( to_date('" . $tgl2 . "','dd/mm/yyyy'))
                            AND NVL (rso_qtyreset, 0) <> 0
                     UNION all
                     SELECT SUBSTR (SOP_PRDCD, 1, 6) || '0' rso_prdcd, null tgl_soic,
@@ -2084,7 +1719,7 @@ order by prd_kodedivisi,
                                   (SELECT MAX (sop_tglso)
                                      FROM tbtr_ba_stockopname
                                     WHERE TO_CHAR (sop_tglso, 'MMyyyy') =
-                                             TO_CHAR ( to_date('" . $periode2 . "','dd/mm/yyyy'), 'MMyyyy'))
+                                             TO_CHAR ( to_date('" . $tgl2 . "','dd/mm/yyyy'), 'MMyyyy'))
                            AND sop_lokasi = '01'
                            AND TRUNC (adj_tglso(+)) = TRUNC (sop_tglso)
                            AND adj_lokasi(+) = sop_lokasi
@@ -2125,31 +1760,8 @@ order by prd_kodedivisi,
 
             $title = "LAPORAN RINCIAN ADJUSTMENT STOCK OPNAME";
 
-            $data = [
-                'title' => $title,
-                'perusahaan' => $perusahaan,
-                'datas' => $datas,
-                'tgl1' => $periode1,
-                'tgl2' => $periode2
-            ];
+            return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $now = Carbon::now('Asia/Jakarta');
-            $now = date_format($now, 'd-m-Y H-i-s');
-
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid, $data);
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-            $pdf->output();
-
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(825, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream($title . ' ' . $periode1 . ' - ' . $periode2 . '.pdf');
         }
     }
 
@@ -2211,7 +1823,8 @@ order by prd_kodedivisi,
 
         $NREC = 0;
 
-        $recs2 = DB::connection(Session::get('connection'))->select("SELECT lpp_prdcd, prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, lpp_rphAkhir
+        $recs2 = DB::connection(Session::get('connection'))
+            ->select("SELECT lpp_prdcd, prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, lpp_rphAkhir
                 FROM tbtr_lpp, tbmaster_prodmast
                WHERE lpp_kodeigr = " . Session::get('kdigr') . "
                 and prd_kodeigr = lpp_kodeigr
@@ -2230,7 +1843,7 @@ order by prd_kodedivisi,
 
                 $JUM = DB::connection(Session::get('connection'))->table("TEMP_LPP06")
                     ->Select('NVL(COUNT(1), 0) count')
-                    ->where('Prdcd', '=', $rec2->st_prdcd)
+                    ->where('Prdcd', '=', $rec2->lpp_prdcd)
                     ->Where('DIV', '=', $rec2->prd_kodedivisi)
                     ->Where('DEPT', '=', $rec2->prd_kodedepartement)
                     ->Where('KATB', '=', $rec2->prd_kodekategoribarang)
@@ -2238,14 +1851,14 @@ order by prd_kodedivisi,
 
                 if ($JUM > 0) {
                     DB::connection(Session::get('connection'))->table('TEMP_LPP06')
-                        ->where('Prdcd', '=', $rec2->st_prdcd)
+                        ->where('Prdcd', '=', $rec2->lpp_prdcd)
                         ->Where('DIV', '=', $rec2->prd_kodedivisi)
                         ->Where('DEPT', '=', $rec2->prd_kodedepartement)
                         ->Where('KATB', '=', $rec2->prd_kodekategoribarang)
                         ->update(['AKHIR_RP' => DB::connection(Session::get('connection'))->raw('NVL(AKHIR_RP, 0) + NVL(' . $rec2->lpp_rphakhir . ', 0)')]);
                 } else {
                     DB::connection(Session::get('connection'))->table('TEMP_LPP06')->insert([
-                        'PRDCD' => $rec2->st_prdcd,
+                        'PRDCD' => $rec2->lpp_prdcd,
                         'DIV' => $rec2->prd_kodedivisi,
                         'DEPT' => $rec2->prd_kodedepartement,
                         'KATB' => $rec2->prd_kodekategoribarang,

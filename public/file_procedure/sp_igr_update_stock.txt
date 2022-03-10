@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE SIMSMG.sp_igr_update_stock (
+CREATE OR REPLACE PROCEDURE SIMSMG.sp_igr_update_stock_migrasi (
    p_kodeigr           VARCHAR2,
    v_lokasi            VARCHAR2,
    v_plu               VARCHAR2,
@@ -38,7 +38,7 @@ IS
         FROM tbmaster_stock
        WHERE st_prdcd = v_plu AND st_lokasi = v_lokasi;
 BEGIN
-   v_lok := FALSE;
+   v_lok := 'FALSE';
 
    OPEN stock_cur;
 
@@ -154,7 +154,7 @@ BEGIN
 
    CLOSE stock_cur;
 
-   v_lok := TRUE;
+   v_lok := 'TRUE';
 EXCEPTION
    WHEN OTHERS
    THEN

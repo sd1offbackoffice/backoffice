@@ -16,11 +16,11 @@
 @endsection
 
 @section('paper_width')
-    842
+    842pt
 @endsection
 
-@section('paper_size')
-    842pt  595pt
+@section('paper_height')
+    595pt
 @endsection
 
 @section('content')

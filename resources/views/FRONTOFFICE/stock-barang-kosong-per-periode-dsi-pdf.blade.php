@@ -2,7 +2,6 @@
 
 @section('table_font_size','7 px')
 
-@section('paper_size',(count($arrTanggal)*30+612).'pt 595pt')
 @section('paper_height','595pt')
 @section('paper_width',(count($arrTanggal)*30+612).'pt')
 

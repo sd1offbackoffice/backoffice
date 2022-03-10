@@ -2376,7 +2376,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
             "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
             "Expires" => "0"
         ];
-        $file = fopen($fname, 'w');
+        $file = fopen(storage_path($fname), 'w');
         fputcsv($file, $columnHeader, '|');
         foreach ($rows as $row) {
             fputcsv($file, $row, '|');

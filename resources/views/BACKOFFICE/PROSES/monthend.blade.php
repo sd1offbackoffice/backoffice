@@ -5,10 +5,10 @@
         <div class="row justify-content-center">
             <div class="col-sm-8">
                 <fieldset class="card border-dark">
-                    <legend class="w-auto ml-5"></legend>
+                    <legend class="w-auto ml-5">Month End</legend>
                     <div class="card-body cardForm ">
                         <div class="row justify-content-center">
-                            <div class="col-sm-10">
+                            <div class="col-sm-12">
                                 <form class="form">
                                     <div class="form-group row mb-1">
                                         <label class="col-sm-2 col-form-label text-sm-right">Periode</label>
@@ -18,22 +18,99 @@
                                         <div class="col-sm-3">
                                             <input type="text" class="form-control daterange-periode" id="periode2">
                                         </div>
-                                    </div>
-
-                                    <div class="form-group row mb-3 mt-4 justify-content-center">
-                                        <div class="row-sm-12">
-                                            <button type="button" class="btn btn-primary"
-                                                    id="btn-proses">PROSES
+                                        <div class="col-sm-3">
+                                            <button type="button" class="btn btn-primary" id="btn-cek">Cek Proses
+                                            </button>
+                                            <button type="button" class="btn btn-primary" id="btn-proses-ulang"
+                                                    onclick="prosesUlang()" style="display: none">Proses Ulang
                                             </button>
                                         </div>
                                     </div>
-                                    <div class="form-group row mb-1 mt-4">
-                                        <div class="col-sm-12">
-                                            <div class="progress">
-                                                <div class="progress-bar" role="progressbar"
-                                                     style="width: 0%"></div>
-                                            </div>
-                                        </div>
+                                    <br>
+                                    <div class="form-group row mb-1">
+                                        <table class="table table-sm mb-0 text-center">
+                                            <thead class="thColor">
+                                            <tr>
+                                                <th>No.</th>
+                                                <th class="text-left">Nama Proses</th>
+                                                <th>Status</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="tabel-urutan-proses">
+                                            <tr>
+                                                <td>1</td>
+                                                <td class="text-left">Cek Proses Awal</td>
+                                                <td id="status-1"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>2</td>
+                                                <td class="text-left">Proses Hitung Stock</td>
+                                                <td id="status-2"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>3</td>
+                                                <td class="text-left">Proses Hitung Stock CMO</td>
+                                                <td id="status-3"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>4</td>
+                                                <td class="text-left">Proses Sales Rekap</td>
+                                                <td id="status-4"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>5</td>
+                                                <td class="text-left">Proses Sales LPP</td>
+                                                <td id="status-5"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>6</td>
+                                                <td class="text-left">Delete Data BackOffice</td>
+                                                <td id="status-6"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>7</td>
+                                                <td class="text-left">Proses Copy Stock</td>
+                                                <td id="status-7"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>8</td>
+                                                <td class="text-left">Proses Copy Stock CMO</td>
+                                                <td id="status-8"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>9</td>
+                                                <td class="text-left">Proses Hitung Stock Tahap 2</td>
+                                                <td id="status-9"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>10</td>
+                                                <td class="text-left">Proses Hitung Stock CMO Tahap 2</td>
+                                                <td id="status-10"></td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>11</td>
+                                                <td class="text-left">Proses LPP Point</td>
+                                                <td id="status-11"></td>
+                                            </tr>
+                                            <tr>
+                                                <td>12</td>
+                                                <td class="text-left">Cek Proses Akhir</td>
+                                                <td id="status-12"></td>
+                                            </tr>
+                                            <tr>
+                                            </tbody>
+                                            <tfoot></tfoot>
+                                        </table>
                                     </div>
                                 </form>
                             </div>
@@ -154,7 +231,7 @@
 
 
     <script>
-
+        var intv;
         $(document).ready(function () {
             var d = new Date();
 
@@ -163,6 +240,8 @@
 
             $('#periode1').val((month < 10 ? '0' : '') + month);
             $('#periode2').val(d.getFullYear());
+
+
         });
 
         $('.daterange-periode').datepicker({
@@ -190,15 +269,15 @@
 
         function reset() {
             $('.progress-bar').animate({
-                width: 0+'%'
-            }, 1000 );
-            $('.progress-bar').text( 0+'%' );
-            $('#btn-proses').attr('disabled',false);
+                width: 0 + '%'
+            }, 1000);
+            $('.progress-bar').text(0 + '%');
+            $('#btn-proses').attr('disabled', false);
             $('#btn-proses').empty().append('PROSES');
 
         }
 
-        $(document).on('click', '#btn-proses', function () {
+        function cekProses() {
             var currentButton = $(this);
             var periode1 = $('#periode1').val();
             var periode2 = $('#periode2').val();
@@ -209,226 +288,662 @@
             }
             ajaxSetup();
             $.ajax({
-                url: "{{ url('/bo/proses/monthend/proses') }}",
+                url: '{{ url()->current() }}/get-status',
+                type: 'get',
+                data: {
+                    bulan: periode1,
+                    tahun: periode2
+                },
+                beforeSend: function () {
+                    $('#btn-cek').attr('disabled', true);
+                    // $('#btn-cek').empty().append('<i class="fas fa-spinner fa-spin"></i>');
+
+                    $('#periode1').attr('disabled', true);
+                    $('#periode2').attr('disabled', true);
+                },
+                success: function (response) {
+
+                    var selesai = true;
+                    if (response.status == 'error') {
+                        swal({
+                            title: response.status,
+                            text: response.message,
+                            icon: response.status,
+                        })
+                            .then((willDelete) => {
+                                if (willDelete) {
+
+                                }
+                            });
+                    } else {
+                        for (i = 0; i < response.data.length; i++) {
+                            if (response.data[i].status == 'WAITING') {
+                                selesai = false;
+                            }
+                            id = response.data[i].submenu.split('_')[0];
+                            $('#status-' + id).html(`
+                                ${response.data[i].status == 'LOADING' ? '<i class="fas fa-spinner fa-spin"></i>' : response.data[i].status == 'DONE' ? '<i class="fas fa-check-circle text-success"></i>' : response.data[i].status == 'EXEC' ? '<button data="' + response.data[i].submenu.split('_')[0] + '" class="btn btn-primary btn-proses">Proses</button>' : response.data[i].status == 'ERROR' ? '<i class="fas fa-ban text-danger"></i><button data="' + response.data[i].submenu.split('_')[0] + '" class="btn btn-primary btn-proses">Proses</button>' : response.data[i].status}
+                            `);
+                        }
+                        if (selesai) {
+                            $('#btn-proses-ulang').show();
+                            $('#btn-cek').hide();
+                        }
+                        $(document).find('.btn-proses').each(function () {
+                            $(this).click();
+                            console.log($(this).attr('data'));
+                        })
+                    }
+                }, error: function (error) {
+                    alertError('Error Get Status Proses', error.responseJSON.message, 'error')
+                    console.log(error);
+                }
+            });
+        }
+
+        $(document).on('click', '#btn-cek', function () {
+            cekProses();
+            doIntervalProses();
+        });
+
+        function doIntervalProses() {
+            intv = setInterval(function () {
+                cekProses();
+            }, 10000);
+        }
+
+        $(document).on('click', '.btn-proses', function () {
+            var currentButton = $(this);
+            clearInterval(intv);
+            doIntervalProses();
+            var proses = $(this).attr('data');
+            switch (proses) {
+                case '1' :
+                    cekProsesAwal(proses);
+                    break;
+                case '2' :
+                    prosesHitungStock(proses);
+                    break;
+                case '3' :
+                    prosesHitungStockCMO(proses);
+                    break;
+                case '4' :
+                    prosesSalesRekap(proses);
+                    break;
+                case '5' :
+                    prosesSalesLPP(proses);
+                    break;
+                case '6' :
+                    deleteDataBackkoffice(proses);
+                    break;
+                case '7' :
+                    prosesCopyStock(proses);
+                    break;
+                case '8' :
+                    prosesCopyStockCMO(proses);
+                    break;
+                case '9' :
+                    prosesHitungStock2(proses);
+                    break;
+                case '10' :
+                    prosesHitungStockCMO2(proses);
+                    break;
+                case '11' :
+                    prosesLPPPoint(proses);
+                    break;
+                case '12' :
+                    cekProsesAkhir(proses);
+                    break;
+            }
+        });
+
+        function cekProsesAwal(val) {
+            var currentButton = $(this);
+            var periode1 = $('#periode1').val();
+            var periode2 = $('#periode2').val();
+            var long = 8;
+            if (periode1 == '' || periode2 == '') {
+                swal('Info', 'Mohon isi Periode', 'info');
+                return false;
+            }
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/proses',
                 type: 'post',
                 data: {
                     bulan: periode1,
                     tahun: periode2
                 },
                 beforeSend: function () {
-                    $('#btn-proses').attr('disabled',true);
-                    $('#btn-proses').append('<i class="fas fa-spinner fa-spin"></i>');
-
-                    $('#periode1').attr('disabled',true);
-                    $('#periode2').attr('disabled',true);
+                    $('#status-' + val).empty().html('<i class="fas fa-spinner fa-spin"></i>');
                 },
                 success: function (response) {
-                    $('.progress-bar').animate({
-                        width: 1/long*100+'%'
-                    }, 1000 );
-                    $('.progress-bar').text( 1/long*100+'%' );
-
+                    // doIntervalProses();
                     if (response.status == 'info') {
                         swal({
                             title: response.status,
-                            text:response.message,
+                            text: response.message,
                             icon: response.status,
                         })
                             .then((willDelete) => {
                                 if (willDelete) {
-                                    reset();
+                                    location.reload();
                                 }
                             });
                     }
-                    else {
-                        ajaxSetup();
-                        $.ajax({
-                            url: "{{ url('/bo/proses/monthend/proses-hitung-stok') }}",
-                            type: 'post',
-                            data: {
-                                bulan: periode1,
-                                tahun: periode2
-                            },
-                            beforeSend: function () {
-                            },
-                            success: function (response) {
-                                if (response.status == 'error') {
-                                    swal(response.status, response.message, response.status);
-                                }
-                                else {
-                                    $('.progress-bar').animate({
-                                        width: 2/long*100+'%'
-                                    }, 1000 );
-                                    $('.progress-bar').text( 2/long*100+'%' );
-                                    ajaxSetup();
-                                    $.ajax({
-                                        url: "{{ url('/bo/proses/monthend/proses-hitung-stok-cmo') }}",
-                                        type: 'post',
-                                        data: {
-                                            bulan: periode1,
-                                            tahun: periode2
-                                        },
-                                        beforeSend: function () {
-                                        },
-                                        success: function (response) {
-                                            if (response.status == 'error') {
-                                                swal(response.status, response.message, response.status);
-                                            }
-                                            else {
-                                                $('.progress-bar').animate({
-                                                    width: 3/long*100+'%'
-                                                }, 1000 );
-                                                $('.progress-bar').text( 3/long*100+'%' );
-                                                ajaxSetup();
-                                                $.ajax({
-                                                    url: "{{ url('/bo/proses/monthend/proses-sales-rekap') }}",
-                                                    type: 'post',
-                                                    data: {
-                                                        bulan: periode1,
-                                                        tahun: periode2
-                                                    },
-                                                    beforeSend: function () {
-                                                    },
-                                                    success: function (response) {
-                                                        if (response.status == 'error') {
-                                                            swal(response.status, response.message, response.status);
-                                                        }
-                                                        else {
-                                                            $('.progress-bar').animate({
-                                                                width: 4/long*100+'%'
-                                                            }, 1000 );
-                                                            $('.progress-bar').text( 4/long*100+'%' );
-                                                            ajaxSetup();
-                                                            $.ajax({
-                                                                url: "{{ url('/bo/proses/monthend/proses-sales-lpp') }}",
-                                                                type: 'post',
-                                                                data: {
-                                                                    bulan: periode1,
-                                                                    tahun: periode2
-                                                                },
-                                                                beforeSend: function () {
-                                                                },
-                                                                success: function (response) {
-                                                                    if (response.status == 'error') {
-                                                                        swal(response.status, response.message, response.status);
-                                                                    }
-                                                                    else {
-                                                                        $('.progress-bar').animate({
-                                                                            width: 5/long*100+'%'
-                                                                        }, 1000 );
-                                                                        $('.progress-bar').text( 5/long*100+'%' );
-                                                                        ajaxSetup();
-                                                                        $.ajax({
-                                                                            url: "{{ url('/bo/proses/monthend/delete-data') }}",
-                                                                            type: 'post',
-                                                                            data: {
-                                                                                bulan: periode1,
-                                                                                tahun: periode2
-                                                                            },
-                                                                            beforeSend: function () {
-                                                                            },
-                                                                            success: function (response) {
-                                                                                if (response.status == 'error') {
-                                                                                    swal(response.status, response.message, response.status);
-                                                                                }
-                                                                                else {
-                                                                                    $('.progress-bar').animate({
-                                                                                        width: 6/long*100+'%'
-                                                                                    }, 1000 );
-                                                                                    $('.progress-bar').text( 6/long*100+'%' );
-                                                                                    ajaxSetup();
-                                                                                    $.ajax({
-                                                                                        url: "{{ url('/bo/proses/monthend/proses-copystock') }}",
-                                                                                        type: 'post',
-                                                                                        data: {
-                                                                                            bulan: periode1,
-                                                                                            tahun: periode2
-                                                                                        },
-                                                                                        beforeSend: function () {
-                                                                                        },
-                                                                                        success: function (response) {
-                                                                                            if (response.status == 'error') {
-                                                                                                swal(response.status, response.message, response.status);
-                                                                                            }
-                                                                                            else {
-                                                                                                $('.progress-bar').animate({
-                                                                                                    width: 7/long*100+'%'
-                                                                                                }, 1000 );
-                                                                                                $('.progress-bar').text( 7/long*100+'%' );
-                                                                                                ajaxSetup();
-                                                                                                $.ajax({
-                                                                                                    url: "{{ url('/bo/proses/monthend/proses-hitung-stok2') }}",
-                                                                                                    type: 'post',
-                                                                                                    data: {
-                                                                                                        bulan: periode1,
-                                                                                                        tahun: periode2
-                                                                                                    },
-                                                                                                    beforeSend: function () {
-                                                                                                    },
-                                                                                                    success: function (response) {
-                                                                                                        $('.progress-bar').animate({
-                                                                                                            width: 8/long*100+'%'
-                                                                                                        }, 1000 );
-                                                                                                        $('.progress-bar').text( 8/long*100+'%' );
-                                                                                                        reset();
-                                                                                                        swal(response.status, response.message, response.status);
-                                                                                                    },
-                                                                                                    error: function (error) {
-                                                                                                        reset();
-                                                                                                        alertError('Error Proses Hitung Stok Tahap 2',error.responseJSON.message,'error')
-                                                                                                        console.log(error);
-                                                                                                    }
-                                                                                                });
-                                                                                            }
-                                                                                        }, error: function (error) {
-                                                                                            reset();
-                                                                                            alertError('Error Proses Copy Stock',error.responseJSON.message,'error')
-                                                                                            console.log(error);
-                                                                                        }
-                                                                                    });
-                                                                                }
-                                                                            }, error: function (error) {
-                                                                                reset();
-                                                                                alertError('Error Proses Delete',error.responseJSON.message,'error')
-                                                                                console.log(error);
-                                                                            }
-                                                                        });
-                                                                    }
-                                                                }, error: function (error) {
-                                                                    reset();
-                                                                    alertError('Error Proses Sales LPP',error.responseJSON.message,'error')
-                                                                    console.log(error);
-                                                                }
-                                                            });
-                                                        }
-                                                    }, error: function (error) {
-                                                        reset();
-                                                        alertError('Error Proses Sales Rekap',error.responseJSON.message,'error')
-                                                        console.log(error);
-                                                    }
-                                                });
-                                            }
-                                        }, error: function (error) {
-                                            reset();
-                                            alertError('Error Proses Hitung Stok CMO',error.responseJSON.message,'error')
-                                            console.log(error);
-                                        }
-                                    });
-                                }
-                            }, error: function (error) {
-                                reset();
-                                alertError('Error Proses Hitung Stok',error.responseJSON.message,'error')
-                                console.log(error);
-                            }
-                        });
-                    }
                 }, error: function (error) {
-                    reset();
-                    alertError('Error Proses',error.responseJSON.message,'error')
+
+                    alertError('Error Proses Cek Awal', error.responseJSON.message, 'error')
                     console.log(error);
                 }
             });
-        });
+        }
+
+        function prosesHitungStock(val) {
+            var currentButton = $(this);
+            var periode1 = $('#periode1').val();
+            var periode2 = $('#periode2').val();
+            var long = 8;
+            if (periode1 == '' || periode2 == '') {
+                swal('Info', 'Mohon isi Periode', 'info');
+                return false;
+            }
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/proses-hitung-stok',
+                type: 'post',
+                data: {
+                    bulan: periode1,
+                    tahun: periode2
+                },
+                beforeSend: function () {
+                    $('#status-' + val).empty().html('<i class="fas fa-spinner fa-spin"></i>');
+                },
+                success: function (response) {
+                    // doIntervalProses();
+                    if (response.status == 'info') {
+                        swal({
+                            title: response.status,
+                            text: response.message,
+                            icon: response.status,
+                        })
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                }
+                            });
+                    }
+                }, error: function (error) {
+                    console.log(error);
+                    if(error.statusText != 'timeout'){
+                        alertError('Error Proses Hitung Stock', error.responseJSON.message, 'error')
+                    }
+                    console.log(error);
+                },timeout: 20000
+            });
+        }
+
+        function prosesHitungStockCMO(val) {
+            var currentButton = $(this);
+            var periode1 = $('#periode1').val();
+            var periode2 = $('#periode2').val();
+            var long = 8;
+            if (periode1 == '' || periode2 == '') {
+                swal('Info', 'Mohon isi Periode', 'info');
+                return false;
+            }
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/proses-hitung-stok-cmo',
+                type: 'post',
+                data: {
+                    bulan: periode1,
+                    tahun: periode2
+                },
+                beforeSend: function () {
+                    $('#status-' + val).empty().html('<i class="fas fa-spinner fa-spin"></i>');
+                },
+                success: function (response) {
+                    // doIntervalProses();
+                    if (response.status == 'info') {
+                        swal({
+                            title: response.status,
+                            text: response.message,
+                            icon: response.status,
+                        })
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                }
+                            });
+                    }
+                }, error: function (error) {
+                    console.log(error);
+                    if(error.statusText != 'timeout'){
+                        alertError('Error Proses Hitung Stock', error.responseJSON.message, 'error')
+                    }
+                    console.log(error);
+                },timeout: 20000
+            });
+        }
+
+        function prosesHitungStockCMO2(val) {
+            var currentButton = $(this);
+            var periode1 = $('#periode1').val();
+            var periode2 = $('#periode2').val();
+            var long = 8;
+            if (periode1 == '' || periode2 == '') {
+                swal('Info', 'Mohon isi Periode', 'info');
+                return false;
+            }
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/proses-hitung-stok-cmo2',
+                type: 'post',
+                data: {
+                    bulan: periode1,
+                    tahun: periode2
+                },
+                beforeSend: function () {
+                    $('#status-' + val).empty().html('<i class="fas fa-spinner fa-spin"></i>');
+                },
+                success: function (response) {
+                    // doIntervalProses();
+                    if (response.status == 'info') {
+                        swal({
+                            title: response.status,
+                            text: response.message,
+                            icon: response.status,
+                        })
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                }
+                            });
+                    }
+                }, error: function (error) {
+                    console.log(error);
+                    if(error.statusText != 'timeout'){
+                        alertError('Error Proses Hitung Stock', error.responseJSON.message, 'error')
+                    }
+                    console.log(error);
+                },timeout: 20000
+            });
+        }
+
+        function prosesSalesRekap(val) {
+            var currentButton = $(this);
+            var periode1 = $('#periode1').val();
+            var periode2 = $('#periode2').val();
+            var long = 8;
+            if (periode1 == '' || periode2 == '') {
+                swal('Info', 'Mohon isi Periode', 'info');
+                return false;
+            }
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/proses-sales-rekap',
+                type: 'post',
+                data: {
+                    bulan: periode1,
+                    tahun: periode2
+                },
+                beforeSend: function () {
+                    $('#status-' + val).empty().html('<i class="fas fa-spinner fa-spin"></i>');
+                },
+                success: function (response) {
+                    // doIntervalProses();
+                    if (response.status == 'info') {
+                        swal({
+                            title: response.status,
+                            text: response.message,
+                            icon: response.status,
+                        })
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                }
+                            });
+                    }
+                }, error: function (error) {
+                    console.log(error);
+                    if(error.statusText != 'timeout'){
+                        alertError('Error Proses Hitung Stock', error.responseJSON.message, 'error')
+                    }
+                    console.log(error);
+                },timeout: 20000
+            });
+        }
+
+        function prosesSalesLPP(val) {
+            var currentButton = $(this);
+            var periode1 = $('#periode1').val();
+            var periode2 = $('#periode2').val();
+            var long = 8;
+            if (periode1 == '' || periode2 == '') {
+                swal('Info', 'Mohon isi Periode', 'info');
+                return false;
+            }
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/proses-sales-lpp',
+                type: 'post',
+                data: {
+                    bulan: periode1,
+                    tahun: periode2
+                },
+                beforeSend: function () {
+                    $('#status-' + val).empty().html('<i class="fas fa-spinner fa-spin"></i>');
+                },
+                success: function (response) {
+                    // doIntervalProses();
+                    if (response.status == 'info') {
+                        swal({
+                            title: response.status,
+                            text: response.message,
+                            icon: response.status,
+                        })
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                }
+                            });
+                    }
+                }, error: function (error) {
+                    console.log(error);
+                    if(error.statusText != 'timeout'){
+                        alertError('Error Proses Hitung Stock', error.responseJSON.message, 'error')
+                    }
+                    console.log(error);
+                },timeout: 20000
+            });
+        }
+
+        function deleteDataBackkoffice(val) {
+            var currentButton = $(this);
+            var periode1 = $('#periode1').val();
+            var periode2 = $('#periode2').val();
+            var long = 8;
+            if (periode1 == '' || periode2 == '') {
+                swal('Info', 'Mohon isi Periode', 'info');
+                return false;
+            }
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/delete-data',
+                type: 'post',
+                data: {
+                    bulan: periode1,
+                    tahun: periode2
+                },
+                beforeSend: function () {
+                    $('#status-' + val).empty().html('<i class="fas fa-spinner fa-spin"></i>');
+                },
+                success: function (response) {
+                    // doIntervalProses();
+                    if (response.status == 'info') {
+                        swal({
+                            title: response.status,
+                            text: response.message,
+                            icon: response.status,
+                        })
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                }
+                            });
+                    }
+                }, error: function (error) {
+                    console.log(error);
+                    if(error.statusText != 'timeout'){
+                        alertError('Error Proses Hitung Stock', error.responseJSON.message, 'error')
+                    }
+                    console.log(error);
+                },timeout: 20000
+            });
+        }
+
+        function prosesCopyStock(val) {
+            var currentButton = $(this);
+            var periode1 = $('#periode1').val();
+            var periode2 = $('#periode2').val();
+            var long = 8;
+            if (periode1 == '' || periode2 == '') {
+                swal('Info', 'Mohon isi Periode', 'info');
+                return false;
+            }
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/proses-copystock',
+                type: 'post',
+                data: {
+                    bulan: periode1,
+                    tahun: periode2
+                },
+                beforeSend: function () {
+                    $('#status-' + val).empty().html('<i class="fas fa-spinner fa-spin"></i>');
+                },
+                success: function (response) {
+                    // doIntervalProses();
+                    if (response.status == 'info') {
+                        swal({
+                            title: response.status,
+                            text: response.message,
+                            icon: response.status,
+                        })
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                }
+                            });
+                    }
+                }, error: function (error) {
+                    console.log(error);
+                    if(error.statusText != 'timeout'){
+                        alertError('Error Proses Hitung Stock', error.responseJSON.message, 'error')
+                    }
+                    console.log(error);
+                },timeout: 20000
+            });
+        }
+
+        function prosesCopyStockCMO(val) {
+            var currentButton = $(this);
+            var periode1 = $('#periode1').val();
+            var periode2 = $('#periode2').val();
+            var long = 8;
+            if (periode1 == '' || periode2 == '') {
+                swal('Info', 'Mohon isi Periode', 'info');
+                return false;
+            }
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/proses-copystock-cmo',
+                type: 'post',
+                data: {
+                    bulan: periode1,
+                    tahun: periode2
+                },
+                beforeSend: function () {
+                    $('#status-' + val).empty().html('<i class="fas fa-spinner fa-spin"></i>');
+                },
+                success: function (response) {
+                    // doIntervalProses();
+                    if (response.status == 'info') {
+                        swal({
+                            title: response.status,
+                            text: response.message,
+                            icon: response.status,
+                        })
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                }
+                            });
+                    }
+                }, error: function (error) {
+                    console.log(error);
+                    if(error.statusText != 'timeout'){
+                        alertError('Error Proses Hitung Stock', error.responseJSON.message, 'error')
+                    }
+                    console.log(error);
+                },timeout: 20000
+            });
+        }
+
+        function prosesHitungStock2(val) {
+            var currentButton = $(this);
+            var periode1 = $('#periode1').val();
+            var periode2 = $('#periode2').val();
+            var long = 8;
+            if (periode1 == '' || periode2 == '') {
+                swal('Info', 'Mohon isi Periode', 'info');
+                return false;
+            }
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/proses-hitung-stok2',
+                type: 'post',
+                data: {
+                    bulan: periode1,
+                    tahun: periode2
+                },
+                beforeSend: function () {
+                    $('#status-' + val).empty().html('<i class="fas fa-spinner fa-spin"></i>');
+                },
+                success: function (response) {
+                    // doIntervalProses();
+                    if (response.status == 'info') {
+                        swal({
+                            title: response.status,
+                            text: response.message,
+                            icon: response.status,
+                        })
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                }
+                            });
+                    }
+                }, error: function (error) {
+                    console.log(error);
+                    if(error.statusText != 'timeout'){
+                        alertError('Error Proses Hitung Stock', error.responseJSON.message, 'error')
+                    }
+                    console.log(error);
+                },timeout: 20000
+            });
+        }
+
+        function prosesLPPPoint(val) {
+            var currentButton = $(this);
+            var periode1 = $('#periode1').val();
+            var periode2 = $('#periode2').val();
+            var long = 8;
+            if (periode1 == '' || periode2 == '') {
+                swal('Info', 'Mohon isi Periode', 'info');
+                return false;
+            }
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/proses-lpp-point',
+                type: 'post',
+                data: {
+                    bulan: periode1,
+                    tahun: periode2
+                },
+                beforeSend: function () {
+                    $('#status-' + val).empty().html('<i class="fas fa-spinner fa-spin"></i>');
+                },
+                success: function (response) {
+                    // doIntervalProses();
+                    if (response.status == 'info') {
+                        swal({
+                            title: response.status,
+                            text: response.message,
+                            icon: response.status,
+                        })
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                }
+                            });
+                    }
+                }, error: function (error) {
+                    console.log(error);
+                    if(error.statusText != 'timeout'){
+                        alertError('Error Proses Hitung Stock', error.responseJSON.message, 'error')
+                    }
+                    console.log(error);
+                },timeout: 20000
+            });
+        }
+
+        function cekProsesAkhir(val) {
+            var currentButton = $(this);
+            var periode1 = $('#periode1').val();
+            var periode2 = $('#periode2').val();
+            var long = 8;
+            if (periode1 == '' || periode2 == '') {
+                swal('Info', 'Mohon isi Periode', 'info');
+                return false;
+            }
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/proses-akhir',
+                type: 'post',
+                data: {
+                    bulan: periode1,
+                    tahun: periode2
+                },
+                beforeSend: function () {
+                    $('#status-' + val).empty().html('<i class="fas fa-spinner fa-spin"></i>');
+                },
+                success: function (response) {
+                    // doIntervalProses();
+                    if (response.status == 'info') {
+                        swal({
+                            title: response.status,
+                            text: response.message,
+                            icon: response.status,
+                        })
+                            .then((willDelete) => {
+                                if (willDelete) {
+                                }
+                            });
+                    }
+                }, error: function (error) {
+                    console.log(error);
+                    if(error.statusText != 'timeout'){
+                        alertError('Error Proses Hitung Stock', error.responseJSON.message, 'error')
+                    }
+                    console.log(error);
+                },timeout: 20000
+            });
+        }
+
+        function prosesUlang() {
+            var currentButton = $(this);
+            var periode1 = $('#periode1').val();
+            var periode2 = $('#periode2').val();
+            var long = 8;
+            if (periode1 == '' || periode2 == '') {
+                swal('Info', 'Mohon isi Periode', 'info');
+                return false;
+            }
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/proses-ulang',
+                type: 'post',
+                data: {
+                    bulan: periode1,
+                    tahun: periode2
+                },
+                beforeSend: function () {
+                },
+                success: function (response) {
+                    $('#btn-cek').show().attr('disabled', true);
+                    $('#btn-proses-ulang').hide();
+                    // doIntervalProses();
+                }, error: function (error) {
+                    console.log(error);
+                    if(error.statusText != 'timeout'){
+                        alertError('Error Proses Hitung Stock', error.responseJSON.message, 'error')
+                    }
+                    console.log(error);
+                },timeout: 20000
+            });
+        }
 
     </script>
 

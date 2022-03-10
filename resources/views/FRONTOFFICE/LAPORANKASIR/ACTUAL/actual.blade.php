@@ -58,6 +58,10 @@
                             <button class="mr-1 col-sm btn btn-primary" onclick="cetak('omi')">OMI</button>
                             <button class="ml-1 col-sm btn btn-primary" onclick="cetak('struk')">STRUK</button>
                         </div>
+                        <div class="row form-group">
+                            <button class="mr-1 col-sm btn btn-primary" onclick="cetak('shopeepay')">SHOPEE PAY</button>
+                            <div class="col-sm"></div>
+                        </div>
                     </div>
                 </div>
             </div>

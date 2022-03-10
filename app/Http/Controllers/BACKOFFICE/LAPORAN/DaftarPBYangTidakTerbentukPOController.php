@@ -29,8 +29,8 @@ class DaftarPBYangTidakTerbentukPOController extends Controller
         $perusahaan = DB::connection(Session::get('connection'))
             ->table("tbmaster_perusahaan")
             ->first();
-//        try {
-            $url = 'http://appapi2.indomaret.lan:9000/Get_pb_tolakan_igr/' . Session::get('kdigr') . '/' . $tanggal1 . '/' . $tanggal2;
+        try {
+            $url = 'http://appapi2.indomaret.lan:8801/Get_pb_tolakan_igr/' . Session::get('kdigr') . '/' . $tanggal1 . '/' . $tanggal2;
             $data = file_get_contents($url);
             $data = json_decode($data);
             for ($i = 0; $i < sizeof($data); $i++) {
@@ -42,9 +42,9 @@ class DaftarPBYangTidakTerbentukPOController extends Controller
                 $data[$i]->deskripsi = $deskripsi;
             }
             return view('BACKOFFICE.LAPORAN.daftar-pb-yang-tidak-terbentuk-po-pdf', compact(['perusahaan', 'data', 'tanggal1', 'tanggal2']));
-//        } catch (\Exception $e) {
-//            return 'Gagal Mengambil Data dari Webservice, Mohon Ditunggu Beberapa Saat!';
-//
-//        }
+        } catch (\Exception $e) {
+            return 'Gagal Mengambil Data dari Webservice, Mohon Ditunggu Beberapa Saat!';
+
+        }
     }
 }

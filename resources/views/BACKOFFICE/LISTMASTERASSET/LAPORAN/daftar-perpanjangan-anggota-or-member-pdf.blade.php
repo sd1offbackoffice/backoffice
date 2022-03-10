@@ -2,7 +2,6 @@
 
 @section('table_font_size','7px')
 
-@section('paper_size','1200pt 595pt')
 @section('paper_height','595pt')
 @section('paper_width','1200pt')
 

@@ -12,7 +12,6 @@
 @endphp
 @extends('html-template')
 
-@section('paper_size','595pt 842pt')
 @section('paper_height','830pt')
 @section('paper_width','595pt')
 

@@ -46,6 +46,24 @@
         </div>
     </div>
 
+    <div class="container-fluid mt-0">
+        <div class="row justify-content-center">
+            <div class="col-sm-8">
+                <fieldset class="card border-dark">
+                    <legend class="w-auto ml-5"></legend>
+                    <div class="card-body cardForm ">
+                        <div class="row justify-content-center">
+                            <div class="col-sm-12">
+                                NOTE :<br>
+                                - Pastikan bahwa POP-UP tidak terblok ketika menekan tombol "Re/Print TRF FILE"
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+
 
 <script>
     let lastProses = '';
@@ -253,7 +271,8 @@
                 lastProses = moment().format('YYYY-MM-DD');
             }, error: function (e) {
                 swal({
-                    title: e.message,
+                    title: e.status,
+                    text: e.message,
                     icon: 'error'
                 })
             }

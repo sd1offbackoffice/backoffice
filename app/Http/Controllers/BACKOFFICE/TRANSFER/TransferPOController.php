@@ -40,55 +40,77 @@ class TransferPOController extends Controller
     }
 
     public function prosesTransfer(Request $request){
-        $nodoc = $request->nodoc;
-        $vnew = $request->vnew;
+        try{
+            $nodoc = $request->nodoc;
+            $vnew = $request->vnew;
+            $lastNodoc = '';
 
-        for($i=0;$i<count($nodoc);$i++){
-            $f_cegattrf = DB::connection(Session::get('connection'))->table('igr_log_aj')
-                ->where('nama_procedure','=','SP_TRANSFER_PO')
-                ->where('attribute1','=',$nodoc[$i])
-                ->first();
+            for($i=0;$i<count($nodoc);$i++){
+                $f_cegattrf = DB::connection(Session::get('connection'))->table('igr_log_aj')
+                    ->where('nama_procedure','=','SP_TRANSFER_PO')
+                    ->where('attribute1','=',$nodoc[$i])
+                    ->first();
 
-            if($f_cegattrf){
+                if($f_cegattrf){
+                    return [
+                        'status' => 'error',
+                        'title' => $nodoc[$i].' sedang ditransfer di tempat lain!'
+                    ];
+                }
+                else{
+                    DB::connection(Session::get('connection'))->table('tb_log_aj')
+                        ->insert([
+                            'nm_procedure' => $nodoc[$i],
+                            'tgl_create' => Carbon::now()
+                        ]);
+
+                    $prs = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
+                        ->first();
+
+                    $connection = loginController::getConnectionProcedure();
+                    $exec = oci_parse($connection, "BEGIN  sp_transfer_po_migrasi('".$prs->prs_kodesbu."','".$prs->prs_kodewilayah."','".$prs->prs_kodecabang."','".$nodoc[$i]."','".$vnew[$i]."','".Session::get('usid')."',:v_errm); END;");
+
+                    oci_bind_by_name($exec, ':v_errm',$v_errm,100);
+                    oci_execute($exec);
+
+                    if($v_errm != null){
+                        dd($v_errm);
+                        break;
+                    }
+
+                    DB::connection(Session::get('connection'))->table('tb_log_aj')
+                        ->where('nm_procedure','=',$nodoc[$i])
+                        ->whereRaw("TRUNC(tgl_create) = TRUNC(SYSDATE)")
+                        ->delete();
+
+                    $lastNodoc = $nodoc[$i];
+                }
+            }
+
+            if($v_errm != null){
                 return [
                     'status' => 'error',
-                    'title' => $nodoc[$i].' sedang ditransfer di tempat lain!'
+                    'title' => $v_errm
                 ];
             }
             else{
-                DB::connection(Session::get('connection'))->table('tb_log_aj')
-                    ->insert([
-                        'nm_procedure' => $nodoc[$i],
-                        'tgl_create' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)")
-                    ]);
-
-                $kodewil = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
-                    ->select('prs_kodewilayah')
-                    ->first()->prs_kodewilayah;
-
-                $connection = loginController::getConnectionProcedure();
-                $exec = oci_parse($connection, "BEGIN  sp_transfer_po_migrasi('4',
-                                    :p_wil,:kdcab,:nodoc,:v_new,'".Session::get('usid')."',
-                                    :v_errm); END;");
-                oci_bind_by_name($exec, ':p_wil',$kodewil,100);
-                oci_bind_by_name($exec, ':kdcab',Session::get('kdigr'),100);
-                oci_bind_by_name($exec, ':nodoc',$nodoc[$i],100);
-                oci_bind_by_name($exec, ':v_new',$vnew[$i],100);
-                oci_bind_by_name($exec, ':v_errm',$v_errm,100);
-                oci_execute($exec);
-
-                DB::connection(Session::get('connection'))->table('tb_log_aj')
-                    ->where('nm_procedure','=',$nodoc[$i])
-                    ->where('tgl_create','=',DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"))
-                    ->delete();
-
-                $newpo = $nodoc[$i];
+                return [
+                    'status' => 'success',
+                    'title' => 'Proses Transfer PO Selesai!'
+                ];
             }
         }
+        catch (\Exception $e){
+            DB::connection(Session::get('connection'))
+                ->table('igr_log_aj')
+                ->where('nama_procedure','=','SP_TRANSFER_PO')
+                ->where('attribute1','=',$lastNodoc)
+                ->delete();
 
-        return [
-            'status' => 'success',
-            'title' => 'Proses Transfer PO Selesai!'
-        ];
+            return [
+                'status' => 'error',
+                'title' => $e->getMessage()
+            ];
+        }
     }
 }

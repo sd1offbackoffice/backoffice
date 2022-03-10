@@ -91,93 +91,94 @@ class DaftarReturPembelianController extends Controller
         $kat2 = $request->kat2;
         $sup1 = $request->sup1;
         $sup2 = $request->sup2;
+        $and_div = '';
+        $and_dep = '';
+        $and_kat = '';
         $and_sup = '';
+
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan', 'prs_namacabang')
             ->first();
 
+        if (isset($div1) && isset($div2)) {
+            $and_div = " AND mstd_kodedivisi BETWEEN '" . $div1 . "' AND '" . $div2 . "'";
+        }
+        if (isset($dep1) && isset($dep2)) {
+            $and_dep = " AND mstd_kodedepartement BETWEEN '" . $dep1 . "' AND '" . $dep2 . "'";
+        }
+        if (isset($kat1) && isset($kat2)) {
+            $and_kat = " AND mstd_kodekategoribrg BETWEEN '" . $kat1 . "' AND '" . $kat2 . "'";
+        }
         if (isset($sup1) && isset($sup2)) {
             $and_sup = " and mstd_kodesupplier(+) between '" . $sup1 . "' and '" . $sup2 . "'";
         }
+
         if ($tipe === '1') {
-            $data = DB::connection(Session::get('connection'))->select("select mstd_kodedivisi, div_namadivisi,
-        mstd_kodedepartement, dep_namadepartement,
-        mstd_kodekategoribrg, kat_namakategori,
-        prs_namaperusahaan, prs_namacabang,
-        sum(gross) gross, sum(mstd_pot) pot,
-        sum(mstd_ppn) ppn, sum(mstd_bm) bm, sum(mstd_btl) btl,
-        sum(total) total, sum(avg) avg
-from (select mstd_kodedivisi, div_namadivisi,
-        mstd_kodedepartement, dep_namadepartement,
-        mstd_kodekategoribrg, kat_namakategori,
-        CASE WHEN NVL(mstd_recordid,'9') = '1' THEN mstd_gross * -1 ELSE mstd_gross END gross,
-CASE WHEN NVL(mstd_recordid,'9') = '1' THEN
-               CASE WHEN mstd_unit = 'KG' THEN
-                     ((mstd_qty / 1000) * (mstd_avgcost / 1000)) * -1
-               ELSE
-                     (mstd_qty* (mstd_avgcost / mstd_frac)) * -1
-               END
-        ELSE
-        CASE WHEN mstd_unit = 'KG' THEN
-                     (mstd_qty / 1000) * (mstd_avgcost / 1000)
-               ELSE
-                     mstd_qty* (mstd_avgcost / mstd_frac)
-               END
-        END avg,
-        CASE WHEN NVL(mstd_recordid,'9') = '1' THEN nvl(mstd_discrph,0) * -1 ELSE nvl(mstd_discrph,0) END mstd_pot,
-        CASE WHEN NVL(mstd_recordid,'9') = '1' THEN nvl(mstd_ppnrph,0) * -1 ELSE nvl(mstd_ppnrph,0) END mstd_ppn,
-        CASE WHEN NVL(mstd_recordid,'9') = '1' THEN nvl(mstd_ppnbmrph,0) * -1 ELSE nvl(mstd_ppnbmrph,0) END mstd_bm,
-        CASE WHEN NVL(mstd_recordid,'9') = '1' THEN nvl(mstd_ppnbtlrph,0) * -1 ELSE nvl(mstd_ppnbtlrph,0) END mstd_btl,
+            $data = DB::connection(Session::get('connection'))
+                ->select("select mstd_kodedivisi, div_namadivisi,
+                mstd_kodedepartement, dep_namadepartement,
+                mstd_kodekategoribrg, kat_namakategori,
+                prs_namaperusahaan, prs_namacabang,
+                sum(gross) gross, sum(mstd_pot) pot,
+                sum(mstd_ppn) ppn, sum(mstd_bm) bm, sum(mstd_btl) btl,
+                sum(total) total, sum(avg) avg
+        from (select mstd_kodedivisi, div_namadivisi,
+                mstd_kodedepartement, dep_namadepartement,
+                mstd_kodekategoribrg, kat_namakategori,
+                CASE WHEN NVL(mstd_recordid,'9') = '1' THEN mstd_gross * -1 ELSE mstd_gross END gross,
         CASE WHEN NVL(mstd_recordid,'9') = '1' THEN
-               (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) - (nvl(mstd_discrph,0)) * -1
-        ELSE
-               (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) - (nvl(mstd_discrph,0))
-        END total,
-        prs_namaperusahaan, prs_namacabang
-        from tbmaster_divisi, tbmaster_departement, tbmaster_kategori,
-        tbtr_mstran_h, tbtr_mstran_d, tbmaster_perusahaan
-        where msth_typetrn='K'
-        and msth_kodeigr='" . Session::get('kdigr') . "'
-        and msth_tgldoc between TO_DATE('" . $tgl1 . "','dd/mm/yyyy') and TO_DATE('" . $tgl2 . "','dd/mm/yyyy')
-        and mstd_nodoc=msth_nodoc
-        and TRUNC(mstd_tgldoc) = TRUNC(msth_tgldoc)
-        AND mstd_kodedivisi BETWEEN '" . $div1 . "' AND '" . $div2 . "'
-        AND mstd_kodedepartement BETWEEN '" . $dep1 . "' AND '" . $dep2 . "'
-        AND mstd_kodekategoribrg BETWEEN '" . $kat1 . "' AND '" . $kat2 . "'
-        and mstd_kodeigr=msth_kodeigr
-        and NVL(mstd_recordid,'9') <> '1'
-        and prs_kodeigr=msth_kodeigr
-        and div_kodedivisi(+)=mstd_kodedivisi
-        and div_kodeigr(+) = mstd_kodeigr
-        and dep_kodedivisi (+)= mstd_kodedivisi
-        and dep_kodedepartement (+)= mstd_kodedepartement
-        and dep_kodeigr(+)=mstd_kodeigr
-        and kat_kodedepartement(+)=mstd_kodedepartement
-        and kat_kodekategori(+)=mstd_kodekategoribrg
-        and kat_kodeigr(+)=mstd_kodeigr
-)
-group by mstd_kodedivisi, div_namadivisi,
-        mstd_kodedepartement, dep_namadepartement,
-        mstd_kodekategoribrg, kat_namakategori,
-        prs_namaperusahaan, prs_namacabang
-order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg");
+                       CASE WHEN mstd_unit = 'KG' THEN
+                             ((mstd_qty / 1000) * (mstd_avgcost / 1000)) * -1
+                       ELSE
+                             (mstd_qty* (mstd_avgcost / mstd_frac)) * -1
+                       END
+                ELSE
+                CASE WHEN mstd_unit = 'KG' THEN
+                             (mstd_qty / 1000) * (mstd_avgcost / 1000)
+                       ELSE
+                             mstd_qty* (mstd_avgcost / mstd_frac)
+                       END
+                END avg,
+                CASE WHEN NVL(mstd_recordid,'9') = '1' THEN nvl(mstd_discrph,0) * -1 ELSE nvl(mstd_discrph,0) END mstd_pot,
+                CASE WHEN NVL(mstd_recordid,'9') = '1' THEN nvl(mstd_ppnrph,0) * -1 ELSE nvl(mstd_ppnrph,0) END mstd_ppn,
+                CASE WHEN NVL(mstd_recordid,'9') = '1' THEN nvl(mstd_ppnbmrph,0) * -1 ELSE nvl(mstd_ppnbmrph,0) END mstd_bm,
+                CASE WHEN NVL(mstd_recordid,'9') = '1' THEN nvl(mstd_ppnbtlrph,0) * -1 ELSE nvl(mstd_ppnbtlrph,0) END mstd_btl,
+                CASE WHEN NVL(mstd_recordid,'9') = '1' THEN
+                       (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) - (nvl(mstd_discrph,0)) * -1
+                ELSE
+                       (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) - (nvl(mstd_discrph,0))
+                END total,
+                prs_namaperusahaan, prs_namacabang
+                from tbmaster_divisi, tbmaster_departement, tbmaster_kategori,
+                tbtr_mstran_h, tbtr_mstran_d, tbmaster_perusahaan
+                where msth_typetrn='K'
+                and msth_kodeigr='" . Session::get('kdigr') . "'
+                and msth_tgldoc between TO_DATE('" . $tgl1 . "','dd/mm/yyyy') and TO_DATE('" . $tgl2 . "','dd/mm/yyyy')
+                and mstd_nodoc=msth_nodoc
+                and TRUNC(mstd_tgldoc) = TRUNC(msth_tgldoc)
+                ".$and_div."
+                ".$and_dep."
+                ".$and_kat."
+                and mstd_kodeigr=msth_kodeigr
+                and NVL(mstd_recordid,'9') <> '1'
+                and prs_kodeigr=msth_kodeigr
+                and div_kodedivisi(+)=mstd_kodedivisi
+                and div_kodeigr(+) = mstd_kodeigr
+                and dep_kodedivisi (+)= mstd_kodedivisi
+                and dep_kodedepartement (+)= mstd_kodedepartement
+                and dep_kodeigr(+)=mstd_kodeigr
+                and kat_kodedepartement(+)=mstd_kodedepartement
+                and kat_kodekategori(+)=mstd_kodekategoribrg
+                and kat_kodeigr(+)=mstd_kodeigr
+        )
+        group by mstd_kodedivisi, div_namadivisi,
+                mstd_kodedepartement, dep_namadepartement,
+                mstd_kodekategoribrg, kat_namakategori,
+                prs_namaperusahaan, prs_namacabang
+        order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg");
 
-//            dd($data);
-            $dompdf = new PDF();
+            return view('BACKOFFICE.LAPORAN.daftar-retur-pembelian-ringkasan-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.daftar-retur-pembelian-ringkasan-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(614, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINGKASAN DIVISI/DEPT/KATEGORI.pdf');
         } else if ($tipe === '2') {
             $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan,
     kemasan, prs_namaperusahaan, prs_namacabang, mstd_bkp,
@@ -256,9 +257,9 @@ from (
         and msth_kodeigr='" . Session::get('kdigr') . "'
         and msth_tgldoc between TO_DATE('" . $tgl1 . "','dd/mm/yyyy') and TO_DATE('" . $tgl2 . "','dd/mm/yyyy')
         and mstd_nodoc=msth_nodoc
-        AND mstd_kodedivisi BETWEEN '" . $div1 . "' AND '" . $div2 . "'
-        AND mstd_kodedepartement BETWEEN '" . $dep1 . "' AND '" . $dep2 . "'
-        AND mstd_kodekategoribrg BETWEEN '" . $kat1 . "' AND '" . $kat2 . "'
+        ".$and_div."
+        ".$and_dep."
+        ".$and_kat."
         and mstd_kodeigr=msth_kodeigr
         and prd_prdcd(+)=mstd_prdcd
         and prd_kodeigr(+)=mstd_kodeigr
@@ -279,22 +280,8 @@ group by msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mst
     mstd_kodekategoribrg, kat_namakategori
 order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg, msth_nodoc, plu");
 
-//            dd($data);
-            $dompdf = new PDF();
+            return view('BACKOFFICE.LAPORAN.daftar-retur-pembelian-rincian-produk-per-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.daftar-retur-pembelian-rincian-produk-per-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(1115, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINCIAN PRODUK PER DIVISI/DEPT/KATEGORI.pdf');
         } else if ($tipe === '3') {
             $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
     kemasan, prs_namaperusahaan, prs_namacabang, mstd_bkp, frac,
@@ -350,22 +337,7 @@ group by msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang,
     kemasan, prs_namaperusahaan, prs_namacabang,mstd_bkp
 order by mstd_kodesupplier, msth_nodoc, plu");
 
-//            dd($data);
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.daftar-retur-pembelian-rincian-produk-per-supplier-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(1115, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINCIAN PRODUK PER SUPPLIER.pdf');
+            return view('BACKOFFICE.LAPORAN.daftar-retur-pembelian-rincian-produk-per-supplier-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
         }else if ($tipe === '4') {
             $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
     ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, mstd_bkp,
@@ -420,23 +392,8 @@ group by msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang,
     mstd_kodesupplier, sup_namasupplier,mstd_nodoc, mstd_tgldoc,
     ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang,mstd_bkp
 order by mstd_kodesupplier, msth_nodoc, plu");
+            return view('BACKOFFICE.LAPORAN.daftar-retur-pembelian-rincian-produk-per-supplier-per-dokumen-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
-//            dd($data);
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.daftar-retur-pembelian-rincian-produk-per-supplier-per-dokumen-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(1115, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINCIAN PRODUK PER SUPPLIER PER DOKUMEN.pdf');
         }
         else if ($tipe === '5') {
             $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc, noretur, tglretur,mstd_kodesupplier,
@@ -494,22 +451,7 @@ group by msth_nodoc, msth_tgldoc, noretur, tglretur, mstd_kodesupplier,
 supplier,prs_namaperusahaan, prs_namacabang, mstd_bkp
 order by mstd_kodesupplier, msth_nodoc");
 
-//            dd($data);
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.daftar-retur-pembelian-rincian-dokumen-per-supplier-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(1115, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINCIAN PRODUK PER SUPPLIER PER DOKUMEN.pdf');
+            return view('BACKOFFICE.LAPORAN.daftar-retur-pembelian-rincian-dokumen-per-supplier-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
         }
     }
 }

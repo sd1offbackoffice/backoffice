@@ -6,7 +6,8 @@ use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -16,6 +17,8 @@ use File;
 
 class TransferPLUController extends Controller
 {
+    public $txtFile = [];
+
     public function index()
     {
         return view('BACKOFFICE.TRANSFER.transfer-plu');
@@ -23,8 +26,21 @@ class TransferPLUController extends Controller
 
     public function downloadDTA(Request $request)
     {
+        set_time_limit(0);
         $err_txt = '';
-        $filedta = '';
+
+        $filedta = DB::connection(Session::get('connection'))
+            ->select("select 'DTA4' || SUBSTR(TO_CHAR(SYSDATE , 'RR'), -1, 1)
+                            || CASE
+                                WHEN TO_CHAR(SYSDATE , 'MM') = '10'
+                                    THEN 'A'
+                                WHEN TO_CHAR(SYSDATE , 'MM') = '11'
+                                    THEN 'B'
+                                WHEN TO_CHAR(SYSDATE , 'MM') = '12'
+                                    THEN 'C'
+                                ELSE SUBSTR(TO_CHAR(SYSDATE , 'MM'), -1, 1)
+                            END
+                            || TO_CHAR(SYSDATE , 'DD')||'.'||" . Session::get('kdigr') . " a from dual")[0]->a;
 
         $c = loginController::getConnectionProcedure();
         $sql = "BEGIN sp_downloaddta('" . Session::get('kdigr') . "',:filedta,:err_txt); END;";
@@ -33,8 +49,7 @@ class TransferPLUController extends Controller
         oci_bind_by_name($s, ':filedta', $filedta, 200);
         oci_bind_by_name($s, ':err_txt', $err_txt, 200);
         oci_execute($s);
-
-        if (!isset($err_txt)) {
+        if ($err_txt == '') {
             $message = 'Download DTA4 berhasil, silahkan lakukan Transfer PLU';
             $status = 'success';
             return compact(['message', 'status']);
@@ -108,8 +123,7 @@ class TransferPLUController extends Controller
                 }
             }
         }
-
-        $this->prosesDTA4($ADADTA, $PROSES, $N_REQ_ID);
+        return $this->prosesDTA4($ADADTA, $PROSES, $N_REQ_ID);
     }
 
     public function reqProsesDTA4(Request $request)
@@ -124,11 +138,10 @@ class TransferPLUController extends Controller
 //        -------->>>>>>>> TRARNSFER PLU <<<<<<<<--------
                 DB::connection(Session::get('connection'))->beginTransaction();
                 $c = loginController::getConnectionProcedure();
-                $sql = "BEGIN SP_TRF_PLU(:n_req_id,:uid,:result); END;";
+                $sql = "BEGIN SP_TRF_PLU(:n_req_id,'" . Session::get('usid') . "',:result); END;";
                 $s = oci_parse($c, $sql);
 
                 oci_bind_by_name($s, ':n_req_id', $PATHDTA, 200);
-                oci_bind_by_name($s, ':uid', Session::get('usid'), 200);
                 oci_bind_by_name($s, ':result', $V_RESULT_PLU, 200);
                 oci_execute($s);
                 DB::connection(Session::get('connection'))->commit();
@@ -145,20 +158,19 @@ class TransferPLUController extends Controller
                     $this->CETAK_BCX_DOBEL($N_REQ_ID);
 
                     $F = 'CETAK PLU BANYAK BARCODE';
-                    $this->CETAK_PLU_BANYAK_BARCODE();
+                    $this->CETAK_PLU_BANYAK_BARCODE($N_REQ_ID);
 
                     $F = 'CETAK DIMENSI NOL';
-                    $this->CETAK_DIMENSI_NOL();
+                    $this->CETAK_DIMENSI_NOL($N_REQ_ID);
                 }
 
 //            -------->>>>>>>> TRANSFER HARGA BELI <<<<<<<<--------
                 DB::connection(Session::get('connection'))->beginTransaction();
                 $c = loginController::getConnectionProcedure();
-                $sql = "BEGIN SP_TRF_HGBELI(:n_req_id,:uid,:result); END;";
+                $sql = "BEGIN SP_TRF_HGBELI(:n_req_id,'" . Session::get('usid') . "',:result); END;";
                 $s = oci_parse($c, $sql);
 
                 oci_bind_by_name($s, ':n_req_id', $PATHDTA, 200);
-                oci_bind_by_name($s, ':uid', Session::get('usid'), 200);
                 oci_bind_by_name($s, ':result', $V_RESULT_HGB, 200);
                 oci_execute($s);
                 DB::connection(Session::get('connection'))->commit();
@@ -176,11 +188,10 @@ class TransferPLUController extends Controller
 //            --menu sendiri
                 DB::connection(Session::get('connection'))->beginTransaction();
                 $c = loginController::getConnectionProcedure();
-                $sql = "BEGIN SP_TRF_SUPP(:n_req_id,:uid,:result); END;";
+                $sql = "BEGIN SP_TRF_SUPP(:n_req_id,'" . Session::get('usid') . "',:result); END;";
                 $s = oci_parse($c, $sql);
 
                 oci_bind_by_name($s, ':n_req_id', $PATHDTA, 200);
-                oci_bind_by_name($s, ':uid', Session::get('usid'), 200);
                 oci_bind_by_name($s, ':result', $V_RESULT_SUP, 200);
                 oci_execute($s);
                 DB::connection(Session::get('connection'))->commit();
@@ -191,11 +202,10 @@ class TransferPLUController extends Controller
 //            -------->>>>>>>> TRANSFER HARGA PROMO <<<<<<<<--------
                 DB::connection(Session::get('connection'))->beginTransaction();
                 $c = loginController::getConnectionProcedure();
-                $sql = "BEGIN SP_TRF_DISC(:n_req_id,:uid,:result); END;";
+                $sql = "BEGIN SP_TRF_DISC(:n_req_id,'" . Session::get('usid') . "',:result); END;";
                 $s = oci_parse($c, $sql);
 
                 oci_bind_by_name($s, ':n_req_id', $PATHDTA, 200);
-                oci_bind_by_name($s, ':uid', Session::get('usid'), 200);
                 oci_bind_by_name($s, ':result', $V_RESULT_PRM, 200);
                 oci_execute($s);
 
@@ -208,11 +218,10 @@ class TransferPLUController extends Controller
 //            -------->>>>>>>> TRANSFER MARGIN <<<<<<<<--------
                 DB::connection(Session::get('connection'))->beginTransaction();
                 $c = loginController::getConnectionProcedure();
-                $sql = "BEGIN SP_TRF_MGN(:n_req_id,:uid,:result); END;";
+                $sql = "BEGIN SP_TRF_MGN(:n_req_id,'" . Session::get('usid') . "',:result); END;";
                 $s = oci_parse($c, $sql);
 
                 oci_bind_by_name($s, ':n_req_id', $PATHDTA, 200);
-                oci_bind_by_name($s, ':uid', Session::get('usid'), 200);
                 oci_bind_by_name($s, ':result', $V_RESULT_MGN, 200);
                 oci_execute($s);
 
@@ -223,11 +232,10 @@ class TransferPLUController extends Controller
 //            -------->>>>>>>> TRANSFER PLU OMI <<<<<<<<--------
                 DB::connection(Session::get('connection'))->beginTransaction();
                 $c = loginController::getConnectionProcedure();
-                $sql = "BEGIN SP_TRF_PLU_OMI(:n_req_id,:uid,:result); END;";
+                $sql = "BEGIN SP_TRF_PLU_OMI(:n_req_id,'" . Session::get('usid') . "',:result); END;";
                 $s = oci_parse($c, $sql);
 
                 oci_bind_by_name($s, ':n_req_id', $PATHDTA, 200);
-                oci_bind_by_name($s, ':uid', Session::get('usid'), 200);
                 oci_bind_by_name($s, ':result', $V_RESULT_OMI, 200);
                 oci_execute($s);
 
@@ -244,7 +252,8 @@ class TransferPLUController extends Controller
                 }
                 $message = 'Proses Transfer Selesai';
                 $status = 'success';
-                return compact(['message', 'status']);
+                $data = $this->txtFile;
+                return compact(['message', 'status', 'data']);
             } else {
                 $message = 'Proses File DTA4 dibatalkan';
                 $status = 'error';
@@ -263,6 +272,7 @@ class TransferPLUController extends Controller
 
 //        DIBUKA!!!!! contoh
 //        $N_REQ_ID = '19216823774';
+
 
         $EOF = DB::connection(Session::get('connection'))->table('TEMP_PLUBARU')
             ->selectRaw('NVL(count(1),0) as count')
@@ -283,8 +293,10 @@ class TransferPLUController extends Controller
             $r2 = 0;
             $linebuff = '';
 
-            $FNAME = 'TEMP_PLUBARU_' . Carbon::now()->format('d-M-Y') . '.txt';
-            $file = fopen($FNAME, "w");
+            $FNAME = 'TEMP_PLUBARU.txt';
+            File::delete(storage_path($FNAME));
+            $file = fopen(storage_path($FNAME), "w");
+            $this->txtFile[] = $FNAME;
 
             $plus = DB::connection(Session::get('connection'))->table('TEMP_PLUBARU')
                 ->where('REQ_ID', $N_REQ_ID)
@@ -356,17 +368,18 @@ class TransferPLUController extends Controller
     {
 
 //        DIBUKA!!!!! contoh
-        $N_REQ_ID = '123123';
-
-        $FNAME = 'TEMP_TRFPLU_' . Carbon::now()->format('d-M-Y') . '.txt';
+//        $N_REQ_ID = '123123';
 
         $EOF = DB::connection(Session::get('connection'))->table('temp_TRFPLU')
             ->selectRaw('NVL(count(1),0) as count')
             ->where('REQ_ID', $N_REQ_ID)
             ->first()->count;
 
-        $FNAME = 'TEMP_TRFPLU_' . Carbon::now()->format('d-M-Y') . '.txt';
-        $file = fopen($FNAME, "w");
+        $FNAME = 'TEMP_TRFPLU.txt';
+        File::delete(storage_path($FNAME));
+        $file = fopen(storage_path($FNAME), "w");
+        $this->txtFile[] = $FNAME;
+
 
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->select('PRS_NAMAPERUSAHAAN', 'PRS_NAMACABANG')
@@ -517,7 +530,7 @@ class TransferPLUController extends Controller
         $v_list_file = '';
         $v_file_counter = 0;
 
-        $fname = 'TEMP_BCX_DOBEL_' . Carbon::now()->format('d-M-Y') . '.txt';
+        $fname = 'TEMP_BCX_DOBEL.txt';
         $step = 6;
 
         $eof = DB::connection(Session::get('connection'))->table('tbbarcode_bcx_dobel')
@@ -527,7 +540,10 @@ class TransferPLUController extends Controller
             ->first()->count;
 
         if ($eof > 0) {
-            $file = fopen($fname, "w");
+            File::delete(storage_path($fname));
+            $file = fopen(storage_path($fname), "w");
+            $this->txtFile[] = $fname;
+
 
             $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
                 ->select('PRS_NAMAPERUSAHAAN', 'PRS_NAMACABANG')
@@ -609,8 +625,8 @@ class TransferPLUController extends Controller
                     }
                 }
             }
+            fclose($file);
         }
-        fclose($file);
 
     }
 
@@ -632,7 +648,7 @@ class TransferPLUController extends Controller
         $v_list_file = '';
         $v_file_counter = 0;
 
-        $FNAME = 'TEMP_PLU_BYK_BRC_' . Carbon::now()->format('d-M-Y') . '.txt';
+        $FNAME = 'TEMP_PLU_BYK_BRC.txt';
 
         $EOF = DB::connection(Session::get('connection'))->table('TBPLU_BANYAK_BARCODE')
             ->selectRaw('NVL(count(1),0) as count')
@@ -641,7 +657,11 @@ class TransferPLUController extends Controller
 
         if ($EOF > 0) {
 
-            $file = fopen($FNAME, "w");
+
+            File::delete(storage_path($FNAME));
+            $file = fopen(storage_path($FNAME), "w");
+            $this->txtFile[] = $FNAME;
+
 
             $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
                 ->select('PRS_NAMAPERUSAHAAN', 'PRS_NAMACABANG')
@@ -672,7 +692,7 @@ class TransferPLUController extends Controller
                     }
 
 //  	-- BODY
-                    $linebuff = $linebuff . ' ' . str_pad($r2 + 1, 4, 0, STR_PAD_LEFT) . ' ' . str_pad(($barcode->PRDCD), 8, ' ', STR_PAD_RIGHT) . str_pad(SUBSTR($barcode->DESK, 1, 50), 52, ' ', STR_PAD_RIGHT) . str_pad($barcode->BARCODE, 16, ' ', STR_PAD_RIGHT) . chr(13) . chr(10);
+                    $linebuff = $linebuff . ' ' . str_pad($r2 + 1, 4, 0, STR_PAD_LEFT) . ' ' . str_pad(($barcode->prdcd), 8, ' ', STR_PAD_RIGHT) . str_pad(SUBSTR($barcode->desk, 1, 50), 52, ' ', STR_PAD_RIGHT) . str_pad($barcode->barcode, 16, ' ', STR_PAD_RIGHT) . chr(13) . chr(10);
                     $r = $r + 1;
                     $r2 = $r2 + 1;
 
@@ -730,7 +750,7 @@ class TransferPLUController extends Controller
         $v_list_file = '';
         $v_file_counter = 0;
 
-        $FNAME = 'TEMP_PLU_DMS_NOL' . Carbon::now()->format('d-M-Y') . '.txt';
+        $FNAME = 'TEMP_PLU_DMS_NOL.txt';
 
         $EOF = DB::connection(Session::get('connection'))->table('TBPLU_BANYAK_BARCODE')
             ->selectRaw('NVL(count(1),0) as count')
@@ -738,7 +758,10 @@ class TransferPLUController extends Controller
 
         if ($EOF > 0) {
 
-            $file = fopen($FNAME, "w");
+            File::delete(storage_path($FNAME));
+            $file = fopen(storage_path($FNAME), "w");
+            $this->txtFile[] = $FNAME;
+
 
             $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
                 ->select('PRS_NAMAPERUSAHAAN', 'PRS_NAMACABANG')
@@ -747,8 +770,9 @@ class TransferPLUController extends Controller
             $NPers = $perusahaan->prs_namaperusahaan;
             $NCab = $perusahaan->prs_namacabang;
 
-            $plus = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
-                ->select('*', 'SUBSTR (PRD_DESKRIPSIPANJANG, 1, 70) DESK')
+            $plus = DB::connection(Session::get('connection'))
+                ->table('TBMASTER_PRODMAST')
+                ->selectRaw('TBMASTER_PRODMAST.*, SUBSTR (PRD_DESKRIPSIPANJANG, 1, 70) DESK')
                 ->where('PRD_KODEIGR', Session::get('kdigr'))
                 ->whereRaw('(PRD_DIMENSIPANJANG = 0 OR PRD_DIMENSILEBAR = 0 OR PRD_DIMENSITINGGI = 0 )')
                 ->orderBy('PRD_PRDCD')
@@ -811,7 +835,7 @@ class TransferPLUController extends Controller
                                     . chr(10);
                             }
                             $r = 0;
-                            fwrite($file, $$linebuff);
+                            fwrite($file, $linebuff);
                         }
                     } else {
                         if ($r == 49 || $r2 == $EOF) {
@@ -819,7 +843,7 @@ class TransferPLUController extends Controller
                             $hal = $hal + 1;
                             if ($r2 == $EOF) {
 
-                                $$linebuff =
+                                $linebuff =
                                     $linebuff
                                     . str_pad('  ' . $EOF . ' Item(s) Transferred ', 84, ' ', STR_PAD_RIGHT)
                                     . '** AKHIR LAPORAN **';
@@ -869,8 +893,11 @@ class TransferPLUController extends Controller
         $r2 = 0;
         $linebuff = '';
 
-        $FNAME = 'TEMP_HGBELI_' . Carbon::now()->format('d-M-Y') . '.txt';
-        $file = fopen($FNAME, "w");
+        $FNAME = 'TEMP_HGBELI.txt';
+        File::delete(storage_path($FNAME));
+        $file = fopen(storage_path($FNAME), "w");
+        $this->txtFile[] = $FNAME;
+
 
         $hgbs = DB::connection(Session::get('connection'))->select("Select
 			    FRKODE,
@@ -978,8 +1005,11 @@ class TransferPLUController extends Controller
         $r2 = 0;
         $linebuff = '';
 
-        $FNAME = 'TEMP_SUPPLIER_' . Carbon::now()->format('d-M-Y') . '.txt';
-        $file = fopen($FNAME, "w");
+        $FNAME = 'TEMP_SUPPLIER.txt';
+        File::delete(storage_path($FNAME));
+        $file = fopen(storage_path($FNAME), "w");
+        $this->txtFile[] = $FNAME;
+
 
         $sups = DB::connection(Session::get('connection'))->table('TEMP_SUPPLIER')
             ->selectRaw("FMKODE,
@@ -1082,8 +1112,11 @@ class TransferPLUController extends Controller
         $r2 = 0;
         $linebuff = '';
 
-        $FNAME = 'TEMP_HRGPROMO_' . Carbon::now()->format('d-M-Y') . '.txt';
-        $file = fopen($FNAME, "w");
+        $FNAME = 'TEMP_HRGPROMO.txt';
+        File::delete(storage_path($FNAME));
+        $file = fopen(storage_path($FNAME), "w");
+        $this->txtFile[] = $FNAME;
+
 
         $hrg_promos = DB::connection(Session::get('connection'))->table('TEMP_HRG_PROMO')
             ->leftJoin('tbMaster_Prodmast', 'PRD_PRDCD', '=', 'FMKODE')
@@ -1181,8 +1214,11 @@ class TransferPLUController extends Controller
         $r2 = 0;
         $linebuff = '';
 
-        $FNAME = 'TEMP_BTLPROMO_' . Carbon::now()->format('d-M-Y') . '.txt';
-        $file = fopen($FNAME, "w");
+        $FNAME = 'TEMP_BTLPROMO.txt';
+        File::delete(storage_path($FNAME));
+        $file = fopen(storage_path($FNAME), "w");
+        $this->txtFile[] = $FNAME;
+
 
         $bottles = DB::connection(Session::get('connection'))->table('TEMP_BTL_PROMO')
             ->leftJoin('tbMaster_Prodmast', 'PRD_PRDCD', '=', 'FMKODE')
@@ -1284,8 +1320,11 @@ class TransferPLUController extends Controller
         $r2 = 0;
         $linebuff = '';
 
-        $FNAME = 'TEMP_MARGIN_' . Carbon::now()->format('d-M-Y') . '.txt';
-        $file = fopen($FNAME, "w");
+        $FNAME = 'TEMP_MARGIN.txt';
+        File::delete(storage_path($FNAME));
+        $file = fopen(storage_path($FNAME), "w");
+        $this->txtFile[] = $FNAME;
+
 
         $margins = DB::connection(Session::get('connection'))->select("SELECT dc_idm,
 						kd_dept||' - '||dep_namadepartement dept,
@@ -1383,8 +1422,12 @@ class TransferPLUController extends Controller
         $r2 = 0;
         $linebuff = '';
 
-        $FNAME = 'TEMP_BRGEDL_OMI_' . Carbon::now()->format('d-M-Y') . '.txt';
-        $file = fopen($FNAME, "w");
+        $FNAME = 'TEMP_BRGEDL_OMI.txt';
+        File::delete(storage_path($FNAME));
+        $file = fopen(storage_path($FNAME), "w");
+        $this->txtFile[] = $FNAME;
+
+
         $rn = 0;
         $recs = DB::connection(Session::get('connection'))->select("SELECT   pluomi,
                              pluigr,
@@ -1412,7 +1455,7 @@ class TransferPLUController extends Controller
                 }
 //  	-- BODY
                 $rn = $rn + 1;
-                $linebuff = $linebuff . str_pad($rn, 4, ' ', STR_PAD_RIGHT) . str_pad($rec->pluomi, 7, ' ', STR_PAD_RIGHT) . str_pad($rec->pluigr, 7, ' ', STR_PAD_RIGHT) . str_pad($rec->prd_deskripsipanjang, 75, ' ', STR_PAD_LEFT) . '     ' . str_pad($rec->prd_unit, 3, ' ', STR_PAD_RIGHT) .str_pad($rec->prd_frac, 3, ' ', STR_PAD_RIGHT) . chr(13) . chr(10);
+                $linebuff = $linebuff . str_pad($rn, 4, ' ', STR_PAD_RIGHT) . str_pad($rec->pluomi, 7, ' ', STR_PAD_RIGHT) . str_pad($rec->pluigr, 7, ' ', STR_PAD_RIGHT) . str_pad($rec->prd_deskripsipanjang, 75, ' ', STR_PAD_LEFT) . '     ' . str_pad($rec->prd_unit, 3, ' ', STR_PAD_RIGHT) . str_pad($rec->prd_frac, 3, ' ', STR_PAD_RIGHT) . chr(13) . chr(10);
                 $r = $r + 1;
                 $r2 = $r2 + 1;
 
@@ -1476,8 +1519,12 @@ class TransferPLUController extends Controller
         $r2 = 0;
         $linebuff = '';
 
-        $FNAME = 'TEMP_BRXOMINULL_' . Carbon::now()->format('d-M-Y') . '.txt';
-        $file = fopen($FNAME, "w");
+        $FNAME = 'TEMP_BRXOMINULL.txt';
+        File::delete(storage_path($FNAME));
+        $file = fopen(storage_path($FNAME), "w");
+        $this->txtFile[] = $FNAME;
+
+
         $rn = 0;
         $recs = DB::connection(Session::get('connection'))->select("SELECT   pluomi,
                              pluigr,
@@ -1485,7 +1532,7 @@ class TransferPLUController extends Controller
                              NVL(prd_unit, ' ') prd_unit,
                              NVL(TO_CHAR(prd_frac), ' ') prd_frac
                         FROM TEMP_BRX_OMI, tbmaster_prodmast
-                       WHERE sessid = ".$N_REQ_ID." AND (PLUIGR IS NULL OR PLUOMI IS NULL) AND PRD_PRDCD(+) = PLUIGR
+                       WHERE sessid = " . $N_REQ_ID . " AND (PLUIGR IS NULL OR PLUOMI IS NULL) AND PRD_PRDCD(+) = PLUIGR
                     ORDER BY pluomi");
 
         if ($recs) {
@@ -1505,7 +1552,7 @@ class TransferPLUController extends Controller
                 }
 //  	-- BODY
                 $rn = $rn + 1;
-                $linebuff = $linebuff . str_pad($rn, 4, ' ', STR_PAD_RIGHT) . str_pad($rec->pluomi, 7, ' ', STR_PAD_RIGHT) . str_pad($rec->pluigr, 7, ' ', STR_PAD_RIGHT) . str_pad($rec->prd_deskripsipanjang, 75, ' ', STR_PAD_LEFT) . '     ' . str_pad($rec->prd_unit, 3, ' ', STR_PAD_RIGHT) .str_pad($rec->prd_frac, 3, ' ', STR_PAD_RIGHT) . chr(13) . chr(10);
+                $linebuff = $linebuff . str_pad($rn, 4, ' ', STR_PAD_RIGHT) . str_pad($rec->pluomi, 7, ' ', STR_PAD_RIGHT) . str_pad($rec->pluigr, 7, ' ', STR_PAD_RIGHT) . str_pad($rec->prd_deskripsipanjang, 75, ' ', STR_PAD_LEFT) . '     ' . str_pad($rec->prd_unit, 3, ' ', STR_PAD_RIGHT) . str_pad($rec->prd_frac, 3, ' ', STR_PAD_RIGHT) . chr(13) . chr(10);
                 $r = $r + 1;
                 $r2 = $r2 + 1;
 
@@ -1546,6 +1593,73 @@ class TransferPLUController extends Controller
         DB::connection(Session::get('connection'))->table('TEMP_MGN')
             ->where('REQ_ID', $N_REQ_ID)
             ->delete();
+
+    }
+
+    public function downloadTxt(Request $request)
+    {
+        $filesAndPaths = $request->txt;
+        $filesAndPaths = explode(',', $filesAndPaths);
+
+        $zip_file = 'FileTxt.zip'; // Name of our archive to download
+
+        $zip = new \ZipArchive();
+        $zip->open(storage_path($zip_file), \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+
+        foreach ($filesAndPaths as $file) {
+            $relativeName = basename($file);
+            $zip->addFile(storage_path($file), $relativeName);
+        }
+        $zip->close();
+
+        return response()->download(storage_path($zip_file))->deleteFileAfterSend();
+    }
+
+    public function transferPLUCOmmitOrder()
+    {
+        set_time_limit(0);
+        $err_txt = '';
+
+        $filecmo = DB::connection(Session::get('connection'))
+            ->select("select 'PLUCMOIGRIDM' || to_char(sysdate, 'yyMMdd') || '.' ||" . Session::get('kdigr') . " a from dual")[0]->a;
+
+        $c = loginController::getConnectionProcedure();
+        $sql = "BEGIN sp_downloadcmo('" . Session::get('kdigr') . "',:filecmo,:err_txt); END;";
+        $s = oci_parse($c, $sql);
+
+        oci_bind_by_name($s, ':filecmo', $filecmo, 200);
+        oci_bind_by_name($s, ':err_txt', $err_txt, 200);
+        oci_execute($s);
+
+
+        if ($err_txt == '') {
+            $sukses = 'true';
+            $v_result = '';
+
+            $sql = "BEGIN SP_TRF_CMO_PLU2(:filecmo,:sukses,:v_result); END;";
+            $s = oci_parse($c, $sql);
+
+            oci_bind_by_name($s, ':filecmo', $filecmo, 200);
+            oci_bind_by_name($s, ':sukses', $sukses, 200);
+            oci_bind_by_name($s, ':v_result', $v_result, 200);
+            oci_execute($s);
+
+            if ($sukses == 'false') {
+                $message = 'CEK ' . $v_result;
+                $status = 'error';
+                return compact(['message', 'status']);
+            } else {
+                $message = 'Data PLU CMO Sudah Selesai di Transfer !!';
+                $status = 'success';
+                return compact(['message', 'status']);
+            }
+        } else {
+            $message = $err_txt;
+            $status = 'error';
+            return compact(['message', 'status']);
+        }
+
+
     }
 
 }

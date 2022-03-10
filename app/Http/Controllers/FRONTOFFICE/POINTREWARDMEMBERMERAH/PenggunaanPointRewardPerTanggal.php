@@ -73,22 +73,24 @@ ORDER BY TGL, KODEMEMBER");
                 'tgl2' => $tgl2,
             ];
 
-            $dompdf = new PDF();
+//            $dompdf = new PDF();
+//
+//            $pdf = PDF::loadview('FRONTOFFICE.POINTREWARDMEMBERMERAH.PENGGUNAANPOINTREWARDPERTANGGAL.' . $filename . '-pdf', $data);
+//
+//            error_reporting(E_ALL ^ E_DEPRECATED);
+//
+////            $pdf->setPaper('A4', 'potrait');
+//            $pdf->output();
+//            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+//
+//            $canvas = $dompdf->get_canvas();
+//            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+//
+//            $dompdf = $pdf;
+//
+//            return $dompdf->stream($filename . '_' . $tgl1 . ' - ' . $tgl2 . '.pdf');
+            return view('FRONTOFFICE.POINTREWARDMEMBERMERAH.PENGGUNAANPOINTREWARDPERTANGGAL.' . $filename . '-pdf',$data);
 
-            $pdf = PDF::loadview('FRONTOFFICE.POINTREWARDMEMBERMERAH.PENGGUNAANPOINTREWARDPERTANGGAL.' . $filename . '-pdf', $data);
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-//            $pdf->setPaper('A4', 'potrait');
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream($filename . '_' . $tgl1 . ' - ' . $tgl2 . '.pdf');
         } else {
             return 'Tidak Ada Data!';
         }

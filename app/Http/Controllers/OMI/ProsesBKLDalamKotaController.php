@@ -46,7 +46,7 @@ class ProsesBKLDalamKotaController extends Controller
                 $filename = substr($file->getClientOriginalName(), 0, strpos($file->getClientOriginalName(),'.'));
                 $filename = $filename.'.DBF';
 
-                $zip->extractTo(public_path('DBF'));
+                $zip->extractTo(storage_path('DBF'));
                 $zip->close();
             } else {
                 $status = 'error';
@@ -58,10 +58,11 @@ class ProsesBKLDalamKotaController extends Controller
         } else {
             $filename = $file->getClientOriginalName();
 
-            $file->move(public_path("/DBF"), $filename);
+            $file->move(storage_path("DBF"), $filename);
         }
 
-        $table = new TableReader(public_path('/DBF/'.$filename));
+//        $table = new TableReader(public_path('/DBF/'.$filename));
+        $table = new TableReader(storage_path("DBF/$filename"));
 
         while ($record = $table->nextRecord()) {
             DB::connection(Session::get('connection'))->table('temp_bkl_dalamkota')->insert([ 'recid' => 5, 'gudang' => $record->get('gudang'),
@@ -191,10 +192,10 @@ class ProsesBKLDalamKotaController extends Controller
                                               WHERE trjd_kodeigr = '$kodeigr'
                                               AND trjd_create_by = 'BKL'
                                               AND TRUNC(trjd_transactiondate) = TRUNC(sysdate)
-                                              AND trjd_cashierstation =  $stat) a");
+                                              AND trjd_cashierstation =  '$stat') a");
 
             $result[0]->jmlh_trans = $jmlh_trans[0]->total;
-            $bladeName  = "OMI.prosesBKL-reset-pdf";
+            $bladeName  = "OMI.proses-bkl-reset-pdf";
         } elseif ($report_id == 5){
             $result     = $this->laporanTolakan($filename,$sesiproc,$kodeigr);
             $pageNum1   = 507;

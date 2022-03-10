@@ -15,10 +15,17 @@
                                 </button>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row mb-5">
                             <div class="col-sm-12 text-center">
                                 <button type="button" id="btn-transfer-dta4" class="btn btn-primary btn-block">TRANSFER
                                     DTA4
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 text-center">
+                                <button type="button" id="btn-transfer-plu-commit-order" class="btn btn-primary btn-block">TRANSFER
+                                    PLU COMMIT ORDER
                                 </button>
                             </div>
                         </div>
@@ -27,10 +34,6 @@
             </div>
         </div>
     </div>
-
-    <style>
-
-    </style>
 
     <script>
         $('#btn-download-dta').on('click', function () {
@@ -95,10 +98,15 @@
                                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                                 },
                                 success: function (response) {
+                                    console.log(response);
+                                    if(response['data']) {
+                                        window.open(`{{ url()->current() }}/download-txt?txt=${response['data']}`, '_blank');
+                                    }
                                     swal({
                                         title: response['message'],
                                         icon: response['status']
                                     }).then((createData) => {
+
                                     });
                                 },
                                 complete: function () {
@@ -118,5 +126,27 @@
                 }
             });
         });
+
+        $('#btn-transfer-plu-commit-order').on('click', function () {
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/transfer-plu-commit-order',
+                type: 'POST',
+                beforeSend: function () {
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
+                success: function (response) {
+                    swal({
+                        title: response['message'],
+                        icon: response['status']
+                    }).then((createData) => {
+                    });
+                },
+                complete: function () {
+                    $('#modal-loader').modal('hide');
+                }
+            });
+        });
     </script>
 @endsection
+

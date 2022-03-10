@@ -18,7 +18,7 @@ class MenuController extends Controller
     }
 
     public function getData(){
-        if(in_array(Session::get('usid'), ['DEV','SUP'])){
+        if(in_array(Session::get('usid'), ['DEV','SUP','DV1','DV2','DV3','SP1','SP2','SP3'])){
             $data = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
                 ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2,
             acc_name, acc_url, acc_level, acc_create_by, to_char(acc_create_dt, 'dd/mm/yyyy hh24:mi:ss') acc_create_dt,

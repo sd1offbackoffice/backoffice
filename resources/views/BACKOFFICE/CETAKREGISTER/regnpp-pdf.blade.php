@@ -1,6 +1,6 @@
 @extends('pdf-template')
 
-@section('paper_size',$ukuran == 'besar' ? '595pt 842pt': '595pt 442pt')
+@section('paper_height',$ukuran == 'besar' ? '842pt': '442pt')
 
 @section('table_font_size','7 px')
 

@@ -48,7 +48,7 @@
                                 <div class="row">
                                     <label class="col-sm-4 col-form-label text-right">Minim Sponsor</label>
                                     <div class="col-sm-4">
-                                        <input class="text-right form-control" type="number" id="minSponsor" min="0" value="1" onkeypress="return isNumberKey(event)">
+                                        <input class="text-right form-control" type="number" id="minSponsor" min="0" value="0" onkeypress="return isNumberKey(event)">
                                     </div>
                                 </div>
                                 <div class="row">
@@ -549,7 +549,9 @@
                         success: function (response) {
                             $('#modal-loader').modal('hide');
                             $('#infoall').val(response.infoall);
-                            $('#kodeGab').val(response.datas[0].isd_kodepromosi).prop("disabled",true);
+
+                            //header
+                            $('#kodeGab').val(response.datas[0].ish_kodepromosi).prop("disabled",true);
                             $('#gab').prop("hidden",true)
                             $('#deskripsiEvent').val(response.datas[0].ish_namapromosi).prop("disabled",true);
                             $('#daterangepicker').data('daterangepicker').setStartDate(response.datas[0].ish_tglawal);
@@ -618,15 +620,19 @@
                             }else{
                                 $('#G3').prop("checked",false).prop("disabled",true);
                             }
+                            //header
+
+                            //detail
                             $('.baris').remove();
-                            for(i=0;i<response.datas.length;i++){
+                            for(i=0;i<response.plu.length;i++){
                                 $('#bodyProdukSponsor').append(tempTable());
-                                $('.plu')[i].value = (response.datas[i].isd_prdcd);
-                                $('.deskripsi')[i].value = (response.datas[i].prd_deskripsipanjang);
+                                $('.plu')[i].value = (response.plu[i].isd_prdcd);
+                                $('.deskripsi')[i].value = (response.plu[i].prd_deskripsipanjang);
                             }
                             $('.plu').prop("disabled",true);
                             $('.btn-delete-row-header').prop("hidden",true);
                             $('.btnPlu').prop("hidden",true);
+                            //detail
                         },
                         error: function (error) {
                             $('#modal-loader').modal('hide');
@@ -1257,7 +1263,7 @@
                     statusForm = "old";
                     $('#kodeGab').focus();
                 }else{
-                    window.open(`/BackOffice/public`, '_self');
+                    location.replace('{{ url('/') }}');
                 }
             });
         }
@@ -1363,7 +1369,7 @@
             $('#daterangepicker').data('daterangepicker').setStartDate(moment().format('DD/MM/YYYY'));
             $('#daterangepicker').data('daterangepicker').setEndDate(moment().format('DD/MM/YYYY'));
             $('#minStruk').val('0');
-            $('#minSponsor').val('1');
+            $('#minSponsor').val('0');
             $('#maxSponsor').val('0');
 
 
@@ -1391,6 +1397,7 @@
 
         function EditButton(){
             if($('#kodeGab').val() != ''){
+                statusForm = 'old';
                 $(' input').prop('disabled', false);
                 $('#kodeGab').prop('disabled', true);
                 $('#ketHadiah').prop('disabled', true);

@@ -62,7 +62,6 @@ class AktifkanHargaJualController extends Controller
         $connection = loginController::getConnectionProcedure();
 
         $exec = oci_parse($connection, "BEGIN  sp_aktifkan_harga_peritem(:kodeigr,:prdcd,:jtim,:user,:errm); END;");
-//        $exec = oci_parse($connection, "BEGIN  sp_transferfile_tokoigr(:kodeigr,:prdcd,:jtim,:user,:errm); END;");
         oci_bind_by_name($exec, ':kodeigr',$kodeigr,100);
         oci_bind_by_name($exec, ':prdcd',$plu,100);
         oci_bind_by_name($exec, ':jtim',$jenistimbangan,100);

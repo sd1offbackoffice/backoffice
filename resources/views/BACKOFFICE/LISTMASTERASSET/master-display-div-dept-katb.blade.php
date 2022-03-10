@@ -359,6 +359,7 @@
             }
         }
     });
+
     $('#menuEPlu1Input').on('change',function(){
         $('#menuEPlu1Desk').val('');
         if($('#menuEPlu1Input').val() == ''){
@@ -368,21 +369,22 @@
             let data = checkPluExist($('#menuEPlu1Input').val());
             if(data != "false"){
                 let deskripsi = data.prd_deskripsipanjang;
-                let div = data.prd_kodedivisi;
-                let dep = data.prd_kodedepartement;
-                let kat = data.prd_kodekategoribarang;
-
-                if($('#menuEDiv1Input').val() != ''){
-                    let status = menuCCustomPluCheck(div,dep,kat);
-                    if(status){
-                        $('#menuEPlu1Desk').val(deskripsi);
-                    }else{
-                        swal('', "Kode PLU tidak sesuai dengan batasan div/dep/kat", 'warning');
-                        $('#menuEPlu1Input').val('').change();
-                    }
-                }else{
-                    $('#menuEPlu1Desk').val(deskripsi);
-                }
+                // // tak perlu check apakah plu berdasarkan div, dep, kat, yg penting plu1 < plu 2, program lama gitu
+                // let div = data.prd_kodedivisi;
+                // let dep = data.prd_kodedepartement;
+                // let kat = data.prd_kodekategoribarang;
+                // if($('#menuEDiv1Input').val() != ''){
+                //     let status = menuCCustomPluCheck(div,dep,kat);
+                //     if(status){
+                //         $('#menuEPlu1Desk').val(deskripsi);
+                //     }else{
+                //         swal('', "Kode PLU tidak sesuai dengan batasan div/dep/kat", 'warning');
+                //         $('#menuEPlu1Input').val('').change();
+                //     }
+                // }else{
+                //     $('#menuEPlu1Desk').val(deskripsi); // jadi hanya merubah deskripsi
+                // }
+                $('#menuEPlu1Desk').val(deskripsi);
             }else{
                 swal('', "Kode PLU tidak terdaftar", 'warning');
 
@@ -399,18 +401,20 @@
             let data = checkPluExist($('#menuEPlu2Input').val());
             if(data != "false"){
                 let deskripsi = data.prd_deskripsipanjang;
-                let div = data.prd_kodedivisi;
-                let dep = data.prd_kodedepartement;
-                let kat = data.prd_kodekategoribarang;
+                // let div = data.prd_kodedivisi;
+                // let dep = data.prd_kodedepartement;
+                // let kat = data.prd_kodekategoribarang;
 
                 if($('#menuEDiv1Input').val() != ''){
-                    let status = menuCCustomPluCheck(div,dep,kat);
-                    if(status){
-                        $('#menuEPlu2Desk').val(deskripsi);
-                    }else{
-                        swal('', "Kode PLU tidak sesuai dengan batasan div/dep/kat", 'warning');
-                        $('#menuEPlu2Input').val('').change();
-                    }
+                    // tak perlu check apakah plu berdasarkan div, dep, kat, yg penting plu1 < plu 2, program lama gitu
+                    // let status = menuCCustomPluCheck(div,dep,kat);
+                    // if(status){
+                    //     $('#menuEPlu2Desk').val(deskripsi);
+                    // }else{
+                    //     swal('', "Kode PLU tidak sesuai dengan batasan div/dep/kat", 'warning');
+                    //     $('#menuEPlu2Input').val('').change();
+                    // }
+                    $('#menuEPlu2Desk').val(deskripsi); // jadi hanya merubah deskripsi
                 }else{
                     $('#menuEPlu2Desk').val(deskripsi);
                 }
@@ -518,14 +522,17 @@
         if($('#menuEDiv1Input').val() == ''){
             $('#pluModal').modal('toggle');
         }else{
-            let div1 = $('#menuEDiv1Input').val();
-            let div2 = $('#menuEDiv2Input').val();
-            let dep1 = $('#menuEDep1Input').val();
-            let dep2 = $('#menuEDep2Input').val();
-            let kat1 = $('#menuEKat1Input').val();
-            let kat2 = $('#menuEKat2Input').val();
-            getModalPluCustom(div1,div2,dep1,dep2,kat1,kat2);
-            $('#pluCustomModal').modal('toggle');
+            // tak perlu modal plu custom yang mana select value range a sampai b
+            // let div1 = $('#menuEDiv1Input').val();
+            // let div2 = $('#menuEDiv2Input').val();
+            // let dep1 = $('#menuEDep1Input').val();
+            // let dep2 = $('#menuEDep2Input').val();
+            // let kat1 = $('#menuEKat1Input').val();
+            // let kat2 = $('#menuEKat2Input').val();
+            // getModalPluCustom(div1,div2,dep1,dep2,kat1,kat2);
+            // $('#pluCustomModal').modal('toggle');
+            //jadi panggil plu biasa
+            $('#pluModal').modal('toggle');
         }
     }
 

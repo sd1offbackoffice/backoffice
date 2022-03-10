@@ -205,20 +205,19 @@
                 swal('Input masih kosong','','warning');
                 return false;
             }
-            let dateA = date.substr(0,10);
-            let dateB = date.substr(13,10);
-            dateA = dateA.split('/').join('-');
-            dateB = dateB.split('/').join('-');
-            let monthA = dateA.split("-");
-            let monthB = dateB.split("-");
-            let kmp = '';
-            if(monthA[0] != monthB[0]){
+
+            tanggal = $('#daterangepicker').val().split(' - ');
+
+            tgl1 = tanggal[0];
+            tgl2 = tanggal[1];
+
+            if(tgl1.substr(3) != tgl2.substr(3)){
                 swal('', "Bulan Periode Harus Sama !!", 'warning');
                 return false;
-            }if(monthA[2] != monthB[2]){
-                swal('', "Tahun Periode Harus Sama !!", 'warning');
-                return false;
             }
+
+            let kmp = '';
+
             if($('input[name="bkl"]:checked').val() == "bkl"){
                 kmp = "zonk-zonk";
             }else if($('#kmp').val() != ''){
@@ -234,8 +233,8 @@
                 url: '{{ url()->current() }}/checkdata',
                 type: 'post',
                 data: {
-                    dateA:dateA,
-                    dateB:dateB,
+                    dateA:tgl1,
+                    dateB:tgl2,
                     kmp:kmp,
                     rad_order:rad_order
                 },
@@ -245,9 +244,9 @@
                 success: function (result) {
                     if(result.kode == '1'){
                         if(rad_order == "Supplier" || kmp == "zonk-zonk"){
-                            window.open('{{ url()->current() }}/printdocsupplier/'+kmp+'/'+dateA+'/'+dateB,'_blank');
+                            window.open('{{ url()->current() }}/printdocsupplier?kodemon='+kmp+'&tgl1='+tgl1+'&tgl2='+tgl2,'_blank');
                         }else{
-                            window.open('{{ url()->current() }}/printdocddk/'+kmp+'/'+dateA+'/'+dateB,'_blank');
+                            window.open('{{ url()->current() }}/printdocddk?kodemon='+kmp+'&tgl1='+tgl1+'&tgl2='+tgl2,'_blank');
                         }
                     }else if (result.kode == '2'){
                         swal('', "Kode Monitoring Tidak Terdaftar !!", 'warning');

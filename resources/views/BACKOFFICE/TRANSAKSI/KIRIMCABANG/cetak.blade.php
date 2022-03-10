@@ -121,6 +121,8 @@
             $('.tanggal').datepicker('setDate', new Date());
 
             // $('#tanggal1').val('01/04/2020');
+
+            getData();
         });
 
         function getData(){
@@ -144,6 +146,7 @@
                     },
                     beforeSend: function () {
                         $('#modal-loader').modal('show');
+                        selected = [];
                     },
                     success: function (response) {
                         $('#modal-loader').modal('hide');
@@ -207,48 +210,21 @@
                     buttons: true,
                     dangerMode: true
                 }).then((ok) => {
-                    $.ajax({
-                        url: '{{ url('/bo/transaksi/kirimcabang/cetak/store-data') }}',
-                        type: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        data: {
-                            nodoc: selected,
-                            reprint: reprint,
-                            jenis: $('#jenis').val(),
-                        },
-                        beforeSend: function () {
-                            $('#modal-loader').modal('show');
-                        },
-                        success: function (response) {
-                            $('#modal-loader').modal('hide');
+                    if(ok){
+                        nodoc = '';
+                        $.each(selected, function(index, value){
+                            nodoc += value +'*';
+                        });
+                        nodoc = nodoc.substr(0,nodoc.length-1);
 
-                            if(response == 'true'){
-                                window.open('{{ url('/bo/transaksi/kirimcabang/cetak/laporan') }}','_blank');
-                            }
-                            else{
-                                swal({
-                                    title: 'Terjadi kesalahan!',
-                                    text: 'Mohon coba kembali',
-                                    icon: 'error',
-                                })
-                            }
-                        },
-                        error: function (error) {
-                            $('#modal-loader').modal('hide');
-                            swal({
-                                title: 'Terjadi kesalahan!',
-                                text: error.responseJSON.message,
-                                icon: 'error',
-                            });
-                        }
-                    });
+                        window.open(`{{ url()->current() }}/laporan?nodoc=${nodoc}&reprint=${reprint}&jenis=${$('#jenis').val()}`,'_blank');
+
+                        setTimeout(function(){
+                            getData();
+                        }, 2000 * selected.length);
+                    }
                 });
             }
         }
-
-
     </script>
-
 @endsection

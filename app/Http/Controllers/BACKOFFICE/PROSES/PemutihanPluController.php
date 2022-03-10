@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE\PROSES;
 
+use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use DateTime;
 use Dompdf\Exception;

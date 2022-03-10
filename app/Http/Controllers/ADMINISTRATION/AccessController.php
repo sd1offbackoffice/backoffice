@@ -5,7 +5,9 @@ namespace App\Http\Controllers\ADMINISTRATION;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
@@ -138,13 +140,20 @@ class AccessController extends Controller
     }
 
     public static function getListMenu(){
-//        $menu = DB::connection(Session::get('connection'))
-//            ->table('tbmaster_access_migrasi')
-//            ->first();
-//
-//        if(!$menu){
-//            self::insertBaseMenu();
-//        }
+        $table = Schema::connection(Session::get('connection'))
+            ->hasTable('tbmaster_access_migrasi');
+
+        if(!$table){
+            self::createBaseTable();
+        }
+
+        $menu = DB::connection(Session::get('connection'))
+            ->table('tbmaster_access_migrasi')
+            ->first();
+
+        if(!$menu){
+            self::insertBaseMenu();
+        }
 
         if(Session::get('usid') == 'ADM'){
 //            $listMenu = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
@@ -171,7 +180,7 @@ class AccessController extends Controller
                 ->orderBy('acc_name')
                 ->get();
         }
-        else if(in_array(Session::get('usid'), ['DEV','SUP'])){
+        else if(in_array(Session::get('usid'), ['DEV','SUP','DV1','DV2','DV3','DV4','DV5','DV6'])){
             $listMenu = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
                 ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
                 ->orderBy('acc_group')
@@ -200,6 +209,42 @@ class AccessController extends Controller
         }
 
         return $listMenu;
+    }
+
+    public static function createBaseTable(){
+        Schema::connection(Session::get('connection'))
+            ->create('tbmaster_access_migrasi', function($table)
+            {
+                $table->string('acc_group',50);
+                $table->string('acc_subgroup1',50)->nullable();
+                $table->string('acc_subgroup2',50)->nullable();
+                $table->string('acc_subgroup3',50)->nullable();
+                $table->string('acc_name',75);
+                $table->integer('acc_level');
+                $table->string('acc_url',255);
+                $table->string('acc_id',10);
+                $table->string('acc_create_by',3);
+                $table->dateTime('acc_create_dt');
+                $table->string('acc_modify_by',3)->nullable();
+                $table->dateTime('acc_modify_dt')->nullable();
+                $table->string('acc_status',1);
+                $table->integer('acc_order')->nullable();
+            });
+
+        Schema::connection(Session::get('connection'))
+            ->create('tbmaster_useraccess_migrasi', function($table)
+            {
+                $table->string('uac_userid',3);
+                $table->string('uac_acc_id',10);
+                $table->string('uac_create',1)->nullable();
+                $table->string('uac_read',1)->nullable();
+                $table->string('uac_update',1)->nullable();
+                $table->string('uac_delete',1)->nullable();
+                $table->string('uac_create_by',3);
+                $table->dateTime('uac_create_dt');
+                $table->string('uac_modify_by',3)->nullable();
+                $table->dateTime('uac_modify_dt')->nullable();
+            });
     }
 
     public static function insertBaseMenu(){

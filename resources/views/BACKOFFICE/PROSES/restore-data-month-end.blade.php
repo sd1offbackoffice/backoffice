@@ -11,7 +11,7 @@
                         <form>
                             <div class="col-sm-12">
                                 <label class="col-sm-4 text-right font-weight-normal">Periode</label>
-                                <input type="text" id="datepicker">
+                                <input type="text" id="datepicker" autocomplete="off">
                                 {{--<input class="col-sm-4 text-left date" type="month" placeholder="TXT_PERIODE" style="text-align: left">--}}
                                 <label class="col-sm-2 text-left">MM / YYYY</label>
                             </div>

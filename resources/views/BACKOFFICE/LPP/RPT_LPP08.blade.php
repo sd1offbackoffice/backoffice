@@ -1,80 +1,24 @@
-<html>
-<head>
-    <title>LAPORAN</title>
-</head>
-<style>
-    /**
-        Set the margins of the page to 0, so the footer and the header
-        can be of the full height and width !
-     **/
-    @page {
-        margin: 25px 10px;
-        size: 900pt 595pt;
+@extends('html-template')
 
-    }
+@section('table_font_size','7 px')
 
-    table {
-        width: 100%;
-    }
+@section('page_title')
+    {{ $title }}
+@endsection
 
-    /** Define now the real margins of every page in the PDF **/
-    body {
-        margin-top: 70px;
-        margin-bottom: 10px;
-        font-size: 8px;
-        /*font-size: 9px;*/
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        font-weight: 400;
-        line-height: 1.8;
-        /*font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";*/
-    }
+@section('title')
+    {{ $title }}
+@endsection
 
-    /** Define the header rules **/
-    header {
-        position: fixed;
-        top: 0cm;
-        left: 0cm;
-        right: 0cm;
-        height: 2cm;
-    }
+@section('subtitle')
+    TANGGAL : {{$tgl1}} s/d {{$tgl2}}
+@endsection
 
-    .page-numbers:after {
-        content: counter(page);
-    }
-
-    .page-break {
-        page-break-after: always;
-    }
-</style>
-
-
-<body>
-<!-- Define header and footer blocks before your content -->
-<?php
-$i = 1;
-$datetime = new DateTime();
-$timezone = new DateTimeZone('Asia/Jakarta');
-$datetime->setTimezone($timezone);
-?>
-
-
-<header>
-    <div style="float:left; margin-top: -20px; line-height: 5px !important;">
-        <p>{{$datas[0]->prs_namaperusahaan}}</p>
-        <p>{{$datas[0]->prs_namacabang}}</p>
-        <p>{{$datas[0]->prs_namawilayah}}</p>
-    </div>
-    <div style="float:right; margin-top: 0px; line-height: 5px !important;">
-        <p>{{ date("d/m/y  H:i:s") }}</p>
-    </div>
-    <div style="line-height: 0.1 !important; text-align: center !important;">
-        <h2 style="">{{ $title }} </h2>
-        <p style="font-size: 10px !important;">TANGGAL : {{$tgl1 }}
-            s/d {{$tgl2 }}</p>
-    </div>
-</header>
-
-<main>
+@section('paper_height','595pt')
+@section('paper_width','1200pt')
+@section('header_right')
+    RINCIAN PER DIVISI (UNIT/RUPIAH)
+@endsection
     @php
         $tempdiv = '';
         $tempdep = '';
@@ -115,114 +59,116 @@ $datetime->setTimezone($timezone);
         $total_koreksi     =0;
         $total_akhirrph    =0;
     @endphp
+@section('content')
+
     <table class="table table-bordered table-responsive">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr style="text-align: center;">
             <th colspan="3" style="text-align: center"></th>
-            <th colspan="2" style="text-align: center">----PENERIMAAN----</th>
-            <th colspan="4" style="text-align: center">----PENGELUARAN----</th>
+            <th colspan="2" style="text-align: center"> - - - - - - - - - - - - - - - - - - - - PENERIMAAN - - - - - - - - - - - - - - - - - - - - </th>
+            <th colspan="4" style="text-align: center"> - - - - - - - - - - - - - - - - - - - - PENGELUARAN - - - - - - - - - - - - - - - - - - - - </th>
         </tr>
         <tr style="text-align: center;">
-            <th>KODE</th>
-            <th>NAMA KATEGORI</th>
-            <th width="10%">SALDO AWAL</th>
-            <th>BAIK</th>
-            <th>RUSAK</th>
-            <th>KE SUPPLIER</th>
-            <th>HILANG</th>
-            <th>LAIN BAIK</th>
-            <th>LAIN RUSAK</th>
-            <th>SO</th>
-            <th>PENYESUAIAN</th>
-            <th>KOREKSI</th>
-            <th>SALDOAKHIR</th>
+            <th class="left">KODE</th>
+            <th class="left" width="5%">NAMA KATEGORI</th>
+            <th class="right" >SALDO AWAL</th>
+            <th class="right">BAIK</th>
+            <th class="right">RUSAK</th>
+            <th class="right">KE SUPPLIER</th>
+            <th class="right">HILANG</th>
+            <th class="right">LAIN BAIK</th>
+            <th class="right">LAIN RUSAK</th>
+            <th class="right" width="5%">SO</th>
+            <th class="right">PENYESUAIAN</th>
+            <th class="right">KOREKSI</th>
+            <th class="right">SALDOAKHIR</th>
         </tr>
         </thead>
         <tbody>
-        @for($i=0;$i<count($datas);$i++)
-            @if($tempdiv != $datas[$i]->lrt_kodedivisi)
+        @for($i=0;$i<count($data);$i++)
+            @if($tempdiv != $data[$i]->lrt_kodedivisi)
                 <tr>
                     <td class="left"><b>DIVISI</b></td>
-                    <td class="left" colspan="17"><b>{{$datas[$i]->lrt_kodedivisi}} - {{$datas[$i]->div_namadivisi}}</b>
+                    <td class="left" colspan="17"><b>{{$data[$i]->lrt_kodedivisi}} - {{$data[$i]->div_namadivisi}}</b>
                     </td>
                 </tr>
-            @endif;
-            @if($tempdep != $datas[$i]->lrt_kodedepartemen)
+            @endif
+            @if($tempdep != $data[$i]->lrt_kodedepartemen)
                 <tr>
                     <td class="left"><b>DEPARTEMEN</b></td>
-                    <td class="left" colspan="17"><b>{{$datas[$i]->lrt_kodedepartemen}}
-                            - {{$datas[$i]->dep_namadepartement}}</b></td>
+                    <td class="left" colspan="17"><b>{{$data[$i]->lrt_kodedepartemen}}
+                            - {{$data[$i]->dep_namadepartement}}</b></td>
                 </tr>
-            @endif;
+            @endif
             <tr>
-                <td align="left">{{ $datas[$i]->lrt_kategoribrg }}</td>
-                <td align="left">{{ $datas[$i]->kat_namakategori }}</td>
-                <td align="right">{{ number_format($datas[$i]->sawalrph    ,2)}}</td>
-                <td align="right">{{ number_format($datas[$i]->baikrph      ,2)}}</td>
-                <td align="right">{{ number_format($datas[$i]->rusakrph     ,2)}}</td>
-                <td align="right">{{ number_format($datas[$i]->supplierrph     ,2)}}</td>
-                <td align="right">{{ number_format($datas[$i]->hilangrph   ,2) }}</td>
-                <td align="right">{{ number_format($datas[$i]->lbaikrph    ,2)}}</td>
-                <td align="right">{{ number_format($datas[$i]->lrusakrph    ,2)}}</td>
-                <td align="right">{{ number_format($datas[$i]->rph_sel_so  ,2) }}</td>
-                <td align="right">{{ number_format($datas[$i]->adjrph      ,2) }}</td>
-                <td align="right">{{ number_format($datas[$i]->koreksi     ,2) }}</td>
-                <td align="right">{{ number_format($datas[$i]->akhirrph    ,2) }}</td>
+                <td align="left">{{ $data[$i]->lrt_kategoribrg }}</td>
+                <td align="left">{{ $data[$i]->kat_namakategori }}</td>
+                <td align="right">{{ number_format($data[$i]->sawalrph    ,0)}}</td>
+                <td align="right">{{ number_format($data[$i]->baikrph      ,0)}}</td>
+                <td align="right">{{ number_format($data[$i]->rusakrph     ,0)}}</td>
+                <td align="right">{{ number_format($data[$i]->supplierrph     ,0)}}</td>
+                <td align="right">{{ number_format($data[$i]->hilangrph   ,0) }}</td>
+                <td align="right">{{ number_format($data[$i]->lbaikrph    ,0)}}</td>
+                <td align="right">{{ number_format($data[$i]->lrusakrph    ,0)}}</td>
+                <td align="right">{{ number_format($data[$i]->rph_sel_so  ,0) }}</td>
+                <td align="right">{{ number_format($data[$i]->adjrph      ,0) }}</td>
+                <td align="right">{{ number_format($data[$i]->koreksi     ,0) }}</td>
+                <td align="right">{{ number_format($data[$i]->akhirrph    ,0) }}</td>
             </tr>
             @php
-        $st_div_sawalrph   += $datas[$i]->sawalrph   ;
-        $st_div_baikrph    += $datas[$i]->baikrph    ;
-        $st_div_rusakrph   += $datas[$i]->rusakrph   ;
-        $st_div_supplierrph+= $datas[$i]->supplierrph;
-        $st_div_hilangrph  += $datas[$i]->hilangrph  ;
-        $st_div_lbaikrph   += $datas[$i]->lbaikrph   ;
-        $st_div_lrusakrph  += $datas[$i]->lrusakrph  ;
-        $st_div_rph_sel_so += $datas[$i]->rph_sel_so ;
-        $st_div_adjrph     += $datas[$i]->adjrph     ;
-        $st_div_koreksi    += $datas[$i]->koreksi    ;
-        $st_div_akhirrph   += $datas[$i]->akhirrph   ;
+        $st_div_sawalrph   += $data[$i]->sawalrph   ;
+        $st_div_baikrph    += $data[$i]->baikrph    ;
+        $st_div_rusakrph   += $data[$i]->rusakrph   ;
+        $st_div_supplierrph+= $data[$i]->supplierrph;
+        $st_div_hilangrph  += $data[$i]->hilangrph  ;
+        $st_div_lbaikrph   += $data[$i]->lbaikrph   ;
+        $st_div_lrusakrph  += $data[$i]->lrusakrph  ;
+        $st_div_rph_sel_so += $data[$i]->rph_sel_so ;
+        $st_div_adjrph     += $data[$i]->adjrph     ;
+        $st_div_koreksi    += $data[$i]->koreksi    ;
+        $st_div_akhirrph   += $data[$i]->akhirrph   ;
 
-        $st_dep_sawalrph   += $datas[$i]->sawalrph   ;
-        $st_dep_baikrph    += $datas[$i]->baikrph    ;
-        $st_dep_rusakrph   += $datas[$i]->rusakrph   ;
-        $st_dep_supplierrph+= $datas[$i]->supplierrph;
-        $st_dep_hilangrph  += $datas[$i]->hilangrph  ;
-        $st_dep_lbaikrph   += $datas[$i]->lbaikrph   ;
-        $st_dep_lrusakrph  += $datas[$i]->lrusakrph  ;
-        $st_dep_rph_sel_so += $datas[$i]->rph_sel_so ;
-        $st_dep_adjrph     += $datas[$i]->adjrph     ;
-        $st_dep_koreksi    += $datas[$i]->koreksi    ;
-        $st_dep_akhirrph   += $datas[$i]->akhirrph   ;
+        $st_dep_sawalrph   += $data[$i]->sawalrph   ;
+        $st_dep_baikrph    += $data[$i]->baikrph    ;
+        $st_dep_rusakrph   += $data[$i]->rusakrph   ;
+        $st_dep_supplierrph+= $data[$i]->supplierrph;
+        $st_dep_hilangrph  += $data[$i]->hilangrph  ;
+        $st_dep_lbaikrph   += $data[$i]->lbaikrph   ;
+        $st_dep_lrusakrph  += $data[$i]->lrusakrph  ;
+        $st_dep_rph_sel_so += $data[$i]->rph_sel_so ;
+        $st_dep_adjrph     += $data[$i]->adjrph     ;
+        $st_dep_koreksi    += $data[$i]->koreksi    ;
+        $st_dep_akhirrph   += $data[$i]->akhirrph   ;
 
-        $total_sawalrph   += $datas[$i]->sawalrph   ;
-        $total_baikrph    += $datas[$i]->baikrph    ;
-        $total_rusakrph   += $datas[$i]->rusakrph   ;
-        $total_supplierrph+= $datas[$i]->supplierrph;
-        $total_hilangrph  += $datas[$i]->hilangrph  ;
-        $total_lbaikrph   += $datas[$i]->lbaikrph   ;
-        $total_lrusakrph  += $datas[$i]->lrusakrph  ;
-        $total_rph_sel_so += $datas[$i]->rph_sel_so ;
-        $total_adjrph     += $datas[$i]->adjrph     ;
-        $total_koreksi    += $datas[$i]->koreksi    ;
-        $total_akhirrph   += $datas[$i]->akhirrph   ;
+        $total_sawalrph   += $data[$i]->sawalrph   ;
+        $total_baikrph    += $data[$i]->baikrph    ;
+        $total_rusakrph   += $data[$i]->rusakrph   ;
+        $total_supplierrph+= $data[$i]->supplierrph;
+        $total_hilangrph  += $data[$i]->hilangrph  ;
+        $total_lbaikrph   += $data[$i]->lbaikrph   ;
+        $total_lrusakrph  += $data[$i]->lrusakrph  ;
+        $total_rph_sel_so += $data[$i]->rph_sel_so ;
+        $total_adjrph     += $data[$i]->adjrph     ;
+        $total_koreksi    += $data[$i]->koreksi    ;
+        $total_akhirrph   += $data[$i]->akhirrph   ;
 
-                $tempdiv = $datas[$i]->lrt_kodedivisi;
-                $tempdep = $datas[$i]->lrt_kodedepartemen;
+                $tempdiv = $data[$i]->lrt_kodedivisi;
+                $tempdep = $data[$i]->lrt_kodedepartemen;
             @endphp
-            @if( isset($datas[$i+1]->lrt_kodedepartemen) && $tempdep != $datas[$i+1]->lrt_kodedepartemen || !(isset($datas[$i+1]->lrt_kodedepartemen)) )
+            @if( isset($data[$i+1]->lrt_kodedepartemen) && $tempdep != $data[$i+1]->lrt_kodedepartemen || !(isset($data[$i+1]->lrt_kodedepartemen)) )
                 <tr style="border-bottom: 1px solid black;">
                     <td align="left" colspan="2">SUB TOTAL DEPT</td>
-                    <td align="right">{{ number_format($st_div_sawalrph   ,2)}}</td>
-                    <td align="right">{{ number_format($st_div_baikrph          ,2)}}</td>
-                    <td align="right">{{ number_format($st_div_rusakrph        ,2)}}</td>
-                    <td align="right">{{ number_format($st_div_supplierrph     ,2)}}</td>
-                    <td align="right">{{ number_format($st_div_hilangrph  ,2) }}</td>
-                    <td align="right">{{ number_format($st_div_lbaikrph       ,2)}}</td>
-                    <td align="right">{{ number_format($st_div_lrusakrph      ,2)}}</td>
-                    <td align="right">{{ number_format($st_div_rph_sel_so ,2) }}</td>
-                    <td align="right">{{ number_format($st_div_adjrph     ,2) }}</td>
-                    <td align="right">{{ number_format($st_div_koreksi    ,2) }}</td>
-                    <td align="right">{{ number_format($st_div_akhirrph   ,2) }}</td>
+                    <td align="right">{{ number_format($st_div_sawalrph   ,0)}}</td>
+                    <td align="right">{{ number_format($st_div_baikrph          ,0)}}</td>
+                    <td align="right">{{ number_format($st_div_rusakrph        ,0)}}</td>
+                    <td align="right">{{ number_format($st_div_supplierrph     ,0)}}</td>
+                    <td align="right">{{ number_format($st_div_hilangrph  ,0) }}</td>
+                    <td align="right">{{ number_format($st_div_lbaikrph       ,0)}}</td>
+                    <td align="right">{{ number_format($st_div_lrusakrph      ,0)}}</td>
+                    <td align="right">{{ number_format($st_div_rph_sel_so ,0) }}</td>
+                    <td align="right">{{ number_format($st_div_adjrph     ,0) }}</td>
+                    <td align="right">{{ number_format($st_div_koreksi    ,0) }}</td>
+                    <td align="right">{{ number_format($st_div_akhirrph   ,0) }}</td>
                 </tr>
                 @php
                     $st_div_sawalrph    =0;
@@ -238,20 +184,20 @@ $datetime->setTimezone($timezone);
                     $st_div_akhirrph =0;
                 @endphp
             @endif
-            @if((isset($datas[$i+1]->lrt_kodedivisi) && $tempdiv != $datas[$i+1]->lrt_kodedivisi) || !(isset($datas[$i+1]->lrt_kodedivisi)) )
+            @if((isset($data[$i+1]->lrt_kodedivisi) && $tempdiv != $data[$i+1]->lrt_kodedivisi) || !(isset($data[$i+1]->lrt_kodedivisi)) )
                 <tr style="border-bottom: 1px solid black;">
                     <td class="left" colspan="2">SUB TOTAL DIVISI</td>
-                    <td align="right">{{ number_format($st_dep_sawalrph   ,2)}}</td>
-                    <td align="right">{{ number_format($st_dep_baikrph          ,2)}}</td>
-                    <td align="right">{{ number_format($st_dep_rusakrph        ,2)}}</td>
-                    <td align="right">{{ number_format($st_dep_supplierrph     ,2)}}</td>
-                    <td align="right">{{ number_format($st_dep_hilangrph  ,2) }}</td>
-                    <td align="right">{{ number_format($st_dep_lbaikrph       ,2)}}</td>
-                    <td align="right">{{ number_format($st_dep_lrusakrph      ,2)}}</td>
-                    <td align="right">{{ number_format($st_dep_rph_sel_so ,2) }}</td>
-                    <td align="right">{{ number_format($st_dep_adjrph     ,2) }}</td>
-                    <td align="right">{{ number_format($st_dep_koreksi    ,2) }}</td>
-                    <td align="right">{{ number_format($st_dep_akhirrph   ,2) }}</td>
+                    <td align="right">{{ number_format($st_dep_sawalrph   ,0)}}</td>
+                    <td align="right">{{ number_format($st_dep_baikrph          ,0)}}</td>
+                    <td align="right">{{ number_format($st_dep_rusakrph        ,0)}}</td>
+                    <td align="right">{{ number_format($st_dep_supplierrph     ,0)}}</td>
+                    <td align="right">{{ number_format($st_dep_hilangrph  ,0) }}</td>
+                    <td align="right">{{ number_format($st_dep_lbaikrph       ,0)}}</td>
+                    <td align="right">{{ number_format($st_dep_lrusakrph      ,0)}}</td>
+                    <td align="right">{{ number_format($st_dep_rph_sel_so ,0) }}</td>
+                    <td align="right">{{ number_format($st_dep_adjrph     ,0) }}</td>
+                    <td align="right">{{ number_format($st_dep_koreksi    ,0) }}</td>
+                    <td align="right">{{ number_format($st_dep_akhirrph   ,0) }}</td>
                 </tr>
                 @php
                  $st_dep_sawalrph    =0;
@@ -269,27 +215,22 @@ $datetime->setTimezone($timezone);
             @endif
 
         @endfor
-        </tbody>
-        <tfoot>
         <tr>
             <td class="left" colspan="2"><strong>TOTAL SELURUHNYA</strong></td>
-            <td align="right">{{ number_format($total_sawalrph   ,2)}}</td>
-            <td align="right">{{ number_format($total_baikrph          ,2)}}</td>
-            <td align="right">{{ number_format($total_rusakrph        ,2)}}</td>
-            <td align="right">{{ number_format($total_supplierrph     ,2)}}</td>
-            <td align="right">{{ number_format($total_hilangrph  ,2) }}</td>
-            <td align="right">{{ number_format($total_lbaikrph       ,2)}}</td>
-            <td align="right">{{ number_format($total_lrusakrph      ,2)}}</td>
-            <td align="right">{{ number_format($total_rph_sel_so ,2) }}</td>
-            <td align="right">{{ number_format($total_adjrph     ,2) }}</td>
-            <td align="right">{{ number_format($total_koreksi    ,2) }}</td>
-            <td align="right">{{ number_format($total_akhirrph   ,2) }}</td>
+            <td align="right">{{ number_format($total_sawalrph   ,0)}}</td>
+            <td align="right">{{ number_format($total_baikrph          ,0)}}</td>
+            <td align="right">{{ number_format($total_rusakrph        ,0)}}</td>
+            <td align="right">{{ number_format($total_supplierrph     ,0)}}</td>
+            <td align="right">{{ number_format($total_hilangrph  ,0) }}</td>
+            <td align="right">{{ number_format($total_lbaikrph       ,0)}}</td>
+            <td align="right">{{ number_format($total_lrusakrph      ,0)}}</td>
+            <td align="right">{{ number_format($total_rph_sel_so ,0) }}</td>
+            <td align="right">{{ number_format($total_adjrph     ,0) }}</td>
+            <td align="right">{{ number_format($total_koreksi    ,0) }}</td>
+            <td align="right">{{ number_format($total_akhirrph   ,0) }}</td>
         </tr>
-        </tfoot>
+        </tbody>
     </table>
 
-    <p style="text-align: right"> ** Akhir Dari Laporan ** </p>
+@endsection
 
-</main>
-</body>
-</html>

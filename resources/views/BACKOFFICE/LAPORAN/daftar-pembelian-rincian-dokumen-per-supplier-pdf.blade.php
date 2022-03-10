@@ -1,37 +1,20 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Daftar Pembelian Rincian Produk Per Supplier</title>
-</head>
-<body>
+@extends('html-template')
 
-<?php
-$datetime = new DateTime();
-$timezone = new DateTimeZone('Asia/Jakarta');
-$datetime->setTimezone($timezone);
-?>
-<header>
-    <div style="float:left; margin-top: 0px; line-height: 8px !important;">
-        <p>
-            {{ $perusahaan->prs_namaperusahaan }}<br><br>
-            {{ $perusahaan->prs_namacabang }}<br><br><br><br>
-            <strong>Tanggal : {{ $tgl1 }} - {{ $tgl2 }}</strong><br><br>
-        </p>
-    </div>
-    <div style="float:right; margin-top: 0px; line-height: 8px !important;">
-        <p>Tgl. Cetak : {{ date("d/m/Y") }}<br><br>
-            Jam Cetak : {{ $datetime->format('H:i:s') }}<br><br>
-            <i>User ID</i> : {{ Session::get('usid') }}<br><br>
-            Hal. :
-    </div>
-    <h2 style="text-align: center">** DAFTAR PEMBELIAN **<br>RINGKASAN DIVISI / DEPARTEMEN / KATEGORI</h2>
-</header>
+@section('table_font_size','7 px')
+@section('paper_height','850pt')
+@section('paper_width','1100pt')
+@section('page_title')
+    Daftar Pembelian Rincian Dokumen Per Supplier
+@endsection
 
-<footer>
+@section('title')
+    Daftar Pembelian Rincian Dokumen Per Supplier
+@endsection
 
-</footer>
+@section('subtitle')
+    Tanggal : {{ $tgl1 }} - {{ $tgl2 }}
+@endsection
 
-<main>
     @php
         $tempsup = '';
         $tempdoc = '';
@@ -67,22 +50,23 @@ $datetime->setTimezone($timezone);
         $sum_total_bkp=0;
         $sum_total_btkp=0;
     @endphp
+@section('content')
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         {{--style="border-top: 1px solid black;border-bottom: 1px solid black;"--}}
-        <tr style="border:1px solid black;">
-            <th colspan="2">------- BPB -------</th>
-            <th rowspan="2" style="vertical-align: middle;">TOP</th>
-            <th rowspan="2" style="vertical-align: middle;">J.TEMPO</th>
-            <th colspan="2" class="text-center" style="vertical-align: middle;">------- PO -------</th>
-            <th colspan="2" class="text-center" style="vertical-align: middle;">------ FAKTUR ------</th>
-            <th rowspan="2" style="vertical-align: middle;">-GROSS-</th>
-            <th rowspan="2" style="vertical-align: middle;">POTONGAN</th>
-            <th rowspan="2" style="vertical-align: middle;">PPN-BM</th>
-            <th rowspan="2" style="vertical-align: middle;">BOTOL</th>
-            <th rowspan="2" style="vertical-align: middle;">DPP</th>
-            <th rowspan="2" style="vertical-align: middle;">PPN</th>
-            <th rowspan="2" style="vertical-align: middle;">TOTAL NILAI</th>
+        <tr style="border-top: 1px solid black;border-bottom: 1px solid black;">
+            <th colspan="2" class="tengah ">------- BPB -------</th>
+            <th rowspan="2" class="tengah right" >TOP</th>
+            <th rowspan="2" class="tengah left" >J.TEMPO</th>
+            <th colspan="2" class="tengah " >------- PO -------</th>
+            <th colspan="2" class="tengah " >------ FAKTUR ------</th>
+            <th rowspan="2" class="tengah right" >-GROSS-</th>
+            <th rowspan="2" class="tengah right" >POTONGAN</th>
+            <th rowspan="2" class="tengah right" >PPN-BM</th>
+            <th rowspan="2" class="tengah right" >BOTOL</th>
+            <th rowspan="2" class="tengah right" >DPP</th>
+            <th rowspan="2" class="tengah right" >PPN</th>
+            <th rowspan="2" class="tengah right" >TOTAL NILAI</th>
         </tr>
         <tr>
             <th>NOMOR</th>
@@ -99,16 +83,16 @@ $datetime->setTimezone($timezone);
                     <tr>
                         <td class="left" colspan="21"><b>SUPPLIER    : {{$data[$i]->supplier}} </b></td>
                     </tr>
-                @endif;
+                @endif
             <tr>
                 <td class="left">{{ $data[$i]->msth_nodoc }}</td>
-                <td class="left">{{ $data[$i]->msth_tgldoc }}</td>
+                <td class="left">{{date("d/m/Y", strtotime($data[$i]->msth_tgldoc))}}</td>
                 <td class="right">{{ number_format($data[$i]->top,2) }}</td>
-                <td class="right">{{ $data[$i]->jth_tempo }}</td>
+                <td class="right">{{ date("d/m/Y", strtotime($data[$i]->jth_tempo)) }}</td>
                 <td class="right">{{ $data[$i]->msth_kodesupplier }}</td>
-                <td class="right">{{ substr($data[$i]->msth_tglpo,1,10) }}</td>
+                <td class="right">{{ date("d/m/Y", strtotime($data[$i]->msth_tglpo)) }}</td>
                 <td class="right">{{ $data[$i]->msth_nofaktur}}</td>
-                <td class="right">{{ $data[$i]->msth_tglfaktur }}</td>
+                <td class="right">{{ date("d/m/Y", strtotime($data[$i]->msth_tglfaktur)) }}</td>
                 <td class="right">{{ number_format($data[$i]->gross,2) }}</td>
                 <td class="right">{{ number_format($data[$i]->potongan,2) }}</td>
                 <td class="right">{{ number_format($data[$i]->bm,2) }}</td>
@@ -204,129 +188,4 @@ $datetime->setTimezone($timezone);
         </tr>
         </tfoot>
     </table>
-    <hr>
-    <p class="right"><strong>** AKHIR DARI LAPORAN **</strong></p>
-</main>
-
-<br>
-</body>
-<style>
-    @page {
-        /*margin: 25px 20px;*/
-        /*size: 1071pt 792pt;*/
-        size: 1200pt 842pt;
-    }
-
-    header {
-        position: fixed;
-        top: 0cm;
-        left: 0cm;
-        right: 0cm;
-        height: 3cm;
-    }
-
-    body {
-        margin-top: 80px;
-        margin-bottom: 10px;
-        font-size: 9px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        font-weight: 400;
-        line-height: 1.8;
-    }
-
-    table {
-        border-collapse: collapse;
-    }
-
-    tbody {
-        display: table-row-group;
-        vertical-align: middle;
-        border-color: inherit;
-    }
-
-    tr {
-        display: table-row;
-        vertical-align: inherit;
-        border-color: inherit;
-    }
-
-    td {
-        display: table-cell;
-    }
-
-    thead {
-        text-align: center;
-    }
-
-    tbody {
-        text-align: center;
-    }
-
-    tfoot {
-        border-top: 1px solid black;
-    }
-
-    .keterangan {
-        text-align: left;
-    }
-
-    .table {
-        width: 100%;
-        white-space: nowrap;
-        color: #212529;
-        /*padding-top: 20px;*/
-        /*margin-top: 25px;*/
-    }
-
-    .table-ttd {
-        width: 15%;
-    }
-
-    .table tbody td {
-        vertical-align: top;
-        /*border-top: 1px solid #dee2e6;*/
-        padding: 0.20rem 0;
-        width: auto;
-    }
-
-    .table th {
-        vertical-align: top;
-        padding: 0.20rem 0;
-    }
-
-    .judul, .table-borderless {
-        text-align: center;
-    }
-
-    .table-borderless th, .table-borderless td {
-        border: 0;
-        padding: 0.50rem;
-    }
-
-    .center {
-        text-align: center;
-    }
-
-    .left {
-        text-align: left;
-        padding: 3px !important;
-    }
-
-    .right {
-        text-align: right;
-        padding: 3px !important;
-    }
-
-    .page-break {
-        page-break-before: always;
-    }
-
-    .table-header td {
-        white-space: nowrap;
-    }
-
-    .tengah {
-        vertical-align: middle !important;
-    }
-</style>
-</html>
+    @endsection

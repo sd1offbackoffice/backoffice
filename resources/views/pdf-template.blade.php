@@ -151,7 +151,7 @@
         padding: 0.50rem;
     }
 
-    .table tbody td.padding-right, .table thead th.padding-right, .table tfoot th.padding-right{
+    .table tbody td.padding-right,.table tbody th.padding-right, .table thead th.padding-right, .table tfoot th.padding-right{
         padding-right: 10px !important;
     }
 

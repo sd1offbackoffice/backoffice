@@ -1,41 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Daftar Pengiriman Antar Cabang Rincian Produk Per Divisi / Departement / Kategori</title>
-</head>
-<body>
+@extends('html-template')
 
-<?php
-$datetime = new DateTime();
-$timezone = new DateTimeZone('Asia/Jakarta');
-$datetime->setTimezone($timezone);
-?>
-<header>
-    <div style="float:left; margin-top: 0px; line-height: 8px !important;">
-        <p>
-            {{ $perusahaan->prs_namaperusahaan }}<br><br>
-            {{ $perusahaan->prs_namacabang }}<br><br><br><br>
-            <strong>Tanggal : {{ $tgl1 }} - {{ $tgl2 }}</strong><br><br>
-        </p>
-    </div>
-    <div style="float:right; margin-top: 0px; line-height: 8px !important;">
-        <p>Tgl. Cetak : {{ date("d/m/Y") }}<br><br>
-            Jam Cetak : {{ $datetime->format('H:i:s') }}<br><br>
-            <i>User ID</i> : {{ Session::get('usid') }}<br><br>
-            Hal. :
-    </div>
-    <h2 style="text-align: center">** DAFTAR PENGIRIMAN ANTAR CABANG**<br>RINCIAN PRODUK PER DIVISI / DEPARTEMEN / KATEGORI</h2>
-</header>
+@section('paper_height','792pt')
+@section('paper_width','1071pt')
 
-<footer>
+@section('table_font_size','7 px')
 
-</footer>
+@section('page_title')
+    Daftar Pengiriman Antar Cabang Rincian Produk Per Divisi / Departement / Kategori
+@endsection
 
-<main>
+@section('title')
+    ** Daftar Pengiriman Antar Cabang **
+@endsection
+
+@section('subtitle')
+    Rincian Produk Per Divisi / Departement / Kategori
+@endsection
+
+@section('header_left')
+    <p>Tanggal : {{ $tgl1 }} s/d {{ $tgl2 }}</p>
+@endsection
+
+@section('content')
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th width="10%" class="center" colspan="2">---------- BAPB ----------</th>
+            <th width="10%" class="center" colspan="2">---------- BPB ----------</th>
             <th width="5%" class="tengah" rowspan="2">PLU</th>
             <th width="20%" class="tengah left" rowspan="2">NAMA BARANG</th>
             <th width="5%" class="tengah" rowspan="2">KEMASAN</th>
@@ -61,61 +51,61 @@ $datetime->setTimezone($timezone);
         </thead>
         <tbody>
         @php
-        $tempdiv = '';
-        $tempdep = '';
-        $tempkat = '';
-        $grosskat = 0;
-        $potkat = 0;
-        $ppnkat = 0;
-        $bmkat = 0;
-        $btlkat = 0;
-        $totalkat = 0;
-        $grossdep = 0;
-        $potdep = 0;
-        $ppndep = 0;
-        $bmdep = 0;
-        $btldep = 0;
-        $totaldep = 0;
-        $grossdiv = 0;
-        $potdiv = 0;
-        $ppndiv = 0;
-        $bmdiv = 0;
-        $btldiv = 0;
-        $totaldiv = 0;
-        $total = 0;
-        $skipdep = false;
-        $skipkat = false;
-        $grossbkp = 0;
-        $potbkp = 0;
-        $ppnbkp = 0;
-        $bmbkp = 0;
-        $btlbkp = 0;
-        $totalbkp = 0;
-        $grossbtkp = 0;
-        $potbtkp = 0;
-        $ppnbtkp = 0;
-        $bmbtkp = 0;
-        $btlbtkp = 0;
-        $totalbtkp = 0;
+            $tempdiv = '';
+            $tempdep = '';
+            $tempkat = '';
+            $grosskat = 0;
+            $potkat = 0;
+            $ppnkat = 0;
+            $bmkat = 0;
+            $btlkat = 0;
+            $totalkat = 0;
+            $grossdep = 0;
+            $potdep = 0;
+            $ppndep = 0;
+            $bmdep = 0;
+            $btldep = 0;
+            $totaldep = 0;
+            $grossdiv = 0;
+            $potdiv = 0;
+            $ppndiv = 0;
+            $bmdiv = 0;
+            $btldiv = 0;
+            $totaldiv = 0;
+            $total = 0;
+            $skipdep = false;
+            $skipkat = false;
+            $grossbkp = 0;
+            $potbkp = 0;
+            $ppnbkp = 0;
+            $bmbkp = 0;
+            $btlbkp = 0;
+            $totalbkp = 0;
+            $grossbtkp = 0;
+            $potbtkp = 0;
+            $ppnbtkp = 0;
+            $bmbtkp = 0;
+            $btlbtkp = 0;
+            $totalbtkp = 0;
         @endphp
         @for($i=0;$i<count($data);$i++)
             @php
-            $d = $data[$i];
-            $total += $d->total;
-            $skipdep = false;
-            $skipkat = false;
-            $grossbkp += $d->grossbkp;
-            $potbkp += $d->potbkp;
-            $ppnbkp += $d->ppnbkp;
-            $bmbkp += $d->bmbkp;
-            $btlbkp += $d->btlbkp;
-            $totalbkp += $d->totalbkp;
-            $grossbtkp += $d->grossbtkp;
-            $potbtkp += $d->potbtkp;
-            $ppnbtkp += $d->ppnbtkp;
-            $bmbtkp += $d->bmbtkp;
-            $btlbtkp += $d->btlbtkp;
-            $totalbtkp += $d->totalbtkp;
+                $d = $data[$i];
+                $total += $d->total;
+                $skipdep = false;
+                $skipkat = false;
+                $grossbkp += $d->grossbkp;
+                $potbkp += $d->potbkp;
+                $ppnbkp += $d->ppnbkp;
+                $bmbkp += $d->bmbkp;
+                $btlbkp += $d->btlbkp;
+                $totalbkp += $d->totalbkp;
+                $grossbtkp += $d->grossbtkp;
+                $potbtkp += $d->potbtkp;
+                $ppnbtkp += $d->ppnbtkp;
+                $bmbtkp += $d->bmbtkp;
+                $btlbtkp += $d->btlbtkp;
+                $totalbtkp += $d->totalbtkp;
             @endphp
             @if($tempdiv != $d->mstd_kodedivisi)
                 @if($tempdiv != '')
@@ -150,13 +140,13 @@ $datetime->setTimezone($timezone);
                         <td></td>
                     </tr>
                     @php
-                    $grossdep = 0;
-                    $potdep = 0;
-                    $ppndep = 0;
-                    $bmdep = 0;
-                    $btldep = 0;
-                    $totaldep = 0;
-                    $skipdep = true;
+                        $grossdep = 0;
+                        $potdep = 0;
+                        $ppndep = 0;
+                        $bmdep = 0;
+                        $btldep = 0;
+                        $totaldep = 0;
+                        $skipdep = true;
                     @endphp
                     <tr>
                         <td class="left" colspan="2"><strong>SUBTOTAL DIVISI : {{ $tempdiv }}</strong></td>
@@ -170,12 +160,12 @@ $datetime->setTimezone($timezone);
                         <td></td>
                     </tr>
                     @php
-                    $grossdiv = 0;
-                    $potdiv = 0;
-                    $ppndiv = 0;
-                    $bmdiv = 0;
-                    $btldiv = 0;
-                    $totaldiv = 0;
+                        $grossdiv = 0;
+                        $potdiv = 0;
+                        $ppndiv = 0;
+                        $bmdiv = 0;
+                        $btldiv = 0;
+                        $totaldiv = 0;
                     @endphp
                 @endif
                 @php $tempdiv = $d->mstd_kodedivisi @endphp
@@ -186,12 +176,12 @@ $datetime->setTimezone($timezone);
                 </tr>
             @endif
             @php
-            $grossdiv += $d->gross;
-            $potdiv += $d->potongan;
-            $ppndiv += $d->ppn;
-            $bmdiv += $d->bm;
-            $btldiv += $d->btl;
-            $totaldiv += $d->total;
+                $grossdiv += $d->gross;
+                $potdiv += $d->potongan;
+                $ppndiv += $d->ppn;
+                $bmdiv += $d->bm;
+                $btldiv += $d->btl;
+                $totaldiv += $d->total;
             @endphp
             @if($tempdep != $d->mstd_kodedepartement)
                 @if($tempdep != '' && !$skipdep)
@@ -206,13 +196,13 @@ $datetime->setTimezone($timezone);
                         <td class="right"><strong>{{ number_format($totalkat,2) }}</strong></td>
                     </tr>
                     @php
-                    $grosskat = 0;
-                    $potkat = 0;
-                    $ppnkat = 0;
-                    $bmkat = 0;
-                    $btlkat = 0;
-                    $totalkat = 0;
-                    $skipkat = true;
+                        $grosskat = 0;
+                        $potkat = 0;
+                        $ppnkat = 0;
+                        $bmkat = 0;
+                        $btlkat = 0;
+                        $totalkat = 0;
+                        $skipkat = true;
                     @endphp
                     <tr>
                         <td class="left" colspan="2"><strong>SUBTOTAL DEPARTEMENT : {{ $tempdep }}</strong></td>
@@ -226,12 +216,12 @@ $datetime->setTimezone($timezone);
                         <td></td>
                     </tr>
                     @php
-                    $totaldep = 0;
-                    $grossdep = 0;
-                    $potdep = 0;
-                    $ppndep = 0;
-                    $bmdep = 0;
-                    $btldep = 0;
+                        $totaldep = 0;
+                        $grossdep = 0;
+                        $potdep = 0;
+                        $ppndep = 0;
+                        $bmdep = 0;
+                        $btldep = 0;
                     @endphp
                 @endif
                 @php $tempdep = $d->mstd_kodedepartement @endphp
@@ -242,12 +232,12 @@ $datetime->setTimezone($timezone);
                 </tr>
             @endif
             @php
-            $grossdep += $d->gross;
-            $potdep += $d->potongan;
-            $ppndep += $d->ppn;
-            $bmdep += $d->bm;
-            $btldep += $d->btl;
-            $totaldep += $d->total;
+                $grossdep += $d->gross;
+                $potdep += $d->potongan;
+                $ppndep += $d->ppn;
+                $bmdep += $d->bm;
+                $btldep += $d->btl;
+                $totaldep += $d->total;
             @endphp
             @if($tempkat != $d->mstd_kodekategoribrg)
                 @if($tempkat != '' && !$skipkat)
@@ -272,12 +262,12 @@ $datetime->setTimezone($timezone);
                 </tr>
             @endif
             @php
-            $grosskat += $d->gross;
-            $potkat += $d->potongan;
-            $ppnkat += $d->ppn;
-            $bmkat += $d->bm;
-            $btlkat += $d->btl;
-            $totalkat += $d->total;
+                $grosskat += $d->gross;
+                $potkat += $d->potongan;
+                $ppnkat += $d->ppn;
+                $bmkat += $d->bm;
+                $btlkat += $d->btl;
+                $totalkat += $d->total;
             @endphp
             <tr>
                 <td>{{ $d->msth_nodoc }}</td>
@@ -372,104 +362,4 @@ $datetime->setTimezone($timezone);
         </tr>
         </tfoot>
     </table>
-    <hr>
-    <p class="right"><strong>** AKHIR DARI LAPORAN **</strong></p>
-</main>
-
-<br>
-</body>
-<style>
-    @page {
-        /*margin: 25px 20px;*/
-        size: 1071pt 792pt;
-        /*size: 842pt 595pt;*/
-    }
-    header {
-        position: fixed;
-        top: 0cm;
-        left: 0cm;
-        right: 0cm;
-        height: 3cm;
-    }
-    body {
-        margin-top: 80px;
-        margin-bottom: 10px;
-        font-size: 9px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        font-weight: 400;
-        line-height: 1.8;
-    }
-    table{
-        border-collapse: collapse;
-    }
-    tbody {
-        display: table-row-group;
-        vertical-align: middle;
-        border-color: inherit;
-    }
-    tr {
-        display: table-row;
-        vertical-align: inherit;
-        border-color: inherit;
-    }
-    td {
-        display: table-cell;
-    }
-    thead{
-        text-align: center;
-    }
-    tbody{
-        text-align: center;
-    }
-    tfoot{
-        border-top: 1px solid black;
-    }
-    .table{
-        width: 100%;
-        white-space: nowrap;
-        color: #212529;
-        /*padding-top: 20px;*/
-        /*margin-top: 25px;*/
-    }
-    .table tbody td {
-        vertical-align: top;
-        /*border-top: 1px solid #dee2e6;*/
-        padding: 0.20rem 0;
-        width: auto;
-    }
-    .table th{
-        vertical-align: top;
-        padding: 0.20rem 0;
-    }
-    .judul, .table-borderless{
-        text-align: center;
-    }
-    .table-borderless th, .table-borderless td {
-        border: 0;
-        padding: 0.50rem;
-    }
-    .center{
-        text-align: center;
-    }
-
-    .left{
-        text-align: left;
-    }
-
-    .right{
-        text-align: right;
-    }
-
-    .page-break {
-        page-break-before: always;
-    }
-
-    .table-header td{
-        white-space: nowrap;
-    }
-
-    .tengah{
-        vertical-align: middle !important;
-    }
-</style>
-</html>
+@endsection

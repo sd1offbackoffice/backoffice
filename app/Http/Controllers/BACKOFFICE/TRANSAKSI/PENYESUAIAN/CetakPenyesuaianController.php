@@ -27,6 +27,7 @@ class CetakPenyesuaianController extends Controller
                 ->selectRaw('trbo_nodoc no, TRUNC(trbo_tgldoc) tgl')
                 ->where('trbo_typetrn','=','X')
                 ->whereRaw("NVL(trbo_recordid, '0') <> '1'")
+//                ->whereNull('trbo_recordid')
                 ->whereRaw("NVL(trbo_flagdoc, '0') = '".$reprint."'")
                 ->whereRaw("trbo_tgldoc between TO_DATE('".$tgl1."','dd/mm/yyyy') and TO_DATE('".$tgl2."','dd/mm/yyyy')")
                 ->orderBy('trbo_nodoc')
@@ -40,6 +41,8 @@ class CetakPenyesuaianController extends Controller
                     ->where('trbo_typetrn','=','X')
                     ->whereRaw("NVL(trbo_flagdoc, ' ') <> '*'")
                     ->whereRaw("NVL(trbo_recordid, ' ') <> '1'")
+//                    ->whereNull('trbo_flagdoc')
+//                    ->whereNull('trbo_recordid')
                     ->whereRaw("trbo_tgldoc between TO_DATE('".$tgl1."','dd/mm/yyyy') and TO_DATE('".$tgl2."','dd/mm/yyyy')")
                     ->orderBy('trbo_nodoc')
                     ->distinct()
@@ -50,8 +53,10 @@ class CetakPenyesuaianController extends Controller
                     ->selectRaw('msth_nodoc no, TRUNC(msth_tgldoc) tgl')
                     ->whereRaw("msth_tgldoc between TO_DATE('".$tgl1."','dd/mm/yyyy') and TO_DATE('".$tgl2."','dd/mm/yyyy')")
                     ->where('msth_typetrn','=','X')
-                    ->whereRaw("NVL(msth_flagdoc, ' ') = '1'")
+                    ->whereRaw("NVL(msth_flagdoc, ' ') = '".$reprint."'")
                     ->whereRaw("NVL(msth_recordid, '0') <> '1'")
+//                    ->whereNull('msth_flagdoc')
+//                    ->whereNull('msth_recordid')
                     ->orderBy('msth_nodoc')
                     ->distinct()
                     ->get();
@@ -61,42 +66,46 @@ class CetakPenyesuaianController extends Controller
         return $data;
     }
 
-    public function storeData(Request $request){
-        try{
-            Session::put('pys_nodoc', $request->nodoc);
-            Session::put('pys_reprint', $request->reprint);
-            Session::put('pys_jenis', $request->jenis);
-            Session::put('pys_ukuran', $request->ukuran);
-            Session::put('pys_updateLokasi', $request->updateLokasi);
-            Session::put('pys_updatePkmt', $request->updatePkmt);
-        }
-        catch(\Exception $e){
-            return 'false';
-        }
-        return 'true';
-    }
-
-    public function laporan(){
-
+    public function laporan(Request $request){
         $step = 0;
         try{
+            $nodoc = explode('*',$request->nodoc);
+            $jenis = $request->jenis;
+            $updateLokasi = $request->updateLokasi;
+            $updatePkmt = $request->updatePkmt;
+            $ukuran = $request->ukuran;
+
             DB::connection(Session::get('connection'))->beginTransaction();
 
             $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
                 ->first();
 
-            $ukuran = Session::get('pys_ukuran');
+            $temp = DB::connection(Session::get('connection'))
+                ->table('tbtr_backoffice')
+                ->whereIn('trbo_nodoc',$nodoc)
+                ->first();
 
-            if(Session::get('pys_jenis') == '1'){
-                if(Session::get('pys_reprint') == '0'){
+//            dd($temp);
+
+            $reprint = $temp->trbo_flagdoc ? 1 : 0;
+
+            if($jenis == '1'){
+                $reprint = $temp->trbo_flagdoc ? 1 : 0;
+
+                if($reprint == '0'){
 
                     DB::connection(Session::get('connection'))->table('tbtr_backoffice')
-                        ->whereIn('trbo_nodoc',Session::get('pys_nodoc'))
+                        ->whereIn('trbo_nodoc',$nodoc)
                         ->update([
                             'trbo_flagdoc' => '1'
                         ]);
                 }
+
                 DB::connection(Session::get('connection'))->commit();
+
+                $perusahaan = DB::connection(Session::get('connection'))
+                    ->table('tbmaster_perusahaan')
+                    ->first();
 
                 $data = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                     ->join('tbmaster_perusahaan','prs_kodeigr','=','trbo_kodeigr')
@@ -119,9 +128,11 @@ class CetakPenyesuaianController extends Controller
                             END AS REP")
                     ->where('trbo_kodeigr','=','22')
                     ->whereRaw("NVL(trbo_recordid,'0') <> '1'")
-                    ->whereIn('trbo_nodoc',Session::get('pys_nodoc'))
+                    ->whereIn('trbo_nodoc',$nodoc)
                     ->orderBy('trbo_nodoc')
                     ->get();
+
+//                dd($data);
 
                 $dompdf = new PDF();
 
@@ -152,6 +163,13 @@ class CetakPenyesuaianController extends Controller
                 return $dompdf->stream($title.'.pdf');
             }
             else{
+                $temp = DB::connection(Session::get('connection'))
+                    ->table('tbtr_mstran_h')
+                    ->whereIn('msth_nodoc',$nodoc)
+                    ->first();
+
+                $reprint = $temp ? 1 : 0;
+
                 $lfirst = 1;
                 $lcost = 0;
                 $acost = 0;
@@ -167,17 +185,9 @@ class CetakPenyesuaianController extends Controller
 
                 $flag = '1';
 
-                if(Session::get('pys_updateLokasi')  == 'true')
-                    $updateLokasi = true;
-                else $updateLokasi = false;
-
-                if( Session::get('pys_updatePkmt')  == 'true')
-                    $updatePkmt = true;
-                else $updatePkmt = false;
-
                 $step = 0;
 
-                foreach(Session::get('pys_nodoc') as $n){
+                foreach($nodoc as $n){
                     if($flag == 1){
                         $step = 4;
                         $jum = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
@@ -210,7 +220,7 @@ class CetakPenyesuaianController extends Controller
                             else $ppmm = false;
                         }
 
-                        if(Session::get('pys_reprint') == '0'){
+                        if($reprint == '0'){
                             if($jum == 1 || $jum > 2 || $ppmm){
                                 $step = 5;
                                 $flagdisc1 = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
@@ -247,6 +257,8 @@ class CetakPenyesuaianController extends Controller
                                                                      )
                                                       ELSE TRBO_QTY
                                                   END");
+
+//                                    dd($rec);
 
                                     foreach($rec as $r){
                                         $step = 6;
@@ -321,7 +333,7 @@ class CetakPenyesuaianController extends Controller
                                             ->select('msth_nodoc')
                                             ->where('msth_kodeigr',Session::get('kdigr'))
                                             ->where('msth_typetrn','=','X')
-                                            ->where('msth_nodoc',$n)
+                                            ->where('msth_nodoc','=',$n)
                                             ->whereRaw("NVL(msth_recordid, ' ') <> '1'")
                                             ->get()->count();
 
@@ -394,12 +406,17 @@ class CetakPenyesuaianController extends Controller
 
                                 $step = 12;
 
-                                $v_plua1 = DB::connection(Session::get('connection'))->table('tbmaster_stock')
+                                $v_plua1 = DB::connection(Session::get('connection'))
+                                    ->table('tbmaster_stock')
                                     ->selectRaw('NVL(st_saldoakhir,0) v_plua1')
                                     ->where('st_kodeigr', Session::get('kdigr'))
                                     ->where('st_prdcd', $prdcdlama)
                                     ->where('st_lokasi', $loklama)
-                                    ->first()->v_plua1;
+                                    ->first();
+
+                                if($v_plua1)
+                                    $v_plua1 = $v_plua1->v_plua1;
+                                else $v_plua1 = 0;
 
                                 $step = 13;
 
@@ -634,6 +651,8 @@ class CetakPenyesuaianController extends Controller
                                                                      )
                                                   ELSE TRBO_QTY
                                               END");
+
+//                                dd($rec);
 
                                 foreach ($rec as $r) {
                                     $step = 16;
@@ -894,7 +913,7 @@ class CetakPenyesuaianController extends Controller
                                             if ($jum > 0) {
                                                 $v_lcplulama1 = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                                     ->select('prd_lastcost')
-                                                    ->where('prdcd', substr($r->trbo_prdcd, 0, 6) . '1')
+                                                    ->where('prd_prdcd', substr($r->trbo_prdcd, 0, 6) . '1')
                                                     ->where('prd_kodeigr', Session::get('kdigr'))
                                                     ->first()->prd_lastcost;
                                             } else $v_lcplulama1 = 0;
@@ -1114,7 +1133,7 @@ class CetakPenyesuaianController extends Controller
                                                            ELSE ST_LASTCOST
                                                        END"),
                                                         'st_modify_by' => Session::get('usid'),
-                                                        'st_modify_dt' => DB::RRAW("SYSDATE")
+                                                        'st_modify_dt' => DB::connection(Session::get('connection'))->RAW("SYSDATE")
                                                     ]);
 
                                                 $step = 49;
@@ -2212,15 +2231,13 @@ class CetakPenyesuaianController extends Controller
 
                 DB::connection(Session::get('connection'))->commit();
 
-                $perusahaan = DB::connection(Session::get('connection'))
-                    ->table('tbmaster_perusahaan')
-                    ->first();
-
-                $nodoc = "(";
-                foreach(Session::get('pys_nodoc') as $no){
-                    $nodoc .= "'".$no."',";
+                $nodocs = "(";
+                foreach($nodoc as $no){
+                    $nodocs .= "'".$no."',";
                 }
-                $nodoc = substr($nodoc,0,strlen($nodoc)-1).")";
+                $nodocs = substr($nodocs,0,strlen($nodocs)-1).")";
+
+//                dd($nodocs);
 
                 $report = DB::connection(Session::get('connection'))->select("Select DISTINCT
                             msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo,
@@ -2253,14 +2270,16 @@ class CetakPenyesuaianController extends Controller
                             and trbo_nodoc=msth_nodoc
                             and trbo_prdcd=mstd_prdcd
                             and NVL(trbo_recordid,'0') <> '1'
-                            and msth_nodoc in ".$nodoc."
+                            and msth_nodoc in ".$nodocs."
                         ORDER BY msth_nodoc,MSTD_SEQNO");
+
+//                dd($report);
 
                 $data = [
                     'perusahaan' => $perusahaan,
                     'report' => $report,
                     'ukuran' => $ukuran,
-                    'reprint' => Session::get('pys_reprint')
+                    'reprint' => $reprint
                 ];
 
 //                dd($report);
@@ -2281,6 +2300,7 @@ class CetakPenyesuaianController extends Controller
 
                 return $dompdf->stream('Laporan Penyesuaian.pdf');
             }
+
         }
         catch(\Exception $e){
             DB::connection(Session::get('connection'))->rollBack();

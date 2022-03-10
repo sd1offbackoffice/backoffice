@@ -73,120 +73,104 @@ class PenerimaanController extends Controller
             ->first();
 
         if($tipe === '1'){
-            $data = DB::connection(Session::get('connection'))->select("select mstd_kodedivisi, div_namadivisi,FRAC, BONUS,
-                    mstd_kodedepartement, dep_namadepartement,
-                    mstd_kodekategoribrg, kat_namakategori,
-                    mstd_nodoc, mstd_tgldoc, unit,
-                    hg_beli, ctn, pcs, mstd_keterangan,
-                    mstd_prdcd, prd_deskripsipanjang,
-                    sum(mstd_gross) gross, sum(mstd_ocost) lcost , sum(mstd_avgcost) acost ,sum(mstd_pot) pot,
-                    sum(mstd_ppn) ppn, sum(mstd_bm) bm, sum(mstd_btl) btl,
-                    sum(total) total,
-                    sum(GROSS_BKP) subgross, sum(GROSS_BTKP) bgross,
-                    sum(POT_BKP) subpot, sum(POT_BTKP) bpot,
-                    sum(PPN_BKP) subppn, sum(PPN_BTKP) bppn,
-                    sum(BM_BKP) subbm, sum(BM_BTKP) bbm,
-                    sum(BTL_BKP) subbtl, sum(BTL_BTKP) bbtl,
-                    sum(TOTAL_BKP) subtotal, sum(TOTAL_BTKP)
-            from (
-                    select  mstd_kodedivisi, div_namadivisi,
-                            mstd_kodedepartement, dep_namadepartement, MSTD_FRAC FRAC,
-                            mstd_kodekategoribrg, kat_namakategori,mstd_keterangan,MSTD_QTYBONUS1 BONUS,
-                            CASE WHEN mstd_bkp = 'Y' THEN
-                                    nvl(mstd_gross,0)
-                            END GROSS_BKP,
-                            CASE WHEN NVL(mstd_bkp,'N') = 'N' THEN
-                                    nvl(mstd_gross,0)
-                            END GROSS_BTKP,
-                            CASE WHEN mstd_bkp = 'Y' THEN
-                                    nvl(mstd_discrph,0)
-                            END POT_BKP,
-                            CASE WHEN NVL(mstd_bkp,'N') = 'N' THEN
-                                    nvl(mstd_discrph,0)
-                            END POT_BTKP,
-                            CASE WHEN mstd_bkp = 'Y' THEN
-                                    nvl(mstd_ppnrph,0)
-                            END PPN_BKP,
-                            CASE WHEN NVL(mstd_bkp,'N') = 'N' THEN
-                                    nvl(mstd_ppnrph,0)
-                            END PPN_BTKP,
-                            CASE WHEN mstd_bkp = 'Y' THEN
-                                    nvl(mstd_ppnbmrph,0)
-                            END BM_BKP,
-                            CASE WHEN NVL(mstd_bkp,'N') = 'N' THEN
-                                    nvl(mstd_ppnbmrph,0)
-                            END BM_BTKP,
-                            CASE WHEN mstd_bkp = 'Y' THEN
-                                    nvl(mstd_ppnbtlrph,0)
-                            END BTL_BKP,
-                            CASE WHEN NVL(mstd_bkp,'N') = 'N' THEN
-                                    nvl(mstd_ppnbtlrph,0)
-                            END BTL_BTKP,
-                            CASE WHEN mstd_bkp = 'Y' THEN
-                                    (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) - nvl(mstd_discrph,0)
-                            END TOTAL_BKP,
-                            CASE WHEN NVL(mstd_bkp,'N') = 'N' THEN
-                                    (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) - nvl(mstd_discrph,0)
-                            END TOTAL_BTKP,
-                            mstd_nodoc, mstd_tgldoc, prd_unit||'/'|| prd_frac unit,
-                            mstd_hrgsatuan hg_beli, floor(mstd_qty/prd_frac) ctn, mod(mstd_qty,prd_frac) pcs,
-                            mstd_prdcd, prd_deskripsipanjang, mstd_gross,  mstd_ocost, mstd_avgcost,
-                            nvl(mstd_discrph,0) mstd_pot,
-                            nvl(mstd_ppnrph,0) mstd_ppn, nvl(mstd_ppnbmrph,0) mstd_bm, nvl(mstd_ppnbtlrph,0) mstd_btl,
-                            (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) -
-                            (nvl(mstd_discrph,0)) total
-                from tbtr_mstran_h, tbtr_mstran_d,tbmaster_prodmast,
-                    tbmaster_divisi, tbmaster_departement,tbmaster_kategori
-                where msth_typetrn='I'
-                    and nvl(msth_recordid,'9') <>'1'
-                    and msth_kodeigr='".Session::get('kdigr')."'
-                    and mstd_nodoc=msth_nodoc
-                    and mstd_kodeigr='".Session::get('kdigr')."'
-                    and msth_tgldoc between TO_DATE('".$tgl1."','DD/MM/YYYY') and TO_DATE('".$tgl2."','DD/MM/YYYY')
-                    and prd_prdcd = mstd_prdcd
-                    and prd_kodeigr=mstd_kodeigr
-                    and div_kodeigr=mstd_kodeigr
-                    and div_kodedivisi = mstd_kodedivisi
-                    and dep_kodeigr = mstd_kodeigr
-                    and dep_kodedivisi= mstd_kodedivisi
-                    and dep_kodedepartement = mstd_kodedepartement
-                    and kat_kodeigr = mstd_kodeigr
-                    and kat_kodedepartement = mstd_kodedepartement
-                    and kat_kodekategori= mstd_kodekategoribrg
-                    and div_kodedivisi||dep_kodedepartement||kat_kodekategori
-                    between '".$div1."'||'".$dep1."'||'".$kat1."' and '".$div2."'||'".$dep2."'||'".$kat2."'
-                    )
-            group by mstd_kodedivisi, div_namadivisi,
-                    mstd_kodedepartement, dep_namadepartement,
-                    mstd_kodekategoribrg, kat_namakategori,FRAC, BONUS,
-                    mstd_prdcd, prd_deskripsipanjang, mstd_nodoc,  mstd_tgldoc,unit,
-                    hg_beli, ctn, pcs,mstd_keterangan
-            order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg, mstd_nodoc, mstd_prdcd");
+            $data = DB::connection(Session::get('connection'))->select("select mstd_kodedivisi, div_namadivisi,
+        mstd_kodedepartement, dep_namadepartement,
+        mstd_kodekategoribrg, kat_namakategori,
+        prs_namaperusahaan, prs_namacabang, prs_namawilayah,
+        sum(mstd_gross) gross, sum(mstd_pot) pot,
+        sum(mstd_ppn) ppn, sum(mstd_bm) bm, sum(mstd_btl) btl,
+        sum(total) total,
+        sum(GROSS_BKP) sGROSS_BKP, sum(GROSS_BTKP) sGROSS_BTKP,
+        sum(POT_BKP) sPOT_BKP, sum(POT_BTKP) sPOT_BTKP,
+        sum(PPN_BKP) sPPN_BKP, sum(PPN_BTKP) sPPN_BTKP,
+        sum(BM_BKP) sBM_BKP, sum(BM_BTKP) sBM_BTKP,
+        sum(BTL_BKP) sBTL_BKP, sum(BTL_BTKP) sBTL_BTKP,
+        sum(TOTAL_BKP) sTOTAL_BKP, sum(TOTAL_BTKP) sTOTAL_BTKP
+from (select mstd_kodedivisi, div_namadivisi,
+        mstd_kodedepartement, dep_namadepartement,
+        mstd_kodekategoribrg, kat_namakategori,
+        CASE WHEN mstd_bkp = 'Y' THEN
+                nvl(mstd_gross,0)
+        END GROSS_BKP,
+        CASE WHEN NVL(mstd_bkp,'N') = 'N' THEN
+                nvl(mstd_gross,0)
+        END GROSS_BTKP,
+        CASE WHEN mstd_bkp = 'Y' THEN
+                nvl(mstd_discrph,0)
+        END POT_BKP,
+        CASE WHEN NVL(mstd_bkp,'N') = 'N' THEN
+                nvl(mstd_discrph,0)
+        END POT_BTKP,
+        CASE WHEN mstd_bkp = 'Y' THEN
+                nvl(mstd_ppnrph,0)
+        END PPN_BKP,
+        CASE WHEN NVL(mstd_bkp,'N') = 'N' THEN
+                nvl(mstd_ppnrph,0)
+        END PPN_BTKP,
+        CASE WHEN mstd_bkp = 'Y' THEN
+                nvl(mstd_ppnbmrph,0)
+        END BM_BKP,
+        CASE WHEN NVL(mstd_bkp,'N') = 'N' THEN
+                nvl(mstd_ppnbmrph,0)
+        END BM_BTKP,
+        CASE WHEN mstd_bkp = 'Y' THEN
+                nvl(mstd_ppnbtlrph,0)
+        END BTL_BKP,
+        CASE WHEN NVL(mstd_bkp,'N') = 'N' THEN
+                nvl(mstd_ppnbtlrph,0)
+        END BTL_BTKP,
+        CASE WHEN mstd_bkp = 'Y' THEN
+                (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) - (nvl(mstd_discrph,0))
+        END TOTAL_BKP,
+        CASE WHEN NVL(mstd_bkp,'N') = 'N' THEN
+                (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) - (nvl(mstd_discrph,0))
+        END TOTAL_BTKP,
+        nvl(mstd_avgcost,0)*nvl(mstd_qty,0) avg,
+        mstd_prdcd, prd_deskripsipanjang, mstd_gross,
+        nvl(mstd_discrph,0) mstd_pot,
+        nvl(mstd_ppnrph,0) mstd_ppn, nvl(mstd_ppnbmrph,0) mstd_bm, nvl(mstd_ppnbtlrph,0) mstd_btl,
+        (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) -
+        (nvl(mstd_discrph,0)) total,
+        prs_namaperusahaan, prs_namacabang, prs_namawilayah
+from tbtr_mstran_h, tbtr_mstran_d,tbmaster_prodmast,
+        tbmaster_divisi, tbmaster_departement,tbmaster_kategori,
+        tbmaster_perusahaan
+where msth_typetrn='I'
+        and nvl(msth_recordid,'9') <>'1'
+        and msth_kodeigr= '".Session::get('kdigr')."'
+        and mstd_nodoc=msth_nodoc
+        and mstd_kodeigr=msth_kodeigr
+        and mstd_tgldoc between TO_DATE('".$tgl1."','DD/MM/YYYY') and TO_DATE('".$tgl2."','DD/MM/YYYY')
+        and prd_prdcd = mstd_prdcd
+        and prd_kodeigr=mstd_kodeigr
+        and div_kodedivisi=mstd_kodedivisi
+        and div_kodeigr(+)=mstd_kodeigr
+        and dep_kodeigr(+) = mstd_kodeigr
+        and dep_kodedivisi(+) = mstd_kodedivisi
+        and dep_kodedepartement(+) = mstd_kodedepartement
+        and kat_kodeigr(+) = mstd_kodeigr
+        and kat_kodedepartement(+) = mstd_kodedepartement
+        and kat_kodekategori (+) =mstd_kodekategoribrg
+        and prs_kodeigr(+) = msth_kodeigr
+        and mstd_kodedivisi||mstd_kodedepartement||mstd_kodekategoribrg
+        between '".$div1."'||'".$dep1."'||'".$kat1."' and '".$div2."'||'".$dep2."'||'".$kat2."'
+        order by div_kodedivisi, dep_kodedepartement, kat_kodekategori)
+group by mstd_kodedivisi, div_namadivisi,
+        mstd_kodedepartement, dep_namadepartement,
+        mstd_kodekategoribrg, kat_namakategori,
+        prs_namaperusahaan, prs_namacabang, prs_namawilayah
+order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg");
 
 //            dd($data);
 
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.penerimaan-ringkasan-pdf',compact(['perusahaan','data','tgl1','tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf ->get_canvas();
-            $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream('LAPORAN PENERIMAAN ANTAR CABANG RINGKASAN DIVISI/DEPT/KATEGORI.pdf');
+            return view('BACKOFFICE.LAPORAN.penerimaan-ringkasan-pdf',compact(['perusahaan','data','tgl1','tgl2']));
         }
         else{
             $data = DB::connection(Session::get('connection'))->select("select mstd_kodedivisi, div_namadivisi,FRAC, BONUS,
                     mstd_kodedepartement, dep_namadepartement,
                     mstd_kodekategoribrg, kat_namakategori,
                     prs_namaperusahaan, prs_namacabang, prs_namawilayah,
-                    mstd_nodoc, mstd_tgldoc, unit,
+                    mstd_nodoc, to_char(mstd_tgldoc,'dd/mm/yyyy') mstd_tgldoc, unit,
                     hg_beli, ctn, pcs, mstd_keterangan,
                     mstd_prdcd, prd_deskripsipanjang,
                     sum(mstd_gross) gross, sum(mstd_ocost) lcost , sum(mstd_avgcost) acost ,sum(mstd_pot) pot,
@@ -278,21 +262,7 @@ class PenerimaanController extends Controller
 
 //            dd($data);
 
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.penerimaan-rincian-pdf',compact(['perusahaan','data','tgl1','tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf ->get_canvas();
-            $canvas->page_text(986, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream('LAPORAN PENERIMAAN ANTAR CABANG RINCIAN PRODUK PER DIVISI/DEPT/KATEGORI.pdf');
+            return view('BACKOFFICE.LAPORAN.penerimaan-rincian-pdf',compact(['perusahaan','data','tgl1','tgl2']));
         }
     }
 }

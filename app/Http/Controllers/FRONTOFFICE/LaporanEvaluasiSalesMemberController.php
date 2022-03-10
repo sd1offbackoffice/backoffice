@@ -6,7 +6,8 @@ use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Mockery\Exception;
@@ -227,14 +228,14 @@ class LaporanEvaluasiSalesMemberController extends Controller
                                                   AND tko_kodecustomer IS NULL
                                                   AND NVL (trjd_admfee, 0) = 0
                                              THEN
-                                                (trjd_nominalamt / 1.1)
+                                                (trjd_nominalamt / 1+(prd_ppn/100))
                                              ELSE
                                                 CASE
                                                    WHEN TRUNC (tko_tgltutup) <=
                                                            TRUNC (
                                                               trjd_transactiondate)
                                                    THEN
-                                                      (trjd_nominalamt / 1.1)
+                                                      (trjd_nominalamt / 1+(prd_ppn/100))
                                                    ELSE
                                                       trjd_nominalamt
                                                 END
@@ -254,14 +255,14 @@ class LaporanEvaluasiSalesMemberController extends Controller
                                                      AND tko_kodecustomer IS NULL
                                                      AND NVL (trjd_admfee, 0) = 0
                                                 THEN
-                                                   (trjd_nominalamt / 1.1)
+                                                   (trjd_nominalamt / 1+(prd_ppn/100))
                                                 ELSE
                                                    CASE
                                                       WHEN TRUNC (tko_tgltutup) <=
                                                               TRUNC (
                                                                  trjd_transactiondate)
                                                       THEN
-                                                         (trjd_nominalamt / 1.1)
+                                                         (trjd_nominalamt / 1+(prd_ppn/100))
                                                       ELSE
                                                          trjd_nominalamt
                                                    END
@@ -304,14 +305,14 @@ class LaporanEvaluasiSalesMemberController extends Controller
                                                          AND NVL (trjd_admfee, 0) =
                                                                 0
                                                     THEN
-                                                       (trjd_nominalamt / 1.1)
+                                                       (trjd_nominalamt / 1+(prd_ppn/100))
                                                     ELSE
                                                        CASE
                                                           WHEN TRUNC (tko_tgltutup) >=
                                                                   TRUNC (
                                                                      trjd_transactiondate)
                                                           THEN
-                                                             (trjd_nominalamt / 1.1)
+                                                             (trjd_nominalamt / 1+(prd_ppn/100))
                                                           ELSE
                                                              trjd_nominalamt
                                                        END
@@ -339,7 +340,7 @@ class LaporanEvaluasiSalesMemberController extends Controller
                                                             AND NVL (trjd_admfee,
                                                                      0) = 0
                                                        THEN
-                                                          (trjd_nominalamt / 1.1)
+                                                          (trjd_nominalamt / 1+(prd_ppn/100))
                                                        ELSE
                                                           CASE
                                                              WHEN TRUNC (
@@ -348,7 +349,7 @@ class LaporanEvaluasiSalesMemberController extends Controller
                                                                         trjd_transactiondate)
                                                              THEN
                                                                 (  trjd_nominalamt
-                                                                 / 1.1)
+                                                                 / 1+(prd_ppn/100))
                                                              ELSE
                                                                 trjd_nominalamt
                                                           END
@@ -540,7 +541,7 @@ GROUP BY trjd_cus_kodemember,cus_namamember
             "Expires" => "0"
         ];
 
-        $file = fopen($filename, 'w');
+        $file = fopen(storage_path($filename), 'w');
 
         fputcsv($file, $columnHeader, '|');
         foreach ($linebuffs as $linebuff) {
@@ -548,6 +549,6 @@ GROUP BY trjd_cus_kodemember,cus_namamember
         }
         fclose($file);
 
-        return response()->download(public_path($filename))->deleteFileAfterSend(true);
+        return response()->download(storage_path($filename))->deleteFileAfterSend(true);
     }
 }

@@ -109,13 +109,13 @@ class LaporanSalesPerDivDepController extends Controller
                                                                             AND tko_kodecustomer IS NULL
                                                                             AND NVL (trjd_admfee, 0) = 0
                                                                        THEN
-                                                                          (trjd_nominalamt / 1.1)
+                                                                          (trjd_nominalamt / 1+(prd_ppn/100))
                                                                        ELSE
                                                                           CASE
                                                                              WHEN TRUNC (tko_tgltutup) <=
                                                                                      TRUNC (trjd_transactiondate)
                                                                              THEN
-                                                                                (trjd_nominalamt / 1.1)
+                                                                                (trjd_nominalamt / 1+(prd_ppn/100))
                                                                              ELSE
                                                                                 trjd_nominalamt
                                                                           END
@@ -132,13 +132,13 @@ class LaporanSalesPerDivDepController extends Controller
                                                                                AND tko_kodecustomer IS NULL
                                                                                AND NVL (trjd_admfee, 0) = 0
                                                                           THEN
-                                                                             (trjd_nominalamt / 1.1)
+                                                                             (trjd_nominalamt / 1+(prd_ppn/100))
                                                                           ELSE
                                                                              CASE
                                                                                 WHEN TRUNC (tko_tgltutup) <=
                                                                                         TRUNC (trjd_transactiondate)
                                                                                 THEN
-                                                                                   (trjd_nominalamt / 1.1)
+                                                                                   (trjd_nominalamt / 1+(prd_ppn/100))
                                                                                 ELSE
                                                                                    trjd_nominalamt
                                                                              END
@@ -199,13 +199,13 @@ class LaporanSalesPerDivDepController extends Controller
                                                                         AND tko_kodecustomer IS NULL
                                                                         AND NVL (trjd_admfee, 0) = 0
                                                                    THEN
-                                                                      (trjd_nominalamt / 1.1)
+                                                                      (trjd_nominalamt / 1+(prd_ppn/100))
                                                                    ELSE
                                                                       CASE
                                                                          WHEN TRUNC (tko_tgltutup) <=
                                                                                  TRUNC (trjd_transactiondate)
                                                                          THEN
-                                                                            (trjd_nominalamt / 1.1)
+                                                                            (trjd_nominalamt / 1+(prd_ppn/100))
                                                                          ELSE
                                                                             trjd_nominalamt
                                                                       END
@@ -222,13 +222,13 @@ class LaporanSalesPerDivDepController extends Controller
                                                                            AND tko_kodecustomer IS NULL
                                                                            AND NVL (trjd_admfee, 0) = 0
                                                                       THEN
-                                                                         (trjd_nominalamt / 1.1)
+                                                                         (trjd_nominalamt / 1+(prd_ppn/100))
                                                                       ELSE
                                                                          CASE
                                                                             WHEN TRUNC (tko_tgltutup) <=
                                                                                     TRUNC (trjd_transactiondate)
                                                                             THEN
-                                                                               (trjd_nominalamt / 1.1)
+                                                                               (trjd_nominalamt / 1+(prd_ppn/100))
                                                                             ELSE
                                                                                trjd_nominalamt
                                                                          END
@@ -356,13 +356,13 @@ class LaporanSalesPerDivDepController extends Controller
                                                                         AND tko_kodecustomer IS NULL
                                                                         AND NVL (trjd_admfee, 0) = 0
                                                                    THEN
-                                                                      (trjd_nominalamt / 1.1)
+                                                                      (trjd_nominalamt / 1+(prd_ppn/100))
                                                                    ELSE
                                                                       CASE
                                                                          WHEN TRUNC (tko_tgltutup) <=
                                                                                  TRUNC (trjd_transactiondate)
                                                                          THEN
-                                                                            (trjd_nominalamt / 1.1)
+                                                                            (trjd_nominalamt / 1+(prd_ppn/100))
                                                                          ELSE
                                                                             trjd_nominalamt
                                                                       END
@@ -379,13 +379,13 @@ class LaporanSalesPerDivDepController extends Controller
                                                                            AND tko_kodecustomer IS NULL
                                                                            AND NVL (trjd_admfee, 0) = 0
                                                                       THEN
-                                                                         (trjd_nominalamt / 1.1)
+                                                                         (trjd_nominalamt / 1+(prd_ppn/100))
                                                                       ELSE
                                                                          CASE
                                                                             WHEN TRUNC (tko_tgltutup) <=
                                                                                     TRUNC (trjd_transactiondate)
                                                                             THEN
-                                                                               (trjd_nominalamt / 1.1)
+                                                                               (trjd_nominalamt / 1+(prd_ppn/100))
                                                                             ELSE
                                                                                trjd_nominalamt
                                                                          END
@@ -477,7 +477,7 @@ class LaporanSalesPerDivDepController extends Controller
                 "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
                 "Expires" => "0"
             ];
-            $file = fopen($filename, 'w');
+            $file = fopen(storage_path($filename), 'w');
 
             fputcsv($file, $columnHeader, '|');
             foreach ($linebuffs as $linebuff) {
@@ -485,7 +485,7 @@ class LaporanSalesPerDivDepController extends Controller
             }
             fclose($file);
 
-            return response()->download(public_path($filename))->deleteFileAfterSend(true);
+            return response()->download(storage_path($filename))->deleteFileAfterSend(true);
         }
 
     }

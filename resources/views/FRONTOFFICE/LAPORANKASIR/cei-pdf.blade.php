@@ -17,7 +17,6 @@
 @php
     //rupiah formatter (no Rp or .00)
     function rupiah($angka){
-        //$hasil_rupiah = "Rp " . number_format($angka,2,',','.');
         $hasil_rupiah = number_format($angka,0,'.',',');
         return $hasil_rupiah;
     }
@@ -35,20 +34,24 @@
                 <th colspan="2" style="border-bottom: 1px solid black">Refund</th>
             </tr>
             <tr>
-                <th style="width: 50px; border-right: 1px solid black;">Qty</th>
-                <th style="width: 100px; border-right: 1px solid black;">Nilai</th>
-                <th style="width: 50px; border-right: 1px solid black;">Qty</th>
-                <th style="width: 100px">Nilai</th>
+                <th style="width: 50px; border-right: 1px solid black;">DPP</th>
+                <th style="width: 100px; border-right: 1px solid black;">PPN</th>
+                <th style="width: 50px; border-right: 1px solid black;">DPP</th>
+                <th style="width: 100px">PPN</th>
             </tr>
         </thead>
         <tbody style="border-bottom: 2px solid black; text-align: center; vertical-align: center">
         <?php
             $kode = '';
             $cDeskripsi = '';
-            $nilaiSales = 0;
-            $nilaiRefund = 0;
-            $totalSales = 0;
-            $totalRefund = 0;
+            $nilaiSalesDPP = 0;
+            $nilaiRefundDPP = 0;
+            $totalSalesDPP = 0;
+            $totalRefundDPP = 0;
+            $nilaiSalesPPN = 0;
+            $nilaiRefundPPN = 0;
+            $totalSalesPPN = 0;
+            $totalRefundPPN = 0;
         ?>
         @for($i=0;$i<sizeof($data);$i++)
             <?php
@@ -64,8 +67,10 @@
                         <td> </td>
                         <td> </td>
                         <td style="text-align: right">Total Per Event</td>
-                        <td colspan="2" style="text-align: right">{{rupiah($nilaiSales)}}</td>
-                        <td colspan="2" style="text-align: right">{{rupiah($nilaiRefund)}}</td>
+                        <td style="text-align: right">{{rupiah($nilaiSalesDPP)}}</td>
+                        <td style="text-align: right">{{rupiah($nilaiSalesPPN)}}</td>
+                        <td style="text-align: right">{{rupiah($nilaiRefundDPP)}}</td>
+                        <td style="text-align: right">{{rupiah($nilaiRefundPPN)}}</td>
                     </tr>
                 @endif
                 <tr>
@@ -77,10 +82,15 @@
                 </tr>
                 <?php
                 $kode = $data[$i]->cbh_kodepromosi;
-                $totalSales = $totalSales + $nilaiSales;
-                $totalRefund = $totalRefund + $nilaiRefund;
-                $nilaiSales = 0;
-                $nilaiRefund = 0;
+                $totalSalesDPP += $nilaiSalesDPP;
+                $totalRefundDPP += $nilaiRefundDPP;
+                $nilaiSalesDPP = 0;
+                $nilaiRefundDPP = 0;
+
+                $totalSalesPPN += $nilaiSalesPPN;
+                $totalRefundPPN += $nilaiRefundPPN;
+                $nilaiSalesPPN = 0;
+                $nilaiRefundPPN = 0;
                 ?>
             @endif
             @if($data[$i]->prd_deskripsipanjang == null || $data[$i]->prd_deskripsipanjang == '')
@@ -97,14 +107,16 @@
                 <td style="text-align: left">{{$cDeskripsi}}</td>
                 <td>{{$data[$i]->sup_kodesupplier}}</td>
                 <td style="text-align: left">{{$data[$i]->sup_namasupplier}}</td>
-                <td style="text-align: right">{{$data[$i]->qtysls}}</td>
-                <td style="text-align: right">{{rupiah($data[$i]->nilsls)}}</td>
-                <td style="text-align: right">{{$data[$i]->qtyref}}</td>
-                <td style="text-align: right">{{rupiah($data[$i]->nilref)}}</td>
+                <td style="text-align: right">{{rupiah($data[$i]->sls_dpp)}}</td>
+                <td style="text-align: right">{{rupiah($data[$i]->sls_ppn)}}</td>
+                <td style="text-align: right">{{rupiah($data[$i]->ref_dpp)}}</td>
+                <td style="text-align: right">{{rupiah($data[$i]->ref_ppn)}}</td>
             </tr>
             <?php
-            $nilaiSales = $nilaiSales + ($data[$i]->nilsls);
-            $nilaiRefund = $nilaiRefund + ($data[$i]->nilref);
+            $nilaiSalesDPP += ($data[$i]->sls_dpp);
+            $nilaiRefundDPP += ($data[$i]->ref_dpp);
+            $nilaiSalesPPN += ($data[$i]->sls_ppn);
+            $nilaiRefundPPN += ($data[$i]->ref_ppn);
             ?>
         @endfor
         <tr style="font-weight: bold">
@@ -112,20 +124,27 @@
             <td> </td>
             <td> </td>
             <td style="text-align: right">Total Per Event</td>
-            <td colspan="2" style="text-align: right">{{rupiah($nilaiSales)}}</td>
-            <td colspan="2" style="text-align: right">{{rupiah($nilaiRefund)}}</td>
+            <td style="text-align: right">{{rupiah($nilaiSalesDPP)}}</td>
+            <td style="text-align: right">{{rupiah($nilaiSalesPPN)}}</td>
+            <td style="text-align: right">{{rupiah($nilaiRefundDPP)}}</td>
+            <td style="text-align: right">{{rupiah($nilaiRefundPPN)}}</td>
         </tr>
         <?php
-        $totalSales = $totalSales + $nilaiSales;
-        $totalRefund = $totalRefund + $nilaiRefund;
+        $totalSalesDPP += $nilaiSalesDPP;
+        $totalSalesPPN += $nilaiSalesPPN;
+        $totalRefundDPP += $nilaiRefundDPP;
+        $totalRefundPPN += $nilaiRefundPPN;
+
         ?>
         <tr style="font-weight: bold; border-top: 1px solid black">
             <td style="border-top: 1px solid black"> </td>
             <td style="border-top: 1px solid black"> </td>
             <td style="border-top: 1px solid black"> </td>
             <td style="text-align: right; border-top: 1px solid black">Grand Total</td>
-            <td colspan="2" style="text-align: right; border-top: 1px solid black">{{rupiah($totalSales)}}</td>
-            <td colspan="2" style="text-align: right; border-top: 1px solid black">{{rupiah($totalRefund)}}</td>
+            <td style="text-align: right; border-top: 1px solid black">{{rupiah($totalSalesDPP)}}</td>
+            <td style="text-align: right; border-top: 1px solid black">{{rupiah($totalSalesPPN)}}</td>
+            <td style="text-align: right; border-top: 1px solid black">{{rupiah($totalRefundDPP)}}</td>
+            <td style="text-align: right; border-top: 1px solid black">{{rupiah($totalRefundPPN)}}</td>
         </tr>
         </tbody>
     </table>

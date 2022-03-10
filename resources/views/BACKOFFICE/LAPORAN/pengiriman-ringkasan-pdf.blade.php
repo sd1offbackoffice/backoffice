@@ -1,37 +1,24 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Daftar Pengiriman Antar Cabang Ringkasan Divisi / Departement / Kategori</title>
-</head>
-<body>
+@extends('html-template')
 
-<?php
-$datetime = new DateTime();
-$timezone = new DateTimeZone('Asia/Jakarta');
-$datetime->setTimezone($timezone);
-?>
-<header>
-    <div style="float:left; margin-top: 0px; line-height: 8px !important;">
-        <p>
-            {{ $perusahaan->prs_namaperusahaan }}<br><br>
-            {{ $perusahaan->prs_namacabang }}<br><br><br><br>
-            <strong>Tanggal : {{ $tgl1 }} - {{ $tgl2 }}</strong><br><br>
-        </p>
-    </div>
-    <div style="float:right; margin-top: 0px; line-height: 8px !important;">
-        <p>Tgl. Cetak : {{ date("d/m/Y") }}<br><br>
-            Jam Cetak : {{ $datetime->format('H:i:s') }}<br><br>
-            <i>User ID</i> : {{ Session::get('usid') }}<br><br>
-            Hal. :
-    </div>
-    <h2 style="text-align: center">** DAFTAR PENGIRIMAN ANTAR CABANG **<br>RINGKASAN DIVISI / DEPARTEMEN / KATEGORI</h2>
-</header>
+@section('table_font_size','7 px')
 
-<footer>
+@section('page_title')
+    Daftar Pengiriman Antar Cabang Ringkasan Divisi / Departement / Kategori
+@endsection
 
-</footer>
+@section('title')
+    ** Daftar Pengiriman Antar Cabang **
+@endsection
 
-<main>
+@section('subtitle')
+    Ringkasan Divisi / Departement / Kategori
+@endsection
+
+@section('header_left')
+    <p>Tanggal : {{ $tgl1 }} s/d {{ $tgl2 }}</p>
+@endsection
+
+@section('content')
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
@@ -76,6 +63,7 @@ $datetime->setTimezone($timezone);
             $tbm = 0;
             $tbtl = 0;
             $btotal = 0;
+            $totalnilaidep = 0;
         @endphp
         @for($i=0;$i<count($data);$i++)
             @php
@@ -108,8 +96,8 @@ $datetime->setTimezone($timezone);
                         <td></td>
                     </tr>
                     @php
-                    $totaldep = 0;
-                    $skipdep = true;
+                        $totaldep = 0;
+                        $skipdep = true;
                     @endphp
                     <tr>
                         <td class="left" colspan="2"><strong>SUBTOTAL DIVISI : {{ $tempdiv }}</strong></td>
@@ -122,19 +110,19 @@ $datetime->setTimezone($timezone);
                         <td></td>
                     </tr>
                     @php
-                    $totaldiv = 0;
-                    $divgross = 0;
-                    $divpot = 0;
-                    $divppn = 0;
-                    $divbm = 0;
-                    $divbtl = 0;
-                    $totaldep = 0;
-                    $totalgross = 0;
-                    $totalpot = 0;
-                    $totalppn = 0;
-                    $totalbm = 0;
-                    $totalbtl = 0;
-                    $totalnilaidep = 0;
+                        $totaldiv = 0;
+                        $divgross = 0;
+                        $divpot = 0;
+                        $divppn = 0;
+                        $divbm = 0;
+                        $divbtl = 0;
+                        $totaldep = 0;
+                        $totalgross = 0;
+                        $totalpot = 0;
+                        $totalppn = 0;
+                        $totalbm = 0;
+                        $totalbtl = 0;
+                        $totalnilaidep = 0;
                     @endphp
                 @endif
                 @php $tempdiv = $d->mstd_kodedivisi @endphp
@@ -250,104 +238,4 @@ $datetime->setTimezone($timezone);
         </tr>
         </tfoot>
     </table>
-    <hr>
-    <p class="right"><strong>** AKHIR DARI LAPORAN **</strong></p>
-</main>
-
-<br>
-</body>
-<style>
-    @page {
-        /*margin: 25px 20px;*/
-        /*size: 1071pt 792pt;*/
-        size: 595pt 842pt;
-    }
-    header {
-        position: fixed;
-        top: 0cm;
-        left: 0cm;
-        right: 0cm;
-        height: 3cm;
-    }
-    body {
-        margin-top: 80px;
-        margin-bottom: 10px;
-        font-size: 9px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        font-weight: 400;
-        line-height: 1.8;
-    }
-    table{
-        border-collapse: collapse;
-    }
-    tbody {
-        display: table-row-group;
-        vertical-align: tengah;
-        border-color: inherit;
-    }
-    tr {
-        display: table-row;
-        vertical-align: inherit;
-        border-color: inherit;
-    }
-    td {
-        display: table-cell;
-    }
-    thead{
-        text-align: center;
-    }
-    tbody{
-        text-align: center;
-    }
-    tfoot{
-        border-top: 1px solid black;
-    }
-    .table{
-        width: 100%;
-        white-space: nowrap;
-        color: #212529;
-        /*padding-top: 20px;*/
-        /*margin-top: 25px;*/
-    }
-    .table tbody td {
-        vertical-align: top;
-        /*border-top: 1px solid #dee2e6;*/
-        padding: 0.20rem 0;
-        width: auto;
-    }
-    .table th{
-        vertical-align: top;
-        padding: 0.20rem 0;
-    }
-    .judul, .table-borderless{
-        text-align: center;
-    }
-    .table-borderless th, .table-borderless td {
-        border: 0;
-        padding: 0.50rem;
-    }
-    .center{
-        text-align: center;
-    }
-
-    .left{
-        text-align: left;
-    }
-
-    .right{
-        text-align: right;
-    }
-
-    .page-break {
-        page-break-before: always;
-    }
-
-    .table-header td{
-        white-space: nowrap;
-    }
-
-    .tengah{
-        vertical-align: middle !important;
-    }
-</style>
-</html>
+@endsection

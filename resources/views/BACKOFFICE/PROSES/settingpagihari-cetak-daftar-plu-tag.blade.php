@@ -26,10 +26,6 @@ $datetime->setTimezone($timezone);
     <h2 style="text-align: center">** DAFTAR PLU TAG N, X **</h2>
 </header>
 
-<footer>
-
-</footer>
-
 <main>
     <table class="table table-responsive">
         <thead style="border-top: double; border-bottom: double;">
@@ -47,8 +43,8 @@ $datetime->setTimezone($timezone);
 
         </thead>
         <tbody>
-        @for($j = 1; $j < sizeof($data); $j++)
-            @if($j == 1)
+        @for($j = 0; $j < sizeof($data); $j++)
+            @if($j == 0)
                 <tr style="padding-top: 50px !important;">
                     <td colspan="13" style="text-align: left"><b>{{$data[$j]->prd_kodedivisi}} {{$data[$j]->prd_kodedepartement}} {{$data[$j]->prd_kodekategoribarang}}
                         - {{$data[$j]->div_namadivisi}}, {{$data[$j]->dep_namadepartement}}, {{$data[$j]->kat_namakategori}}</b></td>
@@ -79,10 +75,21 @@ $datetime->setTimezone($timezone);
                     <tr>
                         <td colspan="13" style="border-bottom: 1px black solid"></td>
                     </tr>
+                @elseif($data[$j]->prd_kodekategoribarang != $data[$j-1]->prd_kodekategoribarang)
+                    <tr>
+                        <td colspan="13" style="border-bottom: 1px black solid"></td>
+                    </tr>
+                    <tr style="padding-top: 50px !important;">
+                        <td colspan="13" style="text-align: left"><b>{{$data[$j]->prd_kodedivisi}} {{$data[$j]->prd_kodedepartement}} {{$data[$j]->prd_kodekategoribarang}}
+                                - {{$data[$j]->div_namadivisi}}, {{$data[$j]->dep_namadepartement}}, {{$data[$j]->kat_namakategori}}</b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="13" style="border-bottom: 1px black solid"></td>
+                    </tr>
                 @endif
             @endif
             <tr>
-                <td>{{ $j }}</td>
+                <td>{{ $j+1 }}</td>
                 <td style="text-align: left">{{ $data[$j]->prd_prdcd }}</td>
                 <td style="text-align: left">{{ $data[$j]->prd_deskripsipanjang }}</td>
                 <td>{{ $data[$j]->prd_frac }}</td>
@@ -98,8 +105,11 @@ $datetime->setTimezone($timezone);
             <td colspan="13" style="border-bottom: 1px black solid"></td>
         </tr>
     </table>
-    <span class="right" style="float: right">** AKHIR LAPORAN **</span><span style="float: left" class="left">{{count($data)}} Item(s) Transferred</span>
 </main>
+
+<footer>
+    <span class="right" style="float: right">** AKHIR LAPORAN **</span><span style="float: left" class="left">{{count($data)}} Item(s) Transferred</span>
+</footer>
 
 <br>
 </body>

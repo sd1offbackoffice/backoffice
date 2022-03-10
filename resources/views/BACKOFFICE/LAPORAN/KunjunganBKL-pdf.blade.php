@@ -82,13 +82,13 @@ $datetime->setTimezone($timezone);
                 @endfor
             </tr>
             <tr>
+                <th style="width: 30px; border: 1px solid black">Minggu</th>
                 <th style="width: 30px; border: 1px solid black">Senin</th>
                 <th style="width: 30px; border: 1px solid black">Selasa</th>
                 <th style="width: 30px; border: 1px solid black">Rabu</th>
                 <th style="width: 30px; border: 1px solid black">Kamis</th>
                 <th style="width: 30px; border: 1px solid black">Jum'at</th>
                 <th style="width: 30px; border: 1px solid black">Sabtu</th>
-                <th style="width: 30px; border: 1px solid black">Minggu</th>
                 @for($i=0;$i<sizeof($hari);$i++)
                     <th style="border: 1px solid black">{{$hari[$i]->hari}}</th>
                 @endfor

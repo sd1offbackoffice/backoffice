@@ -159,21 +159,7 @@ class PengirimanController extends Controller
 
 //            dd($data);
 
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.pengiriman-ringkasan-pdf',compact(['perusahaan','data','tgl1','tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf ->get_canvas();
-            $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream('LAPORAN PENGIRIMAN ANTAR CABANG RINGKASAN DIVISI/DEPT/KATEGORI.pdf');
+            return view('BACKOFFICE.LAPORAN.pengiriman-ringkasan-pdf',compact(['perusahaan','data','tgl1','tgl2']));
         }
         else{
             $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
@@ -272,21 +258,7 @@ class PengirimanController extends Controller
 
 //            dd($data);
 
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.pengiriman-rincian-pdf',compact(['perusahaan','data','tgl1','tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf ->get_canvas();
-            $canvas->page_text(986, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream('LAPORAN PENGIRIMAN ANTAR CABANG RINCIAN PRODUK PER DIVISI/DEPT/KATEGORI.pdf');
+            return view('BACKOFFICE.LAPORAN.pengiriman-rincian-pdf',compact(['perusahaan','data','tgl1','tgl2']));
         }
     }
 }

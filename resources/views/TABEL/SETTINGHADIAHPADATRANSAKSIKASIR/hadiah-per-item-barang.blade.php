@@ -197,7 +197,7 @@
                         </div>
                         <div class="row">
                             <label class="col-sm-4 col-form-label text-right">Max PCS</label>
-                            <input class="col-sm-1 text-right form-control" type="number" id="maxJmlPrevent" min="0" value="1" onkeypress="return isNumberKey(event)">
+                            <input class="col-sm-1 text-right form-control" type="number" id="maxJmlPrevent" min="0" value="0" onkeypress="return isNumberKey(event)">
                         </div>
                         <br>
 
@@ -927,7 +927,7 @@
             $('.checktype').prop('checked',true);
 
             $('#maxFrekPrevent').val('0');
-            $('#maxJmlPrevent').val('1');
+            $('#maxJmlPrevent').val('0');
         }
 
         function EditButton(){

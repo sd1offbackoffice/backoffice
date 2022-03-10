@@ -35,21 +35,31 @@ class settingPagiHariController extends Controller
         return response()->json(['kode' => 1, 'tgltrkmrn' => $tgltrkmrn, 'tglsistem' => $tglsistem, 'tgltrskrg' => $tgltrskrg]);
     }
 
+    function objectToArray( $object ){
+        if( !is_object( $object ) && !is_array( $object ) ){
+            return $object;
+        }
+        if( is_object( $object ) ){
+            $object = get_object_vars( $object );
+        }
+        return array_map( 'objectToArray', $object );
+    }
+
     public function cetak_perubahan_harga_jual(){
 
         $kodeigr = Session::get('kdigr');
         $ppn = '';
-        $nActMargin = '';
+        $nActMargin = array();
 
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
-            ->select('prs_namaperusahaan', 'prs_namacabang')
+            ->select('prs_namaperusahaan', 'prs_namacabang', 'prs_nilaippn')
             ->where('prs_kodeigr', '=', $kodeigr)
             ->first();
 
-        if($ppn = 0){
+        if($perusahaan->prs_nilaippn == 0){
             $ppn = 1.1;
         } else {
-            $ppn = 1 + ($ppn/100);
+            $ppn = 1 + ($perusahaan->prs_nilaippn/100);
         }
 
         $data = DB::connection(Session::get('connection'))->select("SELECT temp.prdcd as prdcd,
@@ -97,38 +107,40 @@ class settingPagiHariController extends Controller
         AND kat.kat_kodekategori(+) = prd.prd_kodekategoribarang
         order by prd_kodedivisi,prd_kodedepartement,prd_kodekategoribarang,temp.prdcd");
 
-            if($data[0]->prd_flagbkp1 == 'Y')
+        for($i = 0; $i < sizeof($data); $i++){
+            if($data[$i]->prd_flagbkp1 == 'Y')
             {
-                if($data[0]->awal == 'Y'){
-                    $nActMargin = ((($data[0]->prmd_hrgjual - ($ppn * $data[0]->prd_lastcost)) / $data[0]->prmd_hrgjual) * 100);
+                if($data[$i]->awal == 'Y'){
+                    $nActMargin[] = ((($data[$i]->prmd_hrgjual - ($ppn * $data[$i]->prd_lastcost)) / $data[$i]->prmd_hrgjual) * 100);
                 }
-                if($data[0]->akhir == 'Y'){
-                    $nActMargin = ((($data[0]->prd_hrgjual2 - ($ppn * $data[0]->prd_lastcost)) / $data[0]->prd_hrgjual2) * 100);
+                if($data[$i]->akhir == 'Y'){
+                    $nActMargin[] = ((($data[$i]->prd_hrgjual2 - ($ppn * $data[$i]->prd_lastcost)) / $data[$i]->prd_hrgjual2) * 100);
                 }
-                if($data[0]->awal == 'T' && $data[0]->akhir == 'T') {
-                    if ($data[0]->prd_hrgjual) {
-                        $nActMargin = 100;
+                if($data[$i]->awal == 'T' && $data[$i]->akhir == 'T') {
+                    if ($data[$i]->prd_hrgjual == 0) {
+                        $nActMargin[] = 100;
                     } else {
-                        $nActMargin = ((($data[0]->prd_hrgjual - ($ppn * $data[0]->prd_lastcost)) / $data[0]->prd_hrgjual) * 100);
+                        $nActMargin[] = ((($data[$i]->prd_hrgjual - ($ppn * $data[$i]->prd_lastcost)) / $data[$i]->prd_hrgjual) * 100);
                     }
                 }
             } else {
-                if($data[0]->awal == 'Y'){
-                    $nActMargin = ((($data[0]->prmd_hrgjual - $data[0]->prd_lastcost) / $data[0]->prmd_hrgjual) * 100);
+                if($data[$i]->awal == 'Y'){
+                    $nActMargin[] = ((($data[$i]->prmd_hrgjual - $data[$i]->prd_lastcost) / $data[$i]->prmd_hrgjual) * 100);
                 }
-                if($data[0]->akhir == 'Y'){
-                    $nActMargin = ((($data[0]->prd_hrgjual2 - $data[0]->prd_lastcost) / $data[0]->prd_hrgjual2) * 100);
+                if($data[$i]->akhir == 'Y'){
+                    $nActMargin[] = ((($data[$i]->prd_hrgjual2 - $data[0]->prd_lastcost) / $data[$i]->prd_hrgjual2) * 100);
                 }
-                if($data[0]->awal == 'T' && $data[0]->akhir == 'T'){
-                    if($data[0]->prd_hrgjual3){
-                        $nActMargin = 100;
+                if($data[$i]->awal == 'T' && $data[$i]->akhir == 'T'){
+                    if($data[$i]->prd_hrgjual3 == 0){
+                        $nActMargin[] = 100;
                     } else {
-                        $nActMargin = ((($data[0]->prd_hrgjual - $data[0]->prd_lastcost) / $data[0]->prd_hrgjual) * 100);
+                        $nActMargin[] = ((($data[$i]->prd_hrgjual - $data[$i]->prd_lastcost) / $data[$i]->prd_hrgjual) * 100);
                     }
                 }
             }
+        }
 
-//            dd($data);
+      //      dd($nActMargin);
 
         $pdf = PDF::loadview('BACKOFFICE.PROSES.settingpagihari-cetak-hrgjual', compact(['perusahaan', 'data', 'nActMargin']));
         $pdf->output();

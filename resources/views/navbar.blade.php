@@ -368,6 +368,7 @@
                                            data-toggle="dropdown" aria-haspopup="true"
                                            aria-expanded="false">Kerjasama IGR IDM</a>
                                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                            <li><a href="{{url("/kerjasamaigridm/virtual-stock-cmo/index")}}">Virtual Stock CMO</a></li>
                                             <li><a href="{{url("/kerjasamaigridm/lapbedatag/index")}}">Laporan Perbedaan
                                                     Tag</a></li>
                                             <li><a href="{{url("/kerjasamaigridm/stout/index")}}">Stock Out</a></li>

@@ -10,7 +10,9 @@
                 <fieldset class="card border-secondary">
                     <div class="card-body">
                         <fieldset class="card border-secondary">
-                            <legend class="w-auto ml-3">CETAK DOKUMEN <span class="text-danger">[ Jenis Dokumen : Pengeluaran dibuat oleh Pak Slamet]</span></legend>
+                            <legend class="w-auto ml-3">CETAK DOKUMEN
+{{--                                <span class="text-danger">[ Jenis Dokumen : Pengeluaran dibuat oleh Pak Slamet]</span>--}}
+                            </legend>
                             <div class="card-body">
                                 <div class="row form-group">
                                     <label class="col-sm text-right col-form-label">Tanggal</label>
@@ -161,14 +163,12 @@
             });
             $('.tanggal').datepicker('setDate', new Date());
             $('.notareturfp').hide();
-        });
-        $('#tableDocument').DataTable();
-        $('#dokumen').on('change', function () {
             cekTanggal();
             cekMenu();
             showData();
         });
-        $('#dokumen,#laporan,#jenisKertas,#reprint').on('change', function () {
+        $('#tableDocument').DataTable();
+        $('#dokumen,#laporan,#jenisKertas,#reprint,#tgl1,#tgl2').on('change', function () {
             cekTanggal();
             cekMenu();
             showData();
@@ -278,7 +278,13 @@
             }
         });
         function cetakEFaktur() {
-            if (checked.length != 0) {
+            if($('#dokumen').val() != 'K' && $('#laporan').val() != 'N'){
+                swal({
+                    title: 'Button Create CSV Faktur hanya untuk Dokumen Keluaran yang sudah cetak List.',
+                    icon: 'info'
+                });
+            }
+            else if (checked.length != 0) {
                 ajaxSetup();
                 $.ajax({
                     url: '{{ url()->current() }}/CSVeFaktur',
@@ -343,13 +349,18 @@
                         console.log(result);
                         buttons = '';
                         if (result) {
-                            $.each(result, function (index, value) {
-                                $('#pdf').append(`<div class="row form-group" >
-                                    <a href="{{url('/')}}/${value}" target="_blank"><button class="btn btn-primary">${value}</button></a>
-                                </div>`);
-                            });
+                            for (i=0;i<result.length;i++){
+                                window.open(`{{ url()->current() }}/download?file=${result[i]}`,'_blank');
+                            }
+
+                            {{--$.each(result, function (index, value) {--}}
+                            {{--    $('#pdf').append(`<div class="row form-group" >--}}
+                            {{--        <a href="{{url('/')}}/${value}" target="_blank"><button class="btn btn-primary">${value}</button></a>--}}
+                            {{--    </div>`);--}}
+                            {{--});--}}
                         }
-                        $('#m_result').modal('show');
+                        // $('#m_result').modal('show');
+                        showData();
                         // window.open('../' + result, '_blank');
                     }, error: function (err) {
                         $('#modal-loader').modal('hide');

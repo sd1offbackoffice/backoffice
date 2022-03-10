@@ -177,29 +177,7 @@ class CetakRegisterController extends Controller
 
         $title = 'Register Bukti Penerimaan Barang '.$tgl1.' - '.$tgl2;
 
-        if(count($data) == 0){
-            $pdf = PDF::loadview('pdf-no-data', compact(['title']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-        }
-        else{
-            $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regterima-pdf',compact(['perusahaan','data','pkp','npkp','pembelian','lain','total','tgl1','tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf ->get_canvas();
-            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-        }
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($title.'.pdf');
+        return view('BACKOFFICE.CETAKREGISTER.regterima-pdf',compact(['perusahaan','data','pkp','npkp','pembelian','lain','total','tgl1','tgl2']));
     }
 
     public function regkeluar($ukuran, $register, $tgl1, $tgl2){
@@ -306,33 +284,7 @@ class CetakRegisterController extends Controller
 
         $pembelian = $total;
 
-        $dompdf = new PDF();
-
-        $title = 'Register Nota Pengeluaran Barang '.$tgl1.' - '.$tgl2;
-
-        if(count($data) == 0){
-            $pdf = PDF::loadview('pdf-no-data', compact(['title']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-        }
-        else{
-            $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regkeluar-pdf',compact(['perusahaan','data','pkp','npkp','pembelian','lain','total','tgl1','tgl2','ukuran']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf ->get_canvas();
-            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-        }
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($title.'.pdf');
+        return view('BACKOFFICE.CETAKREGISTER.regkeluar-pdf',compact(['perusahaan','data','pkp','npkp','pembelian','lain','total','tgl1','tgl2','ukuran']));
     }
 
     public function regsj($cabang, $tgl1, $tgl2){
@@ -342,7 +294,13 @@ class CetakRegisterController extends Controller
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::connection(Session::get('connection'))->select("SELECT msth_nodoc, to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc, status, msth_noref3, to_char(msth_tgref3,'dd/mm/yyyy') msth_tgref3,msth_loc, msth_loc2, mstd_flagdisc1,mstd_ppnrph,sum(total) total
+        if($cabang == 'ALL'){
+            $whereCabang = '';
+        }
+        else $whereCabang = "and (msth_loc2 ='".$cabang."'  or nvl('".$cabang."',' ')=' ')";
+
+        $data = DB::connection(Session::get('connection'))
+            ->select("SELECT msth_nodoc, to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc, status, msth_noref3, to_char(msth_tgref3,'dd/mm/yyyy') msth_tgref3,msth_loc, msth_loc2, mstd_flagdisc1,mstd_ppnrph,sum(total) total
         FROM
         (
             SELECT msth_nodoc, msth_tgldoc,
@@ -354,7 +312,7 @@ class CetakRegisterController extends Controller
             FROM tbtr_mstran_h, tbtr_mstran_d
             WHERE msth_typetrn ='O'
             and msth_kodeigr='".Session::get('kdigr')."'
-            and (msth_loc2 ='".$cabang."'  or nvl('".$cabang."',' ')=' ')
+            ".$whereCabang."
             and mstd_nodoc=msth_nodoc
             and to_char(msth_tgldoc, 'yyyymmdd') between '".$t1."' and '".$t2."'
         )
@@ -362,33 +320,7 @@ class CetakRegisterController extends Controller
         mstd_flagdisc1,mstd_ppnrph,mstd_tgldoc,msth_loc, msth_loc2
         order by msth_tgldoc desc, msth_nodoc asc");
 
-        $dompdf = new PDF();
-
-        $title = 'Register Surat Jalan '.$tgl1.' - '.$tgl2;
-
-        if(count($data) == 0){
-            $pdf = PDF::loadview('pdf-no-data', compact(['title']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-        }
-        else{
-            $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regsj-pdf',compact(['perusahaan','data','tgl1','tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf ->get_canvas();
-            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-        }
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($title.'.pdf');
+        return view('BACKOFFICE.CETAKREGISTER.regsj-pdf',compact(['perusahaan','data','tgl1','tgl2']));
     }
 
     public function regpack($tgl1, $tgl2){
@@ -493,33 +425,7 @@ ORDER BY MSTH_NODOC");
 
 //        dd($data);
 
-        $dompdf = new PDF();
-
-        $title = 'Register Repacking '.$tgl1.' - '.$tgl2;
-
-        if(count($data) == 0){
-            $pdf = PDF::loadview('pdf-no-data', compact(['title']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-        }
-        else{
-            $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regpack-pdf',compact(['perusahaan','data','tgl1','tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf ->get_canvas();
-            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-        }
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($title.'.pdf');
+        return view('BACKOFFICE.CETAKREGISTER.regpack-pdf',compact(['perusahaan','data','tgl1','tgl2']));
     }
 
     public function regdbr($register, $tgl1, $tgl2){
@@ -1229,6 +1135,10 @@ ORDER BY MSTH_NODOC");
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
+        if($cabang == 'ALL')
+            $whereCabang = '';
+        else $whereCabang = "and nvl(mstd_loc2,'999')  = nvl('".$cabang."',mstd_loc2)";
+
         $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc,
                 status, msth_noref3, to_char(msth_tgref3, 'dd/mm/yyyy') msth_tgref3,
                 mstd_tgldoc, mstd_loc2, mstd_flagdisc1,mstd_ppnrph,prs_namaperusahaan, prs_namacabang,
@@ -1256,7 +1166,7 @@ ORDER BY MSTH_NODOC");
                         and msth_kodeigr= '".Session::get('kdigr')."'
                         and mstd_nodoc=msth_nodoc
                         and prs_kodeigr=msth_kodeigr
-                       and nvl(mstd_loc2,'999')  = nvl('".$cabang."',mstd_loc2)
+                       ".$whereCabang."
                         and to_char(msth_tgldoc, 'yyyymmdd') between '".$t1."' and '".$t2."'
                 )
                 group by msth_nodoc, msth_tgldoc,status,msth_invno, msth_noref3, msth_tgref3, mstd_loc2,
@@ -1291,6 +1201,10 @@ ORDER BY MSTH_NODOC");
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
+        if($cabang == 'ALL')
+            $whereCabang = '';
+        else $whereCabang = "and nvl(mstd_loc2,'999') = nvl('".$cabang."',mstd_loc2)";
+
         $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc, status, msth_noref3, to_char(msth_tgref3, 'dd/mm/yyyy') msth_tgref3, mstd_tgldoc, mstd_loc2, mstd_flagdisc1,mstd_ppnrph, title, sum(total) total
         from
         (
@@ -1315,7 +1229,7 @@ ORDER BY MSTH_NODOC");
                 and nvl(mstd_recordid,'9')='1'
                 and msth_kodeigr= '".Session::get('kdigr')."'
                 and mstd_nodoc=msth_nodoc
-               and nvl(mstd_loc2,'999') = nvl('".$cabang."',mstd_loc2)
+               ".$whereCabang."
                and to_char(msth_tgldoc, 'yyyymmdd') between '".$t1."' and '".$t2."'
         )
         group by msth_nodoc, msth_tgldoc,status,msth_invno, msth_noref3, msth_tgref3, mstd_loc2,
@@ -1348,6 +1262,10 @@ ORDER BY MSTH_NODOC");
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
+        if($cabang == 'ALL')
+            $whereCabang = '';
+        else $whereCabang = "and (msth_loc2 ='".$cabang."'  or nvl('".$cabang."',' ')=' ')";
+
         $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, to_char(msth_tgldoc, 'dd/mm/yyyy') msth_tgldoc, status, msth_noref3, to_char(msth_tgref3, 'dd/mm/yyyy') msth_tgref3,
         mstd_tgldoc,msth_loc2, mstd_flagdisc1,mstd_ppnrph,
         sum(total) total
@@ -1366,7 +1284,7 @@ ORDER BY MSTH_NODOC");
             where msth_typetrn ='O'
             and msth_kodeigr='".Session::get('kdigr')."'
             and mstd_nodoc=msth_nodoc
-            and (msth_loc2 ='".$cabang."'  or nvl('".$cabang."',' ')=' ')
+            ".$whereCabang."
             and nvl(msth_recordid,'0')='1'
           and to_char(msth_tgldoc, 'yyyymmdd') between '".$t1."' and '".$t2."'
         )

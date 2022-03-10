@@ -249,20 +249,11 @@ class beritaAcaraPemusnahanController extends Controller
 
         }
 
-//         Update tbTr_Barang_Rusak [TRBR_RECORDID = '2']
-        DB::connection(Session::get('connection'))->table('tbtr_barangrusak')
-            ->where('rsk_kodeigr', $kodeigr)->where('rsk_nodoc', $getNoPBBR->brsk_noref)
-            ->update(['rsk_recordid' => '2']);
-
-        DB::connection(Session::get('connection'))->table('tbtr_bpb_barangrusak')
-            ->where('brsk_kodeigr', $kodeigr)->where('brsk_nodoc', $noDoc)
-            ->update(['brsk_flagdoc' => 'P']);
-
 
 //        Get Data to Print
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
         $data = DB::connection(Session::get('connection'))->table('tbtr_bpb_barangrusak')
-            ->select('prs_namaperusahaan', 'prs_namacabang', 'prs_alamat1', 'prs_alamat3', 'prs_npwp', 'prs_namawilayah', 'brsk_prdcd', 'brsk_qty_real', 'brsk_hrgsatuan', 'brsk_nilai',
+            ->select('brsk_flagdoc', 'prs_namaperusahaan', 'prs_namacabang', 'prs_alamat1', 'prs_alamat3', 'prs_npwp', 'prs_namawilayah', 'brsk_prdcd', 'brsk_qty_real', 'brsk_hrgsatuan', 'brsk_nilai',
                                 'brsk_keterangan', 'brsk_noref', 'brsk_nodoc', 'brsk_tgldoc', 'brsk_flagdoc', 'prd_deskripsipanjang', 'prd_unit', 'prd_frac', 'rap_store_manager', 'rap_store_adm', 'rap_logistic_supervisor','rap_stockkeeper_ii')
             ->leftJoin('tbmaster_perusahaan', 'prs_kodeigr', 'brsk_kodeigr')
             ->leftJoin('tbmaster_prodmast', 'prd_prdcd', 'brsk_prdcd')
@@ -271,14 +262,15 @@ class beritaAcaraPemusnahanController extends Controller
             ->orderBy('brsk_seqno')
             ->get()->toArray();
 
-//        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PEMUSNAHAN.BAPemusnahan-laporan', ['data' => $data, 'perusahaan' => $perusahaan]);
-//        $pdf->output();
-//        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-//
-//        $canvas = $dompdf ->get_canvas();
-//        $canvas->page_text(507, 77.75, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 7, array(0, 0, 0));
-//
-//        return $pdf->stream('BApemusnahan-laporan.pdf');
+        //         Update tbTr_Barang_Rusak [TRBR_RECORDID = '2']
+        DB::connection(Session::get('connection'))->table('tbtr_barangrusak')
+            ->where('rsk_kodeigr', $kodeigr)->where('rsk_nodoc', $getNoPBBR->brsk_noref)
+            ->update(['rsk_recordid' => '2']);
+
+        DB::connection(Session::get('connection'))->table('tbtr_bpb_barangrusak')
+            ->where('brsk_kodeigr', $kodeigr)->where('brsk_nodoc', $noDoc)
+            ->update(['brsk_flagdoc' => 'P']);
+
 
         return view('BACKOFFICE.TRANSAKSI.PEMUSNAHAN.BAPemusnahan-laporan', ['data' => $data, 'perusahaan' => $perusahaan, 'ukuran' => $ukuran]);
     }

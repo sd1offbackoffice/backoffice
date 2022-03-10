@@ -2,8 +2,6 @@
 
 @section('table_font_size','7 px')
 
-@section('paper_size','595pt 842pt')
-
 @section('page_title')
     NOTA PENGELUARAN BARANG <br>{{ strtoupper($data['data1'][0]->judul) }}
 @endsection

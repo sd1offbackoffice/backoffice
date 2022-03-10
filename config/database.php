@@ -818,6 +818,17 @@ return [
             'schema' => 'dbsupport',
             'sslmode' => 'prefer',
         ],
+
+        'igrphi' => [
+            'driver' => 'oracle',
+            'host' => '192.168.234.193',
+            'port' => '1521',
+            'database' => 'simkmy',
+            'username' => 'igrphi',
+            'password' => 'igrphi123',
+            'charset' => 'AL32UTF8',
+            'prefix' => '',
+        ],
     ],
 
     /*

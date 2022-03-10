@@ -55,8 +55,8 @@ class ServiceLevelItemParetoController extends Controller
         $dateB = $request->dateB;
         $kmp = $request->kmp;
         $rad_order = $request->rad_order;
-        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
-        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
+        $sDate = DateTime::createFromFormat('d/m/Y', $dateA)->format('d-m-Y');
+        $eDate = DateTime::createFromFormat('d/m/Y', $dateB)->format('d-m-Y');
         $p_and = " AND NVL(PRD_FLAGBARANGORDERTOKO, 'N') = 'Y' ";
 
         if($kmp != 'zonk-zonk'){
@@ -227,13 +227,13 @@ ORDER BY TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, TPOD_PRDCD")
 
     public function printDocumentddk(Request $request){
         $kodeigr = Session::get('kdigr');
-        $dateA = $request->date1;
-        $dateB = $request->date2;
+        $dateA = $request->tgl1;
+        $dateB = $request->tgl2;
         $today = date('d-m-Y');
         $time = date('H:i:s');
         $kmp = $request->kodemon;
-        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
-        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
+        $sDate = DateTime::createFromFormat('d/m/Y', $dateA)->format('d-m-Y');
+        $eDate = DateTime::createFromFormat('d/m/Y', $dateB)->format('d-m-Y');
 
         $mon = DB::connection(Session::get('connection'))->table('TBTR_MONITORINGPLU')
             ->selectRaw('distinct MPL_KODEMONITORING as MPL_KODEMONITORING')
@@ -244,7 +244,11 @@ ORDER BY TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, TPOD_PRDCD")
         $kdmon = $mon->mpl_kodemonitoring;
         $nmon =$mon->mpl_namamonitoring;
 
-    $datas = DB::connection(Session::get('connection'))->select("SELECT   TPOD_PRDCD, TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, DIV_NAMADIVISI,
+        $perusahaan = DB::connection(Session::get('connection'))
+            ->table('tbmaster_perusahaan')
+            ->first();
+
+        $datas = DB::connection(Session::get('connection'))->select("SELECT   TPOD_PRDCD, TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, DIV_NAMADIVISI,
          DEP_NAMADEPARTEMENT, KAT_NAMAKATEGORI, SUM (TPOD_QTYPO) QTYPO, SUM (GROSS) GROSS,
          SUM (BM) BM, SUM (BTL) BTL, SUM (NILAIA) NILAIA, SUM (KUANB) KUANB, SUM (NILAIB) NILAIB,
          SUM (KUANA) KUANA, SUM (MSTD_QTYBONUS1) QTYBNS1, SUM (MSTD_QTYBONUS2) QTYBNS2,
@@ -324,9 +328,29 @@ GROUP BY TPOD_KODEDIVISI,
          PRS_NAMAWILAYAH
 ORDER BY TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, TPOD_PRDCD");
 
+        return view('BACKOFFICE.LAPORAN.service-level-item-pareto-by-div-dep-kat-pdf', [
+            'perusahaan' => $perusahaan,
+            'kodeigr' => $kodeigr,
+            'date1' => $dateA,
+            'date2' => $dateB,
+            'data' => $datas,
+            'today' => $today,
+            'time' => $time,
+            'p_kdmon' => $kdmon,
+            'p_nmon'=> $nmon
+        ]);
+
         //PRINT
-        $pdf = PDF::loadview('BACKOFFICE.LAPORAN.ServiceLevelItemParetoDDK-pdf',
-            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas,'today' => $today, 'time' => $time, 'p_kdmon' => $kdmon, 'p_nmon'=> $nmon]);
+        $pdf = PDF::loadview('BACKOFFICE.LAPORAN.ServiceLevelItemParetoDDK-pdf', [
+            'kodeigr' => $kodeigr,
+            'date1' => $dateA,
+            'date2' => $dateB,
+            'datas' => $datas,
+            'today' => $today,
+            'time' => $time,
+            'p_kdmon' => $kdmon,
+            'p_nmon'=> $nmon
+        ]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
@@ -339,16 +363,16 @@ ORDER BY TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, TPOD_PRDCD")
 
     public function printDocumentSupplier(Request $request){
         $kodeigr = Session::get('kdigr');
-        $dateA = $request->date1;
-        $dateB = $request->date2;
+        $dateA = $request->tgl1;
+        $dateB = $request->tgl2;
         $kmp = $request->kodemon;
         $today = date('d-m-Y');
         $time = date('H:i:s');
         $p_and = " AND NVL(PRD_FLAGBARANGORDERTOKO, 'N') = 'Y' ";
         $kdmon = '';
         $nmon = '';
-        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
-        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
+        $sDate = DateTime::createFromFormat('d/m/Y', $dateA)->format('d-m-Y');
+        $eDate = DateTime::createFromFormat('d/m/Y', $dateB)->format('d-m-Y');
 
         if($kmp != 'zonk-zonk'){
             $mon = DB::connection(Session::get('connection'))->table('TBTR_MONITORINGPLU')
@@ -364,13 +388,16 @@ ORDER BY TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN, TPOD_KATEGORIBARANG, TPOD_PRDCD")
 
         }
 
+        $perusahaan = DB::connection(Session::get('connection'))
+            ->table('tbmaster_perusahaan')
+            ->first();
+
         $datas = DB::connection(Session::get('connection'))->select("SELECT   case when '$kmp' = 'zonk-zonk' then ' ** SERVICE LEVEL ITEM BKL ** ' else ' ** SERVICE LEVEL ITEM PARETO ** ' end judul,
          TPOD_PRDCD, TPOH_KODESUPPLIER, SUM (TPOD_QTYPO) QTYPO, SUM (GROSS) GROSS, SUM (BM) BM,
          SUM (BTL) BTL, SUM (NILAIA) NILAIA, SUM (KUANB) KUANB, SUM (NILAIB) NILAIB,
          SUM (KUANA) KUANA, SUM (MSTD_QTYBONUS1) QTYBNS1, SUM (MSTD_QTYBONUS2) QTYBNS2,
          SUM (GROSSRP) GROSSRP, SUM (POTONGAN) POTONGAN, SUM (BMRP) BMRP, SUM (BTLRP) BTLRP,
-         PRD_KODETAG, PRD_DESKRIPSIPANJANG, SUP_NAMASUPPLIER, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG,
-         PRS_NAMAWILAYAH, SUM(nvl(qty_PO_outs,0)) qty_PO_outs, SUM(nvl(rph_PO_outs,0)) rph_PO_outs
+         PRD_KODETAG, PRD_DESKRIPSIPANJANG, SUP_NAMASUPPLIER, SUM(nvl(qty_PO_outs,0)) qty_PO_outs, SUM(nvl(rph_PO_outs,0)) rph_PO_outs
     FROM (SELECT TPOD_PRDCD, TPOH_KODESUPPLIER, (tpod_qtypo + nvl(tpod_bonuspo1, 0) + nvl(tpod_bonuspo2, 0))  TPOD_QTYPO, NVL (TPOD_GROSS, 0) GROSS,
                  NVL (TPOD_PPNBM, 0) BM, NVL (TPOD_PPNBOTOL, 0) BTL,
                  (  NVL (TPOD_GROSS, 0)
@@ -424,6 +451,20 @@ GROUP BY TPOD_PRDCD,
          PRS_NAMACABANG,
          PRS_NAMAWILAYAH
 ORDER BY TPOH_KODESUPPLIER, TPOD_PRDCD");
+
+//        dd($datas);
+
+        return view('BACKOFFICE.LAPORAN.service-level-item-pareto-by-supplier-pdf', [
+            'perusahaan' => $perusahaan,
+            'kodeigr' => $kodeigr,
+            'date1' => $dateA,
+            'date2' => $dateB,
+            'data' => $datas,
+            'today' => $today,
+            'time' => $time,
+            'p_kdmon' => $kdmon,
+            'p_nmon'=> $nmon
+        ]);
 
         //PRINT
         $pdf = PDF::loadview('BACKOFFICE.LAPORAN.ServiceLevelItemParetoSupplier-pdf',

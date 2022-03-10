@@ -66,7 +66,8 @@ return [
 
         'DBF' => [
             'driver' => 'local',
-            'root' => public_path() . '/DBF',
+//            'root' => public_path() . '/DBF', //DIganti oleh JR 21/01/2022 karena error ketika write file ke folder DBF
+            'root' => public_path() . '\DBF',
             'visibility' => 'public',
         ],
 

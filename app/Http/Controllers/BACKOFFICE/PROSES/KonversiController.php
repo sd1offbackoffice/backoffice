@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE\PROSES;
 
+use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -20,7 +21,8 @@ class KonversiController extends Controller
     }
 
     public function getDataLovPluUtuh(){
-        $lov = DB::connection(Session::get('connection'))->select("select trim(prd1.prd_deskripsipanjang) || '-' || prd1.prd_unit || '-' || to_char(prd1.prd_frac, '9999') utuh_desk,
+        $lov = DB::connection(Session::get('connection'))
+            ->select("select trim(prd1.prd_deskripsipanjang) || '-' || prd1.prd_unit || '-' || to_char(prd1.prd_frac, '9999') utuh_desk,
             prd1.prd_prdcd utuh_prdcd,
             trim(prd2.prd_deskripsipanjang) || '-' || prd2.prd_unit || '-' || to_char(prd2.prd_frac, '9999') olah_desk,
             prd2.prd_prdcd olah_prdcd, was_persen
@@ -28,6 +30,19 @@ class KonversiController extends Controller
             where was_prdcd_konv = prd2.prd_prdcd and was_prdcd= prd1.prd_prdcd and was_kodeigr = '".Session::get('kdigr')."'");
 
         return DataTables::of($lov)->make(true);
+    }
+
+    public function getDataPluUtuh(Request $request){
+        $data = DB::connection(Session::get('connection'))
+            ->selectOne("select trim(prd1.prd_deskripsipanjang) || '-' || prd1.prd_unit || '-' || to_char(prd1.prd_frac, '9999') utuh_desk,
+            prd1.prd_prdcd utuh_prdcd,
+            trim(prd2.prd_deskripsipanjang) || '-' || prd2.prd_unit || '-' || to_char(prd2.prd_frac, '9999') olah_desk,
+            prd2.prd_prdcd olah_prdcd, was_persen
+            from tbmaster_prodmast prd1, tbtr_mix_waste, tbmaster_prodmast prd2
+            where was_prdcd_konv = prd2.prd_prdcd and was_prdcd= prd1.prd_prdcd and was_kodeigr = '".Session::get('kdigr')."'
+            and was_prdcd = '".$request->plu."'");
+
+        return $data ? response()->json($data) : $data;
     }
 
     public function getDataLovPluMix(){
@@ -38,6 +53,18 @@ class KonversiController extends Controller
             order by prd_deskripsipanjang");
 
         return DataTables::of($lov)->make(true);
+    }
+
+    public function getDataPluMix(Request $request){
+        $data = DB::connection(Session::get('connection'))
+            ->selectOne("select distinct prd_deskripsipanjang mix_desk, prd_prdcd mix_prdcd
+            from tbmaster_prodmast, tbtr_mix_plukonversi
+            where prd_kodeigr='".Session::get('kdigr')."'
+            and knv_prdcd= prd_prdcd and knv_kodeigr = prd_kodeigr
+            and knv_prdcd = '".$request->plu."'
+            order by prd_deskripsipanjang");
+
+        return $data ? response()->json($data) : $data;
     }
 
     public function getDataLovNodoc(){
@@ -365,6 +392,55 @@ class KonversiController extends Controller
         }
     }
 
+    public function checkQtyOlahanMix(Request $request){
+        $mix_plu = $request->mix_plu;
+        $mix_qty = $request->mix_qty;
+        $olahan = $request->olahan;
+        $cekqty = 0;
+
+        foreach($olahan as $o){
+            $temp = DB::connection(Session::get('connection'))->table('tbtr_mix_plukonversi')
+                ->where('knv_prdcd','=',$mix_plu)
+                ->where('knv_prdcd_konv','=',$o['plu'])
+                ->first();
+
+            if(!$temp)
+                return ['status' => 'error', 'alert' => 'Data Konversi '.$mix_plu.' tidak ada!'];
+
+            $temp = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+                ->where('prd_prdcd','=',$o['plu'])
+                ->first();
+
+            if(!$temp)
+                return ['status' => 'error', 'alert' => 'Data Master Produk Konversi '.$o['plu'].' tidak ada!'];
+
+            $temp = DB::connection(Session::get('connection'))->table('tbmaster_stock')
+                ->select('st_saldoakhir')
+                ->where('st_lokasi','=','01')
+                ->where('st_prdcd','=',$o['plu'])
+                ->first();
+
+            if(!$temp)
+                return ['status' => 'error', 'alert' => 'Data Stock tidak ada!'];
+
+            $stock = $temp->st_saldoakhir;
+
+            if($stock < $o['qty'])
+                return ['status' => 'error', 'alert' => 'Qty Stock PLU '.$o['plu'].' tidak cukup!'];
+
+            $cekqty += $o['qty'];
+        }
+
+        if(!($mix_qty >= ($cekqty * 0.95) && $mix_qty <= $cekqty)){
+            return response()->json([
+                'message' => 'Qty Olahan dengan Qty Konversi tidak sesuai dengan batas toleransi 5%!'
+            ], 500);
+        }
+        else return response()->json([
+           'message' => 'ok'
+        ], 200);
+    }
+
     public function konversiOlahanMix(Request $request){
         $mix_plu = $request->mix_plu;
         $mix_qty = $request->mix_qty;
@@ -375,42 +451,42 @@ class KonversiController extends Controller
         try{
             DB::connection(Session::get('connection'))->beginTransaction();
 
-            foreach($olahan as $o){
-                $temp = DB::connection(Session::get('connection'))->table('tbtr_mix_plukonversi')
-                    ->where('knv_prdcd','=',$mix_plu)
-                    ->where('knv_prdcd_konv','=',$o['plu'])
-                    ->first();
-
-                if(!$temp)
-                    return ['status' => 'error', 'alert' => 'Data Konversi '.$mix_plu.' tidak ada!'];
-
-                $temp = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
-                    ->where('prd_prdcd','=',$o['plu'])
-                    ->first();
-
-                if(!$temp)
-                    return ['status' => 'error', 'alert' => 'Data Master Produk Konversi '.$o['plu'].' tidak ada!'];
-
-                $temp = DB::connection(Session::get('connection'))->table('tbmaster_stock')
-                    ->select('st_saldoakhir')
-                    ->where('st_lokasi','=','01')
-                    ->where('st_prdcd','=',$o['plu'])
-                    ->first();
-
-                if(!$temp)
-                    return ['status' => 'error', 'alert' => 'Data Stock tidak ada!'];
-
-                $stock = $temp->st_saldoakhir;
-
-                if($stock < $o['qty'])
-                    return ['status' => 'error', 'alert' => 'Qty Stock PLU '.$o['plu'].' tidak cukup!'];
-
-                $cekqty += $o['qty'];
-            }
-
-            if(!($mix_qty >= ($cekqty * 0.95) && $mix_qty <= $cekqty)){
-                return ['status' => 'error', 'alert' => 'Qty Olahan dengan Qty Konversi tidak sesuai dengan batas toleransi 5%!'];
-            }
+//            foreach($olahan as $o){
+//                $temp = DB::connection(Session::get('connection'))->table('tbtr_mix_plukonversi')
+//                    ->where('knv_prdcd','=',$mix_plu)
+//                    ->where('knv_prdcd_konv','=',$o['plu'])
+//                    ->first();
+//
+//                if(!$temp)
+//                    return ['status' => 'error', 'alert' => 'Data Konversi '.$mix_plu.' tidak ada!'];
+//
+//                $temp = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+//                    ->where('prd_prdcd','=',$o['plu'])
+//                    ->first();
+//
+//                if(!$temp)
+//                    return ['status' => 'error', 'alert' => 'Data Master Produk Konversi '.$o['plu'].' tidak ada!'];
+//
+//                $temp = DB::connection(Session::get('connection'))->table('tbmaster_stock')
+//                    ->select('st_saldoakhir')
+//                    ->where('st_lokasi','=','01')
+//                    ->where('st_prdcd','=',$o['plu'])
+//                    ->first();
+//
+//                if(!$temp)
+//                    return ['status' => 'error', 'alert' => 'Data Stock tidak ada!'];
+//
+//                $stock = $temp->st_saldoakhir;
+//
+//                if($stock < $o['qty'])
+//                    return ['status' => 'error', 'alert' => 'Qty Stock PLU '.$o['plu'].' tidak cukup!'];
+//
+//                $cekqty += $o['qty'];
+//            }
+//
+//            if(!($mix_qty >= ($cekqty * 0.95) && $mix_qty <= $cekqty)){
+//                return ['status' => 'error', 'alert' => 'Qty Olahan dengan Qty Konversi tidak sesuai dengan batas toleransi 5%!'];
+//            }
 
             if(true){
                 foreach($olahan as $o){
@@ -749,6 +825,8 @@ class KonversiController extends Controller
 
         $dompdf = new PDF();
 
+        return view('BACKOFFICE.PROSES.konversi-bukti',compact(['perusahaan','datas','reprint']));
+
         $pdf = PDF::loadview('BACKOFFICE.PROSES.konversi-bukti',compact(['perusahaan','datas','reprint']));
 
         error_reporting(E_ALL ^ E_DEPRECATED);
@@ -829,21 +907,7 @@ ORDER BY prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang");
             ->select('prs_namaperusahaan','prs_namacabang')
             ->first();
 
-        $dompdf = new PDF();
-
-        $pdf = PDF::loadview('BACKOFFICE.PROSES.konversi-laporan-rekap',compact(['perusahaan','data']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream('Memo Penyesuaian Persediaan Konversi Perishable.pdf');
+        return view('BACKOFFICE.PROSES.konversi-laporan-rekap',compact(['perusahaan','data']));
     }
 
     public function printLaporanDetail(Request $request){
@@ -938,20 +1002,6 @@ ORDER BY prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang");
             ->select('prs_namaperusahaan','prs_namacabang')
             ->first();
 
-        $dompdf = new PDF();
-
-        $pdf = PDF::loadview('BACKOFFICE.PROSES.konversi-laporan-detail',compact(['perusahaan','data']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(757, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream('Memo Penyesuaian Persediaan Konversi Perishable.pdf');
+        return view('BACKOFFICE.PROSES.konversi-laporan-detail',compact(['perusahaan','data']));
     }
 }

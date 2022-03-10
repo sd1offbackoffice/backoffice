@@ -29,11 +29,11 @@
                                 <div class="row">
                                     <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">TANGGAL</label>
                                     <div class="col-sm-2">
-                                        <input type="text" class="form-control" id="tgl1" onchange="cekTanggal('tgl1')">
+                                        <input type="text" class="form-control" id="tgl1" onchange="cekTanggal('tgl1')" autocomplete="off">
                                     </div>
                                     <label class="col-sm-1 pt-1 text-center">s/d</label>
                                     <div class="col-sm-2">
-                                        <input type="text" class="form-control" id="tgl2" onchange="cekTanggal('tgl2')">
+                                        <input type="text" class="form-control" id="tgl2" onchange="cekTanggal('tgl2')" autocomplete="off">
                                     </div>
                                 </div>
                             </div>
@@ -1076,14 +1076,14 @@
                 return false;
             }
 
-            if (!valid_divdepkat && !valid_kodemtr && !valid_supplier) {
-                swal({
-                    title: 'Inputan belum lengkap!',
-                    icon: 'warning'
-                });
-            } else {
+            // if (!valid_divdepkat && !valid_kodemtr && !valid_supplier) {
+            //     swal({
+            //         title: 'Inputan belum lengkap!',
+            //         icon: 'warning'
+            //     });
+            // } else {
                 window.open(`{{ url()->current() }}/cetak?tipe=${$('#tipe').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}&div1=${$('#div1').val()}&div2=${$('#div2').val()}&dep1=${$('#dep1').val()}&dep2=${$('#dep2').val()}&kat1=${$('#kat1').val()}&kat2=${$('#kat2').val()}&sup1=${$('#sup1').val()}&sup2=${$('#sup2').val()}`, '_blank');
-            }
+            // }
         }
     </script>
 

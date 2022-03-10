@@ -18,7 +18,7 @@ class CheckLogin
 
             Session::put('menu', AccessController::getListMenu(Session::get('usid')));
 
-            if(!in_array(Session::get('usid'), ['DEV','SUP'])) {
+            if(!in_array(Session::get('usid'), ['DEV','SUP','DV1','DV2','DV3','SP1','SP2','SP3'])) {
                 if(!AccessController::isAccessible(\Request::getPathInfo())){
                     abort(403);
                 }

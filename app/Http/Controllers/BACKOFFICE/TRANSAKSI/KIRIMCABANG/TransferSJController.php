@@ -139,9 +139,9 @@ class TransferSJController extends Controller
 
         $zip = new ZipArchive;
 
-        $tgl = date('d-m-Y',strtotime($datas[0][0]->dateo));
+        $tgl = date('m-d',strtotime($datas[0][0]->dateo));
 
-        $filename = 'TRFSJ CAB '.$datas[0][0]->loc2.' '.$tgl.'.zip';
+        $filename = 'TO'.$datas[0][0]->loc2.$tgl.'.zip';
 
         if ($zip->open(public_path($filename), ZipArchive::CREATE) === TRUE)
         {

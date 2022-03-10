@@ -251,7 +251,7 @@ ORDER BY mstd_kodesupplier ) hasil
         $date = $request->date;
         $today = date('d-m-Y');
         $theDate = DateTime::createFromFormat('m-Y', $date)->format('m-Y');
-        $periode = DateTime::createFromFormat('m-Y', $date)->format('m-Y');
+        $periode = DateTime::createFromFormat('m-Y', $date)->format('m/Y');
         $parameter_hari = '';
 
         $p_hari = DB::connection(Session::get('connection'))->select("SELECT     LEVEL,
@@ -465,9 +465,30 @@ AND supp = mstd_kodesupplier
 AND supp1 = supp
 ORDER BY mstd_kodesupplier ) hasil
 ) hasil2");
+
+        $perusahaan = DB::connection(Session::get('connection'))
+            ->table('tbmaster_perusahaan')
+            ->first();
+
+//        dd($datas);
+
+        return view('BACKOFFICE.LAPORAN.kunjungan-bkl-pdf', [
+            'perusahaan' => $perusahaan,
+            'kodeigr' => $kodeigr,
+            'date' => $periode,
+            'data' => $datas,
+            'hari' =>$p_hari ,
+            'today' => $today
+        ]);
+
         //PRINT
-        $pdf = PDF::loadview('BACKOFFICE.LAPORAN.KunjunganBKL-pdf',
-            ['kodeigr' => $kodeigr, 'date' => $periode, 'datas' => $datas,'hari' =>$p_hari ,'today' => $today]);
+        $pdf = PDF::loadview('BACKOFFICE.LAPORAN.KunjunganBKL-pdf', [
+            'kodeigr' => $kodeigr,
+            'date' => $periode,
+            'datas' => $datas,
+            'hari' =>$p_hari ,
+            'today' => $today
+        ]);
         $pdf->setPaper('A4', 'landscape');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);

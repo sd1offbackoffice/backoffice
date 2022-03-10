@@ -14,9 +14,8 @@
     842
 @endsection
 
-@section('paper_size')
-    842pt  595pt
-@endsection
+@section('paper_widht','842pt')
+@section('paper_height','595pt')
 
 @section('content')
     <table class="table">

@@ -522,6 +522,7 @@
                 $('#body-table-header').append(tempTable(0));
                 $('#body-table-header').append(tempTable(1));
                 $('.baris td button').attr('hidden',true);
+                $('.baris .buttonInside button').removeAttr('hidden');
                 $('#addRow').attr('hidden',true);
             }else{
                 $('.radio').removeAttr('disabled');
@@ -932,7 +933,7 @@
             $.ajax({
                 url: '{{ url()->current() }}/saveData',
                 type: 'post',
-
+                async: false,
                 data: {
                     nomorTrn:nomorTrn,
                     tanggalTrn:date,
@@ -949,7 +950,7 @@
                         text: 'Data telah berhasil disimpan!',
                         icon: 'success'
                     });
-                    if(trbo_flagdoc == ''){
+                    if(trbo_flagdoc === ''){
                         trbo_flagdoc = '0';
                     }
                     //clearForm();
@@ -1197,6 +1198,7 @@
 
             $('.baris td button').removeAttr('hidden');
             $('#addRow').removeAttr('hidden');
+            $('.radio').removeAttr('disabled');
 
 
             $('.baris').remove();
@@ -1207,6 +1209,8 @@
             trbo_averagecost = [];
             deskripsiPanjang = [];
             trbo_flagdoc = '';
+            saveBool = true;
+
 
             //dropdownKecil();
         }
@@ -1371,9 +1375,11 @@
                                 if(rubahPlu == 'Y'){
                                     $('.baris td button').attr('hidden',true);
                                     $('#addRow').attr('hidden',true);
+                                    $('.radio').attr('disabled','disabled');
                                 }else{
                                     $('.baris td button').removeAttr('hidden');
                                     $('#addRow').removeAttr('hidden');
+                                    $('.radio').removeAttr('disabled');
                                 }
                                 $('.pr').removeAttr('disabled');
                                 $('.plu').removeAttr('disabled');
@@ -1388,9 +1394,11 @@
                             if($('#perubahanPlu').value == 'Y'){
                                 $('.baris td button').attr('hidden',true);
                                 $('#addRow').attr('hidden',true);
+                                $('.radio').attr('disabled','disabled');
                             }else{
                                 $('.baris td button').removeAttr('hidden');
                                 $('#addRow').removeAttr('hidden');
+                                $('.radio').removeAttr('disabled');
                             }
                             $('.pr').removeAttr('disabled');
                             $('.plu').removeAttr('disabled');
@@ -1581,13 +1589,14 @@
                 dangerMode: true,
             }).then(function(isConfirm) {
                 if (isConfirm) {
+                    saveData();
                     let nomorTrn = $('#nomorTrn').val();
                     let keterangan = $('#keterangan').val();
                     // >> Sepertinya ga pakai karena status print nya di flagdoc hanya sudah print atau belum, yaitu * atau 0
                     // if(trbo_flagdoc == '0'){
                     //     trbo_flagdoc = '1';
                     // }
-                    saveData();
+
                     let counter = 0;
                     for(i = 0; i < $('.plu').length; i++) {
                         if ($('.plu')[i].value != '') {
@@ -1605,14 +1614,16 @@
                         $.ajax({
                             url: '{{ url()->current() }}/print',
                             type: 'post',
-
+                            async:false,
                             data: {
                                 nomorTrn:nomorTrn,
                                 noReff:noReff,
                                 keterangan:keterangan
                             },
-                            success: function () {
-                                if($('#jenisKertas').val() == 'Biasa'){
+                            success: function (response) {
+                                if(response !== "aman"){
+                                    swal("Terjadi kesalahan", response, "error");
+                                }else if($('#jenisKertas').val() == 'Biasa'){
                                     window.open(`{{ url()->current() }}/printdoc?doc=${nomorTrn}&type=belum`, '_blank');
                                     window.open(`{{ url()->current() }}/printdoc?doc=${nomorTrn}&type=sudah`, '_blank');
                                 }else if($('#jenisKertas').val() == 'Kecil'){

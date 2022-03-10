@@ -20,7 +20,7 @@
                             <div class="col-sm-3">
                                 <select class="form-control" id="monitoringPLU">
                                     @foreach($monitoringPLU as $mP)
-                                        <option value="{{ $mP->mpl_kodemonitoring }}">{{ $mP->mpl_namamonitoring }}</option>
+                                        <option value="{{ $mP->mtr_kodemtr }}">{{ $mP->mtr_namamtr }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -34,6 +34,9 @@
                             </div>
                         </div>
                         <div class="row form-group">
+                            <div class="col-sm-3">
+                                <button class="col btn btn-primary" onclick="monitoringPLU()">Tambah Monitoring PLU</button>
+                            </div>
                             <div class="col-sm"></div>
                             <div class="col-sm-3">
                                 <button class="col btn btn-primary" onclick="viewReport()">VIEW REPORT</button>
@@ -219,9 +222,11 @@
                     'dsi' : $('#dsi').val(),
                 },
                 beforeSend: function () {
-                    // $('#modal-loader').modal('show');
+                    $('#modal-loader').modal('show');
                 },
                 success: function (response) {
+                    $('#modal-loader').modal('hide');
+
                     $('#tableReport').DataTable().destroy();
 
                     thead = '';
@@ -327,7 +332,7 @@
                         title: error.responseJSON.message,
                         icon: 'error',
                     }).then(() => {
-
+                        $('#modal-loader').modal('hide');
                     });
                 }
             });
@@ -406,6 +411,11 @@
                 if(result)
                     window.open(url);
             });
+        }
+
+        function monitoringPLU(){
+            url = '{{ url()->current() }}/../../monitoring/monitoring-plu-eis';
+            window.open(url);
         }
     </script>
 

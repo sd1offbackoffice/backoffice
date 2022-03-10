@@ -4,6 +4,7 @@ namespace App\Http\Controllers\BACKOFFICE\PROSES;
 
 use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
+use Dompdf\Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -27,13 +28,63 @@ class HitungUlangStockController extends Controller
         $lov = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd', 'prd_deskripsipanjang')
             ->where('prd_kodeigr', '=', Session::get('kdigr'))
-            ->orWhere('prd_deskripsipanjang','LIKE', '%'.$search.'%')
+            ->WhereRaw("(prd_deskripsipanjang LIKE '%" . $search . "%' or prd_prdcd LIKE '%" . $search . "%')")
             ->orderBy('prd_prdcd')
             ->limit(100)
             ->get();
         return DataTables::of($lov)->make(true);
     }
 
+    public function cekStatusHitungUlangStock(Request $request)
+    {
+        $periode1 = $request->periode1;
+        $periode2 = $request->periode2;
+        $status = '';
+        $message = '';
+        $data = '';
+
+        $temp = DB::connection(Session::get('connection'))->table('tblog_laravel_ias')
+            ->select('menu', 'submenu', 'status')
+            ->where('menu', '=', 'HitungUlangStock_' . $periode1 . '_' . $periode2)
+            ->count();
+
+        if ($temp == 0) {
+            try {
+                DB::connection(Session::get('connection'))->beginTransaction();
+                DB::connection(Session::get('connection'))->table('tblog_laravel_ias')
+                    ->insert([
+                        [
+                            'menu' => 'HitungUlangStock_' . $periode1 . '_' . $periode2,
+                            'submenu' => '1_Hitung Ulang Stock',
+                            'start_time' => '',
+                            'end_time' => '',
+                            'status' => 'EXEC',
+                        ],
+                        [
+                            'menu' => 'HitungUlangStock_' . $periode1 . '_' . $periode2,
+                            'submenu' => '2_Hitung Ulang Stock CMO',
+                            'start_time' => '',
+                            'end_time' => '',
+                            'status' => 'Waiting',
+                        ],
+                    ]);
+                DB::connection(Session::get('connection'))->commit();
+
+
+
+            } catch (Exception $e) {
+                DB::connection(Session::get('connection'))->rollBack();
+                $status = 'error';
+                $message = $e->getMessage();
+            }
+        }
+        $data = DB::connection(Session::get('connection'))->table('tblog_laravel_ias')
+            ->select('menu', 'submenu', 'status')
+            ->where('menu', '=', 'HitungUlangStock_' . $periode1 . '_' . $periode2)
+            ->orderBy('submenu')
+            ->get();
+        return compact(['status', 'message', 'data']);
+    }
     public function ProsesHitungUlangStock(Request $request)
     {
         $periode1 = $request->periode1;
@@ -50,14 +101,17 @@ class HitungUlangStockController extends Controller
         $status = '';
         $err_txt = 'a';
 
-        $mulai = Date('H:i:s');
         $p_sukses = false;
 
 
-//        dd($plu2);
-        DB::connection(Session::get('connection'))->beginTransaction();
+
+        $menu = 'HitungUlangStock_' . $periode1 . '_' . $periode2;
+        $submenu = '1_Hitung Ulang Stock';
+        $next_submenu = '2_Hitung Ulang Stock CMO';
+
         $c = loginController::getConnectionProcedure();
-        $sql = "BEGIN SP_HITUNG_STOCK2('" . Session::get('kdigr') . "',to_date('" . $periode1 . "','dd/mm/yyyy'),to_date('" . $periode2 . "','dd/mm/yyyy'),:plu1,:plu2,:p_sukses,:err_txt); END;";
+//            $sql = "BEGIN SP_HITUNG_STOCK2('" . Session::get('kdigr') . "',to_date('" . $periode1 . "','dd/mm/yyyy'),to_date('" . $periode2 . "','dd/mm/yyyy'),:plu1,:plu2,:p_sukses,:err_txt); END;";
+        $sql = "BEGIN sp_hitung_stock_log('" . Session::get('kdigr') . "',to_date('" . $periode1 . "','dd/mm/yyyy'),to_date('" . $periode2 . "','dd/mm/yyyy'),:plu1,:plu2,'" . $menu . "','" . $submenu . "','" . $next_submenu . "',:p_sukses,:err_txt); END;";
         $s = oci_parse($c, $sql);
 
         oci_bind_by_name($s, ':plu1', $plu1);
@@ -75,8 +129,33 @@ class HitungUlangStockController extends Controller
             $err_txt = 'Proses Hitung Stock GAGAL! --> ' . $err_txt;
         }
 
+        return compact([ 'status', 'err_txt']);
+    }
+
+    public function ProsesHitungUlangStockCMO(Request $request)
+    {
+        $periode1 = $request->periode1;
+        $periode2 = $request->periode2;
+        $plu1 = $request->plu1;
+        $plu2 = $request->plu2;
+
+        if ($plu1 == '' || !isset($plu1)) {
+            $plu1 = '0000000';
+        }
+        if ($plu2 == '' || !isset($plu2)) {
+            $plu2 = '9999999';
+        }
+        $err_txt = 'a';
+
+        $p_sukses = false;
+
+        $menu = 'HitungUlangStock_' . $periode1 . '_' . $periode2;
+        $submenu = '2_Hitung Ulang Stock CMO';
+        $next_submenu = '';
+
         $c = loginController::getConnectionProcedure();
-        $sql = "BEGIN SP_HITUNG_STOCKCMO2('" . Session::get('kdigr') . "', to_date('" . $periode1 . "','dd/mm/yyyy') , to_date('" . $periode2 . "','dd/mm/yyyy'),:p_sukses,:err_txt); END;";
+//        $sql = "BEGIN SP_HITUNG_STOCKCMO2('" . Session::get('kdigr') . "', to_date('" . $periode1 . "','dd/mm/yyyy') , to_date('" . $periode2 . "','dd/mm/yyyy'),:p_sukses,:err_txt); END;";
+        $sql = "BEGIN SP_HITUNG_STOCKCMO_log('" . Session::get('kdigr') . "',to_date('" . $periode1 . "','dd/mm/yyyy') , to_date('" . $periode2 . "','dd/mm/yyyy'),'" . $menu . "','" . $submenu . "','" . $next_submenu . "',:p_sukses,:err_txt); END;";
         $s = oci_parse($c, $sql);
 
         oci_bind_by_name($s, ':p_sukses', $p_sukses, 100);
@@ -85,15 +164,53 @@ class HitungUlangStockController extends Controller
 
         if ($p_sukses == 'TRUE') {
             $status = 'success';
-            $err_txt = 'Proses Hitung Stock Berhasil !';
+            $err_txt = 'Proses Hitung Stock CMO Berhasil !';
         } else {
             $status = 'error';
-            $err_txt = 'Proses Hitung Stock GAGAL! --> ' . $err_txt;
+            $err_txt = 'Proses Hitung Stock CMO GAGAL! --> ' . $err_txt;
         }
-        DB::connection(Session::get('connection'))->commit();
 
         $akhir = Date('H:i:s');
-        return compact(['mulai', 'akhir', 'status', 'err_txt']);
+        return compact(['status', 'err_txt']);
+    }
+    public function prosesUlang(Request $request)
+    {
+
+        $periode1 = $request->periode1;
+        $periode2 = $request->periode2;
+        $status = '';
+        $message = '';
+        $data = '';
+        try {
+
+            DB::connection(Session::get('connection'))->table('tblog_laravel_ias')
+                ->where('menu', '=', 'HitungUlangStock_' . $periode1 . '_' . $periode2)
+                ->update(
+                    [
+                        'start_time' => '',
+                        'end_time' => '',
+                        'status' => 'WAITING',
+                    ]
+                );
+
+            DB::connection(Session::get('connection'))->table('tblog_laravel_ias')
+                ->where('menu', '=', 'HitungUlangStock_' . $periode1 . '_' . $periode2)
+                ->where('submenu', '=', '1_Hitung Ulang Stock')
+                ->update(
+                    [
+                        'start_time' => '',
+                        'end_time' => '',
+                        'status' => 'EXEC',
+                    ]
+                );
+            $status = 'success';
+            $message = '';
+        } catch (Exception $e) {
+            $status = 'success';
+            $message = $e->getMessage();
+        }
+
+        return compact(['status', 'message']);
     }
 
     public function ProsesHitungUlangPoint(Request $request)
@@ -120,7 +237,8 @@ class HitungUlangStockController extends Controller
         return compact(['mulai', 'akhir', 'status', 'err_txt']);
     }
 
-    public function ProsesHapusPoint(Request $request)
+    public
+    function ProsesHapusPoint(Request $request)
     {
         if (Date('mm') != 12) {
             $status = 'error';
@@ -152,7 +270,8 @@ class HitungUlangStockController extends Controller
 
     }
 
-    public function PrintHapus(Request $request)
+    public
+    function PrintHapus(Request $request)
     {
         $kdsup = $request->kdsup;
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')

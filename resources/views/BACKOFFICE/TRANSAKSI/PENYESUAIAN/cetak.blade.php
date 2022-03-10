@@ -133,6 +133,7 @@
         });
 
         function getData(){
+            selected = [];
             if(checkDate($('#tanggal1').val()) && checkDate($('#tanggal2').val())){
                 if($('#cb_reprint').is(':checked')){
                     reprint = 1;
@@ -171,7 +172,7 @@
                             tr = `<tr><td>${response[i].no}</td><td>${formatDate(response[i].tgl)}</td>` +
                                 `<td>` +
                                     `<div class="custom-control custom-checkbox text-center">` +
-                                        `<input type="checkbox" class="custom-control-input cb-no" id="cb_${i}" onchange="selectDaftar(event)">` +
+                                        `<input type="checkbox" class="custom-control-input cb-no" id="cb_${i}" onchange="selectDaftar(event, '${response[i].no}')">` +
                                         `<label for="cb_${i}" class="custom-control-label"></label>` +
                                     `</div>` +
                                 `</td></tr>`;
@@ -180,7 +181,8 @@
 
                         $('#table_daftar').DataTable({
                             "scrollX" : false,
-                            "paging": true,
+                            "scrollY" : "400px",
+                            "paging": false,
                             "lengthChange": true,
                             "searching": true,
                             "ordering": true,
@@ -189,7 +191,7 @@
                             "responsive": true,
                             "createdRow": function (row, data, dataIndex) {
                             },
-                            "order": []
+                            "order": [[ 0, "desc" ]]
                         });
                     },
                     error: function (error) {
@@ -199,8 +201,7 @@
             }
         }
 
-        function selectDaftar(e){
-            nomor = listNomor[$(e.target).attr('id').substr(-1)];
+        function selectDaftar(e, nomor){
             if($(e.target).is(':checked')){
                 selected.push(nomor);
             }
@@ -336,46 +337,61 @@
                 if(ok){
                     ukuran = ok;
 
-                    $.ajax({
-                        url: '{{ url('/bo/transaksi/penyesuaian/cetak/store-data') }}',
-                        type: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        data: {
-                            nodoc: selected,
-                            reprint: reprint,
-                            jenis: $('#jenis').val(),
-                            ukuran: ukuran,
-                            updateLokasi: updateLokasi,
-                            updatePkmt: updatePkmt
-                        },
-                        beforeSend: function () {
-                            $('#modal-loader').modal('show');
-                        },
-                        success: function (response) {
-                            $('#modal-loader').modal('hide');
-
-                            if(response == 'true'){
-                                window.open('{{ url('/bo/transaksi/penyesuaian/cetak/laporan') }}','_blank');
-                            }
-                            else{
-                                swal({
-                                    title: 'Terjadi kesalahan!',
-                                    text: 'Mohon coba kembali',
-                                    icon: 'error',
-                                })
-                            }
-                        },
-                        error: function (error) {
-                            $('#modal-loader').modal('hide');
-                            swal({
-                                title: 'Terjadi kesalahan!',
-                                text: error.responseJSON.message,
-                                icon: 'error',
-                            });
-                        }
+                    nodoc = '';
+                    $.each(selected, function(index, value){
+                        nodoc += value +'*';
                     });
+                    nodoc = nodoc.substr(0,nodoc.length-1);
+
+                    window.open(`{{ url()->current() }}/laporan?nodoc=${nodoc}&reprint=${reprint}&jenis=${$('#jenis').val()}&ukuran=${ukuran}&updateLokasi=${updateLokasi}&updatePkmt=${updatePkmt}`,'_blank');
+
+                    setTimeout(
+                        function()
+                        {
+                            getData();
+                        }, 2000 * selected.length);
+
+                    {{--$.ajax({--}}
+                    {{--    url: '{{ url('/bo/transaksi/penyesuaian/cetak/store-data') }}',--}}
+                    {{--    type: 'POST',--}}
+                    {{--    headers: {--}}
+                    {{--        'X-CSRF-TOKEN': '{{ csrf_token() }}'--}}
+                    {{--    },--}}
+                    {{--    data: {--}}
+                    {{--        nodoc: selected,--}}
+                    {{--        reprint: reprint,--}}
+                    {{--        jenis: $('#jenis').val(),--}}
+                    {{--        ukuran: ukuran,--}}
+                    {{--        updateLokasi: updateLokasi,--}}
+                    {{--        updatePkmt: updatePkmt--}}
+                    {{--    },--}}
+                    {{--    beforeSend: function () {--}}
+                    {{--        $('#modal-loader').modal('show');--}}
+                    {{--    },--}}
+                    {{--    success: function (response) {--}}
+                    {{--        $('#modal-loader').modal('hide');--}}
+
+                    {{--        if(response == 'true'){--}}
+                    {{--            getData();--}}
+                    {{--            window.open('{{ url('/bo/transaksi/penyesuaian/cetak/laporan') }}','_blank');--}}
+                    {{--        }--}}
+                    {{--        else{--}}
+                    {{--            swal({--}}
+                    {{--                title: 'Terjadi kesalahan!',--}}
+                    {{--                text: 'Mohon coba kembali',--}}
+                    {{--                icon: 'error',--}}
+                    {{--            })--}}
+                    {{--        }--}}
+                    {{--    },--}}
+                    {{--    error: function (error) {--}}
+                    {{--        $('#modal-loader').modal('hide');--}}
+                    {{--        swal({--}}
+                    {{--            title: 'Terjadi kesalahan!',--}}
+                    {{--            text: error.responseJSON.message,--}}
+                    {{--            icon: 'error',--}}
+                    {{--        });--}}
+                    {{--    }--}}
+                    {{--});--}}
                 }
             });
         }

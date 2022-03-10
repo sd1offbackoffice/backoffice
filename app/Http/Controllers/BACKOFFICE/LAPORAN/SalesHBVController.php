@@ -58,16 +58,19 @@ ORDER BY TRJD_PRDCD");
             return response()->json(['kode' => 1]);
         }
     }
+
     public function printDocument(Request $request){
         $kodeigr = Session::get('kdigr');
         $dateA = $request->date1;
         $dateB = $request->date2;
         $today = date('d-m-Y');
         $time = date('H:i:s');
-        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
-        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
+        $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d/m/Y');
+        $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d/m/Y');
 
-    $datas = DB::connection(Session::get('connection'))->select("SELECT   PRD_KODEDEPARTEMENT, DEP_NAMADEPARTEMENT, TRJD_PRDCD, DESC_JADI, HBV_PRDCD_BRD,
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
+
+        $datas = DB::connection(Session::get('connection'))->select("SELECT   PRD_KODEDEPARTEMENT, DEP_NAMADEPARTEMENT, TRJD_PRDCD, DESC_JADI, HBV_PRDCD_BRD,
          PRD_DESKRIPSIPANJANG, UNIT_JADI, PRD_UNIT, TRJD_QUANTITY, HBV_QTY_GRAM,
          (TRJD_QUANTITY * HBV_QTY_GRAM) QTY, TRJD_UNITPRICE, round((ST_AVGCOST / 1000),0) HRG_DASAR,
          (TRJD_QUANTITY * TRJD_UNITPRICE) NILAI_JADI,
@@ -91,7 +94,7 @@ ORDER BY TRJD_PRDCD");
      AND ST_PRDCD = SUBSTR (HBV_PRDCD_BRD, 1, 6) || '0'
      AND ST_LOKASI = '01'
      AND PRS_KODEIGR = '$kodeigr'
-ORDER BY TRJD_PRDCD");
+ORDER BY PRD_KODEDEPARTEMENT,TRJD_PRDCD");
 
         $datas2 = DB::connection(Session::get('connection'))->select("SELECT   HBV_PRDCD_BRD PLU_DSR, PRD_DESKRIPSIPANJANG DESC_DSR, PRD_UNIT UNIT_DSR, SUM (QTY) QTY_DSR,
          HRG_DASAR HRG_DSR, SUM (NILAI_DASAR) NILAI_DSR
@@ -118,16 +121,16 @@ ORDER BY TRJD_PRDCD");
 GROUP BY HBV_PRDCD_BRD, PRD_DESKRIPSIPANJANG, PRD_UNIT, HRG_DASAR
 ORDER BY HBV_PRDCD_BRD");
 
-        //PRINT
-        $pdf = PDF::loadview('BACKOFFICE.LAPORAN.SalesHBV-pdf',
-            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'datas' => $datas, 'datas2' => $datas2,'today' => $today]);
-        $pdf->setPaper('A4', 'landscape');
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+//        dd($datas2);
 
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(780, 24, "PAGE {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-        return $pdf->stream('SalesHBV.pdf');
+        return view('BACKOFFICE.LAPORAN.sales-hbv-pdf', [
+            'perusahaan' => $perusahaan,
+            'kodeigr' => $kodeigr,
+            'tgl1' => $sDate,
+            'tgl2' => $eDate,
+            'data' => $datas,
+            'data2' => $datas2,
+            'today' => $today
+        ]);
     }
 }

@@ -54,7 +54,7 @@
                                     <label class="col-sm-3 text-right col-form-label">Cabang</label>
                                     <div class="col-sm-9">
                                         <select id="cabang" class="form-control">
-{{--                                            <option value="" selected>SEMUA CABANG</option>--}}
+                                            <option value="ALL" selected>SEMUA CABANG</option>
                                             @foreach($cabang as $c)
                                                 <option value="{{ $c->cab_kodecabang }}">{{ $c->cab_kodecabang }} - {{ $c->cab_namacabang }}</option>
                                             @endforeach

@@ -208,6 +208,20 @@
             </div>
         </div>
     </div>
+
+    <div id="popupMenu" hidden>
+
+    </div>
+
+    <style>
+        #popupMenu{
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #0c0c0c;
+        }
+    </style>
+
     <script src={{asset('/js/sweetalert2.js')}}></script>
     <script>
         let modalPlu;
@@ -224,6 +238,14 @@
                 format: 'DD/MM/YYYY'
             }
         });
+
+        $('#testBtn').on('click', function () {
+            PopUpMenu("Do you like it?");
+        })
+
+        function PopUpMenu(judul){
+            $('#popupMenu').prop("hidden",false);
+        }
 
         function cursorMover(w){
             switch (w.id){
@@ -594,27 +616,49 @@
             }
         });
 
-
         $('#hapus').on('click', function () {
-            let lnew1 = false;
-            let lnew2 = false;
-            let cancel = true;
-
-            $.ajax({ // mapping drive S dahulu
-                url: '{{ url()->current() }}/check-share-directory',
+            $.ajax({
+                url: '{{ url()->current() }}/hapus',
                 type: 'GET',
+                data: {
+                    kode: $('#kode').val(),
+                    //desk: $('#descKode').val(),
+                    plu: $('#pluPrime').val(),
+                    jenis_tmb: jenis_tmb
+                },
                 beforeSend: function () {
                     $('#modal-loader').modal('show');
                 },
                 success: function (response) {
                     $('#modal-loader').modal('hide');
-                    // if(response){
-                    //     swal.fire({
-                    //         title: 'PATH tidak ditemukan',
-                    //         text:"path //(ip address)/share tidak ditemukan",
-                    //     })
-                    // }else{
-                    // }
+                    if(response.msgError){
+                        swal.fire({
+                            title: "PLU TIMBANGAN",
+                            text: response.msgError,
+                            icon: "error",
+                        })
+                    }else if(response.msgNoData){
+                        swal.fire({
+                            title: "PLU TIMBANGAN",
+                            text: response.msgNoData,
+                            icon: "info",
+                        })
+                    }else{
+                        swal.fire({
+                            title: "PLU TIMBANGAN",
+                            text: "PENGHAPUSAN BERHASIL DILAKUKAN",
+                            icon: "success",
+                        }).then(() => {
+                            $('#kode').val('');
+                            $('#descKode').val('');
+                        });
+                        if(jenis_tmb != 3){
+                            window.open(`{{ url()->current() }}/hapusDir1Txt`, '_blank');
+                        }else{
+                            window.open(`{{ url()->current() }}/hapusDir2Txt`, '_blank');
+                            window.open(`{{ url()->current() }}/hapusDir3Txt`, '_blank');
+                        }
+                    }
                 },
                 error: function (error) {
                     $('#modal-loader').modal('hide');
@@ -622,128 +666,180 @@
                         title: error.responseJSON.title,
                         text: error.responseJSON.message,
                         icon: 'error',
+                    }).then(() => {
+                        $('#kode').select();
                     });
                 }
             });
+        })
+        {{--$('#hapus').on('click', function () {--}}
+        {{--    let lnew1 = false;--}}
+        {{--    let lnew2 = false;--}}
+        {{--    let willRun = true;--}}
+        {{--    let isError = false;--}}
 
-            if(jenis_tmb != 3){
-                $.ajax({
-                    url: '{{ url()->current() }}/check-directory',
-                    type: 'GET',
-                    data: {
-                        path: "/LREMOTE/HAPUS.txt"
-                    },
-                    beforeSend: function () {
-                        $('#modal-loader').modal('show');
-                    },
-                    success: function (response) {
-                        $('#modal-loader').modal('hide');
-                        if(response){
-                            swal.fire({
-                                title: 'DISPLAY PLU TIMBANGAN',
-                                text:"Apakah File Hapus Plu Timbangan Mau Dihapus? / Data Di File HAPUS.TXT Ingin Digabung?",
-                                showDenyButton: true,
-                                confirmButtonText: `Gabung`,
-                                denyButtonText: `Hapus`,
-                            }).then((result) => {
-                                /* Read more about isConfirmed, isDenied below */
-                                if (result.isConfirmed) {
-                                    lnew1 = false;
-                                } else if (result.isDenied) {
-                                    lnew1 = true;
-                                } else{
-                                    cancel = false;
-                                }
-                            })
-                        }
-                    },
-                    error: function (error) {
-                        $('#modal-loader').modal('hide');
-                        swal.fire({
-                            title: error.responseJSON.title,
-                            text: error.responseJSON.message,
-                            icon: 'error',
-                        });
-                    }
-                });
-            }else{
-                $.ajax({
-                    url: '{{ url()->current() }}/check-directory',
-                    type: 'GET',
-                    data: {
-                        path: "/LREMOTE/ISHIDA/HAPUS.txt"
-                    },
-                    beforeSend: function () {
-                        $('#modal-loader').modal('show');
-                    },
-                    success: function (response) {
-                        $('#modal-loader').modal('hide');
-                        if(response){
-                            swal.fire({
-                                title: 'DISPLAY PLU TIMBANGAN',
-                                text:"Apakah File Hapus Plu Timbangan Mau Dihapus? / Data Di File HAPUS.TXT Ingin Digabung?",
-                                showDenyButton: true,
-                                confirmButtonText: `Gabung`,
-                                denyButtonText: `Hapus`,
-                            }).then((result) => {
-                                alert(result.isCancel);
-                                /* Read more about isConfirmed, isDenied below */
-                                if (result.isConfirmed) {
-                                    lnew2 = false;
-                                } else if (result.isDenied) {
-                                    lnew2 = true;
-                                }else{
-                                    cancel = false;
-                                }
-                            })
-                        }
-                    },
-                    error: function (error) {
-                        $('#modal-loader').modal('hide');
-                        swal.fire({
-                            title: error.responseJSON.title,
-                            text: error.responseJSON.message,
-                            icon: 'error',
-                        });
-                    }
-                });
-            }
-            if(cancel){
-                $.ajax({
-                    url: '{{ url()->current() }}/hapus',
-                    type: 'GET',
-                    data: {
-                        kode: $('#kode').val(),
-                        //desk: $('#descKode').val(),
-                        plu: $('#pluPrime').val(),
-                        jenis_tmb: jenis_tmb,
-                        lnew1:lnew1,
-                        lnew2:lnew2
-                    },
-                    beforeSend: function () {
-                        $('#modal-loader').modal('show');
-                    },
-                    success: function (response) {
-                        $('#modal-loader').modal('hide');
-                        swal.fire({
-                            title: "PLU TIMBANGAN",
-                            text: "PENGHAPUSAN BERHASIL DILAKUKAN",
-                            icon: "success",
-                        })
-                    },
-                    error: function (error) {
-                        $('#modal-loader').modal('hide');
-                        swal.fire({
-                            title: error.responseJSON.title,
-                            text: error.responseJSON.message,
-                            icon: 'error',
-                        }).then(() => {
-                            $('#kode').select();
-                        });
-                    }
-                });
-            }
-        });
+        {{--    $.ajax({ // mapping drive S dahulu--}}
+        {{--        url: '{{ url()->current() }}/check-share-directory',--}}
+        {{--        type: 'GET',--}}
+        {{--        async: false,--}}
+        {{--        beforeSend: function () {--}}
+        {{--            $('#modal-loader').modal('show');--}}
+        {{--        },--}}
+        {{--        success: function (response) {--}}
+        {{--            $('#modal-loader').modal('hide');--}}
+        {{--            // if(response){--}}
+        {{--            //     swal.fire({--}}
+        {{--            //         title: 'PATH tidak ditemukan',--}}
+        {{--            //         text:"path //(ip address)/share tidak ditemukan",--}}
+        {{--            //     })--}}
+        {{--            // }else{--}}
+        {{--            // }--}}
+        {{--        },--}}
+        {{--        error: function (error) {--}}
+        {{--            $('#modal-loader').modal('hide');--}}
+        {{--            swal.fire({--}}
+        {{--                title: error.responseJSON.title,--}}
+        {{--                text: error.responseJSON.message,--}}
+        {{--                icon: 'error',--}}
+        {{--            });--}}
+        {{--            isError = true;--}}
+        {{--        }--}}
+        {{--    });--}}
+        {{--    if(isError){--}}
+        {{--        return false;--}}
+        {{--    }--}}
+        {{--    if(jenis_tmb != 3){--}}
+        {{--        $.ajax({--}}
+        {{--            url: '{{ url()->current() }}/check-directory',--}}
+        {{--            type: 'GET',--}}
+        {{--            async: false,--}}
+        {{--            data: {--}}
+        {{--                path: "/LREMOTE/HAPUS.txt"--}}
+        {{--            },--}}
+        {{--            beforeSend: function () {--}}
+        {{--                $('#modal-loader').modal('show');--}}
+        {{--            },--}}
+        {{--            success: function (response) {--}}
+        {{--                $('#modal-loader').modal('hide');--}}
+        {{--                if(response){--}}
+        {{--                    swal.fire({--}}
+        {{--                        title: 'DISPLAY PLU TIMBANGAN',--}}
+        {{--                        text:"Apakah File Hapus Plu Timbangan Mau Dihapus? / Data Di File HAPUS.TXT Ingin Digabung?",--}}
+        {{--                        showDenyButton: true,--}}
+        {{--                        confirmButtonText: `Gabung`,--}}
+        {{--                        denyButtonText: `Hapus`,--}}
+        {{--                    }).then((result) => {--}}
+        {{--                        /* Read more about isConfirmed, isDenied below */--}}
+        {{--                        if (result.isConfirmed) {--}}
+        {{--                            lnew1 = false;--}}
+        {{--                        } else if (result.isDenied) {--}}
+        {{--                            lnew1 = true;--}}
+        {{--                        } else{--}}
+        {{--                            willRun = false;--}}
+        {{--                        }--}}
+        {{--                        hapus(lnew1, lnew2, willRun);--}}
+        {{--                    })--}}
+        {{--                }--}}
+        {{--            },--}}
+        {{--            error: function (error) {--}}
+        {{--                $('#modal-loader').modal('hide');--}}
+        {{--                swal.fire({--}}
+        {{--                    title: error.responseJSON.title,--}}
+        {{--                    text: error.responseJSON.message,--}}
+        {{--                    icon: 'error',--}}
+        {{--                });--}}
+        {{--                isError = true;--}}
+        {{--            }--}}
+        {{--        });--}}
+        {{--        if(isError){--}}
+        {{--            return false;--}}
+        {{--        }--}}
+        {{--    }else{--}}
+        {{--        $.ajax({--}}
+        {{--            url: '{{ url()->current() }}/check-directory',--}}
+        {{--            type: 'GET',--}}
+        {{--            async: false,--}}
+        {{--            data: {--}}
+        {{--                path: "/LREMOTE/ISHIDA/HAPUS.txt"--}}
+        {{--            },--}}
+        {{--            beforeSend: function () {--}}
+        {{--                $('#modal-loader').modal('show');--}}
+        {{--            },--}}
+        {{--            success: function (response) {--}}
+        {{--                $('#modal-loader').modal('hide');--}}
+        {{--                if(response){--}}
+        {{--                    swal.fire({--}}
+        {{--                        title: 'DISPLAY PLU TIMBANGAN',--}}
+        {{--                        text:"Apakah File Hapus Plu Timbangan Mau Dihapus? / Data Di File HAPUS.TXT Ingin Digabung?",--}}
+        {{--                        showDenyButton: true,--}}
+        {{--                        confirmButtonText: `Gabung`,--}}
+        {{--                        denyButtonText: `Hapus`,--}}
+        {{--                    }).then((result) => {--}}
+        {{--                        /* Read more about isConfirmed, isDenied below */--}}
+        {{--                        if (result.isConfirmed) {--}}
+        {{--                            lnew2 = false;--}}
+        {{--                        } else if (result.isDenied) {--}}
+        {{--                            lnew2 = true;--}}
+        {{--                        }else{--}}
+        {{--                            willRun = false;--}}
+        {{--                        }--}}
+        {{--                        hapus(lnew1, lnew2, willRun);--}}
+        {{--                    })--}}
+        {{--                }--}}
+        {{--            },--}}
+        {{--            error: function (error) {--}}
+        {{--                $('#modal-loader').modal('hide');--}}
+        {{--                swal.fire({--}}
+        {{--                    title: error.responseJSON.title,--}}
+        {{--                    text: error.responseJSON.message,--}}
+        {{--                    icon: 'error',--}}
+        {{--                });--}}
+        {{--                isError = true;--}}
+        {{--            }--}}
+        {{--        });--}}
+        {{--    }--}}
+        {{--    if(isError){--}}
+        {{--        return false;--}}
+        {{--    }--}}
+        {{--});--}}
+
+        {{--function hapus(lnew1, lnew2, willRun){--}}
+        {{--    if(willRun){--}}
+        {{--        $.ajax({--}}
+        {{--            url: '{{ url()->current() }}/hapus',--}}
+        {{--            type: 'GET',--}}
+        {{--            data: {--}}
+        {{--                kode: $('#kode').val(),--}}
+        {{--                //desk: $('#descKode').val(),--}}
+        {{--                plu: $('#pluPrime').val(),--}}
+        {{--                jenis_tmb: jenis_tmb,--}}
+        {{--                lnew1:lnew1,--}}
+        {{--                lnew2:lnew2--}}
+        {{--            },--}}
+        {{--            beforeSend: function () {--}}
+        {{--                $('#modal-loader').modal('show');--}}
+        {{--            },--}}
+        {{--            success: function (response) {--}}
+        {{--                $('#modal-loader').modal('hide');--}}
+        {{--                swal.fire({--}}
+        {{--                    title: "PLU TIMBANGAN",--}}
+        {{--                    text: "PENGHAPUSAN BERHASIL DILAKUKAN",--}}
+        {{--                    icon: "success",--}}
+        {{--                })--}}
+        {{--            },--}}
+        {{--            error: function (error) {--}}
+        {{--                $('#modal-loader').modal('hide');--}}
+        {{--                swal.fire({--}}
+        {{--                    title: error.responseJSON.title,--}}
+        {{--                    text: error.responseJSON.message,--}}
+        {{--                    icon: 'error',--}}
+        {{--                }).then(() => {--}}
+        {{--                    $('#kode').select();--}}
+        {{--                });--}}
+        {{--            }--}}
+        {{--        });--}}
+        {{--    }--}}
+        {{--}--}}
 
         $('#cetakButton').on('click', function () {
             //let p_ord;
@@ -784,34 +880,39 @@
             });
         });
 
+        //v2
         $('#transfer').on('click', function () {
-            let dir1 = "/LREMOTE/UPDATE.txt";
-            let dir2 = "/LREMOTE/ISHIDA/UPDATE.txt";
-            let dir3 = "/LREMOTE/BIZERBA/UPDATE.txt";
+            if(jenis_tmb != 3){
+                transferDir1();
+            }else{
+                transferDir2();
+                transferDir3();
+            }
+        });
 
-            let choice1 = false;
-            let choice2 = false;
-            let choice3 = false;
-            let choice4 = false;
-
-            let cancel = true;
-
-            $.ajax({ // mapping drive S dahulu
-                url: '{{ url()->current() }}/check-share-directory',
+        function transferDir1(){
+            let date = $('#daterangepicker').val();
+            let dateA = date.substr(0,10);
+            let dateB = date.substr(13,10);
+            dateA = dateA.split('/');
+            dateB = dateB.split('/');
+            let date1 = dateA[2]+'-'+dateA[1]+'-'+dateA[0];
+            let date2 = dateB[2]+'-'+dateB[1]+'-'+dateB[0];
+            $.ajax({
+                url: '{{ url()->current() }}/transferDir1',
                 type: 'GET',
-                async: false,
+                data: {
+                    date1: date1,
+                    date2: date2,
+                    jenis_tmb: jenis_tmb,
+                },
                 beforeSend: function () {
                     $('#modal-loader').modal('show');
                 },
-                success: function (response) {
+                success: function () {
                     $('#modal-loader').modal('hide');
-                    // if(response){
-                    //     swal.fire({
-                    //         title: 'PATH tidak ditemukan',
-                    //         text:"path //(ip address)/share tidak ditemukan",
-                    //     })
-                    // }else{
-                    // }
+                    window.open(`{{ url()->current() }}/transferDir1Txt`, '_blank');
+                    window.open(`{{ url()->current() }}/transferDir1Csv`, '_blank');
                 },
                 error: function (error) {
                     $('#modal-loader').modal('hide');
@@ -819,243 +920,357 @@
                         title: error.responseJSON.title,
                         text: error.responseJSON.message,
                         icon: 'error',
+                    }).then(() => {
+                        $('#kode').select();
                     });
                 }
             });
-            if(jenis_tmb != 3){
-                $.ajax({
-                    url: '{{ url()->current() }}/check-directory',
-                    type: 'GET',
-                    data: {
-                        path: dir1
-                    },
-                    async: false,
-                    beforeSend: function () {
-                        $('#modal-loader').modal('show');
-                    },
-                    success: function (response) {
-                        $('#modal-loader').modal('hide');
-                        if(response){
-                            swal.fire({
-                                title: 'DISPLAY PLU TIMBANGAN',
-                                text:"Apakah File Transfer Ke Timbangan / (UPDATE.TXT) Mau Di Hapus ??",
-                                showDenyButton: true,
-                                confirmButtonText: `YA`,
-                                denyButtonText: `TIDAK`,
-                            }).then((result) => {
-                                /* Read more about isConfirmed, isDenied below */
-                                if (result.isConfirmed) {
-                                    choice1 = true;
-                                } else if (result.isDenied) {
-                                    choice1 = false;
-                                } else{
-                                    cancel = false;
-                                }
-                            })
-                        }
-                    },
-                    error: function (error) {
-                        $('#modal-loader').modal('hide');
-                        swal.fire({
-                            title: error.responseJSON.title,
-                            text: error.responseJSON.message,
-                            icon: 'error',
-                        });
-                    }
-                });
-            }else{
-                $.ajax({
-                    url: '{{ url()->current() }}/check-directory',
-                    type: 'GET',
-                    async: false,
-                    data: {
-                        path: dir2
-                    },
-                    beforeSend: function () {
-                        $('#modal-loader').modal('show');
-                    },
-                    success: function (response) {
-                        $('#modal-loader').modal('hide');
-
-                            swal.fire({
-                                title: 'DISPLAY PLU TIMBANGAN',
-                                text:"Apakah File Transfer Ke Timbangan / (UPDATE.TXT) Mau Di Hapus ??",
-                                showDenyButton: true,
-                                confirmButtonText: `YA`,
-                                denyButtonText: `TIDAK`,
-                            }).then((result2) => {
-                                /* Read more about isConfirmed, isDenied below */
-                                if (result2.isConfirmed) {
-                                    //choice3 = true;
-                                } else if (result2.isDenied) {
-                                    //choice3 = false;
-                                } else{
-                                    cancel = false;
-                                }
-                            })
-                        if(response){
-                            swal.fire({
-                                title: 'DISPLAY PLU TIMBANGAN',
-                                text:"Apakah File Transfer Ke Timbangan / (UPDATE.TXT) Mau Di Hapus ??",
-                                showDenyButton: true,
-                                confirmButtonText: `YA`,
-                                denyButtonText: `TIDAK`,
-                            }).then((result) => {
-                                /* Read more about isConfirmed, isDenied below */
-                                if (result.isConfirmed) {
-                                    choice2 = true;
-
-                                    $.ajax({
-                                        url: '{{ url()->current() }}/check-directory',
-                                        type: 'GET',
-                                        data: {
-                                            path: dir3
-                                        },
-                                        beforeSend: function () {
-                                            $('#modal-loader').modal('show');
-                                        },
-                                        success: function (response2) {
-                                            $('#modal-loader').modal('hide');
-                                            if(response2){
-                                                swal.fire({
-                                                    title: 'DISPLAY PLU TIMBANGAN',
-                                                    text:"Apakah File Transfer Ke Timbangan / (UPDATE.TXT) Mau Di Hapus ??",
-                                                    showDenyButton: true,
-                                                    confirmButtonText: `YA`,
-                                                    denyButtonText: `TIDAK`,
-                                                }).then((result2) => {
-                                                    /* Read more about isConfirmed, isDenied below */
-                                                    if (result2.isConfirmed) {
-                                                        choice3 = true;
-                                                    } else if (result2.isDenied) {
-                                                        choice3 = false;
-                                                    } else{
-                                                        cancel = false;
-                                                    }
-                                                })
-                                            }
-                                        },
-                                        error: function (error) {
-                                            $('#modal-loader').modal('hide');
-                                            swal.fire({
-                                                title: error.responseJSON.title,
-                                                text: error.responseJSON.message,
-                                                icon: 'error',
-                                            });
-                                        }
-                                    });
-
-                                } else if (result.isDenied) {
-                                    choice2 = false;
-                                } else{
-                                    cancel = false;
-                                }
-                            })
-                        }
-                    },
-                    error: function (error) {
-                        $('#modal-loader').modal('hide');
-                        swal.fire({
-                            title: error.responseJSON.title,
-                            text: error.responseJSON.message,
-                            icon: 'error',
-                        });
-                    }
-                });
-                if(choice2){
-                    $.ajax({
-                        url: '{{ url()->current() }}/check-directory',
-                        type: 'GET',
-                        async: false,
-                        data: {
-                            path: dir3
-                        },
-                        beforeSend: function () {
-                            $('#modal-loader').modal('show');
-                        },
-                        success: function (response) {
-                            $('#modal-loader').modal('hide');
-                            if(response){
-                                swal.fire({
-                                    title: 'DISPLAY PLU TIMBANGAN',
-                                    text:"Apakah File Transfer Ke Timbangan / (UPDATE.TXT) Mau Di Hapus ??",
-                                    showDenyButton: true,
-                                    confirmButtonText: `YA`,
-                                    denyButtonText: `TIDAK`,
-                                }).then((result) => {
-                                    /* Read more about isConfirmed, isDenied below */
-                                    if (result.isConfirmed) {
-                                        choice4 = true;
-                                    } else if (result.isDenied) {
-                                        choice4 = false;
-                                    } else{
-                                        cancel = false;
-                                    }
-                                })
-                            }
-                        },
-                        error: function (error) {
-                            $('#modal-loader').modal('hide');
-                            swal.fire({
-                                title: error.responseJSON.title,
-                                text: error.responseJSON.message,
-                                icon: 'error',
-                            });
-                        }
+        }
+        function transferDir2(){
+            let date = $('#daterangepicker').val();
+            let dateA = date.substr(0,10);
+            let dateB = date.substr(13,10);
+            dateA = dateA.split('/');
+            dateB = dateB.split('/');
+            let date1 = dateA[2]+'-'+dateA[1]+'-'+dateA[0];
+            let date2 = dateB[2]+'-'+dateB[1]+'-'+dateB[0];
+            $.ajax({
+                url: '{{ url()->current() }}/transferDir2',
+                type: 'GET',
+                data: {
+                    date1: date1,
+                    date2: date2,
+                    jenis_tmb: jenis_tmb,
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function () {
+                    $('#modal-loader').modal('hide');
+                    window.open(`{{ url()->current() }}/transferDir2Txt`, '_blank');
+                    window.open(`{{ url()->current() }}/transferDir2Csv`, '_blank');
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    swal.fire({
+                        title: error.responseJSON.title,
+                        text: error.responseJSON.message,
+                        icon: 'error',
+                    }).then(() => {
+                        $('#kode').select();
                     });
                 }
-                transfer(choice1, choice2, choice3, choice4, cancel);
+            });
+        }
+        function transferDir3(){
+            let date = $('#daterangepicker').val();
+            let dateA = date.substr(0,10);
+            let dateB = date.substr(13,10);
+            dateA = dateA.split('/');
+            dateB = dateB.split('/');
+            let date1 = dateA[2]+'-'+dateA[1]+'-'+dateA[0];
+            let date2 = dateB[2]+'-'+dateB[1]+'-'+dateB[0];
+            $.ajax({
+                url: '{{ url()->current() }}/transferDir3',
+                type: 'GET',
+                data: {
+                    date1: date1,
+                    date2: date2,
+                    jenis_tmb: jenis_tmb,
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function () {
+                    $('#modal-loader').modal('hide');
+                    window.open(`{{ url()->current() }}/transferDir3Txt`, '_blank');
+                    window.open(`{{ url()->current() }}/transferDir3Csv`, '_blank');
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    swal.fire({
+                        title: error.responseJSON.title,
+                        text: error.responseJSON.message,
+                        icon: 'error',
+                    }).then(() => {
+                        $('#kode').select();
+                    });
+                }
+            });
+        }
+        //v1
+        {{--$('#transfer').on('click', function () {--}}
+        {{--    let dir1 = "\\LREMOTE\\UPDATE.txt";--}}
+        {{--    let dir2 = "\\LREMOTE\\ISHIDA\\UPDATE.txt";--}}
+        {{--    let dir3 = "\\LREMOTE\\BIZERBA\\UPDATE.txt";--}}
+
+        {{--    let choice1 = false;--}}
+        {{--    let choice2 = false;--}}
+        {{--    let choice3 = false;--}}
+        {{--    let choice4 = false;--}}
+
+        {{--    let willRun = true;--}}
+        {{--    let isError = false;--}}
+
+        {{--    $.ajax({ // mapping drive S dahulu--}}
+        {{--        url: '{{ url()->current() }}/check-share-directory',--}}
+        {{--        type: 'GET',--}}
+        {{--        async: false,--}}
+        {{--        beforeSend: function () {--}}
+        {{--            $('#modal-loader').modal('show');--}}
+        {{--        },--}}
+        {{--        success: function (response) {--}}
+        {{--            $('#modal-loader').modal('hide');--}}
+        {{--            // if(response){--}}
+        {{--            //     swal.fire({--}}
+        {{--            //         title: 'PATH tidak ditemukan',--}}
+        {{--            //         text:"path //(ip address)/share tidak ditemukan",--}}
+        {{--            //     })--}}
+        {{--            // }else{--}}
+        {{--            // }--}}
+        {{--        },--}}
+        {{--        error: function (error) {--}}
+        {{--            $('#modal-loader').modal('hide');--}}
+        {{--            swal.fire({--}}
+        {{--                title: error.responseJSON.title,--}}
+        {{--                text: error.responseJSON.message,--}}
+        {{--                icon: 'error',--}}
+        {{--            });--}}
+        {{--            isError = true;--}}
+        {{--        }--}}
+        {{--    });--}}
+        {{--    if(isError){--}}
+        {{--        return false;--}}
+        {{--    }--}}
+
+        {{--    if(jenis_tmb != 3){--}}
+        {{--        $.ajax({--}}
+        {{--            url: '{{ url()->current() }}/check-directory',--}}
+        {{--            type: 'GET',--}}
+        {{--            data: {--}}
+        {{--                path: dir1--}}
+        {{--            },--}}
+        {{--            async: false,--}}
+        {{--            beforeSend: function () {--}}
+        {{--                $('#modal-loader').modal('show');--}}
+        {{--            },--}}
+        {{--            success: function (response) {--}}
+        {{--                $('#modal-loader').modal('hide');--}}
+        {{--                if(response){--}}
+        {{--                    swal.fire({--}}
+        {{--                        title: 'DISPLAY PLU TIMBANGAN',--}}
+        {{--                        text:"Apakah File Transfer Ke Timbangan / (UPDATE.TXT) Mau Di Hapus ??",--}}
+        {{--                        showDenyButton: true,--}}
+        {{--                        confirmButtonText: `YA`,--}}
+        {{--                        denyButtonText: `TIDAK`,--}}
+        {{--                    }).then((result) => {--}}
+        {{--                        /* Read more about isConfirmed, isDenied below */--}}
+        {{--                        if (result.isConfirmed) {--}}
+        {{--                            choice1 = true;--}}
+        {{--                        } else if (result.isDenied) {--}}
+        {{--                            choice1 = false;--}}
+        {{--                        } else{--}}
+        {{--                            willRun = false;--}}
+        {{--                        }--}}
+        {{--                        transfer(choice1, choice2, choice3, choice4, willRun);--}}
+        {{--                    })--}}
+        {{--                }--}}
+        {{--            },--}}
+        {{--            error: function (error) {--}}
+        {{--                $('#modal-loader').modal('hide');--}}
+        {{--                swal.fire({--}}
+        {{--                    title: error.responseJSON.title,--}}
+        {{--                    text: error.responseJSON.message,--}}
+        {{--                    icon: 'error',--}}
+        {{--                });--}}
+        {{--                isError = true;--}}
+        {{--            }--}}
+        {{--        });--}}
+        {{--        if(isError){--}}
+        {{--            return false;--}}
+        {{--        }--}}
+        {{--    }else{--}}
+        {{--        $.ajax({--}}
+        {{--            url: '{{ url()->current() }}/check-directory',--}}
+        {{--            type: 'GET',--}}
+        {{--            async: false,--}}
+        {{--            data: {--}}
+        {{--                path: dir2--}}
+        {{--            },--}}
+        {{--            beforeSend: function () {--}}
+        {{--                $('#modal-loader').modal('show');--}}
+        {{--            },--}}
+        {{--            success: function (response) {--}}
+        {{--                $('#modal-loader').modal('hide');--}}
+        {{--                if(response){--}}
+        {{--                    swal.fire({--}}
+        {{--                        title: 'DISPLAY PLU TIMBANGAN',--}}
+        {{--                        text:"Apakah File Transfer Ke Timbangan / (UPDATE.TXT) Mau Di Hapus ?? (ISHIDA)",--}}
+        {{--                        showDenyButton: true,--}}
+        {{--                        confirmButtonText: `YA`,--}}
+        {{--                        denyButtonText: `TIDAK`,--}}
+        {{--                    }).then((result) => {--}}
+        {{--                        /* Read more about isConfirmed, isDenied below */--}}
+        {{--                        if (result.isConfirmed) {--}}
+        {{--                            choice2 = true;--}}
+        {{--                            $.ajax({--}}
+        {{--                                url: '{{ url()->current() }}/check-directory',--}}
+        {{--                                type: 'GET',--}}
+        {{--                                async: false,--}}
+        {{--                                data: {--}}
+        {{--                                    path: dir3--}}
+        {{--                                },--}}
+        {{--                                beforeSend: function () {--}}
+        {{--                                    $('#modal-loader').modal('show');--}}
+        {{--                                },--}}
+        {{--                                success: function (response2) {--}}
+        {{--                                    $('#modal-loader').modal('hide');--}}
+        {{--                                    if(response2){--}}
+        {{--                                        swal.fire({--}}
+        {{--                                            title: 'DISPLAY PLU TIMBANGAN',--}}
+        {{--                                            text:"Apakah File Transfer Ke Timbangan / (UPDATE.TXT) Mau Di Hapus ?? (BIZERBA)",--}}
+        {{--                                            showDenyButton: true,--}}
+        {{--                                            confirmButtonText: `YA`,--}}
+        {{--                                            denyButtonText: `TIDAK`,--}}
+        {{--                                        }).then((result2) => {--}}
+        {{--                                            /* Read more about isConfirmed, isDenied below */--}}
+        {{--                                            if (result2.isConfirmed) {--}}
+        {{--                                                choice3 = true;--}}
+        {{--                                            } else if (result2.isDenied) {--}}
+        {{--                                                choice3 = false;--}}
+        {{--                                            } else{--}}
+        {{--                                                willRun = false;--}}
+        {{--                                            }--}}
+        {{--                                            transfer(choice1, choice2, choice3, choice4, willRun);--}}
+        {{--                                        })--}}
+        {{--                                    }else{--}}
+        {{--                                        transfer(choice1, choice2, choice3, choice4, willRun);--}}
+        {{--                                    }--}}
+        {{--                                },--}}
+        {{--                                error: function (error) {--}}
+        {{--                                    $('#modal-loader').modal('hide');--}}
+        {{--                                    swal.fire({--}}
+        {{--                                        title: error.responseJSON.title,--}}
+        {{--                                        text: error.responseJSON.message,--}}
+        {{--                                        icon: 'error',--}}
+        {{--                                    });--}}
+        {{--                                    isError = true;--}}
+        {{--                                }--}}
+        {{--                            });--}}
+
+        {{--                        } else if (result.isDenied) {--}}
+        {{--                            choice2 = false;--}}
+        {{--                            transfer(choice1, choice2, choice3, choice4, willRun);--}}
+        {{--                        } else{--}}
+        {{--                            willRun = false;--}}
+        {{--                            transfer(choice1, choice2, choice3, choice4, willRun);--}}
+        {{--                        }--}}
+        {{--                    })--}}
+        {{--                }else{--}}
+        {{--                    $.ajax({--}}
+        {{--                        url: '{{ url()->current() }}/check-directory',--}}
+        {{--                        type: 'GET',--}}
+        {{--                        async: false,--}}
+        {{--                        data: {--}}
+        {{--                            path: dir3--}}
+        {{--                        },--}}
+        {{--                        beforeSend: function () {--}}
+        {{--                            $('#modal-loader').modal('show');--}}
+        {{--                        },--}}
+        {{--                        success: function (response) {--}}
+        {{--                            $('#modal-loader').modal('hide');--}}
+        {{--                            if(response){--}}
+        {{--                                swal.fire({--}}
+        {{--                                    title: 'DISPLAY PLU TIMBANGAN',--}}
+        {{--                                    text:"Apakah File Transfer Ke Timbangan / (UPDATE.TXT) Mau Di Hapus ?? (BIZERBA)",--}}
+        {{--                                    showDenyButton: true,--}}
+        {{--                                    confirmButtonText: `YA`,--}}
+        {{--                                    denyButtonText: `TIDAK`,--}}
+        {{--                                }).then((result) => {--}}
+        {{--                                    /* Read more about isConfirmed, isDenied below */--}}
+        {{--                                    if (result.isConfirmed) {--}}
+        {{--                                        choice4 = true;--}}
+        {{--                                    } else if (result.isDenied) {--}}
+        {{--                                        choice4 = false;--}}
+        {{--                                    } else{--}}
+        {{--                                        willRun = false;--}}
+        {{--                                    }--}}
+        {{--                                    transfer(choice1, choice2, choice3, choice4, willRun);--}}
+        {{--                                })--}}
+        {{--                            }--}}
+        {{--                        },--}}
+        {{--                        error: function (error) {--}}
+        {{--                            $('#modal-loader').modal('hide');--}}
+        {{--                            swal.fire({--}}
+        {{--                                title: error.responseJSON.title,--}}
+        {{--                                text: error.responseJSON.message,--}}
+        {{--                                icon: 'error',--}}
+        {{--                            });--}}
+        {{--                            isError = true;--}}
+        {{--                        }--}}
+        {{--                    });--}}
+        {{--                }--}}
+        {{--            },--}}
+        {{--            error: function (error) {--}}
+        {{--                $('#modal-loader').modal('hide');--}}
+        {{--                swal.fire({--}}
+        {{--                    title: error.responseJSON.title,--}}
+        {{--                    text: error.responseJSON.message,--}}
+        {{--                    icon: 'error',--}}
+        {{--                });--}}
+        {{--                isError = true;--}}
+        {{--            }--}}
+        {{--        });--}}
+        {{--        if(isError){--}}
+        {{--            return false--}}
+        {{--        }--}}
+        {{--    }--}}
+        {{--});--}}
+
+        function transfer(choice1, choice2, choice3, choice4, willRun){
+            if(willRun){
+                let date = $('#daterangepicker').val();
+                let dateA = date.substr(0,10);
+                let dateB = date.substr(13,10);
+                dateA = dateA.split('/');
+                dateB = dateB.split('/');
+                let date1 = dateA[2]+'-'+dateA[1]+'-'+dateA[0];
+                let date2 = dateB[2]+'-'+dateB[1]+'-'+dateB[0];
+                $.ajax({
+                    url: '{{ url()->current() }}/transfer',
+                    type: 'GET',
+                    data: {
+                        date1: date1,
+                        date2: date2,
+                        jenis_tmb: jenis_tmb,
+                        alert_button1_1:choice1,
+                        alert_button1_2:choice2,
+                        alert_button1_3:choice3,
+                        alert_button1_4:choice4,
+                    },
+                    beforeSend: function () {
+                        $('#modal-loader').modal('show');
+                    },
+                    success: function (response) {
+                        $('#modal-loader').modal('hide');
+                        swal.fire({
+                            title: "PLU TIMBANGAN",
+                            text: "TRANSFER BERHASIL DILAKUKAN",
+                            icon: "success",
+                        })
+                    },
+                    error: function (error) {
+                        $('#modal-loader').modal('hide');
+                        swal.fire({
+                            title: error.responseJSON.title,
+                            text: error.responseJSON.message,
+                            icon: 'error',
+                        }).then(() => {
+                            $('#kode').select();
+                        });
+                    }
+                });
             }
-        });
-
-        async function transfer(choice1, choice2, choice3, choice4, bool){
-            await new Promise(next => {
-                if(bool){
-                    let date = $('#daterangepicker').val();
-                    let dateA = date.substr(0,10);
-                    let dateB = date.substr(13,10);
-                    dateA = dateA.split('/');
-                    dateB = dateB.split('/');
-                    let date1 = dateA[2]+'-'+dateA[1]+'-'+dateA[0];
-                    let date2 = dateB[2]+'-'+dateB[1]+'-'+dateB[0];
-                    $.ajax({
-                        url: '{{ url()->current() }}/transfer',
-                        type: 'GET',
-                        data: {
-                            date1: date1,
-                            date2: date2,
-                            jenis_tmb: jenis_tmb,
-                            alert_button1_1:choice1,
-                            alert_button1_2:choice2,
-                            alert_button1_3:choice3,
-                            alert_button1_4:choice4,
-                        },
-                        beforeSend: function () {
-                            $('#modal-loader').modal('show');
-                        },
-                        success: function (response) {
-                            $('#modal-loader').modal('hide');
-                            swal.fire({
-                                title: "PLU TIMBANGAN",
-                                text: "TRANSFER BERHASIL DILAKUKAN",
-                                icon: "success",
-                            })
-                        },
-                        error: function (error) {
-                            $('#modal-loader').modal('hide');
-                            swal.fire({
-                                title: error.responseJSON.title,
-                                text: error.responseJSON.message,
-                                icon: 'error',
-                            }).then(() => {
-                                $('#kode').select();
-                            });
-                        }
-                    });
-                }
-                next();
-            });
-
         }
 
         //Fungsi radio button

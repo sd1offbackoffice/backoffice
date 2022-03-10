@@ -139,6 +139,7 @@ class BatalController extends Controller
 
             $title = 'Surat Jalan berhasil dibatalkan!';
             $status = 'success';
+            $message = '';
         }
         catch(QueryException $e){
             DB::connection(Session::get('connection'))->rollBack();

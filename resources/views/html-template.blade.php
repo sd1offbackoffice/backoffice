@@ -2,226 +2,242 @@
 <html>
 <head>
     <title>@yield('page_title')</title>
-</head>
-<style>
-    body{
-        margin: 0;
-    }
+    <style>
+        body{
+            margin: 0;
+        }
 
-    .bg-white{
-        background-color: white;
-    }
+        .bg-white{
+            background-color: white;
+        }
 
-    .bg-gray{
-        background-color: rgb(82, 86, 89);
-    }
-
-    .content-wrapper{
-        margin:auto;
-        min-height: @yield('paper_height','842pt');
-        width: @yield('paper_width','595pt');
-        padding: 5% 4%;
-    }
-
-    table.report-container {
-        page-break-after:always;
-        width: 100%;
-    }
-    thead.report-header {
-        display:table-header-group;
-    }
-    tfoot.report-footer {
-        display:table-footer-group;
-    }
-    table.report-container div.article {
-        page-break-inside: avoid;
-    }
-
-    .btn-print{
-        float:right;
-        color: #fff;
-        background-color: #007bff;
-        border-color: #007bff;
-        display: inline-block;
-        font-weight: 400;border: 1px solid transparent;
-        padding: .375rem .75rem;
-        font-size: 1rem;
-        line-height: 1.5;
-        height: 100%;
-        cursor: pointer;
-        border-radius: 5px;
-    }
-
-    @page {
-        /*margin: 25px 20px;*/
-        /*size: 1071pt 792pt;*/
-        size: @yield('paper_size','595pt 842pt');
-        /*size: 842pt 638pt;*/
-    }
-
-    @media print{
-        #buttonArea{
-            display: none;
+        .bg-gray{
+            background-color: rgb(82, 86, 89);
         }
 
         .content-wrapper{
-            padding: 0;
+            margin:auto;
+            min-height: @yield('paper_height','842pt');
+            width: @yield('paper_width','595pt');
+            padding: 5% 4%;
         }
-    }
 
-    header {
-        /*position: fixed;*/
-        top: 0cm;
-        left: 0cm;
-        right: 0cm;
-        height: 3cm;
-    }
-    body {
-        /*margin-top: 80px;*/
-        /*margin-bottom: 10px;*/
-        font-size: 9px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        font-weight: 400;
-        line-height: @yield('body_line_height','1.8'); /* 1.25 */
+        table.report-container {
+            page-break-after:always;
+            width: 100%;
+        }
+        thead.report-header {
+            display:table-header-group;
+        }
+        tfoot.report-footer {
+            display:table-footer-group;
+        }
+        table.report-container div.article {
+            page-break-inside: avoid;
+        }
 
-        counter-reset: page;
-    }
+        .btn-print{
+            float:right;
+            color: #fff;
+            background-color: #007bff;
+            display: inline-block;
+            font-weight: 400;
+            border: 1px solid transparent;
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            height: 100%;
+            cursor: pointer;
+            border-radius: 5px;
+        }
 
-    #pageNumber {
-        page-break-before: always;
-        counter-increment: page;
-    }
-    #pageNumber::after {
-        content: counter(page);
-    }
+        @page {
+            /*margin: 25px 20px;*/
+            /*size: 1071pt 792pt;*/
+            size: @yield('paper_width','595pt') @yield('paper_height','842pt');
+            /*size: 842pt 638pt;*/
+        }
 
-    .table tbody {
-        display: table-row-group;
-        vertical-align: middle;
-        border-color: inherit;
-    }
-    .table tr {
-        display: table-row;
-        vertical-align: inherit;
-        border-color: inherit;
-    }
-    .table td {
-        display: table-cell;
-    }
-    .table thead{
-        text-align: center;
-    }
-    .table tbody{
-        text-align: center;
-    }
-    .table tfoot{
-        border-top: 1px solid black;
-        border-bottom: 1px solid black;
-    }
+        @media print{
+            #buttonArea{
+                display: none;
+            }
 
-    .keterangan{
-        text-align: left;
-    }
-    .table{
-        border-collapse: collapse;
-        width: 100%;
-        font-size: @yield('table_font_size','10px') !important;
-        white-space: nowrap;
-        color: #212529;
-        /*padding-top: 20px;*/
-        /*margin-top: 25px;*/
-    }
-    .table-ttd{
-        width: 100%;
-        font-size: 9px;
-        /*white-space: nowrap;*/
-        color: #212529;
-        /*padding-top: 20px;*/
-        /*margin-top: 25px;*/
-    }
-    .table tbody td {
-        /*font-size: 6px;*/
-        vertical-align: top;
-        /*border-top: 1px solid #dee2e6;*/
-        padding: 0.20rem 0;
-        width: auto;
-    }
-    .table th{
-        vertical-align: top;
-        padding: 0.20rem 0;
-    }
-    .judul, .table-borderless{
-        text-align: center;
-    }
-    .table-borderless th, .table-borderless td {
-        border: 0;
-        padding: 0.50rem;
-    }
+            .content-wrapper{
+                padding: 0;
+            }
+        }
 
-    .table tbody td.padding-right, .table thead th.padding-right, .table tfoot th.padding-right{
-        padding-right: 10px !important;
-    }
+        header {
+            /*position: fixed;*/
+            top: 0cm;
+            left: 0cm;
+            right: 0cm;
+            height: 3cm;
+        }
+        body {
+            /*margin-top: 80px;*/
+            /*margin-bottom: 10px;*/
+            font-size: 9px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            font-weight: 400;
+            line-height: @yield('body_line_height','1.8'); /* 1.25 */
 
-    .table tbody td.padding-left, .table thead th.padding-left, .table tfoot th.padding-left{
-        padding-left: 10px !important;
-    }
+            counter-reset: page;
+        }
 
-    .center{
-        text-align: center;
-    }
+        #pageNumber {
+            page-break-before: always;
+            counter-increment: page;
+        }
+        #pageNumber::after {
+            content: counter(page);
+        }
 
-    .left{
-        text-align: left;
-    }
+        .table tbody {
+            display: table-row-group;
+            vertical-align: middle;
+            border-color: inherit;
+        }
+        .table tr {
+            display: table-row;
+            vertical-align: inherit;
+            border-color: inherit;
+        }
+        .table td {
+            display: table-cell;
+        }
+        .table thead{
+            text-align: center;
+        }
+        .table tbody{
+            text-align: center;
+        }
+        .table tfoot{
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+        }
 
-    .right{
-        text-align: right;
-    }
+        .keterangan{
+            text-align: left;
+        }
+        .table{
+            border-collapse: collapse;
+            width: 100%;
+            font-size: @yield('table_font_size','10px') !important;
+            white-space: nowrap;
+            color: #212529;
+            /*padding-top: 20px;*/
+            /*margin-top: 25px;*/
+        }
+        .table-ttd{
+            width: 100%;
+            font-size: 9px;
+            /*white-space: nowrap;*/
+            color: #212529;
+            /*padding-top: 20px;*/
+            /*margin-top: 25px;*/
+        }
+        .table tbody td {
+            /*font-size: 6px;*/
+            vertical-align: top;
+            /*border-top: 1px solid #dee2e6;*/
+            padding: 0.20rem 0;
+            width: auto;
+        }
+        .table th{
+            vertical-align: top;
+            padding: 0.20rem 0;
+        }
+        .judul, .table-borderless{
+            text-align: center;
+        }
+        .table-borderless th, .table-borderless td {
+            border: 0;
+            padding: 0.50rem;
+        }
 
-    .page-break {
-        page-break-before: always;
-    }
+        .table tbody td.padding-right,tbody th.padding-right, .table thead th.padding-right, .table tfoot th.padding-right{
+            padding-right: 10px !important;
+        }
 
-    .page-break-avoid{
-        page-break-inside: avoid;
-    }
+        .table tbody td.padding-left, .table thead th.padding-left, .table tfoot th.padding-left{
+            padding-left: 10px !important;
+        }
 
-    .table-header td{
-        white-space: nowrap;
-    }
+        .center{
+            text-align: center;
+        }
 
-    .tengah{
-        vertical-align: middle !important;
-    }
+        .left{
+            text-align: left;
+        }
 
-    .bawah{
-        vertical-align: bottom !important;
-    }
+        .right{
+            text-align: right;
+        }
 
-    .blank-row {
-        line-height: 70px!important;
-        color: white;
-    }
+        .page-break {
+            page-break-before: always;
+        }
 
-    .bold td{
-        font-weight: bold;
-    }
+        .page-break-avoid{
+            page-break-inside: avoid;
+        }
 
-    .top-bottom{
-        border-top: 1px solid black;
-        border-bottom: 1px solid black;
-    }
+        .table-header td{
+            white-space: nowrap;
+        }
 
-    .nowrap{
-        white-space: nowrap;
-    }
+        .tengah{
+            vertical-align: middle !important;
+        }
 
-    .overline{
-        text-decoration: overline;
-    }
+        .bawah{
+            vertical-align: bottom !important;
+        }
 
-    @yield('custom_style')
-</style>
+        .blank-row {
+            line-height: 70px!important;
+            color: white;
+        }
+
+        .bold td{
+            font-weight: bold;
+        }
+
+        .top-bottom{
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+        }
+
+        .nowrap{
+            white-space: nowrap;
+        }
+
+        .overline{
+            text-decoration: overline;
+        }
+
+        /* @yield('custom_style') */
+    </style>
+    <script src={{asset('/js/jquery.js')}}></script>
+    <script>
+
+        var oldPrintFunction = window.print;
+
+        window.print = function () {
+            var curURL = window.location.href;
+            var title = $('title').html();
+            history.replaceState(history.state, '', '/');
+            $('title').html('.');
+            oldPrintFunction();
+            $('title').html(title);
+            history.replaceState(history.state, '', curURL);
+        };
+    </script>
+</head>
+
 <body class="bg-gray">
     <div id="buttonArea" style="position: sticky; width: 100%; height: 50px; top: 0;">
         <button class="btn-print" onclick="window.print()">CETAK</button>
@@ -246,9 +262,6 @@
                             </p>
                             <p>
                                 <i>User ID</i> : {{ Session::get('usid') }}
-                            </p>
-                            <p>
-{{--                                Hal. : <span id="pageNumber"></span>--}}
                             </p>
                             @yield('header_right')
                         </div>

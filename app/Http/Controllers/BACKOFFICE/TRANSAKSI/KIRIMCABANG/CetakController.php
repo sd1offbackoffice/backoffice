@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\KIRIMCABANG;
 
+use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -18,7 +19,7 @@ class CetakController extends Controller
     }
 
     public function getData(Request $request){
-        $reprint = $request->reprint;
+        $reprint = $request->reprint == 0 ? null : $request->reprint;
         $jenis = $request->jenis;
         $tgl1 = $request->tgl1;
         $tgl2 = $request->tgl2;
@@ -27,9 +28,10 @@ class CetakController extends Controller
             $data = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                 ->selectRaw("trbo_nodoc no, trbo_tgldoc tgl")
                 ->where('trbo_typetrn','=','O')
-                ->whereRaw("trbo_recordid is null")
-                ->where('trbo_flagdoc','=',$reprint)
+                ->whereNull('trbo_recordid')
+                ->where('trbo_flagdoc',$reprint)
                 ->whereRaw("trbo_tgldoc between TO_DATE('".$tgl1."','dd/mm/yyyy') and TO_DATE('".$tgl2."','dd/mm/yyyy')")
+                ->distinct()
                 ->get();
         }
         else{
@@ -39,6 +41,7 @@ class CetakController extends Controller
                     ->where('trbo_typetrn','=','O')
                     ->whereRaw("nvl(trbo_flagdoc,' ') = '1'")
                     ->whereRaw("trbo_tgldoc between TO_DATE('".$tgl1."','dd/mm/yyyy') and TO_DATE('".$tgl2."','dd/mm/yyyy')")
+                    ->distinct()
                     ->get();
             }
             else{
@@ -55,39 +58,45 @@ class CetakController extends Controller
         return $data;
     }
 
-    public function storeData(Request $request){
-        try{
-            Session::put('kkc_nodoc', $request->nodoc);
-            Session::put('kkc_reprint', $request->reprint);
-            Session::put('kkc_jenis', $request->jenis);
-        }
-        catch(\Exception $e){
-            return 'false';
-        }
-        return 'true';
-    }
-
-    public function laporan(){
+    public function laporan(Request $request){
         $lap_nodoc = [];
-        $reprint = Session::get('kkc_reprint');
+        $oldnodoc = $request->nodoc;
+        $nodoc = explode('*',$request->nodoc);
+        $jenis = $request->jenis;
+        $vnodoc = null;
+
+        if(!$oldnodoc){
+            $perusahaan = DB::connection(Session::get('connection'))
+                ->table('tbmaster_perusahaan')
+                ->first();
+
+            $data = [];
+            return view('BACKOFFICE.TRANSAKSI.KIRIMCABANG.laporan-nota',compact(['perusahaan','data']));
+        }
 
         try{
             DB::connection(Session::get('connection'))->beginTransaction();
 
-            if(Session::get('kkc_jenis') == 1){
-                if(Session::get('kkc_reprint') == 0){
+            if($jenis == 1){
+                $reprint = DB::connection(Session::get('connection'))
+                    ->table('tbtr_backoffice')
+                    ->select('trbo_flagdoc')
+                    ->whereIn('trbo_nodoc',$nodoc)
+                    ->first()->trbo_flagdoc;
+
+                if($reprint == 0){
                     DB::connection(Session::get('connection'))->table('tbtr_backoffice')
-                        ->whereIn('trbo_nodoc',Session::get('kkc_nodoc'))
+                        ->whereIn('trbo_nodoc',$nodoc)
                         ->update([
                             'trbo_flagdoc' => '1'
                         ]);
                 }
 
-                $nodoc = "(";
-                foreach(Session::get('kkc_nodoc') as $l){
-                    $nodoc .= "'".$l."',";
+                $nodocs = "(";
+                foreach($nodoc as $l){
+                    $nodocs .= "'".$l."',";
                 }
-                $nodoc = substr($nodoc,0,-1).')';
+                $nodocs = substr($nodocs,0,-1).')';
 
                 $data = DB::connection(Session::get('connection'))->select("SELECT   trbo_nodoc,
                                              trbo_tgldoc,
@@ -122,7 +131,7 @@ class CetakController extends Controller
                                              gdg_namagudang
                                         FROM tbtr_backoffice, tbmaster_prodmast, tbmaster_cabang, tbmaster_gudang
                                        WHERE trbo_kodeigr = '".Session::get('kdigr')."'
-                                         AND trbo_nodoc in ".$nodoc."
+                                         AND trbo_nodoc in ".$nodocs."
                                          AND prd_kodeigr = trbo_kodeigr
                                          AND prd_prdcd = trbo_prdcd
                                          AND trbo_kodeigr = cab_kodeigr(+)
@@ -135,6 +144,10 @@ class CetakController extends Controller
                     ->first();
 
 //                dd($data[0]);
+
+                DB::connection(Session::get('connection'))->commit();
+
+                return view('BACKOFFICE.TRANSAKSI.KIRIMCABANG.laporan-list',compact(['perusahaan','data','reprint']));
 
                 $dompdf = new PDF();
 
@@ -153,8 +166,13 @@ class CetakController extends Controller
                 return $dompdf->stream('Edit List Surat Jalan.pdf');
             }
             else{
-                if($reprint == 0){
-                    foreach(Session::get('kkc_nodoc') as $knodoc){
+                $reprint = DB::connection(Session::get('connection'))
+                    ->table('tbtr_mstran_h')
+                    ->whereIn('msth_nodoc',$nodoc)
+                    ->first();
+
+                if(!$reprint){
+                    foreach($nodoc as $knodoc){
                         $c = loginController::getConnectionProcedure();
                         $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMORSTADOC('".Session::get('kdigr')."','SJK','Nomor Surat Jalan','3' || TO_CHAR(SYSDATE, 'yy'),5,TRUE); END;");
                         oci_bind_by_name($s, ':ret', $vnodoc, 32);
@@ -204,7 +222,7 @@ class CetakController extends Controller
                                     'mstd_hrgsatuan' => $d->trbo_hrgsatuan,
                                     'mstd_kodedivisi' => $d->prd_kodedivisi,
                                     'mstd_kodedepartement' => $d->prd_kodedepartement,
-                                    'mstd_kodekategoribrg' => $d->prd_kodekateg,
+                                    'mstd_kodekategoribrg' => $d->prd_kodekategoribarang,
                                     'mstd_qtybonus1' => $d->trbo_qtybonus1,
                                     'mstd_qtybonus2' => $d->trbo_qtybonus2,
                                     'mstd_persendisc1' => $d->trbo_persendisc1,
@@ -224,9 +242,9 @@ class CetakController extends Controller
                             $vmessage = '';
 
                             $c = loginController::getConnectionProcedure();
-                            $s = oci_parse($c, "BEGIN SP_IGR_UPDATE_STOCK('".Session::get('kdigr')."','01','".$d->trbo_prdcd."','".$d->trbo_kodesupplier."','TRFOUT','".$d->trbo_qty."','".$d->st_lastcost."','".$d->st_avgcost."','".Session::get('usid')."',:vlok,:vmessage); END;");
-                            oci_bind_by_name($s,':vlok',$vlok);
-                            oci_bind_by_name($s,':vmessage',$vmessage);
+                            $s = oci_parse($c, "BEGIN SP_IGR_UPDATE_STOCK_MIGRASI('".Session::get('kdigr')."','01','".$d->trbo_prdcd."','".$d->trbo_kodesupplier."','TRFOUT','".$d->trbo_qty."','".$d->st_lastcost."','".$d->st_avgcost."','".Session::get('usid')."',:vlok,:vmessage); END;");
+                            oci_bind_by_name($s,':vlok',$vlok,1000);
+                            oci_bind_by_name($s,':vmessage',$vmessage,1000);
                             oci_execute($s);
 
                             $v_supp = $d->prd_kodesupplier;
@@ -280,7 +298,7 @@ class CetakController extends Controller
                     }
                 }
                 else {
-                    $lap_nodoc = Session::get('kkc_nodoc');
+                    $lap_nodoc = $nodoc;
                 }
 
                 $nodoc = "(";
@@ -314,24 +332,20 @@ class CetakController extends Controller
 
 //                dd($data[0]);
 
-                $dompdf = new PDF();
+                DB::connection(Session::get('connection'))->commit();
 
-                $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.KIRIMCABANG.laporan-nota',compact(['perusahaan','data','reprint']));
+                if($vnodoc)
+                    $oldnodoc = $vnodoc;
 
-                error_reporting(E_ALL ^ E_DEPRECATED);
+                if($jenis != 1){
+                    $reprint = $reprint ? 1 : 0;
+                }
 
-                $pdf->output();
-                $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-                $canvas = $dompdf ->get_canvas();
-                $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-                $dompdf = $pdf;
-
-                return $dompdf->stream('Surat Jalan.pdf');
+                return view('BACKOFFICE.TRANSAKSI.KIRIMCABANG.laporan-nota',compact(['perusahaan','data','reprint']));
             }
         }
         catch(QueryException $e){
+            DB::connection(Session::get('connection'))->rollBack();
             dd($e->getMessage());
         }
     }

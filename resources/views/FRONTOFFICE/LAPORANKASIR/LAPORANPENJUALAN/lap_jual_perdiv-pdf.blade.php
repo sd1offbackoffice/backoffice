@@ -1,6 +1,7 @@
 @extends('pdf-template')
 
-@section('paper_size','842pt 595pt')
+@section('paper_widht','842pt')
+@section('paper_height','595pt')
 
 @section('custom_style')
 {{--    body{--}}

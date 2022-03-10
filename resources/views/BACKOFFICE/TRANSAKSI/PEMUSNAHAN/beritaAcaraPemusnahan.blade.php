@@ -606,7 +606,7 @@
                         } else {
                             swal('ERROR', "Something's Error", 'error')
                         }
-                        // clearField()
+                        clearField()
                     }, error: function (err) {
                         $('#modal-loader').modal('hide');
                         console.log(err.responseJSON.message.substr(0,100));

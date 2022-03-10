@@ -1,4 +1,4 @@
-@extends('pdf-template')
+@extends('html-template')
 
 @section('table_font_size','7 px')
 
@@ -39,6 +39,8 @@
             $temp = '';
             $total = 0;
             $totalppn = 0;
+            $subtotal = 0;
+            $subppn = 0;
         @endphp
         @foreach($data as $d)
             @if($temp != $d->msth_tgldoc)

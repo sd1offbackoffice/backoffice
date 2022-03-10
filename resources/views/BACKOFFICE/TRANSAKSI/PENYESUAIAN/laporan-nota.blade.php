@@ -143,7 +143,7 @@ $datetime->setTimezone($timezone);
             <td>{{ $d->mstd_prdcd }}</td>
             <td class="left">{{ $d->prd_deskripsipanjang }}</td>
             <td>{{ $d->kemasan }}</td>
-            <td>{{ number_format(floor($d->mstd_qty / $d->mstd_frac),0) }}</td>
+            <td>{{ number_format($d->mstd_qty < 0 ? ceil($d->mstd_qty / $d->mstd_frac) : floor($d->mstd_qty / $d->mstd_frac),0) }}</td>
             <td>{{ $d->mstd_qty % $d->mstd_frac }}</td>
             <td class="right">{{ number_format($d->mstd_hrgsatuan,2) }}</td>
             <td class="right">{{ number_format($d->mstd_gross,1) }}</td>

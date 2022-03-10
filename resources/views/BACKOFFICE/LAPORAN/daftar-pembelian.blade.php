@@ -37,11 +37,11 @@
                                 <div class="row">
                                     <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">TANGGAL</label>
                                     <div class="col-sm-2">
-                                        <input type="text" class="form-control" id="tgl1" onchange="cekTanggal('tgl1')">
+                                        <input type="text" class="form-control" id="tgl1" autocomplete="off" onchange="cekTanggal('tgl1')">
                                     </div>
                                     <label class="col-sm-1 pt-1 text-center">s/d</label>
                                     <div class="col-sm-2">
-                                        <input type="text" class="form-control" id="tgl2" onchange="cekTanggal('tgl2')">
+                                        <input type="text" class="form-control" id="tgl2" autocomplete="off" onchange="cekTanggal('tgl2')">
                                     </div>
                                 </div>
                                 <div class="row">
@@ -61,79 +61,79 @@
                                 <div class="row">
                                     <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">MULAI DIV</label>
                                     <div class="col-sm-2 buttonInside">
-                                        <input type="text" class="form-control" id="div1" disabled>
+                                        <input type="text" class="form-control" id="div1" readonly>
                                         <button id="btn_lov_div_1" type="button" class="btn btn-primary btn-lov p-0"
                                                 data-toggle="modal" data-target="#m_lov_div_1" disabled>
                                             <i class="fas fa-question"></i>
                                         </button>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" id="div1_nama" disabled>
+                                        <input type="text" class="form-control" id="div1_nama" readonly>
                                     </div>
                                 </div>
                                 <div class="row div1">
                                     <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">SAMPAI DIV</label>
                                     <div class="col-sm-2 buttonInside">
-                                        <input type="text" class="form-control" id="div2" disabled>
+                                        <input type="text" class="form-control" id="div2" readonly>
                                         <button id="btn_lov_div_2" type="button" class="btn btn-primary btn-lov p-0"
                                                 data-toggle="modal" data-target="#m_lov_div_2" disabled>
                                             <i class="fas fa-question"></i>
                                         </button>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" id="div2_nama" disabled>
+                                        <input type="text" class="form-control" id="div2_nama" readonly>
                                     </div>
                                 </div>
                                 <div class="row div1 div2">
                                     <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">MULAI DEPT</label>
                                     <div class="col-sm-2 buttonInside">
-                                        <input type="text" class="form-control" id="dep1" disabled>
+                                        <input type="text" class="form-control" id="dep1" readonly>
                                         <button id="btn_lov_dep_1" type="button" class="btn btn-primary btn-lov p-0"
                                                 data-toggle="modal" data-target="#m_lov_dep_1" disabled>
                                             <i class="fas fa-question"></i>
                                         </button>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" id="dep1_nama" disabled>
+                                        <input type="text" class="form-control" id="dep1_nama" readonly>
                                     </div>
                                 </div>
                                 <div class="row div1 div2 dep1">
                                     <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">SAMPAI DEPT</label>
                                     <div class="col-sm-2 buttonInside">
-                                        <input type="text" class="form-control" id="dep2" disabled>
+                                        <input type="text" class="form-control" id="dep2" readonly>
                                         <button id="btn_lov_dep_2" type="button" class="btn btn-primary btn-lov p-0"
                                                 data-toggle="modal" data-target="#m_lov_dep_2" disabled>
                                             <i class="fas fa-question"></i>
                                         </button>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" id="dep2_nama" disabled>
+                                        <input type="text" class="form-control" id="dep2_nama" readonly>
                                     </div>
                                 </div>
                                 <div class="row div1 div2 dep1 dep2">
                                     <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">MULAI KAT</label>
                                     <div class="col-sm-2 buttonInside">
-                                        <input type="text" class="form-control" id="kat1" disabled>
+                                        <input type="text" class="form-control" id="kat1" readonly>
                                         <button id="btn_lov_kat_1" type="button" class="btn btn-primary btn-lov p-0"
                                                 data-toggle="modal" data-target="#m_lov_kat_1" disabled>
                                             <i class="fas fa-question"></i>
                                         </button>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" id="kat1_nama" disabled>
+                                        <input type="text" class="form-control" id="kat1_nama" readonly>
                                     </div>
                                 </div>
                                 <div class="row div1 div2 dep1 dep2 kat1">
                                     <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">SAMPAI KAT</label>
                                     <div class="col-sm-2 buttonInside">
-                                        <input type="text" class="form-control" id="kat2" disabled>
+                                        <input type="text" class="form-control" id="kat2" readonly>
                                         <button id="btn_lov_kat_2" type="button" class="btn btn-primary btn-lov p-0"
                                                 data-toggle="modal" data-target="#m_lov_kat_2" disabled>
                                             <i class="fas fa-question"></i>
                                         </button>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" id="kat2_nama" disabled>
+                                        <input type="text" class="form-control" id="kat2_nama" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -142,27 +142,27 @@
                                 <div class="row">
                                     <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">MULAI SUPPLIER</label>
                                     <div class="col-sm-2 buttonInside">
-                                        <input type="text" class="form-control" id="sup1" disabled>
+                                        <input type="text" class="form-control" id="sup1" readonly>
                                         <button id="btn_lov_sup_1" type="button" class="btn btn-primary btn-lov p-0"
                                                 data-toggle="modal" data-target="#m_lov_sup_1" disabled>
                                             <i class="fas fa-question"></i>
                                         </button>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" id="sup1_nama" disabled>
+                                        <input type="text" class="form-control" id="sup1_nama" readonly>
                                     </div>
                                 </div>
                                 <div class="row div1">
                                     <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">SAMPAI SUPPLIER</label>
                                     <div class="col-sm-2 buttonInside">
-                                        <input type="text" class="form-control" id="sup2" disabled>
+                                        <input type="text" class="form-control" id="sup2" readonly>
                                         <button id="btn_lov_sup_2" type="button" class="btn btn-primary btn-lov p-0"
                                                 data-toggle="modal" data-target="#m_lov_sup_2" disabled>
                                             <i class="fas fa-question"></i>
                                         </button>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" id="sup2_nama" disabled>
+                                        <input type="text" class="form-control" id="sup2_nama" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -171,14 +171,14 @@
                                 <div class="row">
                                     <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">Monitoring</label>
                                     <div class="col-sm-2 buttonInside">
-                                        <input type="text" class="form-control" id="mtr" disabled>
+                                        <input type="text" class="form-control" id="mtr" readonly>
                                         <button id="btn_lov_mtr" type="button" class="btn btn-primary btn-lov p-0"
                                                 data-toggle="modal" data-target="#m_lov_mtr">
                                             <i class="fas fa-question"></i>
                                         </button>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" id="mtr_nama" disabled>
+                                        <input type="text" class="form-control" id="mtr_nama" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -1154,15 +1154,16 @@
                 return false;
             }
 
-            if (!valid_divdepkat && !valid_kodemtr && !valid_supplier) {
-                swal({
-                    title: 'Inputan belum lengkap!',
-                    icon: 'warning'
-                });
-            }
-            else {
-                window.open(`{{ url()->current() }}/cetak?tipe=${$('#tipe').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}&div1=${$('#div1').val()}&div2=${$('#div2').val()}&dep1=${$('#dep1').val()}&dep2=${$('#dep2').val()}&kat1=${$('#kat1').val()}&kat2=${$('#kat2').val()}&sup1=${$('#sup1').val()}&sup2=${$('#sup2').val()}&mtr=${$('#mtr').val()}&sort=${$('#sort').val()}`, '_blank');
-            }
+            {{--if (!valid_divdepkat && !valid_kodemtr && !valid_supplier) {--}}
+            {{--    swal({--}}
+            {{--        title: 'Inputan belum lengkap!',--}}
+            {{--        icon: 'warning'--}}
+            {{--    });--}}
+            {{--}--}}
+            {{--else {--}}
+            {{--    window.open(`{{ url()->current() }}/cetak?tipe=${$('#tipe').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}&div1=${$('#div1').val()}&div2=${$('#div2').val()}&dep1=${$('#dep1').val()}&dep2=${$('#dep2').val()}&kat1=${$('#kat1').val()}&kat2=${$('#kat2').val()}&sup1=${$('#sup1').val()}&sup2=${$('#sup2').val()}&mtr=${$('#mtr').val()}&sort=${$('#sort').val()}`, '_blank');--}}
+            {{--}--}}
+            window.open(`{{ url()->current() }}/cetak?tipe=${$('#tipe').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}&div1=${$('#div1').val()}&div2=${$('#div2').val()}&dep1=${$('#dep1').val()}&dep2=${$('#dep2').val()}&kat1=${$('#kat1').val()}&kat2=${$('#kat2').val()}&sup1=${$('#sup1').val()}&sup2=${$('#sup2').val()}&mtr=${$('#mtr').val()}&sort=${$('#sort').val()}`, '_blank');
         }
     </script>
 

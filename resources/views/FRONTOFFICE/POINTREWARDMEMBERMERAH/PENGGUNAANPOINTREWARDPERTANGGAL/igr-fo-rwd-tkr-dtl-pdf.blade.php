@@ -1,4 +1,4 @@
-@extends('pdf-template')
+@extends('html-template')
 
 @section('table_font_size','7 px')
 
@@ -87,20 +87,22 @@
                     @endphp
                 @endif
             @endfor
+            <tr style="font-weight: bold;text-align: center">
+                <td colspan="3"></td>
+                <td align="right">Total</td>
+                <td align="right">{{ number_format($total_tkr, 0,".",",")  }}</td>
+                <td align="right">{{ number_format($total_rdm, 0,".",",")  }}</td>
+                <td align="right">{{ number_format($total_tot_tkr, 0,".",",")  }}</td>
+            </tr>
         @else
             <tr>
                 <td colspan="6">TIDAK ADA DATA</td>
             </tr>
         @endif
+
         </tbody>
         <tfoot>
-        <tr style="font-weight: bold;text-align: center">
-            <td colspan="3"></td>
-            <td align="right">Total</td>
-            <td align="right">{{ number_format($total_tkr, 0,".",",")  }}</td>
-            <td align="right">{{ number_format($total_rdm, 0,".",",")  }}</td>
-            <td align="right">{{ number_format($total_tot_tkr, 0,".",",")  }}</td>
-        </tr>
+
         </tfoot>
     </table>
 @endsection

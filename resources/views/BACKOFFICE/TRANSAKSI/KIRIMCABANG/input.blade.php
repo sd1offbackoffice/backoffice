@@ -12,7 +12,7 @@
                         <div class="row">
                             <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">NOMOR TRN</label>
                             <div class="col-sm-2 buttonInside">
-                                <input type="text" class="form-control" id="notrn">
+                                <input type="text" class="form-control" id="notrn" autocomplete="off">
                                 <button id="btn_lov_trn" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov_trn" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
@@ -134,7 +134,7 @@
                             </table>
                             <div class="row mt-1">
                                 <div class="col-sm-6">
-                                    <input type="text" class="form-control" id="deskripsi" disabled>
+                                    <input type="text" class="form-control" id="deskripsi" disabled autocomplete="off">
                                 </div>
                             </div>
                         </div>
@@ -436,6 +436,7 @@
         var tgltrn;
         var datalks = [];
         var parameterPPN = {{ Session::get('ppn') }};
+        var arrCabang = [];
 
         $(document).ready(function(){
             tgltrn = $('#tgltrn').datepicker({
@@ -546,6 +547,8 @@
                 "responsive": true,
                 "createdRow": function (row, data, dataIndex) {
                     $(row).addClass('row-lov-cabang').css({'cursor': 'pointer'});
+
+                    arrCabang.push(data);
                 },
                 "order" : [],
                 "initComplete" : function(){
@@ -593,7 +596,7 @@
 
                         $('.row-'+currentRow+' .prdcd').val(prdcd);
 
-                        getDataPlu(null, prdcd);
+                        getDataPlu(prdcd);
                     });
                 }
             });
@@ -634,6 +637,7 @@
 
                         row = $('.row-'+currentRow);
 
+                        row.find('.prdcd').val(prdcd);
                         row.find('.deskripsi').val(response.prd_deskripsipendek);
                         row.find('.satuan').val(response.prd_unit+'/'+response.prd_frac);
                         row.find('.tag').val(response.prd_kodetag);
@@ -675,12 +679,6 @@
                 }
             });
         }
-
-        $('#notrn').on('keypress',function(e){
-            if(e.which == 13){
-                getDataTrn(this.value);
-            }
-        });
 
         function getDataTrn(notrn){
             $.ajax({
@@ -735,7 +733,7 @@
                                 <td><input type="text" class="form-control sctn" value="${parseInt(response[i].st_saldoakhir / response[i].prd_frac)}" disabled></td>
                                 <td><input type="text" class="form-control spcs" value="${response[i].st_saldoakhir % response[i].prd_frac}" disabled></td>
                                 <td><input type="text" class="form-control kctn" value="${parseInt(response[i].trbo_qty / response[i].prd_frac)}" onkeyup="hitunghrg(${rowIndex})" onblur="cekqty(${rowIndex})"></td>
-                                <td><input type="text" class="form-control kpcs" value="${response[i].trbo_qty % response[i].prd_frac}" onkeyup="hitunghrg(${rowIndex})" onblur="cekqty(${rowIndex})" onkeypress="showLKS(event, ${rowIndex})"></td>
+                                <td><input type="text" class="form-control kpcs" value="${response[i].trbo_qty % response[i].prd_frac}" onkeyup="hitunghrg(${rowIndex})" onblur="showLKSonBlur(${rowIndex})" onkeypress="showLKS(event, ${rowIndex})"></td>
                                 <td><input type="text" class="form-control hrgsatuan" value="${convertToRupiah(response[i].trbo_hrgsatuan)}" disabled></td>
                                 <td><input type="text" class="form-control gross" value="${convertToRupiah(response[i].trbo_gross)}"></td>
                                 <td><input type="text" class="form-control ppn" value="${convertToRupiah(response[i].trbo_ppnrph)}" disabled></td>
@@ -815,7 +813,7 @@
                 <td><input type="text" class="form-control sctn" disabled></td>
                 <td><input type="text" class="form-control spcs" disabled></td>
                 <td><input type="text" class="form-control kctn" onkeyup="hitunghrg(${rowIndex})" onblur="cekqty(${rowIndex})"></td>
-                <td><input type="text" class="form-control kpcs" onkeyup="hitunghrg(${rowIndex})" onblur="cekqty(${rowIndex})" onkeypress="showLKS(event, ${rowIndex})"></td>
+                <td><input type="text" class="form-control kpcs" onkeyup="hitunghrg(${rowIndex})" onblur="showLKSonBlur(${rowIndex})" onkeypress="showLKS(event, ${rowIndex})" onchange="showLKS(event, ${rowIndex})"></td>
                 <td><input type="text" class="form-control hrgsatuan" disabled></td>
                 <td><input type="text" class="form-control gross"></td>
                 <td><input type="text" class="form-control ppn" disabled></td>
@@ -850,12 +848,20 @@
             $('#totalitem').val(totalitem);
         }
 
+        function showLKSonBlur(index){
+            var e = jQuery.Event("keypress");
+            e.which = 13; //choose the one you want
+
+            cekqty(index);
+            showLKS(e, index);
+        }
+
         function showLKS(e, index){
             prdcd = $('.row-'+index).find('.prdcd').val();
 
             currentRow = index;
 
-            if(e.which == 13){
+            if(e.which == 13 || e.type == 'change'){
                 $.ajax({
                     type: "GET",
                     url: "{{ url('/bo/transaksi/kirimcabang/input/get-data-lks') }}",
@@ -876,7 +882,7 @@
                             $('#table_lks').DataTable().destroy();
                         }
 
-                        $("#table_lks tbody [role='row']").remove();
+                        $("#table_lks tbody tr").remove();
 
                         for(i=0;i<response.length;i++){
                             html = `<tr>
@@ -891,6 +897,14 @@
 
                             $('#table_lks tbody').append(html);
                         }
+
+                        $('#table_lks').DataTable({
+                            "scrollY": "30vh",
+                            "paging" : false,
+                            "sort": false,
+                            "bInfo": false,
+                            "searching": false
+                        });
 
                         $('#lks_nodoc').val($('#notrn').val());
                         $('#lks_prdcd').val(prdcd);
@@ -953,13 +967,13 @@
         }
 
         $('#m_lks').on('shown.bs.modal',() => {
-            $('#table_lks').DataTable({
-                "scrollY": "30vh",
-                "paging" : false,
-                "sort": false,
-                "bInfo": false,
-                "searching": false
-            });
+            // $('#table_lks').DataTable({
+            //     "scrollY": "30vh",
+            //     "paging" : false,
+            //     "sort": false,
+            //     "bInfo": false,
+            //     "searching": false
+            // });
 
             $('#table_lks .ctn:eq(0)').select();
         });
@@ -1073,60 +1087,65 @@
         }
 
         $('#notrn').on('keypress',function(e){
-            if(e.which == 13 && $(this).val().length == 0){
-                swal({
-                    title: 'Buat Nomor Surat Jalan Baru?',
-                    icon: 'warning',
-                    buttons: true,
-                    dangerMode: true
-                }).then((ok) => {
-                    if(ok){
-                        $.ajax({
-                            type: "GET",
-                            url: "{{ url('/bo/transaksi/kirimcabang/input/get-new-no-trn') }}",
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            data: {notrn: notrn},
-                            beforeSend: function () {
-                                $('#modal-loader').modal('show');
-                            },
-                            success: function (response) {
-                                $('#modal-loader').modal('hide');
+            if(e.which == 13){
+                if($(this).val().length == 0){
+                    swal({
+                        title: 'Buat Nomor Surat Jalan Baru?',
+                        icon: 'warning',
+                        buttons: true,
+                        dangerMode: true
+                    }).then((ok) => {
+                        if(ok){
+                            $.ajax({
+                                type: "GET",
+                                url: "{{ url('/bo/transaksi/kirimcabang/input/get-new-no-trn') }}",
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                data: {notrn: notrn},
+                                beforeSend: function () {
+                                    $('#modal-loader').modal('show');
+                                },
+                                success: function (response) {
+                                    $('#modal-loader').modal('hide');
 
-                                if($.fn.DataTable.isDataTable('#table_daftar')){
-                                    $('#table_daftar').DataTable().destroy();
+                                    if($.fn.DataTable.isDataTable('#table_daftar')){
+                                        $('#table_daftar').DataTable().destroy();
+                                    }
+
+                                    $("#table_daftar tbody [role='row']").remove();
+                                    $('input').val('');
+                                    rowIndex = 0;
+                                    data = [];
+
+                                    $('#model').val('* TAMBAH *');
+                                    // $('#table_daftar input').prop('disabled',false);
+
+                                    enableField();
+
+                                    tambahItem();
+
+                                    $('#notrn').val(response);
+                                    tgltrn.datepicker('setDate',new Date())
+                                },
+                                error: function (error) {
+                                    $('#modal-loader').modal('hide');
+                                    // handle error
+                                    swal({
+                                        title: 'Terjadi kesalahan!',
+                                        text: error.responseJSON.message,
+                                        icon: 'error'
+                                    }).then(() => {
+
+                                    });
                                 }
-
-                                $("#table_daftar tbody [role='row']").remove();
-                                $('input').val('');
-                                rowIndex = 0;
-                                data = [];
-
-                                $('#model').val('* TAMBAH *');
-                                // $('#table_daftar input').prop('disabled',false);
-
-                                enableField();
-
-                                tambahItem();
-
-                                $('#notrn').val(response);
-                                tgltrn.datepicker('setDate',new Date())
-                            },
-                            error: function (error) {
-                                $('#modal-loader').modal('hide');
-                                // handle error
-                                swal({
-                                    title: 'Terjadi kesalahan!',
-                                    text: error.responseJSON.message,
-                                    icon: 'error'
-                                }).then(() => {
-
-                                });
-                            }
-                        });
-                    }
-                })
+                            });
+                        }
+                    });
+                }
+                else{
+                    getDataTrn(this.value);
+                }
             }
         });
 
@@ -1155,9 +1174,9 @@
                                title: response.title,
                                text: response.message,
                                icon: response.status
+                           }).then(() => {
+                               location.reload();
                            });
-
-                           lovtrn.ajax.reload();
                        },
                        error: function (error) {
                            $('#modal-loader').modal('hide');
@@ -1167,7 +1186,7 @@
                                text: error.responseJSON.message,
                                icon: 'error'
                            }).then(() => {
-
+                               location.reload();
                            });
                        }
                    });
@@ -1190,6 +1209,7 @@
                 trbo_ppnrph = [];
                 trbo_averagecost = [];
                 trbo_stokqty = [];
+                trbo_keterangan = [];
 
                 $('#table_daftar tbody tr').each(function(){
                     idx = $(this).attr('class').replace(/ .*/,'');
@@ -1197,13 +1217,14 @@
                     frac = data[idx].prd_frac;
 
                     row = $(this);
-                    trbo_prdcd.push(row.find('.prdcd').val());
+                    trbo_prdcd.push(convertPlu(row.find('.prdcd').val()));
                     trbo_qty.push(frac * row.find('.kctn').val() + parseInt(row.find('.kpcs').val()));
                     trbo_hrgsatuan.push(data[idx].prd_avgcost);
                     trbo_gross.push(unconvertToRupiah(row.find('.gross').val()));
                     trbo_ppnrph.push(unconvertToRupiah(row.find('.ppn').val()));
                     trbo_averagecost.push(data[idx].prd_avgcost);
                     trbo_stokqty.push(frac * row.find('.sctn').val() + parseInt(row.find('.spcs').val()));
+                    trbo_keterangan.push(row.find('.keterangan').val());
                 });
 
                 $.ajax({
@@ -1222,7 +1243,8 @@
                         trbo_gross,
                         trbo_ppnrph,
                         trbo_averagecost,
-                        trbo_stokqty
+                        trbo_stokqty,
+                        trbo_keterangan
                     },
                     beforeSend: function () {
                         $('#modal-loader').modal('show');
@@ -1234,6 +1256,8 @@
                             title: response.title,
                             text: response.message,
                             icon: response.status
+                        }).then(() => {
+                            location.reload();
                         });
                     },
                     error: function (error) {
@@ -1344,6 +1368,28 @@
                 }
             });
         }
+
+        $('#kodecabang').on('keypress',function(e){
+            if(e.which == 13){
+                found = false;
+                $.each(arrCabang, function(key, value){
+                    if($('#kodecabang').val() == value.cab_kodecabang){
+                        $('#namacabang').val(value.cab_namacabang);
+                        found = true;
+                    }
+                });
+
+                if(!found){
+                    swal({
+                        title: 'Cabang yang diinputkan salah!',
+                        icon: 'error'
+                    }).then(() => {
+                        $('#kodecabang').select();
+                    });
+                }
+                else $('.row-1 .prdcd').select();
+            }
+        })
     </script>
 
 @endsection

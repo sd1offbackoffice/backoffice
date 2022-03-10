@@ -1029,4 +1029,81 @@ ORDER BY trpt_cus_kodemember");
 
         return $dompdf->stream($title.'.pdf');
     }
+
+    public function cetakShopeepay(Request $request){
+        $tanggal = $request->tanggal;
+
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
+            ->first();
+
+        $data = DB::connection(Session::get('connection'))
+            ->select("  SELECT    vir_cashierstation
+         || '.'
+         || vir_cashierid
+         || '.'
+         || SUBSTR (username, 1, 5)
+            kassa,
+         SUM (fee_in) fee_in,
+         SUM (nilai_in) nilai_in,
+         SUM (fee_out) fee_out,
+         SUM (nilai_out) nilai_out,
+         SUM (nilai_buy) nilai_buy
+    FROM (  SELECT vir_cashierstation,
+                   vir_cashierid,
+                   SUM (fee_in) fee_in,
+                   SUM (nilai_in) nilai_in,
+                   SUM (fee_out) fee_out,
+                   SUM (nilai_out) nilai_out,
+                   SUM (nilai_buy) nilai_buy
+              FROM (SELECT vir_cashierstation,
+                           vir_cashierid,
+                           CASE
+                              WHEN vir_transactiontype = 'CI' THEN vir_fee
+                              ELSE 0
+                           END
+                              fee_in,
+                           CASE
+                              WHEN vir_transactiontype = 'CI' THEN vir_amount
+                              ELSE 0
+                           END
+                              nilai_in,
+                           CASE
+                              WHEN vir_transactiontype = 'CO' THEN vir_fee
+                              ELSE 0
+                           END
+                              fee_out,
+                           CASE
+                              WHEN vir_transactiontype = 'CO' THEN vir_amount
+                              ELSE 0
+                           END
+                              nilai_out,
+                           CASE
+                              WHEN vir_transactiontype = 'S' THEN vir_amount
+                              ELSE 0
+                           END
+                              nilai_buy
+                      FROM tbtr_virtual
+                     WHERE     TRUNC (vir_transactiondate) = to_date('".$tanggal."','dd/mm/yyyy')
+                           AND vir_kodeigr = '".Session::get('kdigr')."'
+                           AND vir_method = 'SHOPEEPAY'
+                           AND vir_transactiontype IN ('CI', 'CO', 'S')) aa
+          GROUP BY vir_cashierstation, vir_cashierid) bb,
+         tbmaster_user
+   WHERE     kodeigr(+) = '".Session::get('kdigr')."'
+         AND userid(+) = vir_cashierid
+GROUP BY    vir_cashierstation
+         || '.'
+         || vir_cashierid
+         || '.'
+         || SUBSTR (username, 1, 5)
+ORDER BY    vir_cashierstation
+         || '.'
+         || vir_cashierid
+         || '.'
+         || SUBSTR (username, 1, 5)");
+
+//        dd($data);
+
+        return view('FRONTOFFICE.LAPORANKASIR.ACTUAL.shopeepay-pdf',compact(['perusahaan','data','tanggal']));
+    }
 }

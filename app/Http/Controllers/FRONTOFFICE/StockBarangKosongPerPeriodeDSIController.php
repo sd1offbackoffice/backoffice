@@ -16,12 +16,21 @@ use Yajra\DataTables\DataTables;
 class StockBarangKosongPerPeriodeDSIController extends Controller
 {
     public function index(){
+//        $monitoringPLU = DB::connection(Session::get('connection'))
+//            ->table('tbtr_monitoringplu')
+//            ->select('mpl_kodemonitoring','mpl_namamonitoring')
+//            ->whereNotNull('mpl_kodemonitoring')
+//            ->groupBy(['mpl_kodemonitoring','mpl_namamonitoring'])
+//            ->orderBy('mpl_namamonitoring')
+//            ->get();
+
         $monitoringPLU = DB::connection(Session::get('connection'))
-            ->table('tbtr_monitoringplu')
-            ->select('mpl_kodemonitoring','mpl_namamonitoring')
-            ->whereNotNull('mpl_kodemonitoring')
-            ->groupBy(['mpl_kodemonitoring','mpl_namamonitoring'])
-            ->orderBy('mpl_namamonitoring')
+            ->table('tbmaster_monitoringplueis')
+            ->select('mtr_kodemtr','mtr_namamtr')
+            ->whereNotNull('mtr_kodemtr')
+            ->whereNull('mtr_record_id')
+            ->groupBy(['mtr_kodemtr','mtr_namamtr'])
+            ->orderBy('mtr_kodemtr')
             ->get();
 
         return view('FRONTOFFICE.stock-barang-kosong-per-periode-dsi')
@@ -51,12 +60,12 @@ class StockBarangKosongPerPeriodeDSIController extends Controller
                               STH_AVGCOST
                               from tbtr_stockharian
                               join tbmaster_prodmast on sth_prdcd = prd_prdcd and sth_kodeigr = prd_kodeigr
-                              join tbtr_monitoringplu on mpl_kodeigr = sth_kodeigr and mpl_prdcd = sth_prdcd
+                              join tbmaster_monitoringplueis on mtr_prdcd = sth_prdcd
                               where sth_kodeigr = '".Session::get('kdigr')."'
                               and sth_lokasi = '01'
                               and sth_periode BETWEEN to_date('".$tgl1."','dd/mm/yyyy')
                               AND to_date('".$tgl2."','dd/mm/yyyy')
-                              AND mpl_kodemonitoring = '".$monitoringPLU."'
+                              AND mtr_kodemtr = '".$monitoringPLU."'
                               --and sth_prdcd = '1394730'
                               order by sth_prdcd, sth_periode asc, sth_lokasi");
 
@@ -83,7 +92,7 @@ class StockBarangKosongPerPeriodeDSIController extends Controller
 
                 $temp = DB::connection('igrcrm')
                     ->table('tb_avg_3_bulan')
-                    ->select('tba_avg_qty')
+                    ->selectRaw("round(tba_avg_qty) tba_avg_qty")
                     ->whereRaw("tba_periode = LAST_DAY (ADD_MONTHS (TRUNC (to_date('".$d->periode."','dd/mm/yyyy')), -1)) + 1")
                     ->where('tba_kodeigr','=',$d->sth_kodeigr)
                     ->where('tba_prdcd','=',$d->sth_prdcd)
@@ -98,11 +107,11 @@ class StockBarangKosongPerPeriodeDSIController extends Controller
 
             $temp = DB::connection(Session::get('connection'))
                 ->table('tbtr_po_d')
-                ->selectRaw("tpod_tglpo, sum(tpod_qtypo) qtypo, count(tpod_prdcd) frqpo")
+                ->selectRaw("tpod_prdcd, sum(tpod_qtypo) qtypo, count(tpod_prdcd) frqpo")
                 ->where('tpod_kodeigr','=',$d->sth_kodeigr)
-                ->where('tpod_tglpo','=',Carbon::createFromFormat('d/m/Y',$d->periode))
+                ->whereBetween('tpod_tglpo',[Carbon::createFromFormat('d/m/Y',$tgl1), Carbon::createFromFormat('d/m/Y',$tgl2)])
                 ->where('tpod_prdcd','=',$d->sth_prdcd)
-                ->groupBy('tpod_tglpo')
+                ->groupBy('tpod_prdcd')
                 ->first();
 
             if($temp){
@@ -116,11 +125,12 @@ class StockBarangKosongPerPeriodeDSIController extends Controller
 
             $temp = DB::connection(Session::get('connection'))
                 ->table('tbtr_mstran_d')
-                ->selectRaw("mstd_tgldoc, sum(mstd_qty) frqbpb, count(mstd_prdcd) qtybpb")
+                ->selectRaw("mstd_prdcd, sum(mstd_qty) qtybpb, count(mstd_prdcd) frqbpb")
                 ->where('mstd_kodeigr','=',$d->sth_kodeigr)
-                ->where('mstd_tgldoc','=',Carbon::createFromFormat('d/m/Y',$d->periode))
+//                ->where('mstd_tgldoc','=',Carbon::createFromFormat('d/m/Y',$d->periode))
+                ->whereBetween('mstd_tgldoc',[Carbon::createFromFormat('d/m/Y',$tgl1), Carbon::createFromFormat('d/m/Y',$tgl2)])
                 ->where('mstd_prdcd','=',$d->sth_prdcd)
-                ->groupBy('mstd_tgldoc')
+                ->groupBy('mstd_prdcd')
                 ->first();
 
             if($temp){
@@ -134,7 +144,7 @@ class StockBarangKosongPerPeriodeDSIController extends Controller
 
             $jmlhari = Carbon::createFromFormat('d/m/Y',$tgl1)->daysInMonth;
 
-            $tempData->avgdsi = is_null($tempData->v_avg_qty) ? null : $tempData->v_avg_qty / $jmlhari;
+            $tempData->avgdsi = is_null($tempData->v_avg_qty) ? null : round($tempData->v_avg_qty / $jmlhari);
 
 
 //            if(MSTR_QTY /
@@ -152,7 +162,7 @@ class StockBarangKosongPerPeriodeDSIController extends Controller
 //                    -1
 //}
 //}
-            $tempData->sl = ($tempData->qtybpb / ($tempData->qtypo > 0 ? $tempData->qtypo : -1) * 100 < 0) ? 0 : ($tempData->qtybpb / ($tempData->qtypo > 0 ? $tempData->qtypo : -1));
+            $tempData->sl = ($tempData->qtybpb / ($tempData->qtypo > 0 ? $tempData->qtypo : -1) * 100 < 0) ? 0 : ($tempData->qtybpb / ($tempData->qtypo > 0 ? $tempData->qtypo : -1) * 100);
 
             $stock = DB::connection(Session::get('connection'))
                 ->table('tbmaster_stock')
@@ -170,7 +180,7 @@ class StockBarangKosongPerPeriodeDSIController extends Controller
 //                ((IF(ST_SALDOAWAL<=TBA_AVG_DSI*DSI,1,0) * round((TBA_AVG_DSI*DSI),0.01)) -
                 //IF(ST_SALDOAWAL <= (TBA_AVG_DSI*DSI),
                 //IF(ST_SALDOAWAL<0,0,ST_SALDOAWAL),0))*(PRD_HRGJUAL/PRD_FRAC)
-                $tempData->rupiah = ((($stock->st_saldoawal <= $tempData->v_avg_qty * $request->dsi) ? 1 : 0) * round($tempData->avgdsi * $request->dsi)) - ($stock->st_saldoawal <= ($tempData->avgdsi * $request->dsi) ? ($stock->st_saldoawal < 0 ? 0 : $stock->st_saldoawal) : 0) * $tempData->hrgjual;
+                $tempData->rupiah = ((($stock->st_saldoawal <= $tempData->avgdsi * $request->dsi) ? 1 : 0) * round($tempData->avgdsi * $request->dsi)) - ($stock->st_saldoawal <= ($tempData->avgdsi * $request->dsi) ? ($stock->st_saldoawal < 0 ? 0 : $stock->st_saldoawal) : 0) * $tempData->hrgjual;
             }
             else{
                 $tempData->qty = null;
@@ -273,10 +283,10 @@ class StockBarangKosongPerPeriodeDSIController extends Controller
             ->first();
 
         $monitoring = DB::connection(Session::get('connection'))
-            ->table('tbtr_monitoringplu')
-            ->select('mpl_namamonitoring')
-            ->where('mpl_kodemonitoring','=',$monitoringPLU)
-            ->first()->mpl_namamonitoring;
+            ->table('tbmaster_monitoringplueis')
+            ->select('mtr_namamtr')
+            ->where('mtr_kodemtr','=',$monitoringPLU)
+            ->first()->mtr_namamtr;
 
         $data = json_decode(self::viewReport($request)->getContent());
 
@@ -370,7 +380,7 @@ class StockBarangKosongPerPeriodeDSIController extends Controller
             "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
             "Expires" => "0"
         ];
-        $file = fopen($filename, 'w');
+        $file = fopen(storage_path($filename), 'w');
 
         fputcsv($file, $columnHeader, '|');
         foreach ($linebuffs as $linebuff) {
@@ -378,6 +388,6 @@ class StockBarangKosongPerPeriodeDSIController extends Controller
         }
         fclose($file);
 
-        return response()->download(public_path($filename))->deleteFileAfterSend(true);
+        return response()->download(storage_path($filename))->deleteFileAfterSend(true);
     }
 }

@@ -225,7 +225,7 @@
                 member2 = temp;
             }
         }
-return false;
+
         //PRINT
         window.open(`{{ url()->current() }}/print-daftar-anggota-or-type-outlet?outlet1=${outlet1}&outlet2=${outlet2}&member1=${member1}&member2=${member2}`, '_blank');
     }

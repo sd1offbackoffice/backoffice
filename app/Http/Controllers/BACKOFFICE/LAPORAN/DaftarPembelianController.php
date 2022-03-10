@@ -116,12 +116,11 @@ class DaftarPembelianController extends Controller
         $and_kat = '';
         $and_sup = '';
         $p_order = '';
-
         if ($sort == 1) {
-            $and_doc = " and mstd_nodoc = msth_nodoc and TRUNC(mstd_tgldoc) BETWEEN TO_DATE('" . $tgl1 . "','dd/mm/yyyy') AND TO_DATE('" . $tgl2 . "','dd/mm/yyyy')";
+            $and_doc = " and mstd_nodoc = msth_nodoc and TRUNC(mstd_tgldoc) BETWEEN TO_DATE('" . $tgl1 . "','dd/mm/yyyy') AND TO_DATE('" . $tgl2 . "','dd/mm/yyyy') and TRUNC(msth_tgldoc) BETWEEN TO_DATE('" . $tgl1 . "','dd/mm/yyyy') AND TO_DATE('" . $tgl2 . "','dd/mm/yyyy')";
             $p_order = 'order by msth_kodesupplier,msth_nodoc,msth_tgldoc';
         } else {
-            $and_doc = " and mstd_nopo = msth_nopo and mstd_nodoc = msth_nodoc and TRUNC(mstd_tglpo) between TO_DATE('" . $tgl1 . "','dd/mm/yyyy') and TO_DATE('" . $tgl2 . "','dd/mm/yyyy')";
+            $and_doc = " and mstd_nopo = msth_nopo and mstd_nodoc = msth_nodoc and TRUNC(mstd_tglpo) between TO_DATE('" . $tgl1 . "','dd/mm/yyyy') and TO_DATE('" . $tgl2 . "','dd/mm/yyyy') AND TRUNC(msth_tglpo) BETWEEN TO_DATE('" . $tgl1 . "','dd/mm/yyyy') AND TO_DATE('" . $tgl2 . "','dd/mm/yyyy')";
             $p_order = 'order by msth_kodesupplier, msth_nopo, msth_tglpo';
         }
         if (isset($sup1) && isset($sup2)) {
@@ -228,7 +227,9 @@ where msth_typetrn='B'
         and kat_kodekategori (+) = mstd_kodekategoribrg
         and kat_kodeigr (+) = mstd_kodeigr
         " . $and_plu . "
-        and mstd_kodedivisi||mstd_kodedepartement||mstd_kodekategoribrg  between  '" . $div1 . "'||'" . $dep1 . "'||'" . $kat1 . "' and '" . $div2 . "'||'" . $dep2 . "'||'" . $kat2 . "'
+        " . $and_div . "
+        " . $and_dep . "
+        " . $and_kat . "
         order by div_kodedivisi, dep_kodedepartement, kat_kodekategori)
 group by mstd_kodedivisi, div_namadivisi,
         mstd_kodedepartement, dep_namadepartement,
@@ -236,27 +237,15 @@ group by mstd_kodedivisi, div_namadivisi,
         prs_namaperusahaan, prs_namacabang, prs_namawilayah
 order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg");
 
-            $dompdf = new PDF();
+            return view('BACKOFFICE.LAPORAN.daftar-pembelian-ringkasan-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.daftar-pembelian-ringkasan-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(614, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream('LAPORAN DAFTAR PEMBELIAN ANTAR CABANG RINGKASAN DIVISI/DEPT/KATEGORI.pdf');
         } else if ($tipe === '2') {
             $and_sup = ' ';
             if (isset($mtr) && $mtr <> '') {
                 $and_sup = " and mstd_kodemonitoring in (select msu_kodemonitoring from tbtr_monitoringsupplier
    		                    where msu_kodeigr = '" . Session::get('kdigr') . "' and msu_kodemonitoring = '" . $mtr . "')";
-            } else {
+            }
+            if(isset($sup1)){
                 $and_sup = " and sup_kodeigr = '" . Session::get('kdigr') . "' and sup_kodesupplier between '" . $sup1 . "' and '" . $sup2 . "'";
             }
             $data = DB::connection(Session::get('connection'))->select("select mstd_kodesupplier, sup_namasupplier,
@@ -318,8 +307,6 @@ where msth_typetrn='B'
         and msth_kodeigr='" . Session::get('kdigr') . "'
         " . $and_doc . "
         and nvl(msth_recordid, '9') <> '1'
-        and msth_kodesupplier between '" . $sup1 . "' and '" . $sup2 . "'
-        and nvl(mstd_recordid, '9') <> '1'
         and mstd_kodeigr=msth_kodeigr
         and prs_kodeigr=msth_kodeigr
        " . $and_sup . "
@@ -330,21 +317,8 @@ group by mstd_kodesupplier, sup_namasupplier,
         prs_namaperusahaan, prs_namacabang, prs_namawilayah
 order by mstd_kodesupplier");
 
-            $dompdf = new PDF();
+            return view('BACKOFFICE.LAPORAN.daftar-pembelian-ringkasan-per-supplier-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.daftar-pembelian-ringkasan-per-supplier-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(986, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream('LAPORAN DAFTAR PEMBELIAN RINGKASAN PER SUPPLIER.pdf');
         } else if ($tipe === '3') {
             $data = DB::connection(Session::get('connection'))->select("select no_doc, tgl_doc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
         sum(ctn) ctn, sum(pcs) pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -440,7 +414,9 @@ where msth_typetrn='B'
         and kat_kodedepartement(+) = mstd_kodedepartement
         and kat_kodekategori(+) = mstd_kodekategoribrg
        " . $and_plu . "
-        and (mstd_kodedivisi||mstd_kodedepartement||mstd_kodekategoribrg between '" . $div1 . "'||'" . $dep1 . "'||'" . $kat1 . "' and '" . $div2 . "'||'" . $dep2 . "'||'" . $kat2 . "')
+       " . $and_div . "
+        " . $and_dep . "
+        " . $and_kat . "
         order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg, no_doc, tgl_doc)
 group by
         no_doc, tgl_doc,
@@ -451,21 +427,8 @@ group by
         mstd_kodekategoribrg, kat_namakategori
 order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg, no_doc, tgl_doc");
 
-            $dompdf = new PDF();
+            return view('BACKOFFICE.LAPORAN.daftar-pembelian-rincian-per-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.daftar-pembelian-rincian-per-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(1115, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream('LAPORAN DAFTAR PEMBELIAN RINCIAN PER DIVDEPKAT.pdf');
         } else if ($tipe === '4') {
             $data = DB::connection(Session::get('connection'))->select("select no_doc, tgl_doc, msth_tglpo, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
         ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -541,7 +504,6 @@ from (select
         tbmaster_supplier
    where msth_kodeigr='" . Session::get('kdigr') . "'
         and msth_typetrn='B'
-        and msth_kodesupplier between  '" . $sup1 . "' and '" . $sup2 . "'
         " . $and_doc . "
         and nvl(msth_recordid, '9') <> '1'
         and nvl(mstd_recordid, '9') <> '1'
@@ -559,30 +521,19 @@ group by no_doc, tgl_doc, msth_tglpo, plu, prd_deskripsipanjang,
     ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah
 order by mstd_kodesupplier, no_doc, tgl_doc");
 
-            $dompdf = new PDF();
+            return view('BACKOFFICE.LAPORAN.daftar-pembelian-rincian-produk-per-supplier-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.daftar-pembelian-rincian-produk-per-supplier-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(1115, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream('LAPORAN DAFTAR PEMBELIAN RINCIAN PRODUK PER SUPPLIER.pdf');
         } else if ($tipe === '5') {
-            $data = DB::connection(Session::get('connection'))->select("select no_doc, tgl_doc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
+
+            $data = DB::connection(Session::get('connection'))
+                ->select("select no_doc, tgl_doc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
         ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
         mstd_kodedivisi, div_namadivisi,
         mstd_kodedepartement, dep_namadepartement,
         mstd_kodekategoribrg, kat_namakategori,
         sum(bonus) bonus, sum(gross) gross, sum(potongan) potongan,
         sum(bm) bm, sum(btl) btl, sum(ppn) ppn,
-        sum(total) total,
+        sum(total) total, sum(avgcost) avgcost,
         sum(GROSS_BKP) sum_gross_bkp, sum(GROSS_BTKP) sum_gross_btkp,
         sum(POT_BKP)sum_potongan_bkp, sum(POT_BTKP) sum_potongan_btkp,
         sum(PPN_BKP) sum_ppn_bkp, sum(PPN_BTKP) sum_ppn_btkp,
@@ -590,12 +541,12 @@ order by mstd_kodesupplier, no_doc, tgl_doc");
         sum(BTL_BKP) sum_btl_bkp, sum(BTL_BTKP) sum_btl_btkp,
         sum(TOTAL_BKP) sum_total_bkp, sum(TOTAL_BTKP) sum_total_btkp
 from (select
-         CASE WHEN '" . $sort . "' = 1 THEN
+         CASE WHEN ".$sort." = 1 THEN
                  msth_nodoc
          ELSE
                  msth_nopo
          END no_doc,
-         CASE WHEN '" . $sort . "' = 1 THEN
+         CASE WHEN ".$sort." = 1 THEN
                  msth_tgldoc
          ELSE
                  msth_tglpo
@@ -655,44 +606,31 @@ where msth_typetrn = 'B'
         and mstd_kodeigr='" . Session::get('kdigr') . "'
         and nvl(msth_recordid, '9') <> '1'
         and nvl(mstd_recordid, '9') <> '1'
-        " . $and_doc . "
+        ".$and_doc."
         and prd_prdcd(+)=mstd_prdcd
         and prd_kodeigr(+)=mstd_kodeigr
         and prs_kodeigr=msth_kodeigr
         and div_kodedivisi(+) = mstd_kodedivisi
         and div_kodeigr(+) = mstd_kodeigr
-        " . $and_div . "
+        ".$and_div."
         and dep_kodedivisi(+) = mstd_kodedivisi
         and dep_kodedepartement(+) = mstd_kodedepartement
         and dep_kodeigr(+) = mstd_kodeigr
-        " . $and_dep . "
+        ".$and_dep."
         and kat_kodedepartement(+) = mstd_kodedepartement
         and kat_kodekategori(+) = mstd_kodekategoribrg
         and kat_kodeigr(+) = mstd_kodeigr
-         " . $and_kat . "
+         ".$and_kat."
          order by tgl_doc)
 group by no_doc, tgl_doc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
     ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
     mstd_kodedivisi, div_namadivisi,
     mstd_kodedepartement, dep_namadepartement,
     mstd_kodekategoribrg, kat_namakategori
-order by tgl_doc");
+order by mstd_kodedivisi,mstd_kodedepartement,mstd_kodekategoribrg,tgl_doc");
 
-            $dompdf = new PDF();
+            return view('BACKOFFICE.LAPORAN.daftar-penerimaan-produk-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.daftar-penerimaan-produk-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(986, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream('LAPORAN DAFTAR PENERIMAAN PRODUK DIVDEPKAT.pdf');
         } else if ($tipe === '6') {
             $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
         ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -759,8 +697,6 @@ from (select msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, mstd_prdcd plu, prd
     where msth_kodeigr='" . Session::get('kdigr') . "'
         and msth_typetrn='B'
         and nvl(msth_recordid, '9') <> '1'
-        and msth_kodesupplier between '" . $sup1 . "' and '" . $sup2 . "'
-        and nvl(mstd_recordid, '9') <> '1'
         " . $and_doc . "
         " . $and_sup . "
         and mstd_kodeigr=msth_kodeigr
@@ -778,21 +714,23 @@ group by msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, plu, prd_deskripsipanja
 
 //            dd($data);
 
-            $dompdf = new PDF();
+//            $dompdf = new PDF();
+//
+//            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.daftar-pembelian-rincian-produk-per-supplier-per-dokumen-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
+//
+//            error_reporting(E_ALL ^ E_DEPRECATED);
+//
+//            $pdf->output();
+//            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+//
+//            $canvas = $dompdf->get_canvas();
+//            $canvas->page_text(986, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+//
+//            $dompdf = $pdf;
+//
+//            return $dompdf->stream('LAPORAN DAFTAR PENERIMAAN PRODUK DIVDEPKAT.pdf');
+            return view('BACKOFFICE.LAPORAN.daftar-pembelian-rincian-produk-per-supplier-per-dokumen-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.daftar-pembelian-rincian-produk-per-supplier-per-dokumen-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(986, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream('LAPORAN DAFTAR PENERIMAAN PRODUK DIVDEPKAT.pdf');
         } else if ($tipe === '7') {
             $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc,  top, jth_tempo, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur,
         supplier,prs_namaperusahaan, prs_namacabang, prs_namawilayah, msth_kodesupplier,
@@ -861,8 +799,6 @@ from tbtr_mstran_h, tbtr_mstran_d, tbmaster_supplier, tbmaster_perusahaan
 where msth_kodeigr='" . Session::get('kdigr') . "'
         and msth_typetrn='B'
         and nvl(msth_recordid, '9') <> '1'
-        and msth_kodesupplier between '" . $sup1 . "' and '" . $sup2 . "'
-        and nvl(mstd_recordid, '9') <> '1'
         " . $and_doc . "
         and mstd_kodeigr=msth_kodeigr
         and sup_kodesupplier = msth_kodesupplier
@@ -876,21 +812,24 @@ group by msth_nodoc, msth_tgldoc,  top, jth_tempo, msth_nopo, msth_tglpo, msth_n
 
 //            dd($data);
 
-            $dompdf = new PDF();
+//            $dompdf = new PDF();
+//
+//            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.daftar-pembelian-rincian-dokumen-per-supplier-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
+//
+//            error_reporting(E_ALL ^ E_DEPRECATED);
+//
+//            $pdf->output();
+//            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+//
+//            $canvas = $dompdf->get_canvas();
+//            $canvas->page_text(1115, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+//
+//            $dompdf = $pdf;
+//
+//            return $dompdf->stream('LAPORAN DAFTAR PENERIMAAN PRODUK DIVDEPKAT.pdf');
 
-            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.daftar-pembelian-rincian-dokumen-per-supplier-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
+            return view('BACKOFFICE.LAPORAN.daftar-pembelian-rincian-dokumen-per-supplier-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(1115, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream('LAPORAN DAFTAR PENERIMAAN PRODUK DIVDEPKAT.pdf');
         }
     }
 }

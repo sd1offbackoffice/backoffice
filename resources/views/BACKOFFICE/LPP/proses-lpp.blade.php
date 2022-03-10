@@ -88,8 +88,7 @@
                     success: function (response) {
                         $('#modal-loader').modal('hide');
                         if (response.status == 'success') {
-                            $('#modal-loader').modal('show');
-                            console.log(response);
+                            $('#modal-loader').modal('hide');
                             swal(response.status, response.message, response.status);
                         } else {
                             alertError(response.status, response.message, response.status)

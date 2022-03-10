@@ -50,7 +50,7 @@ $datetime->setTimezone($timezone);
 
 function rupiah($angka){
 
-    $hasil_rupiah = number_format($angka,2,',','.');
+    $hasil_rupiah = number_format($angka);
     return $hasil_rupiah;
 
 }
@@ -114,7 +114,6 @@ function rupiah($angka){
             $totnsupplier = 0;
         ?>
         @for($i=0;$i<sizeof($datas);$i++)
-
             @if($supplier != $datas[$i]->tpoh_kodesupplier)
                 @if($i!=0)
                     <tr>
@@ -147,7 +146,6 @@ function rupiah($angka){
                         <td style="text-align: right; border-top: 2px solid black; border-bottom: 2px solid black">{{$totnsupplier}}</td>
                     </tr>
                     <?php
-                    $supplier = $datas[$i]->tpoh_kodesupplier;
 
                     $katotal = $katotal + $kasupplier;
                     $natotal = $natotal + $nasupplier;
@@ -162,6 +160,9 @@ function rupiah($angka){
                     $totnsupplier = 0;
                     ?>
                 @endif
+                @php
+                    $supplier = $datas[$i]->tpoh_kodesupplier;
+                @endphp
                 <tr>
                 <td colspan="10" style="border-top: 2px solid black; border-bottom: 2px solid black; background-color: lightgray">SUPPLIER : {{$datas[$i]->tpoh_kodesupplier}} - {{$datas[$i]->sup_namasupplier}}</td>
                 </tr>

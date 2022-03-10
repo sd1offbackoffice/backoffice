@@ -12,7 +12,8 @@ use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -169,12 +170,12 @@ class HadiahUntukGabunganItemController extends Controller
         $kodeigr = Session::get('kdigr');
         $kode = $request->kode;
 
-        $datas = DB::connection(Session::get('connection'))->table("TBTR_INSTORE_DTL")
-            ->selectRaw("ISD_PRDCD")
-            ->selectRaw("ISD_KODEIGR")
-            ->selectRaw("ISD_RECORDID")
-            ->selectRaw("ISd_KODEPROMOSI")
+        $datas = DB::connection(Session::get('connection'))->table("TBTR_INSTORE_HDR")
+//            ->selectRaw("ISD_PRDCD")
+//            ->selectRaw("ISD_KODEIGR")
+//            ->selectRaw("ISD_RECORDID")
 
+            ->selectRaw("ISh_KODEPROMOSI")
             ->selectRaw("ISH_NAMAPROMOSI")
             ->selectRaw("TO_CHAR(ISH_TGLAWAL, 'dd-MM-yyyy') as ish_tglawal")
             ->selectRaw("TO_CHAR(ISH_TGLAKHIR, 'dd-MM-yyyy') as ish_tglakhir")
@@ -197,7 +198,7 @@ class HadiahUntukGabunganItemController extends Controller
             ->selectRaw("ish_gold2")
             ->selectRaw("ish_gold3")
 
-            ->selectRaw("PRD_DESKRIPSIPANJANG")
+//            ->selectRaw("PRD_DESKRIPSIPANJANG")
 
 //            ->selectRaw("ISD_JENISPROMOSI")
 //            ->selectRaw("trunc(ISD_TGLAWAL) as tglawal")
@@ -210,19 +211,33 @@ class HadiahUntukGabunganItemController extends Controller
 //            ->selectRaw("trunc(ISD_CREATE_DT) as create_dt")
 //            ->selectRaw("ISD_MODIFY_BY")
 //            ->selectRaw("trunc(ISD_MODIFY_DT) as modify_dt")
-            ->leftJoin('TBTR_INSTORE_HDR', 'isd_kodepromosi', 'ish_kodepromosi')
+//            ->leftJoin('TBTR_INSTORE_DTL', 'ish_kodepromosi', 'ish_kodepromosi')
+//            ->leftJoin('TBMASTER_PRODMAST', 'ISD_PRDCD', 'PRD_PRDCD')
+            ->where("ISH_KODEIGR",'=',$kodeigr)
+            ->where("ISH_KODEPROMOSI",'=',$kode)
+            ->where("ISH_JENISPROMOSI",'=','H')
+            ->get();
+
+
+        $datas2 = DB::connection(Session::get('connection'))->table("TBTR_INSTORE_DTL")
+            ->selectRaw("ISD_PRDCD")
+            ->selectRaw("ISD_KODEIGR")
+            ->selectRaw("ISD_RECORDID")
+            ->selectRaw("prd_deskripsipanjang")
             ->leftJoin('TBMASTER_PRODMAST', 'ISD_PRDCD', 'PRD_PRDCD')
             ->where("ISD_KODEIGR",'=',$kodeigr)
             ->where("ISD_KODEPROMOSI",'=',$kode)
             ->where("ISD_JENISPROMOSI",'=','H')
             ->get();
-        if(trim($datas[0]->isd_prdcd) == "ALLITEM"){
-            $infoall = "ALL ITEM PRODUK SPONSOR";
-        }else{
-            $infoall = "";
+
+        $infoall = "";
+        if(sizeof($datas2)>0){
+            if(trim($datas2[0]->isd_prdcd) == "ALLITEM"){
+                $infoall = "ALL ITEM PRODUK SPONSOR";
+            }
         }
 
-        return response()->json(['datas' => $datas, 'infoall' => $infoall]);
+        return response()->json(['datas' => $datas, 'infoall' => $infoall, 'plu' => $datas2]);
     }
 
     public function GetNew(){
@@ -392,6 +407,7 @@ class HadiahUntukGabunganItemController extends Controller
                 }
 
             }else{
+                //update data lama
                 $temp = DB::connection(Session::get('connection'))->table("TBTR_INSTORE_HDR")
                     ->selectRaw("ISH_CREATE_BY")
                     ->selectRaw("ISH_CREATE_DT")
@@ -399,6 +415,13 @@ class HadiahUntukGabunganItemController extends Controller
                     ->first();
                 $creator = $temp->ish_create_by;
                 $create_dt = $temp->ish_create_dt;
+
+                DB::connection(Session::get('connection'))->table("TBTR_INSTORE_HDR")
+                    ->where("ISH_KODEPROMOSI",'=',$kodegab)
+                    ->delete();
+                DB::connection(Session::get('connection'))->table("TBTR_INSTORE_DTL")
+                    ->where("ISD_KODEPROMOSI",'=',$kodegab)
+                    ->delete();
 
                 DB::connection(Session::get('connection'))->table("TBTR_INSTORE_HDR")
                     ->insert([

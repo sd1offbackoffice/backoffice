@@ -93,7 +93,7 @@
             <td>{{ $d->plu }}</td>
             <td class="left">{{ $d->prd_deskripsipanjang }}</td>
             <td>{{ $d->kemasan }}</td>
-            <td>{{ number_format($d->trbo_qty / $d->prd_frac,0) }}</td>
+            <td>{{ number_format($d->trbo_qty < 0 ? ceil($d->trbo_qty / $d->prd_frac) : floor($d->trbo_qty / $d->prd_frac),0) }}</td>
             <td>{{ $d->trbo_qty % $d->prd_frac }}</td>
             <td>{{ number_format($d->trbo_hrgsatuan,2) }}</td>
             <td>{{ number_format($d->trbo_gross,1) }}</td>

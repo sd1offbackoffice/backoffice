@@ -778,6 +778,7 @@
         }
 
         function choosePlu(kode,index) {
+            kode = convertPlu(kode);
             $('.plu')[index].value = kode;
             $('#modalHelp').modal('hide');
 

@@ -322,9 +322,9 @@
                             url: '{{ url()->current() }}/nmrBaruTrn',
                             type: 'post',
                             data: {nodoc: nodoc},
-                            beforeSend: function () {
-                                $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                            },
+                            // beforeSend: function () {
+                            //     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                            // },
                             success: function (result){
                                 $('#no-trn').val(result);
                                 $('#tgl-doc').val(formatDate('now'));
@@ -340,7 +340,7 @@
                                 $('#btn-addRow').attr('disabled', false);
                             }, error: function () {
                                 alert('error');
-                                $('#modal-loader').modal('hide')
+                                //$('#modal-loader').modal('hide')
                             }
                         })
                     }
@@ -461,11 +461,11 @@
                 url: '{{ url()->current() }}/showTrn',
                 type: 'post',
                 data: {nodoc: nodoc},
-                beforeSend: function () {
-                    $('#modal-loader').modal('show');
-                },
+                // beforeSend: function () {
+                //     $('#modal-loader').modal('show');
+                // },
                 success: function (result) {
-                    $('#modal-loader').modal('hide');
+                   // $('#modal-loader').modal('hide');
 
                     if(result.length == 0){
                         swal({
@@ -590,11 +590,11 @@
                 url: '{{ url()->current() }}/showPlu',
                 type: 'post',
                 data: {noplu:noplu}, //noplu sebelah kiri buat panggil noplu di controller, sebelah kanan yg dari parameter
-                beforeSend: function () {
-                    $('#modal-loader').modal('show');
-                },
+                // beforeSend: function () {
+                //     $('#modal-loader').modal('show');
+                // },
                 success: function (result) { //result bukan dr controller, cuma penamaan
-                    $('#modal-loader').modal('hide');
+                    //$('#modal-loader').modal('hide');
 
                     if(result.noplu === 1){
                         data = result.data[0]; //array sebagai penanda data mana yang dipilih, pake result.data krn controller nya manggil byk
@@ -646,7 +646,7 @@
                         swal('Error', '', 'error')
                     }
                 }, error: function (error) {
-                    $('#modal-loader').modal('hide')
+                    //$('#modal-loader').modal('hide')
                     console.log(error)
                 }
             })
@@ -757,19 +757,22 @@
                     date:date,
                     nodoc:nodoc
                 },
-                beforeSend: function () {
-                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                },
+                // beforeSend: function () {
+                //     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                // },
                 success: function (result) {
                     console.log(result)
                     if(result.kode == '1'){
                         swal('Dokumen Berhasil disimpan','','success')
+                            .then((value) => {
+                                window.location.reload();
+                            });
                     } else {
                         swal('ERROR', "Something's Error", 'error')
                     }
-                    $('#modal-loader').modal('hide')
+                   // $('#modal-loader').modal('hide')
                     $('#btn-save').attr("disabled", true)
-                    clearField();
+                    // clearField();
                 }, error: function () {
                     alert('error');
                 }
@@ -789,24 +792,6 @@
             $('.ctn')[index].focus()
         }
 
-        {{--$("#btn-hapus").click(function(){--}}
-        {{--    let nodoc = $('#no-trn').val();--}}
-        {{--   // var id = $(this).data("id");--}}
-        {{--    var token = $("meta[name='csrf-token']").attr("content");--}}
-
-        {{--    ajaxSetup();--}}
-        {{--    $.ajax({--}}
-        {{--            url: '{{ url()->current() }}/deleteDoc',--}}
-        {{--            type: 'POST',--}}
-        {{--            data: {--}}
-        {{--                "nodoc": nodoc,--}}
-        {{--                "_token": token,--}}
-        {{--            }, success: function (){--}}
-        {{--                console.log("deleted");--}}
-        {{--            }--}}
-        {{--        });--}}
-        {{--});--}}
-
         function deleteDoc(event) {
             event.preventDefault();
             let nodoc = $('#no-trn').val();
@@ -823,11 +808,11 @@
                             url: '{{ url()->current() }}/deleteDoc',
                             type: 'post',
                             data: {nodoc: nodoc},
-                            beforeSend: function () {
-                                $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                            },
+                            // beforeSend: function () {
+                            //     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                            // },
                             success: function (result){
-                                $('#modal-loader').modal('hide');
+                                //$('#modal-loader').modal('hide');
                                 clearField();
                                 swal({
                                     title: result.msg,
@@ -835,7 +820,7 @@
                                 });
                             }, error: function () {
                                 alert('error');
-                                $('#modal-loader').modal('hide')
+                                //$('#modal-loader').modal('hide')
                             }
                         })
                     } else {

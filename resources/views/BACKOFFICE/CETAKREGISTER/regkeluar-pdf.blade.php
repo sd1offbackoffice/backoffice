@@ -1,6 +1,6 @@
-@extends('pdf-template')
+@extends('html-template')
 
-@section('paper_size',$ukuran == 'besar' ? '595pt 842pt': '595pt 442pt')
+@section('paper_height',$ukuran == 'besar' ? '842pt' : '442pt')
 
 @section('table_font_size','7 px')
 
@@ -54,7 +54,7 @@
             @if($temp != $d->msth_tgldoc)
                 @if($temp != '')
                     <tr>
-                        <td class="border-top left" colspan="6">SUBTOTAL TANGGAL {{ $d->msth_tgldoc }}</td>
+                        <td class="border-top left" colspan="6">SUBTOTAL TANGGAL {{ $temp }}</td>
                         <td class="border-top right">{{ number_format(round($subgross), 0, '.', ',') }}</td>
                         <td class="border-top right">{{ number_format(round($subdiscount), 0, '.', ',') }}</td>
                         <td class="border-top right">{{ number_format(round($submstd_ppnrph), 0, '.', ',') }}</td>

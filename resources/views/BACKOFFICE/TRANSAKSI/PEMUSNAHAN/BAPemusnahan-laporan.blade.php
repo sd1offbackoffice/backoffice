@@ -3,7 +3,7 @@
 
 @section('table_font_size','7 px')
 
-@section('paper_size',$ukuran == 'besar' ? '595pt 842pt': '595pt 442pt')
+@section('paper_height',$ukuran == 'besar' ? '842pt': '442pt')
 
 @section('page_title')
     Berita Acara Pemusnahan Barang Rusak
@@ -27,7 +27,9 @@
         {{$data[0]->prs_namaperusahaan}}
         <br style="margin-left: 100px">ALAMAT : {{$data[0]->prs_alamat1}} , {{$data[0]->prs_alamat3}}
         <br>NPWP : {{$data[0]->prs_npwp}}
-        <br><strong>REPRINT</strong>
+        @if($data[0]->brsk_flagdoc == 'P')
+            <br><strong>REPRINT</strong>
+        @endif
     </p>
 @endsection
 

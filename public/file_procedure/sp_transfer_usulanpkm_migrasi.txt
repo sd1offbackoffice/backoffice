@@ -1,0 +1,774 @@
+CREATE OR REPLACE PROCEDURE sp_transfer_usulanpkm_migrasi (
+   p_kodeigr    IN     VARCHAR2,
+   p_userid     IN     VARCHAR2,
+   p_nousulan      OUT VARCHAR2,
+   p_err           OUT VARCHAR2)
+IS
+   no_usulan        VARCHAR2 (10);
+   temp             NUMBER;
+   mpkm_awal        NUMBER;
+   pkmadjust_awal   NUMBER;
+   mplus_awal       NUMBER;
+   pkmt_awal        NUMBER;
+   approval         VARCHAR2 (10);
+   mindis           NUMBER;
+   minor            NUMBER;
+   acost            NUMBER (15, 2);
+   kdiv             VARCHAR2 (2);
+   kdep             VARCHAR2 (2);
+   kkat             VARCHAR2 (2);
+   flaggudang       VARCHAR2 (2);
+   ADA              NUMBER;
+   LEADTIME         NUMBER;
+   KSUP             VARCHAR2 (5);
+   N                NUMBER;
+   mplus_exists     NUMBER;
+
+   mail_err         BOOLEAN := FALSE;
+
+   v_cabang         VARCHAR2 (100);
+   v_sender         VARCHAR2 (100);
+   v_receiver       VARCHAR2 (100);
+   v_headmail       VARCHAR2 (1000);
+   v_bodymail       VARCHAR2 (10000);
+
+   f                UTL_FILE.file_type;
+   v_directory      VARCHAR2 (100);
+   v_file           VARCHAR2 (100);
+   v_dirpath        VARCHAR2 (100);
+
+   c_ipserver       VARCHAR2 (100);
+   c_dbuser         VARCHAR2 (100);
+   c_dbpass         VARCHAR2 (100);
+
+   p_session        VARCHAR2 (100);
+   l_blob           t_file_transfer.ftfile%TYPE;
+
+
+   --17-12-2021 nilai 0 juga diupdate
+
+BEGIN
+   SELECT prs_namacabang
+     INTO v_cabang
+     FROM tbmaster_perusahaan
+    WHERE prs_kodeigr = p_kodeigr;
+
+   SELECT DISTINCT no_usulan INTO no_usulan FROM TBTEMP_EDITPKM_MIGRASI;
+
+   p_nousulan := no_usulan;
+
+   SELECT DISTINCT upkm_approval
+     INTO approval
+     FROM tbtr_usulanpkm
+    WHERE upkm_nousulan = no_usulan;
+
+   FOR rec IN (SELECT NO_USULAN,
+                      TO_DATE (TGL_USULAN, 'dd/mm/yyyy') TGL_USULAN,
+                      SUBSTR (PRDCD, 1, 7) PRDCD,
+                      TO_NUMBER (PKM_EDIT) PKM_EDIT,
+                      TO_NUMBER (MPLUS_EDIT) MPLUS_EDIT,
+                      SUBSTR (KODEIGR, 1, 2) KODEIGR
+                 FROM TBTEMP_EDITPKM_MIGRASI)
+   LOOP
+      ----update tbtr_usulanpkm----
+
+      SELECT COUNT (1)
+        INTO temp
+        FROM tbtr_usulanpkm
+       WHERE     upkm_kodeigr = rec.KODEIGR
+             AND upkm_nousulan = rec.NO_USULAN
+             AND upkm_prdcd = rec.PRDCD;
+
+
+      IF temp > 0
+      THEN
+         UPDATE tbtr_usulanpkm
+            SET UPKM_PKM_EDIT = rec.PKM_EDIT,
+                UPKM_MPLUS_EDIT = rec.MPLUS_EDIT,
+                UPKM_MODIFY_DT = SYSDATE,
+                UPKM_MODIFY_BY = p_userid
+          WHERE     upkm_kodeigr = rec.KODEIGR
+                AND upkm_nousulan = rec.NO_USULAN
+                AND upkm_prdcd = rec.PRDCD;
+      ELSE
+         SELECT COUNT (1)
+           INTO temp
+           FROM tbmaster_kkpkm
+          WHERE pkm_prdcd = rec.PRDCD;
+
+         IF temp > 0
+         THEN
+            SELECT pkm_mpkm,
+                   CASE WHEN pkm_adjust_by IS NOT NULL THEN pkm_pkm END
+                      pkm_adjust,
+                   pkm_qtymplus,
+                   pkm_pkmt
+              INTO mpkm_awal,
+                   pkmadjust_awal,
+                   mplus_awal,
+                   pkmt_awal
+              FROM tbmaster_kkpkm
+             WHERE pkm_prdcd = rec.PRDCD;
+         ELSE
+            mpkm_awal := NULL;
+            pkmadjust_awal := NULL;
+            mplus_awal := NULL;
+            pkmt_awal := NULL;
+         END IF;
+
+
+         INSERT INTO tbtr_usulanpkm (UPKM_KODEIGR,
+                                     UPKM_NOUSULAN,
+                                     UPKM_TGLUSULAN,
+                                     UPKM_PRDCD,
+                                     UPKM_MPKM_AWAL,
+                                     UPKM_PKMADJUST_AWAL,
+                                     UPKM_MPLUS_AWAL,
+                                     UPKM_PKMT_AWAL,
+                                     UPKM_PKM_EDIT,
+                                     UPKM_MPLUS_EDIT,
+                                     UPKM_APPROVAL,
+                                     UPKM_CREATE_BY,
+                                     UPKM_CREATE_DT)
+              VALUES (rec.KODEIGR,
+                      rec.NO_USULAN,
+                      rec.TGL_USULAN,
+                      rec.PRDCD,
+                      mpkm_awal,
+                      pkmadjust_awal,
+                      mplus_awal,
+                      pkmt_awal,
+                      rec.PKM_EDIT,
+                      rec.MPLUS_EDIT,
+                      approval,
+                      p_userid,
+                      SYSDATE);
+      END IF;
+
+      ----update tbmaster_kkpkm ----
+
+      IF rec.PKM_EDIT IS NOT NULL
+      --IF rec.PKM_EDIT > 0
+      THEN
+         --cek mindis+minor
+
+         SELECT COUNT (1)
+           INTO temp
+           FROM tbmaster_kkpkm
+          WHERE pkm_prdcd = rec.PRDCD;
+
+         IF temp > 0
+         THEN
+            SELECT NVL (pkm_mindisplay, 0), NVL (pkm_minorder, 0)
+              INTO mindis, minor
+              FROM tbmaster_kkpkm
+             WHERE pkm_prdcd = rec.prdcd;
+         ELSE
+            mindis := 0;
+            minor := 0;
+         END IF;
+
+         IF rec.PKM_EDIT >= mindis + minor
+         THEN
+            ----insert update----
+
+            IF temp > 0
+            THEN
+               --update
+               UPDATE tbmaster_kkpkm
+                  SET pkm_pkm = rec.PKM_EDIT,
+                      pkm_mpkm = rec.PKM_EDIT,
+                      pkm_pkmt = rec.PKM_EDIT + NVL (pkm_qtymplus, 0),
+                      pkm_last_pkm = rec.PKM_EDIT,
+                      pkm_adjust_by = 'EDT',
+                      pkm_adjust_dt = SYSDATE,
+                      pkm_modify_by = p_userid,
+                      pkm_modify_dt = SYSDATE
+                WHERE pkM_prdcd = rec.prdcd;
+            ELSE
+               --insert tbmaster_kkpkm
+
+               N := 2;
+               mindis := 0;
+               minor := 0;
+               mplus_exists := 0;
+
+               SELECT prd_kodedivisi,
+                      prd_kodedepartement,
+                      prd_kodekategoribarang,
+                      CASE
+                         WHEN NVL (PRD_MINORDER, 0) = 0 THEN PRD_ISIBELI
+                         ELSE PRD_MINORDER
+                      END
+                         MINORD,
+                      PRD_FLAGGUDANG
+                 INTO kdiv,
+                      kdep,
+                      kkat,
+                      minor,
+                      flaggudang
+                 FROM tbmaster_prodmast
+                WHERE prd_prdcd = rec.prdcd;
+
+               SELECT NVL (COUNT (1), 0)
+                 INTO ADA
+                 FROM TBMASTER_LOKASI
+                WHERE     LKS_KODEIGR = rec.KODEIGR
+                      AND LKS_PRDCD = rec.prdcd
+                      AND (    LKS_KODERAK NOT LIKE 'X%'
+                           AND LKS_KODERAK NOT LIKE 'A%'
+                           AND LKS_KODERAK NOT LIKE 'G%')
+                      AND LKS_TIPERAK <> 'S';
+
+               IF NVL (ADA, 0) = 0
+               THEN
+                  mindis := 0;
+               ELSE
+                    SELECT NVL (SUM (NILAI), 0)
+                      INTO mindis
+                      FROM (SELECT LKS_PRDCD,
+                                   (  LKS_TIRKIRIKANAN
+                                    * LKS_TIRDEPANBELAKANG
+                                    * LKS_TIRATASBAWAH)
+                                      NILAI
+                              FROM TBMASTER_LOKASI
+                             WHERE     LKS_KODEIGR = rec.KODEIGR
+                                   AND LKS_PRDCD = rec.prdcd
+                                   AND (    LKS_KODERAK NOT LIKE 'X%'
+                                        AND LKS_KODERAK NOT LIKE 'A%'
+                                        AND LKS_KODERAK NOT LIKE 'G%')
+                                   AND LKS_TIPERAK <> 'S')
+                  GROUP BY LKS_PRDCD;
+               END IF;
+
+               IF NVL (flaggudang, 'N') IN ('Y', 'P')
+               THEN
+                  LEADTIME := 15;
+               ELSE
+                  SELECT COUNT (1)
+                    INTO ADA
+                    FROM (SELECT *
+                            FROM (  SELECT HGB_KODESUPPLIER
+                                      FROM TBMASTER_HARGABELI
+                                     WHERE     HGB_KODEIGR = rec.KODEIGR
+                                           AND HGB_PRDCD = rec.prdcd
+                                  ORDER BY HGB_TIPE)
+                           WHERE ROWNUM = 1) A,
+                         TBMASTER_SUPPLIER
+                   WHERE     SUP_KODEIGR = rec.KODEIGR
+                         AND SUP_KODESUPPLIER = HGB_KODESUPPLIER;
+
+                  IF NVL (ADA, 0) = 0
+                  THEN
+                     LEADTIME := 1;
+                     KSUP := '';
+                  ELSE
+                     SELECT SUP_JANGKAWAKTUKIRIMBARANG, SUP_KODESUPPLIER
+                       INTO LEADTIME, KSUP
+                       FROM (SELECT *
+                               FROM (  SELECT HGB_KODESUPPLIER
+                                         FROM TBMASTER_HARGABELI
+                                        WHERE     HGB_KODEIGR = rec.KODEIGR
+                                              AND HGB_PRDCD = rec.prdcd
+                                     ORDER BY HGB_TIPE)
+                              WHERE ROWNUM = 1) A,
+                            TBMASTER_SUPPLIER
+                      WHERE     SUP_KODEIGR = rec.KODEIGR
+                            AND SUP_KODESUPPLIER = HGB_KODESUPPLIER;
+                  END IF;
+               END IF;
+
+
+
+               SELECT COUNT (1)
+                 INTO temp
+                 FROM tbmaster_pkmplus
+                WHERE pkmp_prdcd = rec.prdcd;
+
+               IF temp > 0
+               THEN
+                  SELECT PKMP_QTYMINOR
+                    INTO mplus_exists
+                    FROM tbmaster_pkmplus
+                   WHERE pkmp_prdcd = rec.prdcd;
+               ELSE
+                  mplus_exists := 0;
+               END IF;
+
+
+               INSERT INTO TBMASTER_KKPKM (PKM_KODEIGR,
+                                           PKM_KODEDIVISI,
+                                           PKM_KODEDEPARTEMENT,
+                                           PKM_PERIODEPROSES,
+                                           PKM_KODEKATEGORIBARANG,
+                                           PKM_PRDCD,
+                                           PKM_KODESUPPLIER,
+                                           PKM_MINDISPLAY,
+                                           PKM_MINORDER,
+                                           PKM_LEADTIME,
+                                           PKM_KOEFISIEN,
+                                           PKM_PKM,
+                                           PKM_PKMT,
+                                           PKM_MPKM,
+                                           PKM_QTYMPLUS,
+                                           PKM_CREATE_BY,
+                                           PKM_CREATE_DT,
+                                           pkm_last_pkm)
+                    VALUES (rec.KODEIGR,
+                            kdiv,
+                            kdep,
+                            TO_CHAR (SYSDATE, 'MMyyyy'),
+                            kkat,
+                            REC.prdcd,
+                            KSUP,
+                            mindis,
+                            minor,
+                            LEADTIME,
+                            N,
+                            rec.PKM_EDIT,
+                            rec.PKM_EDIT + NVL (mplus_exists, 0),
+                            rec.PKM_EDIT,
+                            mplus_exists,
+                            p_userid,
+                            SYSDATE,
+                            rec.PKM_EDIT);
+            END IF;
+         ELSE
+            UPDATE tbtr_usulanpkm
+               SET UPKM_keterangan = 'Qty PKM < mindis+minor',
+                   UPKM_MODIFY_DT = SYSDATE,
+                   UPKM_MODIFY_BY = p_userid
+             WHERE     upkm_kodeigr = rec.KODEIGR
+                   AND upkm_nousulan = rec.NO_USULAN
+                   AND upkm_prdcd = rec.PRDCD;
+
+            mail_err := TRUE;
+         END IF;
+      END IF;
+
+      ----update tbtr_mplus ----
+
+      IF rec.MPLUS_EDIT IS NOT NULL
+      --IF rec.MPLUS_EDIT > 0
+      THEN
+         --cek acost // kalau = 0 update
+
+         SELECT prd_avgcost,
+                prd_kodedivisi,
+                prd_kodedepartement,
+                prd_kodekategoribarang
+           INTO acost,
+                kdiv,
+                kdep,
+                kkat
+           FROM tbmaster_prodmast
+          WHERE prd_prdcd = rec.prdcd;
+
+         --IF NVL (acost, 0) = 0                                 --acost is null
+         --THEN
+
+         -- insert update
+
+         SELECT COUNT (1)
+           INTO temp
+           FROM tbmaster_pkmplus
+          WHERE pkmp_prdcd = rec.prdcd;
+
+         IF temp = 0
+         THEN
+            INSERT INTO tbmaster_pkmplus (pkmp_kodeigr,
+                                          pkmp_kodedivisi,
+                                          pkmp_kodedepartemen,
+                                          pkmp_kodekategoribrg,
+                                          pkmp_prdcd,
+                                          pkmp_qtyminor,
+                                          pkmp_create_by,
+                                          pkmp_create_dt)
+                 VALUES (rec.kodeigr,
+                         kdiv,
+                         kdep,
+                         kkat,
+                         rec.PRDCD,
+                         rec.MPLUS_EDIT,
+                         'EDT',
+                         SYSDATE);
+         ELSE
+            UPDATE tbmaster_pkmplus
+               SET pkmp_qtyminor = rec.MPLUS_EDIT,
+                   pkmp_mplusi = 0,
+                   pkmp_mpluso = 0,
+                   pkmp_modify_by = 'EDT',
+                   pkmp_modify_dt = SYSDATE
+             WHERE pkMp_prdcd = rec.prdcd;
+         END IF;
+
+         -- insert/update kkpkm
+
+         SELECT COUNT (1)
+           INTO temp
+           FROM tbmaster_kkpkm
+          WHERE pkm_prdcd = rec.PRDCD;
+
+         IF temp > 0
+         THEN
+            UPDATE tbmaster_kkpkm
+               SET pkm_pkmt = pkm_mpkm + rec.MPLUS_EDIT,
+                   pkm_qtymplus = rec.MPLUS_EDIT,
+                   pkm_adjust_by = 'EDT',
+                   pkm_adjust_dt = SYSDATE,
+                   pkm_modify_by = p_userid,
+                   pkm_modify_dt = SYSDATE
+             WHERE pkM_prdcd = rec.prdcd;
+         ELSE
+            N := 2;
+            mindis := 0;
+            minor := 0;
+
+            SELECT prd_kodedivisi,
+                   prd_kodedepartement,
+                   prd_kodekategoribarang,
+                   CASE
+                      WHEN NVL (PRD_MINORDER, 0) = 0 THEN PRD_ISIBELI
+                      ELSE PRD_MINORDER
+                   END
+                      MINORD,
+                   PRD_FLAGGUDANG
+              INTO kdiv,
+                   kdep,
+                   kkat,
+                   minor,
+                   flaggudang
+              FROM tbmaster_prodmast
+             WHERE prd_prdcd = rec.prdcd;
+
+            SELECT NVL (COUNT (1), 0)
+              INTO ADA
+              FROM TBMASTER_LOKASI
+             WHERE     LKS_KODEIGR = rec.KODEIGR
+                   AND LKS_PRDCD = rec.prdcd
+                   AND (    LKS_KODERAK NOT LIKE 'X%'
+                        AND LKS_KODERAK NOT LIKE 'A%'
+                        AND LKS_KODERAK NOT LIKE 'G%')
+                   AND LKS_TIPERAK <> 'S';
+
+            IF NVL (ADA, 0) = 0
+            THEN
+               mindis := 0;
+            ELSE
+                 SELECT NVL (SUM (NILAI), 0)
+                   INTO mindis
+                   FROM (SELECT LKS_PRDCD,
+                                (  LKS_TIRKIRIKANAN
+                                 * LKS_TIRDEPANBELAKANG
+                                 * LKS_TIRATASBAWAH)
+                                   NILAI
+                           FROM TBMASTER_LOKASI
+                          WHERE     LKS_KODEIGR = rec.KODEIGR
+                                AND LKS_PRDCD = rec.prdcd
+                                AND (    LKS_KODERAK NOT LIKE 'X%'
+                                     AND LKS_KODERAK NOT LIKE 'A%'
+                                     AND LKS_KODERAK NOT LIKE 'G%')
+                                AND LKS_TIPERAK <> 'S')
+               GROUP BY LKS_PRDCD;
+            END IF;
+
+            IF NVL (flaggudang, 'N') IN ('Y', 'P')
+            THEN
+               LEADTIME := 15;
+            ELSE
+               SELECT COUNT (1)
+                 INTO ADA
+                 FROM (SELECT *
+                         FROM (  SELECT HGB_KODESUPPLIER
+                                   FROM TBMASTER_HARGABELI
+                                  WHERE     HGB_KODEIGR = rec.KODEIGR
+                                        AND HGB_PRDCD = rec.prdcd
+                               ORDER BY HGB_TIPE)
+                        WHERE ROWNUM = 1) A,
+                      TBMASTER_SUPPLIER
+                WHERE     SUP_KODEIGR = rec.KODEIGR
+                      AND SUP_KODESUPPLIER = HGB_KODESUPPLIER;
+
+               IF NVL (ADA, 0) = 0
+               THEN
+                  LEADTIME := 1;
+                  KSUP := '';
+               ELSE
+                  SELECT SUP_JANGKAWAKTUKIRIMBARANG, SUP_KODESUPPLIER
+                    INTO LEADTIME, KSUP
+                    FROM (SELECT *
+                            FROM (  SELECT HGB_KODESUPPLIER
+                                      FROM TBMASTER_HARGABELI
+                                     WHERE     HGB_KODEIGR = rec.KODEIGR
+                                           AND HGB_PRDCD = rec.prdcd
+                                  ORDER BY HGB_TIPE)
+                           WHERE ROWNUM = 1) A,
+                         TBMASTER_SUPPLIER
+                   WHERE     SUP_KODEIGR = rec.KODEIGR
+                         AND SUP_KODESUPPLIER = HGB_KODESUPPLIER;
+               END IF;
+
+               INSERT INTO TBMASTER_KKPKM (PKM_KODEIGR,
+                                           PKM_KODEDIVISI,
+                                           PKM_KODEDEPARTEMENT,
+                                           PKM_PERIODEPROSES,
+                                           PKM_KODEKATEGORIBARANG,
+                                           PKM_PRDCD,
+                                           PKM_KODESUPPLIER,
+                                           PKM_MINDISPLAY,
+                                           PKM_MINORDER,
+                                           PKM_LEADTIME,
+                                           PKM_KOEFISIEN,
+                                           PKM_PKM,
+                                           PKM_PKMT,
+                                           PKM_MPKM,
+                                           PKM_QTYMPLUS,
+                                           PKM_CREATE_BY,
+                                           PKM_CREATE_DT,
+                                           pkm_last_pkm)
+                    VALUES (rec.KODEIGR,
+                            kdiv,
+                            kdep,
+                            TO_CHAR (SYSDATE, 'MMyyyy'),
+                            kkat,
+                            REC.prdcd,
+                            KSUP,
+                            mindis,
+                            minor,
+                            LEADTIME,
+                            N,
+                            0,
+                            rec.MPLUS_EDIT,
+                            0,
+                            rec.MPLUS_EDIT,
+                            p_userid,
+                            SYSDATE,
+                            0);
+            END IF;
+         END IF;
+      --         ELSE
+      --            UPDATE tbtr_usulanpkm
+      --               SET UPKM_keterangan =
+      --                         CASE
+      --                            WHEN UPKM_keterangan IS NOT NULL
+      --                            THEN
+      --                               UPKM_keterangan || ', '
+      --                         END
+      --                      || 'Acost > 0',
+      --                   UPKM_MODIFY_DT = SYSDATE,
+      --                   UPKM_MODIFY_BY = p_userid
+      --             WHERE     upkm_kodeigr = rec.KODEIGR
+      --                   AND upkm_nousulan = rec.NO_USULAN
+      --                   AND upkm_prdcd = rec.PRDCD;
+      --
+      --            mail_err := TRUE;
+      --         END IF;
+      END IF;
+   END LOOP;
+
+   UPDATE tbtr_usulanpkm
+      SET upkm_status = 'A', upkm_tglproses = SYSDATE
+    WHERE upkm_nousulan = no_usulan;
+
+   COMMIT;
+
+   ---- Email kalau qty edit < mindis+minor dan mplus tidak diupdate karna sudah ada acost nya
+   IF mail_err
+   THEN
+      v_sender := 'tolakanEditPKM@oraigr.mail';
+
+      v_headmail :=
+         'Tolakan Edit PKM ' || v_cabang || ' (' || p_kodeigr || ')';
+
+      v_bodymail :=
+            'Berikut tolakan Edit PKM no.usulan '
+         || no_usulan
+         || ' '
+         || v_cabang
+         || '  '
+         || CHR (13)
+         || CHR (10)
+         || CHR (13)
+         || CHR (10);
+
+      ----
+
+      ----- create file
+
+      v_directory := 'IGRCRM';
+
+      v_file := 'tolakanPKM_' || no_usulan || '.txt';
+
+      SELECT directory_path
+        INTO v_dirpath
+        FROM all_directories
+       WHERE directory_name = v_directory;
+
+      f := UTL_FILE.fopen (v_directory, v_file, 'w');
+
+      ----
+
+      FOR rec
+         IN (SELECT upkm_kodeigr,
+                    upkm_nousulan,
+                    upkm_prdcd,
+                    upkm_pkm_edit,
+                    pkm_mindisplay,
+                    pkm_minorder,
+                    prd_deskripsipanjang
+               FROM tbtr_usulanpkm, tbmaster_kkpkm, tbmaster_prodmast
+              WHERE     upkm_nousulan = no_usulan
+                    AND upkm_prdcd = pkm_prdcd
+                    AND upkm_prdcd = prd_prdcd
+                    AND upkm_pkm_edit > 0
+                    AND upkm_pkm_edit < pkm_mindisplay + pkm_minorder)
+      LOOP
+         UTL_FILE.put_line (
+            f,
+               'PLU : '
+            || rec.upkm_prdcd
+            || ' - '
+            || rec.prd_deskripsipanjang
+            || CHR (13)
+            || CHR (10)
+            || 'Tolakan : qty PKM ( '
+            || rec.upkm_pkm_edit
+            || ' ) < min display ('
+            || rec.pkm_mindisplay
+            || ') + min order ('
+            || rec.pkm_minorder
+            || ')'
+            || CHR (13)
+            || CHR (10)
+            || CHR (13)
+            || CHR (10));
+      --         v_bodymail :=
+      --               v_bodymail
+      --            || 'PLU : '
+      --            || rec.upkm_prdcd
+      --            || ' - '
+      --            || rec.prd_deskripsipanjang
+      --            || CHR (13)
+      --            || CHR (10)
+      --            || 'Tolakan : qty PKM ( '
+      --            || rec.upkm_pkm_edit
+      --            || ' ) < min display ('
+      --            || rec.pkm_mindisplay
+      --            || ') + min order ('
+      --            || rec.pkm_minorder
+      --            || ')'
+      --            || CHR (13)
+      --            || CHR (10)
+      --            || CHR (13)
+      --            || CHR (10);
+      END LOOP;
+
+      ----
+
+      --      FOR rec
+      --         IN (SELECT upkm_kodeigr,
+      --                    upkm_nousulan,
+      --                    upkm_prdcd,
+      --                    upkm_mplus_edit,
+      --                    prd_avgcost,
+      --                    prd_deskripsipanjang
+      --               FROM tbtr_usulanpkm, tbmaster_pkmplus, tbmaster_prodmast
+      --              WHERE     upkm_nousulan = no_usulan
+      --                    AND upkm_prdcd = pkmp_prdcd
+      --                    AND upkm_prdcd = prd_prdcd
+      --                    AND upkm_mplus_edit > 0
+      --                    AND NVL (prd_avgcost, 0) > 0)
+      --      LOOP
+      --         UTL_FILE.put_line (
+      --            f,
+      --               'PLU : '
+      --            || rec.upkm_prdcd
+      --            || ' - '
+      --            || rec.prd_deskripsipanjang
+      --            || CHR (13)
+      --            || CHR (10)
+      --            || 'Tolakan : qty mplus ('
+      --            || rec.upkm_mplus_edit
+      --            || ') tidak diupdate, sudah ada penerimaan, a.cost = '
+      --            || rec.prd_avgcost
+      --            || ' '
+      --            || CHR (13)
+      --            || CHR (10)
+      --            || CHR (13)
+      --            || CHR (10));
+      --      --         v_bodymail :=
+      --      --               v_bodymail
+      --      --            || 'PLU : '
+      --      --            || rec.upkm_prdcd
+      --      --            || ' - '
+      --      --            || rec.prd_deskripsipanjang
+      --      --            || CHR (13)
+      --      --            || CHR (10)
+      --      --            || 'Tolakan : qty mplus ('
+      --      --            || rec.upkm_mplus_edit
+      --      --            || ') tidak diupdate, sudah ada penerimaan, a.cost = '
+      --      --            || rec.prd_avgcost
+      --      --            || ' '
+      --      --            || CHR (13)
+      --      --            || CHR (10)
+      --      --            || CHR (13)
+      --      --            || CHR (10);
+      --      END LOOP;
+
+      UTL_FILE.fclose (f);
+
+      ----
+
+      SELECT LOWER (ip_server_db), LOWER (db_user_name), LOWER (db_password)
+        INTO c_ipserver, c_dbuser, c_dbpass
+        FROM igr_setup_db;
+
+      p_session := TO_CHAR (USERENV ('SESSIONID'));
+
+      DELETE FROM t_file_transfer
+            WHERE ftuser = p_session;
+
+      INSERT INTO t_file_transfer (ftuser, ftfile)
+           VALUES (p_session, EMPTY_BLOB ());
+
+      COMMIT;
+
+      filetools.loadblob (v_dirpath || v_file,
+                          p_session,
+                          c_ipserver,
+                          c_dbuser,
+                          c_dbpass);
+
+      SELECT ftfile
+        INTO l_blob
+        FROM t_file_transfer
+       WHERE ftuser = p_session;
+
+      FOR rec IN (SELECT UPPER (eml_email) email
+                    FROM tbmaster_email
+                   --WHERE eml_user LIKE 'FINANCE%'
+                   --WHERE eml_user LIKE 'ARIEADI%'
+                   WHERE eml_user = 'INVENTORY HO')
+      LOOP
+         v_receiver := rec.email;
+
+         send_mail_atchzip (v_receiver,
+                            v_sender,
+                            v_headmail,
+                            v_bodymail,
+                            v_file,
+                            'txt',
+                            l_blob);
+      --         send_mail (v_sender,
+      --                    v_receiver,
+      --                    v_headmail,
+      --                    v_bodymail);
+      END LOOP;
+   END IF;
+EXCEPTION
+   WHEN OTHERS
+   THEN
+      ROLLBACK;
+      p_err := SQLERRM;
+END;
+/

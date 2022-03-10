@@ -322,6 +322,7 @@ class InformasiHistoryProductController extends Controller
         })->leftJoin('TBMASTER_STOCK', function ($join) {
             $join->On(DB::connection(Session::get('connection'))->raw('SUBSTR (PRD_PRDCD, 1, 6)'), '=', DB::connection(Session::get('connection'))->raw('SUBSTR (ST_PRDCD, 1, 6)'))->On('PRD_KODEIGR', '=', 'ST_KODEIGR')->On('ST_LOKASI', '=', 01);
         })->SelectRaw('PRD_PRDCD,
+                                PRD_PPN,
                                 PRD_MINJUAL MINJ,
                                 PRD_FLAGBKP1 PKP,
                                 NVL (PRD_FLAGBKP2, \'xx\') PKP2,
@@ -345,26 +346,28 @@ class InformasiHistoryProductController extends Controller
                                 PRMD_JAMAKHIR FMTOHR ')
             ->whereRaw('SUBSTR (PRD_PRDCD, 1, 6) = SUBSTR (\'' . $request->value . '\', 1, 6)')
             ->groupBy(DB::connection(Session::get('connection'))->raw('PRD_PRDCD,
-                         PRD_MINJUAL,
-                         PRD_FLAGBKP1,
-                         PRD_FLAGBKP2,
-                         PRD_HRGJUAL,
-                         PRD_BARCODE,
-                         PRD_KODETAG,
-                         PRD_LASTCOST,
-                         PRD_FLAGBARANGORDERTOKO,
-                         PRD_UNIT,
-                         PRD_FRAC,
-                         PRMD_PRDCD,
-                         PRMD_HRGJUAL,
-                         PRMD_POTONGANPERSEN,
-                         PRMD_POTONGANRPH,
-                         ST_AVGCOST,
-                         ST_LASTCOST,
-                         PRMD_JAMAWAL,
-                         PRMD_JAMAKHIR'))
+                        PRD_PPN,
+                        PRD_MINJUAL,
+                        PRD_FLAGBKP1,
+                        PRD_FLAGBKP2,
+                        PRD_HRGJUAL,
+                        PRD_BARCODE,
+                        PRD_KODETAG,
+                        PRD_LASTCOST,
+                        PRD_FLAGBARANGORDERTOKO,
+                        PRD_UNIT,
+                        PRD_FRAC,
+                        PRMD_PRDCD,
+                        PRMD_HRGJUAL,
+                        PRMD_POTONGANPERSEN,
+                        PRMD_POTONGANRPH,
+                        ST_AVGCOST,
+                        ST_LASTCOST,
+                        PRMD_JAMAWAL,
+                        PRMD_JAMAKHIR'))
             ->orderBy('PRD_PRDCD')
             ->get();
+            
         for ($i = 0; $i < sizeof($sj); $i++) {
             if ($sj[$i]->unit == 'KG') {
                 $sj[$i]->frac = 1;
@@ -391,8 +394,8 @@ class InformasiHistoryProductController extends Controller
                             $marlcost = (1 - (($sj[$i]->st_lastcost * $sj[$i]->frac) / $nfmjual)) * 100;
                             $maracost = (1 - (($sj[$i]->st_lcost * $sj[$i]->frac) / $nfmjual)) * 100;
                         } else {
-                            $marlcost = (1 - 1.1 * (($sj[$i]->st_lastcost * $sj[$i]->frac)) / $nfmjual) * 100;
-                            $maracost = (1 - 1.1 * (($sj[$i]->st_lcost * $sj[$i]->frac)) / $nfmjual) * 100;
+                            $marlcost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)):1.1) * (($sj[$i]->st_lastcost * $sj[$i]->frac)) / $nfmjual) * 100;
+                            $maracost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)):1.1) * (($sj[$i]->st_lcost * $sj[$i]->frac)) / $nfmjual) * 100;
                         }
                     } else {
                         if ($sj[$i]->fmjual != 0) {
@@ -412,8 +415,8 @@ class InformasiHistoryProductController extends Controller
                             $marlcost = (1 - ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
                             $maracost = (1 - ($sj[$i]->st_lcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
                         } else {
-                            $marlcost = (1 - 1.1 * ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
-                            $maracost = (1 - 1.1 * ($sj[$i]->st_lcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                            $marlcost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)):1.1) * ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                            $maracost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)):1.1) * ($sj[$i]->st_lcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
                         }
                     } else {
                         $marlcost = (1 - ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
@@ -428,8 +431,8 @@ class InformasiHistoryProductController extends Controller
                             $marlcost = (1 - ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
                             $maracost = (1 - ($sj[$i]->st_lcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
                         } else {
-                            $marlcost = (1 - 1.1 * ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
-                            $maracost = (1 - 1.1 * ($sj[$i]->st_lcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                            $marlcost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)):1.1) * ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                            $maracost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)):1.1) * ($sj[$i]->st_lcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
                         }
                     } else {
                         $marlcost = (1 - ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
@@ -1451,7 +1454,7 @@ class InformasiHistoryProductController extends Controller
 //        } else {
 //            $showpromosi = false;
 //        }
-
+        
         return compact(['produk', 'sj', 'trendsales', 'prodstock', 'AVGSALES', 'FMPBLNA', 'stock', 'pkmt', 'ITEM', 'flag', 'supplier', 'permintaan', 'so_tgl', 'so', 'adjustso', 'resetsoic', 'hargabeli', 'stockcarton', 'gdl', 'showpromo', 'message']);
     }
 

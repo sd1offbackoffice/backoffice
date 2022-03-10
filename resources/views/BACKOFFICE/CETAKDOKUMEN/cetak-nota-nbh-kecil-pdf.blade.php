@@ -2,7 +2,7 @@
 
 @section('table_font_size','7 px')
 
-@section('paper_size','595pt 642pt')
+@section('paper_height','642pt')
 
 @section('page_title')
     {{ strtoupper($data['data1'][0]->judul) }}
@@ -11,7 +11,9 @@
 @section('title')
     {{ strtoupper($data['data1'][0]->judul) }}
 @endsection
-
+@section('header_left')
+    NPWP : {{ $perusahaan->prs_npwp }}
+@endsection
 @section('content')
     @php
         $temp_doc ='';
@@ -29,14 +31,12 @@
                 <tr>
                     <td class="left">NOMOR</td>
                     <td class="left">: {{$data['data1'][$i]->msth_nodoc}}</td>
-                    <td class="left">TANGGAL</td>
-                    <td class="left">: {{ date('d/m/Y',strtotime(substr($data['data1'][$i]->msth_tgldoc,0,10))) }}</td>
+                    <td class="left">TANGGAL : {{ date('d/m/Y',strtotime(substr($data['data1'][$i]->msth_tgldoc,0,10))) }}</td>
                 </tr>
                 <tr>
                     <td class="left">NO. REF</td>
                     <td class="left">: {{$data['data1'][$i]->msth_nopo}}</td>
-                    <td class="left">TGL. REF</td>
-                    <td class="left">: {{ date('d/m/Y',strtotime(substr($data['data1'][$i]->msth_tglpo,0,10))) }}</td>
+                    <td class="left">TGL. REF : {{ isset($data['data1'][$i]->msth_tglpo)?date('d/m/Y',strtotime(substr($data['data1'][$i]->msth_tglpo,0,10))):'-' }}</td>
                 </tr>
                 <tr>
                     <td class="left">KETERANGAN</td>

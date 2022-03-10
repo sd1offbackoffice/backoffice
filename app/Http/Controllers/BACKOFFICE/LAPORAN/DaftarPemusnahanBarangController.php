@@ -93,6 +93,21 @@ class DaftarPemusnahanBarangController extends Controller
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan', 'prs_namacabang')
             ->first();
+        $and_div = '';
+        $and_dep = '';
+        $and_kat = '';
+        if(isset($div1)){
+            $and_div = " and mstd_kodedivisi between '".$div1."' and '".$div2."'";
+        }
+
+        if(isset($dep1)){
+            $and_dep = " and mstd_kodedepartement between '".$dep1."' and '".$dep2."'";
+        }
+
+        if(isset($kat1)){
+            $and_kat = " and mstd_kodekategoribrg between '".$kat1."' and '".$kat2."'";
+        }
+
 
         if ($tipe === '1') {
             $data = DB::connection(Session::get('connection'))->select("select mstd_kodedivisi, div_namadivisi,
@@ -126,7 +141,9 @@ where mstd_typetrn = 'F'
         and kat_kodedepartement(+) = mstd_kodedepartement
         and kat_kodekategori(+) = mstd_kodekategoribrg
         and prs_kodeigr=mstd_kodeigr
-        and mstd_kodedivisi||mstd_kodedepartement||mstd_kodekategoribrg between '" . $div1 . "'||'" . $dep1 . "'||'" . $kat1 . "' and '" . $div2 . "'||'" . $dep2 . "'||'" . $kat2 . "'
+        ".$and_div."
+        ".$and_dep."
+        ".$and_kat."
         order by div_kodedivisi, dep_kodedepartement, kat_kodekategori, prd_prdcd)
 group by mstd_kodedivisi, div_namadivisi,
         mstd_kodedepartement, dep_namadepartement,
@@ -134,21 +151,9 @@ group by mstd_kodedivisi, div_namadivisi,
         prs_namaperusahaan, prs_namacabang
 order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg");
 
-            $dompdf = new PDF();
 
-            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.daftar-pemusnahan-ringkasan-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
+            return view('BACKOFFICE.LAPORAN.daftar-pemusnahan-ringkasan-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(625, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINGKASAN DIVISI/DEPT/KATEGORI.pdf');
         } else if ($tipe === '2') {
             $data = DB::connection(Session::get('connection'))->select("select plu, barang, kemasan,
         mstd_kodedivisi, div_namadivisi,
@@ -186,8 +191,9 @@ where mstd_typetrn='F'
         and kat_kodedepartement(+) = mstd_kodedepartement
         and kat_kodekategori(+) = mstd_kodekategoribrg
         and prs_kodeigr=mstd_kodeigr
-        and mstd_kodedivisi||mstd_kodedepartement||mstd_kodekategoribrg between '" . $div1 . "'||'" . $dep1 . "'||'" . $kat1 . "' and '" . $div2 . "'||'" . $dep2 . "'||'" . $kat2 . "'
-        order by div_kodedivisi, dep_kodedepartement, kat_kodekategori, prd_prdcd)
+        ".$and_div."
+        ".$and_dep."
+        ".$and_kat."        order by div_kodedivisi, dep_kodedepartement, kat_kodekategori, prd_prdcd)
 group by plu, barang, kemasan,   hrg_satuan, mstd_frac,
         mstd_kodedivisi, div_namadivisi,
         mstd_kodedepartement, dep_namadepartement,
@@ -195,22 +201,8 @@ group by plu, barang, kemasan,   hrg_satuan, mstd_frac,
         prs_namaperusahaan, prs_namacabang
 order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg, mstd_prdcd");
 
-//            dd($data);
-            $dompdf = new PDF();
+            return view('BACKOFFICE.LAPORAN.daftar-pemusnahan-rekap-produk-per-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
-            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.daftar-pemusnahan-rekap-produk-per-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(745, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINCIAN PRODUK PER DIVISI/DEPT/KATEGORI.pdf');
         } else if ($tipe === '3') {
             $data = DB::connection(Session::get('connection'))->select("select plu, barang, kemasan,
         mstd_nodoc, mstd_tgldoc,
@@ -252,8 +244,9 @@ from (
         and kat_kodedepartement(+) = mstd_kodedepartement
         and kat_kodekategori(+) = mstd_kodekategoribrg
         and prs_kodeigr = mstd_kodeigr
-        and mstd_kodedivisi||mstd_kodedepartement||mstd_kodekategoribrg between '" . $div1 . "'||'" . $dep1 . "'||'" . $kat1 . "' and '" . $div2 . "'||'" . $dep2 . "'||'" . $kat2 . "'
-        order by div_kodedivisi, dep_kodedepartement, kat_kodekategori, prd_prdcd)
+        ".$and_div."
+        ".$and_dep."
+        ".$and_kat."        order by div_kodedivisi, dep_kodedepartement, kat_kodekategori, prd_prdcd)
 group by plu, barang, kemasan,
          mstd_nodoc, mstd_tgldoc,
          mstd_kodedivisi, div_namadivisi,
@@ -262,22 +255,8 @@ group by plu, barang, kemasan,
          prs_namaperusahaan, prs_namacabang
 order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg, mstd_prdcd");
 
-//            dd($data);
-            $dompdf = new PDF();
 
-            $pdf = PDF::loadview('BACKOFFICE.LAPORAN.daftar-pemusnahan-rincian-produk-per-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(1115, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream('LAPORAN DAFTAR RETUR PEMBELIAN RINCIAN PRODUK PER SUPPLIER.pdf');
+            return view('BACKOFFICE.LAPORAN.daftar-pemusnahan-rincian-produk-per-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
         }
     }
 }

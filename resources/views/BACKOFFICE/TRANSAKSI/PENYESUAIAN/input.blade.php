@@ -458,10 +458,15 @@
                 "autoWidth": false,
                 "responsive": true,
                 "createdRow": function (row, data, dataIndex) {
-                    $(row).addClass('modalRow');
+                    $(row).addClass('modalRow prd_prdcd');
                 },
                 "initComplete" : function(){
                     $('#table_lov_plu_filter input').val(value);
+
+                    $(document).on('click', '.prd_prdcd', function (e) {
+                        plu_select($(this).find('td:eq(1)').html());
+                        $('#m_lov_plu').modal('hide');
+                    });
                 }
             });
 
@@ -547,9 +552,10 @@
                         title: 'Apakah Ingin Membuat Nomor Baru?',
                         icon: 'warning',
                         buttons: true,
-                        dangerMode: true,
+                        dangerMode: false,
                     }).then(function(ok){
                         if(ok){
+                            $('#tipe_mpp').prop('disabled',false);
                             $('#tgl_penyesuaian').attr('disabled',false);
 
                             $.ajax({
@@ -591,8 +597,9 @@
                         success: function (response) {
                             $('#modal-loader').modal('hide');
 
+                            listPLU = [];
                             listPLU = response.list;
-                            generateListData(listPLU);
+                            generateListData();
 
                             response = response.doc;
 
@@ -602,6 +609,7 @@
                                 jenisdoc = 'lama';
 
                                 $('#tgl_penyesuaian').attr('disabled',true);
+                                $('#tipe_mpp').prop('disabled',true);
 
                                 console.log(response['trbo_nodoc']);
                                 $('#no_penyesuaian').val(response['trbo_nodoc']);
@@ -616,9 +624,10 @@
                                     }
                                     else tipebarang = response['trbo_flagdisc2'];
                                 }
-                                $('#tipe_barang').val('0'+response['trbo_flagdisc2']);
+                                $('#tipe_barang').val(response['trbo_flagdisc2']);
                                 $('#total').val(convertToRupiah(response['total']));
                                 $('#totalitem').val(listPLU.length);
+                                generateListData();
                             }
                             else{
                                 jenisdoc = 'xxx';
@@ -1060,7 +1069,7 @@
 
         function hapus(){
             swal({
-                title: 'Yakin ingin menyimpan data?',
+                title: 'Yakin ingin menghapus data?',
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true
@@ -1082,6 +1091,8 @@
                         success: function (response) {
                             $('#modal-loader').modal('hide');
 
+                            doc_select($('#no_penyesuaian').val());
+
                             if(typeof response.message === 'undefined'){
                                 swal({
                                     title: response.title,
@@ -1093,7 +1104,7 @@
                                     title: response.title,
                                     text: response.message,
                                     icon: response.status
-                                })
+                                });
                             }
                         }
                     });
@@ -1102,6 +1113,7 @@
         }
 
         function lihatDaftar(){
+            generateListData();
             $('#m_list').modal('show');
         }
 
@@ -1115,24 +1127,26 @@
                     scrollY: "350px"
                 });
             }
+
+            generateListData();
         });
 
-        function generateListData(data){
+        function generateListData(){
             if ($.fn.DataTable.isDataTable('#table_list')) {
                 $('#table_list').DataTable().destroy();
-                $("#table_list tbody [role='row']").remove();
+                $("#table_list tbody tr").remove();
             }
 
-            for(i=0;i<data.length;i++){
+            for(i=0;i<listPLU.length;i++){
                 $('#table_list tbody').append(`
                     <tr>
-                        <td>${ data[i].trbo_prdcd }</td>
-                        <td>${ data[i].prd_deskripsipendek }</td>
-                        <td>${ data[i].kemasan }</td>
-                        <td class="text-right">${ convertToRupiah2(data[i].qty) }</td>
-                        <td class="text-right">${ convertToRupiah2(data[i].qtyk) }</td>
-                        <td class="text-right">${ convertToRupiah2(data[i].trbo_hrgsatuan) }</td>
-                        <td class="text-right">${ convertToRupiah2(data[i].trbo_gross) }</td>
+                        <td>${ listPLU[i].trbo_prdcd }</td>
+                        <td>${ listPLU[i].prd_deskripsipendek }</td>
+                        <td>${ listPLU[i].kemasan }</td>
+                        <td class="text-right">${ convertToRupiah2(listPLU[i].qty) }</td>
+                        <td class="text-right">${ convertToRupiah2(listPLU[i].qtyk) }</td>
+                        <td class="text-right">${ convertToRupiah2(listPLU[i].trbo_hrgsatuan) }</td>
+                        <td class="text-right">${ convertToRupiah2(listPLU[i].trbo_gross) }</td>
                     </tr>
                 `);
             }

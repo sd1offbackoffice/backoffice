@@ -25,9 +25,12 @@ class inputController extends Controller
     public $param_seqno = 0;
     public $param_simpanData;
 
-    public function index()
-    {
+    public function index() {
         return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.input');
+    }
+
+    public function testing() {
+        return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.input-copy');
     }
 
     public function showBTB(Request $request){
@@ -45,8 +48,7 @@ class inputController extends Controller
         return DataTables::of($data)->make(true);
     }
 
-    public function chooseBTB(Request $request)
-    {
+    public function chooseBTB(Request $request) {
         $noDoc = $request->noDoc;
         $noPO = $request->noPO;
         $typeTrn = $request->typeTrn;
@@ -96,7 +98,7 @@ class inputController extends Controller
 //      sehingga langsung menampilkan data dari tbtr_backoffice dengan query yang sepertinya buatan sendiri
 
         $data = DB::connection(Session::get('connection'))->select("SELECT a.*, b.prd_deskripsipanjang as barang, b.prd_unit, b.prd_frac as trbo_frac, b.prd_kodetag as trbo_kodetag, nvl(b.prd_flagbkp1, ' ') as trbo_bkp, c.sup_namasupplier,
-                                    c.sup_pkp ,a.trbo_qty / b.prd_frac as qty
+                                    c.sup_pkp ,a.trbo_qty / b.prd_frac as qty, ( a.trbo_rphdisc1 + a.trbo_rphdisc2 + a.trbo_rphdisc2ii + a.trbo_rphdisc2iii + a.trbo_rphdisc3 + a.trbo_rphdisc4) as total_disc
                                       FROM tbtr_backoffice a
                                            LEFT JOIN tbmaster_prodmast b ON a.trbo_prdcd = b.prd_prdcd AND a.trbo_kodeigr = b.prd_kodeigr
                                            LEFT JOIN tbmaster_supplier c ON a.trbo_kodesupplier = c.sup_kodesupplier and a.trbo_kodeigr = c.sup_kodeigr
@@ -116,8 +118,7 @@ class inputController extends Controller
         }
     }
 
-    public function getNewNoBTB(Request $request)
-    {
+    public function getNewNoBTB(Request $request) {
         $typeTrn = $request->typeTrn;
         $kodeigr = Session::get('kdigr');
         $IP = str_replace('.', '0', SUBSTR(Session::get('ip'), -3));
@@ -136,8 +137,7 @@ class inputController extends Controller
         return response()->json($result);
     }
 
-    public function showPO()
-    {
+    public function showPO() {
         $kodeigr = Session::get('kdigr');
 
         $data = DB::connection(Session::get('connection'))->select("SELECT tpoh_nopo,
@@ -161,8 +161,7 @@ class inputController extends Controller
         return DataTables::of($data)->make(true);
     }
 
-    public function choosePO(Request $request)
-    {
+    public function choosePO(Request $request) {
         $typeTrn = $request->typeTrn;
         $noPO = $request->noPo;
         $kodeigr = Session::get('kdigr');
@@ -203,7 +202,7 @@ class inputController extends Controller
         $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp
                                       FROM TBTR_PO_H
                                      WHERE     TPOH_NOPO = '$noPO'
-                                           AND TPOH_KODEIGR = '22'
+                                           AND TPOH_KODEIGR = '$kodeigr'
                                            AND NVL (TRIM (TPOH_RECORDID), '0') != '2'
                                            AND NVL (TRIM (TPOH_RECORDID), '0') != '1'");
 
@@ -266,7 +265,6 @@ class inputController extends Controller
                 }
             }
 
-//            $lotorisasi = 0;
             if ($lotorisasi == 1) {
 //                return response()->json(['kode' => 2, 'msg' => $msg, 'data' => '']);
             } else {
@@ -333,8 +331,7 @@ class inputController extends Controller
         return response()->json(['kode' => 0, 'msg' => "Something's Error", 'data' => '']);
     }
 
-    public function checkPO($flaggo, $typeTrn, $noPO, $kodeigr)
-    {
+    public function checkPO($flaggo, $typeTrn, $noPO, $kodeigr) {
         if ($typeTrn == 'L' && $noPO > 0) {
             $msg = "Nomor PO tidak boleh diisi";
             return (['kode' => 0, 'msg' => $msg, 'data' => '']);
@@ -384,8 +381,7 @@ class inputController extends Controller
         return (['kode' => 1, 'msg' => '', 'data' => $temp]);
     }
 
-    public function showSupplier()
-    {
+    public function showSupplier() {
         $kodeigr = Session::get('kdigr');
 
         $data = DB::connection(Session::get('connection'))->select("select sup_namasupplier || '/' || sup_Singkatansupplier sup_namasupplier, sup_kodesupplier, sup_pkp, sup_top
@@ -395,8 +391,23 @@ class inputController extends Controller
         return DataTables::of($data)->make(true);
     }
 
-    public function showPlu(Request $request)
-    {
+    public function checkkodeSupplier(Request  $request){
+        sleep(1);
+        $kodeSupplier = $request->kodeSupplier;
+        $kodeigr = Session::get('kdigr');
+
+        $data = DB::select ("SELECT SUP_NAMASUPPLIER || '/' || SUP_SINGKATANSUPPLIER SUPPLIER, SUP_TOP, SUP_PKP
+	                            FROM TBMASTER_SUPPLIER
+	                            WHERE SUP_KODESUPPLIER = '$kodeSupplier' AND SUP_KODEIGR = '$kodeigr'");
+
+        if ($data){
+            return response()->json(['kode' => 1, 'message' => "Supplier Terdaftar", 'data' => $data[0]]);
+        } else {
+            return response()->json(['kode' => 0, 'message' => "Supplier Tidak Terdaftar", 'data' => '']);
+        }
+    }
+
+    public function showPlu(Request $request) {
         $typeTrn = $request->typeTrn;
         $kodeigr = Session::get('kdigr');
         $value = strtoupper($request->value);
@@ -451,8 +462,7 @@ class inputController extends Controller
         return response()->json($data);
     }
 
-    public function choosePlu(Request $request)
-    {
+    public function choosePlu(Request $request) {
         $typeTrn = $request->typeTrn;
         $prdcd = $request->prdcd;
         $noDoc = $request->noDoc;
@@ -533,6 +543,11 @@ class inputController extends Controller
 //            Proses looping data dari tbtr_backoffice disini dipindahkan ke bagian JS, mengambil data dari tempData yg didapatkan dari chooseBTB()
 //            Dalam proses looping ada pembuatan status 0 atau 1, disini otomatis menjadi 0 sehingga langung memanggil GET_PO_DETAIL
             $getPODetail = $this->getPODetail($noPo, $kodeigr, $prdcd);
+
+            if ($getPODetail[0] == 2){
+                return response()->json(['kode' => $getPODetail[0], 'msg' => $getPODetail[1], 'data' => $getPODetail[2]]);
+            }
+
             $this->getDataPlu = $getPODetail[2];
         }
 
@@ -541,10 +556,14 @@ class inputController extends Controller
         return response()->json(['kode' => $chkGets['kode'], 'msg' => $chkGets['msg'], 'data' => $this->getDataPlu]);
     }
 
-    public function getItemData($supplier, $prdcd, $kodeigr, $typeTrn, $noPo)
-    {
+    public function getItemData($supplier, $prdcd, $kodeigr, $typeTrn, $noPo) {
         if ($prdcd || $prdcd != null) {
             $data = $this->query1($supplier, $prdcd, $kodeigr);
+
+            if (!$data){
+                return (['2', "PLU " . $prdcd . " tidak sesuai kateory-nya", ""]);
+            }
+
             $data = $data[0];
 
             if ($data->i_unit == 'KG') {
@@ -619,8 +638,7 @@ class inputController extends Controller
         return (['0', "", $data]);
     }
 
-    public function query1($supplier, $prdcd, $kodeigr)
-    {
+    public function query1($supplier, $prdcd, $kodeigr) {
         $data = DB::connection(Session::get('connection'))->select("SELECT prd_kodeigr as i_kodeigr,
                                            prd_kodedivisi as i_kodedivisi,
                                            prd_kodedepartement as i_kodedepartement,
@@ -671,8 +689,7 @@ class inputController extends Controller
         return $data;
     }
 
-    public function getPODetail($noPo, $kodeigr, $prdcd)
-    {
+    public function getPODetail($noPo, $kodeigr, $prdcd) {
         $v_qty = '';
         $v_pkp = '';
         $v_acost = '';
@@ -684,8 +701,12 @@ class inputController extends Controller
         $i_prdcd = '';
 
         $data = $this->query2($noPo, $kodeigr, $prdcd);
-        $data = $data[0];
 
+        if (!$data){
+            return (['2', "Kode Produk tidak terdaftar dalam No.PO ini !!!", ""]);
+        }
+
+        $data = $data[0];
         $flag_update = 1;
 
         $data->i_bandrol = $data->prd_flagbandrol;
@@ -749,8 +770,7 @@ class inputController extends Controller
         }
     }
 
-    public function query2($noPo, $kodeigr, $prdcd)
-    {
+    public function query2($noPo, $kodeigr, $prdcd) {
         $data = DB::connection(Session::get('connection'))->select(" SELECT   tpod_kodeigr,
                                              tpod_recordid,
                                              tpod_nopo,
@@ -820,8 +840,7 @@ class inputController extends Controller
         return $data;
     }
 
-    public function chkGets($col, $prdcd, $kodeigr, $supplier, $noPo)
-    {
+    public function chkGets($col, $prdcd, $kodeigr, $supplier, $noPo) {
         $datas = $this->query3($prdcd, $kodeigr, $supplier, $noPo);
         $this->param_error = 0;
         $getDataPlu = $this->getDataPlu;
@@ -1434,8 +1453,7 @@ class inputController extends Controller
         return (['kode' => '0', 'msg' => "Procedure success", 'data' => '']);
     }
 
-    public function query3($prdcd, $kodeigr, $supplier, $noPo)
-    {
+    public function query3($prdcd, $kodeigr, $supplier, $noPo) {
         $data = DB::connection(Session::get('connection'))->select("SELECT prd_prdcd,
                                      prd_lastcost,
                                      prd_unit,
@@ -1772,11 +1790,11 @@ class inputController extends Controller
                     array_push($this->tempDataSave,$temp);
 
                     $qtypb = ($data->i_qty * $data->i_frac) + $data->i_qtyk;
-//                    $updatePoD  = DB::connection(Session::get('connection'))->table('tbtr_po_d')
-//                        ->where('tpod_kodeigr', $kodeigr)->where('tpod_nopo', $noPo)->where('tpod_prdcd', $prdcd)
-//                        ->update(['tpod_qtypb' => $qtypb, 'tpod_recordid' => 2]);
-//
-//                    $updatePoH  = DB::connection(Session::get('connection'))->table('tbtr_po_h')->where('tpoh_nopo', $noPo)->update(['tpoh_recordid' => 2]);
+                    $updatePoD  = DB::connection(Session::get('connection'))->table('tbtr_po_d')
+                        ->where('tpod_kodeigr', $kodeigr)->where('tpod_nopo', $noPo)->where('tpod_prdcd', $prdcd)
+                        ->update(['tpod_qtypb' => $qtypb, 'tpod_recordid' => 2]);
+
+                    $updatePoH  = DB::connection(Session::get('connection'))->table('tbtr_po_h')->where('tpoh_nopo', $noPo)->update(['tpoh_recordid' => 2]);
                 }
 
             }
@@ -1969,6 +1987,7 @@ class inputController extends Controller
     }
 
     public function saveData(Request $request){
+        $typeTrn = $request->typeTrn;
         $tempdata   = $request->tempDataSave;
         $user       = Session::get('usid');
         $kodeigr    = Session::get('kdigr');
@@ -1976,21 +1995,36 @@ class inputController extends Controller
         $date       = $help->getDate();
 
 
+        $IP = str_replace('.', '0', SUBSTR(Session::get('ip'), -3));
+        $connect = loginController::getConnectionProcedure();
+
+        if ($typeTrn == 'B') {
+            $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomorstadoc('$kodeigr','RTB','Nomor Reff BTB','$IP' || '0' ,6, TRUE); END;");
+            oci_bind_by_name($query, ':ret', $fixNoBTB, 32);
+            oci_execute($query);
+        } else {
+            $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomorstadoc('$kodeigr','RTL','Nomor Reff BTB Lain-Lain','$IP' || '1' ,6, TRUE); END;");
+            oci_bind_by_name($query, ':ret', $fixNoBTB, 32);
+            oci_execute($query);
+        }
+
+
         try {
             foreach ($tempdata as $temp){
                 $data = (object) $temp;
 
+//                dd($data);
+
                 DB::connection(Session::get('connection'))->table('tbtr_backoffice')->insert([
                     "TRBO_KODEIGR" => $kodeigr,
                     "TRBO_RECORDID" => '',
-                    "TRBO_TYPETRN" => 'B',
-                    "TRBO_NODOC" => $request->noBTB,
-                    "TRBO_TGLDOC" => $request->tglBTB,
-//                    "TRBO_TGLDOC" => date('Y-M-d', strtotime($request->tglBTB)),
+                    "TRBO_TYPETRN" => $typeTrn,
+                    "TRBO_NODOC" => $fixNoBTB,
+                    "TRBO_TGLDOC" => date('Y/d/m', strtotime($request->tglBTB)),
                     "TRBO_NOREFF" => '',
                     "TRBO_TGLREFF" => '',
                     "TRBO_NOPO" => $request->noPO,
-                    "TRBO_TGLPO" => $request->tglPO,
+                    "TRBO_TGLPO" => date('Y/d/m', strtotime($request->tglPO)),
                     "TRBO_NOFAKTUR" => $request->noFaktur,
                     "TRBO_TGLFAKTUR" => $request->tglFaktur,
                     "TRBO_KODESUPPLIER" => $request->supplier,

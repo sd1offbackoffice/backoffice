@@ -1,4 +1,4 @@
-@extends('pdf-template')
+@extends('html-template')
 
 @section('table_font_size','7 px')
 
@@ -69,6 +69,15 @@
                     $tempNama = $data[$i]->kodemember;
                 @endphp
             @endfor
+            <tr>
+                <th style="border-right: 1px solid black;" colspan="2">Poin INTERN: {{ isset($t_pi)?number_format($t_pi, 0,".",","):0 }}</th>
+                <th style="border-right: 1px solid black;" colspan="2">Poin EXTERN: {{ isset($t_pe)?number_format($t_pe, 0,".",","):0 }}</th>
+                <th colspan="2" rowspan="2" >Total: {{  number_format($total, 0,".",",")}}</th>
+            </tr>
+            <tr>
+                <th style="border-right: 1px solid black;" colspan="2">Poin Valid: {{ isset($total_valid)?number_format($total_valid, 0,".",","):0 }}</th>
+                <th style="border-right: 1px solid black;" colspan="2">Poin Invalid: {{ isset($total_invalid)?number_format($total_invalid, 0,".",","):0 }}</th>
+            </tr>
         @else
             <tr>
                 <td colspan="10">TIDAK ADA DATA</td>
@@ -76,15 +85,7 @@
         @endif
         </tbody>
         <tfoot>
-        <tr>
-            <th style="border-right: 1px solid black;" colspan="2">Poin INTERN: {{ isset($t_pi)?number_format($t_pi, 0,".",","):0 }}</th>
-            <th style="border-right: 1px solid black;" colspan="2">Poin EXTERN: {{ isset($t_pe)?number_format($t_pe, 0,".",","):0 }}</th>
-            <th colspan="2" rowspan="2" >Total: {{  number_format($total, 0,".",",")}}</th>
-        </tr>
-        <tr>
-            <th style="border-right: 1px solid black;" colspan="2">Poin Valid: {{ isset($total_valid)?number_format($total_valid, 0,".",","):0 }}</th>
-            <th style="border-right: 1px solid black;" colspan="2">Poin Invalid: {{ isset($total_invalid)?number_format($total_invalid, 0,".",","):0 }}</th>
-        </tr>
+
         </tfoot>
     </table>
 @endsection

@@ -777,7 +777,7 @@
                     let theSubRak = $('#theSubRak').val();
                     let theTipeRak = $('#theTipeRak').val();
 
-                    if($('#rakColumn').val() === 'rak'){
+                    if($('#rakColumn').val() == 'rak'){
                         if (dataIndex === 0)
                         {
                             listRak = [];
@@ -1330,6 +1330,8 @@
 
             if(cursor.substr(0,5) === "menuC") {
                 menuCChoose(currentButton);
+            }else if(cursor.substr(0,5) === "menuE") {
+                menuEChoose(currentButton);
             }
         });
         //ONCLICK PLU CUSTOM
@@ -1484,7 +1486,7 @@
             return 0;
         }
 
-        //Untuk periksa apakah mem ada
+        //Untuk periksa apakah plu ada
         function checkPluExist(val){
             let result = "false";
             $.ajax({

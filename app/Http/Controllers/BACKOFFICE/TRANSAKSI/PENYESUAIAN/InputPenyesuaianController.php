@@ -435,22 +435,27 @@ class InputPenyesuaianController extends Controller
                                 ->where('trbo_nodoc',$nodoc)
                                 ->where('trbo_qty','<','0')
                                 ->whereRaw("NVL(trbo_recordid,0) <> '1'")
-                                ->first()->trbo_prdcd;
-
-                            $oldfrac = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
-                                ->selectRaw("NVL(prd_frac,0) frac")
-                                ->where('prd_kodeigr',Session::get('kdigr'))
-                                ->where('prd_prdcd',$oldplu)
-                                ->first()->frac;
-
-                            $hrgsatuan = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
-                                ->select('trbo_hrgsatuan')
-                                ->where('trbo_kodeigr',Session::get('kdigr'))
-                                ->where('trbo_nodoc',$nodoc)
-                                ->where('trbo_prdcd',$oldplu)
-                                ->whereRaw("NVL(trbo_recordid,0) <> '1'")
                                 ->first();
-                            $hrgsatuan = $hrgsatuan ? ($hrgsatuan->trbo_hrgsatuan / $oldfrac) * $frac : 0;
+
+                            if($oldplu){
+                                $oldplu = $oldplu->trbo_prdcd;
+
+                                $oldfrac = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+                                    ->selectRaw("NVL(prd_frac,0) frac")
+                                    ->where('prd_kodeigr',Session::get('kdigr'))
+                                    ->where('prd_prdcd',$oldplu)
+                                    ->first()->frac;
+
+                                $hrgsatuan = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
+                                    ->select('trbo_hrgsatuan')
+                                    ->where('trbo_kodeigr',Session::get('kdigr'))
+                                    ->where('trbo_nodoc',$nodoc)
+                                    ->where('trbo_prdcd',$oldplu)
+                                    ->whereRaw("NVL(trbo_recordid,0) <> '1'")
+                                    ->first();
+
+                                $hrgsatuan = $hrgsatuan ? ($hrgsatuan->trbo_hrgsatuan / $oldfrac) * $frac : 0;
+                            }
                         }
                     }
 
@@ -553,6 +558,7 @@ class InputPenyesuaianController extends Controller
             ->selectRaw("trbo_prdcd, prd_deskripsipendek, prd_unit || '/' || prd_frac kemasan,
                 case when (trbo_qty/prd_frac) < 0 then ceil(trbo_qty/prd_frac) else floor(trbo_qty/prd_frac) end qty, mod(trbo_qty,prd_frac) qtyk, trbo_hrgsatuan, trbo_gross")
             ->where('trbo_nodoc','=',$request->nodoc)
+            ->whereNull('trbo_recordid')
             ->orderBy('trbo_create_dt','asc')
             ->get();
 

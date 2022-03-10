@@ -131,8 +131,6 @@
 
     <p class="text-hide" id="idField"></p>
 
-    <h1>222105023</h1>
-
     <!-- Modal -->
     <div class="modal fade" id="modalHelp" tabindex="-1" role="dialog" aria-labelledby="m_kodecabangHelp" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">

@@ -24,8 +24,7 @@
 
 @extends('html-template')
 
-@section('paper_size','595pt 442pt')
-@section('paper_height','420pt')
+@section('paper_height','442pt')
 @section('paper_width','595pt')
 
 @section('table_font_size','7px')

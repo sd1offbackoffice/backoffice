@@ -1,6 +1,6 @@
 @extends('pdf-template')
 
-@section('paper_size','595pt 442pt')
+@section('paper_height','442pt')
 
 @section('table_font_size','7 px')
 

@@ -3,56 +3,50 @@
 namespace App\Http\Controllers\BACKOFFICE;
 
 use App\Http\Controllers\Connection;
+use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\DataTables;
 
 class PBManualController extends Controller
 {
     public function index()
     {
-        $produk = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
-            ->select('prd_prdcd', 'prd_deskripsipanjang')
-            ->where(DB::connection(Session::get('connection'))->raw('SUBSTR(prd_prdcd,7,1)'), '=', '0')
-            ->orderBy('prd_deskripsipanjang')
-            ->get();
-        $pb = DB::connection(Session::get('connection'))->table('tbTr_PB_H')
-            ->select('*')
-            ->where('PBH_KodeIGR', '=', Session::get('kdigr'))
-            ->limit(20)
-            ->orderBy('pbh_nopb', 'desc')
-            ->get()->toArray();
-        return view('BACKOFFICE.PBManual')->with(compact(['pb', 'produk']));
+        return view('BACKOFFICE.pb-manual');
     }
 
-    public function lov_search(Request $request)
+    public function lov_nopb(Request $request)
     {
         $pb = DB::connection(Session::get('connection'))->table('tbTr_PB_H')
-            ->select('*')
+            ->select('pbh_nopb','pbh_tglpb','pbh_flagdoc')
             ->where('PBH_KodeIGR', '=', Session::get('kdigr'))
             ->where('PBH_NOPB', 'like', '%' . $request->value . '%')
             ->orderBy('pbh_nopb', 'desc')
             ->get();
-        return $pb;
+        return Datatables::of($pb)->make(true);
     }
 
     public function lov_search_plu(Request $request)
     {
+        $result='';
         if (is_numeric($request->value)) {
             $result = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->select('prd_prdcd', 'prd_deskripsipanjang')
                 ->where('prd_prdcd', 'like', '%' . $request->value . '%')
                 ->orderBy('prd_deskripsipanjang')
+                ->limit(100)
                 ->get();
         } else {
             $result = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->select('prd_prdcd', 'prd_deskripsipanjang')
                 ->where('prd_deskripsipanjang', 'like', '%' . $request->value . '%')
+                ->limit(100)
                 ->orderBy('prd_deskripsipanjang')
                 ->get();
         }
-        return $result;
+        return Datatables::of($result)->make(true);
     }
 
     public function hapusDokumen(Request $request)
@@ -94,7 +88,8 @@ class PBManualController extends Controller
             $pb['pbh_nopb'] = $r;
             $pb['pbh_tglpb'] = $TGLPB;
         } else {
-            $pb = DB::connection(Session::get('connection'))->table('tbTr_PB_H')
+            $pb = DB::connection(Session::get('connection'))
+                ->table('tbTr_PB_H')
                 ->select('pbh_nopb', 'pbh_tglpb', 'pbh_tipepb', 'pbh_jenispb', 'pbh_flagdoc', 'pbh_keteranganpb', 'pbh_tgltransfer')
                 ->where('PBH_KodeIGR', '=', Session::get('kdigr'))
                 ->where('PBH_NOPB', '=', $request->value)
@@ -112,7 +107,7 @@ class PBManualController extends Controller
             $KET = $pb->pbh_keteranganpb;
             $TGLTRF = $pb->pbh_tgltransfer;
 
-            if (($FLAG == '*') OR !is_null($TGLTRF)) {
+            if (($FLAG == '*') || !is_null($TGLTRF)) {
                 $MODEL = 'PB SUDAH DICETAK / TRANSFER';
             } else {
                 $MODEL = 'KOREKSI';
@@ -187,11 +182,10 @@ class PBManualController extends Controller
         $PBD_PRDCD = $request->plu;
         $PBD_NOPB = $request->nopb;
         $PBD_KODEIGR = Session::get('kdigr');
-        $FLAG = $request->flag;
+        $FLAG = is_null($request->flag)?'':$request->flag;
         $TGLPB = $request->tglpb;
 
         $c = loginController::getConnectionProcedure();
-
 
         $sql = "BEGIN sp_igr_bo_pb_cek_plu2('" . $PBD_KODEIGR . "','" . $PBD_PRDCD . "',to_date('" . $TGLPB . "','dd/mm/yyyy'),'" . $FLAG . "'," . ":DESKPDK, :DESKPJG, :UNIT, :FRAC, :BKP,:PBD_KODESUPPLIER, :SUPPLIER, :SUPPKP, :HG_JUAL, :ISI_BELI, :PBD_SALDOAKHIR, :MINOR, :PBD_PKMT, :PBD_PERSENDISC1, :PBD_RPHDISC1, :PBD_FLAGDISC1, :PBD_PERSENDISC2, :PBD_RPHDISC2, :PBD_FLAGDISC2, :PBD_TOP, :F_OMI, :F_IDM, :PBD_HRGSATUAN, :PBD_PPNBM,:PBD_PPNBOTOL, :v_oke, :v_message);END;";
 //        dd($sql);
@@ -227,6 +221,7 @@ class PBManualController extends Controller
         oci_execute($s);
 
         $plu['pbd_prdcd'] = $PBD_PRDCD;
+
         if ($v_oke == "TRUE") {
             $plu['satuan'] = $plu['prd_unit'] . '/' . Self::ceknull($plu['prd_frac'], 1);
             $divdepkat = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
@@ -298,7 +293,8 @@ class PBManualController extends Controller
         for ($i = 0; $i < sizeof($request->data['prdcd']); $i++) {
 //            $request->data['gantiaku'][$i]="kosong";
             DB::connection(Session::get('connection'))->table('tbtr_pb_d')
-                ->insert(['PBD_KODEIGR' => Session::get('kdigr'),
+                ->insert([
+                    'PBD_KODEIGR' => Session::get('kdigr'),
                     'PBD_RECORDID' => '',
                     'PBD_NOPB' => $request->nopb,
                     'PBD_PRDCD' => $request->data['prdcd'][$i],
@@ -340,9 +336,10 @@ class PBManualController extends Controller
                     'PBD_FDXREV' => $request->data['fdxrev'][$i],
                     'PBD_FLAGGUDANGPUSAT' => '',
                     'PBD_CREATE_BY' => Session::get('usid'),
-                    'PBD_CREATE_DT' => DB::connection(Session::get('connection'))->raw('trunc(sysdate)'),
+                    'PBD_CREATE_DT' => Carbon::now(),
                     'PBD_MODIFY_BY' => Session::get('usid'),
-                    'PBD_MODIFY_DT' => DB::connection(Session::get('connection'))->raw('trunc(sysdate)')]);
+                    'PBD_MODIFY_DT' =>  Carbon::now()
+                ]);
         }
         $pbh = DB::connection(Session::get('connection'))->table('tbtr_pb_h')
             ->select('pbh_tglpb', 'pbh_tipepb', 'pbh_jenispb', 'pbh_flagdoc', 'pbh_keteranganpb', 'pbh_tgltransfer')

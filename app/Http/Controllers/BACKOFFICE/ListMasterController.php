@@ -212,17 +212,17 @@ class ListMasterController extends Controller
 
         if($div1 != ''){
             if($div2 != ''){
-                $whereDiv = "prd_kodedivisi between ".$div1." and ".$div2;
+                $whereDiv = "prd_kodedivisi between '".$div1."' and '".$div2."'";
             }else{
-                $whereDiv = "prd_kodedivisi >= ".$div1;
+                $whereDiv = "prd_kodedivisi >= '".$div1."'";
             }
         }
 
         if($dep1 != ''){
             if($dep2 != ''){
-                $whereDep = "prd_kodedepartement between ".$dep1." and ".$dep2;
+                $whereDep = "prd_kodedepartement between '".$dep1."' and '".$dep2."'";
             }else{
-                $whereDiv = "prd_kodedepartement >= ".$div1;
+                $whereDiv = "prd_kodedepartement >= '".$div1."'";
             }
         }
         if($whereDiv != "" && $whereDep != ""){
@@ -231,9 +231,9 @@ class ListMasterController extends Controller
 
         if($kat1 != ''){
             if($kat2 != ''){
-                $whereKat = "prd_kodekategoribarang between ".$kat1." and ".$kat2;
+                $whereKat = "prd_kodekategoribarang between '".$kat1."' and '".$kat2."'";
             }else{
-                $whereKat = "prd_kodekategoribarang >= ".$kat1;
+                $whereKat = "prd_kodekategoribarang >= '".$kat1."'";
             }
         }
         if($whereDep != "" && $whereKat != ""){

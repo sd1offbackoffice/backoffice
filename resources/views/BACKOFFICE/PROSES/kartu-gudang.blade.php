@@ -101,7 +101,7 @@
                         <div class="row form-group">
                             <div class="col-sm"></div>
                             <div class="col-sm-3">
-                                <button class="col btn btn-primary" onclick="process()">PROSES DAN CETAK</button>
+                                <button class="col btn btn-primary" id="btnProses" onclick="process()">PROSES DAN CETAK</button>
                             </div>
                         </div>
                     </div>
@@ -123,24 +123,24 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col lov">
-                                    <table class="table table-sm" id="table_lov_divisi">
-                                        <thead>
-                                        <tr>
-                                            <td>KODE DIVISI</td>
-                                            <td>NAMA DIVISI</td>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        @php $i = 0 @endphp
-                                        @foreach($divisi as $d)
-                                            @php $i++ @endphp
-                                            <tr id="row_lov_divisi_{{ $i }}" onclick="lov_selectDivision({{ $i }})" class="row_lov">
-                                                <td class="div_kodedivisi">{{ $d->div_kodedivisi }}</td>
-                                                <td class="div_namadivisi">{{ $d->div_namadivisi }}</td>
+                                        <table class="table table-sm" id="table_lov_divisi">
+                                            <thead>
+                                            <tr>
+                                                <td>KODE DIVISI</td>
+                                                <td>NAMA DIVISI</td>
                                             </tr>
-                                        @endforeach
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                            @php $i = 0 @endphp
+                                            @foreach($divisi as $d)
+                                                @php $i++ @endphp
+                                                <tr id="row_lov_divisi_{{ $i }}" onclick="lov_selectDivision({{ $i }})" class="row_lov">
+                                                    <td class="div_kodedivisi">{{ $d->div_kodedivisi }}</td>
+                                                    <td class="div_namadivisi">{{ $d->div_namadivisi }}</td>
+                                                </tr>
+                                            @endforeach
+                                            </tbody>
+                                        </table>
                                 </div>
                             </div>
                         </div>
@@ -243,9 +243,8 @@
                                 <table class="table table-striped table-bordered" id="table_lov_plu">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>PLU</th>
                                         <th>Deskripsi</th>
-                                        <th>Satuan</th>
+                                        <th>PLU</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -338,6 +337,8 @@
                 $('.waktu input').prop('disabled',true);
 
                 tglPer = '{{ $tglPer }}';
+                var dateParts = tglPer.split("/");
+                var dateObject = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
 
                 currVar = '';
 
@@ -347,8 +348,8 @@
                     locale: {
                         format: 'DD/MM/YYYY'
                     },
-                    // minDate: new Date(date.getFullYear(), date.getMonth(), 1),
-                    // maxDate: new Date(),
+                    minDate: dateObject,
+                    maxDate: new Date(),
                     // startDate: new Date(date.getFullYear(), date.getMonth(), 1),
                     // endDate: new Date()
                 });
@@ -366,13 +367,18 @@
             $('#divisi1').on('keypress',function(e){
                 if(e.which == 13){
                     // check-divisi($(this).val(),$(this).attr('id'),'true');
-                    selectDivision('divisi1');
+                    if($('#divisi1').val() == '')
+                        $('#divisi1').val(nvl($('#divisi1').val(), '0'));
+                    else selectDivision('divisi1');
+
+                    $('#divisi2').select();
                 }
             });
 
             $('#divisi2').on('keypress',function(e){
                 if(e.which == 13){
                     if($(this).val() == ''){
+                        $('#divisi2').val(nvl($('#divisi2').val(), '9'));
                         $('#departement1').select();
                     }
                     else if($(this).val() < $('#divisi1').val()){
@@ -390,6 +396,10 @@
 
             $('#departement1').on('keypress',function(e){
                 if(e.which == 13){
+                    if($('#departement1').val() == ''){
+                        $('#departement1').val(nvl($('#departement1').val(), '00'));
+                        $('#departement2').select();
+                    }
                     // check-departement($(this).val(),$(this).attr('id'),'true');
                     selectDepartment($(this).attr('id'));
                 }
@@ -398,6 +408,7 @@
             $('#departement2').on('keypress',function(e){
                 if(e.which == 13){
                     if($(this).val() == ''){
+                        $('#departement2').val(nvl($('#departement2').val(), '99'));
                         $('#kategori1').select();
                     }
                     else if($(this).val() < $('#departement1').val()){
@@ -414,13 +425,18 @@
 
             $('#kategori1').on('keypress',function(e){
                 if(e.which == 13){
-                    selectCategory($(this).attr('id'));
+                    if($('#kategori1').val() == ''){
+                        $('#kategori1').val(nvl($('#kategori1').val(), '00'));
+                        $('#kategori2').select();
+                    }
+                    else selectCategory($(this).attr('id'));
                 }
             });
 
             $('#kategori2').on('keypress',function(e){
                 if(e.which == 13){
                     if($(this).val() == ''){
+                        $('#kategori2').val(nvl($('#kategori2').val(), '99'));
                         $('#plu1').select();
                     }
                     else if($(this).val() < $('#kategori1').val()){
@@ -614,9 +630,23 @@
                 }
             }
 
-            $('.plu').on('keypress',function(e){
+            $('#plu1').on('keypress',function(e){
                 if(e.which == 13){
-                    checkPLU($(this).attr('id'));
+                    if($('#plu1').val() == ''){
+                        $('#plu1').val('0000000');
+                        $('#plu2').select();
+                    }
+                    else checkPLU('plu1');
+                }
+            });
+
+            $('#plu2').on('keypress',function(e){
+                if(e.which == 13){
+                    if($('#plu2').val() == ''){
+                        $('#plu2').val('0000000');
+                        $('#btnProses').focus();
+                    }
+                    else checkPLU('plu2');
                 }
             });
 
@@ -817,6 +847,15 @@
             }
 
             function process() {
+                $('#divisi1').val(nvl($('#divisi1').val(), '0'));
+                $('#divisi2').val(nvl($('#divisi2').val(), '9'));
+                $('#departement1').val(nvl($('#departement1').val(), '00'));
+                $('#departement2').val(nvl($('#departement2').val(), '99'));
+                $('#kategori1').val(nvl($('#kategori1').val(), '00'));
+                $('#kategori2').val(nvl($('#kategori2').val(), '99'));
+                $('#plu1').val(nvl($('#plu1').val(), '0000000'));
+                $('#plu2').val(nvl($('#plu2').val(), '9999999'));
+
                 swal({
                     title: 'Yakin akan melakukan proses dan cetak untuk periode '+$('#periode').val()+'?',
                     icon: 'warning',
@@ -828,6 +867,11 @@
 
                         periode1 = periode[0];
                         periode2 = periode[1];
+
+                        now = new Date();
+
+                        $('#waktu1').val(now.getHours() + ":" + now.getMinutes() + ":" + ('00'+now.getSeconds()).substr(-2));
+                        $('#waktu2').val('');
 
                         $.ajax({
                             url: '{{ url()->current().'/process' }}',
@@ -858,6 +902,9 @@
                                     icon: 'success'
                                 }).then(function(){
                                     $('#modal-loader').modal('hide');
+                                    now = new Date();
+
+                                    $('#waktu2').val(now.getHours() + ":" + now.getMinutes() + ":" + ('00'+now.getSeconds()).substr(-2));
                                     print();
                                 });
                             },

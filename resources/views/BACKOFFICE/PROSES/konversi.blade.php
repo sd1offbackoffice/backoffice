@@ -14,7 +14,7 @@
                             <div class="row">
                                 <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">PLU UTUH</label>
                                 <div class="col-sm-2 buttonInside">
-                                    <input type="text" class="form-control" id="utuh_plu" disabled>
+                                    <input type="text" class="form-control" id="utuh_plu">
                                     <button id="btn_lov_plu_utuh" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov_plu_utuh" disabled>
                                         <i class="fas fa-spinner fa-spin"></i>
                                     </button>
@@ -67,7 +67,7 @@
                             <div class="row">
                                 <label class="col-sm-2 pl-0 pr-0 text-right col-form-label">PLU MIX</label>
                                 <div class="col-sm-2 buttonInside">
-                                    <input type="text" class="form-control" id="mix_plu" disabled>
+                                    <input type="text" class="form-control" id="mix_plu">
                                     <button id="btn_lov_plu_mix" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov_plu_mix" disabled>
                                         <i class="fas fa-spinner fa-spin"></i>
                                     </button>
@@ -420,56 +420,108 @@
 
                         $('#m_lov_plu_mix').modal('hide');
 
-                        $.ajax({
-                            type: "GET",
-                            url: "{{ url()->current().'/get-data-plu-olahan' }}",
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            data: {
-                                plu: $('#mix_plu').val(),
-                            },
-                            beforeSend: function () {
-                                $('#modal-loader').modal('show');
-                            },
-                            success: function (response) {
-                                $('#modal-loader').modal('hide');
+                        getDataPluOlahan();
+                    });
+                }
+            });
+        }
 
-                                if($.fn.DataTable.isDataTable('#table_daftar')){
-                                    $('#table_daftar').DataTable().destroy();
-                                    $("#table_daftar tbody [role='row']").remove();
-                                }
+        $('#mix_plu').on('keypress',function(e){
+            if(e.which == 13){
+                $.ajax({
+                    type: "GET",
+                    url: "{{ url()->current().'/get-data-plu-mix' }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        plu: convertPlu($('#mix_plu').val()),
+                    },
+                    beforeSend: function () {
+                        $('#modal-loader').modal('show');
+                    },
+                    success: function (response) {
+                        $('#modal-loader').modal('hide');
 
-                                for(i=0;i<response.length;i++){
-                                    html = `<tr>` +
-                                            `<td>${response[i].knv_prdcd_konv}</td>` +
-                                            `<td class="text-left">${response[i].deskripsi}</td>` +
-                                            `<td><input type="number" class="form-control text-right" value="0"></td>`+
-                                            `</tr>`;
+                        if(response == ''){
+                            swal({
+                                title: 'PLU tidak ditemukan!',
+                                icon: 'error'
+                            }).then(() => {
 
-                                    $('#table_daftar tbody').append(html);
-                                }
+                            });
+                        }
+                        else{
+                            $('#mix_plu').val(response.mix_prdcd);
+                            $('#mix_desk').val(response.mix_desk.replace(/&amp;/g, '&'));
+                            $('#mix_qty').val(0);
 
-                                tabel = $('#table_daftar').DataTable({
-                                    "scrollY": "30vh",
-                                    "paging" : false,
-                                    "sort": false,
-                                    "bInfo": false,
-                                    "searching": false
-                                });
-                            },
-                            error: function (error) {
-                                $('#modal-loader').modal('hide');
-                                // handle error
-                                swal({
-                                    title: 'Terjadi kesalahan!',
-                                    text: error.responseJSON.message,
-                                    icon: 'error'
-                                }).then(() => {
+                            getDataPluOlahan();
+                        }
+                    },
+                    error: function (error) {
+                        $('#modal-loader').modal('hide');
+                        // handle error
+                        swal({
+                            title: 'Terjadi kesalahan!',
+                            text: error.responseJSON.message,
+                            icon: 'error'
+                        }).then(() => {
 
-                                });
-                            }
                         });
+                    }
+                });
+            }
+        });
+
+        function getDataPluOlahan(){
+            $.ajax({
+                type: "GET",
+                url: "{{ url()->current().'/get-data-plu-olahan' }}",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    plu: $('#mix_plu').val(),
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+
+                    if($.fn.DataTable.isDataTable('#table_daftar')){
+                        $('#table_daftar').DataTable().destroy();
+                        $("#table_daftar tbody [role='row']").remove();
+                    }
+
+                    for(i=0;i<response.length;i++){
+                        html = `<tr>` +
+                            `<td>${response[i].knv_prdcd_konv}</td>` +
+                            `<td class="text-left">${response[i].deskripsi}</td>` +
+                            `<td><input type="number" class="form-control text-right" value="0"></td>`+
+                            `</tr>`;
+
+                        $('#table_daftar tbody').append(html);
+                    }
+
+                    tabel = $('#table_daftar').DataTable({
+                        "scrollY": "30vh",
+                        "paging" : false,
+                        "sort": false,
+                        "bInfo": false,
+                        "searching": false
+                    });
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    // handle error
+                    swal({
+                        title: 'Terjadi kesalahan!',
+                        text: error.responseJSON.message,
+                        icon: 'error'
+                    }).then(() => {
+
                     });
                 }
             });
@@ -508,6 +560,59 @@
                 }
             });
         }
+
+        $('#utuh_plu').on('keypress',function(e){
+            if(e.which == 13){
+                $.ajax({
+                    type: "GET",
+                    url: "{{ url()->current().'/get-data-plu-utuh' }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        plu: convertPlu($('#utuh_plu').val()),
+                    },
+                    beforeSend: function () {
+                        $('#modal-loader').modal('show');
+                    },
+                    success: function (response) {
+                        $('#modal-loader').modal('hide');
+
+                        if(response == ''){
+                            swal({
+                                title: 'PLU tidak ditemukan!',
+                                icon: 'error'
+                            }).then(() => {
+
+                            });
+                        }
+                        else{
+                            $('#utuh_qty').val('');
+                            $('#olahan_qty').val('');
+                            $('#utuh_plu').val(response.utuh_prdcd);
+                            $('#utuh_desk').val(response.utuh_desk.replace(/&amp;/g, '&'));
+                            $('#olahan_plu').val(response.olah_prdcd);
+                            $('#olahan_desk').val(response.olah_desk.replace(/&amp;/g, '&'));
+                            $('#waste').val(response.was_persen);
+
+                            $('#olahan_qty').prop('disabled',false);
+                            $('#utuh_qty').prop('disabled',false).select();
+                        }
+                    },
+                    error: function (error) {
+                        $('#modal-loader').modal('hide');
+                        // handle error
+                        swal({
+                            title: 'Terjadi kesalahan!',
+                            text: error.responseJSON.message,
+                            icon: 'error'
+                        }).then(() => {
+
+                        });
+                    }
+                });
+            }
+        });
 
         function konversiUtuhOlahan(){
             if($('#utuh_plu').val() == ''){
@@ -635,79 +740,120 @@
                 });
             }
             else{
-                swal({
-                    title: 'Yakin ingin melakukan proses konversi PLU '+$('#mix_plu').val()+'?',
-                    icon: 'warning',
-                    buttons: true,
-                    dangerMode: true
-                }).then((ok) => {
-                    if(ok){
-                        olah = [];
-                        $('#table_daftar tbody tr').each(function(){
-                            o = {};
-                            o.plu = $(this).find(':eq(0)').html();
-                            o.qty = $(this).find(':eq(2) input').val();
-                            olah.push(o);
-                        });
+                olah = [];
+                $('#table_daftar tbody tr').each(function(){
+                    o = {};
+                    o.plu = $(this).find(':eq(0)').html();
+                    o.qty = $(this).find(':eq(2) input').val();
+                    olah.push(o);
+                });
 
-                        $.ajax({
-                            type: "POST",
-                            url: "{{ url()->current().'/konversi-olahan-mix' }}",
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            data: {
-                                mix_plu: $('#mix_plu').val(),
-                                mix_qty: $('#mix_qty').val(),
-                                olahan: olah
-                            },
-                            beforeSend: function () {
-                                $('#modal-loader').modal('show');
-                            },
-                            success: function (response) {
-                                $('#modal-loader').modal('hide');
+                $.ajax({
+                    type: "GET",
+                    url: "{{ url()->current().'/check-qty-olahan-mix' }}",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        mix_plu: $('#mix_plu').val(),
+                        mix_qty: $('#mix_qty').val(),
+                        olahan: olah
+                    },
+                    beforeSend: function () {
+                        $('#modal-loader').modal('show');
+                    },
+                    success: function (response) {
+                        $('#modal-loader').modal('hide');
 
-                                swal({
-                                    title: response.alert,
-                                    icon: response.status
-                                }).then(() => {
-                                    if(response.status == 'success'){
-                                        if($.fn.DataTable.isDataTable('#table_daftar')){
-                                            $('#table_daftar').DataTable().destroy();
-                                            $("#table_daftar tbody [role='row']").remove();
-                                        }
+                        doKonversiOlahanMix();
+                    },
+                    error: function (error) {
+                        $('#modal-loader').modal('hide');
+                        // handle error
+                        swal({
+                            title: error.responseJSON.message,
+                            icon: 'error'
+                        }).then(() => {
 
-                                        tabel = $('#table_daftar').DataTable({
-                                            "scrollY": "30vh",
-                                            "paging" : false,
-                                            "sort": false,
-                                            "bInfo": false,
-                                            "searching": false
-                                        });
-
-                                        lovnodoc.ajax.reload();
-                                        $('input').val('');
-
-                                        $('#nodoc').val(response.nodoc);
-                                        window.open('{{ url()->current() }}/print-bukti?nodoc='+$('#nodoc').val(),'_blank');
-                                    }
-                                });
-                            },
-                            error: function (error) {
-                                $('#modal-loader').modal('hide');
-                                // handle error
-                                swal({
-                                    title: 'Terjadi kesalahan!',
-                                    text: error.responseJSON.message,
-                                    icon: 'error'
-                                }).then(() => {
-
-                                });
-                            }
                         });
                     }
                 });
             }
+        }
+
+        function doKonversiOlahanMix(){
+            swal({
+                title: 'Yakin ingin melakukan proses konversi PLU '+$('#mix_plu').val()+'?',
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true
+            }).then((ok) => {
+                if(ok){
+                    olah = [];
+                    $('#table_daftar tbody tr').each(function(){
+                        o = {};
+                        o.plu = $(this).find(':eq(0)').html();
+                        o.qty = $(this).find(':eq(2) input').val();
+                        olah.push(o);
+                    });
+
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ url()->current().'/konversi-olahan-mix' }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            mix_plu: $('#mix_plu').val(),
+                            mix_qty: $('#mix_qty').val(),
+                            olahan: olah
+                        },
+                        beforeSend: function () {
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (response) {
+                            $('#modal-loader').modal('hide');
+
+                            swal({
+                                title: response.alert,
+                                icon: response.status
+                            }).then(() => {
+                                if(response.status == 'success'){
+                                    if($.fn.DataTable.isDataTable('#table_daftar')){
+                                        $('#table_daftar').DataTable().destroy();
+                                        $("#table_daftar tbody [role='row']").remove();
+                                    }
+
+                                    tabel = $('#table_daftar').DataTable({
+                                        "scrollY": "30vh",
+                                        "paging" : false,
+                                        "sort": false,
+                                        "bInfo": false,
+                                        "searching": false
+                                    });
+
+                                    lovnodoc.ajax.reload();
+                                    $('input').val('');
+
+                                    $('#nodoc').val(response.nodoc);
+                                    window.open('{{ url()->current() }}/print-bukti?nodoc='+$('#nodoc').val(),'_blank');
+                                }
+                            });
+                        },
+                        error: function (error) {
+                            $('#modal-loader').modal('hide');
+                            // handle error
+                            swal({
+                                title: 'Terjadi kesalahan!',
+                                text: error.responseJSON.message,
+                                icon: 'error'
+                            }).then(() => {
+
+                            });
+                        }
+                    });
+                }
+            });
         }
 
         function printBukti(){

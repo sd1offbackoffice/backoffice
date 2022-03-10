@@ -6,7 +6,9 @@ use Carbon\Carbon;
 use Dompdf\Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Auth\loginController;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Yajra\DataTables\DataTables;
@@ -21,7 +23,7 @@ class ProsesLPPController extends Controller
 
     public function proses(Request $request)
     {
-
+        set_time_limit(0);
         $periode1 = $request->periode1;
         $periode2 = $request->periode2;
 

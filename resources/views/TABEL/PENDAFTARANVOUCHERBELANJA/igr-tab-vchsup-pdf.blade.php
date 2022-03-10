@@ -14,9 +14,6 @@
 {{--    842--}}
 {{--@endsection--}}
 
-{{--@section('paper_size')--}}
-{{--    842pt  595pt--}}
-{{--@endsection--}}
 @section('content')
 
     <table class="table">

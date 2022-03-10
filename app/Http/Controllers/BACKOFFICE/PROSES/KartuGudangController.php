@@ -23,13 +23,20 @@ class KartuGudangController extends Controller
 
         if($temp->prs_bulanberjalan == null && $temp->prs_tahunberjalan == null){
             $isValid = false;
-            $message = 'Tanggal awal periode tidak terdefinisi!';
+            $message = 'Tanggal awal periode (cycle) tidak terdefinisi!';
 
             return view('BACKOFFICE.PROSES.kartu-gudang')->with(compact(['isValid','message']));
         }
         else{
             $isValid = true;
             $tglPer = '01/'.$temp->prs_bulanberjalan.'/'.$temp->prs_tahunberjalan;
+
+            if(Carbon::createFromFormat('d/m/Y',$tglPer) > Carbon::now()){
+                $isValid = false;
+                $message = 'Kesalahan Setting Periode Terakhir Month End ( Awal Cycle : '.$tglPer.' , Hari Ini Baru Tgl : '.Carbon::now()->format('d/m/Y').'!';
+
+                return view('BACKOFFICE.PROSES.kartu-gudang')->with(compact(['isValid','message']));
+            }
 
             $divisi = DB::connection(Session::get('connection'))->table('tbmaster_divisi')
                 ->select('div_kodedivisi','div_namadivisi')
@@ -591,7 +598,25 @@ group by ktg_nodokumen, ktg_tgl, ktg_kasir,
     prs_namacabang, prs_namawilayah, ktg_qtyawal, saq1, saf1
 order by ktg_prdcd, ktg_tgl, ktg_nodokumen, ktg_kasir, ktg_station");
 
-//        dd($data);
+
+        $tempPlu = null;
+        $temp = [];
+        $finalData = [];
+        foreach($data as $d){
+            if($tempPlu == $d->ktg_prdcd){
+                $temp[] = $d;
+            }
+            else{
+                if($tempPlu != null)
+                    $finalData[] = $temp;
+                $tempPlu = $d->ktg_prdcd;
+                $temp = [];
+                $temp[] = $d;
+            }
+        }
+        $finalData[] = $temp;
+
+//        dd($finalData);
 
         return view('BACKOFFICE.PROSES.kartu-gudang-detail-pdf',compact(['perusahaan','data','periode1','periode2']));
     }

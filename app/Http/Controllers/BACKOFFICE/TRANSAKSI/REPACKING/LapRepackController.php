@@ -45,7 +45,7 @@ Where msth_kodeigr=mstd_kodeigr
   and nvl(mstd_recordid,'9') <> '1'
   and msth_kodeigr=prs_kodeigr
   and msth_kodeigr='$kodeigr'
-  and msth_tgldoc between TO_DATE('$sDate','DD-MM-YYYY') and TO_DATE('$eDate', 'DD-MM-YYYY')
+  and trunc(msth_tgldoc) between TO_DATE('$sDate','DD-MM-YYYY') and TO_DATE('$eDate', 'DD-MM-YYYY')
   and msth_typetrn='P'
   and nvl(msth_recordid,'9') <> '1'
 Order by msth_tgldoc,msth_nodoc,mstd_flagdisc1 desc,mstd_seqno)");
@@ -83,7 +83,7 @@ Where msth_kodeigr=mstd_kodeigr
   and nvl(mstd_recordid,'9') <> '1'
   and msth_kodeigr=prs_kodeigr
   and msth_kodeigr='$kodeigr'
-  and msth_tgldoc between TO_DATE('$sDate','DD-MM-YYYY') and TO_DATE('$eDate', 'DD-MM-YYYY')
+  and trunc(msth_tgldoc) between TO_DATE('$sDate','DD-MM-YYYY') and TO_DATE('$eDate', 'DD-MM-YYYY')
   and msth_typetrn='P'
   and nvl(msth_recordid,'9') <> '1'
 Order by msth_tgldoc,msth_nodoc,mstd_flagdisc1 desc,mstd_seqno)");

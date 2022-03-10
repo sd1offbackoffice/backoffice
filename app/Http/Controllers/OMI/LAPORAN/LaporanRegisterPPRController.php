@@ -1,16 +1,11 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ryan
- * Date: 08/09/2021
- * Time: 9:13 AM
- */
 
 namespace App\Http\Controllers\OMI\LAPORAN;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;

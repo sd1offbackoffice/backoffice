@@ -40,6 +40,7 @@ class PembatalanMPPController extends Controller
 					msth_noref3, msth_tgref3, prd_frac")
             ->where('mstd_typetrn','X')
             ->where('msth_nodoc',$nompp)
+            ->whereNull('msth_recordid')
             ->orderBy('mstd_prdcd')
             ->get();
 
@@ -57,10 +58,9 @@ class PembatalanMPPController extends Controller
 
         $cek = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
             ->selectRaw("to_char(msth_tgldoc, 'YYYYMM') tglmpp, to_char(sysdate, 'YYYYMM') now")
-            ->where('msth_nodoc',$nompp)
+            ->where('msth_nodoc','=',$nompp)
             ->whereRaw("NVL(msth_recordid,0) <> '1'")
             ->where('msth_kodeigr',Session::get('kdigr'))
-            ->distinct()
             ->first();
 
         if(!$cek){

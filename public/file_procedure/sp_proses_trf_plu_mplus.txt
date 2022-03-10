@@ -1,0 +1,103 @@
+CREATE OR REPLACE PROCEDURE sp_proses_trf_plu_mplus_php (
+   p_file     IN     VARCHAR2,
+   p_sukses      OUT VARCHAR2,
+   p_result      OUT VARCHAR2)
+IS
+   f           UTL_FILE.file_type;
+   v_line      VARCHAR2 (30000);
+   line        NUMBER;
+
+   TYPE plumplus IS TABLE OF tbtemp_plumplus%ROWTYPE;
+
+   plumplus1   plumplus;
+BEGIN
+   p_result := '';
+
+   DELETE FROM temp_plumplus;
+
+   INSERT INTO temp_plumplus
+      SELECT * FROM tbtemp_plumplus;
+
+   DELETE FROM tbtemp_plumplus;
+
+   plumplus1 := plumplus ();
+
+   EXECUTE IMMEDIATE 'create or replace directory TRF_MPLUS as ''/u01/lhost/trf_mplus/DATA/''';
+
+   f := UTL_FILE.fopen ('TRF_MPLUS', p_file, 'R');
+   plumplus1.EXTEND (1);
+
+   IF UTL_FILE.is_open (f)
+   THEN
+      line := 1;
+
+      LOOP
+         BEGIN
+            UTL_FILE.get_line (f, v_line, 30000);
+
+            IF v_line IS NULL
+            THEN
+               EXIT;
+            END IF;
+
+            IF line = 1
+            THEN
+               NULL;
+            ELSE
+               v_line := ' ' || v_line;
+
+               plumplus1 (line - 1).MPL_PLU :=
+                  TRIM (REGEXP_SUBSTR (REPLACE (v_line, ',', ', '),
+                                       '[^,]+',
+                                       1,
+                                       1));
+
+               plumplus1 (line - 1).MPL_QTY :=
+                  REPLACE (
+                     REPLACE (
+                        TRIM (REGEXP_SUBSTR (REPLACE (v_line, ',', ', '),
+                                             '[^,]+',
+                                             1,
+                                             2)),
+                        CHR (13),
+                        ''),
+                     CHR (10),
+                     '');
+
+               plumplus1.EXTEND (1);
+            END IF;
+
+            line := line + 1;
+         EXCEPTION
+            WHEN NO_DATA_FOUND
+            THEN
+               EXIT;
+         END;
+      END LOOP;
+
+      UTL_FILE.fclose (f);
+
+      FORALL i IN 1 .. line - 2
+         INSERT INTO tbtemp_plumplus (MPL_PLU, MPL_QTY)
+              VALUES (plumplus1 (i).MPL_PLU, plumplus1 (i).MPL_QTY);
+   END IF;
+
+   host_command (p_command => '/bin/mkdir /u01/lhost/trf_mplus/DATA/BACKUP/');
+
+   host_command (
+      p_command   =>    '/bin/mv /u01/lhost/trf_mplus/DATA/'
+                     || p_file
+                     || ' /u01/lhost/trf_mplus/DATA/BACKUP/'
+                     || to_char(sysdate, 'yyyyMMddhh24miss') || '.CSV');
+
+   p_sukses := 'TRUE';
+   COMMIT;
+EXCEPTION
+   WHEN OTHERS
+   THEN
+      ROLLBACK;
+      DBMS_OUTPUT.put_line ('TRF_PLU_MPLUS : ERROR = ' || SQLERRM);
+      p_sukses := 'FALSE';
+      p_result := p_result || 'TRF_PLU_MPLUS : ERROR = ' || SQLERRM;
+END;
+/

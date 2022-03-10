@@ -11,7 +11,7 @@
 @endsection
 
 @section('subtitle')
-    Periode: {{$tanggal1}} s/d {{$tanggal2}}
+    Periode: {{date('d/m/Y',strtotime(substr($tanggal1,0,10)))}} s/d {{date('d/m/Y',strtotime(substr($tanggal2,0,10)))}}
 @endsection
 
 @section('content')

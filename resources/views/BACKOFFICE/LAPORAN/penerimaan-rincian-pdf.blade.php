@@ -1,41 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Daftar Penerimaan Antar Cabang Rincian Produk Per Divisi / Departement / Kategori</title>
-</head>
-<body>
+@extends('html-template')
 
-<?php
-$datetime = new DateTime();
-$timezone = new DateTimeZone('Asia/Jakarta');
-$datetime->setTimezone($timezone);
-?>
-<header>
-    <div style="float:left; margin-top: 0px; line-height: 8px !important;">
-        <p>
-            {{ $perusahaan->prs_namaperusahaan }}<br><br>
-            {{ $perusahaan->prs_namacabang }}<br><br><br><br>
-            <strong>Tanggal : {{ $tgl1 }} - {{ $tgl2 }}</strong><br><br>
-        </p>
-    </div>
-    <div style="float:right; margin-top: 0px; line-height: 8px !important;">
-        <p>Tgl. Cetak : {{ date("d/m/Y") }}<br><br>
-            Jam Cetak : {{ $datetime->format('H:i:s') }}<br><br>
-            <i>User ID</i> : {{ Session::get('usid') }}<br><br>
-            Hal. :
-    </div>
-    <h2 style="text-align: center">** DAFTAR PENERIMAAN ANTAR CABANG**<br>RINCIAN PRODUK PER DIVISI / DEPARTEMEN / KATEGORI</h2>
-</header>
+@section('paper_height','792pt')
+@section('paper_width','1071pt')
 
-<footer>
+@section('table_font_size','7 px')
 
-</footer>
+@section('page_title')
+    Daftar Penerimaan Antar Cabang Rincian Produk Per Divisi / Departement / Kategori
+@endsection
 
-<main>
+@section('title')
+    ** Daftar Penerimaan Antar Cabang **
+@endsection
+
+@section('subtitle')
+    Rincian Produk Per Divisi / Departement / Kategori
+@endsection
+
+@section('header_left')
+    <p>Tanggal : {{ $tgl1 }} s/d {{ $tgl2 }}</p>
+@endsection
+
+@section('content')
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th width="10%" class="center" colspan="2">---------- BAPB ----------</th>
+            <th width="10%" class="center" colspan="2">---------- BPB ----------</th>
             <th width="5%" class="tengah" rowspan="2">PLU</th>
             <th width="20%" class="tengah left" rowspan="2">NAMA BARANG</th>
             <th width="5%" class="tengah" rowspan="2">KEMASAN</th>
@@ -45,7 +35,7 @@ $datetime->setTimezone($timezone);
             <th width="5%" class="tengah" rowspan="2">PPN</th>
             <th width="5%" class="tengah" rowspan="2">PPN-BM</th>
             <th width="5%" class="tengah" rowspan="2">BOTOL</th>
-            <th width="10%" class="tengah" rowspan="2">TOTAL NILAI</th>
+            <th width="10%" class="tengah padding-right" rowspan="2">TOTAL NILAI</th>
             <th width="5%" class="tengah" rowspan="2">KETERANGAN</th>
             <th width="5%" class="tengah" rowspan="2">LCOST</th>
             <th width="5%" class="tengah" rowspan="2">ACOST</th>
@@ -283,7 +273,10 @@ $datetime->setTimezone($timezone);
                 <td class="right">{{ number_format($d->btl,2) }}</td>
                 <td class="right">{{ number_format($d->total,2) }}</td>
                 <td>{{ $d->mstd_keterangan }}</td>
-                <td class="right">{{ number_format($d->lcost,2) }}</td>
+{{--                //RETURN(((:Gross - :pot + :Bm + :Btl) * :Frac / (:ctn * :Frac + :pcs + :bonus)));--}}
+{{--                //((($d->gross - $d->pot + $d->bm + $d->btl) * $d->frac / ($d->ctn * $d->frac + $d->pcs + $d->bonus)))--}}
+                <td class="right">{{ number_format(((($d->gross - $d->pot + $d->bm + $d->btl) * $d->frac / ($d->ctn * $d->frac + $d->pcs + $d->bonus))),2) }}</td>
+{{--                <td class="right">{{ number_format($d->lcost,2) }}</td>--}}
                 <td class="right">{{ number_format($d->acost,2) }}</td>
             </tr>
         @endfor
@@ -359,104 +352,4 @@ $datetime->setTimezone($timezone);
         </tr>
         </tfoot>
     </table>
-    <hr>
-    <p class="right"><strong>** AKHIR DARI LAPORAN **</strong></p>
-</main>
-
-<br>
-</body>
-<style>
-    @page {
-        /*margin: 25px 20px;*/
-        size: 1071pt 792pt;
-        /*size: 842pt 595pt;*/
-    }
-    header {
-        position: fixed;
-        top: 0cm;
-        left: 0cm;
-        right: 0cm;
-        height: 3cm;
-    }
-    body {
-        margin-top: 80px;
-        margin-bottom: 10px;
-        font-size: 9px;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        font-weight: 400;
-        line-height: 1.8;
-    }
-    table{
-        border-collapse: collapse;
-    }
-    tbody {
-        display: table-row-group;
-        vertical-align: middle;
-        border-color: inherit;
-    }
-    tr {
-        display: table-row;
-        vertical-align: inherit;
-        border-color: inherit;
-    }
-    td {
-        display: table-cell;
-    }
-    thead{
-        text-align: center;
-    }
-    tbody{
-        text-align: center;
-    }
-    tfoot{
-        border-top: 1px solid black;
-    }
-    .table{
-        width: 100%;
-        white-space: nowrap;
-        color: #212529;
-        /*padding-top: 20px;*/
-        /*margin-top: 25px;*/
-    }
-    .table tbody td {
-        vertical-align: top;
-        /*border-top: 1px solid #dee2e6;*/
-        padding: 0.20rem 0;
-        width: auto;
-    }
-    .table th{
-        vertical-align: top;
-        padding: 0.20rem 0;
-    }
-    .judul, .table-borderless{
-        text-align: center;
-    }
-    .table-borderless th, .table-borderless td {
-        border: 0;
-        padding: 0.50rem;
-    }
-    .center{
-        text-align: center;
-    }
-
-    .left{
-        text-align: left;
-    }
-
-    .right{
-        text-align: right;
-    }
-
-    .page-break {
-        page-break-before: always;
-    }
-
-    .table-header td{
-        white-space: nowrap;
-    }
-
-    .tengah{
-        vertical-align: middle !important;
-    }
-</style>
-</html>
+@endsection

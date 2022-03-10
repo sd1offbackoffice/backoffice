@@ -126,6 +126,7 @@ class InputController extends Controller
 
             $status = 'success';
             $title = 'Berhasil menghapus data '.$request->notrn;
+            $message = '';
         }
         catch (QueryException $e){
             DB::connection(Session::get('connection'))->rollBack();
@@ -283,6 +284,7 @@ ORDER BY PRDCD,
         $trbo_ppnrph = $request->trbo_ppnrph;
         $trbo_averagecost = $request->trbo_averagecost;
         $trbo_stokqty = $request->trbo_stokqty;
+        $trbo_keterangan = $request->trbo_keterangan;
 
         try{
             DB::connection(Session::get('connection'))->beginTransaction();
@@ -423,6 +425,7 @@ ORDER BY PRDCD,
                 $ins['trbo_ppnrph'] = $trbo_ppnrph[$i];
                 $ins['trbo_averagecost'] = $trbo_averagecost[$i];
                 $ins['trbo_stokqty'] = $trbo_stokqty[$i];
+                $ins['trbo_keterangan'] = $trbo_keterangan[$i];
 
                 $ins['trbo_kodeigr'] = Session::get('kdigr');
                 $ins['trbo_typetrn'] = 'O';
@@ -435,8 +438,11 @@ ORDER BY PRDCD,
                 $inserts[] = $ins;
             }
 
+//            dd($inserts);
+
             foreach($inserts as $insert){
-                DB::connection(Session::get('connection'))->table('tbtr_backoffice')
+                DB::connection(Session::get('connection'))
+                    ->table('tbtr_backoffice')
                     ->insert($insert);
             }
 

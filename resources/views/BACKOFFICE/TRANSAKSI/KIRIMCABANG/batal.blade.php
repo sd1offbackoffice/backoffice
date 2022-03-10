@@ -106,6 +106,8 @@
             });
 
             $('.tanggal').datepicker('setDate', new Date());
+
+            getData();
         });
 
         function isMonthEnd(){

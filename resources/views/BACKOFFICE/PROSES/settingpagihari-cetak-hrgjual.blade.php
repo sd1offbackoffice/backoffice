@@ -26,24 +26,20 @@ $datetime->setTimezone($timezone);
     <h2 style="text-align: center">** DAFTAR PERUBAHAN HARGA JUAL **</h2>
 </header>
 
-<footer>
-
-</footer>
-
 <main>
     <table class="table table-responsive">
         <thead style="border-top: double; border-bottom: double;">
         <tr>
             <th class="tengah" rowspan="2" width="5%">KODE</th>
-            <th class="tengah" rowspan="2" width="30%">NAMA BARANG</th>
-            <th class="tengah" rowspan="2" width="4%">UNIT</th>
-            <th class="tengah" rowspan="2" width="3%">FRAC</th>
-            <th class="tengah" rowspan="2" width="8%">MIN JUAL</th>
-            <th class="tengah" rowspan="2" width="8%">HPP TERAKHIR</th>
-            <th class="tengah" rowspan="2" width="8%">HPP RATA</th>
-            <th class="tengah" colspan="2" width="10%">HARGA JUAL</th>
+            <th class="tengah" rowspan="2" width="28%">NAMA BARANG</th>
+            <th class="tengah" rowspan="2" width="3%">UNIT</th>
+            <th class="tengah" rowspan="2" width="2%">FRAC</th>
+            <th class="tengah" rowspan="2" width="6%">MIN JUAL</th>
+            <th class="tengah" rowspan="2" width="9%">HPP TERAKHIR</th>
+            <th class="tengah" rowspan="2" width="10%">HPP RATA2</th>
+            <th class="tengah" colspan="2" width="14%">HARGA JUAL</th>
             <th class="tengah" rowspan="2" width="8%">MARGIN BARU</th>
-            <th class="tengah" rowspan="2" width="8%">TGL AKTIF</th>
+            <th class="tengah" rowspan="2" width="7%">TGL AKTIF</th>
             <th class="tengah" rowspan="2" width="3%">TAG</th>
             <th class="tengah" rowspan="2" width="5%">PROMO</th>
         </tr>
@@ -97,6 +93,17 @@ $datetime->setTimezone($timezone);
                     <tr>
                         <td colspan="13" style="border-bottom: 1px black solid"></td>
                     </tr>
+                @elseif($data[$j]->prd_kodekategoribarang != $data[$j-1]->prd_kodekategoribarang)
+                    <tr>
+                        <td colspan="13" style="border-top: 1px black solid"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="13" style="text-align: left"><b>DEPARTMENT : {{$data[$j]->prd_kodedepartement}} - {{ $data[$j]->dep_namadepartement }}
+                                KATEGORI : {{ $data[$j]->prd_kodekategoribarang }} - {{ $data[$j]->kat_namakategori }}</b></td>
+                    </tr>
+                    <tr>
+                        <td colspan="13" style="border-bottom: 1px black solid"></td>
+                    </tr>
                 @endif
             @endif
         <tr>
@@ -105,11 +112,11 @@ $datetime->setTimezone($timezone);
             <td>{{ $data[$j]->unit }}</td>
             <td>{{ $data[$j]->prd_frac }}</td>
             <td>{{ $data[$j]->prd_minjual }}</td>
-            <td style="text-align: right">{{ number_format($data[$j]->prd_lastcost, 2) }}</td>
-            <td style="text-align: right">{{ number_format($data[$j]->prd_avgcost, 2) }}</td>
-            <td style="text-align: right">{{ number_format($data[$j]->prd_hrgjual2, 2) }}</td>
-            <td style="text-align: right">{{ number_format($data[$j]->prd_hrgjual, 2) }}</td>
-            <td>{{ number_format($nActMargin, 2) }}%</td>
+            <td style="text-align: right">{{ number_format($data[$j]->prd_lastcost, 2,',' ,'.')}}</td>
+            <td style="text-align: right">{{ number_format($data[$j]->prd_avgcost, 2,',' ,'.') }}</td>
+            <td style="text-align: right">{{ number_format($data[$j]->prd_hrgjual2, 2,',' ,'.') }}</td>
+            <td style="text-align: right">{{ number_format($data[$j]->prd_hrgjual, 2,',' ,'.') }}</td>
+            <td>{{ number_format($nActMargin[$j], 2, ',', '.') }}%</td>
             <td>{{ date('d-M-y', strtotime($data[$j]->prd_tglhrgjual))}}</td>
             <td>{{ $data[$j]->prd_kodetag }}</td>
             <td></td>
@@ -120,8 +127,11 @@ $datetime->setTimezone($timezone);
             <td colspan="13" style="border-bottom: 1px black solid"></td>
         </tr>
     </table>
-    <span class="right" style="float: right">** AKHIR LAPORAN **</span><span style="float: left" class="left">{{count($data)}} Item(s) Transferred</span>
 </main>
+
+<footer>
+    <span class="right" style="float: right">** AKHIR LAPORAN **</span><span style="float: left" class="left">{{count($data)}} Item(s) Transferred</span>
+</footer>
 
 <br>
 </body>

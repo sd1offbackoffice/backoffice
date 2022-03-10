@@ -446,12 +446,14 @@ class repackController extends Controller
 //
 //            }
 
-            self::simpan($request);
+
+            $status = self::simpan($request);
             DB::connection(Session::get('connection'))->commit();
 
-
+            return response()->json($status);
         }catch(\Exception $e){
             DB::connection(Session::get('connection'))->rollBack();
+            return response()->json($e->getMessage());
         }
 
 
@@ -478,6 +480,12 @@ class repackController extends Controller
             $RePrint = 'Re-Print';
         }
         $nodocPrint = $flagdoc->trbo_nonota;
+
+        //update status jadi telah di print
+        DB::connection(Session::get('connection'))->table("tbtr_backoffice")
+            ->where('trbo_nodoc','=',$noDoc)
+            ->where('trbo_typetrn','=','P')
+            ->update(['trbo_flagdoc'=>'*']);
 
         $datas = DB::connection(Session::get('connection'))->select("SELECT MSTH_NODOC, MSTH_TGLDOC, MSTH_NOPO, MSTH_KETERANGAN_HEADER, MSTD_FLAGDISC1,
               MSTD_PRDCD, MSTD_UNIT, MSTD_FRAC, MSTD_HRGSATUAN, MSTD_GROSS, MSTD_PPNRPH, MSTD_PPNBMRPH, MSTD_PPNBTLRPH,
@@ -536,6 +544,12 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
             $RePrint = 'Re-Print';
         }
         $nodocPrint = $flagdoc->trbo_nonota;
+
+        //update status jadi telah di print
+        DB::connection(Session::get('connection'))->table("tbtr_backoffice")
+            ->where('trbo_nodoc','=',$noDoc)
+            ->where('trbo_typetrn','=','P')
+            ->update(['trbo_flagdoc'=>'*']);
 
         $datas = DB::connection(Session::get('connection'))->select("SELECT MSTH_NODOC, MSTH_TGLDOC, MSTH_NOPO, MSTH_KETERANGAN_HEADER, MSTD_FLAGDISC1,
               MSTD_PRDCD, MSTD_UNIT, MSTD_FRAC, MSTD_HRGSATUAN, MSTD_GROSS, MSTD_PPNRPH, MSTD_PPNBMRPH, MSTD_PPNBTLRPH,
@@ -606,7 +620,6 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                 ->where("trbo_nodoc",'=',$nomorTrn)
                 ->orderBy('TRBO_SEQNO')
                 ->get();
-
             if($datas[0]->trbo_flagdoc == '0'){ //ubah kembali jadi == 0 nanti! kalau mau coba" fungsi ini == diubah jadi !=    , jangan coba" kalau bukan simulasi wkwkwkwkwk
                 $connect = loginController::getConnectionProcedure();
 
@@ -835,9 +848,10 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                     :v_lok,
                                     :v_message
                                    ); END;");
-                        oci_bind_by_name($query, ':v_lok', $v_lok, 32);
-                        oci_bind_by_name($query, ':v_message', $v_message, 32);
+                        oci_bind_by_name($query, ':v_lok', $v_lok, 512);
+                        oci_bind_by_name($query, ':v_message', $v_message, 512);
                         oci_execute($query);
+
                     //--->>>> Insert Data pada tbHistory_BarangBaru <<<<---
                         if($datas[$i]->trbo_flagdisc3 == 'Y'){
                             $vplulama = $datas[$i]->trbo_prdcd;
@@ -1041,8 +1055,8 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                                     :v_lok,
                                     :v_message
                                    ); END;");
-                        oci_bind_by_name($query, ':v_lok', $v_lok, 32);
-                        oci_bind_by_name($query, ':v_message', $v_message, 32);
+                        oci_bind_by_name($query, ':v_lok', $v_lok, 512);
+                        oci_bind_by_name($query, ':v_message', $v_message, 512);
                         oci_execute($query);
 
                         $tgldoc = $datas[$i]->trbo_tgldoc;
@@ -1224,12 +1238,12 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                             //
                             //----->>>> Update data PKM GONDOLA
                             $temp = DB::connection(Session::get('connection'))->table("tbtr_pkmgondola")
-                                ->selectRaw('NVL(COUNT(1), 0)')
+                                ->selectRaw('NVL(COUNT(1), 0) as res')
                                 ->where('pkmg_kodeigr','=',$kodeigr)
                                 ->where('pkmg_prdcd','=',$vplulama)
                                 ->first();
 
-                            if($temp != 0){
+                            if($temp->res != 0){
                                 $tampungan = $datas[$i]->trbo_prdcd;
                                 $pkmgdl_cur = DB::connection(Session::get('connection'))->table("tbtr_pkmgondola")
                                     ->selectRaw('1')
@@ -1369,18 +1383,25 @@ ORDER BY MSTH_NODOC, MSTD_FLAGDISC1
                 }
                 //--** update data tbTr_BackOffice
 //ini masih dalam if trbo_flagdoc = 0, jadinya nonota nya kosong, dan tak bisa di print
+//                DB::connection(Session::get('connection'))->table("tbtr_backoffice")
+//                    ->where('trbo_nodoc','=',$nomorTrn)
+//                    ->where('trbo_typetrn','=','P')
+//                    ->update(['trbo_nonota'=>$v_nodoc,
+//                        'trbo_tglnota'=>$today,
+//                        'trbo_recordid'=>'2',
+//                        'trbo_flagdoc'=>'*']);
                 DB::connection(Session::get('connection'))->table("tbtr_backoffice")
                     ->where('trbo_nodoc','=',$nomorTrn)
                     ->where('trbo_typetrn','=','P')
                     ->update(['trbo_nonota'=>$v_nodoc,
                         'trbo_tglnota'=>$today,
-                        'trbo_recordid'=>'2',
-                        'trbo_flagdoc'=>'*']);
+                        'trbo_recordid'=>'2']);
             }
-            //dd("Jangan commit dulu cuy");
             DB::connection(Session::get('connection'))->commit();
+            return "aman";
         }catch(\Exception $e){
             DB::connection(Session::get('connection'))->rollBack();
+            return $e->getMessage();
         }
     }
 }
