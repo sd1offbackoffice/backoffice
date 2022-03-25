@@ -44,6 +44,7 @@ class LaporanBarangPromosiController extends Controller
     public function printEarlyData(Request $request) {
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         $kodeigr = Session::get('kdigr');
+        $dataType = 'early';
         $date = $request->date;
 
         $data = DB::connection(Session::get('connection'))
@@ -211,12 +212,13 @@ class LaporanBarangPromosiController extends Controller
          ORDER BY gfh_kodepromosi, prdcd");
 
         //  return dd($data);
-        return view('BARANGHADIAH.laporanbarangpromosi-pdf', compact('data', 'perusahaan', 'date'));
+        return view('BARANGHADIAH.laporanbarangpromosi-pdf', compact('data', 'perusahaan', 'date', 'dataType'));
     }
 
     public function printNowData(Request $request) {
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         $kodeigr = Session::get('kdigr');
+        $dataType = 'now';
         $date = $request->date;
         
         $data = DB::connection(Session::get('connection'))

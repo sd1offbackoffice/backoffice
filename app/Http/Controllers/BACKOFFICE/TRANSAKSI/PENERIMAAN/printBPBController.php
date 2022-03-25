@@ -4,24 +4,27 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PENERIMAAN;
 
 use App\AllModel;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 
 class printBPBController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.printBPB');
     }
 
-    public function viewData(Request $request){
+    public function viewData(Request $request)
+    {
         $startDate = date('Y-M-d', strtotime($request->startDate));
         $endDate = date('Y-M-d', strtotime($request->endDate));
         $type = $request->type;
         $checked = $request->checked;
         $typeTrn = $request->typeTrn;
 
-        if ($type == 1){
+        if ($type == 1) {
             $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT trbo_nodoc as nodoc, trbo_tgldoc as tgldoc
                                        FROM tbtr_backoffice
                                       WHERE trbo_typetrn = '$typeTrn'
@@ -30,7 +33,7 @@ class printBPBController extends Controller
                                         order by trbo_nodoc");
             return response()->json($data);
         } else {
-            if ($checked == 0){
+            if ($checked == 0) {
                 $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT trbo_nodoc as nodoc, trbo_tgldoc as tgldoc
                                            FROM tbtr_backoffice
                                           WHERE (trbo_tgldoc BETWEEN ('$startDate') AND ('$endDate'))
@@ -49,13 +52,11 @@ class printBPBController extends Controller
 
                 return response()->json($data);
             }
-
         }
-
-
     }
 
-    public function cetakData(Request  $request){
+    public function cetakData(Request  $request)
+    {
         $document   = $request->document;
         $type       = $request->type;
         $reprint    = $request->checked;
@@ -72,18 +73,18 @@ class printBPBController extends Controller
         $model  = new AllModel();
         $conn   = $model->connectionProcedure();
 
-        if ($type == 1){
+        if ($type == 1) {
             $temp = $document;
             $v_print = $reprint;
         } else {
-            if ($reprint == 0){
-                foreach ($document as $data){
-                    $updateData = $this->update_data($document[0],$kodeigr,$userid,$conn,$type,'');
+            if ($reprint == 0) {
+                foreach ($document as $data) {
+                    $updateData = $this->update_data($document[0], $kodeigr, $userid, $conn, $type, '');
 
-                    if($updateData['kode'] == 0){
+                    if ($updateData['kode'] == 0) {
                         return response()->json($updateData);
                     }
-                $updateData = $this->update_data2($kodeigr,$conn,$type);
+                    $updateData = $this->update_data2($kodeigr, $conn, $type);
 
                     $ct = DB::connection(Session::get('connection'))->select("select nvl(count(1),0) as ct
 						            	from tbtr_backoffice, tbmaster_lokasi
@@ -92,7 +93,7 @@ class printBPBController extends Controller
 														and lks_kodeigr= trbo_kodeigr
 														and substr(lks_koderak,1,1) = 'A'");
 
-                    if ($ct[0]->ct > 0){
+                    if ($ct[0]->ct > 0) {
                         array_push($temp_lokasi, [$data]);
                         $counter = $counter + 1;
                     }
@@ -100,36 +101,37 @@ class printBPBController extends Controller
             }
         } // End Else ($type = 1)
 
-        if ($counter > 0){
+        if ($counter > 0) {
             $this->print_lokasi($temp_lokasi, $type, $v_print);
         }
 
 
-        if ($temp){
-            if ($type == 1 && $reprint == 0){
+        if ($temp) {
+            if ($type == 1 && $reprint == 0) {
                 DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                     ->whereIn('trbo_nodoc', $temp)
                     ->update(['trbo_flagdoc' => '1']);
-            } elseif ($type == 2 && $reprint == 0){
+            } elseif ($type == 2 && $reprint == 0) {
                 DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                     ->whereIn('trbo_nodoc', $temp)
                     ->update(['trbo_flagdoc' => '*', 'trbo_recordid' => 2]);
             }
 
-            $print_btb = $this->print_btb($temp,$type,$v_print,$size);
+            $print_btb = $this->print_btb($temp, $type, $v_print, $size);
         }
 
-//        if ($type == 1){
-//            $this->getData1();
-//        } else {
-//            $this->getData2();
-//        }
+        //        if ($type == 1){
+        //            $this->getData1();
+        //        } else {
+        //            $this->getData2();
+        //        }
 
-        return response()->json(['kode' => 1 , 'message' => 'Create Report Success', 'data' => $print_btb]);
+        return response()->json(['kode' => 1, 'message' => 'Create Report Success', 'data' => $print_btb]);
     }
 
-    public function update_data($noDoc, $kodeigr, $userId, $conn, $type, $dummyvar){
-        if(!$dummyvar){
+    public function update_data($noDoc, $kodeigr, $userId, $conn, $type, $dummyvar)
+    {
+        if (!$dummyvar) {
             $checkDummyVar = DB::connection(Session::get('connection'))->select(" SELECT TRBO_PRDCD,
                                                      TRBO_TYPETRN,
                                                      PRD_PRDCD,
@@ -168,10 +170,10 @@ class printBPBController extends Controller
                                                      AND HH.STA_LOKASI(+) = '01'
                                             ORDER BY AA.TRBO_PRDCD");
 
-            foreach ($checkDummyVar as $data){
-                if (!$data->prd_lastcost){
-                    if ($data->prd_avgcost){
-                        return ['kode' => 0, 'message' => "PLU ".$data->prd_prdcd." Abg Cost <> 0, Lakukan Update PKM?" ];
+            foreach ($checkDummyVar as $data) {
+                if (!$data->prd_lastcost) {
+                    if ($data->prd_avgcost) {
+                        return ['kode' => 0, 'message' => "PLU " . $data->prd_prdcd . " Abg Cost <> 0, Lakukan Update PKM?"];
                     }
                 }
             }
@@ -180,45 +182,47 @@ class printBPBController extends Controller
         }
 
         $exec = oci_parse($conn, "BEGIN sp_penerimaan_updatedata(:kodeigr, :userid, :tipe, :dummyvar, :result); END;");
-        oci_bind_by_name($exec, ':kodeigr',$kodeigr);
-        oci_bind_by_name($exec, ':userid',$userId);
+        oci_bind_by_name($exec, ':kodeigr', $kodeigr);
+        oci_bind_by_name($exec, ':userid', $userId);
         oci_bind_by_name($exec, ':tipe', $type);
         oci_bind_by_name($exec, ':dummyvar', $dummyvar);
-        oci_bind_by_name($exec, ':result', $result,1000);
+        oci_bind_by_name($exec, ':result', $result, 1000);
         oci_execute($exec);
 
-        return ['kode' => 1, 'message' => "Success" ];
+        return ['kode' => 1, 'message' => "Success"];
     }
 
-    public function update_data2($kodeigr, $conn, $type){
+    public function update_data2($kodeigr, $conn, $type)
+    {
         $exec = oci_parse($conn, "BEGIN sp_penerimaan_updatedata2(:kodeigr, :tipe, :result); END;");
-        oci_bind_by_name($exec, ':kodeigr',$kodeigr);
+        oci_bind_by_name($exec, ':kodeigr', $kodeigr);
         oci_bind_by_name($exec, ':tipe', $type);
-        oci_bind_by_name($exec, ':result', $result,1000);
+        oci_bind_by_name($exec, ':result', $result, 1000);
         oci_execute($exec);
 
-        return ['kode' => 1, 'message' => "Success" ];
+        return ['kode' => 1, 'message' => "Success"];
     }
 
-    public function print_btb($temp, $type, $v_print, $size){
+    public function print_btb($temp, $type, $v_print, $size)
+    {
 
-        if ($type == 1){
-            if ($size == 2){
+        if ($type == 1) {
+            if ($size == 2) {
                 return 'IGR_BO_LISTBTB_FULL';
             } else {
                 return 'IGR_BO_LISTBTB';
             }
         } else {
-            if ($size == 2){
+            if ($size == 2) {
                 return "IGR_BO_CTBTBNOTA_FULL";
             } else {
                 return "IGR_BO_CTBTBNOTA";
             }
         }
-
     }
 
-    public function print_lokasi($temp_lokasi, $type, $v_print){
+    public function print_lokasi($temp_lokasi, $type, $v_print)
+    {
 
         $datas = "1";
 
@@ -226,29 +230,29 @@ class printBPBController extends Controller
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
-        $canvas = $dompdf ->get_canvas();
+        $canvas = $dompdf->get_canvas();
         $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
         return $pdf->stream('igr_bo_ctklokasi.pdf');
-
     }
 
-    public function viewReport(Request $request){
+    public function viewReport(Request $request)
+    {
         $report = $request->report;
         $noDoc  = $request->noDoc;
         $reprint = $request->reprint;
         $splitDoc = explode(',', $noDoc);
-        $kodeigr= Session::get('kdigr');
+        $kodeigr = Session::get('kdigr');
         $document = '';
-        $re_print = ($reprint == 1) ? '(REPRINT)' :' ';
+        $re_print = ($reprint == 1) ? '(REPRINT)' : ' ';
 
-        foreach ($splitDoc as $data){
-            $document = $document."'".$data."',";
+        foreach ($splitDoc as $data) {
+            $document = $document . "'" . $data . "',";
         }
 
-        $document = substr($document,0,-1);
+        $document = substr($document, 0, -1);
 
-        if ($report == 'IGR_BO_LISTBTB_FULL'){
+        if ($report == 'IGR_BO_LISTBTB_FULL') {
             $datas = DB::connection(Session::get('connection'))->select("select trbo_nodoc, TO_CHAR(trbo_tgldoc,'DD/MM/YY') trbo_tgldoc, trbo_nopo, TO_CHAR(trbo_tglpo,'DD/MM/YY') trbo_tglpo, trbo_nofaktur, TO_CHAR(trbo_tglfaktur,'DD/MM/YY') trbo_tglfaktur,
                                         floor(trbo_qty/prd_frac) qty, mod(trbo_qty,prd_frac) qtyk, trbo_qtybonus1, trbo_qtybonus2, trbo_typetrn, trbo_qty, nvl(trbo_flagdoc,'0') flagdoc,
                                         trbo_hrgsatuan, trbo_persendisc1, trbo_persendisc2 , trbo_persendisc2ii , trbo_persendisc2iii , trbo_persendisc3, trbo_persendisc4, trbo_gross, trbo_ppnrph,trbo_ppnbmrph,trbo_ppnbtlrph,
@@ -272,11 +276,11 @@ class printBPBController extends Controller
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
-            $canvas = $dompdf ->get_canvas();
+            $canvas = $dompdf->get_canvas();
             $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
             return $pdf->stream('igr_bo_listbtb_full.pdf');
-        } elseif ($report == 'IGR_BO_LISTBTB'){
+        } elseif ($report == 'IGR_BO_LISTBTB') {
             $datas = DB::connection(Session::get('connection'))->select("select trbo_nodoc, TO_CHAR(trbo_tgldoc,'DD/MM/YY') trbo_tgldoc, trbo_nopo, TO_CHAR(trbo_tglpo,'DD/MM/YY') trbo_tglpo, trbo_nofaktur, TO_CHAR(trbo_tglfaktur,'DD/MM/YY') trbo_tglfaktur,
                                         floor(trbo_qty/prd_frac) qty, mod(trbo_qty,prd_frac) qtyk, trbo_qtybonus1, trbo_qtybonus2, trbo_typetrn, trbo_qty, nvl(trbo_flagdoc,'0') flagdoc,
                                         trbo_hrgsatuan, trbo_persendisc1, trbo_persendisc2 , trbo_persendisc2ii , trbo_persendisc2iii , trbo_persendisc3, trbo_persendisc4, trbo_gross, trbo_ppnrph,trbo_ppnbmrph,trbo_ppnbtlrph,
@@ -297,8 +301,8 @@ class printBPBController extends Controller
                                                  AND trbo_nodoc in ($document)
                                         ORDER BY trbo_nodoc, trbo_prdcd", (['p_kodeigr' => $kodeigr]));
 
-            if ($datas){
-                foreach ($datas as $data){
+            if ($datas) {
+                foreach ($datas as $data) {
                     $nilaiDisc1 = 0;
                     $nilaiDisc1 = $data->ptg1;
                     $nilaiDisc2 = ($data->trbo_persendisc2 != 0) ? ($data->trbo_persendisc2 * ($data->trbo_gross - $nilaiDisc1)) / 100 : $data->trbo_rphdisc2;
@@ -313,11 +317,11 @@ class printBPBController extends Controller
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
-            $canvas = $dompdf ->get_canvas();
+            $canvas = $dompdf->get_canvas();
             $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
             return $pdf->stream('igr_bo_listbtb.pdf');
-        } elseif ($report == 'IGR_BO_CTBTBNOTA'){
+        } elseif ($report == 'IGR_BO_CTBTBNOTA') {
             $datas = DB::connection(Session::get('connection'))->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
                                         prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
                                         sup_kodesupplier||' '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_npwp, sup_alamatsupplier1 ||'   '||sup_alamatsupplier2 alamat_supplier,
@@ -348,7 +352,7 @@ class printBPBController extends Controller
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
             return $pdf->stream('igr_bo_ctbtbnota.pdf');
-        } elseif ($report == 'IGR_BO_CTBTBNOTA_FULL'){
+        } elseif ($report == 'IGR_BO_CTBTBNOTA_FULL') {
             $datas = DB::connection(Session::get('connection'))->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
                                         prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
                                         sup_kodesupplier||' '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_npwp, sup_alamatsupplier1 ||'   '||sup_alamatsupplier2 alamat_supplier,
@@ -379,7 +383,7 @@ class printBPBController extends Controller
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
             return $pdf->stream('igr_bo_ctbtbnota_full.pdf');
-        } elseif ($report == 'lokasi'){
+        } elseif ($report == 'lokasi') {
             $datas = DB::connection(Session::get('connection'))->select("SELECT trbo_prdcd,
                                        SUBSTR (prd_deskripsipanjang, 1, 50) desc2,
                                        prd_unit || '/' || prd_frac kemasan,
@@ -411,7 +415,7 @@ class printBPBController extends Controller
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
-            $canvas = $dompdf ->get_canvas();
+            $canvas = $dompdf->get_canvas();
             $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
             return $pdf->stream('igr_bo_ctklokasi.pdf');
@@ -419,8 +423,4 @@ class printBPBController extends Controller
 
         dd($report);
     }
-
-
 }
-
-

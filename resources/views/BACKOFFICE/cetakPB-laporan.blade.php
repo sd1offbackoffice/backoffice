@@ -319,6 +319,8 @@
         @endif
     @endfor
 
+    <p>Keterangan : Kolom Omi = '*'  -> Khusus Plu OMI: Kolom Idm = '*'  -> Khusus Plu IDM: Kolom Super Promo = '*'  -> Khusus Plu Promo</p>
+
 @endsection
 
 

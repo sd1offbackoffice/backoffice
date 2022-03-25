@@ -240,7 +240,7 @@ class TransferPLUController extends Controller
                 oci_execute($s);
 
                 $JUM = DB::connection(Session::get('connection'))->table('TEMP_BRX_OMI')
-                    ->select(DB::connection(Session::get('connection'))->raw("NVL (COUNT (1), 0) count"))
+                    ->selectRaw("NVL (COUNT (1), 0) count")
                     ->where('SESSID', $N_REQ_ID)
                     ->first()->count;
 

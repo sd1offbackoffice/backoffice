@@ -206,7 +206,7 @@ Route::post('/bo/transaksi/penerimaan/pembatalan/batalbpb', 'BACKOFFICE\TRANSAKS
 
 
 //BACKOFFICE-TRANSAKSI-PENERIMAAN-CETAK BPB
-Route::get('/bo/transaksi/penerimaan/printbpb/index', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@index')->middleware('CheckLogin');
+Route::get('/bo/transaksi/penerimaan/printbpb/', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@index')->middleware('CheckLogin');
 Route::post('/bo/transaksi/penerimaan/printbpb/viewdata', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@viewData')->middleware('CheckLogin');
 Route::post('/bo/transaksi/penerimaan/printbpb/cetakdata', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@cetakData')->middleware('CheckLogin');
 Route::get('/bo/transaksi/penerimaan/printbpb/viewreport/{reprint}/{report}/{noDoc}', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@viewReport')->middleware('CheckLogin');
@@ -578,7 +578,7 @@ Route::middleware(['CheckLogin'])->group(function () {
 
             //hen
             //PB Perishable
-            Route::prefix('pbperishable')->group(function () {
+            Route::prefix('/pbperishable')->group(function () {
                 Route::get('/', 'BACKOFFICE\PBPerishableController@index');
                 Route::post('/lov_trn', 'BACKOFFICE\PBPerishableController@lov_trn');
                 Route::post('/lov_plu', 'BACKOFFICE\PBPerishableController@lov_plu');
@@ -1489,6 +1489,26 @@ Route::middleware(['CheckLogin'])->group(function () {
 
     });
 
+    /*Steven Leo*/
+    Route::prefix('/bh')->group(function () {
+        Route::prefix('/master-barang-hadiah')->group(function () {
+            Route::prefix('/barang-hadiah')->group(function () {
+                Route::get('/','BARANGHADIAH\MASTER\BarangHadiahController@index');
+                Route::get('/get-produk','BARANGHADIAH\MASTER\BarangHadiahController@getProduk');
+                Route::post('/get-data-produk','BARANGHADIAH\MASTER\BarangHadiahController@getDataProduk');
+                Route::get('/get-card-produk','BARANGHADIAH\MASTER\BarangHadiahController@getCardProduk');
+            });
+
+        });
+        Route::prefix('/laporan-barang-promosi')->group(function () {
+            Route::get('/', 'BARANGHADIAH\LaporanBarangPromosiController@index');
+            Route::get('/check-date', 'BARANGHADIAH\LaporanBarangPromosiController@checkDate');
+            Route::get('/print-early', 'BARANGHADIAH\LaporanBarangPromosiController@printEarlyData');
+            Route::get('/print-now', 'BARANGHADIAH\LaporanBarangPromosiController@printNowData');
+        });
+    });
+
+
     Route::prefix('/btas')->group(function () {
         /*Ryan*/
         Route::prefix('/monitoring')->group(function () {
@@ -2133,6 +2153,8 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/export-pdf', 'FRONTOFFICE\StockBarangKosongPerPeriodeDSIController@exportPDF');
             Route::get('/export-csv', 'FRONTOFFICE\StockBarangKosongPerPeriodeDSIController@exportCSV');
         });
+
+
     });
 
     Route::prefix('/monitoring')->group(function () {
