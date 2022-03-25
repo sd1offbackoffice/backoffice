@@ -11,7 +11,7 @@
 @endsection
 
 @section('subtitle')
-    Kode PLU : {{ $plu1 }} s/d {{ $plu2 }} Dari Tgl. {{ $tgl1 }} s/d {{ $tgl2 }}
+    Kode PLU : {{ $plu1 }} s/d {{ $plu2 }}<br>Dari Tgl. {{ $tgl1 }} s/d {{ $tgl2 }}
 @endsection
 
 @section('content')

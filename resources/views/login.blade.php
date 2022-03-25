@@ -75,7 +75,7 @@
                     <select class="input100" id="cabang" data-validate="user" style="text-transform: uppercase;"
                             required>
                         @foreach($cabang as $c)
-                            <option value="{{ $c->kode }}">{{ $c->kodeigr }} - {{ strtoupper($c->namacabang) }}</option>
+                            <option value="{{ $c->kode }}" {{ $c->kodeigr == '22' ? 'selected' : '' }}>{{ $c->kodeigr }} - {{ strtoupper($c->namacabang) }}</option>
                         @endforeach
                     </select>
                     <span class="focus-input100"></span>
@@ -85,8 +85,8 @@
             <span class="txt1 p-b-11">Koneksi</span>
             <div class="wrap-input100 validate-input ">
                 <select class="input100" id="koneksi" data-validate="user" style="text-transform: uppercase;" required>
-                    <option value="igr" selected>PRODUCTION</option>
-                    <option value="sim">SIMULASI</option>
+                    <option value="igr">PRODUCTION</option>
+                    <option value="sim" selected>SIMULASI</option>
                 </select>
                 <span class="focus-input100"></span>
             </div>
@@ -174,6 +174,17 @@
             });
         }
         @endisset
+
+        isChrome = /chrom(e|ium)/.test(navigator.userAgent.toLowerCase());
+
+        if(!isChrome){
+            swal({
+                title: 'Disarankan menggunakan Chrome untuk mengakses web ini!',
+                icon: 'warning'
+            });
+        }
+
+        $('body').scrollTop($('body').width());
     });
 
     $('#username').keypress(function (e) {

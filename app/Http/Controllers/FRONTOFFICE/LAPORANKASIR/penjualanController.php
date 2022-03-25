@@ -1046,9 +1046,9 @@ FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT,
 	         0
 	      ELSE
 	         CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
-	           CASE WHEN cBkp = 'Y' THEN ((fdnamt*1.1)-Fdnamt) ELSE 0 END
+	           CASE WHEN cBkp = 'Y' THEN ((fdnamt*(1+(nvl(prd_ppn,10)/100)))-Fdnamt) ELSE 0 END
 	         ELSE
-	           CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/1.1)) ELSE 0 END
+	           CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END
 	         END
 	      END nTax,
 	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
@@ -1057,13 +1057,13 @@ FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT,
 	         CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN
 	            Fdnamt
 	         ELSE
-	            Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/1.1)) ELSE 0 END)
+	            Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END)
 	         END
 	      END nNet,
 	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
 	         CASE WHEN Mark_up IS NULL THEN ((5*Fdnamt)/100) ELSE ((Mark_up*Fdnamt)/100) END
 	      ELSE
-	         (CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN Fdnamt ELSE Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/1.1)) ELSE 0 END) END) -
+	         (CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN Fdnamt ELSE Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END) END) -
 			 ( Fdjqty/(CASE WHEN unit='KG'THEN 1000 ELSE 1 END)*Fdcost)
 	      END nMargin,
 	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
@@ -1073,7 +1073,7 @@ FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT,
 	      END nHpp,
 	      CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
 	         CASE WHEN cBkp = 'Y' THEN
-	            fdnamt*1.1
+	            fdnamt*(1+(nvl(prd_ppn,10)/100))
 	         ELSE
 	            fdnamt
 	         END
@@ -1084,7 +1084,8 @@ FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT,
 	(	SELECT tko_kodeigr kodeigr, tko_kodeOMI omikod, tko_namaomi namaomi, tko_kodeSBU omisbu, tko_namasbu namasbu, trjd_cus_kodemember omimem, trjd_divisioncode fdkdiv, SUBSTR(trjd_division,1,2) fddiv,
 			   trjd_nominalamt fdnamt, trjd_baseprice fdcost, trjd_quantity fdjqty, prd_unit unit, prd_markUpStandard mark_up,
 			   trjd_transactiontype fdtipe, trjd_flagtax1 cBkp,
-			   CASE WHEN trjd_cus_kodemember NOT IN (SELECT cus_kodemember FROM TBMASTER_CUSTOMER) THEN 'T' ELSE cus_flagPKP END pjkO
+			   CASE WHEN trjd_cus_kodemember NOT IN (SELECT cus_kodemember FROM TBMASTER_CUSTOMER) THEN 'T' ELSE cus_flagPKP END pjkO,
+			   prd_ppn
 		FROM TBMASTER_TOKOIGR, TBTR_JUALDETAIL, TBMASTER_CUSTOMER, TBMASTER_PRODMAST
 		WHERE trjd_cus_kodemember = tko_kodecustomer
 		  AND trjd_cus_kodemember = cus_kodemember
@@ -1240,9 +1241,9 @@ FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT,
 	         0
 	      ELSE
 	         CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
-	           CASE WHEN cBkp = 'Y' THEN ((fdnamt*1.1)-Fdnamt) ELSE 0 END
+	           CASE WHEN cBkp = 'Y' THEN ((fdnamt*(1+(nvl(prd_ppn,10)/100)))-Fdnamt) ELSE 0 END
 	         ELSE
-	           CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/1.1)) ELSE 0 END
+	           CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END
 	         END
 	      END nTax,
 	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
@@ -1251,13 +1252,13 @@ FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT,
 	         CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN
 	            Fdnamt
 	         ELSE
-	            Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/1.1)) ELSE 0 END)
+	            Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END)
 	         END
 	      END nNet,
 	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
 	         CASE WHEN Mark_up IS NULL THEN ((5*Fdnamt)/100) ELSE ((Mark_up*Fdnamt)/100) END
 	      ELSE
-	         (CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN Fdnamt ELSE Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/1.1)) ELSE 0 END) END) -
+	         (CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN Fdnamt ELSE Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END) END) -
 			 ( Fdjqty/(CASE WHEN unit='KG'THEN 1000 ELSE 1 END)*Fdcost)
 	      END nMargin,
 	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
@@ -1267,7 +1268,7 @@ FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT,
 	      END nHpp,
 	      CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
 	         CASE WHEN cBkp = 'Y' THEN
-	            fdnamt*1.1
+	            fdnamt*(1+(nvl(prd_ppn,10)/100))
 	         ELSE
 	            fdnamt
 	         END
@@ -1278,7 +1279,8 @@ FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT,
 	(	SELECT tko_kodeigr kodeigr, tko_kodeOMI omikod, tko_kodeSBU omisbu, tko_namasbu namasbu, trjd_cus_kodemember omimem, trjd_divisioncode fdkdiv, SUBSTR(trjd_division,1,2) fddiv,
 			   trjd_nominalamt fdnamt, trjd_baseprice fdcost, trjd_quantity fdjqty, prd_unit unit, prd_markUpStandard mark_up,
 			   trjd_transactiontype fdtipe, trjd_flagtax1 cBkp,
-			   CASE WHEN trjd_cus_kodemember NOT IN (SELECT cus_kodemember FROM TBMASTER_CUSTOMER) THEN 'T' ELSE cus_flagPKP END pjkO
+			   CASE WHEN trjd_cus_kodemember NOT IN (SELECT cus_kodemember FROM TBMASTER_CUSTOMER) THEN 'T' ELSE cus_flagPKP END pjkO,
+			   prd_ppn
 		FROM TBMASTER_TOKOIGR, TBTR_JUALDETAIL, TBMASTER_CUSTOMER, TBMASTER_PRODMAST
 		WHERE trjd_cus_kodemember = tko_kodecustomer
 		  AND trjd_cus_kodemember = cus_kodemember
@@ -1378,9 +1380,9 @@ FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT,
 	         0
 	      ELSE
 	         CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
-	           CASE WHEN cBkp = 'Y' THEN ((fdnamt*1.1)-Fdnamt) ELSE 0 END
+	           CASE WHEN cBkp = 'Y' THEN ((fdnamt*(1+(nvl(prd_ppn,10)/100)))-Fdnamt) ELSE 0 END
 	         ELSE
-	           CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/1.1)) ELSE 0 END
+	           CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END
 	         END
 	      END nTax,
 	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
@@ -1389,13 +1391,13 @@ FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT,
 	         CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN
 	            Fdnamt
 	         ELSE
-	            Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/1.1)) ELSE 0 END)
+	            Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END)
 	         END
 	      END nNet,
 	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
 	         CASE WHEN Mark_up IS NULL THEN ((5*Fdnamt)/100) ELSE ((Mark_up*Fdnamt)/100) END
 	      ELSE
-	         (CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN Fdnamt ELSE Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/1.1)) ELSE 0 END) END) -
+	         (CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN Fdnamt ELSE Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END) END) -
 			 ( Fdjqty/(CASE WHEN unit='KG'THEN 1000 ELSE 1 END)*Fdcost)
 	      END nMargin,
 	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
@@ -1405,7 +1407,7 @@ FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT,
 	      END nHpp,
 	      CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
 	         CASE WHEN cBkp = 'Y' THEN
-	            fdnamt*1.1
+	            fdnamt*(1+(nvl(prd_ppn,10)/100))
 	         ELSE
 	            fdnamt
 	         END
@@ -1416,7 +1418,8 @@ FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT,
 	(	SELECT tko_kodeigr kodeigr, tko_kodeOMI omikod, tko_kodeSBU omisbu, tko_namasbu namasbu, trjd_cus_kodemember omimem, trjd_divisioncode fdkdiv, SUBSTR(trjd_division,1,2) fddiv,
 			   trjd_nominalamt fdnamt, trjd_baseprice fdcost, trjd_quantity fdjqty, prd_unit unit, prd_markUpStandard mark_up,
 			   trjd_transactiontype fdtipe, trjd_flagtax1 cBkp,
-			   CASE WHEN trjd_cus_kodemember NOT IN (SELECT cus_kodemember FROM TBMASTER_CUSTOMER) THEN 'T' ELSE cus_flagPKP END pjkO
+			   CASE WHEN trjd_cus_kodemember NOT IN (SELECT cus_kodemember FROM TBMASTER_CUSTOMER) THEN 'T' ELSE cus_flagPKP END pjkO,
+			   prd_ppn
 		FROM TBMASTER_TOKOIGR, TBTR_JUALDETAIL, TBMASTER_CUSTOMER, TBMASTER_PRODMAST
 		WHERE trjd_cus_kodemember = tko_kodecustomer
 		  AND trjd_cus_kodemember = cus_kodemember
@@ -1975,128 +1978,130 @@ ORDER BY sls_periode");
         }
 
         $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, KASIR, STAT,
-	   KDIV fdkdiv, div_namadivisi, SUBSTR(DIV,1,2) FDKDEP, dep_namadepartement, SUBSTR(DIV,-2,2) FDKATB, kat_namakategori, FLAGTAX2 Fdfbkp,
-	   CASE WHEN cEXP = 'T' THEN 'Y' ELSE 'N' END fexpor,
-	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN
-	   	   	   CASE WHEN admfee > 0 THEN
-			     CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN
-				   fdnamt * 1.1 ELSE fdnamt
-				 END
-			   ELSE fdnamt
-			   END
-	         ELSE
-			   CASE WHEN recordid IS NULL AND tipe = 'R' THEN
-		   	   	 CASE WHEN admfee > 0 THEN
-				   CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN
-					 fdnamt * 1.1 * (0-1) ELSE fdnamt * (0-1)
-				   END
-				 ELSE fdnamt * (0-1)
-				 END
-			   END
-			 END
-		   ) fdnAmt,
-	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sTax
-	   	   	 ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sTax*(0-1) END
-			 END
-		   ) fdnTax,
-	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sNet
-	   	   	 ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sNet*(0-1) END
-			 END
-		   ) fdnNet,
-	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sMargin
-	   	   	 ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sMargin*(0-1) END
-			 END
-		   ) fdnMrgn,
-	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sHpp
-	   	   	 ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sHpp*(0-1) END
-			 END
-		   ) fdnHpp
+       KDIV fdkdiv, div_namadivisi, SUBSTR(DIV,1,2) FDKDEP, dep_namadepartement, SUBSTR(DIV,-2,2) FDKATB, kat_namakategori, FLAGTAX2 Fdfbkp,
+       CASE WHEN cEXP = 'T' THEN 'Y' ELSE 'N' END fexpor,
+       SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN
+                     CASE WHEN admfee > 0 THEN
+                 CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN
+                   fdnamt * (1+(nvl(prd_ppn,10)/100)) ELSE fdnamt
+                 END
+               ELSE fdnamt
+               END
+             ELSE
+               CASE WHEN recordid IS NULL AND tipe = 'R' THEN
+                       CASE WHEN admfee > 0 THEN
+                   CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN
+                     fdnamt * (1+(nvl(prd_ppn,10)/100)) * (0-1) ELSE fdnamt * (0-1)
+                   END
+                 ELSE fdnamt * (0-1)
+                 END
+               END
+             END
+           ) fdnAmt,
+       SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sTax
+                   ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sTax*(0-1) END
+             END
+           ) fdnTax,
+       SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sNet
+                   ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sNet*(0-1) END
+             END
+           ) fdnNet,
+       SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sMargin
+                   ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sMargin*(0-1) END
+             END
+           ) fdnMrgn,
+       SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sHpp
+                   ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sHpp*(0-1) END
+             END
+           ) fdnHpp
 FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_KATEGORI,
-(	SELECT KDIGR, TGLTRANS, KASIR, STAT, PRDCD, KDIV, DIV, QUANTITY, BASEPRICE, KDMBR, ADMFEE, FLAGTAX2 ,NOMINALAMT FDNAMT, RECORDID, TIPE, PJKO, CEXP, CBKP, COBKP, MARKUP, UNIT, STAX, SNET,
-		   CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
-		     SNet - (CASE WHEN MarkUp IS NULL THEN (5*sNet)/100 ELSE (MarkUp*sNet)/100 END )
-		   ELSE
-		     (QUANTITY / (CASE WHEN UNIT = 'KG' THEN 1000 ELSE 1 END) ) * BASEPRICE
-		   END SHPP,
-		   CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
-		     CASE WHEN MarkUp IS NULL THEN (5 * sNet)/100 ELSE (MarkUp * sNet) / 100 END
-		   ELSE
-		     sNet - (QUANTITY / (CASE WHEN UNIT = 'KG' THEN 1000 ELSE 1 END) * BASEPRICE )
-		   END SMARGIN
-	FROM
-	(	SELECT KDIGR, TGLTRANS, KASIR, STAT, /*TRANSNO, SEQNO,*/ PRDCD, KDIV, DIV, QUANTITY, BASEPRICE,
-			   KDMBR, ADMFEE, FLAGTAX2, NOMINALAMT, PJKO, CEXP, CBKP, COBKP, MARKUP, UNIT, STAX,RECORDID, TIPE,
-			   CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
-			     NOMINALAMT
-			   ELSE
-			     CASE WHEN ADMFEE <> 0 THEN
-				   CASE WHEN KASIR = 'BKL' THEN
-				     CASE WHEN pjkO = 'Y' AND cBkp = 'Y' THEN
-					   NOMINALAMT
-		 			 ELSE
-					   NOMINALAMT - STAX
-					 END
-				   ELSE
-		 			 NOMINALAMT
-		 		   END
-		 	     ELSE
-		 	   	   CASE WHEN KASIR = 'BKL' THEN
-				     CASE WHEN pjkO = 'Y' AND cBkp = 'Y'THEN
-					   NOMINALAMT
-					 ELSE
-					   NOMINALAMT - STAX
-					 END
-				   ELSE
-		 			 NOMINALAMT - STAX
-				   END
-				 END
-		       END SNET
-		FROM
-		(	SELECT KDIGR, TGLTRANS, KASIR, STAT, /*TRANSNO, SEQNO,*/ PRDCD, KDIV, DIV, QUANTITY, BASEPRICE, KDMBR, ADMFEE, FLAGTAX2, NOMINALAMT, PJKO, CEXP, CBKP, COBKP,
-				   PRD_MARKUPSTANDARD MARKUP, PRD_UNIT UNIT, RECORDID, TIPE,
-				   CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
-				     0
-				   ELSE
-			    	 CASE WHEN ADMFEE <> 0 THEN
-					   CASE WHEN KASIR = 'BKL' THEN
-					     CASE WHEN (pjkO = 'Y' AND cBkp = 'Y' ) THEN
-						   CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y') THEN (NOMINALAMT * 1.1) - NOMINALAMT ELSE 0 END ELSE 0 END
-						 ELSE
-						   CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y') THEN NOMINALAMT - (NOMINALAMT / 1.1) ELSE 0 END ELSE 0 END
-						 END
-			 		   ELSE
-					     CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT * 1.1) - NOMINALAMT ELSE 0 END ELSE 0 END
-					   END
-			 	     ELSE
-			 	   	   CASE WHEN KASIR = 'BKL' THEN
-					     CASE WHEN (pjkO = 'Y' AND cBkp = 'Y') THEN
-						   CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT * 1.1) - NOMINALAMT ELSE 0 END ELSE 0 END
-			 			 ELSE
-			 			   CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT - (NOMINALAMT / 1.1)) ELSE 0 END ELSE 0 END
-			 			 END
-			 		   ELSE
-			 		     CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT - (NOMINALAMT / 1.1)) ELSE 0 END ELSE 0 END
-			 		   END
-			 		 END
-			 	   END STAX
-			FROM TBMASTER_PRODMAST,
-			(	SELECT TRJD_KODEIGR KDIGR, TRJD_TRANSACTIONDATE TGLTRANS, TRJD_CREATE_BY KASIR, TRJD_CASHIERSTATION STAT,/* TRJD_TRANSACTIONNO TRANSNO,
-					   TRJD_SEQNO SEQNO,*/ TRJD_PRDCD PRDCD, TRJD_DIVISIONCODE KDIV, TRJD_DIVISION DIV, TRJD_QUANTITY QUANTITY, TRJD_BASEPRICE BASEPRICE,
-					   TRJD_NOMINALAMT NOMINALAMT, TRJD_CUS_KODEMEMBER KDMBR, TRJD_ADMFEE ADMFEE, TRJD_FLAGTAX2 FLAGTAX2, TRJD_RECORDID RECORDID, TRJD_TRANSACTIONTYPE TIPE,
-					   CASE WHEN cus_kodemember IS NOT NULL THEN CUS_FLAGPKP ELSE 'T' END PJKO,
-					   CASE WHEN SUBSTR(TRJD_PRDCD,1,6)||'0' IN (SELECT EXP_PRDCD FROM TBMASTER_BARANGEXPORT) THEN
-					      CASE WHEN TRJD_CUS_KODEMEMBER IN (SELECT CUS_KODEMEMBER FROM TBMASTER_CUSTOMER WHERE CUS_JENISMEMBER='E') THEN 'T' END ELSE 'F' END CEXP,
-					   CASE WHEN (TRJD_DIVISIONCODE = '5' AND SUBSTR(TRJD_DIVISION,1,2) = '39') THEN 'T' ELSE TRJD_FLAGTAX1 END cBkp,
-					   CASE WHEN TRJD_DIVISIONCODE = '5' AND SUBSTR(TRJD_DIVISION,1,2) = '39' THEN ' 'ELSE TRJD_FLAGTAX2 END cObkp
-				FROM TBTR_JUALDETAIL, TBMASTER_CUSTOMER
-				WHERE trunc( trjd_transactiondate ) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-				  AND trjd_create_by = '$kasir'
-				  AND trjd_cashierstation = '$station'
-				  AND trjd_cus_kodemember = cus_kodemember(+)
-			)
-			WHERE PRDCD = PRD_PRDCD
-		)
-	)
+(    SELECT KDIGR, TGLTRANS, KASIR, STAT, PRDCD, KDIV, DIV, QUANTITY, BASEPRICE, KDMBR, ADMFEE, FLAGTAX2 ,NOMINALAMT FDNAMT, RECORDID, TIPE, PJKO, CEXP, CBKP, COBKP, MARKUP, UNIT, STAX, SNET,
+           CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
+             SNet - (CASE WHEN MarkUp IS NULL THEN (5*sNet)/100 ELSE (MarkUp*sNet)/100 END )
+           ELSE
+             (QUANTITY / (CASE WHEN UNIT = 'KG' THEN 1000 ELSE 1 END) ) * BASEPRICE
+           END SHPP,
+           CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
+             CASE WHEN MarkUp IS NULL THEN (5 * sNet)/100 ELSE (MarkUp * sNet) / 100 END
+           ELSE
+             sNet - (QUANTITY / (CASE WHEN UNIT = 'KG' THEN 1000 ELSE 1 END) * BASEPRICE )
+           END SMARGIN, prd_ppn
+    FROM
+    (    SELECT KDIGR, TGLTRANS, KASIR, STAT, /*TRANSNO, SEQNO,*/ PRDCD, KDIV, DIV, QUANTITY, BASEPRICE,
+               KDMBR, ADMFEE, FLAGTAX2, NOMINALAMT, PJKO, CEXP, CBKP, COBKP, MARKUP, UNIT, STAX,RECORDID, TIPE,
+               CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
+                 NOMINALAMT
+               ELSE
+                 CASE WHEN ADMFEE <> 0 THEN
+                   CASE WHEN KASIR = 'BKL' THEN
+                     CASE WHEN pjkO = 'Y' AND cBkp = 'Y' THEN
+                       NOMINALAMT
+                      ELSE
+                       NOMINALAMT - STAX
+                     END
+                   ELSE
+                      NOMINALAMT
+                    END
+                  ELSE
+                       CASE WHEN KASIR = 'BKL' THEN
+                     CASE WHEN pjkO = 'Y' AND cBkp = 'Y'THEN
+                       NOMINALAMT
+                     ELSE
+                       NOMINALAMT - STAX
+                     END
+                   ELSE
+                      NOMINALAMT - STAX
+                   END
+                 END
+               END SNET,
+               prd_ppn
+        FROM
+        (    SELECT KDIGR, TGLTRANS, KASIR, STAT, /*TRANSNO, SEQNO,*/ PRDCD, KDIV, DIV, QUANTITY, BASEPRICE, KDMBR, ADMFEE, FLAGTAX2, NOMINALAMT, PJKO, CEXP, CBKP, COBKP,
+                   PRD_MARKUPSTANDARD MARKUP, PRD_UNIT UNIT, RECORDID, TIPE,
+                   CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
+                     0
+                   ELSE
+                     CASE WHEN ADMFEE <> 0 THEN
+                       CASE WHEN KASIR = 'BKL' THEN
+                         CASE WHEN (pjkO = 'Y' AND cBkp = 'Y' ) THEN
+                           CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y') THEN (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT ELSE 0 END ELSE 0 END
+                         ELSE
+                           CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y') THEN NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100))) ELSE 0 END ELSE 0 END
+                         END
+                        ELSE
+                         CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT ELSE 0 END ELSE 0 END
+                       END
+                      ELSE
+                           CASE WHEN KASIR = 'BKL' THEN
+                         CASE WHEN (pjkO = 'Y' AND cBkp = 'Y') THEN
+                           CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT ELSE 0 END ELSE 0 END
+                          ELSE
+                            CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100)))) ELSE 0 END ELSE 0 END
+                          END
+                        ELSE
+                          CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100)))) ELSE 0 END ELSE 0 END
+                        END
+                      END
+                    END STAX,
+                    prd_ppn
+            FROM TBMASTER_PRODMAST,
+            (    SELECT TRJD_KODEIGR KDIGR, TRJD_TRANSACTIONDATE TGLTRANS, TRJD_CREATE_BY KASIR, TRJD_CASHIERSTATION STAT,/* TRJD_TRANSACTIONNO TRANSNO,
+                       TRJD_SEQNO SEQNO,*/ TRJD_PRDCD PRDCD, TRJD_DIVISIONCODE KDIV, TRJD_DIVISION DIV, TRJD_QUANTITY QUANTITY, TRJD_BASEPRICE BASEPRICE,
+                       TRJD_NOMINALAMT NOMINALAMT, TRJD_CUS_KODEMEMBER KDMBR, TRJD_ADMFEE ADMFEE, TRJD_FLAGTAX2 FLAGTAX2, TRJD_RECORDID RECORDID, TRJD_TRANSACTIONTYPE TIPE,
+                       CASE WHEN cus_kodemember IS NOT NULL THEN CUS_FLAGPKP ELSE 'T' END PJKO,
+                       CASE WHEN SUBSTR(TRJD_PRDCD,1,6)||'0' IN (SELECT EXP_PRDCD FROM TBMASTER_BARANGEXPORT) THEN
+                          CASE WHEN TRJD_CUS_KODEMEMBER IN (SELECT CUS_KODEMEMBER FROM TBMASTER_CUSTOMER WHERE CUS_JENISMEMBER='E') THEN 'T' END ELSE 'F' END CEXP,
+                       CASE WHEN (TRJD_DIVISIONCODE = '5' AND SUBSTR(TRJD_DIVISION,1,2) = '39') THEN 'T' ELSE TRJD_FLAGTAX1 END cBkp,
+                       CASE WHEN TRJD_DIVISIONCODE = '5' AND SUBSTR(TRJD_DIVISION,1,2) = '39' THEN ' 'ELSE TRJD_FLAGTAX2 END cObkp
+                FROM TBTR_JUALDETAIL, TBMASTER_CUSTOMER
+                WHERE trunc( trjd_transactiondate ) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+                  AND trjd_create_by = '$kasir'
+                  AND trjd_cashierstation = '$station'
+                  AND trjd_cus_kodemember = cus_kodemember(+)
+            )
+            WHERE PRDCD = PRD_PRDCD
+        )
+    )
 )
 WHERE PRS_KODEIGR = '$kodeigr'
   AND KDIGR = PRS_KODEIGR
@@ -2123,128 +2128,131 @@ ORDER BY FDKDIV, FDKDEP");
             $margp[$index] = 0;
         }
         $rec = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, KASIR, STAT,
-	   KDIV fdkdiv, div_namadivisi, SUBSTR(DIV,1,2) FDKDEP, dep_namadepartement, SUBSTR(DIV,-2,2) FDKATB, kat_namakategori, FLAGTAX2 Fdfbkp,
-	   CASE WHEN cEXP = 'T' THEN 'Y' ELSE 'N' END fexpor,
-	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN
-	   	   	   CASE WHEN admfee > 0 THEN
-			     CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN
-				   fdnamt * 1.1 ELSE fdnamt
-				 END
-			   ELSE fdnamt
-			   END
-	         ELSE
-			   CASE WHEN recordid IS NULL AND tipe = 'R' THEN
-		   	   	 CASE WHEN admfee > 0 THEN
-				   CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN
-					 fdnamt * 1.1 * (0-1) ELSE fdnamt * (0-1)
-				   END
-				 ELSE fdnamt * (0-1)
-				 END
-			   END
-			 END
-		   ) fdnAmt,
-	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sTax
-	   	   	 ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sTax*(0-1) END
-			 END
-		   ) fdnTax,
-	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sNet
-	   	   	 ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sNet*(0-1) END
-			 END
-		   ) fdnNet,
-	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sMargin
-	   	   	 ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sMargin*(0-1) END
-			 END
-		   ) fdnMrgn,
-	   SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sHpp
-	   	   	 ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sHpp*(0-1) END
-			 END
-		   ) fdnHpp
+       KDIV fdkdiv, div_namadivisi, SUBSTR(DIV,1,2) FDKDEP, dep_namadepartement, SUBSTR(DIV,-2,2) FDKATB, kat_namakategori, FLAGTAX2 Fdfbkp,
+       CASE WHEN cEXP = 'T' THEN 'Y' ELSE 'N' END fexpor,
+       SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN
+                     CASE WHEN admfee > 0 THEN
+                 CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN
+                   fdnamt * (1+(nvl(prd_ppn,10)/100)) ELSE fdnamt
+                 END
+               ELSE fdnamt
+               END
+             ELSE
+               CASE WHEN recordid IS NULL AND tipe = 'R' THEN
+                       CASE WHEN admfee > 0 THEN
+                   CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN
+                     fdnamt * (1+(nvl(prd_ppn,10)/100)) * (0-1) ELSE fdnamt * (0-1)
+                   END
+                 ELSE fdnamt * (0-1)
+                 END
+               END
+             END
+           ) fdnAmt,
+       SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sTax
+                   ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sTax*(0-1) END
+             END
+           ) fdnTax,
+       SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sNet
+                   ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sNet*(0-1) END
+             END
+           ) fdnNet,
+       SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sMargin
+                   ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sMargin*(0-1) END
+             END
+           ) fdnMrgn,
+       SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sHpp
+                   ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sHpp*(0-1) END
+             END
+           ) fdnHpp
 FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_KATEGORI,
-(	SELECT KDIGR, TGLTRANS, KASIR, STAT, PRDCD, KDIV, DIV, QUANTITY, BASEPRICE, KDMBR, ADMFEE, FLAGTAX2 ,NOMINALAMT FDNAMT, RECORDID, TIPE, PJKO, CEXP, CBKP, COBKP, MARKUP, UNIT, STAX, SNET,
-		   CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
-		     SNet - (CASE WHEN MarkUp IS NULL THEN (5*sNet)/100 ELSE (MarkUp*sNet)/100 END )
-		   ELSE
-		     (QUANTITY / (CASE WHEN UNIT = 'KG' THEN 1000 ELSE 1 END) ) * BASEPRICE
-		   END SHPP,
-		   CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
-		     CASE WHEN MarkUp IS NULL THEN (5 * sNet)/100 ELSE (MarkUp * sNet) / 100 END
-		   ELSE
-		     sNet - (QUANTITY / (CASE WHEN UNIT = 'KG' THEN 1000 ELSE 1 END) * BASEPRICE )
-		   END SMARGIN
-	FROM
-	(	SELECT KDIGR, TGLTRANS, KASIR, STAT, /*TRANSNO, SEQNO,*/ PRDCD, KDIV, DIV, QUANTITY, BASEPRICE,
-			   KDMBR, ADMFEE, FLAGTAX2, NOMINALAMT, PJKO, CEXP, CBKP, COBKP, MARKUP, UNIT, STAX,RECORDID, TIPE,
-			   CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
-			     NOMINALAMT
-			   ELSE
-			     CASE WHEN ADMFEE <> 0 THEN
-				   CASE WHEN KASIR = 'BKL' THEN
-				     CASE WHEN pjkO = 'Y' AND cBkp = 'Y' THEN
-					   NOMINALAMT
-		 			 ELSE
-					   NOMINALAMT - STAX
-					 END
-				   ELSE
-		 			 NOMINALAMT
-		 		   END
-		 	     ELSE
-		 	   	   CASE WHEN KASIR = 'BKL' THEN
-				     CASE WHEN pjkO = 'Y' AND cBkp = 'Y'THEN
-					   NOMINALAMT
-					 ELSE
-					   NOMINALAMT - STAX
-					 END
-				   ELSE
-		 			 NOMINALAMT - STAX
-				   END
-				 END
-		       END SNET
-		FROM
-		(	SELECT KDIGR, TGLTRANS, KASIR, STAT, /*TRANSNO, SEQNO,*/ PRDCD, KDIV, DIV, QUANTITY, BASEPRICE, KDMBR, ADMFEE, FLAGTAX2, NOMINALAMT, PJKO, CEXP, CBKP, COBKP,
-				   PRD_MARKUPSTANDARD MARKUP, PRD_UNIT UNIT, RECORDID, TIPE,
-				   CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
-				     0
-				   ELSE
-			    	 CASE WHEN ADMFEE <> 0 THEN
-					   CASE WHEN KASIR = 'BKL' THEN
-					     CASE WHEN (pjkO = 'Y' AND cBkp = 'Y' ) THEN
-						   CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y') THEN (NOMINALAMT * 1.1) - NOMINALAMT ELSE 0 END ELSE 0 END
-						 ELSE
-						   CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y') THEN NOMINALAMT - (NOMINALAMT / 1.1) ELSE 0 END ELSE 0 END
-						 END
-			 		   ELSE
-					     CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT * 1.1) - NOMINALAMT ELSE 0 END ELSE 0 END
-					   END
-			 	     ELSE
-			 	   	   CASE WHEN KASIR = 'BKL' THEN
-					     CASE WHEN (pjkO = 'Y' AND cBkp = 'Y') THEN
-						   CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT * 1.1) - NOMINALAMT ELSE 0 END ELSE 0 END
-			 			 ELSE
-			 			   CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT - (NOMINALAMT / 1.1)) ELSE 0 END ELSE 0 END
-			 			 END
-			 		   ELSE
-			 		     CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT - (NOMINALAMT / 1.1)) ELSE 0 END ELSE 0 END
-			 		   END
-			 		 END
-			 	   END STAX
-			FROM TBMASTER_PRODMAST,
-			(	SELECT TRJD_KODEIGR KDIGR, TRJD_TRANSACTIONDATE TGLTRANS, TRJD_CREATE_BY KASIR, TRJD_CASHIERSTATION STAT,/* TRJD_TRANSACTIONNO TRANSNO,
-					   TRJD_SEQNO SEQNO,*/ TRJD_PRDCD PRDCD, TRJD_DIVISIONCODE KDIV, TRJD_DIVISION DIV, TRJD_QUANTITY QUANTITY, TRJD_BASEPRICE BASEPRICE,
-					   TRJD_NOMINALAMT NOMINALAMT, TRJD_CUS_KODEMEMBER KDMBR, TRJD_ADMFEE ADMFEE, TRJD_FLAGTAX2 FLAGTAX2, TRJD_RECORDID RECORDID, TRJD_TRANSACTIONTYPE TIPE,
-					   CASE WHEN cus_kodemember IS NOT NULL THEN CUS_FLAGPKP ELSE 'T' END PJKO,
-					   CASE WHEN SUBSTR(TRJD_PRDCD,1,6)||'0' IN (SELECT EXP_PRDCD FROM TBMASTER_BARANGEXPORT) THEN
-					      CASE WHEN TRJD_CUS_KODEMEMBER IN (SELECT CUS_KODEMEMBER FROM TBMASTER_CUSTOMER WHERE CUS_JENISMEMBER='E') THEN 'T' END ELSE 'F' END CEXP,
-					   CASE WHEN (TRJD_DIVISIONCODE = '5' AND SUBSTR(TRJD_DIVISION,1,2) = '39') THEN 'T' ELSE TRJD_FLAGTAX1 END cBkp,
-					   CASE WHEN TRJD_DIVISIONCODE = '5' AND SUBSTR(TRJD_DIVISION,1,2) = '39' THEN ' 'ELSE TRJD_FLAGTAX2 END cObkp
-				FROM TBTR_JUALDETAIL, TBMASTER_CUSTOMER
-				WHERE trunc( trjd_transactiondate ) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-				  AND trjd_create_by = '$kasir'
-				  AND trjd_cashierstation = '$station'
-				  AND trjd_cus_kodemember = cus_kodemember(+)
-			)
-			WHERE PRDCD = PRD_PRDCD
-		)
-	)
+(    SELECT KDIGR, TGLTRANS, KASIR, STAT, PRDCD, KDIV, DIV, QUANTITY, BASEPRICE, KDMBR, ADMFEE, FLAGTAX2 ,NOMINALAMT FDNAMT, RECORDID, TIPE, PJKO, CEXP, CBKP, COBKP, MARKUP, UNIT, STAX, SNET,
+           CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
+             SNet - (CASE WHEN MarkUp IS NULL THEN (5*sNet)/100 ELSE (MarkUp*sNet)/100 END )
+           ELSE
+             (QUANTITY / (CASE WHEN UNIT = 'KG' THEN 1000 ELSE 1 END) ) * BASEPRICE
+           END SHPP,
+           CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
+             CASE WHEN MarkUp IS NULL THEN (5 * sNet)/100 ELSE (MarkUp * sNet) / 100 END
+           ELSE
+             sNet - (QUANTITY / (CASE WHEN UNIT = 'KG' THEN 1000 ELSE 1 END) * BASEPRICE )
+           END SMARGIN,
+           prd_ppn
+    FROM
+    (    SELECT KDIGR, TGLTRANS, KASIR, STAT, /*TRANSNO, SEQNO,*/ PRDCD, KDIV, DIV, QUANTITY, BASEPRICE,
+               KDMBR, ADMFEE, FLAGTAX2, NOMINALAMT, PJKO, CEXP, CBKP, COBKP, MARKUP, UNIT, STAX,RECORDID, TIPE,
+               CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
+                 NOMINALAMT
+               ELSE
+                 CASE WHEN ADMFEE <> 0 THEN
+                   CASE WHEN KASIR = 'BKL' THEN
+                     CASE WHEN pjkO = 'Y' AND cBkp = 'Y' THEN
+                       NOMINALAMT
+                      ELSE
+                       NOMINALAMT - STAX
+                     END
+                   ELSE
+                      NOMINALAMT
+                    END
+                  ELSE
+                       CASE WHEN KASIR = 'BKL' THEN
+                     CASE WHEN pjkO = 'Y' AND cBkp = 'Y'THEN
+                       NOMINALAMT
+                     ELSE
+                       NOMINALAMT - STAX
+                     END
+                   ELSE
+                      NOMINALAMT - STAX
+                   END
+                 END
+               END SNET,
+               prd_ppn
+        FROM
+        (    SELECT KDIGR, TGLTRANS, KASIR, STAT, /*TRANSNO, SEQNO,*/ PRDCD, KDIV, DIV, QUANTITY, BASEPRICE, KDMBR, ADMFEE, FLAGTAX2, NOMINALAMT, PJKO, CEXP, CBKP, COBKP,
+                   PRD_MARKUPSTANDARD MARKUP, PRD_UNIT UNIT, RECORDID, TIPE,
+                   CASE WHEN KDIV = '5' AND SUBSTR(DIV,1,2) = '39' THEN
+                     0
+                   ELSE
+                     CASE WHEN ADMFEE <> 0 THEN
+                       CASE WHEN KASIR = 'BKL' THEN
+                         CASE WHEN (pjkO = 'Y' AND cBkp = 'Y' ) THEN
+                           CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y') THEN (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT ELSE 0 END ELSE 0 END
+                         ELSE
+                           CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y') THEN NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100))) ELSE 0 END ELSE 0 END
+                         END
+                        ELSE
+                         CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT ELSE 0 END ELSE 0 END
+                       END
+                      ELSE
+                           CASE WHEN KASIR = 'BKL' THEN
+                         CASE WHEN (pjkO = 'Y' AND cBkp = 'Y') THEN
+                           CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT ELSE 0 END ELSE 0 END
+                          ELSE
+                            CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100)))) ELSE 0 END ELSE 0 END
+                          END
+                        ELSE
+                          CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100)))) ELSE 0 END ELSE 0 END
+                        END
+                      END
+                    END STAX,
+                    prd_ppn
+            FROM TBMASTER_PRODMAST,
+            (    SELECT TRJD_KODEIGR KDIGR, TRJD_TRANSACTIONDATE TGLTRANS, TRJD_CREATE_BY KASIR, TRJD_CASHIERSTATION STAT,/* TRJD_TRANSACTIONNO TRANSNO,
+                       TRJD_SEQNO SEQNO,*/ TRJD_PRDCD PRDCD, TRJD_DIVISIONCODE KDIV, TRJD_DIVISION DIV, TRJD_QUANTITY QUANTITY, TRJD_BASEPRICE BASEPRICE,
+                       TRJD_NOMINALAMT NOMINALAMT, TRJD_CUS_KODEMEMBER KDMBR, TRJD_ADMFEE ADMFEE, TRJD_FLAGTAX2 FLAGTAX2, TRJD_RECORDID RECORDID, TRJD_TRANSACTIONTYPE TIPE,
+                       CASE WHEN cus_kodemember IS NOT NULL THEN CUS_FLAGPKP ELSE 'T' END PJKO,
+                       CASE WHEN SUBSTR(TRJD_PRDCD,1,6)||'0' IN (SELECT EXP_PRDCD FROM TBMASTER_BARANGEXPORT) THEN
+                          CASE WHEN TRJD_CUS_KODEMEMBER IN (SELECT CUS_KODEMEMBER FROM TBMASTER_CUSTOMER WHERE CUS_JENISMEMBER='E') THEN 'T' END ELSE 'F' END CEXP,
+                       CASE WHEN (TRJD_DIVISIONCODE = '5' AND SUBSTR(TRJD_DIVISION,1,2) = '39') THEN 'T' ELSE TRJD_FLAGTAX1 END cBkp,
+                       CASE WHEN TRJD_DIVISIONCODE = '5' AND SUBSTR(TRJD_DIVISION,1,2) = '39' THEN ' 'ELSE TRJD_FLAGTAX2 END cObkp
+                FROM TBTR_JUALDETAIL, TBMASTER_CUSTOMER
+                WHERE trunc( trjd_transactiondate ) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+                  AND trjd_create_by = '$kasir'
+                  AND trjd_cashierstation = '$station'
+                  AND trjd_cus_kodemember = cus_kodemember(+)
+            )
+            WHERE PRDCD = PRD_PRDCD
+        )
+    )
 )
 WHERE PRS_KODEIGR = '$kodeigr'
   AND KDIGR = PRS_KODEIGR

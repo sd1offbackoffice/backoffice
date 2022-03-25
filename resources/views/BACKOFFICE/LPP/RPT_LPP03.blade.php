@@ -11,7 +11,7 @@
 @endsection
 
 @section('subtitle')
-    TANGGAL : {{$tgl1}} s/d {{$tgl2}}
+    TANGGAL : {{date('d/M/Y',strtotime(str_replace('/','-',$tgl1)))}} s/d {{date('d/M/Y',strtotime(str_replace('/','-',$tgl2)))}}
 @endsection
 
 @section('paper_height','595pt')
@@ -252,9 +252,6 @@ RINCIAN PER DIVISI (UNIT/RUPIAH)
                 @endphp
             @endif
         @endfor
-
-        </tbody>
-        <tfoot style="border-bottom: 1px solid black;border-top: 1px solid black;">
         <tr style="border-top: 1px solid black">
             <th class="left">TOTAL: </th>
             <th class="right">{{ number_format($total_prdcd,0) }} ITEM</th>
@@ -285,6 +282,6 @@ RINCIAN PER DIVISI (UNIT/RUPIAH)
             <th align="right">{{ number_format($total_koreksirph     ,0) }}</th>
             <th align="right">{{ number_format($total_akhirrph     ,0) }}</th>
         </tr>
-        </tfoot>
+        </tbody>
     </table>
 @endsection

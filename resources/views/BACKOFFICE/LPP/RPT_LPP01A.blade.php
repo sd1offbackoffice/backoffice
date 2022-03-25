@@ -11,8 +11,9 @@
 @endsection
 
 @section('subtitle')
-    TANGGAL : {{$tgl1}} s/d {{$tgl2}}
+    TANGGAL : {{date('d/M/Y',strtotime(str_replace('/','-',$tgl1)))}} s/d {{date('d/M/Y',strtotime(str_replace('/','-',$tgl2)))}}
 @endsection
+
     @php
         $tempdiv = '';
         $tempdep = '';
@@ -130,6 +131,9 @@
                    $st_dep_qty_soic  =0;
                    $st_dep_qty_so    =0;
                    $st_dep_qty_total =0;
+                   $st_dep_rph_soic  =0;
+                   $st_dep_rph_so    =0;
+                   $st_dep_rph_total =0;
                    $no=1;
                 @endphp
             @endif
@@ -152,13 +156,15 @@
                     $st_div_qty_soic = 0;
                     $st_div_qty_so   = 0;
                     $st_div_qty_total= 0;
+
+                    $st_div_rph_soic = 0;
+                    $st_div_rph_so   = 0;
+                    $st_div_rph_total= 0;
                 @endphp
             @endif
 
         @endfor
-        </tbody>
-        <tfoot style="border-top: 1px solid black;">
-        <tr>
+        <tr style="border-top: 1px solid black;">
             <td class="left" colspan="1"><strong>TOTAL SELURUHNYA</strong></td>
             <td class="left"></td>
             <td align="right">{{ number_format($total_qty_soic  ,0)}}</td>
@@ -172,7 +178,7 @@
             <td align="right">{{ number_format($total_rph_so   ,0)}}</td>
             <td align="right">{{ number_format($total_rph_total,0)}}</td>
         </tr>
-        </tfoot>
+        </tbody>
     </table>
 @endsection
 

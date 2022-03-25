@@ -124,7 +124,7 @@ class LaporanSalesPerDepKatController extends Controller
         }
 
         $dataDepGroup = DB::connection(Session::get('connection'))
-            ->select("select kodedepartement,namadepartement nama,round(sum(margin)/sum(sales)*100,2) marginpersen ,sum(qty) qty,sum(sales) sales,sum(margin) margin,sum(jmlmember) jmlmember from (
+            ->select("select kodedepartement,namadepartement nama,case when sum(sales)=0 then 0 else round(sum(margin)/sum(sales)*100,2) end  marginpersen ,sum(qty) qty,sum(sales) sales,sum(margin) margin,sum(jmlmember) jmlmember from (
                                 select a.*
                                 from(
                                     select dep_kodedepartement kodedepartement,dep_kodedepartement||'-'||dep_namadepartement namadepartement, kat_kodekategori kodekategori, kat_namakategori namakategori,
@@ -144,13 +144,13 @@ class LaporanSalesPerDepKatController extends Controller
                                                                             AND tko_kodecustomer IS NULL
                                                                             AND NVL (trjd_admfee, 0) = 0
                                                                        THEN
-                                                                          (trjd_nominalamt / 1+(prd_ppn/100))
+                                                                          (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
                                                                        ELSE
                                                                           CASE
                                                                              WHEN TRUNC (tko_tgltutup) <=
                                                                                      TRUNC (trjd_transactiondate)
                                                                              THEN
-                                                                                (trjd_nominalamt / 1+(prd_ppn/100))
+                                                                                (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
                                                                              ELSE
                                                                                 trjd_nominalamt
                                                                           END
@@ -167,13 +167,13 @@ class LaporanSalesPerDepKatController extends Controller
                                                                                AND tko_kodecustomer IS NULL
                                                                                AND NVL (trjd_admfee, 0) = 0
                                                                           THEN
-                                                                             (trjd_nominalamt / 1+(prd_ppn/100))
+                                                                             (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
                                                                           ELSE
                                                                              CASE
                                                                                 WHEN TRUNC (tko_tgltutup) <=
                                                                                         TRUNC (trjd_transactiondate)
                                                                                 THEN
-                                                                                   (trjd_nominalamt / 1+(prd_ppn/100))
+                                                                                   (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
                                                                                 ELSE
                                                                                    trjd_nominalamt
                                                                              END
@@ -218,7 +218,7 @@ class LaporanSalesPerDepKatController extends Controller
         ");
 
         $dataDep = DB::connection(Session::get('connection'))
-            ->select("select a.*,round(margin/sales*100,2) marginpersen
+            ->select("select a.*,case when sales=0 then 0 else round(margin/sales*100,2) end  marginpersen
                             from(
                                 select dep_kodedepartement kodedepartement,dep_namadepartement namadepartement, kat_kodekategori kodekategori, kat_kodekategori||'-'||kat_namakategori nama,
                                       SUM (
@@ -237,13 +237,13 @@ class LaporanSalesPerDepKatController extends Controller
                                                                         AND tko_kodecustomer IS NULL
                                                                         AND NVL (trjd_admfee, 0) = 0
                                                                    THEN
-                                                                      (trjd_nominalamt / 1+(prd_ppn/100))
+                                                                      (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
                                                                    ELSE
                                                                       CASE
                                                                          WHEN TRUNC (tko_tgltutup) <=
                                                                                  TRUNC (trjd_transactiondate)
                                                                          THEN
-                                                                            (trjd_nominalamt / 1+(prd_ppn/100))
+                                                                            (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
                                                                          ELSE
                                                                             trjd_nominalamt
                                                                       END
@@ -260,13 +260,13 @@ class LaporanSalesPerDepKatController extends Controller
                                                                            AND tko_kodecustomer IS NULL
                                                                            AND NVL (trjd_admfee, 0) = 0
                                                                       THEN
-                                                                         (trjd_nominalamt / 1+(prd_ppn/100))
+                                                                         (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
                                                                       ELSE
                                                                          CASE
                                                                             WHEN TRUNC (tko_tgltutup) <=
                                                                                     TRUNC (trjd_transactiondate)
                                                                             THEN
-                                                                               (trjd_nominalamt / 1+(prd_ppn/100))
+                                                                               (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
                                                                             ELSE
                                                                                trjd_nominalamt
                                                                          END
@@ -386,7 +386,7 @@ class LaporanSalesPerDepKatController extends Controller
         }
 
         $data = DB::connection(Session::get('connection'))
-            ->select("select a.*,round(margin/sales*100,2) marginpersen
+            ->select("select a.*,case when sales=0 then 0 else round(margin/sales*100,2) end marginpersen
                             from(
                                 select dep_kodedepartement kodedepartement,dep_namadepartement namadepartement, kat_kodekategori kodekategori, kat_namakategori namakategori,
                                       SUM (
@@ -405,13 +405,13 @@ class LaporanSalesPerDepKatController extends Controller
                                                                         AND tko_kodecustomer IS NULL
                                                                         AND NVL (trjd_admfee, 0) = 0
                                                                    THEN
-                                                                      (trjd_nominalamt / 1+(prd_ppn/100))
+                                                                      (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
                                                                    ELSE
                                                                       CASE
                                                                          WHEN TRUNC (tko_tgltutup) <=
                                                                                  TRUNC (trjd_transactiondate)
                                                                          THEN
-                                                                            (trjd_nominalamt / 1+(prd_ppn/100))
+                                                                            (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
                                                                          ELSE
                                                                             trjd_nominalamt
                                                                       END
@@ -428,13 +428,13 @@ class LaporanSalesPerDepKatController extends Controller
                                                                            AND tko_kodecustomer IS NULL
                                                                            AND NVL (trjd_admfee, 0) = 0
                                                                       THEN
-                                                                         (trjd_nominalamt / 1+(prd_ppn/100))
+                                                                         (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)) )
                                                                       ELSE
                                                                          CASE
                                                                             WHEN TRUNC (tko_tgltutup) <=
                                                                                     TRUNC (trjd_transactiondate)
                                                                             THEN
-                                                                               (trjd_nominalamt / 1+(prd_ppn/100))
+                                                                               (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
                                                                             ELSE
                                                                                trjd_nominalamt
                                                                          END

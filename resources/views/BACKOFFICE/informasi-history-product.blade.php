@@ -529,19 +529,19 @@
                                     data-target="#m-detailsales" onclick="getDataDetailSales()">Detail Sales
                             </button>
                             <button class="btn btn-primary m-1" id="btn-penerimaan" data-toggle="modal"
-                                    data-target="#m-penerimaan">Penerimaan
+                                    data-target="#m-penerimaan" onclick="getDataPenerimaan()">Penerimaan
                             </button>
                             <button class="btn btn-primary col-sm-1 m-1" id="btn-pb" data-toggle="modal"
-                                    data-target="#m-pb">PB
+                                    data-target="#m-pb" onclick="getDataPB()">PB
                             </button>
                             <button class="btn btn-primary col-sm-1 m-1" id="btn-so" data-toggle="modal"
-                                    data-target="#m-so">SO
+                                    data-target="#m-so" onclick="getDataSO()">SO
                             </button>
                             <button class="btn btn-primary col-sm-1 m-1" id="btn-hargabeli" data-toggle="modal"
-                                    data-target="#m-hargabeli">Harga Beli
+                                    data-target="#m-hargabeli" onclick="getDataHargaBeli()">Harga Beli
                             </button>
                             <button class="btn btn-primary col-sm-1 m-1" id="btn-stockcarton" data-toggle="modal"
-                                    data-target="#m-stockcarton">Stock Carton
+                                    data-target="#m-stockcarton" onclick="getDataStockCarton()">Stock Carton
                             </button>
                             <button class="btn btn-primary col-sm-1 m-1" id="btn-cetak">Cetak
                             </button>
@@ -727,8 +727,8 @@
                 </div>
                 <div class="modal-body" style="height: 650px;">
                     <div class="row">
-                        <label for="prod" class="col-sm-1 text-right">Produk </label>
-                        <input type="text" id="produk-penerimaan" class="form-control p-0 col-sm-6" disabled>
+                        <label for="prod" class="col-sm-1 col-form-label text-right">Produk</label>
+                        <input type="text" id="produk-penerimaan" class="form-control col-sm-6" disabled>
                     </div>
                     <div class="row">
                         <div class="col">
@@ -1322,6 +1322,7 @@
                 },
                 success: function (response) {
                     $('#modal-loader').modal('hide');
+                    $('#table-detailsales').empty();
                     for (i = 0; i < 12; i++) {
                         c = i + 1;
                         $('#table-detailsales').append('<tr class="justify-content-md-center p-0 baris">\n' +
@@ -1354,7 +1355,6 @@
                             '                                    </td>\n' +
                             '                                </tr>');
                     }
-                    $('#produk-penerimaan').val(response.produk['prd_deskripsipanjang'] + ' [' + response.produk['prd_prdcd'] + ']');
 
                     $('#avgsls-igr').val(convertToRupiah2(response['detailsales'].avgigr));
                     $('#avgsls-idm').val(convertToRupiah2(response['detailsales'].avgidm));
@@ -1365,7 +1365,6 @@
                     errorHandlingforAjax(err)
                 }
             })
-
 
 
         }
@@ -1393,6 +1392,7 @@
                             });
                         } else {
                             notif(response.message, -1, response.message.length);
+                            $('#produk-penerimaan').val(response.produk['prd_deskripsipanjang'] + ' [' + response.produk['prd_prdcd'] + ']');
 
                             $('.baris').remove();
                             $('#cabang').val(response.produk['cab_namacabang']);
@@ -1586,242 +1586,138 @@
                             // $('#avgsls-omi').val(convertToRupiah2(response['detailsales'].avgomi));
                             // $('#avgsls-mrh').val(convertToRupiah2(response['detailsales'].avgmrh));
 
-                            for (var i = 0; i < response['supplier'].length; i++) {
-                                $('#table-penerimaan').append('<tr class="baris"><td class="p-0">\n' +
-                                    '<input type="text" class="form-control" value="' + response['supplier'][i].sup_namasupplier + '" disabled>\n' +
-                                    '</td>\n' +
-                                    '<td class="p-0">\n' +
-                                    '    <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['supplier'][i].trm_qtybns) + '" disabled>\n' +
-                                    '</td>\n' +
-                                    '<td class="p-0">\n' +
-                                    '    <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['supplier'][i].trm_bonus) + '" disabled>\n' +
-                                    '</td>\n' +
-                                    '<td class="p-0">\n' +
-                                    '    <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['supplier'][i].trm_bonus2) + '" disabled>\n' +
-                                    '</td>\n' +
-                                    '<td class="p-0">\n' +
-                                    '    <input type="text" class="form-control" value="' + response['supplier'][i].trm_dokumen + '" disabled>\n' +
-                                    '</td>\n' +
-                                    '<td class="p-0">\n' +
-                                    '    <input type="text" class="form-control" value="' + formatDate(response['supplier'][i].trm_tanggal) + '" disabled>\n' +
-                                    '</td>\n' +
-                                    '<td class="p-0">\n' +
-                                    '    <input type="text" class="form-control" value="' + response['supplier'][i].trm_top + '" disabled>\n' +
-                                    '</td>\n' +
-                                    '<td class="p-0">\n' +
-                                    '    <input type="text" class="form-control text-right" value="' + format_currency(response['supplier'][i].trm_hpp) + '" disabled>\n' +
-                                    '</td>\n' +
-                                    '<td class="p-0">\n' +
-                                    '    <input type="text" class="form-control text-right" value="' + format_currency(response['supplier'][i].trm_acost) + '" disabled>\n' +
-                                    '</td><tr>');
-                            }
-                            for (var i = 0; i < response['permintaan'].length; i++) {
-                                $('#table-pb').append('<tr class="justify-content-md-center p-0 baris">\n' +
-                                    '                                    <td class="p-0">\n' +
-                                    '                                        <input type="text" class="form-control" value="' + response['permintaan'][i].pb_no + '" disabled>\n' +
-                                    '                                    </td>\n' +
-                                    '                                    <td class="p-0">\n' +
-                                    '                                        <input type="text" class="form-control" value="' + formatDate(response['permintaan'][i].pb_tgl) + '" disabled>\n' +
-                                    '                                    </td>\n' +
-                                    '                                    <td class="p-0">\n' +
-                                    '                                        <input type="text" class="form-control text-right" value="' + nvl(convertToRupiah2(response['permintaan'][i].pb_qty), '') + '" disabled>\n' +
-                                    '                                    </td>\n' +
-                                    '                                   <td class="p-0">\n' +
-                                    '                                        <input type="text" class="form-control" value="' + response['permintaan'][i].pb_ket + '" disabled>\n' +
-                                    '                                    </td>\n' +
-                                    '                                    <td class="p-0">\n' +
-                                    '                                        <input type="text" class="form-control" value="' + response['permintaan'][i].pb_nopo + '" disabled>\n' +
-                                    '                                    </td>\n' +
-                                    '                                   <td class="p-0">\n' +
-                                    '                                        <input type="text" class="form-control" value="' + formatDate(response['permintaan'][i].pb_tglpo) + '" disabled>\n' +
-                                    '                                    </td>\n' +
-                                    '                                   <td class="p-0">\n' +
-                                    '                                        <input type="text" class="form-control text-right" value="' + nvl(convertToRupiah2(response['permintaan'][i].pb_qtybpb, '')) + '" disabled>\n' +
-                                    '                                    </td>\n' +
-                                    '                                   <td class="p-0">\n' +
-                                    '                                        <input type="text" class="form-control" value="' + response['permintaan'][i].pb_ketbpb + '" disabled>\n' +
-                                    '                                    </td>\n' +
-                                    '                                </tr>');
-                            }
-                            //SO
-                            cetakso.so = response['so'];
-                            cetakso.sotgl = response['so_tgl'];
-                            cetakso.adjustso = response['adjustso'];
-                            cetakso.resetsoic = response['resetsoic'];
+                            // for (var i = 0; i < response['supplier'].length; i++) {
+                            //     $('#table-penerimaan').append('<tr class="baris"><td class="p-0">\n' +
+                            //         '<input type="text" class="form-control" value="' + response['supplier'][i].sup_namasupplier + '" disabled>\n' +
+                            //         '</td>\n' +
+                            //         '<td class="p-0">\n' +
+                            //         '    <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['supplier'][i].trm_qtybns) + '" disabled>\n' +
+                            //         '</td>\n' +
+                            //         '<td class="p-0">\n' +
+                            //         '    <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['supplier'][i].trm_bonus) + '" disabled>\n' +
+                            //         '</td>\n' +
+                            //         '<td class="p-0">\n' +
+                            //         '    <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['supplier'][i].trm_bonus2) + '" disabled>\n' +
+                            //         '</td>\n' +
+                            //         '<td class="p-0">\n' +
+                            //         '    <input type="text" class="form-control" value="' + response['supplier'][i].trm_dokumen + '" disabled>\n' +
+                            //         '</td>\n' +
+                            //         '<td class="p-0">\n' +
+                            //         '    <input type="text" class="form-control" value="' + formatDate(response['supplier'][i].trm_tanggal) + '" disabled>\n' +
+                            //         '</td>\n' +
+                            //         '<td class="p-0">\n' +
+                            //         '    <input type="text" class="form-control" value="' + response['supplier'][i].trm_top + '" disabled>\n' +
+                            //         '</td>\n' +
+                            //         '<td class="p-0">\n' +
+                            //         '    <input type="text" class="form-control text-right" value="' + format_currency(response['supplier'][i].trm_hpp) + '" disabled>\n' +
+                            //         '</td>\n' +
+                            //         '<td class="p-0">\n' +
+                            //         '    <input type="text" class="form-control text-right" value="' + format_currency(response['supplier'][i].trm_acost) + '" disabled>\n' +
+                            //         '</td><tr>');
+                            // }
+
+
+                            // for (var i = 0; i < response['permintaan'].length; i++) {
+                            //     $('#table-pb').append('<tr class="justify-content-md-center p-0 baris">\n' +
+                            //         '                                    <td class="p-0">\n' +
+                            //         '                                        <input type="text" class="form-control" value="' + response['permintaan'][i].pb_no + '" disabled>\n' +
+                            //         '                                    </td>\n' +
+                            //         '                                    <td class="p-0">\n' +
+                            //         '                                        <input type="text" class="form-control" value="' + formatDate(response['permintaan'][i].pb_tgl) + '" disabled>\n' +
+                            //         '                                    </td>\n' +
+                            //         '                                    <td class="p-0">\n' +
+                            //         '                                        <input type="text" class="form-control text-right" value="' + nvl(convertToRupiah2(response['permintaan'][i].pb_qty), '') + '" disabled>\n' +
+                            //         '                                    </td>\n' +
+                            //         '                                   <td class="p-0">\n' +
+                            //         '                                        <input type="text" class="form-control" value="' + response['permintaan'][i].pb_ket + '" disabled>\n' +
+                            //         '                                    </td>\n' +
+                            //         '                                    <td class="p-0">\n' +
+                            //         '                                        <input type="text" class="form-control" value="' + response['permintaan'][i].pb_nopo + '" disabled>\n' +
+                            //         '                                    </td>\n' +
+                            //         '                                   <td class="p-0">\n' +
+                            //         '                                        <input type="text" class="form-control" value="' + formatDate(response['permintaan'][i].pb_tglpo) + '" disabled>\n' +
+                            //         '                                    </td>\n' +
+                            //         '                                   <td class="p-0">\n' +
+                            //         '                                        <input type="text" class="form-control text-right" value="' + nvl(convertToRupiah2(response['permintaan'][i].pb_qtybpb, '')) + '" disabled>\n' +
+                            //         '                                    </td>\n' +
+                            //         '                                   <td class="p-0">\n' +
+                            //         '                                        <input type="text" class="form-control" value="' + response['permintaan'][i].pb_ketbpb + '" disabled>\n' +
+                            //         '                                    </td>\n' +
+                            //         '                                </tr>');
+                            // }
+
+                            // //SO
+                            // cetakso.so = response['so'];
+                            // cetakso.sotgl = response['so_tgl'];
+                            // cetakso.adjustso = response['adjustso'];
+                            // cetakso.resetsoic = response['resetsoic'];
                             cetakso.plu = response.produk['prd_prdcd'];
                             cetakso.barcode = response.produk['brc_barcode'];
                             cetakso.produk = response.produk['prd_deskripsipanjang'];
+                            //
+                            // $('#periode-so').val(formatDate(response['so_tgl']));
+                            // for (var i = 0; i < response['so'].length; i++) {
+                            //     $('#table-so').append(
+                            //         '<tr class="p-0 baris">\n' +
+                            //         '    <td class="p-0">\n' +
+                            //         '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].sop_qtyso) + '" disabled>\n' +
+                            //         '    </td>\n' +
+                            //         '     <td class="p-0">\n' +
+                            //         '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].sop_qtylpp) + '" disabled>\n' +
+                            //         '    </td>\n' +
+                            //         '    <td class="p-0">\n' +
+                            //         '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].qty_adj) + '" disabled>\n' +
+                            //         '    </td>\n' +
+                            //         '    <td class="p-0">\n' +
+                            //         '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].selisih) + '" disabled>\n' +
+                            //         '    </td>\n' +
+                            //         '    <td class="p-0">\n' +
+                            //         '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].sop_newavgcost) + '" disabled>\n' +
+                            //         '    </td>\n' +
+                            //         '    <td class="p-0">\n' +
+                            //         '         <input type="text" class="form-control text-center" value="' + convertToRupiah(response['so'][i].rupiah) + '" disabled>\n' +
+                            //         '    </td>\n' +
+                            //         '</tr>');
+                            // }
+                            //
+                            // for (var i = 0; i < response['adjustso'].length; i++) {
+                            //     $('#table-detailadj').append(
+                            //         '<tr class="p-0 baris">\n' +
+                            //         '    <td class="p-0">\n' +
+                            //         '       <input type="text" value="' + response['adjustso'][i].adj_seq + '" class="form-control text-center" disabled>\n' +
+                            //         '    </td>\n' +
+                            //         '    <td class="p-0">\n' +
+                            //         '       <input type="text" value="' + convertToRupiah2(response['adjustso'][i].adj_qty) + '" class="form-control text-center" disabled>\n' +
+                            //         '    </td>\n' +
+                            //         '    <td class="p-0">\n' +
+                            //         '       <input type="text" value="' + response['adjustso'][i].adj_keterangan + '" class="form-control text-center" disabled>\n' +
+                            //         '    </td>\n' +
+                            //         '    <td class="p-0">\n' +
+                            //         '       <input type="text" value="' + formatDate(response['adjustso'][i].adj_create_dt) + '" class="form-control text-center" disabled>\n' +
+                            //         '    </td>\n' +
+                            //         '</tr>'
+                            //     );
+                            // }
+                            //
+                            // for (var i = 0; i < response['resetsoic'].length; i++) {
+                            //     $('#table-soic').append(
+                            //         '<tr class="p-0 baris">\n' +
+                            //         '    <td class="p-0">\n' +
+                            //         '       <input type="text" value="' + formatDate(response['resetsoic'].rso_tglso) + '" class="form-control text-center" disabled>\n' +
+                            //         '    </td>\n' +
+                            //         '    <td class="p-0">\n' +
+                            //         '       <input type="text" value="' + response['resetsoic'].rso_kodeso + '" class="form-control text-center" disabled>\n' +
+                            //         '    </td>\n' +
+                            //         '    <td class="p-0">\n' +
+                            //         '       <input type="text" value="' + convertToRupiah2(response['resetsoic'].rso_qty) + '" class="form-control text-center" disabled>\n' +
+                            //         '    </td>\n' +
+                            //         '    <td class="p-0">\n' +
+                            //         '       <input type="text" value="' + convertToRupiah2(response['resetsoic'].rso_avgcostreset) + '" class="form-control text-center" disabled>\n' +
+                            //         '    </td>\n' +
+                            //         '</tr>'
+                            //     );
+                            // }
 
-                            $('#periode-so').val(formatDate(response['so_tgl']));
-                            for (var i = 0; i < response['so'].length; i++) {
-                                $('#table-so').append(
-                                    '<tr class="p-0 baris">\n' +
-                                    '    <td class="p-0">\n' +
-                                    '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].sop_qtyso) + '" disabled>\n' +
-                                    '    </td>\n' +
-                                    '     <td class="p-0">\n' +
-                                    '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].sop_qtylpp) + '" disabled>\n' +
-                                    '    </td>\n' +
-                                    '    <td class="p-0">\n' +
-                                    '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].qty_adj) + '" disabled>\n' +
-                                    '    </td>\n' +
-                                    '    <td class="p-0">\n' +
-                                    '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].selisih) + '" disabled>\n' +
-                                    '    </td>\n' +
-                                    '    <td class="p-0">\n' +
-                                    '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].sop_newavgcost) + '" disabled>\n' +
-                                    '    </td>\n' +
-                                    '    <td class="p-0">\n' +
-                                    '         <input type="text" class="form-control text-center" value="' + convertToRupiah(response['so'][i].rupiah) + '" disabled>\n' +
-                                    '    </td>\n' +
-                                    '</tr>');
-                            }
-
-                            for (var i = 0; i < response['adjustso'].length; i++) {
-                                $('#table-detailadj').append(
-                                    '<tr class="p-0 baris">\n' +
-                                    '    <td class="p-0">\n' +
-                                    '       <input type="text" value="' + response['adjustso'][i].adj_seq + '" class="form-control text-center" disabled>\n' +
-                                    '    </td>\n' +
-                                    '    <td class="p-0">\n' +
-                                    '       <input type="text" value="' + convertToRupiah2(response['adjustso'][i].adj_qty) + '" class="form-control text-center" disabled>\n' +
-                                    '    </td>\n' +
-                                    '    <td class="p-0">\n' +
-                                    '       <input type="text" value="' + response['adjustso'][i].adj_keterangan + '" class="form-control text-center" disabled>\n' +
-                                    '    </td>\n' +
-                                    '    <td class="p-0">\n' +
-                                    '       <input type="text" value="' + formatDate(response['adjustso'][i].adj_create_dt) + '" class="form-control text-center" disabled>\n' +
-                                    '    </td>\n' +
-                                    '</tr>'
-                                );
-                            }
-
-                            for (var i = 0; i < response['resetsoic'].length; i++) {
-                                $('#table-soic').append(
-                                    '<tr class="p-0 baris">\n' +
-                                    '    <td class="p-0">\n' +
-                                    '       <input type="text" value="' + formatDate(response['resetsoic'].rso_tglso) + '" class="form-control text-center" disabled>\n' +
-                                    '    </td>\n' +
-                                    '    <td class="p-0">\n' +
-                                    '       <input type="text" value="' + response['resetsoic'].rso_kodeso + '" class="form-control text-center" disabled>\n' +
-                                    '    </td>\n' +
-                                    '    <td class="p-0">\n' +
-                                    '       <input type="text" value="' + convertToRupiah2(response['resetsoic'].rso_qty) + '" class="form-control text-center" disabled>\n' +
-                                    '    </td>\n' +
-                                    '    <td class="p-0">\n' +
-                                    '       <input type="text" value="' + convertToRupiah2(response['resetsoic'].rso_avgcostreset) + '" class="form-control text-center" disabled>\n' +
-                                    '    </td>\n' +
-                                    '</tr>'
-                                );
-                            }
-
-                            //HARGA BELI
-                            total_data_hb = response['hargabeli'].length;
-                            data_hb = response['hargabeli'];
-                            if (total_data_hb == 1) {
-                                $('#btn-hb-next').prop('disabled', true);
-                            } else {
-                                $('#btn-hb-next').removeAttr('disabled');
-                            }
-                            $('#hb-supp-terakhir').val(response['hargabeli'][0].hb_supplier);
-                            $('#hb-plu').val(response['hargabeli'][0].hb_plu);
-                            $('#hb-status-tag').val(response['hargabeli'][0].hb_statustag);
-                            $('#hb-satuan-beli').val(response['hargabeli'][0].hb_satuanbl);
-                            $('#hb-bkp').val(response['hargabeli'][0].hb_bkp);
-                            $('#hb-flag-bandrol').val(response['hargabeli'][0].hb_flagbandrol);
-                            $('#hb-harga-omi').val(convertToRupiah(response['hargabeli'][0].hb_hrgomi));
-
-                            $('#hb-supp').val(response['hargabeli'][0].hb_supplier);
-                            $('#hb-pkp').val(response['hargabeli'][0].hb_pkp);
-                            $('#hb-jenis-harga').val(response['hargabeli'][0].hb_jnshg);
-                            $('#hb-tgl-berlaku').val(formatDate(response['hargabeli'][0].hb_tglberlaku));
-                            $('#hb-top').val(response['hargabeli'][0].hb_top);
-                            $('#hb-harga-beli').val(convertToRupiah(response['hargabeli'][0].hb_hgbeli));
-                            $('#hb-kondisi').val(response['hargabeli'][0].hb_kondisi);
-                            $('#hb-ppn-bm').val(convertToRupiah(response['hargabeli'][0].hb_ppnbm));
-                            $('#hb-ppn').val(convertToRupiah(response['hargabeli'][0].hb_ppn));
-                            $('#hb-botol').val(convertToRupiah(response['hargabeli'][0].hb_btl));
-                            $('#hb-total').val(convertToRupiah(response['hargabeli'][0].hb_total));
-
-                            $('#hb-discount-1').val(convertToRupiah(response['hargabeli'][0].hb_persendisc1));
-                            $('#hb-rp-1').val(convertToRupiah(response['hargabeli'][0].hb_rpdisc1));
-                            $('#hb-satuan').val(response['hargabeli'][0].hb_satuan);
-                            $('#hb-bonus-1').val(response['hargabeli'][0].hb_bns1);
-
-                            $('#hb-discount-2').val(convertToRupiah(response['hargabeli'][0].hb_persendisc2));
-                            $('#hb-rp-2').val(convertToRupiah(response['hargabeli'][0].hb_rpdisc2));
-                            $('#hb-periode-2').val((response['hargabeli'][0].hb_periode));
-
-                            $('#hb-discount-2a').val(convertToRupiah(response['hargabeli'][0].hb_persendisc2ii));
-                            $('#hb-rp-2a').val(convertToRupiah(response['hargabeli'][0].hb_rpdisc2ii));
-                            $('#hb-periode-2a').val(formatDate(response['hargabeli'][0].hb_periodeii));
-
-                            $('#hb-discount-2b').val(convertToRupiah(response['hargabeli'][0].hb_persendisc2iii));
-                            $('#hb-rp-2b').val(convertToRupiah(response['hargabeli'][0].hb_rpdisc2iii));
-                            $('#hb-periode-2b').val(formatDate(response['hargabeli'][0].hb_periodeiii));
-
-                            $('#hb-discount-3').val(convertToRupiah(response['hargabeli'][0].hb_persendisc3));
-                            $('#hb-rp-3').val(convertToRupiah(response['hargabeli'][0].hb_rpdisc3));
-
-                            $('#hb-no-return').val(convertToRupiah(response['hargabeli'][0].hb_persendisc4));
-                            $('#hb-rp-no-return').val(convertToRupiah(response['hargabeli'][0].hb_rpdisc4));
-
-                            $('#hb-cash-discount').val(convertToRupiah(response['hargabeli'][0].hb_persencd));
-                            $('#hb-rp-cash-discount').val(convertToRupiah(response['hargabeli'][0].hb_rpcd));
-
-                            $('#hb-distribution-fee').val(convertToRupiah(response['hargabeli'][0].hb_persendf));
-                            $('#hb-rp-distribution-fee').val(convertToRupiah(response['hargabeli'][0].hb_rpdf));
-                            $('#hb-total-discount').val(convertToRupiah(response['hargabeli'][0].hb_total2));
-
-                            $('#hb-bonus-kelipatan').val(convertToRupiah2(response['hargabeli'][0].hb_bnslipat));
-                            $('#hb-periode').val(response['hargabeli'][0].hb_periodbns);
-
-                            $('#hb-qty-beli1').val(convertToRupiah2(response['hargabeli'][0].hb_qtybeli1));
-                            $('#hb-qty-beli2').val(convertToRupiah2(response['hargabeli'][0].hb_qtybeli2));
-                            $('#hb-qty-beli3').val(convertToRupiah2(response['hargabeli'][0].hb_qtybeli3));
-
-                            $('#hb-qty-bns1').val(convertToRupiah2(response['hargabeli'][0].hb_qtybns1));
-                            $('#hb-qty-bns2').val(convertToRupiah2(response['hargabeli'][0].hb_qtybns2));
-                            $('#hb-qty-bns3').val(convertToRupiah2(response['hargabeli'][0].hb_qtybns3));
-
-
-                            //STOCK CARTON
-                            $('#title-stock-carton').val(response['stockcarton'].STC_TITLE);
-
-                            $('#table-stockcarton').append(
-                                '<tr class="baris p-0">\n' +
-                                '    <td class="p-0">\n' +
-                                '        <input type="text" class="form-control" value="' + response['stockcarton'].STC_baik + '" disabled>\n' +
-                                '    </td>\n' +
-                                '    <td class="p-0">\n' +
-                                '        <input type="text" class="form-control text-right" value="' + response['stockcarton'].STC_CT1 + '" disabled>\n' +
-                                '    </td>\n' +
-                                '    <td class="p-0">\n' +
-                                '        <input type="text" class="form-control text-right" value="' + response['stockcarton'].STC_PCS1 + '" disabled>\n' +
-                                '    </td>\n' +
-                                '</tr>' +
-                                '<tr class="baris p-0">\n' +
-                                '    <td class="p-0">\n' +
-                                '        <input type="text" class="form-control" value="' + response['stockcarton'].STC_retur + '" disabled>\n' +
-                                '    </td>\n' +
-                                '    <td class="p-0">\n' +
-                                '        <input type="text" class="form-control text-right" value="' + response['stockcarton'].STC_CT2 + '" disabled>\n' +
-                                '    </td>\n' +
-                                '    <td class="p-0">\n' +
-                                '        <input type="text" class="form-control text-right" value="' + response['stockcarton'].STC_PCS2 + '" disabled>\n' +
-                                '    </td>\n' +
-                                '</tr>' +
-                                '<tr class="baris p-0">\n' +
-                                '    <td class="p-0">\n' +
-                                '        <input type="text" class="form-control" value="' + response['stockcarton'].STC_rsk + '" disabled>\n' +
-                                '    </td>\n' +
-                                '    <td class="p-0">\n' +
-                                '        <input type="text" class="form-control text-right" value="' + response['stockcarton'].STC_CT3 + '" disabled>\n' +
-                                '    </td>\n' +
-                                '    <td class="p-0">\n' +
-                                '        <input type="text" class="form-control text-right" value="' + response['stockcarton'].STC_PCS3 + '" disabled>\n' +
-                                '    </td>\n' +
-                                '</tr>');
 
                             //CETAK
                             cetak = response;
@@ -2059,6 +1955,336 @@
             }
 
         });
+
+        function getDataPenerimaan() {
+            $.ajax({
+                url: '{{ url()->current() }}/get-data-penerimaan',
+                type: 'get',
+                data: {
+                    value: $('#plu').val()
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+                    $('#table-penerimaan').empty();
+                    for (var i = 0; i < response['supplier'].length; i++) {
+                        $('#table-penerimaan').append('<tr class="baris"><td class="p-0">\n' +
+                            '<input type="text" class="form-control" value="' + response['supplier'][i].sup_namasupplier + '" disabled>\n' +
+                            '</td>\n' +
+                            '<td class="p-0">\n' +
+                            '    <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['supplier'][i].trm_qtybns) + '" disabled>\n' +
+                            '</td>\n' +
+                            '<td class="p-0">\n' +
+                            '    <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['supplier'][i].trm_bonus) + '" disabled>\n' +
+                            '</td>\n' +
+                            '<td class="p-0">\n' +
+                            '    <input type="text" class="form-control text-right" value="' + convertToRupiah2(response['supplier'][i].trm_bonus2) + '" disabled>\n' +
+                            '</td>\n' +
+                            '<td class="p-0">\n' +
+                            '    <input type="text" class="form-control" value="' + response['supplier'][i].trm_dokumen + '" disabled>\n' +
+                            '</td>\n' +
+                            '<td class="p-0">\n' +
+                            '    <input type="text" class="form-control" value="' + formatDate(response['supplier'][i].trm_tanggal) + '" disabled>\n' +
+                            '</td>\n' +
+                            '<td class="p-0">\n' +
+                            '    <input type="text" class="form-control" value="' + response['supplier'][i].trm_top + '" disabled>\n' +
+                            '</td>\n' +
+                            '<td class="p-0">\n' +
+                            '    <input type="text" class="form-control text-right" value="' + format_currency(response['supplier'][i].trm_hpp) + '" disabled>\n' +
+                            '</td>\n' +
+                            '<td class="p-0">\n' +
+                            '    <input type="text" class="form-control text-right" value="' + format_currency(response['supplier'][i].trm_acost) + '" disabled>\n' +
+                            '</td><tr>');
+                    }
+                }, error: function (err) {
+                    $('#modal-loader').modal('hide');
+                    errorHandlingforAjax(err)
+                }
+            })
+        }
+
+        function getDataPB() {
+            $.ajax({
+                url: '{{ url()->current() }}/get-data-pb',
+                type: 'get',
+                data: {
+                    value: $('#plu').val()
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+                    $('#table-pb').empty();
+
+                    for (var i = 0; i < response['permintaan'].length; i++) {
+                        $('#table-pb').append('<tr class="justify-content-md-center p-0 baris">\n' +
+                            '                                    <td class="p-0">\n' +
+                            '                                        <input type="text" class="form-control" value="' + response['permintaan'][i].pb_no + '" disabled>\n' +
+                            '                                    </td>\n' +
+                            '                                    <td class="p-0">\n' +
+                            '                                        <input type="text" class="form-control" value="' + formatDate(response['permintaan'][i].pb_tgl) + '" disabled>\n' +
+                            '                                    </td>\n' +
+                            '                                    <td class="p-0">\n' +
+                            '                                        <input type="text" class="form-control text-right" value="' + nvl(convertToRupiah2(response['permintaan'][i].pb_qty), '') + '" disabled>\n' +
+                            '                                    </td>\n' +
+                            '                                   <td class="p-0">\n' +
+                            '                                        <input type="text" class="form-control" value="' + response['permintaan'][i].pb_ket + '" disabled>\n' +
+                            '                                    </td>\n' +
+                            '                                    <td class="p-0">\n' +
+                            '                                        <input type="text" class="form-control" value="' + response['permintaan'][i].pb_nopo + '" disabled>\n' +
+                            '                                    </td>\n' +
+                            '                                   <td class="p-0">\n' +
+                            '                                        <input type="text" class="form-control" value="' + formatDate(response['permintaan'][i].pb_tglpo) + '" disabled>\n' +
+                            '                                    </td>\n' +
+                            '                                   <td class="p-0">\n' +
+                            '                                        <input type="text" class="form-control text-right" value="' + nvl(convertToRupiah2(response['permintaan'][i].pb_qtybpb, '')) + '" disabled>\n' +
+                            '                                    </td>\n' +
+                            '                                   <td class="p-0">\n' +
+                            '                                        <input type="text" class="form-control" value="' + response['permintaan'][i].pb_ketbpb + '" disabled>\n' +
+                            '                                    </td>\n' +
+                            '                                </tr>');
+                    }
+                }, error: function (err) {
+                    $('#modal-loader').modal('hide');
+                    errorHandlingforAjax(err)
+                }
+            })
+        }
+
+        function getDataHargaBeli() {
+            $.ajax({
+                url: '{{ url()->current() }}/get-data-harga-beli',
+                type: 'get',
+                data: {
+                    value: $('#plu').val()
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+                    //HARGA BELI
+                    total_data_hb = response['hargabeli'].length;
+                    data_hb = response['hargabeli'];
+                    if (total_data_hb == 1) {
+                        $('#btn-hb-next').prop('disabled', true);
+                    } else {
+                        $('#btn-hb-next').removeAttr('disabled');
+                    }
+                    $('#hb-supp-terakhir').val(response['hargabeli'][0].hb_supplier);
+                    $('#hb-plu').val(response['hargabeli'][0].hb_plu);
+                    $('#hb-status-tag').val(response['hargabeli'][0].hb_statustag);
+                    $('#hb-satuan-beli').val(response['hargabeli'][0].hb_satuanbl);
+                    $('#hb-bkp').val(response['hargabeli'][0].hb_bkp);
+                    $('#hb-flag-bandrol').val(response['hargabeli'][0].hb_flagbandrol);
+                    $('#hb-harga-omi').val(convertToRupiah(response['hargabeli'][0].hb_hrgomi));
+
+                    $('#hb-supp').val(response['hargabeli'][0].hb_supplier);
+                    $('#hb-pkp').val(response['hargabeli'][0].hb_pkp);
+                    $('#hb-jenis-harga').val(response['hargabeli'][0].hb_jnshg);
+                    $('#hb-tgl-berlaku').val(formatDate(response['hargabeli'][0].hb_tglberlaku));
+                    $('#hb-top').val(response['hargabeli'][0].hb_top);
+                    $('#hb-harga-beli').val(convertToRupiah(response['hargabeli'][0].hb_hgbeli));
+                    $('#hb-kondisi').val(response['hargabeli'][0].hb_kondisi);
+                    $('#hb-ppn-bm').val(convertToRupiah(response['hargabeli'][0].hb_ppnbm));
+                    $('#hb-ppn').val(convertToRupiah(response['hargabeli'][0].hb_ppn));
+                    $('#hb-botol').val(convertToRupiah(response['hargabeli'][0].hb_btl));
+                    $('#hb-total').val(convertToRupiah(response['hargabeli'][0].hb_total));
+
+                    $('#hb-discount-1').val(convertToRupiah(response['hargabeli'][0].hb_persendisc1));
+                    $('#hb-rp-1').val(convertToRupiah(response['hargabeli'][0].hb_rpdisc1));
+                    $('#hb-satuan').val(response['hargabeli'][0].hb_satuan);
+                    $('#hb-bonus-1').val(response['hargabeli'][0].hb_bns1);
+
+                    $('#hb-discount-2').val(convertToRupiah(response['hargabeli'][0].hb_persendisc2));
+                    $('#hb-rp-2').val(convertToRupiah(response['hargabeli'][0].hb_rpdisc2));
+                    $('#hb-periode-2').val((response['hargabeli'][0].hb_periode));
+
+                    $('#hb-discount-2a').val(convertToRupiah(response['hargabeli'][0].hb_persendisc2ii));
+                    $('#hb-rp-2a').val(convertToRupiah(response['hargabeli'][0].hb_rpdisc2ii));
+                    $('#hb-periode-2a').val(formatDate(response['hargabeli'][0].hb_periodeii));
+
+                    $('#hb-discount-2b').val(convertToRupiah(response['hargabeli'][0].hb_persendisc2iii));
+                    $('#hb-rp-2b').val(convertToRupiah(response['hargabeli'][0].hb_rpdisc2iii));
+                    $('#hb-periode-2b').val(formatDate(response['hargabeli'][0].hb_periodeiii));
+
+                    $('#hb-discount-3').val(convertToRupiah(response['hargabeli'][0].hb_persendisc3));
+                    $('#hb-rp-3').val(convertToRupiah(response['hargabeli'][0].hb_rpdisc3));
+
+                    $('#hb-no-return').val(convertToRupiah(response['hargabeli'][0].hb_persendisc4));
+                    $('#hb-rp-no-return').val(convertToRupiah(response['hargabeli'][0].hb_rpdisc4));
+
+                    $('#hb-cash-discount').val(convertToRupiah(response['hargabeli'][0].hb_persencd));
+                    $('#hb-rp-cash-discount').val(convertToRupiah(response['hargabeli'][0].hb_rpcd));
+
+                    $('#hb-distribution-fee').val(convertToRupiah(response['hargabeli'][0].hb_persendf));
+                    $('#hb-rp-distribution-fee').val(convertToRupiah(response['hargabeli'][0].hb_rpdf));
+                    $('#hb-total-discount').val(convertToRupiah(response['hargabeli'][0].hb_total2));
+
+                    $('#hb-bonus-kelipatan').val(convertToRupiah2(response['hargabeli'][0].hb_bnslipat));
+                    $('#hb-periode').val(response['hargabeli'][0].hb_periodbns);
+
+                    $('#hb-qty-beli1').val(convertToRupiah2(response['hargabeli'][0].hb_qtybeli1));
+                    $('#hb-qty-beli2').val(convertToRupiah2(response['hargabeli'][0].hb_qtybeli2));
+                    $('#hb-qty-beli3').val(convertToRupiah2(response['hargabeli'][0].hb_qtybeli3));
+
+                    $('#hb-qty-bns1').val(convertToRupiah2(response['hargabeli'][0].hb_qtybns1));
+                    $('#hb-qty-bns2').val(convertToRupiah2(response['hargabeli'][0].hb_qtybns2));
+                    $('#hb-qty-bns3').val(convertToRupiah2(response['hargabeli'][0].hb_qtybns3));
+                }, error: function (err) {
+                    $('#modal-loader').modal('hide');
+                    errorHandlingforAjax(err)
+                }
+            })
+        }
+
+        function getDataStockCarton() {
+            $.ajax({
+                url: '{{ url()->current() }}/get-data-stock-carton',
+                type: 'get',
+                data: {
+                    value: $('#plu').val()
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+
+                    //STOCK CARTON
+                    $('#title-stock-carton').val(response['stockcarton'].STC_TITLE);
+                    $('#table-stockcarton').empty();
+                    $('#table-stockcarton').append(
+                        '<tr class="baris p-0">\n' +
+                        '    <td class="p-0">\n' +
+                        '        <input type="text" class="form-control" value="' + response['stockcarton'].STC_baik + '" disabled>\n' +
+                        '    </td>\n' +
+                        '    <td class="p-0">\n' +
+                        '        <input type="text" class="form-control text-right" value="' + response['stockcarton'].STC_CT1 + '" disabled>\n' +
+                        '    </td>\n' +
+                        '    <td class="p-0">\n' +
+                        '        <input type="text" class="form-control text-right" value="' + response['stockcarton'].STC_PCS1 + '" disabled>\n' +
+                        '    </td>\n' +
+                        '</tr>' +
+                        '<tr class="baris p-0">\n' +
+                        '    <td class="p-0">\n' +
+                        '        <input type="text" class="form-control" value="' + response['stockcarton'].STC_retur + '" disabled>\n' +
+                        '    </td>\n' +
+                        '    <td class="p-0">\n' +
+                        '        <input type="text" class="form-control text-right" value="' + response['stockcarton'].STC_CT2 + '" disabled>\n' +
+                        '    </td>\n' +
+                        '    <td class="p-0">\n' +
+                        '        <input type="text" class="form-control text-right" value="' + response['stockcarton'].STC_PCS2 + '" disabled>\n' +
+                        '    </td>\n' +
+                        '</tr>' +
+                        '<tr class="baris p-0">\n' +
+                        '    <td class="p-0">\n' +
+                        '        <input type="text" class="form-control" value="' + response['stockcarton'].STC_rsk + '" disabled>\n' +
+                        '    </td>\n' +
+                        '    <td class="p-0">\n' +
+                        '        <input type="text" class="form-control text-right" value="' + response['stockcarton'].STC_CT3 + '" disabled>\n' +
+                        '    </td>\n' +
+                        '    <td class="p-0">\n' +
+                        '        <input type="text" class="form-control text-right" value="' + response['stockcarton'].STC_PCS3 + '" disabled>\n' +
+                        '    </td>\n' +
+                        '</tr>');
+                }, error: function (err) {
+                    $('#modal-loader').modal('hide');
+                    errorHandlingforAjax(err)
+                }
+            })
+        }
+
+        function getDataSO() {
+            $.ajax({
+                url: '{{ url()->current() }}/get-data-so',
+                type: 'get',
+                data: {
+                    value: $('#plu').val()
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+                    //SO
+                    cetakso.so = response['so'];
+                    cetakso.sotgl = response['so_tgl'];
+                    cetakso.adjustso = response['adjustso'];
+                    cetakso.resetsoic = response['resetsoic'];
+
+                    $('#periode-so').val(formatDate(response['so_tgl']));
+                    $('#table-so').empty();
+                    for (var i = 0; i < response['so'].length; i++) {
+                        $('#table-so').append(
+                            '<tr class="p-0 baris">\n' +
+                            '    <td class="p-0">\n' +
+                            '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].sop_qtyso) + '" disabled>\n' +
+                            '    </td>\n' +
+                            '     <td class="p-0">\n' +
+                            '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].sop_qtylpp) + '" disabled>\n' +
+                            '    </td>\n' +
+                            '    <td class="p-0">\n' +
+                            '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].qty_adj) + '" disabled>\n' +
+                            '    </td>\n' +
+                            '    <td class="p-0">\n' +
+                            '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].selisih) + '" disabled>\n' +
+                            '    </td>\n' +
+                            '    <td class="p-0">\n' +
+                            '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(response['so'][i].sop_newavgcost) + '" disabled>\n' +
+                            '    </td>\n' +
+                            '    <td class="p-0">\n' +
+                            '         <input type="text" class="form-control text-center" value="' + convertToRupiah(response['so'][i].rupiah) + '" disabled>\n' +
+                            '    </td>\n' +
+                            '</tr>');
+                    }
+                    $('#table-detailadj').empty();
+                    for (var i = 0; i < response['adjustso'].length; i++) {
+                        $('#table-detailadj').append(
+                            '<tr class="p-0 baris">\n' +
+                            '    <td class="p-0">\n' +
+                            '       <input type="text" value="' + response['adjustso'][i].adj_seq + '" class="form-control text-center" disabled>\n' +
+                            '    </td>\n' +
+                            '    <td class="p-0">\n' +
+                            '       <input type="text" value="' + convertToRupiah2(response['adjustso'][i].adj_qty) + '" class="form-control text-center" disabled>\n' +
+                            '    </td>\n' +
+                            '    <td class="p-0">\n' +
+                            '       <input type="text" value="' + response['adjustso'][i].adj_keterangan + '" class="form-control text-center" disabled>\n' +
+                            '    </td>\n' +
+                            '    <td class="p-0">\n' +
+                            '       <input type="text" value="' + formatDate(response['adjustso'][i].adj_create_dt) + '" class="form-control text-center" disabled>\n' +
+                            '    </td>\n' +
+                            '</tr>'
+                        );
+                    }
+                    $('#table-soic').empty();
+                    for (var i = 0; i < response['resetsoic'].length; i++) {
+                        $('#table-soic').append(
+                            '<tr class="p-0 baris">\n' +
+                            '    <td class="p-0">\n' +
+                            '       <input type="text" value="' + formatDate(response['resetsoic'].rso_tglso) + '" class="form-control text-center" disabled>\n' +
+                            '    </td>\n' +
+                            '    <td class="p-0">\n' +
+                            '       <input type="text" value="' + response['resetsoic'].rso_kodeso + '" class="form-control text-center" disabled>\n' +
+                            '    </td>\n' +
+                            '    <td class="p-0">\n' +
+                            '       <input type="text" value="' + convertToRupiah2(response['resetsoic'].rso_qty) + '" class="form-control text-center" disabled>\n' +
+                            '    </td>\n' +
+                            '    <td class="p-0">\n' +
+                            '       <input type="text" value="' + convertToRupiah2(response['resetsoic'].rso_avgcostreset) + '" class="form-control text-center" disabled>\n' +
+                            '    </td>\n' +
+                            '</tr>'
+                        );
+                    }
+                }, error: function (err) {
+                    $('#modal-loader').modal('hide');
+                    errorHandlingforAjax(err)
+                }
+            })
+        }
     </script>
 
 @endsection

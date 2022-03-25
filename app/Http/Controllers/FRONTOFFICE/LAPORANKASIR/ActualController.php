@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\FRONTOFFICE\LAPORANKASIR;
 
+use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -259,8 +260,30 @@ class ActualController extends Controller
         }
     }
 
+    public function cashback($tanggal){
+        try{
+            $c = loginController::getConnectionProcedure();
+            $sql = "BEGIN sp_job_lpt_cashback(to_date('" . $tanggal . "','dd/mm/yyyy'),to_date('" . $tanggal . "','dd/mm/yyyy'),'".Session::get('usid')."'); END;";
+            $s = oci_parse($c, $sql);
+            oci_execute($s);
+
+            return null;
+        }
+        catch(\Exception $e){
+            return $e->getMessage();
+        }
+    }
+
     public function cetakSales(Request $request){
         DB::connection(Session::get('connection'))->table('cetak_sums')->truncate();
+
+        $result = $this->cashback($request->tanggal);
+        if($result){
+            return response()->json([
+                'message' => 'Terjadi kesalahan!',
+                'error' => $result
+            ], 500);
+        }
 
         $data = DB::connection(Session::get('connection'))->table('tbtr_sumsales')
             ->where('sls_kodeigr','=',Session::get('kdigr'))
@@ -644,6 +667,14 @@ class ActualController extends Controller
 
     public function cetakCbNk(Request $request){
         $tanggal = $request->tanggal;
+
+        $result = $this->cashback($tanggal);
+        if($result){
+            return response()->json([
+                'message' => 'Terjadi kesalahan!',
+                'error' => $result
+            ], 500);
+        }
 
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();

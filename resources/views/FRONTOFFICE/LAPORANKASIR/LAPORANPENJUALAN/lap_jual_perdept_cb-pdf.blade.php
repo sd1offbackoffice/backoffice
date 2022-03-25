@@ -33,7 +33,7 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
         return $hasil_rupiah;
     }
     $tempDiv='';
-    $tempDep=$data[0]->cdept;
+    $tempDep=count($data) > 0 ? $data[0]->cdept : null;
     $sub_gross=0;
     $sub_potongan=0;
     $sub_dpp=0;

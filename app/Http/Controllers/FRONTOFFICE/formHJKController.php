@@ -89,6 +89,7 @@ class formHJKController extends Controller
                              prd_deskripsipanjang deskripsi,
                              prd_unit unit,
                              prd_frac frac,
+                             prd_ppn ppn,
                              prd_minjual minj,
                              prd_flagbkp1 pkp,
                              NVL(prd_flagbkp2, 'xx') pkp2,
@@ -115,6 +116,7 @@ class formHJKController extends Controller
                     GROUP BY prd_prdcd,
                              prd_deskripsipanjang,
                              prd_unit,
+                             prd_ppn,
                              prd_frac,
                              prd_minjual,
                              prd_flagbkp1,
@@ -146,7 +148,7 @@ class formHJKController extends Controller
 
 
         $cursor = DB::connection(Session::get('connection'))->select("SELECT   PRD_PRDCD, PRD_DESKRIPSIPANJANG DESKRIPSI, PRD_UNIT UNIT,
-                         PRD_FRAC FRAC, PRD_MINJUAL MINJ, PRD_FLAGBKP1 PKP,
+                         PRD_FRAC FRAC, PRD_MINJUAL MINJ, PRD_FLAGBKP1 PKP, PRD_PPN PPN,
                          NVL (PRD_FLAGBKP2, 'xx') PKP2, PRD_HRGJUAL PRICE_A, PRD_KODETAG PTAG,
                          NVL (PRD_LASTCOST, 0) PRD_LCOST,
                          NVL (PRD_AVGCOST, 0) PRD_ACOST,
@@ -158,6 +160,7 @@ class formHJKController extends Controller
                      AND ST_KODEIGR(+) = PRD_KODEIGR
                      AND ST_LOKASI(+) = '01'
                 GROUP BY PRD_PRDCD,
+                         PRD_PPN,
                          PRD_DESKRIPSIPANJANG,
                          PRD_UNIT,
                          PRD_FRAC,

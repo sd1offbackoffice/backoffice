@@ -80,7 +80,7 @@
             @endif
             <tr>
                 <td class="left">{{ $data[$i]->plu }}</td>
-                <td class="left">{{ $data[$i]->barang }}</td>
+                <td class="left">{{ strlen($data[$i]->barang) > 30 ? substr($data[$i]->barang,0,30).'...' : $data[$i]->barang }}</td>
                 <td class="left">{{ $data[$i]->kemasan }}</td>
                 <td class="left padding-right">{{ $data[$i]->mstd_nodoc }}</td>
                 <td class="left padding-right">{{ date('d/m/Y',strtotime(substr($data[$i]->mstd_tgldoc,0,10))) }}</td>

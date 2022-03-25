@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: ryan
- * Date: 1/12/2021
- * Time: 3:25 PM
- */
+
 
 namespace App\Http\Controllers\FRONTOFFICE\LAPORANKASIR;
 
@@ -18,7 +13,12 @@ use DateTime;
 
 class ceiController extends Controller
 {
-
+    /**
+     * Created by PhpStorm.
+     * User: ryan
+     * Date: 1/12/2021
+     * Time: 3:25 PM
+     */
     public function index()
     {
         return view('FRONTOFFICE.LAPORANKASIR.cei');
@@ -151,10 +151,10 @@ ORDER BY A.CBH_KODEPROMOSI, A.PLU");
                                  NILREF_BKP,
                                  NILREF_BTKP,
                                  PRD_PPN,
-                                 ROUND ( (NVL (NILSLS_BKP, 0) / NVL ((1 + (PRD_PPN / 100)), 1.1)) + NVL (NILSLS_BTKP, 0), 2) SLS_DPP,
-                                 ROUND ( ( (NVL (NILSLS_BKP, 0) / NVL ((1 + (PRD_PPN / 100)), 1.1)) * NVL ((PRD_PPN / 100), 0.1)), 2) SLS_PPN,
-                                 ROUND ( (NVL (NILREF_BKP, 0) / NVL ((1 + (PRD_PPN / 100)), 1.1)) + NVL (NILREF_BTKP, 0), 2) REF_DPP,
-                                 ROUND ( ( (NVL (NILREF_BKP, 0) / NVL ((1 + (PRD_PPN / 100)), 1.1)) * NVL ((PRD_PPN / 100), 0.1)), 2) REF_PPN,
+                                 ROUND ( (NVL (NILSLS_BKP, 0) / NVL ((1 + ( NVL (PRD_PPN, 10) / 100)), 1.1 )) + NVL (NILSLS_BTKP, 0), 2) SLS_DPP,
+                                 ROUND ( ( (NVL (NILSLS_BKP, 0) / NVL ((1 + ( NVL (PRD_PPN, 10) / 100)), 1.1 )) * NVL ((NVL (PRD_PPN, 10) / 100), 0.1)), 2) SLS_PPN,
+                                 ROUND ( (NVL (NILREF_BKP, 0) / NVL ((1 + ( NVL (PRD_PPN, 10) / 100)), 1.1 )) + NVL (NILREF_BTKP, 0), 2) REF_DPP,
+                                 ROUND ( ( (NVL (NILREF_BKP, 0) / NVL ((1 + ( NVL (PRD_PPN, 10) / 100)), 1.1 )) * NVL ((NVL (PRD_PPN, 10) / 100), 0.1)), 2) REF_PPN,
                                  PRD_DESKRIPSIPANJANG,
                                  SUP_KODESUPPLIER,
                                  SUP_NAMASUPPLIER,
@@ -259,7 +259,7 @@ ORDER BY A.CBH_KODEPROMOSI, A.PLU");
                                  AND PRS_KODEIGR = '$kodeigr'
                         ORDER BY A.CBH_KODEPROMOSI, A.PLU");
 
-        
+
 
         if(sizeof($datas) == 0){
             return "**DATA TIDAK ADA**";
@@ -282,15 +282,15 @@ ORDER BY A.CBH_KODEPROMOSI, A.PLU");
 //
 //        return $pdf->stream('FRONTOFFICE\LAPORANKASIR\csi-pdf');
 
-        
-        
 
-        
-        
-        
+
+
+
+
+
 
         return view('FRONTOFFICE.LAPORANKASIR.cei-pdf',['kodeigr' => $kodeigr,'date1' => $dateA, 'date2' => $dateB, 'data' => $datas,'perusahaan' => $perusahaan ,'today' => $today, 'time' => $time]);
-        
+
     }
 
     public function downloadCsv(Request $request) {
@@ -336,15 +336,15 @@ ORDER BY A.CBH_KODEPROMOSI, A.PLU");
                         SUP_KODESUPPLIER,
                         SUP_NAMASUPPLIER,
                         ROUND (
-                            (NVL (NILSLS_BKP, 0) / NVL ((1 + (PRD_PPN / 100)), 1.1)) + NVL (NILSLS_BTKP, 0),
+                            (NVL (NILSLS_BKP, 0) / NVL ((1 + ( NVL (PRD_PPN, 10) / 100)), 1.1)) + NVL (NILSLS_BTKP, 0),
                             2)
                             SLS_DPP,
-                        ROUND ( ( (NVL (NILSLS_BKP, 0) / NVL ((1 + (PRD_PPN / 100)), 1.1)) * NVL ((PRD_PPN / 100), 0.1)), 2) SLS_PPN,
+                        ROUND ( ( (NVL (NILSLS_BKP, 0) / NVL ((1 + ( NVL (PRD_PPN, 10) / 100)), 1.1)) * NVL ((NVL (PRD_PPN, 10) / 100), 0.1)), 2) SLS_PPN,
                         ROUND (
-                            (NVL (NILREF_BKP, 0) / NVL ((1 + (PRD_PPN / 100)), 1.1)) + NVL (NILREF_BTKP, 0),
+                            (NVL (NILREF_BKP, 0) / NVL ((1 + ( NVL (PRD_PPN, 10) / 100)), 1.1)) + NVL (NILREF_BTKP, 0),
                             2)
                             REF_DPP,
-                        ROUND ( ( (NVL (NILREF_BKP, 0) / NVL ((1 + (PRD_PPN / 100)), 1.1)) * NVL ((PRD_PPN / 100), 0.1)), 2) REF_PPN
+                        ROUND ( ( (NVL (NILREF_BKP, 0) / NVL ((1 + ( NVL (PRD_PPN, 10) / 100)), 1.1)) * NVL ((NVL (PRD_PPN, 10) / 100), 0.1)), 2) REF_PPN
                     FROM (  SELECT '1111111' PLU,
                                     CBH_KODEPROMOSI,
                                     CBH_NAMAPROMOSI,
@@ -478,7 +478,7 @@ ORDER BY A.CBH_KODEPROMOSI, A.PLU");
         $lineBuffs = array();
 
         $i = 1;
-        foreach ($csvDatas as $csvData) {            
+        foreach ($csvDatas as $csvData) {
             $tempData = [
                 $i,
                 $csvData->cab,
@@ -487,11 +487,11 @@ ORDER BY A.CBH_KODEPROMOSI, A.PLU");
                 $csvData->cbh_namapromosi,
                 $csvData->sup_kodesupplier,
                 $csvData->sls_dpp,
-                $csvData->sls_ppn,               
+                $csvData->sls_ppn,
                 $csvData->ref_dpp,
                 $csvData->ref_ppn,
                 $csvData->ttl_dpp,
-                $csvData->ttl_ppn                
+                $csvData->ttl_ppn
             ];
             $i++;
             array_push($lineBuffs, $tempData);

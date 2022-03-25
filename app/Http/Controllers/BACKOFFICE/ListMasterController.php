@@ -34,7 +34,7 @@ class ListMasterController extends Controller
         $datas = DB::connection(Session::get('connection'))->table('tbmaster_divisi')
             ->selectRaw('div_namadivisi')
             ->selectRaw('trim(div_kodedivisi) div_kodedivisi')
-            ->where('div_kodeigr','=',$kodeigr)
+            ->where('div_kodeigr', '=', $kodeigr)
             ->get();
 
         return Datatables::of($datas)->make(true);
@@ -48,7 +48,7 @@ class ListMasterController extends Controller
             ->selectRaw('dep_namadepartement')
             ->selectRaw('dep_kodedepartement')
             ->selectRaw('dep_kodedivisi')
-            ->where('dep_kodeigr','=',$kodeigr)
+            ->where('dep_kodeigr', '=', $kodeigr)
             ->orderByRaw("dep_kodedivisi, dep_kodedepartement")
             ->get();
 
@@ -63,7 +63,7 @@ class ListMasterController extends Controller
             ->selectRaw('kat_namakategori')
             ->selectRaw('kat_kodekategori')
             ->selectRaw('kat_kodedepartement')
-            ->where('kat_kodeigr','=',$kodeigr)
+            ->where('kat_kodeigr', '=', $kodeigr)
             ->orderByRaw("kat_kodedepartement, kat_kodekategori")
             ->get();
 
@@ -77,7 +77,7 @@ class ListMasterController extends Controller
         $datas = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->selectRaw('sup_namasupplier')
             ->selectRaw('sup_kodesupplier')
-            ->where('sup_kodeigr','=',$kodeigr)
+            ->where('sup_kodeigr', '=', $kodeigr)
             ->orderByRaw("sup_kodesupplier")
             ->get();
 
@@ -89,20 +89,19 @@ class ListMasterController extends Controller
         $kodeigr = Session::get('kdigr');
         $search = $request->value;
         $min = $request->min;
-        if($min != ''){ //masukkin where cus_kodeigr disini agar whereRaw tidak kosong
-            $where_min = "cus_kodeigr = '".$kodeigr."' and cus_kodemember >= '".$min."'";
-        }else{
-            $where_min = "cus_kodeigr = '".$kodeigr."'";
+        if ($min != '') { //masukkin where cus_kodeigr disini agar whereRaw tidak kosong
+            $where_min = "cus_kodeigr = '" . $kodeigr . "' and cus_kodemember >= '" . $min . "'";
+        } else {
+            $where_min = "cus_kodeigr = '" . $kodeigr . "'";
         }
 
         $datas = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->selectRaw('cus_namamember')
             ->selectRaw('cus_kodemember')
-            ->where("cus_namamember",'LIKE', '%'.$search.'%')
+            ->where("cus_namamember", 'LIKE', '%' . $search . '%')
             //->where('cus_kodeigr','=',$kodeigr)
             ->whereRaw($where_min)
-
-            ->orWhere("cus_kodemember",'LIKE', '%'.$search.'%')
+            ->orWhere("cus_kodemember", 'LIKE', '%' . $search . '%')
             //->where('cus_kodeigr','=',$kodeigr)
             ->whereRaw($where_min)
             ->limit(1000)
@@ -110,6 +109,7 @@ class ListMasterController extends Controller
 
         return Datatables::of($datas)->make(true);
     }
+
     public function checkMember(Request $request)
     {
         $kodeigr = Session::get('kdigr');
@@ -117,17 +117,18 @@ class ListMasterController extends Controller
 
         $data = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->selectRaw('cus_namamember')
-            ->where("cus_kodemember",'=', $search)
-            ->where('cus_kodeigr','=',$kodeigr)
+            ->where("cus_kodemember", '=', $search)
+            ->where('cus_kodeigr', '=', $kodeigr)
             ->first();
-        if($data){
+        if ($data) {
             $result = $data->cus_namamember;
-        }else{
+        } else {
             $result = "false";
         }
 
         return response()->json($result);
     }
+
     public function getLovMemberWithDate(Request $request)
     {
         $kodeigr = Session::get('kdigr');
@@ -139,7 +140,7 @@ class ListMasterController extends Controller
         $datas = DB::connection(Session::get('connection'))->table('tbmaster_customer')
             ->selectRaw('cus_namamember')
             ->selectRaw('cus_kodemember')
-            ->where('cus_kodeigr','=',$kodeigr)
+            ->where('cus_kodeigr', '=', $kodeigr)
             ->whereRaw("cus_tglregistrasi between TO_DATE('$sDate','DD-MM-YYYY') and TO_DATE('$eDate','DD-MM-YYYY')")
             ->orderBy("cus_namamember")
             ->get();
@@ -154,7 +155,7 @@ class ListMasterController extends Controller
         $datas = DB::connection(Session::get('connection'))->table('tbmaster_outlet')
             ->selectRaw('out_namaoutlet')
             ->selectRaw('out_kodeoutlet')
-            ->where('out_kodeigr','=',$kodeigr)
+            ->where('out_kodeigr', '=', $kodeigr)
             ->orderByRaw("out_kodeoutlet")
             ->get();
 
@@ -169,7 +170,7 @@ class ListMasterController extends Controller
             ->selectRaw('sub_namasuboutlet')
             ->selectRaw('sub_kodesuboutlet')
             ->selectRaw("sub_kodeoutlet")
-            ->where('sub_kodeigr','=',$kodeigr)
+            ->where('sub_kodeigr', '=', $kodeigr)
             ->orderByRaw("sub_kodeoutlet, sub_kodesuboutlet")
             ->get();
 
@@ -184,11 +185,10 @@ class ListMasterController extends Controller
         $datas = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->selectRaw('prd_deskripsipanjang')
             ->selectRaw('prd_prdcd')
-            ->where("prd_deskripsipanjang",'LIKE', '%'.$search.'%')
-            ->where('prd_kodeigr','=',$kodeigr)
-
-            ->orWhere("prd_prdcd",'LIKE', '%'.$search.'%')
-            ->where('prd_kodeigr','=',$kodeigr)
+            ->where("prd_deskripsipanjang", 'LIKE', '%' . $search . '%')
+            ->where('prd_kodeigr', '=', $kodeigr)
+            ->orWhere("prd_prdcd", 'LIKE', '%' . $search . '%')
+            ->where('prd_kodeigr', '=', $kodeigr)
             ->limit(1000)
             ->get();
 
@@ -210,41 +210,41 @@ class ListMasterController extends Controller
         $kat2 = $request->kat2;
         $whereKat = "";
 
-        if($div1 != ''){
-            if($div2 != ''){
-                $whereDiv = "prd_kodedivisi between '".$div1."' and '".$div2."'";
-            }else{
-                $whereDiv = "prd_kodedivisi >= '".$div1."'";
+        if ($div1 != '') {
+            if ($div2 != '') {
+                $whereDiv = "prd_kodedivisi between '" . $div1 . "' and '" . $div2 . "'";
+            } else {
+                $whereDiv = "prd_kodedivisi >= '" . $div1 . "'";
             }
         }
 
-        if($dep1 != ''){
-            if($dep2 != ''){
-                $whereDep = "prd_kodedepartement between '".$dep1."' and '".$dep2."'";
-            }else{
-                $whereDiv = "prd_kodedepartement >= '".$div1."'";
+        if ($dep1 != '') {
+            if ($dep2 != '') {
+                $whereDep = "prd_kodedepartement between '" . $dep1 . "' and '" . $dep2 . "'";
+            } else {
+                $whereDiv = "prd_kodedepartement >= '" . $div1 . "'";
             }
         }
-        if($whereDiv != "" && $whereDep != ""){
-            $whereDep = " and ".$whereDep;
+        if ($whereDiv != "" && $whereDep != "") {
+            $whereDep = " and " . $whereDep;
         }
 
-        if($kat1 != ''){
-            if($kat2 != ''){
-                $whereKat = "prd_kodekategoribarang between '".$kat1."' and '".$kat2."'";
-            }else{
-                $whereKat = "prd_kodekategoribarang >= '".$kat1."'";
+        if ($kat1 != '') {
+            if ($kat2 != '') {
+                $whereKat = "prd_kodekategoribarang between '" . $kat1 . "' and '" . $kat2 . "'";
+            } else {
+                $whereKat = "prd_kodekategoribarang >= '" . $kat1 . "'";
             }
         }
-        if($whereDep != "" && $whereKat != ""){
-            $whereKat = " and ".$whereKat;
+        if ($whereDep != "" && $whereKat != "") {
+            $whereKat = " and " . $whereKat;
         }
 
         $datas = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->selectRaw('prd_deskripsipanjang')
             ->selectRaw('prd_prdcd')
-            ->where('prd_kodeigr','=',$kodeigr)
-            ->whereRaw($whereDiv.$whereDep.$whereKat)
+            ->where('prd_kodeigr', '=', $kodeigr)
+            ->whereRaw($whereDiv . $whereDep . $whereKat)
             ->get();
 
         return Datatables::of($datas)->make(true);
@@ -258,12 +258,12 @@ class ListMasterController extends Controller
         $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->selectRaw('prd_deskripsipanjang')
             ->selectRaw("prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang")
-            ->where("prd_prdcd",'=', $search)
-            ->where('prd_kodeigr','=',$kodeigr)
+            ->where("prd_prdcd", '=', $search)
+            ->where('prd_kodeigr', '=', $kodeigr)
             ->first();
-        if($data){
+        if ($data) {
             $result = $data;
-        }else{
+        } else {
             $result = "false";
         }
 
@@ -279,7 +279,7 @@ class ListMasterController extends Controller
             ->selectRaw('lks_kodesubrak')
             ->selectRaw('lks_tiperak')
             ->selectRaw('lks_shelvingrak')
-            ->where('lks_kodeigr','=',$kodeigr)
+            ->where('lks_kodeigr', '=', $kodeigr)
             ->orderBy("lks_koderak")
             ->get();
 
@@ -291,68 +291,68 @@ class ListMasterController extends Controller
     {
         $kodeigr = Session::get('kdigr');
         $div1 = $request->div1;
-        if($div1 == ''){
+        if ($div1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("min(div_kodedivisi) as result")
-                ->where("div_kodeigr",'=',$kodeigr)
+                ->where("div_kodeigr", '=', $kodeigr)
                 ->first();
             $div1 = $temp->result;
         }
         $div2 = $request->div2;
-        if($div2 == ''){
+        if ($div2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("max(div_kodedivisi) as result")
-                ->where("div_kodeigr",'=',$kodeigr)
+                ->where("div_kodeigr", '=', $kodeigr)
                 ->first();
             $div2 = $temp->result;
         }
         $dep1 = $request->dep1;
-        if($dep1 == ''){
+        if ($dep1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("min(dep_kodedepartement) as result")
-                ->where("dep_kodeigr",'=',$kodeigr)
-                ->where("dep_kodedivisi",'=',$div1)
+                ->where("dep_kodeigr", '=', $kodeigr)
+                ->where("dep_kodedivisi", '=', $div1)
                 ->first();
             $dep1 = $temp->result;
         }
         $dep2 = $request->dep2;
-        if($dep2 == ''){
+        if ($dep2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("max(dep_kodedepartement) as result")
-                ->where("dep_kodeigr",'=',$kodeigr)
-                ->where("dep_kodedivisi",'=',$div2)
+                ->where("dep_kodeigr", '=', $kodeigr)
+                ->where("dep_kodedivisi", '=', $div2)
                 ->first();
             $dep2 = $temp->result;
         }
         $kat1 = $request->kat1;
-        if($kat1 == ''){
+        if ($kat1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("min(kat_kodekategori) as result")
-                ->where("kat_kodeigr",'=',$kodeigr)
-                ->where("kat_kodedepartement",'=',$dep1)
+                ->where("kat_kodeigr", '=', $kodeigr)
+                ->where("kat_kodedepartement", '=', $dep1)
                 ->first();
             $kat1 = $temp->result;
         }
         $kat2 = $request->kat2;
-        if($kat2 == ''){
+        if ($kat2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("max(kat_kodekategori) as result")
-                ->where("kat_kodeigr",'=',$kodeigr)
-                ->where("kat_kodedepartement",'=',$dep2)
+                ->where("kat_kodeigr", '=', $kodeigr)
+                ->where("kat_kodedepartement", '=', $dep2)
                 ->first();
             $kat2 = $temp->result;
         }
         $ptag = $request->ptag;
         $p_tagq = "";
-        if($ptag != ''){
-            $p_tagq = "and NVL(prd_kodetag,'b') in (".$ptag.")";
+        if ($ptag != '') {
+            $p_tagq = "and NVL(prd_kodetag,'b') in (" . $ptag . ")";
         }
         $produkbaru = $request->produkbaru;
         $chp = $request->chp;
         $sort = $request->sort;
         $date = $request->date;
         $date = DateTime::createFromFormat('d-m-Y', $date)->format('d-M-Y');
-        if((int)$produkbaru == 1){
+        if ((int)$produkbaru == 1) {
             $judul = " ** DAFTAR PRODUK BARU ** ";
             $temp = DB::connection(Session::get('connection'))->table("dual")
                 ->selectRaw("nvl(TO_DATE('$date','DD-MON-YYYY'),sysdate)-91 as result")
@@ -360,25 +360,25 @@ class ListMasterController extends Controller
             $tgla = $temp->result;
             $tgla = DateTime::createFromFormat('Y-m-d H:i:s', $tgla)->format('d-M-Y');
             $p_periodtgl = " and prd_tglaktif >= to_date('$tgla','dd-MON-yy') ";
-        }else{
+        } else {
             $judul = " ** DAFTAR PRODUK ** ";
             $p_periodtgl = '';
         }
-        if((int)$sort == 1){
+        if ((int)$sort == 1) {
             $p_urut = "URUT: DIV+DEPT+KATEGORI+KODE";
             $p_orderby = " order by prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, prd_prdcd";
-        }elseif ((int)$sort == 2){
+        } elseif ((int)$sort == 2) {
             $p_urut = "URUT: DIV+DEPT+KATEGORI+NAMA";
             $p_orderby = " order by prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, prd_deskripsipanjang";
-        }else{
-           $p_urut = "URUT: NAMA" ;
-           $p_orderby = " order by prd_deskripsipanjang";
+        } else {
+            $p_urut = "URUT: NAMA";
+            $p_orderby = " order by prd_deskripsipanjang";
         }
 
         $datas = DB::connection(Session::get('connection'))->select("select prd_prdcd prd, prd_deskripsipanjang desc2, prd_unit||'/'||prd_frac satuan,
 case when substr(prd_prdcd,-1) = 1 then 1 else prd_minjual end minjl,
 prd_lastcost, prd_avgcost, prd_hrgjual, prd_flagbkp1, prd_flagbkp2,
-prd_unit, prd_frac, prd_tglaktif, prd_kodetag, prd_minorder,
+prd_unit, prd_frac, prd_tglaktif, prd_kodetag, prd_minorder, prd_ppn,
 prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang,
 st_prdcd, st_avgcost,case when substr(prd_prdcd,-1) = '0' then 1 else 0 end produk,
 sls_kodesupplier||'-'||substr(sup_namasupplier,1,8) SUPPLIER,
@@ -414,45 +414,54 @@ and dep_kodeigr = prd_kodeigr
 and kat_kodekategori = prd_kodekategoribarang
 and kat_kodedepartement = dep_kodedepartement
 and kat_kodeigr= prd_kodeigr
-".$p_tagq."
+" . $p_tagq . "
 and prs_kodeigr = prd_kodeigr
 and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'||'$dep1'||'$kat1' and '$div2'||'$dep2'||'$kat2'
 --and kat_kodekategori between :p_kat1 and :p_kat2
-".$p_periodtgl."
-
+" . $p_periodtgl . "
 and pkm_prdcd(+) = prd_prdcd
 and pkm_kodeigr(+) = prd_kodeigr
 and prs_kodeigr(+) = prd_kodeigr
-".$p_orderby);
+" . $p_orderby);
 
         $cf_nmargin = [];
-        for($i=0;$i<sizeof($datas);$i++){
-            if($datas[$i]->prd_unit == 'KG'){
+        for ($i = 0; $i < sizeof($datas); $i++) {
+            $ppn = isset($datas[$i]->prd_ppn) ? 1 + ($datas[$i]->prd_ppn / 100) : 1.1;
+            if ($datas[$i]->prd_unit == 'KG') {
                 $multiplier = 1;
-            }else{
+            } else {
                 $multiplier = (int)$datas[$i]->prd_frac;
             }
             $nAcost = (float)$datas[$i]->st_avgcost * $multiplier;
-            if($nAcost > 0){
-                if($datas[$i]->prd_flagbkp1 == 'Y' && $datas[$i]->prd_flagbkp2 != 'P'){
-                    $cf_nmargin[$i] = round((($datas[$i]->prd_hrgjual)/(1.1 * $nAcost)-1)*100, 2);
-                }else{
-                    $cf_nmargin[$i] = round((($datas[$i]->prd_hrgjual)/$nAcost-1)*100, 2);
+
+            if ($nAcost > 0) {
+                if ($datas[$i]->prd_flagbkp1 == 'Y' && $datas[$i]->prd_flagbkp2 != 'P') {
+                    $cf_nmargin[$i] = isset($datas[$i]->prd_hrgjual) ? round((1 - $ppn * $nAcost / $datas[$i]->prd_hrgjual) * 100,2): 0;
+
+                    //rumus disamaain dengan informasihistoryproduct berdasarkan UAT 22-03-2022 By Remus,Denni
+//                    $cf_nmargin[$i] = round((($datas[$i]->prd_hrgjual) / ($ppn * $nAcost) - 1) * 100, 2);
+                    //sini
+                } else {
+                    $cf_nmargin[$i] = isset($datas[$i]->prd_hrgjual) ? round((1 - $nAcost / $datas[$i]->prd_hrgjual) * 100,2):0;
+                    //rumus disamaain dengan informasihistoryproduct berdasarkan UAT 22-03-2022 By Remus,Denni
+//                    $cf_nmargin[$i] = round((($datas[$i]->prd_hrgjual) / $nAcost - 1) * 100, 2);
                 }
-            }else{
-                $cf_nmargin[$i]=0;
+            } else {
+                $cf_nmargin[$i] = 0;
             }
         }
 
+
+
         //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
-        if((int)$sort < 3){
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
+        if ((int)$sort < 3) {
             //CETAK_DAFTARPRODUK (IGR_BO_DAFTARPRODUK.jsp)
             return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-produk-pdf',
                 ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
                     'judul' => $judul, 'urut' => $p_urut, 'p_hpp' => $chp,
                     'cf_nmargin' => $cf_nmargin]);
-        }else{
+        } else {
             //CETAK_DAFTARPRDNAMA (IGR_BO_DAFTARPRDNM.jsp)
             return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-produk-nama-pdf',
                 ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
@@ -465,54 +474,54 @@ and prs_kodeigr(+) = prd_kodeigr
     {
         $kodeigr = Session::get('kdigr');
         $div1 = $request->div1;
-        if($div1 == ''){
+        if ($div1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("min(div_kodedivisi) as result")
-                ->where("div_kodeigr",'=',$kodeigr)
+                ->where("div_kodeigr", '=', $kodeigr)
                 ->first();
             $div1 = $temp->result;
         }
         $div2 = $request->div2;
-        if($div2 == ''){
+        if ($div2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("max(div_kodedivisi) as result")
-                ->where("div_kodeigr",'=',$kodeigr)
+                ->where("div_kodeigr", '=', $kodeigr)
                 ->first();
             $div2 = $temp->result;
         }
         $dep1 = $request->dep1;
-        if($dep1 == ''){
+        if ($dep1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("min(dep_kodedepartement) as result")
-                ->where("dep_kodeigr",'=',$kodeigr)
-                ->where("dep_kodedivisi",'=',$div1)
+                ->where("dep_kodeigr", '=', $kodeigr)
+                ->where("dep_kodedivisi", '=', $div1)
                 ->first();
             $dep1 = $temp->result;
         }
         $dep2 = $request->dep2;
-        if($dep2 == ''){
+        if ($dep2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("max(dep_kodedepartement) as result")
-                ->where("dep_kodeigr",'=',$kodeigr)
-                ->where("dep_kodedivisi",'=',$div2)
+                ->where("dep_kodeigr", '=', $kodeigr)
+                ->where("dep_kodedivisi", '=', $div2)
                 ->first();
             $dep2 = $temp->result;
         }
         $kat1 = $request->kat1;
-        if($kat1 == ''){
+        if ($kat1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("min(kat_kodekategori) as result")
-                ->where("kat_kodeigr",'=',$kodeigr)
-                ->where("kat_kodedepartement",'=',$dep1)
+                ->where("kat_kodeigr", '=', $kodeigr)
+                ->where("kat_kodedepartement", '=', $dep1)
                 ->first();
             $kat1 = $temp->result;
         }
         $kat2 = $request->kat2;
-        if($kat2 == ''){
+        if ($kat2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("max(kat_kodekategori) as result")
-                ->where("kat_kodeigr",'=',$kodeigr)
-                ->where("kat_kodedepartement",'=',$dep2)
+                ->where("kat_kodeigr", '=', $kodeigr)
+                ->where("kat_kodedepartement", '=', $dep2)
                 ->first();
             $kat2 = $temp->result;
         }
@@ -525,31 +534,31 @@ and prs_kodeigr(+) = prd_kodeigr
         $sDate = DateTime::createFromFormat('d-m-Y', $sDate)->format('d-M-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $eDate)->format('d-M-Y');
 
-        if($sort == '1'){
+        if ($sort == '1') {
             $urut = "URUT  : DIV+DEPT+KATEGORI+KODE";
             $p_orderby = " order by prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, prd_prdcd";
-        }elseif($sort == '2'){
+        } elseif ($sort == '2') {
             $urut = "URUT  : DIV+DEPT+KATEGORI+NAMA";
             $p_orderby = " order by prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, prd_deskripsipanjang";
-        }else{
+        } else {
             $urut = "URUT  : NAMA";
             $p_orderby = " order by prd_deskripsipanjang";
         }
 
-        if($tag1 != '' && $tag2 != ''){
-            $and_tag = " and NVL(prd_kodetag,'b') between '".$tag1."' and '".$tag2."'";
-        }else{
+        if ($tag1 != '' && $tag2 != '') {
+            $and_tag = " and NVL(prd_kodetag,'b') between '" . $tag1 . "' and '" . $tag2 . "'";
+        } else {
             $and_tag = " ";
         }
-        if($check == '1'){
+        if ($check == '1') {
             $and_diskon = " and NVL(prd_kodetag,'b') not in ('Z','N','X','H')";
-        }else{
+        } else {
             $and_diskon = " ";
         }
         $datas = DB::connection(Session::get('connection'))->select("select prd_prdcd, prd_flagbkp1 pkp, prd_flagbkp2 pkp2, prd_deskripsipanjang desc2,prd_tglhrgjual,
         prd_unit||'/'||prd_frac as satuan, prd_unit unit, prd_frac frac, case when substr(prd_prdcd,-1) = '0' then 1 else 0 end jml_prod,
         prd_minjual, prd_lastcost, prd_avgcost, prd_hrgjual2 price_b, prd_hrgjual price_a,
-        prd_tglaktif, prd_kodetag tag,
+        prd_tglaktif, prd_kodetag tag, prd_ppn,
         st_avgcost st_lastcost, st_prdcd,
         prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang,
         prm_tglmulai, prm_tglakhir,
@@ -564,11 +573,11 @@ where prd_kodeigr = '$kodeigr'
     and nvl(prd_recordid,'9')<>'1'
     and prd_hrgjual <>0
     and prd_tglhrgjual between TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-    ".$and_tag."
+    " . $and_tag . "
     and st_prdcd(+)=substr(prd_prdcd,0,6)||'0'
     and st_kodeigr(+)=prd_kodeigr
     and st_lokasi(+)='01'
-    ".$and_diskon."
+    " . $and_diskon . "
     and prm_prdcd(+) = prd_prdcd
     and prm_kodeigr(+)=prd_kodeigr
     and prd_tglaktif >= prm_tglmulai(+) AND prd_tglaktif <= prm_tglakhir(+)
@@ -585,34 +594,35 @@ where prd_kodeigr = '$kodeigr'
    -- &and_kat
 and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'||'$dep1'||'$kat1' and '$div2'||'$dep2'||'$kat2'
     and prs_kodeigr = prd_kodeigr
-".$p_orderby);
+" . $p_orderby);
 
         $cf_nmargin = [];
-        for($i=0;$i<sizeof($datas);$i++){
-            if($datas[$i]->unit == 'KG'){
+        for ($i = 0; $i < sizeof($datas); $i++) {
+            $ppn = isset($datas[$i]->prd_ppn) ? 1 + ($datas[$i]->prd_ppn / 100) : 1.1;
+            if ($datas[$i]->unit == 'KG') {
                 $multiplier = 1;
-            }else{
+            } else {
                 $multiplier = (int)$datas[$i]->frac;
             }
             $nAcost = (float)$datas[$i]->st_lastcost * $multiplier;
-            if($nAcost > 0){
-                if($datas[$i]->pkp == 'Y' && $datas[$i]->pkp2 != 'P'){
-                    $cf_nmargin[$i] = round((($datas[$i]->price_a - (1.1*$nAcost)) / $datas[$i]->price_a)*100, 2);
-                }else{
-                    $cf_nmargin[$i] = round((($datas[$i]->price_a - $nAcost) / $datas[$i]->price_a)*100, 2);
+            if ($nAcost > 0) {
+                if ($datas[$i]->pkp == 'Y' && $datas[$i]->pkp2 != 'P') {
+                    $cf_nmargin[$i] = round((($datas[$i]->price_a - ($ppn * $nAcost)) / $datas[$i]->price_a) * 100, 2);
+                } else {
+                    $cf_nmargin[$i] = round((($datas[$i]->price_a - $nAcost) / $datas[$i]->price_a) * 100, 2);
                 }
-            }else{
-                $cf_nmargin[$i]=0;
+            } else {
+                $cf_nmargin[$i] = 0;
             }
         }
         //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
-        if((int)$sort < 3){
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
+        if ((int)$sort < 3) {
             //CETAK_DAFTARPRODUK (IGR_BO_DAFTARPRODUK.jsp)
             return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-perubahan-harga-jual-pdf',
                 ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
                     'date1' => $sDate, 'date2' => $eDate, 'urut' => $urut, 'cf_nmargin' => $cf_nmargin]);
-        }else{
+        } else {
             //CETAK_DAFTARPRDNAMA (IGR_BO_DAFTARPRDNM.jsp)
             return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-perubahan-harga-jual-nama-pdf',
                 ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
@@ -625,76 +635,76 @@ and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'|
         set_time_limit(0);
         $kodeigr = Session::get('kdigr');
         $div1 = $request->div1;
-        if($div1 == ''){
+        if ($div1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("min(div_kodedivisi) as result")
-                ->where("div_kodeigr",'=',$kodeigr)
+                ->where("div_kodeigr", '=', $kodeigr)
                 ->first();
             $div1 = $temp->result;
         }
         $div2 = $request->div2;
-        if($div2 == ''){
+        if ($div2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("max(div_kodedivisi) as result")
-                ->where("div_kodeigr",'=',$kodeigr)
+                ->where("div_kodeigr", '=', $kodeigr)
                 ->first();
             $div2 = $temp->result;
         }
         $dep1 = $request->dep1;
-        if($dep1 == ''){
+        if ($dep1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("min(dep_kodedepartement) as result")
-                ->where("dep_kodeigr",'=',$kodeigr)
-                ->where("dep_kodedivisi",'=',$div1)
+                ->where("dep_kodeigr", '=', $kodeigr)
+                ->where("dep_kodedivisi", '=', $div1)
                 ->first();
             $dep1 = $temp->result;
         }
         $dep2 = $request->dep2;
-        if($dep2 == ''){
+        if ($dep2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("max(dep_kodedepartement) as result")
-                ->where("dep_kodeigr",'=',$kodeigr)
-                ->where("dep_kodedivisi",'=',$div2)
+                ->where("dep_kodeigr", '=', $kodeigr)
+                ->where("dep_kodedivisi", '=', $div2)
                 ->first();
             $dep2 = $temp->result;
         }
         $kat1 = $request->kat1;
-        if($kat1 == ''){
+        if ($kat1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("min(kat_kodekategori) as result")
-                ->where("kat_kodeigr",'=',$kodeigr)
-                ->where("kat_kodedepartement",'=',$dep1)
+                ->where("kat_kodeigr", '=', $kodeigr)
+                ->where("kat_kodedepartement", '=', $dep1)
                 ->first();
             $kat1 = $temp->result;
         }
         $kat2 = $request->kat2;
-        if($kat2 == ''){
+        if ($kat2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("max(kat_kodekategori) as result")
-                ->where("kat_kodeigr",'=',$kodeigr)
-                ->where("kat_kodedepartement",'=',$dep2)
+                ->where("kat_kodeigr", '=', $kodeigr)
+                ->where("kat_kodedepartement", '=', $dep2)
                 ->first();
             $kat2 = $temp->result;
         }
         $ptag = $request->ptag;
         $p_tagq = "";
-        if($ptag != ''){
-            $p_tagq = "and NVL(prd_kodetag,'b') in (".$ptag.")";
+        if ($ptag != '') {
+            $p_tagq = "and NVL(prd_kodetag,'b') in (" . $ptag . ")";
         }
         $sort = $request->sort;
-        if((int)$sort == 1){
+        if ((int)$sort == 1) {
             $p_urut = "URUT: DIV+DEPT+KATEGORI+KODE";
             $p_orderby = " order by prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, prd_prdcd";
-        }elseif ((int)$sort == 2){
+        } elseif ((int)$sort == 2) {
             $p_urut = "URUT: DIV+DEPT+KATEGORI+NAMA";
             $p_orderby = " order by prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, prd_deskripsipanjang";
-        }else{
-            $p_urut = "URUT: NAMA" ;
+        } else {
+            $p_urut = "URUT: NAMA";
             $p_orderby = " order by prd_deskripsipanjang";
         }
 
         $datas = DB::connection(Session::get('connection'))->select("select /*+ ORDERED */ prd_prdcd, prd_flagbkp1 pkp, prd_flagbkp2 pkp2, prd_deskripsipanjang desc2, prd_lastcost, prd_avgcost,
-      prd_hrgjual price_a, prd_kodetag tag, prd_lastcost, prd_unit unit, prd_frac frac,
+      prd_hrgjual price_a, prd_kodetag tag, prd_lastcost, prd_unit unit, prd_frac frac, prd_ppn,
       prd_unit||'/'|| case when substr(prd_prdcd,-1) = '0' then prd_frac else 1 end satuan,
       st_prdcd, nvl(st_avgcost,0) * case when prd_unit = 'KG' then 1 else prd_frac end avgcost,
       nvl(st_avgcost,0) st_acost, st_saldoakhir qty,
@@ -731,7 +741,7 @@ where prd_kodeigr = '$kodeigr'
      and kat_kodeigr= prd_kodeigr
 --&AND_KAT
      and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'||'$dep1'||'$kat1' and '$div2'||'$dep2'||'$kat2'
-".$p_tagq."
+" . $p_tagq . "
      and prs_kodeigr = prd_kodeigr
      and hgb_prdcd(+)= substr(prd_prdcd,0,6)||'0'
      and hgb_kodeigr(+)= prd_kodeigr
@@ -742,7 +752,7 @@ where prd_kodeigr = '$kodeigr'
      and sls_prdcd(+) = substr(prd_prdcd,0,6)||'0'
      and sls_kodeigr(+)= prd_kodeigr
      --and (1-((nvl(st_avgcost,0) * case prd_unit = 'KG' then 1 else prd_frac))/prd_hrgjual) < 0 --ini masih coba:
-".$p_orderby);
+" . $p_orderby);
 
         $ac_margin = [];
         $lc_margin = [];
@@ -754,71 +764,72 @@ where prd_kodeigr = '$kodeigr'
         $avgsls = [];
 
         $prd_prdcd = [];
-        for($i=0;$i<sizeof($datas);$i++){
+        for ($i = 0; $i < sizeof($datas); $i++) {
             //### AC_MARGIN ###
-            if($datas[$i]->unit == 'KG'){
+            $ppn = isset($datas[$i]->prd_ppn) ? 1 + ($datas[$i]->prd_ppn / 100) : 1.1;
+            if ($datas[$i]->unit == 'KG') {
                 $multiplier = 1;
-            }else{
+            } else {
                 $multiplier = (int)$datas[$i]->frac;
             }
-            if((float)$datas[$i]->price_a > 0){
-                if($datas[$i]->pkp == 'Y' && ($datas[$i]->pkp2 != 'P' && $datas[$i]->pkp2 != 'W' && $datas[$i]->pkp2 != 'G')){
-                    if($datas[$i]->prmd_prdcd != ''){
-                        if($datas[$i]->fmjual != 0){
+            if ((float)$datas[$i]->price_a > 0) {
+                if ($datas[$i]->pkp == 'Y' && ($datas[$i]->pkp2 != 'P' && $datas[$i]->pkp2 != 'W' && $datas[$i]->pkp2 != 'G')) {
+                    if ($datas[$i]->prmd_prdcd != '') {
+                        if ($datas[$i]->fmjual != 0) {
                             $nFmjual = (float)$datas[$i]->fmjual;
-                        }elseif($datas[$i]->fmpotp != 0){
-                            $nFmjual = (float)$datas[$i]->price_a - ((float)$datas[$i]->price_a * ((float)$datas[$i]->fmpotp/100));
-                        }else{
+                        } elseif ($datas[$i]->fmpotp != 0) {
+                            $nFmjual = (float)$datas[$i]->price_a - ((float)$datas[$i]->price_a * ((float)$datas[$i]->fmpotp / 100));
+                        } else {
                             $nFmjual = (float)$datas[$i]->price_a - (float)$datas[$i]->fmpotr;
                         }
-                        if($nFmjual == 0){
+                        if ($nFmjual == 0) {
                             $divisor = 1;
-                        }else{
+                        } else {
                             $divisor = $nFmjual;
                         }
-                        if($datas[$i]->tag == 'Q'){
-                            $nMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier)) / $divisor ) * 100;
-                        }else{
-                            $nMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier) / ($divisor / 1.1))) * 100;
+                        if ($datas[$i]->tag == 'Q') {
+                            $nMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier)) / $divisor) * 100;
+                        } else {
+                            $nMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier) / ($divisor / $ppn))) * 100;
                         }
-                    }else{
-                        if($datas[$i]->price_a == 0){
+                    } else {
+                        if ($datas[$i]->price_a == 0) {
                             $divisor = 1;
-                        }else{
+                        } else {
                             $divisor = (float)$datas[$i]->price_a;
                         }
-                        if($datas[$i]->tag == 'Q'){
-                            $nMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier)) / $divisor ) * 100;
-                        }else{
-                            $nMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier) / ($divisor / 1.1))) * 100;
+                        if ($datas[$i]->tag == 'Q') {
+                            $nMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier)) / $divisor) * 100;
+                        } else {
+                            $nMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier) / ($divisor / $ppn))) * 100;
                         }
                     }
-                }else{
-                    if($datas[$i]->prmd_prdcd != ''){
-                        if($datas[$i]->fmjual != 0){
+                } else {
+                    if ($datas[$i]->prmd_prdcd != '') {
+                        if ($datas[$i]->fmjual != 0) {
                             $nFmjual = (float)$datas[$i]->fmjual;
-                        }elseif($datas[$i]->fmpotp != 0){
-                            $nFmjual = (float)$datas[$i]->price_a - ((float)$datas[$i]->price_a * ((float)$datas[$i]->fmpotp/100));
-                        }else{
+                        } elseif ($datas[$i]->fmpotp != 0) {
+                            $nFmjual = (float)$datas[$i]->price_a - ((float)$datas[$i]->price_a * ((float)$datas[$i]->fmpotp / 100));
+                        } else {
                             $nFmjual = (float)$datas[$i]->price_a - (float)$datas[$i]->fmpotr;
                         }
-                        if($nFmjual == 0){
+                        if ($nFmjual == 0) {
                             $divisor = 1;
-                        }else{
+                        } else {
                             $divisor = $nFmjual;
                         }
-                        $nMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier)) / $divisor ) * 100;
-                    }else{
-                        if($datas[$i]->price_a == 0){
+                        $nMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier)) / $divisor) * 100;
+                    } else {
+                        if ($datas[$i]->price_a == 0) {
                             $divisor = 1;
-                        }else{
+                        } else {
                             $divisor = (float)$datas[$i]->price_a;
                         }
-                        $nMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier)) / $divisor ) * 100;
+                        $nMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier)) / $divisor) * 100;
                     }
                 }
-                $ac_margin[$i] = round($nMargin,0);
-            }else{
+                $ac_margin[$i] = round($nMargin, 0);
+            } else {
                 $ac_margin[$i] = 0;
             }
 
@@ -894,12 +905,12 @@ where prd_kodeigr = '$kodeigr'
             $nDisc2 = 0;
             $mPrice = 0;
             $nQty = 1;
-            if($datas[$i]->unit == 'KG'){
+            if ($datas[$i]->unit == 'KG') {
                 $divisor = 1000;
-            }else{
+            } else {
                 $divisor = 1;
             }
-            $nPrice = (float)$datas[$i]->fmbeli * (int)$datas[$i]->frac/$divisor;
+            $nPrice = (float)$datas[$i]->fmbeli * (int)$datas[$i]->frac / $divisor;
 
             $nDiscp1 = $datas[$i]->fmdirp;
             $nDiscr1 = $datas[$i]->fmdirr;
@@ -908,116 +919,116 @@ where prd_kodeigr = '$kodeigr'
 
             $nDiscp2 = $datas[$i]->fmditp;
             $nDiscr2 = $datas[$i]->fmditr;
-            if($nDiscp1 != 0){
+            if ($nDiscp1 != 0) {
                 $nDiscr1 = 0;
                 $cFdisc1 = ' ';
-                $nDisc1  = (float)$nDiscp1 * $nPrice / 100;
-            }else{
-                if($cFdisc1 == 'B'){
+                $nDisc1 = (float)$nDiscp1 * $nPrice / 100;
+            } else {
+                if ($cFdisc1 == 'B') {
                     $nDisc1 = $nQty * (float)$nDiscr1;
-                }else{
-                    if($datas[$i]->unit != 'KG'){
-                        $nDisc1 = ($nQty * (int)$datas[$i]->frac ) * (float)$nDiscr1;
-                    }else{
+                } else {
+                    if ($datas[$i]->unit != 'KG') {
+                        $nDisc1 = ($nQty * (int)$datas[$i]->frac) * (float)$nDiscr1;
+                    } else {
                         $nDisc1 = $nQty * (float)$nDiscr1 / (int)$datas[$i]->frac;
                     }
                 }
             }
 
-            if($nDiscp2 != 0){
+            if ($nDiscp2 != 0) {
                 $nDiscr2 = 0;
                 $cFdisc2 = ' ';
-                $nDisc2 = (float)$nDiscp2 * ($nPrice - $nDisc1 ) / 100;
-            }else{
-               if($cFdisc2 == 'B'){
-                   $nDisc2 = $nQty * (float)$nDiscr2;
-               }else{
-                   if($datas[$i]->unit != 'KG'){
-                       $nDisc2 = ($nQty * (int)$datas[$i]->frac ) * (float)$nDiscr2;
-                   }else{
-                       $nDisc2 = $nQty * (float)$nDiscr2 / (int)$datas[$i]->frac;
-                   }
-               }
+                $nDisc2 = (float)$nDiscp2 * ($nPrice - $nDisc1) / 100;
+            } else {
+                if ($cFdisc2 == 'B') {
+                    $nDisc2 = $nQty * (float)$nDiscr2;
+                } else {
+                    if ($datas[$i]->unit != 'KG') {
+                        $nDisc2 = ($nQty * (int)$datas[$i]->frac) * (float)$nDiscr2;
+                    } else {
+                        $nDisc2 = $nQty * (float)$nDiscr2 / (int)$datas[$i]->frac;
+                    }
+                }
             }
 
             $nDiscrp = $nDisc1 + $nDisc2;
-            $mPrice  = $nPrice - $nDiscrp;
+            $mPrice = $nPrice - $nDiscrp;
 
-            $CF_mPrice[$i]=$mPrice;
+            $CF_mPrice[$i] = $mPrice;
 
             //### nJual ###
             $nJual = 0;
-            if($datas[$i]->unit == 'KG'){
+            if ($datas[$i]->unit == 'KG') {
                 $multiplier = 1;
-            }else{
+            } else {
                 $multiplier = (int)$datas[$i]->frac;
             }
-            if($datas[$i]->pkp == 'Y' && $datas[$i]->pkp != 'P'){
-                if($datas[$i]->prmd_prdcd != ''){
-                    if($datas[$i]->fmjual != 0){
+            if ($datas[$i]->pkp == 'Y' && $datas[$i]->pkp != 'P') {
+                if ($datas[$i]->prmd_prdcd != '') {
+                    if ($datas[$i]->fmjual != 0) {
                         $nJual = (float)$datas[$i]->fmjual;
-                    }elseif($datas[$i]->fmpotp != 0){
+                    } elseif ($datas[$i]->fmpotp != 0) {
                         $nJual = (float)$datas[$i]->price_a - ((float)$datas[$i]->price_a * ((float)$datas[$i]->fmptop / 100));
-                    }else{
+                    } else {
                         $nJual = (float)$datas[$i]->price_a - (float)$datas[$i]->fmpotr;
                     }
 
-                    if($nJual == 0){
+                    if ($nJual == 0) {
                         $divisor = 1;
-                    }else{
+                    } else {
                         $divisor = $nJual;
                     }
-                    if($datas[$i]->tag == 'Q'){
-                        $nLcMargin = (1-((float)$datas[$i]->prd_lastcost / $divisor)) * 100;
-                        $nAcMargin = (1-(((float)$datas[$i]->st_acost * $multiplier)/$divisor))*100;
-                        $nHbMargin = (1-($CF_mPrice[$i]/$divisor)) * 100;
-                    }else{
-                        $nLcMargin = (1- ((float)$datas[$i]->prd_lastcost / ($divisor / 1.1))) * 100;
-                        $nAcMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier)/($divisor / 1.1))) * 100;
-                        $nHbMargin = (1 - ($CF_mPrice[$i] / ($divisor / 1.1))) *100;
+                    if ($datas[$i]->tag == 'Q') {
+                        $nLcMargin = (1 - ((float)$datas[$i]->prd_lastcost / $divisor)) * 100;
+                        $nAcMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier) / $divisor)) * 100;
+                        $nHbMargin = (1 - ($CF_mPrice[$i] / $divisor)) * 100;
+                    } else {
+                        $nLcMargin = (1 - ((float)$datas[$i]->prd_lastcost / ($divisor / $ppn))) * 100;
+                        $nAcMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier) / ($divisor / $ppn))) * 100;
+                        $nHbMargin = (1 - ($CF_mPrice[$i] / ($divisor / $ppn))) * 100;
                     }
-                }else{
-                    if($datas[$i]->price_a == 0){
+                } else {
+                    if ($datas[$i]->price_a == 0) {
                         $divisor = 1;
-                    }else{
+                    } else {
                         $divisor = (float)$datas[$i]->price_a;
                     }
-                    if($datas[$i]->tag == 'Q'){
-                        $nLcMargin = (1-((float)$datas[$i]->prd_lastcost / $divisor)) * 100;
-                        $nAcMargin = (1-(((float)$datas[$i]->st_acost * $multiplier)/$divisor))*100;
-                        $nHbMargin = (1-($CF_mPrice[$i]/$divisor)) * 100;
-                    }else{
-                        $nLcMargin = (1- ((float)$datas[$i]->prd_lastcost / ($divisor / 1.1))) * 100;
-                        $nAcMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier)/($divisor / 1.1))) * 100;
-                        $nHbMargin = (1 - ($CF_mPrice[$i] / ($divisor / 1.1))) *100;
+                    if ($datas[$i]->tag == 'Q') {
+                        $nLcMargin = (1 - ((float)$datas[$i]->prd_lastcost / $divisor)) * 100;
+                        $nAcMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier) / $divisor)) * 100;
+                        $nHbMargin = (1 - ($CF_mPrice[$i] / $divisor)) * 100;
+                    } else {
+                        $nLcMargin = (1 - ((float)$datas[$i]->prd_lastcost / ($divisor / $ppn))) * 100;
+                        $nAcMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier) / ($divisor / $ppn))) * 100;
+                        $nHbMargin = (1 - ($CF_mPrice[$i] / ($divisor / $ppn))) * 100;
                     }
                 }
-            }else{
-                if($datas[$i]->prmd_prdcd != ''){
-                    if($datas[$i]->fmjual != 0){
+            } else {
+                if ($datas[$i]->prmd_prdcd != '') {
+                    if ($datas[$i]->fmjual != 0) {
                         $nJual = (float)$datas[$i]->fmjual;
-                    }elseif($datas[$i]->fmpotp != 0){
+                    } elseif ($datas[$i]->fmpotp != 0) {
                         $nJual = (float)$datas[$i]->price_a - ((float)$datas[$i]->price_a * ((float)$datas[$i]->fmptop / 100));
-                    }else{
+                    } else {
                         $nJual = (float)$datas[$i]->price_a - (float)$datas[$i]->fmpotr;
                     }
-                    if($nJual == 0){
+                    if ($nJual == 0) {
                         $divisor = 1;
-                    }else{
+                    } else {
                         $divisor = $nJual;
                     }
-                    $nLcMargin = (1-((float)$datas[$i]->prd_lastcost / $divisor)) * 100;
-                    $nAcMargin = (1-(((float)$datas[$i]->st_acost * $multiplier)/$divisor))*100;
-                    $nHbMargin = (1-($CF_mPrice[$i]/$divisor)) * 100;
-                }else{
-                    if($datas[$i]->price_a == 0){
+                    $nLcMargin = (1 - ((float)$datas[$i]->prd_lastcost / $divisor)) * 100;
+                    $nAcMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier) / $divisor)) * 100;
+                    $nHbMargin = (1 - ($CF_mPrice[$i] / $divisor)) * 100;
+                } else {
+                    if ($datas[$i]->price_a == 0) {
                         $divisor = 1;
-                    }else{
+                    } else {
                         $divisor = (float)$datas[$i]->price_a;
                     }
-                    $nLcMargin = (1-((float)$datas[$i]->prd_lastcost / $divisor)) * 100;
-                    $nAcMargin = (1-(((float)$datas[$i]->st_acost * $multiplier)/$divisor))*100;
-                    $nHbMargin = (1-($CF_mPrice[$i]/$divisor)) * 100;
+                    $nLcMargin = (1 - ((float)$datas[$i]->prd_lastcost / $divisor)) * 100;
+                    $nAcMargin = (1 - (((float)$datas[$i]->st_acost * $multiplier) / $divisor)) * 100;
+                    $nHbMargin = (1 - ($CF_mPrice[$i] / $divisor)) * 100;
                 }
             }
             $CP_nJual[$i] = $nJual;
@@ -1028,7 +1039,7 @@ where prd_kodeigr = '$kodeigr'
             //CF_AVGSLS
             $prd_prdcd[$i] = $datas[$i]->prd_prdcd;
 
-            if($datas[$i]->sls_prdcd != ''){
+            if ($datas[$i]->sls_prdcd != '') {
                 $prdcd = $datas[$i]->prd_prdcd;
                 $holder = '';
                 $connect = loginController::getConnectionProcedure();
@@ -1036,24 +1047,24 @@ where prd_kodeigr = '$kodeigr'
                 oci_bind_by_name($query, ':temp', $holder, 9999999);
                 oci_execute($query);
                 $avgsls[$i] = $holder;
-            }else{
+            } else {
                 $avgsls[$i] = 0;
             }
         }
 
         //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
-        if((int)$sort < 3){
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
+        if ((int)$sort < 3) {
             //CETAK_MARGINNEGATIF
             return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-margin-negatif-pdf',
                 ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
-                    'urut' => $p_urut, 'tag' => $ptag, 'ac_margin' => $ac_margin,'cf_mprice' => $CF_mPrice,
+                    'urut' => $p_urut, 'tag' => $ptag, 'ac_margin' => $ac_margin, 'cf_mprice' => $CF_mPrice,
                     'cp_njual' => $CP_nJual, 'cp_nhbmargin' => $cp_nHbMargin, 'cp_nlcmargin' => $cp_nLcMargin, 'cp_nacmargin' => $cp_nAcMargin, 'avgsls' => $avgsls]);
-        }else{
+        } else {
             //CETAK_MARGINNEGATIFNAMA
             return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-margin-negatif-nama-pdf',
                 ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
-                    'urut' => $p_urut, 'tag' => $ptag, 'ac_margin' => $ac_margin,'cf_mprice' => $CF_mPrice,
+                    'urut' => $p_urut, 'tag' => $ptag, 'ac_margin' => $ac_margin, 'cf_mprice' => $CF_mPrice,
                     'cp_njual' => $CP_nJual, 'cp_nhbmargin' => $cp_nHbMargin, 'cp_nlcmargin' => $cp_nLcMargin, 'cp_nacmargin' => $cp_nAcMargin, 'avgsls' => $avgsls]);
         }
     }
@@ -1088,13 +1099,13 @@ where prd_kodeigr = '$kodeigr'
             ->selectRaw("sup_alamatsupplier1||' '||sup_kotasupplier3||' Telp : '||sup_telpsupplier alamat")
             ->selectRaw("sup_top")
             ->selectRaw("sup_contactperson")
-            ->where("sup_kodeigr",'=',$kodeigr)
+            ->where("sup_kodeigr", '=', $kodeigr)
             ->whereRaw("sup_kodesupplier between '$sup1' and '$sup2'")
             ->orderBy("sup_kodesupplier")
             ->get();
 
         //CETAK_DAFTARSUPPLIER(IGR_BO_DAFTARSUPPLIER.jsp)
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-supplier-pdf',
             ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan]);
     }
@@ -1123,53 +1134,53 @@ where prd_kodeigr = '$kodeigr'
         }
 
         $sort = $request->sort;
-        if($sort == 1){
+        if ($sort == 1) {
             $urut = "URUT: OUTLET+AREA+KODE";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_kodesuboutlet, CUS_KODEAREA, CUS_KODEMEMBER";
-        }elseif($sort == 2){
+        } elseif ($sort == 2) {
             $urut = "URUT: OUTLET+AREA+NAMA";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_KODEAREA, CUS_NAMAMEMBER";
-        }elseif($sort == 3){
+        } elseif ($sort == 3) {
             $urut = "URUT: OUTLET+KODE";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_kodesuboutlet, CUS_KODEMEMBER";
-        }elseif($sort == 4){
+        } elseif ($sort == 4) {
             $urut = "URUT: OUTLET+NAMA";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_kodesuboutlet, CUS_NAMAMEMBER";
-        }elseif($sort == 5){
+        } elseif ($sort == 5) {
             $urut = "URUT: AREA+KODE";
             $and_orderby = " ORDER BY CUS_KODEAREA, CUS_KODEMEMBER";
-        }elseif($sort == 6){
+        } elseif ($sort == 6) {
             $urut = "URUT: AREA+NAMA";
             $and_orderby = " ORDER BY CUS_KODEAREA, CUS_NAMAMEMBER";
-        }elseif($sort == 7){
+        } elseif ($sort == 7) {
             $urut = "URUT: KODE";
             $and_orderby = " ORDER BY CUS_KODEMEMBER";
-        }elseif($sort == 8){
+        } elseif ($sort == 8) {
             $urut = "URUT: NAMA";
             $and_orderby = " ORDER BY CUS_NAMAMEMBER";
-        }else{
+        } else {
             $urut = "URUT: KODE";
             $and_orderby = " ORDER BY CUS_KODEMEMBER";
         }
 
         $pilihan = $request->pilihan;
-        if($pilihan == 3){
+        if ($pilihan == 3) {
             $and_pilih = " and add_months(nvl(cus_tglregistrasi,sysdate),12) <= trunc(sysdate) ";
             $and_recid = " and nvl(cus_recordid,'9')<>'1' ";
-        }elseif($pilihan == 2){
+        } elseif ($pilihan == 2) {
             $and_pilih = " and add_months(nvl(cus_tglregistrasi,sysdate),12) > trunc(sysdate) ";
             $and_recid = " and nvl(cus_recordid,'9')<>'1'";
             //$mbr_expired = " "; //tak tau fungsi mbr ini, di program lama hanya ada di pilihan 2 seperti ini
-        }else{
+        } else {
             $and_pilih = " ";
             $and_recid = " ";
         }
 
         $sub1 = $request->suboutlet1;
         $sub2 = $request->suboutlet2;
-        if($sub1 != '' && $sub2 != ''){
-            $and_sub = " and CUS_KODESUBOUTLET(+) BETWEEN '".$sub1."' AND '".$sub2."'";
-        }else{
+        if ($sub1 != '' && $sub2 != '') {
+            $and_sub = " and CUS_KODESUBOUTLET(+) BETWEEN '" . $sub1 . "' AND '" . $sub2 . "'";
+        } else {
             $and_sub = " ";
         }
 
@@ -1180,43 +1191,43 @@ cus_jenismember,out_kodeoutlet||'-'||out_namaoutlet outlet, sub_kodesuboutlet||'
 prs_namaperusahaan, prs_namacabang, cus_kodearea area2
 from tbmaster_customer, tbmaster_perusahaan, tbmaster_outlet, tbmaster_suboutlet
 where cus_kodeigr='$kodeigr'
-".$and_recid."
+" . $and_recid . "
 and cus_kodemember between '$mem1' and '$mem2'
 and nvl(CUS_KODEOUTLET,0) = '$outlet'
-".$and_sub."
+" . $and_sub . "
 and prs_kodeigr=cus_kodeigr
 --&mbr_expired
 and out_kodeoutlet = cus_kodeoutlet
 and out_kodeigr=cus_kodeigr
 and sub_kodeoutlet(+)=cus_kodeoutlet
 and sub_kodeigr(+)=cus_kodeigr
-and sub_kodesuboutlet(+) = cus_kodesuboutlet".
-$and_pilih.
-$and_orderby);
+and sub_kodesuboutlet(+) = cus_kodesuboutlet" .
+            $and_pilih .
+            $and_orderby);
 
         //PROCEDURE IGR_BO_CONTS (:P_KODEIGR, 'AA', :AREA2, TEMP);
         $area = [];
-        for($i=0;$i<sizeof($datas);$i++){
-            try{
-                $tipearea = 'AA'.$datas[$i]->area2;
+        for ($i = 0; $i < sizeof($datas); $i++) {
+            try {
+                $tipearea = 'AA' . $datas[$i]->area2;
                 $temp = DB::connection(Session::get('connection'))->table("tbmaster_const")
                     ->selectRaw("consT_name")
-                    ->where("const_kodeigr",'=',$kodeigr)
-                    ->where("const_branch",'=',$tipearea)
+                    ->where("const_kodeigr", '=', $kodeigr)
+                    ->where("const_branch", '=', $tipearea)
                     ->first();
-                if($temp){
+                if ($temp) {
                     $area[$i] = $temp->const_name;
-                }else{
+                } else {
                     $area[$i] = " ";
                 }
-            }catch (\Exception $e){
+            } catch (\Exception $e) {
                 $area[$i] = " ";
             }
 
         }
 
         //CETAK_DAFTARSUPPLIER(IGR_BO_DAFTARSUPPLIER.jsp)
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
         return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-anggota-or-member-pdf',
             ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
@@ -1277,7 +1288,7 @@ and out_kodeoutlet= cus_kodeoutlet
 order by CUS_KODEOUTLET, cus_kodemember");
 
         //CETAK_DAFTARSUPPLIER(IGR_BO_DAFTARSUPPLIER.jsp)
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
         return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-anggota-or-type-outlet-pdf',
             ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan]);
@@ -1309,31 +1320,31 @@ order by CUS_KODEOUTLET, cus_kodemember");
             $member2 = $temp->result;
         }
 
-        if($sort == 1){
+        if ($sort == 1) {
             $urut = "URUT: OUTLET+AREA+KODE";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_kodesuboutlet, CUS_KODEAREA, CUS_KODEMEMBER";
-        }elseif($sort == 2){
+        } elseif ($sort == 2) {
             $urut = "URUT: OUTLET+AREA+NAMA";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_KODEAREA, CUS_NAMAMEMBER";
-        }elseif($sort == 3){
+        } elseif ($sort == 3) {
             $urut = "URUT: OUTLET+KODE";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_kodesuboutlet, CUS_KODEMEMBER";
-        }elseif($sort == 4){
+        } elseif ($sort == 4) {
             $urut = "URUT: OUTLET+NAMA";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_kodesuboutlet, CUS_NAMAMEMBER";
-        }elseif($sort == 5){
+        } elseif ($sort == 5) {
             $urut = "URUT: AREA+KODE";
             $and_orderby = " ORDER BY CUS_KODEAREA, CUS_KODEMEMBER";
-        }elseif($sort == 6){
+        } elseif ($sort == 6) {
             $urut = "URUT: AREA+NAMA";
             $and_orderby = " ORDER BY CUS_KODEAREA, CUS_NAMAMEMBER";
-        }elseif($sort == 7){
+        } elseif ($sort == 7) {
             $urut = "URUT: KODE";
             $and_orderby = " ORDER BY CUS_KODEMEMBER";
-        }elseif($sort == 8){
+        } elseif ($sort == 8) {
             $urut = "URUT: NAMA";
             $and_orderby = " ORDER BY CUS_NAMAMEMBER";
-        }else{
+        } else {
             $urut = "URUT: KODE";
             $and_orderby = " ORDER BY CUS_KODEMEMBER";
         }
@@ -1353,30 +1364,30 @@ and nvl(cus_recordid,'9')<>'1'
 and prs_kodeigr=cus_kodeigr
 and out_kodeigr(+) = cus_kodeigr
 and out_kodeoutlet(+)= cus_kodeoutlet
-".$and_orderby);
+" . $and_orderby);
 
         //PROCEDURE IGR_BO_CONTS (:P_KODEIGR, 'AA', :AREA2, TEMP);
         $area = [];
-        for($i=0;$i<sizeof($datas);$i++){
-            try{
-                $tipearea = 'AA'.$datas[$i]->area1;
+        for ($i = 0; $i < sizeof($datas); $i++) {
+            try {
+                $tipearea = 'AA' . $datas[$i]->area1;
                 $temp = DB::connection(Session::get('connection'))->table("tbmaster_const")
                     ->selectRaw("consT_name")
-                    ->where("const_kodeigr",'=',$kodeigr)
-                    ->where("const_branch",'=',$tipearea)
+                    ->where("const_kodeigr", '=', $kodeigr)
+                    ->where("const_branch", '=', $tipearea)
                     ->first();
-                if($temp){
+                if ($temp) {
                     $area[$i] = $temp->const_name;
-                }else{
+                } else {
                     $area[$i] = " ";
                 }
-            }catch (\Exception $e){
+            } catch (\Exception $e) {
                 $area[$i] = " ";
             }
         }
 
         //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
         return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-anggota-or-member-baru-pdf',
             ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
@@ -1409,31 +1420,31 @@ and out_kodeoutlet(+)= cus_kodeoutlet
             $member2 = $temp->result;
         }
 
-        if($sort == 1){
+        if ($sort == 1) {
             $urut = "URUT: OUTLET+AREA+KODE";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_kodesuboutlet, CUS_KODEAREA, CUS_KODEMEMBER";
-        }elseif($sort == 2){
+        } elseif ($sort == 2) {
             $urut = "URUT: OUTLET+AREA+NAMA";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_KODEAREA, CUS_NAMAMEMBER";
-        }elseif($sort == 3){
+        } elseif ($sort == 3) {
             $urut = "URUT: OUTLET+KODE";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_kodesuboutlet, CUS_KODEMEMBER";
-        }elseif($sort == 4){
+        } elseif ($sort == 4) {
             $urut = "URUT: OUTLET+NAMA";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_kodesuboutlet, CUS_NAMAMEMBER";
-        }elseif($sort == 5){
+        } elseif ($sort == 5) {
             $urut = "URUT: AREA+KODE";
             $and_orderby = " ORDER BY CUS_KODEAREA, CUS_KODEMEMBER";
-        }elseif($sort == 6){
+        } elseif ($sort == 6) {
             $urut = "URUT: AREA+NAMA";
             $and_orderby = " ORDER BY CUS_KODEAREA, CUS_NAMAMEMBER";
-        }elseif($sort == 7){
+        } elseif ($sort == 7) {
             $urut = "URUT: KODE";
             $and_orderby = " ORDER BY CUS_KODEMEMBER";
-        }elseif($sort == 8){
+        } elseif ($sort == 8) {
             $urut = "URUT: NAMA";
             $and_orderby = " ORDER BY CUS_NAMAMEMBER";
-        }else{
+        } else {
             $urut = "URUT: KODE";
             $and_orderby = " ORDER BY CUS_KODEMEMBER";
         }
@@ -1453,30 +1464,30 @@ and nvl(cus_recordid,'9')<>'1'
 and prs_kodeigr=cus_kodeigr
 and out_kodeigr(+) = cus_kodeigr
 and out_kodeoutlet(+)= cus_kodeoutlet
-".$and_orderby);
+" . $and_orderby);
 
         //PROCEDURE IGR_BO_CONTS (:P_KODEIGR, 'AA', :AREA2, TEMP);
         $area = [];
-        for($i=0;$i<sizeof($datas);$i++){
-            try{
-                $tipearea = 'AA'.$datas[$i]->area1;
+        for ($i = 0; $i < sizeof($datas); $i++) {
+            try {
+                $tipearea = 'AA' . $datas[$i]->area1;
                 $temp = DB::connection(Session::get('connection'))->table("tbmaster_const")
                     ->selectRaw("consT_name")
-                    ->where("const_kodeigr",'=',$kodeigr)
-                    ->where("const_branch",'=',$tipearea)
+                    ->where("const_kodeigr", '=', $kodeigr)
+                    ->where("const_branch", '=', $tipearea)
                     ->first();
-                if($temp){
+                if ($temp) {
                     $area[$i] = $temp->const_name;
-                }else{
+                } else {
                     $area[$i] = " ";
                 }
-            }catch (\Exception $e){
+            } catch (\Exception $e) {
                 $area[$i] = " ";
             }
         }
 
         //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
         return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-anggota-or-member-jatuh-tempo-pdf',
             ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
@@ -1506,31 +1517,31 @@ and out_kodeoutlet(+)= cus_kodeoutlet
             $member2 = $temp->result;
         }
 
-        if($sort == 1){
+        if ($sort == 1) {
             $urut = "URUT: OUTLET+AREA+KODE";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_kodesuboutlet, CUS_KODEAREA, CUS_KODEMEMBER";
-        }elseif($sort == 2){
+        } elseif ($sort == 2) {
             $urut = "URUT: OUTLET+AREA+NAMA";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_KODEAREA, CUS_NAMAMEMBER";
-        }elseif($sort == 3){
+        } elseif ($sort == 3) {
             $urut = "URUT: OUTLET+KODE";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_kodesuboutlet, CUS_KODEMEMBER";
-        }elseif($sort == 4){
+        } elseif ($sort == 4) {
             $urut = "URUT: OUTLET+NAMA";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_kodesuboutlet, CUS_NAMAMEMBER";
-        }elseif($sort == 5){
+        } elseif ($sort == 5) {
             $urut = "URUT: AREA+KODE";
             $and_orderby = " ORDER BY CUS_KODEAREA, CUS_KODEMEMBER";
-        }elseif($sort == 6){
+        } elseif ($sort == 6) {
             $urut = "URUT: AREA+NAMA";
             $and_orderby = " ORDER BY CUS_KODEAREA, CUS_NAMAMEMBER";
-        }elseif($sort == 7){
+        } elseif ($sort == 7) {
             $urut = "URUT: KODE";
             $and_orderby = " ORDER BY CUS_KODEMEMBER";
-        }elseif($sort == 8){
+        } elseif ($sort == 8) {
             $urut = "URUT: NAMA";
             $and_orderby = " ORDER BY CUS_NAMAMEMBER";
-        }else{
+        } else {
             $urut = "URUT: KODE";
             $and_orderby = " ORDER BY CUS_KODEMEMBER";
         }
@@ -1547,86 +1558,87 @@ and cus_kodemember between '$member1' and '$member2'
 and prs_kodeigr=cus_kodeigr
 and out_kodeigr = cus_kodeigr
 and out_kodeoutlet= cus_kodeoutlet
-".$and_orderby);
+" . $and_orderby);
         //PROCEDURE IGR_BO_CONTS (:P_KODEIGR, 'AA', :AREA2, TEMP);
         $area = [];
-        for($i=0;$i<sizeof($datas);$i++){
-            try{
-                $tipearea = 'AA'.$datas[$i]->area1;
+        for ($i = 0; $i < sizeof($datas); $i++) {
+            try {
+                $tipearea = 'AA' . $datas[$i]->area1;
                 $temp = DB::connection(Session::get('connection'))->table("tbmaster_const")
                     ->selectRaw("consT_name")
-                    ->where("const_kodeigr",'=',$kodeigr)
-                    ->where("const_branch",'=',$tipearea)
+                    ->where("const_kodeigr", '=', $kodeigr)
+                    ->where("const_branch", '=', $tipearea)
                     ->first();
-                if($temp){
+                if ($temp) {
                     $area[$i] = $temp->const_name;
-                }else{
+                } else {
                     $area[$i] = " ";
                 }
-            }catch (\Exception $e){
+            } catch (\Exception $e) {
                 $area[$i] = " ";
             }
         }
 
         //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
         return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-anggota-or-member-expired-pdf',
             ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
                 'urut' => $urut, 'p_area' => $area, 'sort' => $sort]);
     }
+
     public function printDaftarHargaJualBaru(Request $request)
     {
         $kodeigr = Session::get('kdigr');
         $div1 = $request->div1;
-        if($div1 == ''){
+        if ($div1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("min(div_kodedivisi) as result")
-                ->where("div_kodeigr",'=',$kodeigr)
+                ->where("div_kodeigr", '=', $kodeigr)
                 ->first();
             $div1 = $temp->result;
         }
         $div2 = $request->div2;
-        if($div2 == ''){
+        if ($div2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("max(div_kodedivisi) as result")
-                ->where("div_kodeigr",'=',$kodeigr)
+                ->where("div_kodeigr", '=', $kodeigr)
                 ->first();
             $div2 = $temp->result;
         }
         $dep1 = $request->dep1;
-        if($dep1 == ''){
+        if ($dep1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("min(dep_kodedepartement) as result")
-                ->where("dep_kodeigr",'=',$kodeigr)
-                ->where("dep_kodedivisi",'=',$div1)
+                ->where("dep_kodeigr", '=', $kodeigr)
+                ->where("dep_kodedivisi", '=', $div1)
                 ->first();
             $dep1 = $temp->result;
         }
         $dep2 = $request->dep2;
-        if($dep2 == ''){
+        if ($dep2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("max(dep_kodedepartement) as result")
-                ->where("dep_kodeigr",'=',$kodeigr)
-                ->where("dep_kodedivisi",'=',$div2)
+                ->where("dep_kodeigr", '=', $kodeigr)
+                ->where("dep_kodedivisi", '=', $div2)
                 ->first();
             $dep2 = $temp->result;
         }
         $kat1 = $request->kat1;
-        if($kat1 == ''){
+        if ($kat1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("min(kat_kodekategori) as result")
-                ->where("kat_kodeigr",'=',$kodeigr)
-                ->where("kat_kodedepartement",'=',$dep1)
+                ->where("kat_kodeigr", '=', $kodeigr)
+                ->where("kat_kodedepartement", '=', $dep1)
                 ->first();
             $kat1 = $temp->result;
         }
         $kat2 = $request->kat2;
-        if($kat2 == ''){
+        if ($kat2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("max(kat_kodekategori) as result")
-                ->where("kat_kodeigr",'=',$kodeigr)
-                ->where("kat_kodedepartement",'=',$dep2)
+                ->where("kat_kodeigr", '=', $kodeigr)
+                ->where("kat_kodedepartement", '=', $dep2)
                 ->first();
             $kat2 = $temp->result;
         }
@@ -1639,30 +1651,30 @@ and out_kodeoutlet= cus_kodeoutlet
         $sDate = DateTime::createFromFormat('d-m-Y', $sDate)->format('d-M-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $eDate)->format('d-M-Y');
 
-        if($sort == '1'){
+        if ($sort == '1') {
             $urut = "URUT  : DIV+DEPT+KATEGORI+KODE";
             $p_orderby = " order by prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, prd_prdcd";
-        }elseif($sort == '2'){
+        } elseif ($sort == '2') {
             $urut = "URUT  : DIV+DEPT+KATEGORI+NAMA";
             $p_orderby = " order by prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, prd_deskripsipanjang";
-        }else{
+        } else {
             $urut = "URUT  : NAMA";
             $p_orderby = " order by prd_deskripsipanjang";
         }
 
-        if($tag1 != '' && $tag2 != ''){
-            $and_tag = " and prd_kodetag between '".$tag1."' and '".$tag2."'";
-        }else{
+        if ($tag1 != '' && $tag2 != '') {
+            $and_tag = " and prd_kodetag between '" . $tag1 . "' and '" . $tag2 . "'";
+        } else {
             $and_tag = " ";
         }
-        if($check == '1'){
+        if ($check == '1') {
             $and_diskon = " and NVL(prd_kodetag,'0') not in ('N','X','H')";
-        }else{
+        } else {
             $and_diskon = " ";
         }
         $datas = DB::connection(Session::get('connection'))->select("select prd_prdcd, prd_deskripsipanjang, prd_unit,  prd_frac,
 case when substr(prd_prdcd,-1) = '0' then 1 else 0 end jml_prod,
-prd_lastcost, prd_avgcost, prd_hrgjual2, prd_hrgjual, prd_tglhrgjual, prd_minjual,
+prd_lastcost, prd_avgcost, prd_hrgjual2, prd_hrgjual, prd_tglhrgjual, prd_minjual, prd_ppn,
 st_avgcost, st_prdcd, prd_kodetag, prd_flagbkp1 pkp, prd_flagbkp2 pkp2,
 prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang,
 div_kodedivisi||' - '||div_namadivisi divisi,
@@ -1674,11 +1686,11 @@ from tbmaster_prodmast, tbmaster_stock, tbmaster_divisi, tbmaster_departement, t
 where prd_kodeigr='$kodeigr'
 and nvl(prd_recordid,'9')<> 1
 and prd_tglhrgjual3 between TO_DATE('$sDate','DD-MM-YYYY') and TO_DATE('$eDate','DD-MM-YYYY')
-".$and_tag."
+" . $and_tag . "
 and st_kodeigr(+)=prd_kodeigr
 and st_prdcd(+) = substr(prd_prdcd,0,6)||'0'
 and st_lokasi(+) ='01'
-".$and_diskon."
+" . $and_diskon . "
 and div_kodedivisi = prd_kodedivisi
 and div_kodeigr=prd_kodeigr
 --&AND_DIV
@@ -1692,43 +1704,51 @@ and kat_kodeigr= prd_kodeigr
 --&AND_KAT
 and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'||'$dep1'||'$kat1' and '$div2'||'$dep2'||'$kat2'
 and prs_kodeigr = prd_kodeigr"
-            .$p_orderby);
+            . $p_orderby);
 
         $cf_nmargin = [];
-        for($i=0;$i<sizeof($datas);$i++){
-            if($datas[$i]->prd_unit == 'KG'){
+        for ($i = 0; $i < sizeof($datas); $i++) {
+            $ppn = isset($datas[$i]->prd_ppn) ? 1 + ($datas[$i]->prd_ppn / 100) : 1.1;
+            if ($datas[$i]->prd_unit == 'KG') {
                 $multiplier = 1;
-            }else{
+            } else {
                 $multiplier = (int)$datas[$i]->prd_frac;
             }
-            if($datas[$i]->st_avgcost == ''){
+            if ($datas[$i]->st_avgcost == '') {
                 $avgcost = 0;
-            }else{
+            } else {
                 $avgcost = $datas[$i]->st_avgcost;
             }
-            if($datas[$i]->prd_hrgjual == ''){
+            if ($datas[$i]->prd_hrgjual == '') {
                 $hrgjual = 0;
-            }else{
+            } else {
                 $hrgjual = $datas[$i]->prd_hrgjual;
             }
-            if($datas[$i]->prd_hrgjual == '' || $datas[$i]->prd_hrgjual == 0){
+            if ($datas[$i]->prd_hrgjual == '' || $datas[$i]->prd_hrgjual == 0) {
                 $divisor = 1;
-            }else{
+            } else {
                 $divisor = 1;
             }
             $nAcost = (float)$datas[$i]->st_avgcost * $multiplier;
-            if($nAcost > 0){
-                if($datas[$i]->pkp == 'Y' && $datas[$i]->pkp2 != 'P'){
-                    $cf_nmargin[$i] = round((($hrgjual - (1.1*$nAcost)) / $divisor)*100, 2);
-                }else{
-                    $cf_nmargin[$i] = round((($hrgjual - $nAcost) / $divisor)*100, 2);
+            if ($nAcost > 0) {
+                if ($datas[$i]->pkp == 'Y' && $datas[$i]->pkp2 != 'P') {
+                    $cf_nmargin[$i] = round((($hrgjual - ($ppn * $nAcost)) / $hrgjual) * 100,2);
+//                    $cf_nmargin[$i] = round((($hrgjual - ($ppn * $nAcost)) / $divisor) * 100, 2);
+                } else {
+                    $cf_nmargin[$i] = round((($hrgjual - $nAcost) / $hrgjual) * 100,2);
+//                    $cf_nmargin[$i] = round((($hrgjual - $nAcost) / $divisor) * 100, 2);
                 }
-            }else{
-                $cf_nmargin[$i]=0;
+            } else {
+                $cf_nmargin[$i] = 0;
             }
+            $cf_nmargin[$i].="%";
         }
+
+
+
+
         //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         //CETAK_DAFTARHRGBARU & CETAK_DAFTARHRGBARUNAMA (CETAK_DAFTARHRGBARU.jsp && CETAK_DAFTARHRGBARUNAMA.jsp)
         return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-harga-jual-baru-pdf',
             ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
@@ -1736,7 +1756,8 @@ and prs_kodeigr = prd_kodeigr"
 
     }
 
-    public function printDaftarPerpanjanganMember(Request $request){
+    public function printDaftarPerpanjanganMember(Request $request)
+    {
         $kodeigr = Session::get('kdigr');
         $member1 = $request->member1;
         $member2 = $request->member2;
@@ -1761,31 +1782,31 @@ and prs_kodeigr = prd_kodeigr"
             $member2 = $temp->result;
         }
 
-        if($sort == 1){
+        if ($sort == 1) {
             $urut = "URUT: OUTLET+AREA+KODE";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_kodesuboutlet, CUS_KODEAREA, CUS_KODEMEMBER";
-        }elseif($sort == 2){
+        } elseif ($sort == 2) {
             $urut = "URUT: OUTLET+AREA+NAMA";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_KODEAREA, CUS_NAMAMEMBER";
-        }elseif($sort == 3){
+        } elseif ($sort == 3) {
             $urut = "URUT: OUTLET+KODE";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_kodesuboutlet, CUS_KODEMEMBER";
-        }elseif($sort == 4){
+        } elseif ($sort == 4) {
             $urut = "URUT: OUTLET+NAMA";
             $and_orderby = " ORDER BY CUS_KODEOUTLET, cus_kodesuboutlet, CUS_NAMAMEMBER";
-        }elseif($sort == 5){
+        } elseif ($sort == 5) {
             $urut = "URUT: AREA+KODE";
             $and_orderby = " ORDER BY CUS_KODEAREA, CUS_KODEMEMBER";
-        }elseif($sort == 6){
+        } elseif ($sort == 6) {
             $urut = "URUT: AREA+NAMA";
             $and_orderby = " ORDER BY CUS_KODEAREA, CUS_NAMAMEMBER";
-        }elseif($sort == 7){
+        } elseif ($sort == 7) {
             $urut = "URUT: KODE";
             $and_orderby = " ORDER BY CUS_KODEMEMBER";
-        }elseif($sort == 8){
+        } elseif ($sort == 8) {
             $urut = "URUT: NAMA";
             $and_orderby = " ORDER BY CUS_NAMAMEMBER";
-        }else{
+        } else {
             $urut = "URUT: KODE";
             $and_orderby = " ORDER BY CUS_KODEMEMBER";
         }
@@ -1805,93 +1826,94 @@ and cus_kodemember between '$member1' and '$member2'
 and prs_kodeigr=cus_kodeigr
 and out_kodeigr (+)= cus_kodeigr
 and out_kodeoutlet(+)= cus_kodeoutlet
-".$and_orderby);
+" . $and_orderby);
 
         //PROCEDURE IGR_BO_CONTS (:P_KODEIGR, 'AA', :AREA2, TEMP);
         $area = [];
-        for($i=0;$i<sizeof($datas);$i++){
-            try{
-                $tipearea = 'AA'.$datas[$i]->area1;
+        for ($i = 0; $i < sizeof($datas); $i++) {
+            try {
+                $tipearea = 'AA' . $datas[$i]->area1;
                 $temp = DB::connection(Session::get('connection'))->table("tbmaster_const")
                     ->selectRaw("consT_name")
-                    ->where("const_kodeigr",'=',$kodeigr)
-                    ->where("const_branch",'=',$tipearea)
+                    ->where("const_kodeigr", '=', $kodeigr)
+                    ->where("const_branch", '=', $tipearea)
                     ->first();
-                if($temp){
+                if ($temp) {
                     $area[$i] = $temp->const_name;
-                }else{
+                } else {
                     $area[$i] = " ";
                 }
-            }catch (\Exception $e){
+            } catch (\Exception $e) {
                 $area[$i] = " ";
             }
         }
 
         //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
         return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-perpanjangan-anggota-or-member-pdf',
             ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
                 'urut' => $urut, 'p_area' => $area, 'sort' => $sort, 'date1' => $sDate, 'date2' => $eDate]);
     }
 
-    public function printDaftarStatusTagBar(Request $request){
+    public function printDaftarStatusTagBar(Request $request)
+    {
         $kodeigr = Session::get('kdigr');
         $dep1 = $request->dep1;
-        if($dep1 == ''){
+        if ($dep1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("min(dep_kodedepartement) as result")
-                ->where("dep_kodeigr",'=',$kodeigr)
+                ->where("dep_kodeigr", '=', $kodeigr)
                 ->first();
             $dep1 = $temp->result;
         }
         $dep2 = $request->dep2;
-        if($dep2 == ''){
+        if ($dep2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("max(dep_kodedepartement) as result")
-                ->where("dep_kodeigr",'=',$kodeigr)
+                ->where("dep_kodeigr", '=', $kodeigr)
                 ->first();
             $dep2 = $temp->result;
         }
         $kat1 = $request->kat1;
-        if($kat1 == ''){
+        if ($kat1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("min(kat_kodekategori) as result")
-                ->where("kat_kodeigr",'=',$kodeigr)
-                ->where("kat_kodedepartement",'=',$dep1)
+                ->where("kat_kodeigr", '=', $kodeigr)
+                ->where("kat_kodedepartement", '=', $dep1)
                 ->first();
             $kat1 = $temp->result;
         }
         $kat2 = $request->kat2;
-        if($kat2 == ''){
+        if ($kat2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("max(kat_kodekategori) as result")
-                ->where("kat_kodeigr",'=',$kodeigr)
-                ->where("kat_kodedepartement",'=',$dep2)
+                ->where("kat_kodeigr", '=', $kodeigr)
+                ->where("kat_kodedepartement", '=', $dep2)
                 ->first();
             $kat2 = $temp->result;
         }
 
         $plu1 = $request->plu1;
         $plu2 = $request->plu2;
-        if($plu1 != '' && $plu2 != ''){
-            $and_plu = " and prd_prdcd between '".$plu1."' and '".$plu2."'";
-        }else{
+        if ($plu1 != '' && $plu2 != '') {
+            $and_plu = " and prd_prdcd between '" . $plu1 . "' and '" . $plu2 . "'";
+        } else {
             $and_plu = " ";
         }
 
         $status = $request->status;
-        if($status != ''){
-            if($status == "1"){
+        if ($status != '') {
+            if ($status == "1") {
                 $and_status = " and prd_flagbarcode1 = 'BN'";
-            }elseif($status == '2'){
+            } elseif ($status == '2') {
                 $and_status = " and prd_flagbarcode1 = 'BC'";
-            }elseif($status == '3'){
+            } elseif ($status == '3') {
                 $and_status = " and prd_flagbarcode1 = 'BD'";
-            }else{
+            } else {
                 $and_status = " and prd_flagbarcode1 = 'BC'";
             }
-        }else{
+        } else {
             $and_status = " ";
         }
 
@@ -1901,7 +1923,7 @@ kat_kodekategori||'-'||kat_namakategori kat,
 prs_namaperusahaan, prs_namacabang
 from tbmaster_prodmast, tbmaster_departement, tbmaster_kategori, tbmaster_perusahaan
 where prd_kodeigr='$kodeigr'
-".$and_plu."
+" . $and_plu . "
 and dep_kodeigr=prd_kodeigr
 and dep_kodedepartement = prd_kodedepartement
 --&and_dep
@@ -1909,20 +1931,21 @@ and kat_kodeigr=prd_kodeigr
 and kat_kodekategori = prd_kodekategoribarang
 and kat_kodedepartement=dep_kodedepartement
 --&and_kat
-".$and_plu."
+" . $and_plu . "
 and prd_kodedepartement||prd_kodekategoribarang between '$dep1'||'$kat1' and '$dep2'||'$kat2'
 and prs_kodeigr=prd_kodeigr
-".$and_status."
+" . $and_status . "
 order by dep_kodedepartement, dep_kodedepartement, prd_prdcd");
 
         //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
         return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-status-tag-bar-pdf',
             ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan]);
     }
 
-    public function printMasterDisplay(Request $request){
+    public function printMasterDisplay(Request $request)
+    {
         $kodeigr = Session::get('kdigr');
         $rak1 = $request->rak1;
         $rak2 = $request->rak2;
@@ -1934,53 +1957,53 @@ order by dep_kodedepartement, dep_kodedepartement, prd_prdcd");
         $shelving2 = $request->shelving2;
         $omi = $request->omi;
 
-        if($rak1 == ''){
+        if ($rak1 == '') {
             $rak1 = "0000000";
         }
-        if($subrak1 == ''){
+        if ($subrak1 == '') {
             $subrak1 = "000";
         }
-        if($tiperak1 == ''){
+        if ($tiperak1 == '') {
             $tiperak1 = "000";
         }
-        if($shelving1 == ''){
+        if ($shelving1 == '') {
             $shelving1 = "00";
         }
-        if($rak2 == ''){
+        if ($rak2 == '') {
             $rak2 = "zzzzzzz";
         }
-        if($subrak2 == ''){
+        if ($subrak2 == '') {
             $subrak2 = "zzz";
         }
-        if($tiperak2 == ''){
+        if ($tiperak2 == '') {
             $tiperak2 = "zzz";
         }
-        if($shelving2 == ''){
+        if ($shelving2 == '') {
             $shelving2 = "zz";
         }
-        if($omi == 1){
+        if ($omi == 1) {
             $title = "LISTING DISPLAY BARANG ITEM OMI";
-            $and_omi = " and prc_group = 'O'".
-                       " AND nvl(prc_kodetag (+), 'ccc') <> 'R'".
-                       " AND nvl(prc_kodetag (+), 'ccc') <> 'N'".
-                       " AND nvl(prc_kodetag (+), 'ccc') <> 'O'".
-                       " AND nvl(prc_kodetag (+), 'ccc') <> 'H'".
-                       " AND nvl(prc_kodetag (+), 'ccc') <> 'G'".
-                       " AND nvl(prc_kodetag (+), 'ccc') <> 'T'".
-                       " AND nvl(prc_kodetag (+), 'ccc') <> 'X'".
-                       " AND nvl(prc_kodetag (+), 'ccc') <> 'Z'".
-                       " and prc_kodeigr=prd_kodeigr and prc_pluomi=prd_prdcd";
-        }else{
+            $and_omi = " and prc_group = 'O'" .
+                " AND nvl(prc_kodetag (+), 'ccc') <> 'R'" .
+                " AND nvl(prc_kodetag (+), 'ccc') <> 'N'" .
+                " AND nvl(prc_kodetag (+), 'ccc') <> 'O'" .
+                " AND nvl(prc_kodetag (+), 'ccc') <> 'H'" .
+                " AND nvl(prc_kodetag (+), 'ccc') <> 'G'" .
+                " AND nvl(prc_kodetag (+), 'ccc') <> 'T'" .
+                " AND nvl(prc_kodetag (+), 'ccc') <> 'X'" .
+                " AND nvl(prc_kodetag (+), 'ccc') <> 'Z'" .
+                " and prc_kodeigr=prd_kodeigr and prc_pluomi=prd_prdcd";
+        } else {
             $title = "LISTING DISPLAY BARANG";
-            $and_omi = " and prc_group(+) = 'O'".
-                " AND nvl(prc_kodetag (+), 'ccc') <> 'R'".
-                " AND nvl(prc_kodetag (+), 'ccc') <> 'N'".
-                " AND nvl(prc_kodetag (+), 'ccc') <> 'O'".
-                " AND nvl(prc_kodetag (+), 'ccc') <> 'H'".
-                " AND nvl(prc_kodetag (+), 'ccc') <> 'G'".
-                " AND nvl(prc_kodetag (+), 'ccc') <> 'T'".
-                " AND nvl(prc_kodetag (+), 'ccc') <> 'X'".
-                " AND nvl(prc_kodetag (+), 'ccc') <> 'Z'".
+            $and_omi = " and prc_group(+) = 'O'" .
+                " AND nvl(prc_kodetag (+), 'ccc') <> 'R'" .
+                " AND nvl(prc_kodetag (+), 'ccc') <> 'N'" .
+                " AND nvl(prc_kodetag (+), 'ccc') <> 'O'" .
+                " AND nvl(prc_kodetag (+), 'ccc') <> 'H'" .
+                " AND nvl(prc_kodetag (+), 'ccc') <> 'G'" .
+                " AND nvl(prc_kodetag (+), 'ccc') <> 'T'" .
+                " AND nvl(prc_kodetag (+), 'ccc') <> 'X'" .
+                " AND nvl(prc_kodetag (+), 'ccc') <> 'Z'" .
                 " and prc_kodeigr(+)=prd_kodeigr and prc_pluomi(+)=prd_prdcd";
         }
 
@@ -2006,19 +2029,20 @@ and pkm_kodeigr(+)=prd_kodeigr
 and st_prdcd (+)= prd_prdcd
 and st_kodeigr(+)=prd_kodeigr
 and st_lokasi(+)='01'
-".$and_omi."
+" . $and_omi . "
 and prs_kodeigr=lks_kodeigr
 order by lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak, lks_nourut ");
 
-        $forbidden_tag = ['A','R','N','O','H','G','T','X','Z'];
+        $forbidden_tag = ['A', 'R', 'N', 'O', 'H', 'G', 'T', 'X', 'Z'];
         //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
         return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.master-display-pdf',
             ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan, 'title' => $title, 'p_omi' => $omi, 'forbidden_tag' => $forbidden_tag]);
     }
 
-    public function printMasterDisplayDDK(Request $request){
+    public function printMasterDisplayDDK(Request $request)
+    {
         $kodeigr = Session::get('kdigr');
         $div1 = $request->div1;
         $div2 = $request->div2;
@@ -2032,70 +2056,70 @@ order by lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak, lks_nourut "
 
         $p_omi = $request->omi;
 
-        if($div1 == ''){
+        if ($div1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("min(div_kodedivisi) as result")
-                ->where("div_kodeigr",'=',$kodeigr)
+                ->where("div_kodeigr", '=', $kodeigr)
                 ->first();
             $div1 = $temp->result;
         }
 
-        if($div2 == ''){
+        if ($div2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("max(div_kodedivisi) as result")
-                ->where("div_kodeigr",'=',$kodeigr)
+                ->where("div_kodeigr", '=', $kodeigr)
                 ->first();
             $div2 = $temp->result;
         }
 
-        if($dep1 == ''){
+        if ($dep1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("min(dep_kodedepartement) as result")
-                ->where("dep_kodeigr",'=',$kodeigr)
-                ->where("dep_kodedivisi",'=',$div1)
+                ->where("dep_kodeigr", '=', $kodeigr)
+                ->where("dep_kodedivisi", '=', $div1)
                 ->first();
             $dep1 = $temp->result;
         }
 
-        if($dep2 == ''){
+        if ($dep2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("max(dep_kodedepartement) as result")
-                ->where("dep_kodeigr",'=',$kodeigr)
-                ->where("dep_kodedivisi",'=',$div2)
+                ->where("dep_kodeigr", '=', $kodeigr)
+                ->where("dep_kodedivisi", '=', $div2)
                 ->first();
             $dep2 = $temp->result;
         }
 
-        if($kat1 == ''){
+        if ($kat1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("min(kat_kodekategori) as result")
-                ->where("kat_kodeigr",'=',$kodeigr)
-                ->where("kat_kodedepartement",'=',$dep1)
+                ->where("kat_kodeigr", '=', $kodeigr)
+                ->where("kat_kodedepartement", '=', $dep1)
                 ->first();
             $kat1 = $temp->result;
         }
 
-        if($kat2 == ''){
+        if ($kat2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("max(kat_kodekategori) as result")
-                ->where("kat_kodeigr",'=',$kodeigr)
-                ->where("kat_kodedepartement",'=',$dep2)
+                ->where("kat_kodeigr", '=', $kodeigr)
+                ->where("kat_kodedepartement", '=', $dep2)
                 ->first();
             $kat2 = $temp->result;
         }
 
-        if($plu1 == ''){
+        if ($plu1 == '') {
             $plu1 = "0000000";
         }
-        if($plu2 == ''){
+        if ($plu2 == '') {
             $plu2 = "ZZZZZZZ";
         }
 
-        if($p_omi == 1){
-            $and_omi = " and prc_group = 'O' and nvl(prc_kodetag,'ccc') not in ('A','R','N', 'O', 'H', 'G', 'T','X','Z') ".
+        if ($p_omi == 1) {
+            $and_omi = " and prc_group = 'O' and nvl(prc_kodetag,'ccc') not in ('A','R','N', 'O', 'H', 'G', 'T','X','Z') " .
                 " and prc_kodeigr=prd_kodeigr and prc_pluomi=prd_prdcd";
-        }else{
-            $and_omi = " and prc_group(+) = 'O' and nvl(prc_kodetag(+),'ccc') not in ('A','R','N', 'O', 'H', 'G', 'T','X','Z') ".
+        } else {
+            $and_omi = " and prc_group(+) = 'O' and nvl(prc_kodetag(+),'ccc') not in ('A','R','N', 'O', 'H', 'G', 'T','X','Z') " .
                 " and prc_kodeigr(+)=prd_kodeigr and prc_pluomi(+)=prd_prdcd";
         }
 
@@ -2113,7 +2137,7 @@ from tbmaster_prodmast, tbmaster_lokasi,
 tbmaster_divisi, tbmaster_departement, tbmaster_kategori,
 tbmaster_perusahaan, tbmaster_prodcrm
 where prd_kodeigr='$kodeigr'
-".$and_omi."
+" . $and_omi . "
 and lks_kodeigr=prd_kodeigr
 and lks_prdcd = prd_prdcd
 and div_kodedivisi = prd_kodedivisi
@@ -2134,87 +2158,89 @@ and prs_kodeigr = prs_kodeigr
 ORDER BY div_kodedivisi, dep_kodedepartement, kat_kodekategori, prd_prdcd, lks_nourut ");
 
 
-        if($p_omi == 1){
+        if ($p_omi == 1) {
             $title = "** LIST MASTER DISPLAY /DIV/DEPT/KATB (ITEM OMI) **";
-        }else{
+        } else {
             $title = "** LIST MASTER DISPLAY /DIV/DEPT/KATB **";
         }
-        $forbidden_tag = ['A','R','N','O','H','G','T','X','Z'];
+        $forbidden_tag = ['A', 'R', 'N', 'O', 'H', 'G', 'T', 'X', 'Z'];
         //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
         return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.master-display-div-dep-kat-pdf',
             ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
                 'title' => $title, 'p_omi' => $p_omi, 'forbidden_tag' => $forbidden_tag]);
     }
-    public function printDaftarMarginNegatifvsMCG(Request $request){
+
+    public function printDaftarMarginNegatifvsMCG(Request $request)
+    {
         $kodeigr = Session::get('kdigr');
         $div1 = $request->div1;
-        if($div1 == ''){
+        if ($div1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("min(div_kodedivisi) as result")
-                ->where("div_kodeigr",'=',$kodeigr)
+                ->where("div_kodeigr", '=', $kodeigr)
                 ->first();
             $div1 = $temp->result;
         }
         $div2 = $request->div2;
-        if($div2 == ''){
+        if ($div2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_divisi")
                 ->selectRaw("max(div_kodedivisi) as result")
-                ->where("div_kodeigr",'=',$kodeigr)
+                ->where("div_kodeigr", '=', $kodeigr)
                 ->first();
             $div2 = $temp->result;
         }
         $dep1 = $request->dep1;
-        if($dep1 == ''){
+        if ($dep1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("min(dep_kodedepartement) as result")
-                ->where("dep_kodeigr",'=',$kodeigr)
-                ->where("dep_kodedivisi",'=',$div1)
+                ->where("dep_kodeigr", '=', $kodeigr)
+                ->where("dep_kodedivisi", '=', $div1)
                 ->first();
             $dep1 = $temp->result;
         }
         $dep2 = $request->dep2;
-        if($dep2 == ''){
+        if ($dep2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_departement")
                 ->selectRaw("max(dep_kodedepartement) as result")
-                ->where("dep_kodeigr",'=',$kodeigr)
-                ->where("dep_kodedivisi",'=',$div2)
+                ->where("dep_kodeigr", '=', $kodeigr)
+                ->where("dep_kodedivisi", '=', $div2)
                 ->first();
             $dep2 = $temp->result;
         }
         $kat1 = $request->kat1;
-        if($kat1 == ''){
+        if ($kat1 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("min(kat_kodekategori) as result")
-                ->where("kat_kodeigr",'=',$kodeigr)
-                ->where("kat_kodedepartement",'=',$dep1)
+                ->where("kat_kodeigr", '=', $kodeigr)
+                ->where("kat_kodedepartement", '=', $dep1)
                 ->first();
             $kat1 = $temp->result;
         }
         $kat2 = $request->kat2;
-        if($kat2 == ''){
+        if ($kat2 == '') {
             $temp = DB::connection(Session::get('connection'))->table("tbmaster_kategori")
                 ->selectRaw("max(kat_kodekategori) as result")
-                ->where("kat_kodeigr",'=',$kodeigr)
-                ->where("kat_kodedepartement",'=',$dep2)
+                ->where("kat_kodeigr", '=', $kodeigr)
+                ->where("kat_kodedepartement", '=', $dep2)
                 ->first();
             $kat2 = $temp->result;
         }
         $ptag = $request->ptag;
         $p_tagq = "";
-        if($ptag != ''){
-            $p_tagq = "and NVL(prd_kodetag,'b') in (".$ptag.")";
+        if ($ptag != '') {
+            $p_tagq = "and NVL(prd_kodetag,'b') in (" . $ptag . ")";
         }
         $sort = $request->sort;
-        if((int)$sort == 1){
+        if ((int)$sort == 1) {
             $p_urut = "URUT: DIV+DEPT+KATEGORI+KODE";
             $p_orderby = " order by prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, prd_prdcd";
-        }elseif ((int)$sort == 2){
+        } elseif ((int)$sort == 2) {
             $p_urut = "URUT: DIV+DEPT+KATEGORI+NAMA";
             $p_orderby = " order by prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, prd_deskripsipanjang";
-        }else{
-            $p_urut = "URUT: NAMA" ;
+        } else {
+            $p_urut = "URUT: NAMA";
             $p_orderby = " order by prd_deskripsipanjang";
         }
         $datas = DB::connection(Session::get('connection'))->select("select prd_prdcd, prd_flagbkp1 pkp, prd_flagbkp2 pkp2, prd_deskripsipanjang desc2, prd_lastcost, prd_avgcost,
@@ -2261,7 +2287,7 @@ and kat_kodedepartement = dep_kodedepartement
 and kat_kodeigr= prd_kodeigr
 --and kat_kodekategori between :p_kat1 and :p_kat2
 and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'||'$dep1'||'$kat1' and '$div2'||'$dep2'||'$kat2'
-".$p_tagq."
+" . $p_tagq . "
 and prs_kodeigr = prd_kodeigr
 and hgb_prdcd(+)= substr(prd_prdcd,0,6)||'0'
 and hgb_kodeigr(+)= prd_kodeigr
@@ -2275,12 +2301,11 @@ and sls_prdcd(+) = substr(prd_prdcd,0,6)||'0'
 and sls_kodeigr(+)= prd_kodeigr
 and (((prd_hrgjual- prd_lastcost) / case when nvl(prd_hrgjual,0)=0 then 1 else prd_hrgjual end) * 100 <0
 or ((prd_hrgjual - (nvl(st_avgcost,0) * case when prd_unit = 'KG' then 1 else prd_frac end))/ (case when nvl(prd_hrgjual,0)=0 then 1 else prd_hrgjual end)) * 100 < 0)
-".$p_orderby);
-
+" . $p_orderby);
 
 
         //PRINT
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-margin-negatif-vs-mcg-pdf',
             ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
                 'urut' => $p_urut, 'tag' => $ptag, 'sort' => $sort]);
@@ -2307,9 +2332,9 @@ or ((prd_hrgjual - (nvl(st_avgcost,0) * case when prd_unit = 'KG' then 1 else pr
             $sup2 = $temp->result;
         }
         $phari = $request->phari;
-        if($phari != ''){
-            $and_hari = " and hari in (".$phari.") ";
-        }else{
+        if ($phari != '') {
+            $and_hari = " and hari in (" . $phari . ") ";
+        } else {
             $and_hari = "";
         }
 
@@ -2367,12 +2392,12 @@ from (
 where bb.sup_kodesupplier = aa.sk
 and aa.sk between '$sup1' and '$sup2'
 and bb.sup_kodeigr='$kodeigr'
-".$and_hari."
+" . $and_hari . "
 and prs_kodeigr=sup_kodeigr
 order by urut, sk");
 
         //CETAK_DAFTARMSUPPLIERHARI(IGR_BO_DAFTARSUPPLIERHARI.jsp)
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-supplier-by-hari-pdf',
             ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan]);
     }

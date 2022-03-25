@@ -108,7 +108,7 @@ class ReprintBKLController extends Controller
             $bladeName  = "OMI.LAPORAN.reprint-bkl-struk-pdf";
             $pdfName    = "reprint-bkl-struk.pdf";
         }
-
+//dd($result);
         $pdf = PDF::loadview("$bladeName",[ 'result' => $result]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
@@ -144,7 +144,8 @@ class ReprintBKLController extends Controller
                                               WHEN NVL (mstd_kodesupplier, '11111') <> '11111' THEN '( PROFORMA)'
                                               ELSE '( LAIN - LAIN )'
                                            END
-                                              judul
+                                              judul,
+                                              prd_ppn
                                       FROM tbtr_mstran_h,
                                            tbmaster_perusahaan,
                                            tbmaster_supplier,

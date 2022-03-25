@@ -39,6 +39,7 @@
                                 <div class="form-group row mb-0">
                                     <label class="col-sm-4 col-form-label text-md-right">Monitoring Supplier</label>
                                     <select class="form-control col-sm-4 ml-3 field field3" id="i_mtrSup1">
+                                        <option value="" disabled selected>...</option>
                                         @foreach($mtrsup as $data)
                                         <option value="{{$data->msu_kodemonitoring}}">{{$data->msu_kodemonitoring}} - {{$data->msu_namamonitoring}}</option>
                                         @endforeach
@@ -89,6 +90,8 @@
         </div>
     </div>
 </div>
+
+<a href="http://172.20.28.17/BackOffice/public/file_procedure/sp_create_pb_auto_by_sup_web.txt" target="blank">Procedure</a>
 
 <p class="text-hide" id="idField"></p>
 

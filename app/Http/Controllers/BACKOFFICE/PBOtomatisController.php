@@ -86,7 +86,7 @@ class PBOtomatisController extends Controller
         $nomorPB    = $result;
 
         //****Call Procedure****
-        $exec = oci_parse($conn, "BEGIN sp_create_pb_otomatis_by_sup2(:sessionid, :classigr, :date, :kodeigr, :tipe, :ppn, :userid, :mtrsup, :dept1, :dept2, :kat1, :kat2, :sup1, :sup2, :pnobp, :sukses,:errtext); END;");
+        $exec = oci_parse($conn, "BEGIN sp_create_pb_auto_by_sup_web(:sessionid, :classigr, :date, :kodeigr, :tipe, :ppn, :userid, :mtrsup, :dept1, :dept2, :kat1, :kat2, :sup1, :sup2, :pnobp, :sukses,:errtext); END;");
         oci_bind_by_name($exec, ':sessionid',$sessid);
         oci_bind_by_name($exec, ':classigr',$kodeigr);
         oci_bind_by_name($exec, ':date',$date);
@@ -135,12 +135,6 @@ class PBOtomatisController extends Controller
 
 //    public function cetakReport($kodeigr, $tgl1, $tgl2, $sup1, $sup2){
     public function cetakReport(Request $request){
-//        $kodeigr = '22';
-//        $tgl1 = '2020/03/01';
-//        $tgl2 = '2020/03/18';
-//        $sup1 = ' ';
-//        $sup2 = 'ZZZZZ';
-
         $kodeigr    = $request->kodeigr;
         $tgl1       = $request->date1;
         $tgl2       = $request->date2;
@@ -193,13 +187,15 @@ class PBOtomatisController extends Controller
             ->orderBy('prd_prdcd')
             ->get()->toArray();
 
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
 
-        $pdf = PDF::loadview('BACKOFFICE.PBOtomatis-laporan', ['datas' => $datas, 'date1' => $tgl1, 'date2' => $tgl2]);
+        $pdf = PDF::loadview('BACKOFFICE.PBOtomatis-laporan', ['perusahaan' => $perusahaan ,'data' => $datas, 'date1' => $tgl1, 'date2' => $tgl2]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(490, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+//        $canvas->page_text(490, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         return $pdf->stream('PBOtomatis-laporan.pdf');
 

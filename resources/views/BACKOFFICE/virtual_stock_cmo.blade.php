@@ -259,7 +259,7 @@
                     $('#modal-loader').modal('hide');
                     if (response.status == 'success') {
                         $('#modal-loader').modal('show');
-                        console.log(response);
+                      
                         swal(response.status, response.message, response.status);
                     } else {
                         alertError(response.status, response.message, response.status)
@@ -426,6 +426,7 @@
             "responsive": true,
             "createdRow": function (row, data, dataIndex) {
                 $(row).addClass('row-supplier').css({'cursor': 'pointer'});
+                
             },
             "order": [],
             "initComplete": function () {
@@ -456,9 +457,10 @@
             },
             success: function (result) {
 
+                console.log(result);
                 $('#modal-loader').modal('hide');
-                $('#kodemcg').val(result.data.sup_kodesuppliermcg);
-                $('#namasupplier').val(result.data.sup_namasupplier);
+                $('#kodemcg').val(result.datas.sup_kodesuppliermcg);
+                $('#namasupplier').val(result.datas.sup_namasupplier);
             }, error: function (e) {
                 alert('error');
             }

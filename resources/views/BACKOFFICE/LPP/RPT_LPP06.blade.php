@@ -11,7 +11,7 @@
 @endsection
 
 @section('subtitle')
-    TANGGAL : {{$tgl1}} s/d {{$tgl2}}
+    TANGGAL : {{date('d/M/Y',strtotime(str_replace('/','-',$tgl1)))}} s/d {{date('d/M/Y',strtotime(str_replace('/','-',$tgl2)))}}
 @endsection
 @section('header_right')
     RINCIAN PER DIVISI (UNIT/RUPIAH)
@@ -21,15 +21,15 @@
         $tempdep = '';
         $tempkat = '';
 
-        $st_begbal_div='';
-        $st_akhir_div ='';
-        $st_begbal_dep='';
-        $st_akhir_dep ='';
-        $st_begbal_kat='';
-        $st_akhir_kat ='';
+        $st_begbal_div=0;
+        $st_akhir_div =0;
+        $st_begbal_dep=0;
+        $st_akhir_dep =0;
+        $st_begbal_kat=0;
+        $st_akhir_kat =0;
 
-        $total_begbal = '';
-        $total_akhir = '';
+        $total_begbal =0;
+        $total_akhir = 0;
     @endphp
 @section('content')
 
@@ -47,15 +47,22 @@
         </thead>
         <tbody>
         @for($i=0;$i<count($data);$i++)
-            @if($tempdep != $data[$i]->lpp_kodedepartemen)
+            @if($tempdiv != $data[$i]->div)
                 <tr>
                     <td class="left"><b>DIVISI</b></td>
                     <td class="left"><b>{{$data[$i]->div_namadivisi}}</b></td>
                 </tr>
+
+            @endif
+            @if($tempdep != $data[$i]->div.$data[$i]->dept)
+
                 <tr>
                     <td class="left"><b>DEPARTEMEN</b></td>
                     <td class="left"><b>{{$data[$i]->dep_namadepartement}}</b></td>
                 </tr>
+
+            @endif
+            @if($tempkat != $data[$i]->div.$data[$i]->dept.$data[$i]->katb)
                 <tr>
                     <td class="left"><b>KATEGORI BARANG :</b></td>
                     <td class="left"><b>{{$data[$i]->kat_namakategori}}</b></td>
@@ -64,57 +71,59 @@
             <tr>
                 <td align="left">{{ $data[$i]->prdcd }}</td>
                 <td colspan="3" align="left">{{ $data[$i]->prd_deskripsipanjang }}</td>
-                <td align="left">{{ $data[$i]->div }}</td>
-                <td align="left">{{ $data[$i]->dept }}</td>
-                <td align="left">{{ $data[$i]->kat }}</td>
-                <td align="right">{{ $data[$i]->begbal_rp }}</td>
-                <td align="right">{{ $data[$i]->akhir_rp }}</td>
+                <td align="center">{{ $data[$i]->div }}</td>
+                <td align="center">{{ $data[$i]->dept }}</td>
+                <td align="center">{{ $data[$i]->katb }}</td>
+                <td align="right">{{ number_format($data[$i]->begbal_rp,0) }}</td>
+                <td align="right">{{ number_format($data[$i]->akhir_rp,0) }}</td>
             </tr>
             @php
                 $st_begbal_div     += $data[$i]->begbal_rp;
-                $st_akhir_div      += $data[$i]->akhir_rp;
+                $st_akhir_div      += (int)$data[$i]->akhir_rp;
 
-                $st_begbal_dep     += $data[$i]->begbal_rp;
-                $st_akhir_dep      += $data[$i]->akhir_rp;
+                $st_begbal_dep     += (int)$data[$i]->begbal_rp;
+                $st_akhir_dep      += (int)$data[$i]->akhir_rp;
 
-                $st_begbal_kat     += $data[$i]->begbal_rp;
-                $st_akhir_kat      += $data[$i]->akhir_rp;
+                $st_begbal_kat     += (int)$data[$i]->begbal_rp;
+                $st_akhir_kat      += (int)$data[$i]->akhir_rp;
 
-                $tempdiv = $data[$i]->div_kodedivisi;
-                $tempdep = $data[$i]->dep_kodedep;
-                $tempkat = $data[$i]->kat_kodekat;
+                $tempdiv = $data[$i]->div;
+                $tempdep = $data[$i]->div.$data[$i]->dept;
+                $tempkat = $data[$i]->div.$data[$i]->dept.$data[$i]->katb;
 
+                $total_begbal += (int)$data[$i]->begbal_rp;
+                $total_akhir += (int)$data[$i]->akhir_rp;
             @endphp
-            @if( isset($data[$i+1]->kat_kodekat) && $tempkat != $data[$i+1]->kat_kodekat || !(isset($data[$i+1]->kat_kodekat)) )
-                <tr>
-                    <td class="right">TOTAL KATEGORI</td>
-                    <td class="left">{{ $data[$i]->kat_kodekat }}</td>
-                    <td class="right">{{ $st_begbal_kat }}</td>
-                    <td class="right">{{ $st_akhir_kat }}</td>
+            @if( (isset($data[$i+1]->katb) && $tempkat != $data[$i+1]->div.$data[$i+1]->dept.$data[$i+1]->katb) || !(isset($data[$i+1]->katb)) )
+                <tr style="border-top: 1px solid black">
+                    <td class="left" >TOTAL KATEGORI</td>
+                    <td class="left" colspan="6">{{ $data[$i]->katb }}</td>
+                    <td class="right">{{ number_format($st_begbal_kat,0) }}</td>
+                    <td class="right">{{ number_format($st_akhir_kat,0) }}</td>
                 </tr>
                 @php
                     $st_begbal_kat     =0;
                     $st_akhir_kat      =0;
                 @endphp
             @endif
-            @if( isset($data[$i+1]->dept_kodedept) && $tempdept != $data[$i+1]->dept_kodedept || !(isset($data[$i+1]->dept_kodedept)) )
-                <tr>
-                    <td class="right">TOTAL DEPARTEMENT</td>
-                    <td class="left">{{ $data[$i]->dept_kodedept }}</td>
-                    <td class="right">{{ $st_begbal_dept }}</td>
-                    <td class="right">{{ $st_akhir_dept }}</td>
+            @if( (isset($data[$i+1]->dept) && $tempdep != $data[$i+1]->div.$data[$i+1]->dept) || !(isset($data[$i+1]->dept)) )
+                <tr style="border-top: 1px solid black">
+                    <td class="left" >TOTAL DEPARTEMENT</td>
+                    <td class="left" colspan="6">{{ $data[$i]->dept }}</td>
+                    <td class="right">{{ number_format($st_begbal_dep,0) }}</td>
+                    <td class="right">{{ number_format($st_akhir_dep,0) }}</td>
                 </tr>
                 @php
-                    $st_begbal_dept     =0;
-                    $st_akhir_dept      =0;
+                    $st_begbal_dep     =0;
+                    $st_akhir_dep      =0;
                 @endphp
             @endif
-            @if( isset($data[$i+1]->div_kodediv) && $tempdiv != $data[$i+1]->div_kodediv || !(isset($data[$i+1]->div_kodediv)) )
-                <tr>
-                    <td class="right">TOTAL DIVISI</td>
-                    <td class="left">{{ $data[$i]->div_kodediv }}</td>
-                    <td class="right">{{ $st_begbal_div }}</td>
-                    <td class="right">{{ $st_akhir_div }}</td>
+            @if( (isset($data[$i+1]->div) && $tempdiv != $data[$i+1]->div) || !(isset($data[$i+1]->div)) )
+                <tr style="border-top: 1px solid black">
+                    <td class="left" >TOTAL DIVISI</td>
+                    <td class="left" colspan="6">{{ $data[$i]->div }}</td>
+                    <td class="right">{{ number_format($st_begbal_div,0) }}</td>
+                    <td class="right">{{ number_format($st_akhir_div,0) }}</td>
                 </tr>
                 @php
                     $st_begbal_div     =0;
@@ -123,15 +132,15 @@
             @endif
 
         @endfor
-        <tr>
-            <td class="right" colspan="5"><strong>TOTAL SEMUA</strong></td>
-            <td class="right">{{ $total_begbal }}</td>
-            <td class="right">{{ $total_akhir }}</td>
+        <tr style="border-top: 1px solid black">
+            <td class="left" colspan="7" ><strong>TOTAL SEMUA</strong></td>
+            <td class="right">{{ number_format($total_begbal,0) }}</td>
+            <td class="right">{{ number_format($total_akhir,0) }}</td>
         </tr>
 
         </tbody>
 
     </table>
 
-@section('content')
+@endsection
 

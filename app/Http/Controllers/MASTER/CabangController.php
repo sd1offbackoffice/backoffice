@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\MASTER;
 
+use App\Cabang;
 use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
@@ -15,7 +16,8 @@ class CabangController extends Controller
     }
 
     public function index(){
-        $getCabang  = DB::connection(Session::get('connection'))->table('tbmaster_cabang')->orderBy('cab_kodecabang')->get();
+        $getCabang  = Cabang::connection(Session::get('connection'))->all();
+//        $getCabang  = DB::connection(Session::get('connection'))->table('tbmaster_cabang')->orderBy('cab_kodecabang')->get();
 
         return view('MASTER.cabang', compact('getCabang'));
     }

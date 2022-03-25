@@ -46,7 +46,7 @@
         @endphp
         @foreach($data as $d)
             <tr>
-                <td width="8%" class="center">{{ $d->trjd_cus_kodemember }}</td>
+                <td width="8%" class="center">{{ $d->cus_kodemember }}</td>
                 <td width="28%" class="left">{{ $d->cus_namamember }}</td>
                 <td width="8%" class="left padding-left">{{ $d->kunj }}</td>
                 <td width="8%" class="tengah center">{{ $d->struk }}</td>
@@ -55,7 +55,7 @@
                 <td width="8%" class="right">{{ number_format($d->sales, 0, '.', ',') }}</td>
                 <td width="8%" class="right">{{ number_format($d->sales * 0.1, 0, '.', ',') }}</td>
                 <td width="8%" class="right">{{ number_format($d->margin, 0, '.', ',') }}</td>
-                <td width="8%" class="right">{{ number_format($d->margin / $d->sales * 100, 2, '.', ',') }}%</td>
+                <td width="8%" class="right">{{ number_format($d->sales == 0 ? 0 : ($d->margin / $d->sales) * 100, 2, '.', ',') }}%</td>
             </tr>
 
             @php
@@ -77,7 +77,7 @@
             <td width="8%" class="right">{{ number_format($salesnet, 0, '.', ',') }}</td>
             <td width="8%" class="right">{{ number_format($ppn, 0, '.', ',') }}</td>
             <td width="8%" class="right">{{ number_format($margin, 0, '.', ',') }}</td>
-            <td width="8%" class="right">{{ number_format($margin / $salesnet * 100, 2, '.', ',') }}%</td>
+            <td width="8%" class="right">{{ number_format($salesnet == 0 ? 0 : ($margin / $salesnet * 100), 2, '.', ',') }}%</td>
         </tr>
         </tbody>
         <tfoot>

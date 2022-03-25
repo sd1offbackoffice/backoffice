@@ -58,9 +58,6 @@
         @endforeach
         </tbody>
         <tfoot>
-        <tr>
-            <td colspan="13" class="right">** Akhir dari laporan **</td>
-        </tr>
         </tfoot>
     </table>
 @endsection

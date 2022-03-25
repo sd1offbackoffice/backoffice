@@ -298,7 +298,8 @@ class ProsesBKLDalamKotaController extends Controller
                                               WHEN NVL (mstd_kodesupplier, '11111') <> '11111' THEN '( PROFORMA)'
                                               ELSE '( LAIN - LAIN )'
                                            END
-                                              judul
+                                              judul,
+                                              prd_ppn
                                       FROM tbtr_mstran_h,
                                            tbmaster_perusahaan,
                                            tbmaster_supplier,

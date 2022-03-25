@@ -506,8 +506,28 @@ ORDER BY lpp_kodedivisi,
          lpp_kodedepartemen,
          lpp_kategoribrg,
          lpp_prdcd");
-
+            set_time_limit(0);
+//            $datas =[];
+//for ($i = 0 ;$i<1000;$i++){
+//    $datas[] = $data[$i];
+//}
+//$data = $datas;
             $title = '** POSISI & MUTASI PERSEDIAAN BARANG BAIK **';
+//
+//            $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid,compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
+//            $pdf->setPaper('A4', 'landscape');
+//            $pdf->output();
+//            $pdf->setOption('enable-smart-shrinking', true);
+//            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+//
+//            $canvas = $dompdf ->get_canvas();
+//            $canvas->page_text(465, 77, "{PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
+//
+//            return $pdf->download('laporan2.pdf');
+
+//            $pdf = PDF::loadView('BACKOFFICE.LPP.' . $repid,compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
+//            return $pdf->download('test.pdf');
+
             return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 
         } else if ($menu == 'LPP03') {
@@ -581,7 +601,8 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
             $rep_name = 'IGR_BO_LPPBAIKRCPPB.jsp';
 
 
-            $data = DB::connection(Session::get('connection'))->select("SELECT lpp_kodedivisi, div_namadivisi,
+            $data = DB::connection(Session::get('connection'))
+                ->select("SELECT lpp_kodedivisi, div_namadivisi,
         lpp_kodedepartemen, dep_namadepartement,
         lpp_kategoribrg, kat_namakategori, lpp_prdcd, prd_deskripsipanjang, kemasan,
         judul, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
@@ -969,7 +990,6 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
 
             return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
         } else if ($menu == 'LPP06') {
-            DB::connection(Session::get('connection'))->table('TEMP_LPP06')->truncate();
             Self::PROSES_LPP06();
 
             $p_prog = 'LPP06';
@@ -997,7 +1017,7 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
                         and dep_kodedepartement = prd_kodedepartement
                         and div_kodedivisi = prd_kodedivisi
                         ORDER BY DIV,DEPT,KATB");
-
+//dd($data);
             return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 
         } else if ($menu == 'LPP07') {
@@ -1771,23 +1791,24 @@ order by prd_kodedivisi,
 
         DB::connection(Session::get('connection'))->table('TEMP_LPP06')->truncate();
 
-        $datas = DB::connection(Session::get('connection'))->select("SELECT st_prdcd, prd_kodedivisi, prd_kodedepartement,
-         prd_kodekategoribarang, st_rpsaldoawal
-    FROM tbmaster_stock, tbmaster_prodmast
-   WHERE st_kodeigr = " . Session::get('kdigr') . "
-        AND prd_kodeigr = st_kodeigr
-        AND prd_prdcd = st_prdcd
-        AND st_prdcd IS NOT NULL
-        AND NVL (prd_kodedivisi, '0') <> '5'
-        AND NVL (prd_kodedepartement, '00') <> '39'
-        AND prd_kodedivisi IS NOT NULL
-        AND prd_kodedepartement IS NOT NULL
-        AND prd_kodekategoribarang IS NOT NULL
-        AND NVL (st_recordid, '0') <> '1'
-        AND st_lokasi = '01'
-		ORDER BY st_prdcd");
+        $datas = DB::connection(Session::get('connection'))
+            ->select("SELECT st_prdcd, prd_kodedivisi, prd_kodedepartement,
+                             prd_kodekategoribarang, nvl(st_rpsaldoawal,0) st_rpsaldoawal
+                        FROM tbmaster_stock, tbmaster_prodmast
+                       WHERE st_kodeigr = " . Session::get('kdigr') . "
+                            AND prd_kodeigr = st_kodeigr
+                            AND prd_prdcd = st_prdcd
+                            AND st_prdcd IS NOT NULL
+                            AND NVL (prd_kodedivisi, '0') <> '5'
+                            AND NVL (prd_kodedepartement, '00') <> '39'
+                            AND prd_kodedivisi IS NOT NULL
+                            AND prd_kodedepartement IS NOT NULL
+                            AND prd_kodekategoribarang IS NOT NULL
+                            AND NVL (st_recordid, '0') <> '1'
+                            AND st_lokasi = '01'
+                            ORDER BY st_prdcd");
 
-        if ($datas) {
+        if (isset($datas)) {
             foreach ($datas as $data) {
 
                 $nrec = $nrec + 1;
@@ -1807,24 +1828,23 @@ order by prd_kodedivisi,
                         ->Where('DIV', '=', $data->prd_kodedivisi)
                         ->Where('DEPT', '=', $data->prd_kodedepartement)
                         ->Where('KATB', '=', $data->prd_kodekategoribarang)
-                        ->update(['BEGBAL_RP' => DB::connection(Session::get('connection'))->raw('NVL(' . $data->begbal_rp . ', 0) + NVL(' . $data->st_rpsaldoawal . ', 0)')]);
+                        ->update(['BEGBAL_RP' => DB::connection(Session::get('connection'))->raw('NVL(begbal_rp, 0) + NVL(' . isset($data->st_rpsaldoawal)  ? $data->st_rpsaldoawal : 0 . ', 0)')]);
                 } else {
                     DB::connection(Session::get('connection'))->table('TEMP_LPP06')->insert([
                         'PRDCD' => $data->st_prdcd,
                         'DIV' => $data->prd_kodedivisi,
                         'DEPT' => $data->prd_kodedepartement,
                         'KATB' => $data->prd_kodekategoribarang,
-                        'BEGBAL_RP' => $data->st_rpsaldoawal != null ? $data->st_rpsaldoawal : 0,
+                        'BEGBAL_RP' => isset($data->st_rpsaldoawal) ? $data->st_rpsaldoawal : 0
                     ]);
                 }
             }
         }
 
-
         $NREC = 0;
 
         $recs2 = DB::connection(Session::get('connection'))
-            ->select("SELECT lpp_prdcd, prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, lpp_rphAkhir
+            ->select("SELECT lpp_prdcd, prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, nvl(lpp_rphakhir,0) lpp_rphakhir
                 FROM tbtr_lpp, tbmaster_prodmast
                WHERE lpp_kodeigr = " . Session::get('kdigr') . "
                 and prd_kodeigr = lpp_kodeigr
@@ -1842,12 +1862,12 @@ order by prd_kodedivisi,
                 $NREC = $NREC + 1;
 
                 $JUM = DB::connection(Session::get('connection'))->table("TEMP_LPP06")
-                    ->Select('NVL(COUNT(1), 0) count')
+                    ->SelectRaw('NVL(COUNT(1), 0) count')
                     ->where('Prdcd', '=', $rec2->lpp_prdcd)
                     ->Where('DIV', '=', $rec2->prd_kodedivisi)
                     ->Where('DEPT', '=', $rec2->prd_kodedepartement)
                     ->Where('KATB', '=', $rec2->prd_kodekategoribarang)
-                    ->first()->count;;
+                    ->first()->count;
 
                 if ($JUM > 0) {
                     DB::connection(Session::get('connection'))->table('TEMP_LPP06')
@@ -1855,14 +1875,14 @@ order by prd_kodedivisi,
                         ->Where('DIV', '=', $rec2->prd_kodedivisi)
                         ->Where('DEPT', '=', $rec2->prd_kodedepartement)
                         ->Where('KATB', '=', $rec2->prd_kodekategoribarang)
-                        ->update(['AKHIR_RP' => DB::connection(Session::get('connection'))->raw('NVL(AKHIR_RP, 0) + NVL(' . $rec2->lpp_rphakhir . ', 0)')]);
+                        ->update(['AKHIR_RP' => DB::connection(Session::get('connection'))->raw('NVL(AKHIR_RP, 0) + NVL(' . isset($rec2->lpp_rphakhir) ? $rec2->lpp_rphakhir : 0 . ', 0)')]);
                 } else {
                     DB::connection(Session::get('connection'))->table('TEMP_LPP06')->insert([
                         'PRDCD' => $rec2->lpp_prdcd,
                         'DIV' => $rec2->prd_kodedivisi,
                         'DEPT' => $rec2->prd_kodedepartement,
                         'KATB' => $rec2->prd_kodekategoribarang,
-                        'AKHIR_RP' => $rec2->lpp_rphakhir != null ? $rec2->lpp_rphakhir : 0,
+                        'AKHIR_RP' => isset($rec2->lpp_rphakhir) ? $rec2->lpp_rphakhir : 0,
                     ]);
 
                 }

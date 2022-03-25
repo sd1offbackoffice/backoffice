@@ -156,8 +156,7 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                                             OR TRJD_ADMFEE > 0)
                                        AND cus_flagpkp = 'Y'
                                        AND trjd_transactiontype = 'S'
-                                       AND TRUNC (trjd_transactiondate) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy')
-                                                                            AND to_date('" . $tgl2 . "','dd/mm/yyyy')
+                                       AND TRUNC (trjd_transactiondate) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy')
                               GROUP BY fkt_tglfaktur,
                                        cus_kodemember,
                                        CUS_NAMAMEMBER,
@@ -206,8 +205,7 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                                                AND (   trjd_noinvoice1 <> '0'
                                                     OR trjd_noinvoice2 <> '0')
                                                AND TRJD_NOMINALAMT > 0
-                                               AND TRUNC (jh_referencedate) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy')
-                                                                                AND to_date('" . $tgl2 . "','dd/mm/yyyy')
+                                               AND TRUNC (jh_referencedate) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy')
                                                AND JH_CUS_KODEMEMBER = CUS_KODEMEMBER
                                                AND JH_CUS_KODEMEMBER =
                                                       TRJD_CUS_KODEMEMBER
@@ -407,7 +405,7 @@ ORDER BY transactiondate, nomor_faktur");
                    trjd_transactiondate
               FROM (SELECT A.*, NVL (B.NOMINAL, 0) TTL_REFUND
                       FROM (  SELECT REPLACE (FKT_NOSERI, 'Y', '') NOFAK,
-                                     FKT_TGLFAKTUR TGLFAK,
+                                     TO_DATE (FKT_TGLFAKTUR, 'dd/mm/yy') TGLFAK,
                                      NVL (CUS_NPWP, '00.000.000.0-000.000') NPWP,
                                      NVL (CUS_NAMAMEMBER, 0) NAMA,
                                      CASE
@@ -521,10 +519,8 @@ AND NVL(CUS_flagPKP,'N')  <> 'Y'
                                                         AND TRUNC (OBI_TGLSTRUK) =
                                                                TRUNC (
                                                                   TRJD_TRANSACTIONDATE)
-                                                        AND TRUNC (OBI_TGLSTRUK) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy')
-                                                                      AND to_date('" . $tgl2 . "','dd/mm/yyyy'))
-                                     AND TRUNC (TRJD_TRANSACTIONDATE) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy')
-                                                                      AND to_date('" . $tgl2 . "','dd/mm/yyyy')
+                                                        AND TRUNC (OBI_TGLSTRUK) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy'))
+                                     AND TRUNC (TRJD_TRANSACTIONDATE) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy')
                             GROUP BY FKT_NOSERI,
                                      FKT_TGLFAKTUR,
                                      CUS_NPWP,
@@ -580,12 +576,12 @@ AND NVL(CUS_flagPKP,'N')  <> 'Y'
                                      AND (   TRJD_NOINVOICE1 <> '0'
                                           OR TRJD_NOINVOICE2 <> '0')
                                      AND TRJD_NOMINALAMT > 0
-                                     AND TRUNC (JH_REFERENCEDATE) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy')
-                                                                      AND to_date('" . $tgl2 . "','dd/mm/yyyy')
+                                     AND TRUNC (JH_REFERENCEDATE) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy')
                                      AND JH_CUS_KODEMEMBER = CUS_KODEMEMBER
                                      AND JH_CUS_KODEMEMBER = TRJD_CUS_KODEMEMBER
                                      AND JH_TRANSACTIONNO = TRJD_TRANSACTIONNO
-                                     AND TRUNC (JH_TRANSACTIONDATE) = TRUNC (TRJD_TRANSACTIONDATE)
+                                     AND TRUNC (JH_TRANSACTIONDATE) =
+                                            TRUNC (TRJD_TRANSACTIONDATE)
                                      AND JH_CASHIERSTATION = TRJD_CASHIERSTATION
                                      AND JH_CASHIERID = TRJD_CREATE_BY
 AND NVL(CUS_flagPKP,'N')  <> 'Y'
@@ -621,7 +617,7 @@ AND NVL(CUS_flagPKP,'N')  <> 'Y'
                    trjd_transactiondate) d,
          tbmaster_perusahaan
    WHERE prs_kodeigr = '" . Session::get('kdigr') . "'
-ORDER BY trjd_transactiondate, nofak");
+ORDER BY trjd_transactiondate, NOFAK");
         $filename = 'igr-fo-cetak-fpstd-ominonpkp';
 
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
@@ -667,7 +663,8 @@ ORDER BY trjd_transactiondate, nofak");
             + +CASE
                   WHEN NVL (OBI_ATTRIBUTE2, 'N') IN ('KlikIGR', 'Corp')
                   THEN
-                     ROUND (OBI_EKSPEDISI / 1.1)
+                     -- ROUND (OBI_EKSPEDISI / 1.1)
+                     ROUND (OBI_EKSPEDISI / (NVL (NVL (PRS_NILAIPPN, 11) / 10 ), 1.1) )
                   ELSE
                      0
                END,
@@ -678,7 +675,8 @@ ORDER BY trjd_transactiondate, nofak");
             + +CASE
                   WHEN NVL (OBI_ATTRIBUTE2, 'N') IN ('KlikIGR', 'Corp')
                   THEN
-                     (OBI_EKSPEDISI - ROUND (OBI_EKSPEDISI / 1.1))
+                     -- (OBI_EKSPEDISI - ROUND (OBI_EKSPEDISI / 1.1))
+                     (OBI_EKSPEDISI - ROUND (OBI_EKSPEDISI / (NVL (NVL (PRS_NILAIPPN, 11) / 10 ), 1.1) ))
                   ELSE
                      0
                END,

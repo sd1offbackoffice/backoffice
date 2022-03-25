@@ -436,16 +436,16 @@
                 },
                 success: function (response) {
                     // doIntervalProses();
-                    if (response.status = 'success') {
-                        console.log(response);
-                        swal(response.status, response.err_txt, response.status)
-                            .then((ok) => {
-                                if (ok) {
-                                }
-                            });
-                    } else {
-                        alertError(response.status, response.message, response.status)
-                    }
+                    console.log(response);
+                    // if (response.status = 'success') {
+                    //     swal(response.status, response.err_txt, response.status)
+                    //         .then((ok) => {
+                    //             if (ok) {
+                    //             }
+                    //         });
+                    // } else {
+                    //     alertError(response.status, response.message, response.status)
+                    // }
                 }, error: function (error) {
                     console.log(error);
                 },timeout: 20000
@@ -474,17 +474,17 @@
                 },
                 success: function (response) {
                     // doIntervalProses();
-                    if (response.status == 'info') {
-                        swal({
-                            title: response.status,
-                            text: response.message,
-                            icon: response.status,
-                        })
-                            .then((willDelete) => {
-                                if (willDelete) {
-                                }
-                            });
-                    }
+                    // if (response.status == 'info') {
+                    //     swal({
+                    //         title: response.status,
+                    //         text: response.message,
+                    //         icon: response.status,
+                    //     })
+                    //         .then((willDelete) => {
+                    //             if (willDelete) {
+                    //             }
+                    //         });
+                    // }
                 }, error: function (error) {
                     console.log(error);
                     if (error.statusText != 'timeout') {

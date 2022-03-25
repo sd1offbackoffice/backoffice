@@ -325,11 +325,13 @@
                                         marlcost = (1 - data.prd_lcost / nfmjual) * 100;
                                         maracost = (1 -((data.st_lcost * vfrac) / nfmjual)) * 100;
                                     }else{
-                                        lcost = 1.1 * data.prd_lcost;
-                                        acost = 1.1 * data.st_lcost * vfrac;
+                                        // ppn = 1 + (data.ppn/100)
+                                        // data.ppn = prd_ppn dr tbmaster_prodmast
+                                        lcost = ( 1 + (data.ppn/100) ) * data.prd_lcost;
+                                        acost = ( 1 + (data.ppn/100) ) * data.st_lcost * vfrac;
 
-                                        marlcost = (1 - 1.1 * data.prd_lcost / nfmjual) * 100;
-                                        maracost = (1 - 1.1 *((data.st_lcost * vfrac)) / nfmjual) * 100;
+                                        marlcost = (1 - ( 1 + (data.ppn/100) ) * data.prd_lcost / nfmjual) * 100;
+                                        maracost = (1 - ( 1 + (data.ppn/100) ) *((data.st_lcost * vfrac)) / nfmjual) * 100;
                                     }
                                 }else{
                                     if(data.fmjual != 0){
@@ -355,11 +357,11 @@
                                         marlcost = (1 - data.prd_lcost / data.price_a) * 100;
                                         maracost = (1 - (data.st_lcost * vfrac) / data.price_a) * 100;
                                     }else{
-                                        lcost = 1.1 * data.prd_lcost;
-                                        acost = 1.1 * data.st_lcost * vfrac;
+                                        lcost = ( 1 + (data.ppn/100) ) * data.prd_lcost;
+                                        acost = ( 1 + (data.ppn/100) ) * data.st_lcost * vfrac;
 
-                                        marlcost = (1 - 1.1 * data.prd_lcost / data.price_a) * 100;
-                                        maracost = (1 - 1.1 *(data.st_lcost * vfrac) / data.price_a) * 100;
+                                        marlcost = (1 - ( 1 + (data.ppn/100) ) * data.prd_lcost / data.price_a) * 100;
+                                        maracost = (1 - ( 1 + (data.ppn/100) ) *(data.st_lcost * vfrac) / data.price_a) * 100;
                                     }
                                 }else{
                                     lcost = data.prd_lcost;
@@ -378,11 +380,11 @@
                                         marlcost = (1 - data.prd_lcost / data.price_a) * 100;
                                         maracost = (1 - (data.st_lcost * vfrac) / data.price_a) * 100;
                                     }else{
-                                        lcost = 1.1 * data.prd_lcost;
-                                        acost = 1.1 * data.st_lcost * vfrac;
+                                        lcost = ( 1 + (data.ppn/100) ) * data.prd_lcost;
+                                        acost = ( 1 + (data.ppn/100) ) * data.st_lcost * vfrac;
 
-                                        marlcost = (1 - 1.1 * data.prd_lcost / data.price_a) * 100;
-                                        maracost = (1 - 1.1 *(data.st_lcost * vfrac) / data.price_a) * 100;
+                                        marlcost = (1 - ( 1 + (data.ppn/100) ) * data.prd_lcost / data.price_a) * 100;
+                                        maracost = (1 - ( 1 + (data.ppn/100) ) *(data.st_lcost * vfrac) / data.price_a) * 100;
                                     }
                                 }else{
                                     lcost = data.prd_lcost;
@@ -478,9 +480,10 @@
                             MARLCOST = (1 - data.prd_lcost / parseFloat($('.usulan')[index].value)) * 100;
                             MARACOST = (1 - (data.st_lcost * vfrac) / parseFloat($('.usulan')[index].value)) * 100;
                         }else{
-                            PRSNRML  = (1 - 1.1 * data.prd_acost / parseFloat($('.normal')[index].value)) * 100;
-                            MARLCOST = (1 - 1.1 * data.prd_lcost / parseFloat($('.usulan')[index].value)) * 100;
-                            MARACOST = (1 - 1.1 * (data.st_lcost * vfrac) / parseFloat($('.usulan')[index].value)) * 100;
+                            // 1.1 menjadi ( 1 + (data.ppn/100) )
+                            PRSNRML  = (1 - ( 1 + (data.ppn/100) ) * data.prd_acost / parseFloat($('.normal')[index].value)) * 100;
+                            MARLCOST = (1 - ( 1 + (data.ppn/100) ) * data.prd_lcost / parseFloat($('.usulan')[index].value)) * 100;
+                            MARACOST = (1 - ( 1 + (data.ppn/100) ) * (data.st_lcost * vfrac) / parseFloat($('.usulan')[index].value)) * 100;
                         }
                     }else{
                         PRSNRML  = (1 - data.prd_acost / parseFloat($('.normal')[index].value)) * 100;

@@ -27,6 +27,7 @@
     <script src="{{ asset('/js/MonthPicker.js') }}"></script>
     <script src="{{ asset('login_assets/vendor/daterangepicker/moment.min.js')}}"></script>
     <script src="{{ asset('login_assets/vendor/daterangepicker/daterangepicker.js')}}"></script>
+    <script src={{asset('/js/jquery.signature.min.js')}}></script>
 
     <link rel="stylesheet" href="{{ asset('/css/fontawesome-all.css') }}">
     <link rel="stylesheet" href={{ asset('css/bootstrap.min.css') }} rel="stylesheet">
@@ -37,6 +38,7 @@
     <link rel="stylesheet" href="{{ asset('css/stylee.css') }}">
     <link rel="stylesheet" href="{{ asset('css/MonthPicker.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('login_assets/vendor/daterangepicker/daterangepicker.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/jquery.signature.css') }}">
 
     <title id="title">@yield('title')</title>
 </head>
@@ -113,6 +115,7 @@
                                             <li><a href="{{url("/bokkei/index")}}">Kertas Kerja Estimasi Kebutuhan Toko
                                                     IGR</a></li>
                                             <li><a href="{{url("/bopbotomatis/index")}}">PB Otomatis</a></li>
+                                            <li><a href="{{url("/bo/pb/pbperishable/")}}">PB Perishable</a></li>
                                             <li><a href="{{url("/bopbmanual/index")}}">PB Manual</a></li>
                                             <li><a href="{{url("/bo/pb/reorder-pb-go")}}">Reorder PB GO</a></li>
                                             <li><a href="{{url("/bokirimkkei/index")}}">Upload dan Monitoring KKEI Toko
@@ -382,6 +385,20 @@
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <li><a href="{{url("/inqprodsupp/index")}}">Inquiry Produk Per Supplier</a></li>
                                     <li><a href="{{url("/inqsupprod/index")}}">Inquiry Supplier Per Produk</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Barang Hadiah</a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li class="dropdown">
+                                        <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                           data-toggle="dropdown" aria-haspopup="true"
+                                           aria-expanded="false">Master</a>
+                                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                            <li><a href="{{url("/bh/master-hadiah-barang/barang-hadiah/index")}}">Barang Hadiah</a></li>
+                                        </ul>
+                                    </li>
                                 </ul>
                             </li>
                             <li class="dropdown">

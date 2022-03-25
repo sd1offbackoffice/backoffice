@@ -1,6 +1,7 @@
+{{--@extends('pdf-template')--}}
 @extends('html-template')
 
-@section('table_font_size','7 px')
+@section('table_font_size','4 px')
 
 @section('page_title')
     {{ $title }}
@@ -11,7 +12,7 @@
 @endsection
 
 @section('subtitle')
-    TANGGAL : {{$tgl1}} s/d {{$tgl2}}
+    TANGGAL : {{date('d/M/Y',strtotime(str_replace('/','-',$tgl1)))}} s/d {{date('d/M/Y',strtotime(str_replace('/','-',$tgl2)))}}
 @endsection
 @section('header_right')
     RINCIAN PER DIVISI (UNIT/RUPIAH)

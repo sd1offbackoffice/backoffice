@@ -3,11 +3,11 @@
 @section('table_font_size','7 px')
 
 @section('page_title')
-   LAPORAN MONITORING FAKTUR PAJAK SJ/NRB
+   LAPORAN MONITORING PENGECEKAN FAKTUR PAJAK {{$cetak}}
 @endsection
 
 @section('title')
-    LAPORAN MONITORING FAKTUR PAJAK SJ/NRB
+    LAPORAN MONITORING PENGECEKAN FAKTUR PAJAK {{$cetak}}
 @endsection
 
 @section('subtitle')
@@ -49,7 +49,7 @@
                 <td class="left">{{ $data[$i]->mstd_nodoc }}</td>
                 <td class="left">{{ $data[$i]->mstd_invno }}</td>
                 <td class="right">{{ number_format($data[$i]->item,0,".",",") }}</td>
-                <td class="right padding-right">{{ number_format($data[$i]->gross,0,".",",") }}</td>
+                <td class="right padding-right">{{ $data[$i]->gross }}</td>
                 <td class="left">{{ $data[$i]->keterangan }}</td>
             </tr>
             @php

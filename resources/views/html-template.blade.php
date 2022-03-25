@@ -19,6 +19,8 @@
             margin:auto;
             min-height: @yield('paper_height','842pt');
             width: @yield('paper_width','595pt');
+            /*min-height: auto;*/
+            /*width: auto;*/
             padding: 5% 4%;
         }
 
@@ -55,6 +57,7 @@
             /*margin: 25px 20px;*/
             /*size: 1071pt 792pt;*/
             size: @yield('paper_width','595pt') @yield('paper_height','842pt');
+{{--            size: @yield('paper_width','auto') @yield('paper_height','auto');--}}
             /*size: 842pt 638pt;*/
         }
 
@@ -219,11 +222,18 @@
             text-decoration: overline;
         }
 
+        @media print {
+            .pagebreak { page-break-before: always; } /* page-break-after works, as well */
+        }
+
         /* @yield('custom_style') */
     </style>
-    <script src={{asset('/js/jquery.js')}}></script>
-    <script>
 
+    {{-- <link rel="stylesheet" type="text/css" href="{{ asset('/css/bootstrap.min.css') }}"> --}}
+
+    <script src={{asset('/js/jquery.js')}}></script>
+    {{-- <script src="{{ asset('/js/bootstrap.bundle.js') }}"></script> --}}
+    <script>
         var oldPrintFunction = window.print;
 
         window.print = function () {

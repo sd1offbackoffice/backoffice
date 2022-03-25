@@ -27,7 +27,7 @@
                                         <div class="col-sm-2">
                                             <button type="button" id="btnHapusDokumen"
                                                     class="btn btn-danger float-left" disabled><i
-                                                        class="icon fas fa-trash"></i> Hapus Dokumen
+                                                    class="icon fas fa-trash"></i> Hapus Dokumen
                                             </button>
                                         </div>
                                         <div class="col-sm-3">
@@ -36,7 +36,7 @@
                                         </div>
                                         <div class="offset-2 col-sm-2">
                                             <button type="button" id="btnSimpan" class="btn btn-primary"><i
-                                                        class="icon fas fa-save"></i> Simpan
+                                                    class="icon fas fa-save"></i> Simpan
                                             </button>
                                         </div>
                                     </div>
@@ -69,7 +69,7 @@
                                         <div class="offset-1 col-sm-2">
                                             <button type="button" id="btnUsulanRetur" data-target="#m_usulan_retur"
                                                     data-toggle="modal" class="btn btn-info"><i
-                                                        class="icon fas fa-upload"></i> Usulan Retur
+                                                    class="icon fas fa-upload"></i> Usulan Retur
                                             </button>
                                         </div>
                                     </div>
@@ -346,7 +346,7 @@
                     <div class="row">
                         <div class="col-sm-2">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
-                                        class="icon fas fa-times"></i> CANCEL
+                                    class="icon fas fa-times"></i> CANCEL
                             </button>
                         </div>
 
@@ -357,7 +357,7 @@
                         </div>
                         <div class="col-sm-5">
                             <button type="button" class="btn btn-primary" id="btnKirimUsulan" data-dismiss="modal"><i
-                                        class="icon fas fa-upload"></i> KIRIM USULAN KE FINANCE
+                                    class="icon fas fa-upload"></i> KIRIM USULAN KE FINANCE
                             </button>
                         </div>
 

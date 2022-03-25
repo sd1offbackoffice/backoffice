@@ -46,8 +46,10 @@ class LaporanMonitoringFakturPajakSJNRBController extends Controller
 
         if ($cetak == 'S') {
             $and_pil = " and msth_typetrn in ('O')";
+            $cetak = "SJ";
         } else {
             $and_pil = " and msth_typetrn in ('K')";
+            $cetak = "NRB";
         }
 
         if ($kategori == 'O') {
@@ -63,7 +65,7 @@ class LaporanMonitoringFakturPajakSJNRBController extends Controller
 
         $data = DB::connection(Session::get('connection'))
             ->select("select prs_namaperusahaan, prs_namacabang, mstd_tgldoc, mstd_nodoc,  mstd_invno, keterangan,
-                                sum(item) item, sum(mstd_gross+mstd_ppnrph+mstd_ppnbmrph+mstd_ppnbtlrph-mstd_discrph) gross
+                                sum(item) item, sum(nvl(mstd_gross,0)+nvl(mstd_ppnrph,0)+nvl(mstd_ppnbmrph,0)+nvl(mstd_ppnbtlrph,0)-nvl(mstd_discrph,0)) gross
                             from (
                                     select prs_namaperusahaan, prs_namacabang, mstd_tgldoc, mstd_nodoc,  mstd_invno,  1 item,
                                         mstd_gross, mstd_ppnrph, mstd_ppnbmrph, mstd_ppnbtlrph, mstd_discrph,
@@ -87,6 +89,6 @@ class LaporanMonitoringFakturPajakSJNRBController extends Controller
                             order by mstd_tgldoc, mstd_nodoc");
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
 
-        return view('BACKOFFICE.LAPORAN.monitoring-faktur-pajak-sj-nrb-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2', 'keterangan']));
+        return view('BACKOFFICE.LAPORAN.monitoring-faktur-pajak-sj-nrb-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2', 'keterangan','cetak']));
     }
 }

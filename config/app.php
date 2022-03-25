@@ -176,10 +176,10 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         Yajra\Oci8\Oci8ServiceProvider::class,
-        Barryvdh\DomPDF\ServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
 
-//        Barryvdh\Snappy\ServiceProvider::class
+        Barryvdh\DomPDF\ServiceProvider::class,
+//        Barryvdh\Snappy\ServiceProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
     ],

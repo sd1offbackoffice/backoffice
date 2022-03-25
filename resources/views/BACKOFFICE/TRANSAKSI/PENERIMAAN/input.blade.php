@@ -1222,6 +1222,7 @@
                         });
 
                         kodeSupp.focus();
+                        return false
                     } else {
                         typeLov = 'PLU';
                     }

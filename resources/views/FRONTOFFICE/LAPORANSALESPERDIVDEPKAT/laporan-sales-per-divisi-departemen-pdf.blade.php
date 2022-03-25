@@ -109,7 +109,12 @@
             @endphp
             @if( !isset($data[$i+1]->kodedivisi)  || (isset($data[$i+1]->kodedivisi) && $tempDiv != $data[$i+1]->kodedivisi) )
                 @php
-                    $subtotal_marginpersen = $subtotal_margin/$subtotal_sales*100;
+                    if($subtotal_sales!=0){
+                        $subtotal_marginpersen = $subtotal_margin/$subtotal_sales*100;
+                    }
+                    else{
+                        $subtotal_marginpersen=0;
+                    }
                 @endphp
                 <tr>
                     <th class="right"><b>Subtotal</b></th>
@@ -135,7 +140,12 @@
 
         </tbody>
         @php
-            $total_marginpersen = $total_margin/$total_sales*100;
+            if($total_sales!=0){
+                $total_marginpersen = $total_margin/$total_sales*100;
+            }
+            else{
+                $total_marginpersen=0;
+            }
         @endphp
         <tfoot>
             <tr>

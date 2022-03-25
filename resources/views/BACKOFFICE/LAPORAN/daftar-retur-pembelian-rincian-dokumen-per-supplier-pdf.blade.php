@@ -61,7 +61,7 @@
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th class="left" colspan="2">--------------- NPB ---------------</th>
+            <th class="left" colspan="2">--------------- NRB ---------------</th>
             <th class="left" colspan="2">------------ NOTA RETUR ------------</th>
             <th class="right padding-right" rowspan="2" style="vertical-align: middle;">GROSS</th>
             <th class="right padding-right" rowspan="2" style="vertical-align: middle;">POTONGAN</th>
@@ -73,24 +73,24 @@
             <th class="right padding-right" rowspan="2" style="vertical-align: middle;">TOT. NILAI <br>AVERAGE</th>
         </tr>
         <tr>
-            <th class="left">NOMOR</th>
-            <th class="left">TANGGAL</th>
-            <th class="left">NOMOR</th>
-            <th class="left">TANGGAL</th>
+            <th class="center">NOMOR</th>
+            <th class="center">TANGGAL</th>
+            <th class="center">NOMOR</th>
+            <th class="center">TANGGAL</th>
         </tr>
         </thead>
         <tbody>
         @for($i=0;$i<count($data);$i++)
                 @if($tempsup != $data[$i]->supplier)
                     <tr>
-                        <td class="left" colspan="12"><b>SUPPLIER    : {{$data[$i]->supplier}} </b></td>
+                        <td class="left" colspan="12"><b>SUPPLIER : {{$data[$i]->supplier}} </b></td>
                     </tr>
                 @endif
             <tr>
-                <td class="left">{{ $data[$i]->msth_nodoc }}</td>
-                <td class="left">{{ date('d/m/Y',strtotime(substr($data[$i]->msth_tgldoc,0,10))) }}</td>
-                <td class="left">{{ $data[$i]->noretur }}</td>
-                <td class="left">{{ isset($data[$i]->tglretur)?date('d/m/Y',strtotime(substr($data[$i]->tglretur,0,10))):'' }}</td>
+                <td class="center">{{ $data[$i]->msth_nodoc }}</td>
+                <td class="center">{{ date('d/m/Y',strtotime(substr($data[$i]->msth_tgldoc,0,10))) }}</td>
+                <td class="center">{{ $data[$i]->noretur }}</td>
+                <td class="center">{{ isset($data[$i]->tglretur)?date('d/m/Y',strtotime(substr($data[$i]->tglretur,0,10))):'' }}</td>
                 <td class="right padding-right">{{ number_format($data[$i]->gross,2) }}</td>
                 <td class="right padding-right">{{ number_format($data[$i]->potongan,2) }}</td>
                 <td class="right padding-right">{{ number_format($data[$i]->bm,2) }}</td>
@@ -133,7 +133,7 @@
             @if((isset($data[$i+1]->supplier) && $tempsup != $data[$i+1]->supplier) || !(isset($data[$i+1]->supplier)) )
                 <tr style="border-bottom: 1px solid black;">
                     <th class="left">SUB TOTAL SUPPLIER</th>
-                    <th class="left" colspan="3">{{ $data[$i]->supplier }} </th>
+                    <th class="left" colspan="3">{{ strlen($data[$i]->supplier) > 30 ? substr($data[$i]->supplier,0,30).'...' : $data[$i]->supplier }} </th>
                     <th class="right padding-right">{{ number_format($st_sup_gross,2) }}</th>
                     <th class="right padding-right">{{ number_format($st_sup_potongan,2) }}</th>
                     <th class="right padding-right">{{ number_format($st_sup_bm ,2) }}</th>

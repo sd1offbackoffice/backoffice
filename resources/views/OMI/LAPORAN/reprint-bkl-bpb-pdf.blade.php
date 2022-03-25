@@ -215,7 +215,7 @@
             </tr>
             <tr><td colspan="9" style="height: 1px; border-bottom: 1px solid black"></td></tr>
             {{$total = $total + $data->jumlah}}
-            {{$ppn = $ppn + (0.1 * $data->jumlah)}}
+            {{$ppn = $ppn + (isset($data->prd_ppn)?$data->prd_ppn:10/100) * $data->jumlah}}
             {{$disc4 = $disc4 + $data->dis4}}
         @endforeach
 {{--                @endfor--}}

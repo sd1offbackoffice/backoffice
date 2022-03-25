@@ -688,6 +688,13 @@
                 }
             }
 
+            div1 = (div1 == '') ? '' : div1
+            div2 = (div2 == '') ? '' : div2
+            dept1 = (dept1 == '') ? '' : dept1
+            dept2 = (dept2 == '') ? '' : dept2
+            kat1 = (kat1 == '') ? '' : kat1
+            kat2 = (kat2 == '') ? '' : kat2
+
             if (!tgl1 || !tgl2) {
                 swal("Tanggal Harus Terisi !!", '', 'warning')
             } else if ( (doc1 && !doc2) || (!doc1 && doc2) ) {
@@ -699,7 +706,9 @@
             } else if ((!kat1 && kat2) || (kat1 && !kat2)) {
                 swal("Kode Kategori Harus Terisi Semua!!", '', 'warning')
             } else {
-                window.open('{{ url()->current() }}/cetakreport/'+tgl1 +'/'+tgl2+'/'+doc1+'/'+doc2+'/'+div1+'/'+div2+'/'+dept1+'/'+dept2+'/'+kat1+'/'+kat2+'/'+tipePB+'/')
+                {{--window.open('{{ url()->current() }}/cetakreport/'+tgl1 +'/'+tgl2+'/'+doc1+'/'+doc2+'/'+div1+'/'+div2+'/'+dept1+'/'+dept2+'/'+kat1+'/'+kat2+'/'+tipePB+'/')--}}
+                window.open(`{{ url()->current() }}/cetakreport?tgl1=${tgl1}&tgl2=${tgl2}&doc1=${doc1}&doc2=${doc2}&div1=${div1}&div2=${div2}&dept1=${dept1}&dept2=${dept2}&kat1=${kat1}&kat2=${kat2}&tipePB=${tipePB}`)
+
                 clearField()
             }
         }

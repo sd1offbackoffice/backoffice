@@ -5,7 +5,8 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PENERIMAAN;
 use App\AllModel;
 use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 //use App\Http\Controllers\Controller;
@@ -25,15 +26,18 @@ class inputController extends Controller
     public $param_seqno = 0;
     public $param_simpanData;
 
-    public function index() {
+    public function index()
+    {
         return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.input');
     }
 
-    public function testing() {
+    public function testing()
+    {
         return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.input-copy');
     }
 
-    public function showBTB(Request $request){
+    public function showBTB(Request $request)
+    {
         $kodeigr = Session::get('kdigr');
         $tipeTrn = $request->tipetrn;
 
@@ -48,7 +52,8 @@ class inputController extends Controller
         return DataTables::of($data)->make(true);
     }
 
-    public function chooseBTB(Request $request) {
+    public function chooseBTB(Request $request)
+    {
         $noDoc = $request->noDoc;
         $noPO = $request->noPO;
         $typeTrn = $request->typeTrn;
@@ -90,12 +95,11 @@ class inputController extends Controller
                     return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
                 }
             }
-
         }
 
-//      Program Unit "Check_btb" Tidak di pakai karena Pembuatan nomor dokumen baru sudah ada function tersendiri,
-//      dan kondisi dimana nomor dokumen tidak ada di tbtr_backoffice tidak bisa terpenuhi (Tidak ada inputan manual dari user),
-//      sehingga langsung menampilkan data dari tbtr_backoffice dengan query yang sepertinya buatan sendiri
+        //      Program Unit "Check_btb" Tidak di pakai karena Pembuatan nomor dokumen baru sudah ada function tersendiri,
+        //      dan kondisi dimana nomor dokumen tidak ada di tbtr_backoffice tidak bisa terpenuhi (Tidak ada inputan manual dari user),
+        //      sehingga langsung menampilkan data dari tbtr_backoffice dengan query yang sepertinya buatan sendiri
 
         $data = DB::connection(Session::get('connection'))->select("SELECT a.*, b.prd_deskripsipanjang as barang, b.prd_unit, b.prd_frac as trbo_frac, b.prd_kodetag as trbo_kodetag, nvl(b.prd_flagbkp1, ' ') as trbo_bkp, c.sup_namasupplier,
                                     c.sup_pkp ,a.trbo_qty / b.prd_frac as qty, ( a.trbo_rphdisc1 + a.trbo_rphdisc2 + a.trbo_rphdisc2ii + a.trbo_rphdisc2iii + a.trbo_rphdisc3 + a.trbo_rphdisc4) as total_disc
@@ -118,7 +122,8 @@ class inputController extends Controller
         }
     }
 
-    public function getNewNoBTB(Request $request) {
+    public function getNewNoBTB(Request $request)
+    {
         $typeTrn = $request->typeTrn;
         $kodeigr = Session::get('kdigr');
         $IP = str_replace('.', '0', SUBSTR(Session::get('ip'), -3));
@@ -137,7 +142,8 @@ class inputController extends Controller
         return response()->json($result);
     }
 
-    public function showPO() {
+    public function showPO()
+    {
         $kodeigr = Session::get('kdigr');
 
         $data = DB::connection(Session::get('connection'))->select("SELECT tpoh_nopo,
@@ -161,7 +167,8 @@ class inputController extends Controller
         return DataTables::of($data)->make(true);
     }
 
-    public function choosePO(Request $request) {
+    public function choosePO(Request $request)
+    {
         $typeTrn = $request->typeTrn;
         $noPO = $request->noPo;
         $kodeigr = Session::get('kdigr');
@@ -212,7 +219,7 @@ class inputController extends Controller
             return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
         }
 
-//        $flaggo = 'Y';
+        //        $flaggo = 'Y';
 
         if ($flaggo == 'Y') {
             $temp = DB::connection(Session::get('connection'))->select("SELECT PER_AWAL_REORDER AS AWALGO, PER_AKHIR_REORDER AS AKHIRGO
@@ -266,13 +273,13 @@ class inputController extends Controller
             }
 
             if ($lotorisasi == 1) {
-//                return response()->json(['kode' => 2, 'msg' => $msg, 'data' => '']);
+                return response()->json(['kode' => 2, 'msg' => $msg, 'data' => '']);
             } else {
                 $checkPO = $this->checkPO($flaggo, $typeTrn, $noPO, $kodeigr);
                 return response()->json(['kode' => $checkPO['kode'], 'msg' => $checkPO['msg'], 'data' => $checkPO['data']]);
             }
         } else {
-//-------------- ELSE DARI FLAGGO
+            //-------------- ELSE DARI FLAGGO
             $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (tpoh_flagcmo, 'N') as flagcmo
                                          FROM tbtr_po_h
                                         WHERE tpoh_nopo = '$noPO'");
@@ -303,11 +310,9 @@ class inputController extends Controller
             if ($temp[0]->recid == '2') {
                 $msg = "Kuantitas PO sudah dipenuhi";
                 return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
-
-            } elseif ($temp[0]->recid == 'X') {
+            } else if ($temp[0]->recid == 'X') {
                 $msg = "PO Sedang Dipakai di DCP";
                 return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
-
             } else {
                 if ($temp[0]->cond1 == '0') {
                     $msg = "Umur P.O. sudah melampaui Tanggal hari ini";
@@ -318,7 +323,6 @@ class inputController extends Controller
                         $lotorisasi = 1;
                     }
                 }
-
                 if ($lotorisasi == 1) {
                     return response()->json(['kode' => 2, 'msg' => $msg, 'data' => '']);
                 } else {
@@ -331,7 +335,8 @@ class inputController extends Controller
         return response()->json(['kode' => 0, 'msg' => "Something's Error", 'data' => '']);
     }
 
-    public function checkPO($flaggo, $typeTrn, $noPO, $kodeigr) {
+    public function checkPO($flaggo, $typeTrn, $noPO, $kodeigr)
+    {
         if ($typeTrn == 'L' && $noPO > 0) {
             $msg = "Nomor PO tidak boleh diisi";
             return (['kode' => 0, 'msg' => $msg, 'data' => '']);
@@ -374,14 +379,15 @@ class inputController extends Controller
                                                AND sup_kodesupplier = tpoh_kodesupplier
                                                AND sup_kodeigr = tpoh_kodeigr");
 
-//        ------------------ Update RecID menjadi 2, di komen karena di browser gk bisa update otomatis ke null ketika page ditutup
-//                DB::connection(Session::get('connection'))->table('tbtr_po_h')->where('tpoh_nopo', $noPO)->update(['tpoh_recordid' => 2]);
-//                DB::connection(Session::get('connection'))->table('tbtr_po_d')->where('tpod_nopo', $noPO)->update(['tpod_recordid' => 2]);
+        //        ------------------ Update RecID menjadi 2, di komen karena di browser gk bisa update otomatis ke null ketika page ditutup
+        //                DB::connection(Session::get('connection'))->table('tbtr_po_h')->where('tpoh_nopo', $noPO)->update(['tpoh_recordid' => 2]);
+        //                DB::connection(Session::get('connection'))->table('tbtr_po_d')->where('tpod_nopo', $noPO)->update(['tpod_recordid' => 2]);
 
         return (['kode' => 1, 'msg' => '', 'data' => $temp]);
     }
 
-    public function showSupplier() {
+    public function showSupplier()
+    {
         $kodeigr = Session::get('kdigr');
 
         $data = DB::connection(Session::get('connection'))->select("select sup_namasupplier || '/' || sup_Singkatansupplier sup_namasupplier, sup_kodesupplier, sup_pkp, sup_top
@@ -391,23 +397,25 @@ class inputController extends Controller
         return DataTables::of($data)->make(true);
     }
 
-    public function checkkodeSupplier(Request  $request){
+    public function checkkodeSupplier(Request  $request)
+    {
         sleep(1);
         $kodeSupplier = $request->kodeSupplier;
         $kodeigr = Session::get('kdigr');
 
-        $data = DB::select ("SELECT SUP_NAMASUPPLIER || '/' || SUP_SINGKATANSUPPLIER SUPPLIER, SUP_TOP, SUP_PKP
+        $data = DB::select("SELECT SUP_NAMASUPPLIER || '/' || SUP_SINGKATANSUPPLIER SUPPLIER, SUP_TOP, SUP_PKP
 	                            FROM TBMASTER_SUPPLIER
 	                            WHERE SUP_KODESUPPLIER = '$kodeSupplier' AND SUP_KODEIGR = '$kodeigr'");
 
-        if ($data){
+        if ($data) {
             return response()->json(['kode' => 1, 'message' => "Supplier Terdaftar", 'data' => $data[0]]);
         } else {
             return response()->json(['kode' => 0, 'message' => "Supplier Tidak Terdaftar", 'data' => '']);
         }
     }
 
-    public function showPlu(Request $request) {
+    public function showPlu(Request $request)
+    {
         $typeTrn = $request->typeTrn;
         $kodeigr = Session::get('kdigr');
         $value = strtoupper($request->value);
@@ -416,21 +424,31 @@ class inputController extends Controller
         $typeLov = $request->typeLov;
 
         if ($typeLov == 'PLU') {
-            $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
-                ->select('prd_deskripsipanjang', 'prd_prdcd')
-                ->join('tbmaster_stock', function ($join) {
-                    $join->on("st_prdcd", "prd_prdcd");
-                    $join->on("st_kodeigr", "prd_kodeigr");
+            // $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+            //     ->select('prd_deskripsipanjang', 'prd_prdcd')
+            //     ->join('tbmaster_stock', function ($join) {
+            //         $join->on("st_prdcd", "prd_prdcd");
+            //         $join->on("st_kodeigr", "prd_kodeigr");
+            //     })
+            //     ->where('prd_kodesupplier', $supplier)
+            //     ->where('st_kodeigr', $kodeigr)
+            //     ->where('st_lokasi', '01')
+            //     ->whereNotNull('st_avgcost')
+            //     ->whereRaw("(prd_deskripsipanjang LIKE '%$value%' or prd_prdcd LIKE '%$value%')")
+            //     ->get()->toArray();
+            $data = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
+                ->select('PRD_PRDCD', 'PRD_DESKRIPSIPANJANG')
+                ->join('TBMASTER_STOCK', function ($join) {
+                    $join->on('ST_PRDCD', 'PRD_PRDCD');
+                    $join->on('ST_KODEIGR', 'PRD_KODEIGR');
                 })
-                ->where('prd_kodesupplier', $supplier)
-                ->where('st_kodeigr', $kodeigr)
-                ->where('st_lokasi', '01')
-                ->whereNotNull('st_avgcost')
-                ->whereRaw("(prd_deskripsipanjang LIKE '%$value%' or prd_prdcd LIKE '%$value%')")
-                ->limit(100)
+                ->where('ST_KODEIGR', $kodeigr)
+                ->where('ST_LOKASI', '01')
+                ->where('ST_SALDOAKHIR', '>', 0)
+                ->whereNotNull('ST_AVGCOST')
+                ->whereRaw("(PRD_KODETAG != 'T' AND PRD_KODETAG != 'G' AND PRD_KODETAG != 'Q')")
                 ->get()->toArray();
-
-        } elseif ($typeLov == 'PLU_PO') {
+        } else if ($typeLov == 'PLU_PO') {
             $data = DB::connection(Session::get('connection'))->select("select prd_deskripsipanjang, tpod_prdcd, prd_unit||'/'||prd_frac kemasan,
                                             floor(tpod_qtypo/prd_frac) qty,mod(tpod_qtypo,prd_frac) qtyk,
                                             tpod_bonuspo1 bonus1, tpod_bonuspo2 bonus2,
@@ -444,7 +462,7 @@ class inputController extends Controller
                                             AND prd_prdcd = tpod_prdcd
                                             AND prd_kodeigr=tpod_kodeigr
                                             AND (prd_deskripsipanjang LIKE '%$value%' or prd_prdcd LIKE '%$value%')");
-        } elseif ($typeLov == 'LOV155') {
+        } else if ($typeLov == 'LOV155') {
             $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->select('prd_deskripsipanjang', 'prd_prdcd')
                 ->join('tbmaster_stock', function ($join) {
@@ -458,11 +476,11 @@ class inputController extends Controller
                 ->limit(100)
                 ->get()->toArray();
         }
-
         return response()->json($data);
     }
 
-    public function choosePlu(Request $request) {
+    public function choosePlu(Request $request)
+    {
         $typeTrn = $request->typeTrn;
         $prdcd = $request->prdcd;
         $noDoc = $request->noDoc;
@@ -503,7 +521,7 @@ class inputController extends Controller
             }
         }
 
-//        CHECK PLU KE TEMP DATA YG UDH DI SAVE SEMENTARA
+        //        CHECK PLU KE TEMP DATA YG UDH DI SAVE SEMENTARA
         if ($tempData) {
             for ($i = 0; $i < sizeof($tempData); $i++) {
                 if ($tempData[$i]['trbo_prdcd'] == $prdcd) {
@@ -540,11 +558,11 @@ class inputController extends Controller
                 return response()->json(['kode' => $getItemData[0], 'msg' => $getItemData[1], 'data' => $getItemData[2]]);
             }
         } else {
-//            Proses looping data dari tbtr_backoffice disini dipindahkan ke bagian JS, mengambil data dari tempData yg didapatkan dari chooseBTB()
-//            Dalam proses looping ada pembuatan status 0 atau 1, disini otomatis menjadi 0 sehingga langung memanggil GET_PO_DETAIL
+            //            Proses looping data dari tbtr_backoffice disini dipindahkan ke bagian JS, mengambil data dari tempData yg didapatkan dari chooseBTB()
+            //            Dalam proses looping ada pembuatan status 0 atau 1, disini otomatis menjadi 0 sehingga langung memanggil GET_PO_DETAIL
             $getPODetail = $this->getPODetail($noPo, $kodeigr, $prdcd);
 
-            if ($getPODetail[0] == 2){
+            if ($getPODetail[0] == 2) {
                 return response()->json(['kode' => $getPODetail[0], 'msg' => $getPODetail[1], 'data' => $getPODetail[2]]);
             }
 
@@ -556,11 +574,12 @@ class inputController extends Controller
         return response()->json(['kode' => $chkGets['kode'], 'msg' => $chkGets['msg'], 'data' => $this->getDataPlu]);
     }
 
-    public function getItemData($supplier, $prdcd, $kodeigr, $typeTrn, $noPo) {
+    public function getItemData($supplier, $prdcd, $kodeigr, $typeTrn, $noPo)
+    {
         if ($prdcd || $prdcd != null) {
             $data = $this->query1($supplier, $prdcd, $kodeigr);
 
-            if (!$data){
+            if (!$data) {
                 return (['2', "PLU " . $prdcd . " tidak sesuai kateory-nya", ""]);
             }
 
@@ -620,25 +639,24 @@ class inputController extends Controller
             $data->i_kemasan = $data->i_unit . ' / ' . $data->i_frac;
 
             if (!$noPo && !$supplier) {
-                $this->i_hrgbeli = 0;
+                $data->i_hrgbeli = 0;
             } else {
-                $this->i_hrgbeli = ($data->v_hrgbeli * $data->i_frac) / (($data->i_unit == 'KG') ? 1000 : 1);
+                $data->i_hrgbeli = ($data->v_hrgbeli * $data->i_frac) / (($data->i_unit == 'KG') ? 1000 : 1);
             }
 
 
             $data->i_lcost = $data->v_lastcost;
 
-            if (!$data->i_barang) {
-                return (['2', "Item Tidak Terdaftar", ""]);
-            } elseif (!$this->i_hrgbeli) {
-                return (['2', "Harga Tidak Tercatat", ""]);
+            if (!($data->i_barang)) {
+                return (['2', "Item Tidak Terdaftar", $data]);
             }
         }
 
         return (['0', "", $data]);
     }
 
-    public function query1($supplier, $prdcd, $kodeigr) {
+    public function query1($supplier, $prdcd, $kodeigr)
+    {
         $data = DB::connection(Session::get('connection'))->select("SELECT prd_kodeigr as i_kodeigr,
                                            prd_kodedivisi as i_kodedivisi,
                                            prd_kodedepartement as i_kodedepartement,
@@ -689,7 +707,8 @@ class inputController extends Controller
         return $data;
     }
 
-    public function getPODetail($noPo, $kodeigr, $prdcd) {
+    public function getPODetail($noPo, $kodeigr, $prdcd)
+    {
         $v_qty = '';
         $v_pkp = '';
         $v_acost = '';
@@ -702,7 +721,7 @@ class inputController extends Controller
 
         $data = $this->query2($noPo, $kodeigr, $prdcd);
 
-        if (!$data){
+        if (!$data) {
             return (['2', "Kode Produk tidak terdaftar dalam No.PO ini !!!", ""]);
         }
 
@@ -753,14 +772,14 @@ class inputController extends Controller
         $data->i_dis4jr = $data->dis4jr;
         $data->i_totaldisc = $data->tpod_rphttldisc;
         $data->i_hrgbeli = $nprice;
-        $data->i_bkp = $data->prd_flagbkp1 .'/'. $data->prd_flagbkp2;
+        $data->i_bkp = $data->prd_flagbkp1 . '/' . $data->prd_flagbkp2;
         $data->i_ppn = ($data->sup_pkp = 'Y' && $data->prd_flagbkp1 = 'Y') ? 0.1 * $ndpp : 0;
         $data->i_bm = $data->tpod_ppnbm;
         $data->i_botol = $data->tpod_ppnbotol;
         $data->trbo_qty = $data->qty_po;
         $flag_update = 1;
         $data->i_jenispb = $data->tpod_jenispb;
-//        $data->i_total = round(NVL(:trbo_gross, 0) - NVL(:trbo_discrph, 0) + NVL(:trbo_ppnrph, 0) + NVL(:trbo_ppnbmrph, 0) + NVL(:trbo_ppnbtlrph, 0)); // TRBO tidak di pakai karena tidak ada
+        //        $data->i_total = round(NVL(:trbo_gross, 0) - NVL(:trbo_discrph, 0) + NVL(:trbo_ppnrph, 0) + NVL(:trbo_ppnbmrph, 0) + NVL(:trbo_ppnbtlrph, 0)); // TRBO tidak di pakai karena tidak ada
         $data->i_total = 0;
 
         if ($flag_update == 0) {
@@ -770,7 +789,8 @@ class inputController extends Controller
         }
     }
 
-    public function query2($noPo, $kodeigr, $prdcd) {
+    public function query2($noPo, $kodeigr, $prdcd)
+    {
         $data = DB::connection(Session::get('connection'))->select(" SELECT   tpod_kodeigr,
                                              tpod_recordid,
                                              tpod_nopo,
@@ -840,7 +860,8 @@ class inputController extends Controller
         return $data;
     }
 
-    public function chkGets($col, $prdcd, $kodeigr, $supplier, $noPo) {
+    public function chkGets($col, $prdcd, $kodeigr, $supplier, $noPo)
+    {
         $datas = $this->query3($prdcd, $kodeigr, $supplier, $noPo);
         $this->param_error = 0;
         $getDataPlu = $this->getDataPlu;
@@ -964,9 +985,7 @@ class inputController extends Controller
                 $getDataPlu->i_bm = $data->tpod_ppnbm;
                 $getDataPlu->i_botol = $data->tpod_ppnbotol;
                 $getDataPlu->i_total = round(($this->param_ndpp + $getDataPlu->i_ppn + $getDataPlu->i_bm + $getDataPlu->i_botol));
-
-            }
-            else {
+            } else {
                 if (!$supplier) {
                     null;
                 } else {
@@ -1056,7 +1075,7 @@ class inputController extends Controller
                 $getDataPlu->i_disc4 = $data->tpod_rphdisc4;
             } //line 541 di oracle
 
-            if (!$noPo && !$supplier && $getDataPlu->i_qty != 0){
+            if (!$noPo && !$supplier && $getDataPlu->i_qty != 0) {
                 $getDataPlu->i_qty = 0;
                 $this->param_error = 5;
                 return (['kode' => 2, 'msg' => "Pada Transaksi Bonus, Qty tidak boleh diisi !", 'data' => '']);
@@ -1067,7 +1086,7 @@ class inputController extends Controller
                 return (['kode' => 2, 'msg' => "Jml Qty Tidak Boleh < 0", 'data' => '']);
             }
 
-//            dd([$getDataPlu->i_qty * $data->tpod_isibeli + $getDataPlu->i_qtyk, $data->tpod_qtypo, $data, $getDataPlu]);
+            //            dd([$getDataPlu->i_qty * $data->tpod_isibeli + $getDataPlu->i_qtyk, $data->tpod_qtypo, $data, $getDataPlu]);
 
             if ($noPo && $getDataPlu->i_prdcd) {
                 if (($getDataPlu->i_qty * $data->tpod_isibeli + $getDataPlu->i_qtyk) > $data->tpod_qtypo) {
@@ -1095,7 +1114,6 @@ class inputController extends Controller
                 $getDataPlu->i_bm = ($data->tpod_ppnbm / $data->tpod_qtypo) * ($getDataPlu->i_qty * $data->tpod_isibeli + $getDataPlu->i_qtyk);
                 $getDataPlu->i_botol = ($data->tpod_ppnbotol / $data->tpod_qtypo) * ($getDataPlu->i_qty * $data->tpod_isibeli + $getDataPlu->i_qtyk);
                 $getDataPlu->i_total = round(($this->param_ndpp + $getDataPlu->i_ppn + $getDataPlu->i_bm + $getDataPlu->i_botol));
-
             } else { //line 636 di oracle
                 if (($getDataPlu->i_bonus1 + $getDataPlu->i_bonus1) == 0) {
                     if ($data->hgb_tglmulaibonus01 <= $sysdate && $data->hgb_tglakhirbonus01 >= $sysdate && $data->hgb_tglmulaibonus01) {
@@ -1145,7 +1163,7 @@ class inputController extends Controller
                 }
 
                 $getDataPlu->i_total = round(($this->param_ndpp + $getDataPlu->i_ppn + $getDataPlu->i_bm + $getDataPlu->i_botol));
-            }//end if ($noPo && $data->i_prdcd) Line 755
+            } //end if ($noPo && $data->i_prdcd) Line 755
 
 
             if (!$noPo && !$supplier && $getDataPlu->i_qty != 0) {
@@ -1169,21 +1187,21 @@ class inputController extends Controller
 
             if ($noPo) {
                 $getDataPlu->i_qty = floor($getDataPlu->i_qty + ($getDataPlu->i_qtyk / $data->tpod_isibeli));
-//                $getDataPlu->i_qtyk = ($getDataPlu->i_qtyk / $data->tpod_isibeli);
-//                $getDataPlu->i_qtyk = $data->qty_po - ($getDataPlu->i_qty * $data->tpod_isibeli);
+                //                $getDataPlu->i_qtyk = ($getDataPlu->i_qtyk / $data->tpod_isibeli);
+                //                $getDataPlu->i_qtyk = $data->qty_po - ($getDataPlu->i_qty * $data->tpod_isibeli);
                 $getDataPlu->i_qtyk = (int) fmod($getDataPlu->i_qtyk, $data->tpod_isibeli);
             } else {
                 $getDataPlu->i_qty = floor($getDataPlu->i_qty + ($getDataPlu->i_qtyk / $getDataPlu->i_frac));
-//                $getDataPlu->i_qtyk = ($getDataPlu->i_qtyk / $getDataPlu->i_frac);
-//                $getDataPlu->i_qtyk = $data->qty_po - ($getDataPlu->i_qty * $data->tpod_isibeli);
+                //                $getDataPlu->i_qtyk = ($getDataPlu->i_qtyk / $getDataPlu->i_frac);
+                //                $getDataPlu->i_qtyk = $data->qty_po - ($getDataPlu->i_qty * $data->tpod_isibeli);
                 $getDataPlu->i_qtyk = (int) fmod($getDataPlu->i_qtyk, $getDataPlu->i_frac);
             } // END di line  796 atau di 808
 
-//            30-12-2020
-            if ($noPo && $data->tpod_prdcd){
+            //            30-12-2020
+            if ($noPo && $data->tpod_prdcd) {
                 if (($getDataPlu->i_qty * $data->tpod_isibeli + $getDataPlu->i_qtyk) > $data->tpod_qtypo) {
                     $getDataPlu->i_qty = floor($data->tpod_qtypo / $data->tpod_isibeli);
-//                    $getDataPlu->i_qtyk = ($data->tpod_qtypo / $data->tpod_isibeli);
+                    //                    $getDataPlu->i_qtyk = ($data->tpod_qtypo / $data->tpod_isibeli);
                     $getDataPlu->i_qtyk = (int) fmod($data->tpod_qtypo, $data->tpod_isibeli);
                     $this->param_error = 0;
                     return (['kode' => 2, 'msg' => "Kuantum melebihi PO", 'data' => '']);
@@ -1255,11 +1273,11 @@ class inputController extends Controller
                 $getDataPlu->i_total = round(($this->param_ndpp + $getDataPlu->i_ppn + $getDataPlu->i_bm + $getDataPlu->i_botol));
             } // END IF ($noPo && $data->tpod_prdcd) 977
 
-            if ($data->tpod_isibeli != $nisib){
-                $getDataPlu->i_isibeli = (($getDataPlu->i_qty * $data->tpod_isibeli + $getDataPlu->i_qtyk) / $nisib) .' '. $data->prd_unit. ' '.(($getDataPlu->i_qty * $data->tpod_isibeli + $getDataPlu->i_qtyk) / $nisib). ' Pcs';
+            if ($data->tpod_isibeli != $nisib) {
+                $getDataPlu->i_isibeli = (($getDataPlu->i_qty * $data->tpod_isibeli + $getDataPlu->i_qtyk) / $nisib) . ' ' . $data->prd_unit . ' ' . (($getDataPlu->i_qty * $data->tpod_isibeli + $getDataPlu->i_qtyk) / $nisib) . ' Pcs';
             }
 
-            if ($getDataPlu->i_bonus1 < 0){
+            if ($getDataPlu->i_bonus1 < 0) {
                 $getDataPlu->i_bonus1 = 0;
                 $this->param_error = 0;
                 return (['kode' => 2, 'msg' => "Bonus 1 harus >= 0", 'data' => '']);
@@ -1270,7 +1288,7 @@ class inputController extends Controller
                 return (['kode' => 2, 'msg' => "Pada Transaksi Bonus, Qty Bonus harus diisi !", 'data' => '']);
             }
 
-            if (!$noPo && !$supplier){
+            if (!$noPo && !$supplier) {
                 $getDataPlu->i_gross        =  $getDataPlu->i_bonus1 *  $getDataPlu->i_hrgbeli /  $getDataPlu->i_frac;
                 $getDataPlu->i_totaldisc    = ($getDataPlu->i_rphdisc1 + $getDataPlu->i_rphdisc2 + $getDataPlu->i_rphdisc2a + $getDataPlu->i_rphdisc2b + $getDataPlu->i_rphdisc3 + $getDataPlu->i_rphdisc4) * $getDataPlu->i_bonus1;
                 $this->param_ndpp           = $getDataPlu->i_gross - $getDataPlu->i_totaldisc;
@@ -1283,14 +1301,14 @@ class inputController extends Controller
                 $getDataPlu->i_disc2b       = $data->tpod_rphdisc2b * $getDataPlu->i_bonus1;
                 $getDataPlu->i_disc3        = $data->tpod_rphdisc3 * $getDataPlu->i_bonus1;
                 $getDataPlu->i_disc4        = $data->tpod_rphdisc4 * $getDataPlu->i_bonus1;
-            }// Line 1044
+            } // Line 1044
 
-            if ($getDataPlu->i_rphdisc1 < 0){
+            if ($getDataPlu->i_rphdisc1 < 0) {
                 $this->param_error = 0;
                 return (['kode' => 2, 'msg' => "Potongan 1 (Rp) harus >= 0", 'data' => '']);
             }
 
-            if (!$noPo && !$supplier && $getDataPlu->i_rphdisc1 != 0){
+            if (!$noPo && !$supplier && $getDataPlu->i_rphdisc1 != 0) {
                 $getDataPlu->i_rphdisc1 = 0;
                 $getDataPlu->i_disc1    = 0;
                 $getDataPlu->i_ppn      = 0;
@@ -1302,8 +1320,8 @@ class inputController extends Controller
 
             $getDataPlu->i_disc1 = $getDataPlu->i_rphdisc1;
 
-            if (!$noPo){
-                if (!$supplier){
+            if (!$noPo) {
+                if (!$supplier) {
                     $getDataPlu->i_totaldisc = ($getDataPlu->i_rphdisc1 + $getDataPlu->i_rphdisc2 + $getDataPlu->i_rphdisc2a + $getDataPlu->i_rphdisc2b + $getDataPlu->i_rphdisc3 + $getDataPlu->i_rphdisc4) * $getDataPlu->i_bonus2;
                 } else {
                     $getDataPlu->i_totaldisc = ($getDataPlu->i_rphdisc1 + $getDataPlu->i_rphdisc2 + $getDataPlu->i_rphdisc2a + $getDataPlu->i_rphdisc2b + $getDataPlu->i_rphdisc3 + $getDataPlu->i_rphdisc4) *
@@ -1318,20 +1336,20 @@ class inputController extends Controller
             $getDataPlu->i_total = round(($this->param_ndpp + $getDataPlu->i_ppn + $getDataPlu->i_bm + $getDataPlu->i_botol));
             $getDataPlu->i_disc1 = (!$noPo) ? $getDataPlu->i_rphdisc1 * ($getDataPlu->i_qty * $getDataPlu->i_frac + $getDataPlu->i_qtyk)  : $getDataPlu->i_rphdisc1;
 
-            if ($getDataPlu->i_rphdisc2 < 0){
+            if ($getDataPlu->i_rphdisc2 < 0) {
                 $this->param_error = 0;
                 return (['kode' => 2, 'msg' => "Potongan 2 (Rp) harus >= 0", 'data' => '']);
             }
-            if ($getDataPlu->i_rphdisc2a < 0){
+            if ($getDataPlu->i_rphdisc2a < 0) {
                 $this->param_error = 0;
                 return (['kode' => 2, 'msg' => "Potongan 2 A (Rp) harus >= 0", 'data' => '']);
             }
-            if ($getDataPlu->i_rphdisc2b < 0){
+            if ($getDataPlu->i_rphdisc2b < 0) {
                 $this->param_error = 0;
                 return (['kode' => 2, 'msg' => "Potongan 2 B (Rp) harus >= 0", 'data' => '']);
             }
 
-            if (!$noPo && !$supplier && $getDataPlu->i_rphdisc2 != 0){ //Line 1152
+            if (!$noPo && !$supplier && $getDataPlu->i_rphdisc2 != 0) { //Line 1152
                 $getDataPlu->i_rphdisc2 = 0;
                 $getDataPlu->i_disc2    = 0;
                 $getDataPlu->i_ppn      = 0;
@@ -1340,7 +1358,7 @@ class inputController extends Controller
                 $getDataPlu->i_total    = 0;
                 return (['kode' => 2, 'msg' => "Pada Transaksi BTB Lain2, Discount 2 tidak boleh diisi !", 'data' => '']);
             }
-            if (!$noPo && !$supplier && $getDataPlu->i_rphdisc2a != 0){ //Line 1152
+            if (!$noPo && !$supplier && $getDataPlu->i_rphdisc2a != 0) { //Line 1152
                 $getDataPlu->i_rphdisc2a = 0;
                 $getDataPlu->i_disc2a    = 0;
                 $getDataPlu->i_ppn      = 0;
@@ -1349,7 +1367,7 @@ class inputController extends Controller
                 $getDataPlu->i_total    = 0;
                 return (['kode' => 2, 'msg' => "Pada Transaksi BTB Lain2, Discount 2 A tidak boleh diisi !", 'data' => '']);
             }
-            if (!$noPo && !$supplier && $getDataPlu->i_rphdisc2b != 0){ //Line 1152
+            if (!$noPo && !$supplier && $getDataPlu->i_rphdisc2b != 0) { //Line 1152
                 $getDataPlu->i_rphdisc2b = 0;
                 $getDataPlu->i_disc2b    = 0;
                 $getDataPlu->i_ppn      = 0;
@@ -1363,8 +1381,8 @@ class inputController extends Controller
             $getDataPlu->i_disc2a = $getDataPlu->i_rphdisc2a;
             $getDataPlu->i_disc2b = $getDataPlu->i_rphdisc2b;
 
-            if (!$noPo){
-                if (!$supplier){
+            if (!$noPo) {
+                if (!$supplier) {
                     $getDataPlu->i_totaldisc = ($getDataPlu->i_rphdisc1 + $getDataPlu->i_rphdisc2 + $getDataPlu->i_rphdisc2a + $getDataPlu->i_rphdisc2b + $getDataPlu->i_rphdisc3 + $getDataPlu->i_rphdisc4) *
                         $getDataPlu->i_bonus1;
                 } else {
@@ -1382,12 +1400,12 @@ class inputController extends Controller
             $getDataPlu->i_disc2a = (!$noPo) ? $getDataPlu->i_rphdisc2a * ($getDataPlu->i_qty * $getDataPlu->i_frac + $getDataPlu->i_qtyk)  : $getDataPlu->i_rphdisc2a;
             $getDataPlu->i_disc2b = (!$noPo) ? $getDataPlu->i_rphdisc2b * ($getDataPlu->i_qty * $getDataPlu->i_frac + $getDataPlu->i_qtyk)  : $getDataPlu->i_rphdisc2b;
 
-            if ($getDataPlu->i_rphdisc3 < 0){
+            if ($getDataPlu->i_rphdisc3 < 0) {
                 $this->param_error = 0;
                 return (['kode' => 2, 'msg' => "Potongan 3 (Rp) harus >= 0", 'data' => '']);
             }
 
-            if (!$noPo && !$supplier && $getDataPlu->i_rphdisc3 != 0){ //Line 1269
+            if (!$noPo && !$supplier && $getDataPlu->i_rphdisc3 != 0) { //Line 1269
                 $getDataPlu->i_rphdisc3 = 0;
                 $getDataPlu->i_disc3    = 0;
                 $getDataPlu->i_ppn      = 0;
@@ -1399,8 +1417,8 @@ class inputController extends Controller
 
             $getDataPlu->i_disc3  = $getDataPlu->i_rphdisc3;
 
-            if (!$noPo){
-                if (!$supplier){
+            if (!$noPo) {
+                if (!$supplier) {
                     $getDataPlu->i_totaldisc = ($getDataPlu->i_rphdisc1 + $getDataPlu->i_rphdisc2 + $getDataPlu->i_rphdisc2a + $getDataPlu->i_rphdisc2b + $getDataPlu->i_rphdisc3 + $getDataPlu->i_rphdisc4) *
                         $getDataPlu->i_bonus1;
                 } else {
@@ -1416,11 +1434,11 @@ class inputController extends Controller
             $getDataPlu->i_total = round(($this->param_ndpp + $getDataPlu->i_ppn + $getDataPlu->i_bm + $getDataPlu->i_botol));
             $getDataPlu->i_disc3 = (!$noPo) ? $getDataPlu->i_rphdisc3 * ($getDataPlu->i_qty * $getDataPlu->i_frac + $getDataPlu->i_qtyk)  : $getDataPlu->i_rphdisc3;
 
-            if ($getDataPlu->i_rphdisc4 < 0){
+            if ($getDataPlu->i_rphdisc4 < 0) {
                 return (['kode' => 2, 'msg' => "Potongan 4 (Rp) harus >= 0", 'data' => '']);
             }
 
-            if (!$noPo && !$supplier && $getDataPlu->i_rphdisc4 != 0){ //Line 1352
+            if (!$noPo && !$supplier && $getDataPlu->i_rphdisc4 != 0) { //Line 1352
                 $getDataPlu->i_rphdisc4 = 0;
                 $getDataPlu->i_disc4    = 0;
                 $getDataPlu->i_ppn      = 0;
@@ -1432,8 +1450,8 @@ class inputController extends Controller
 
             $getDataPlu->i_disc4  = $getDataPlu->i_rphdisc4;
 
-            if (!$noPo){
-                if (!$supplier){
+            if (!$noPo) {
+                if (!$supplier) {
                     $getDataPlu->i_totaldisc = ($getDataPlu->i_rphdisc1 + $getDataPlu->i_rphdisc2 + $getDataPlu->i_rphdisc2a + $getDataPlu->i_rphdisc2b + $getDataPlu->i_rphdisc3 + $getDataPlu->i_rphdisc4) *
                         $getDataPlu->i_bonus1;
                 } else {
@@ -1453,7 +1471,8 @@ class inputController extends Controller
         return (['kode' => '0', 'msg' => "Procedure success", 'data' => '']);
     }
 
-    public function query3($prdcd, $kodeigr, $supplier, $noPo) {
+    public function query3($prdcd, $kodeigr, $supplier, $noPo)
+    {
         $data = DB::connection(Session::get('connection'))->select("SELECT prd_prdcd,
                                      prd_lastcost,
                                      prd_unit,
@@ -1544,7 +1563,8 @@ class inputController extends Controller
         return $data;
     }
 
-    public function changeHargaBeli(Request $request){
+    public function changeHargaBeli(Request $request)
+    {
         $hrgbeli    = $request->hargaBeli;
         $prdcd      = $request->prdcd;
         $supplier   = $request->supplier;
@@ -1552,11 +1572,11 @@ class inputController extends Controller
         $qty        = $request->qty;
         $qtyk       = $request->qtyk;
         $kodeigr    = Session::get('kdigr');
-        $tempDataPlu= $request->tempDataPLU;
+        $tempDataPlu = $request->tempDataPLU;
         $this->getDataPlu = (object) $tempDataPlu;
 
 
-        $this->getDataPlu->i_hrgbeli= $hrgbeli;
+        $this->getDataPlu->i_hrgbeli = $hrgbeli;
         $this->getDataPlu->i_qty = $qty;
         $this->getDataPlu->i_qtyk = $qtyk;
         $msg        = '';
@@ -1564,12 +1584,12 @@ class inputController extends Controller
 
         $chkGets    = $this->chkGets(2, $prdcd, $kodeigr, $supplier, $noPo);
 
-        if ($chkGets['kode'] == 2){
-            if ($this->param_error == 0){
+        if ($chkGets['kode'] == 2) {
+            if ($this->param_error == 0) {
                 $msg = $chkGets['msg'];
             } elseif ($this->param_error == 2) {
                 $msg = " Selisih cost terlalu besar";
-            } elseif ($this->param_error == 3){
+            } elseif ($this->param_error == 3) {
                 $msg = $chkGets['msg'];
             }
         } else {
@@ -1580,7 +1600,8 @@ class inputController extends Controller
         return response()->json(['kode' => $kode, 'msg' => $msg, 'data' => $this->getDataPlu]);
     }
 
-    public function changeQty(Request $request){
+    public function changeQty(Request $request)
+    {
         $hrgbeli    = $request->hargaBeli;
         $prdcd      = $request->prdcd;
         $supplier   = $request->supplier;
@@ -1588,7 +1609,7 @@ class inputController extends Controller
         $qty        = $request->qty;
         $qtyk       = $request->qtyk;
         $kodeigr    = Session::get('kdigr');
-        $tempDataPlu= $request->tempDataPLU;
+        $tempDataPlu = $request->tempDataPLU;
         $this->getDataPlu = (object) $tempDataPlu;
         $msg        = '';
         $kode       = 0;
@@ -1596,7 +1617,7 @@ class inputController extends Controller
 
         $dataPoD  = DB::connection(Session::get('connection'))->table("TBTR_PO_D")->where('tpod_kodeigr', $kodeigr)->where('tpod_nopo', $noPo)->where('tpod_prdcd', $prdcd)->get()->toArray();
 
-        if ($dataPoD){
+        if ($dataPoD) {
             $temp = $dataPoD[0];
             $this->getDataPlu->i_rphdisc1 = ($temp->tpod_rphdisc1 / $temp->tpod_qtypo) * (($qty * $temp->tpod_isibeli) + $qtyk);
             $this->getDataPlu->i_rphdisc2 = ($temp->tpod_rphdisc2 / $temp->tpod_qtypo) * (($qty * $temp->tpod_isibeli) + $qtyk);
@@ -1617,8 +1638,8 @@ class inputController extends Controller
 
         $chkGets    = $this->chkGets(2, $prdcd, $kodeigr, $supplier, $noPo);
 
-        if ($chkGets['kode'] == 2){
-            if ($this->param_error == 0){
+        if ($chkGets['kode'] == 2) {
+            if ($this->param_error == 0) {
                 $msg = $chkGets['msg'];
             }
         } else {
@@ -1629,13 +1650,14 @@ class inputController extends Controller
         return response()->json(['kode' => $kode, 'msg' => $msg, 'data' => $this->getDataPlu]);
     }
 
-    public function changeBonus1(Request $request){
+    public function changeBonus1(Request $request)
+    {
         $bonus1     = $request->bonus1;
         $prdcd      = $request->prdcd;
         $supplier   = $request->supplier;
         $noPo       = $request->noPo;
         $kodeigr    = Session::get('kdigr');
-        $tempDataPlu= $request->tempDataPLU;
+        $tempDataPlu = $request->tempDataPLU;
         $this->getDataPlu = (object) $tempDataPlu;
         $msg        = '';
         $kode       = 0;
@@ -1644,8 +1666,8 @@ class inputController extends Controller
 
         $chkGets    = $this->chkGets(2, $prdcd, $kodeigr, $supplier, $noPo);
 
-        if ($chkGets['kode'] == 2){
-            if ($this->param_error == 0){
+        if ($chkGets['kode'] == 2) {
+            if ($this->param_error == 0) {
                 $msg = $chkGets['msg'];
             }
         } else {
@@ -1656,7 +1678,8 @@ class inputController extends Controller
         return response()->json(['kode' => $kode, 'msg' => $msg, 'data' => $this->getDataPlu]);
     }
 
-    public function changeRphDisc(Request $request) {
+    public function changeRphDisc(Request $request)
+    {
         $prdcd = $request->prdcd;
         $supplier = $request->supplier;
         $noPo = $request->noPo;
@@ -1668,8 +1691,8 @@ class inputController extends Controller
 
         $chkGets    = $this->chkGets(7, $prdcd, $kodeigr, $supplier, $noPo);
 
-        if ($chkGets['kode'] == 2){
-            if ($this->param_error == 0){
+        if ($chkGets['kode'] == 2) {
+            if ($this->param_error == 0) {
                 $msg = $chkGets['msg'];
             }
         } else {
@@ -1678,10 +1701,10 @@ class inputController extends Controller
         }
 
         return response()->json(['kode' => $kode, 'msg' => $msg, 'data' => $this->getDataPlu]);
-
     }
 
-    public function rekamData(Request $request){
+    public function rekamData(Request $request)
+    {
         $prdcd  = $request->prdcd;
         $noBtb  = $request->noBTB;
         $noPo   = $request->noPo;
@@ -1691,43 +1714,43 @@ class inputController extends Controller
         $this->getDataPlu = (object)$tempDataPlu;
         $data = $this->getDataPlu; //**** tempdataplu -> getdataplu supaya berbentuk object. dari getdataplu ke data supaya pakainya lebih mudah
 
-        if ($tempData){
-            foreach ($tempData as $datas){
-                if ($datas['trbo_prdcd'] != $prdcd){
-                    array_push($this->tempDataSave,$datas);
+        if ($tempData) {
+            foreach ($tempData as $datas) {
+                if ($datas['trbo_prdcd'] != $prdcd) {
+                    array_push($this->tempDataSave, $datas);
                 }
             }
         }
 
         $checkBtb   = DB::connection(Session::get('connection'))->table('tbtr_backoffice')->where('trbo_nodoc', $noBtb)->get()->toArray();
 
-        if ($checkBtb){
-//            --- Tidak dipakai, karena validasi pas pakai noPO ini belum bisa dibuat, karena ketika halaman ditutup, belum bisa update otomatis supaya noPO dapat di pakai oleh user lain
-//            UPDATE TBTR_PO_H
-//            SET TPOH_RECORDID = NULL
-//            WHERE TPOH_NOPO = :NO_PO AND NVL (TPOH_RECORDID, '9') <> 'X';
-//
-//            UPDATE TBTR_PO_D
-//            SET TPOD_RECORDID = NULL
-//            WHERE  TPOD_NOPO = :NO_PO AND NVL (TPOD_RECORDID, '9') <> 'X' AND NVL (TPOD_QTYPB, 0) = 0;
+        if ($checkBtb) {
+            //            --- Tidak dipakai, karena validasi pas pakai noPO ini belum bisa dibuat, karena ketika halaman ditutup, belum bisa update otomatis supaya noPO dapat di pakai oleh user lain
+            //            UPDATE TBTR_PO_H
+            //            SET TPOH_RECORDID = NULL
+            //            WHERE TPOH_NOPO = :NO_PO AND NVL (TPOH_RECORDID, '9') <> 'X';
+            //
+            //            UPDATE TBTR_PO_D
+            //            SET TPOD_RECORDID = NULL
+            //            WHERE  TPOD_NOPO = :NO_PO AND NVL (TPOD_RECORDID, '9') <> 'X' AND NVL (TPOD_QTYPB, 0) = 0;
 
-            $msg = "Nomor BPB ".$noBtb." Sudah Ada di TBTR_BACKOFFICE !! Hubungi EDP !!";
+            $msg = "Nomor BPB " . $noBtb . " Sudah Ada di TBTR_BACKOFFICE !! Hubungi EDP !!";
 
             return response()->json(['kode' => 0, 'msg' => $msg, 'data' => $data]);
         } else {
-//            if (((int)$data->i_totalpo) - ((int)$data->grant_total) > 500){
-//                return response()->json(['kode' => 0, 'msg' => "Selisih Total PO > 500 !!", 'data' => '']);
-//            } // ----- Tidak dipakai karena tidak ada yg init i_totalpo dan grant_total
+            //            if (((int)$data->i_totalpo) - ((int)$data->grant_total) > 500){
+            //                return response()->json(['kode' => 0, 'msg' => "Selisih Total PO > 500 !!", 'data' => '']);
+            //            } // ----- Tidak dipakai karena tidak ada yg init i_totalpo dan grant_total
 
-            if ($data->i_qty * $data->i_frac + $data->i_qtyk > $data->qty_po){
+            if ($data->i_qty * $data->i_frac + $data->i_qtyk > $data->qty_po) {
                 $data->i_qty = floor($data->qty_po / $data->tpod_isibeli);
                 $data->i_qtyk = $data->qty_po - ($data->i_qty * $data->tpod_isibeli);
 
                 return response()->json(['kode' => 0, 'msg' => "Kuantum melebihi PO", 'data' => $data]);
             } else {
-//               --- Part dimana cek parameter.arr_plu di hilangkan karena bisa pakai tempDataSave
+                //               --- Part dimana cek parameter.arr_plu di hilangkan karena bisa pakai tempDataSave
 
-                if ($this->param_rec == 0){
+                if ($this->param_rec == 0) {
                     $temp = new \stdClass();
 
                     $temp->trbo_prdcd       = $prdcd;
@@ -1787,7 +1810,7 @@ class inputController extends Controller
                     $temp->trbo_furgnt      = $data->i_jenispb;
                     $temp->trbo_oldcost     = $data->i_lcost;
 
-                    array_push($this->tempDataSave,$temp);
+                    array_push($this->tempDataSave, $temp);
 
                     $qtypb = ($data->i_qty * $data->i_frac) + $data->i_qtyk;
                     $updatePoD  = DB::connection(Session::get('connection'))->table('tbtr_po_d')
@@ -1796,14 +1819,14 @@ class inputController extends Controller
 
                     $updatePoH  = DB::connection(Session::get('connection'))->table('tbtr_po_h')->where('tpoh_nopo', $noPo)->update(['tpoh_recordid' => 2]);
                 }
-
             }
 
             return response()->json(['kode' => 1, 'msg' => "Rekam Data Berhasil", 'data' => $this->tempDataSave]);
         }
     }
 
-    public function transferPO(Request $request){
+    public function transferPO(Request $request)
+    {
         $supplier = $request->supplier;
         $noPo   = $request->noPo;
         $kodeigr = Session::get('kdigr');
@@ -1818,11 +1841,11 @@ class inputController extends Controller
                                       FROM TBTR_MSTRAN_D
                                      WHERE MSTD_KODEIGR = '$kodeigr' AND MSTD_NOPO = NVL('$noPo', '123') AND MSTD_TYPETRN = 'B'  AND NVL(MSTD_RECORDID, '0') <> 1");
 
-        if ($temp1[0]->temp1 != 0 || $temp2[0]->temp2 != 0){
+        if ($temp1[0]->temp1 != 0 || $temp2[0]->temp2 != 0) {
             return response()->json(['kode' => 2, 'msg' => "Nomor Dokumen Ini Sudah Terdapat di TBTR_BACKOFFICE / TBTR_MSTRAN_D, Program Akan Keluar Otomatis !!", 'data' => '']);
         }
 
-        if ($noPo == '' || !$noPo){
+        if ($noPo == '' || !$noPo) {
             return response()->json(['kode' => 2, 'msg' => "Check No PO", 'data' => '']);
         }
 
@@ -1830,29 +1853,30 @@ class inputController extends Controller
                                       FROM TBTR_PO_H
                                      WHERE TPOH_NOPO = '$noPo' AND TPOH_KODEIGR = '$kodeigr'");
 
-        if ($recID == 'X'){
+        if ($recID == 'X') {
             return response()->json(['kode' => 2, 'msg' => "PO Sedang Dipakai di DCP", 'data' => '']);
         }
 
-        $getPOData  = $this->getPOData($kodeigr,$supplier,$noPo);
+        $getPOData  = $this->getPOData($kodeigr, $supplier, $noPo);
 
         return response()->json(['kode' => $getPOData['kode'], 'msg' => $getPOData['msg'], 'data' => $this->tempDataSave]);
     }
 
-    public function getPOData($kodeigr, $supplier, $noPo){
+    public function getPOData($kodeigr, $supplier, $noPo)
+    {
         $query4 = $this->query4($kodeigr, $supplier, $noPo);
 
-        if (!$query4){
+        if (!$query4) {
             return (['kode' => 2, 'msg' => "Data tidak ada !!", 'data' => '']);
         }
 
         $this->tempDataSave = [];
 
-        foreach ($query4 as $data){
+        foreach ($query4 as $data) {
             DB::connection(Session::get('connection'))->table("tbtr_po_d")->where('tpod_nopo', $noPo)->where('tpod_prdcd', $data->tpod_prdcd)->where('tpod_kodeigr', $kodeigr)
                 ->update(['tpod_qtypb' => $data->qty_po, 'tpod_recordid' => '2']);
 
-//            *** Save to tempdatasave
+            //            *** Save to tempdatasave
             $temp = new \stdClass();
 
             $temp->trbo_nopo = $data->tpod_nopo;
@@ -1902,23 +1926,24 @@ class inputController extends Controller
             $temp->trbo_hrgsatuan =  $temp->nprice;
             $temp->trbo_bkp = $data->prd_flagbkp1;
             $temp->trbo_fobkp = $data->prd_flagbkp2;
-            $temp->trbo_ppnrph = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.1 * $temp->ndpp : 0 ;
+            $temp->trbo_ppnrph = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.1 * $temp->ndpp : 0;
             $temp->trbo_ppnbmrph = $data->tpod_ppnbm;
             $temp->trbo_ppnbtlrph = $data->tpod_ppnbotol;
             $temp->trbo_qty = $data->qty_po;
             $temp->flag_update = 1;
             $temp->total_rph = $temp->trbo_gross - $temp->trbo_discrph + $temp->trbo_ppnrph + $temp->trbo_ppnbmrph + $temp->trbo_ppnbtlrph;
-            $temp->total_disc = $temp->trbo_rphdisc1 + $temp->trbo_rphdisc2 +$temp->trbo_rphdisc2ii + $temp->trbo_rphdisc2iii + $temp->trbo_rphdisc3 + $temp->trbo_rphdisc4;
+            $temp->total_disc = $temp->trbo_rphdisc1 + $temp->trbo_rphdisc2 + $temp->trbo_rphdisc2ii + $temp->trbo_rphdisc2iii + $temp->trbo_rphdisc3 + $temp->trbo_rphdisc4;
             $this->param_seqno = $this->param_seqno + 1;
             $temp->trbo_seqno = $this->param_seqno;
             $temp->item = 1;
 
-            array_push($this->tempDataSave,$temp);
+            array_push($this->tempDataSave, $temp);
         }
         return (['kode' => '0', 'msg' => "Procedure success", 'data' => '']);
     }
 
-    public function query4($kodeigr, $supplier, $noPo){
+    public function query4($kodeigr, $supplier, $noPo)
+    {
         $data   = DB::connection(Session::get('connection'))->select("SELECT  tpod_kodeigr,
                                              tpod_recordid,
                                              tpod_nopo,
@@ -1986,7 +2011,8 @@ class inputController extends Controller
         return $data;
     }
 
-    public function saveData(Request $request){
+    public function saveData(Request $request)
+    {
         $typeTrn = $request->typeTrn;
         $tempdata   = $request->tempDataSave;
         $user       = Session::get('usid');
@@ -2010,21 +2036,21 @@ class inputController extends Controller
 
 
         try {
-            foreach ($tempdata as $temp){
+            foreach ($tempdata as $temp) {
                 $data = (object) $temp;
 
-//                dd($data);
+                //                dd($data);
 
                 DB::connection(Session::get('connection'))->table('tbtr_backoffice')->insert([
                     "TRBO_KODEIGR" => $kodeigr,
                     "TRBO_RECORDID" => '',
                     "TRBO_TYPETRN" => $typeTrn,
                     "TRBO_NODOC" => $fixNoBTB,
-                    "TRBO_TGLDOC" => date('Y/d/m', strtotime($request->tglBTB)),
+                    "TRBO_TGLDOC" => $request->tglBTB,
                     "TRBO_NOREFF" => '',
                     "TRBO_TGLREFF" => '',
                     "TRBO_NOPO" => $request->noPO,
-                    "TRBO_TGLPO" => date('Y/d/m', strtotime($request->tglPO)),
+                    "TRBO_TGLPO" => $request->tglPO,
                     "TRBO_NOFAKTUR" => $request->noFaktur,
                     "TRBO_TGLFAKTUR" => $request->tglFaktur,
                     "TRBO_KODESUPPLIER" => $request->supplier,
@@ -2071,22 +2097,26 @@ class inputController extends Controller
             }
 
             return response()->json(['kode' => 1, 'msg' => "Simpan Data Berhasil !!", 'data' => '']);
-        } catch (\Exception $catch){
+        } catch (\Exception $catch) {
             return response()->json(['kode' => 0, 'msg' => $catch->getMessage(), 'data' => '']);
         }
     }
 
-
+    public function showPLULain()
+    {
+        $kodeigr = Session::get('kdigr');
+        $data = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
+            ->select('PRD_PRDCD', 'PRD_DESKRIPSIPANJANG')
+            ->join('TBMASTER_STOCK', function ($join) {
+                $join->on('ST_PRDCD', 'PRD_PRDCD');
+                $join->on('ST_KODEIGR', 'PRD_KODEIGR');
+            })
+            ->where('ST_KODEIGR', $kodeigr)
+            ->where('ST_LOKASI', '01')
+            ->where('ST_SALDOAKHIR', '>', 0)
+            ->whereNotNull('ST_AVGCOST')
+            ->whereRaw("(PRD_KODETAG != 'T' AND PRD_KODETAG != 'G' AND PRD_KODETAG != 'Q')")
+            ->get()->toArray();
+        return response()->json($data);
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-

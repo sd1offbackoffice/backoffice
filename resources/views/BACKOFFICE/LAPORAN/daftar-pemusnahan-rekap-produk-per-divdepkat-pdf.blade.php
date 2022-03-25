@@ -77,7 +77,7 @@
             @endif
             <tr>
                 <td class="left">{{ $data[$i]->plu }}</td>
-                <td class="left">{{ $data[$i]->barang }}</td>
+                <td class="left">{{ strlen($data[$i]->barang) > 30 ? substr($data[$i]->barang,0,30).'...' : $data[$i]->barang }}</td>
                 <td class="left">{{ $data[$i]->kemasan }}</td>
                 <td class="right padding-right">{{ number_format($data[$i]->hrg_satuan,2) }}</td>
                 <td class="right">{{ number_format($data[$i]->qty,2) }}</td>

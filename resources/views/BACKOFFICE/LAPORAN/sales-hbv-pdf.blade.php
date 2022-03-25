@@ -40,6 +40,7 @@
         @php
             $tempDep = null;
             $tempPLU = null;
+            $tempQty = null;
             $jmlJual = 0;
             $jmlDasar = 0;
         @endphp
@@ -52,9 +53,10 @@
                     <td colspan="7"></td>
                 </tr>
             @endif
-            @if($tempPLU != $d->trjd_prdcd)
+            @if($tempPLU != $d->trjd_prdcd || ($tempPLU == $d->trjd_prdcd && $tempQty != $d->trjd_quantity))
                 @php
                     $tempPLU = $d->trjd_prdcd;
+                    $tempQty = $d->trjd_quantity;
                     $jmlJual += $d->nilai_jadi;
                 @endphp
                 <tr>

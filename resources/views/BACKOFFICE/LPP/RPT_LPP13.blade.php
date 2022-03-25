@@ -14,8 +14,7 @@
     TANGGAL : {{$tgl1}} s/d {{$tgl2}}
 @endsection
 
-@section('paper_height','595pt')
-@section('paper_width','1200pt')
+
     @php
         $tempsup = '';
         $tempsup = '';
@@ -218,8 +217,6 @@
 
         @endfor
 
-        </tbody>
-        <tfoot style="border-bottom: 1px solid black;border-top: 1px solid black;">
         <tr>
             <td class="left" colspan="1"><strong>TOTAL :</strong></td>
             <td align="right">{{ number_format($total_sawalrph     ,0) }}</td>
@@ -238,7 +235,7 @@
             <td align="right">{{ number_format($total_intrstrph    ,0) }}</td>
             <td align="right">{{ number_format($total_sadj         ,0) }}</td>
         </tr>
-        </tfoot>
+        </tbody>
     </table>
 
 @endsection

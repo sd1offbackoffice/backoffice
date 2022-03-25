@@ -798,10 +798,10 @@
                                 <td class="align-middle"><input disabled class="form-control text-right harga" value="${convertToRupiah2(response[i].rom_hrg)}"></td>
                                 <td class="align-middle"><input disabled class="form-control text-right total" value="${convertToRupiah2(response[i].rom_ttl)}"></td>
                                 <td class="align-middle"><input type="number" onchange="fnQTY(${i}, event, true)" onkeypress="fnQTY(${i}, event, false)" class="form-control text-right qty" value="${response[i].rom_qty}"></td>
-                                <td class="align-middle"><input disabled class="form-control text-right realisasi" value="${response[i].rom_qtyrealisasi}" onkeyup="checkQty(this.value, ${response[i].rom_qty}, event)"></td>
+                                <td class="align-middle"><input disabled class="form-control text-right realisasi" value="${response[i].rom_qtyrealisasi}" onkeyup="checkQty(this.value, ${i})"></td>
                                 <td class="align-middle"><input disabled class="form-control text-right selisih" value="${response[i].rom_qtyselisih}"></td>
-                                <td class="align-middle"><input disabled class="form-control text-right jual" value="${response[i].rom_qtymlj}"></td>
-                                <td class="align-middle"><input disabled class="form-control text-right nonjual" value="${response[i].rom_qtytlj}"></td>
+                                <td class="align-middle"><input disabled class="form-control text-right jual" value="${response[i].rom_qtymlj}" onkeyup="checkQtyJual(this.value, ${i})"></td>
+                                <td class="align-middle"><input disabled class="form-control text-right nonjual" value="${response[i].rom_qtytlj}" onkeyup="checkQtyNonJual(this.value, ${i})"></td>
                             </tr>
                         `);
                     }
@@ -878,14 +878,104 @@
             });
         }
 
-        function checkQty(qtyRealisasi, qtyRetur, event){
-            if(qtyRealisasi > qtyRetur){
+        function checkQty(qtyRealisasi, row){
+            curr = $('#row-data-'+row);
+
+            qtyRealisasi = nvl(qtyRealisasi, 0);
+
+            qtyRetur = curr.find('.qty').val();
+
+            if(parseInt(qtyRealisasi) == 0 && paramTypeRetur == 'M'){
                 swal({
-                    title: 'Qty realisasi tidak boleh lebih besar dari qty retur!',
+                    title: 'Qty realisasi Retur OMI tidak boleh 0!',
                     icon: 'error'
                 }).then(() => {
-                    $(event.target).val(0).select();
+                    curr.find('.realisasi').select();
                 });
+            }
+            else{
+                if(parseInt(qtyRealisasi) < 0){
+                    swal({
+                        title: 'Qty realisasi tidak boleh lebih kecil dari 0!',
+                        icon: 'error'
+                    }).then(() => {
+                        curr.find('.realisasi').val(0).select();
+                    });
+                }
+                else{
+                    if(parseInt(qtyRealisasi) > parseInt(qtyRetur)){
+                        swal({
+                            title: 'Qty realisasi tidak boleh lebih besar dari qty retur!',
+                            icon: 'error'
+                        }).then(() => {
+                            curr.find('.realisasi').val(0).select();
+                        });
+                    }
+                    else{
+                        selisih = parseInt(qtyRetur) - parseInt(qtyRealisasi);
+                        curr.find('.selisih').val(selisih);
+
+                        if(selisih > 0){
+                            $('#namadriver').prop('disabled',false);
+                        }
+
+                        curr.find('.jual').val(parseInt(qtyRealisasi));
+                        curr.find('.nonjual').val(0);
+                    }
+                }
+            }
+        }
+
+        function checkQtyJual(qtyJual, row){
+            curr = $('#row-data-'+row);
+
+            if(parseInt(qtyJual) == 0){
+                swal({
+                    title: 'Qty masih layak jual Retur OMI tidak boleh 0!',
+                    icon: 'error'
+                }).then(() => {
+                    curr.find('.jual').select();
+                });
+            }
+            else{
+                curr.find('.nonjual').val(parseInt(curr.find('.realisasi').val()) - parseInt(qtyJual)).focus();
+            }
+        }
+
+        function checkQtyNonJual(qtyNonJual, row){
+            curr = $('#row-data-'+row);
+
+            if(parseInt(qtyNonJual) < 0){
+                swal({
+                    title: 'Qty tidak layak jual Retur OMI tidak boleh kurang dari 0!',
+                    icon: 'error'
+                }).then(() => {
+                    curr.find('.nonjual').select();
+                });
+            }
+            else{
+                if(parseInt(curr.find('.realisasi').val()) == 0 && parseInt(qtyNonJual) > 0){
+                    swal({
+                        title: 'Qty tidak layak jual tidak boleh diisi karena Qty Realisasi 0!',
+                        icon: 'error'
+                    }).then(() => {
+                        curr.find('.nonjual').val(0).select();
+                    });
+                }
+                else{
+                    if(parseInt(qtyNonJual) > parseInt(curr.find('.realisasi').val())){
+                        swal({
+                            title: 'Qty tidak layak jual tidak boleh lebih besar dari Qty Realisasi!',
+                            icon: 'error'
+                        }).then(() => {
+                            curr.find('.nonjual').val(0).select();
+                        });
+                    }
+                    else{
+                        curr.find('.jual').val(parseInt(curr.find('.realisasi').val()) - parseInt(qtyNonJual));
+                        // $('#row-data-'+(row+1)).find('.realisasi').select();
+                    }
+                }
             }
         }
 
@@ -1043,8 +1133,8 @@
                     <td class="align-middle"><input type="number" onchange="fnQTY(${row}, event, true)" onkeypress="fnQTY(${row}, event, false)" class="form-control text-right qty"></td>
                     <td class="align-middle"><input disabled class="form-control text-right realisasi"></td>
                     <td class="align-middle"><input disabled class="form-control text-right selisih"></td>
-                    <td class="align-middle"><input disabled class="form-control text-right jual"></td>
-                    <td class="align-middle"><input disabled class="form-control text-right nonjual"></td>
+                    <td class="align-middle"><input disabled class="form-control text-right jual" onkeyup="checkQtyJual(this.value, ${row})"></td>
+                    <td class="align-middle"><input disabled class="form-control text-right nonjual" onkeyup="checkQtyNonJual(this.value, ${row})"></td>
                 </tr>
             `);
 

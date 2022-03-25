@@ -117,7 +117,7 @@
                 <td style="text-align: right">{{oneDigit($data[$i]->prd_avgcost)}}</td>
                 <td style="text-align: right">{{oneDigit($data[$i]->prd_hrgjual2)}}</td>
                 <td style="text-align: right">{{oneDigit($data[$i]->prd_hrgjual)}}</td>
-                <td style="text-align: right">{{twoDigit($cf_nmargin[$i])}}</td>
+                <td style="text-align: right">{{$cf_nmargin[$i]}}</td>
                 <?php
                 $date = new DateTime($data[$i]->prd_tglhrgjual);
                 $strip = $date->format('d-m-Y');

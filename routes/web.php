@@ -466,6 +466,8 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::post('/cetak-so', 'BACKOFFICE\InformasiHistoryProductController@cetakSo');
             Route::post('/cetak', 'BACKOFFICE\InformasiHistoryProductController@cetak');
             Route::get('/get-data-detail-sales', 'BACKOFFICE\InformasiHistoryProductController@getDetailSales');
+            Route::get('/get-data-penerimaan', 'BACKOFFICE\InformasiHistoryProductController@getPenerimaan');
+            Route::get('/get-data-pb', 'BACKOFFICE\InformasiHistoryProductController@getPenerimaan');
         });
 
         /*Leo*/
@@ -477,7 +479,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/lov_nopb', 'BACKOFFICE\PBManualController@lov_nopb');
                 Route::get('/lov_search_plu', 'BACKOFFICE\PBManualController@lov_search_plu');
                 Route::get('/get-data-pb', 'BACKOFFICE\PBManualController@getDataPB');
-                Route::post('/hapusDokumen', 'BACKOFFICE\PBManualController@hapusDokumen');
+                Route::post('/hapus-dokumen', 'BACKOFFICE\PBManualController@hapusDokumen');
                 Route::post('/cek_plu', 'BACKOFFICE\PBManualController@cek_plu');
                 Route::post('/cek_bonus', 'BACKOFFICE\PBManualController@cek_bonus');
                 Route::post('/save_data', 'BACKOFFICE\PBManualController@save_data');
@@ -572,6 +574,19 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::post('/cek_supplier', 'BACKOFFICE\CetakTolakanPBController@cek_supplier');
                 Route::post('/sup_cek_plu', 'BACKOFFICE\CetakTolakanPBController@sup_cek_plu');
                 Route::get('/print_by_sup', 'BACKOFFICE\CetakTolakanPBController@print_by_sup');
+            });
+
+            //hen
+            //PB Perishable
+            Route::prefix('pbperishable')->group(function () {
+                Route::get('/', 'BACKOFFICE\PBPerishableController@index');
+                Route::post('/lov_trn', 'BACKOFFICE\PBPerishableController@lov_trn');
+                Route::post('/lov_plu', 'BACKOFFICE\PBPerishableController@lov_plu');
+                Route::post('/showTrn', 'BACKOFFICE\PBPerishableController@showTrn');
+                Route::post('/showPlu', 'BACKOFFICE\PBPerishableController@showPlu');
+                Route::post('/nmrBaruTrn', 'BACKOFFICE\PBPerishableController@nmrBaruTrn');
+                Route::post('/saveDoc', 'BACKOFFICE\PBPerishableController@saveDoc');
+                Route::post('/deleteDoc', 'BACKOFFICE\PBPerishableController@deleteDoc');
             });
         });
 
@@ -715,6 +730,15 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::get('/get-data', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InqueryRtrSupController@getData');
                     Route::get('/get-data-detail', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InqueryRtrSupController@getDataDetail');
                     Route::get('/cetak', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InqueryRtrSupController@report');
+                });
+
+                // Cesar
+                // Cetak Ulang Faktur Pajak
+                Route::prefix('/cetak-ulang-faktur-pajak')->group(function () {
+                    Route::get('/', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\CetakUlangFakturPajakController@index');
+                    Route::post('/lov-search1', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\CetakUlangFakturPajakController@lovSearchNPB1');
+                    Route::post('/lov-search2', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\CetakUlangFakturPajakController@lovSearchNPB2');
+                    Route::post('/check-data', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\CetakUlangFakturPajakController@checkData');
                 });
 
             });
@@ -1362,6 +1386,11 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/get-data-lov-plu', 'BACKOFFICE\AdjustmentStockCMOController@getDataLovPLU');
             Route::get('/check-plu', 'BACKOFFICE\AdjustmentStockCMOController@checkPLU');
             Route::get('/get-data-ba', 'BACKOFFICE\AdjustmentStockCMOController@getDataBA');
+            Route::get('/get-new-no-ba', 'BACKOFFICE\AdjustmentStockCMOController@getNewNoBA');
+            Route::get('/check-qty-ba', 'BACKOFFICE\AdjustmentStockCMOController@checkQtyBA');
+            Route::post('/process-ba', 'BACKOFFICE\AdjustmentStockCMOController@processBA');
+            Route::get('/print-ba', 'BACKOFFICE\AdjustmentStockCMOController@printBA');
+            Route::post('/cancel-ba', 'BACKOFFICE\AdjustmentStockCMOController@cancelBA');
         });
 
         /*Leo*/
@@ -1941,6 +1970,11 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/printdocumentmenu5', 'FRONTOFFICE\LAPORANKASIR\penjualanController@printDocumentMenu5');
                 Route::get('/printdocumentmenu6', 'FRONTOFFICE\LAPORANKASIR\penjualanController@printDocumentMenu6');
             });
+
+            Route::prefix('/laporan-transaksi-bkp-btkp')->group(function () {
+                Route::get('/', 'FRONTOFFICE\LAPORANKASIR\LaporanTransaksiBKPBTKPController@index');
+                Route::get('/print', 'FRONTOFFICE\LAPORANKASIR\LaporanTransaksiBKPBTKPController@print');
+            });
         });
 
         Route::prefix('/laporan-sales-per-divisi-departemen')->group(function () {
@@ -2099,8 +2133,6 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/export-pdf', 'FRONTOFFICE\StockBarangKosongPerPeriodeDSIController@exportPDF');
             Route::get('/export-csv', 'FRONTOFFICE\StockBarangKosongPerPeriodeDSIController@exportCSV');
         });
-
-
     });
 
     Route::prefix('/monitoring')->group(function () {

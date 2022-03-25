@@ -2,7 +2,7 @@
 
 {{--@section('table_font_size','7 px')--}}
 
-@section('paper_widht','842pt')
+@section('paper_width','842pt')
 @section('paper_height','595pt')
 
 @section('page_title')

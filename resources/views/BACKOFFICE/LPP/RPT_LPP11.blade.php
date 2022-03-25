@@ -11,7 +11,7 @@
 @endsection
 
 @section('subtitle')
-    TANGGAL : {{$tgl1}} s/d {{$tgl2}}
+    TANGGAL : {{date('d/M/Y',strtotime(str_replace('/','-',$tgl1)))}} s/d {{date('d/M/Y',strtotime(str_replace('/','-',$tgl2)))}}
 @endsection
 
 @section('paper_height','595pt')
@@ -55,8 +55,8 @@
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr style="text-align: center;">
             <th colspan="2" style="text-align: center"></th>
-            <th colspan="2" style="text-align: center">- - - - - - - - - - - - - - - - - - - - - - - - PENERIMAAN- - - - - - - - - - - - - - - - - - - - - - - - </th>
-            <th colspan="4" style="text-align: center">- - - - - - - - - - - - - - - - - - - - - - - - PENGELUARAN- - - - - - - - - - - - - - - - - - - - - - - - </th>
+            <th colspan="2" style="text-align: right">- - - - - - - - - PENERIMAAN- - - - - - - - -  </th>
+            <th colspan="4" style="text-align: right">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - PENGELUARAN - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - </th>
         </tr>
         <tr style="text-align: center;">
             <th class="right" width="1%"></th>

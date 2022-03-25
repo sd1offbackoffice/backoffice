@@ -525,7 +525,7 @@ class ReturController extends Controller
                 $ins['rom_kodeigr'] = Session::get('kdigr');
                 $ins['rom_nodokumen'] = $request->nodokumen;
                 $ins['rom_tgldokumen'] = DB::connection(Session::get('connection'))->raw("to_date('".$request->tgldokumen."','dd/mm/yyyy')");
-                $ins['rom_tgljatuhtempo'] = DB::connection(Session::get('connection'))->raw("to_date('".$request->tgldokumen."','dd/mm/yyyy') +".$top);
+                $ins['rom_tgljatuhtempo'] = DB::connection(Session::get('connection'))->raw("to_date('".$request->tgldokumen."','dd/mm/yyyy') +".(($top == '' || $top == null) ? 0 : $top));
                 $ins['rom_noreferensi'] = $request->noreferensi;
                 $ins['rom_tglreferensi'] = DB::connection(Session::get('connection'))->raw("to_date('".$request->tglreferensi."','dd/mm/yyyy')");
                 $ins['rom_kodetoko'] = $request->kodetoko;
@@ -1286,6 +1286,7 @@ class ReturController extends Controller
                                        tbmaster_prodmast.prd_kodedivisi,
                                        tbmaster_prodmast.prd_kodedepartement,
                                        tbmaster_prodmast.prd_kodekategoribarang,
+                                       tbmaster_prodmast.prd_ppn,
                                        tbmaster_prodmast.prd_deskripsipendek
                                   FROM tbtr_returomi, tbmaster_stock, tbmaster_prodmast
                                  WHERE rom_kodeigr = '".Session::get('kdigr')."'
@@ -1311,6 +1312,7 @@ class ReturController extends Controller
 
                                     $plujual = $plu->prd_prdcd;
                                     $hrgprd = $plu->prd_hrgjual;
+                                    $new_ppn = isset($rec->prd_ppn)?1 + ($rec->prd_ppn/100):1.1 ;
 
                                     $seqno++;
                                     $step = 29;
@@ -1322,8 +1324,8 @@ class ReturController extends Controller
                                     )
                                         $nilai = $nilai + ($hrgprd * $rec->rom_qtyselisih);
                                     else{
-                                        $nilai = $nilai + ($hrgprd * $rec->rom_qtyselisih / 1.1);
-                                        $ppn = $ppn + (($hrgprd * $rec->rom_qtyselisih) - (($hrgprd * $rec->rom_qtyselisih) / 1.1));
+                                        $nilai = $nilai + ($hrgprd * $rec->rom_qtyselisih / $new_ppn);
+                                        $ppn = $ppn + (($hrgprd * $rec->rom_qtyselisih) - (($hrgprd * $rec->rom_qtyselisih) / $new_ppn));
                                     }
 
                                     $step = 30;
@@ -1564,7 +1566,8 @@ class ReturController extends Controller
 
                     $recs = DB::connection(Session::get('connection'))->select("SELECT tbtr_returomi.*,
                                tbmaster_prodmast.prd_flagbkp1,
-                               tbmaster_prodmast.prd_flagbkp2
+                               tbmaster_prodmast.prd_flagbkp2,
+                               tbmaster_prodmast.prd_ppn
                           FROM tbtr_returomi, tbmaster_prodmast
                          WHERE rom_kodeigr = '".Session::get('kdigr')."'
                            AND rom_nodokumen = '".$request->nodoc."'
@@ -1574,6 +1577,7 @@ class ReturController extends Controller
 
                     foreach($recs as $rec){
                         $step = 36;
+                        $new_ppn = isset($rec->prd_ppn)?1 + ($rec->prd_ppn/100):1.1 ;
                         $rpretur = $rpretur + ($rec->rom_qty * $rec->rom_hrg);
 
                         if(self::nvl($rec->prd_flagbkp1, 'N') == 'Y'){
@@ -1582,7 +1586,7 @@ class ReturController extends Controller
                                 self::nvl($rec->prd_flagbkp2,'N') != 'G' ||
                                 self::nvl($rec->prd_flagbkp2,'N') != 'W'
                             ){
-                                $ppnretur = $ppnretur + round((($rec->rom_hrg - ($rec->rom_hrg / 1.1)) * $rec->rom_qty),0);
+                                $ppnretur = $ppnretur + round((($rec->rom_hrg - ($rec->rom_hrg / $new_ppn)) * $rec->rom_qty),0);
                             }
                         }
 
@@ -1691,7 +1695,7 @@ class ReturController extends Controller
                                  ".$rpretur.",
                                  ".$rpretur." - ".$ppnretur.",
                                  ".$ppnretur.",
-                                 ".DB::connection(Session::get('connection'))->raw("SYSDATE + ".intval($top)).",
+                                 ".DB::connection(Session::get('connection'))->raw("SYSDATE + ".intval((($top == '' || $top == null) ? 0 : $top))).",
                                  '".Session::get('usid')."',
                                  SYSDATE,
                                  0,
@@ -1942,9 +1946,9 @@ ORDER BY rom_nodokumen, rom_prdcd");
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
         $data = DB::connection(Session::get('connection'))->select("SELECT rom_noreferensi, to_char(rom_tglreferensi, 'dd/mm/yyyy') rom_tglreferensi, rom_kodetoko,
-                prc_pluomi, prd_deskripsipendek, prd_unit||'/'||prd_frac kemasan, rom_qty, rom_ttl, tko_namaomi,
+                prc_pluomi, prd_deskripsipendek, prd_unit||'/'||prd_frac kemasan, rom_qty, rom_ttl, tko_namaomi, prd_ppn,
                 CASE WHEN prd_flagbkp2 = 'Y' THEN
-                       rom_ttl / 1.1
+                       rom_ttl / (1 + (prd_ppn/ 100) )
                 ELSE
                        rom_ttl
                 END nilai
@@ -2029,22 +2033,23 @@ ORDER BY rom_nodokumen, rom_prdcd");
 
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
+        //perubahan ppn hen
         $data = DB::connection(Session::get('connection'))->select("SELECT rom_nodokumen, TRUNC(rom_tgldokumen) tgldok, rom_noreferensi, rom_tglreferensi, rom_nopo,
                 rom_member, rom_tgljatuhtempo, rom_prdcd, prd_deskripsipanjang, prd_unit||'/'||prd_frac kemasan,
-                rom_flagbkp, rom_flagbkp2, rom_qty, rom_qtyrealisasi, rom_hrg, rom_ttl,
+                rom_flagbkp, rom_flagbkp2, rom_qty, rom_qtyrealisasi, rom_hrg, rom_ttl, prd_ppn,
                 cus_namamember, cus_alamatmember1|| ' ' || cus_alamatmember2 alamat,
                 CASE WHEN nvl(rom_flagbkp,'N') = 'Y' THEN
-                       hso_hrgsatuan1 / 1.1
+                       hso_hrgsatuan1 / (1 + (prd_ppn/ 100) )
                 ELSE
                        hso_hrgsatuan1 / 1
                 END hrgsat1,
                 CASE WHEN nvl(rom_flagbkp,'N') = 'Y' THEN
-                       hso_hrgsatuan2 / 1.1
+                       hso_hrgsatuan2 / (1 + (prd_ppn/ 100) )
                 ELSE
                        hso_hrgsatuan2 / 1
                 END hrgsat2,
                 CASE WHEN nvl(rom_flagbkp,'N') = 'Y' THEN
-                       hso_hrgsatuan3 / 1.1
+                       hso_hrgsatuan3 / (1 + (prd_ppn/ 100) )
                 ELSE
                        hso_hrgsatuan3 / 1
                 END hrgsat3,
@@ -2131,20 +2136,20 @@ ORDER BY rom_nodokumen, rom_prdcd");
         $tgldoc = $request->tgldoc;
 
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
-
+        //perubahan ppn hen
         $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT rom_nodokumen, TO_CHAR(rom_tgldokumen, 'dd/mm/yyyy') tgldokumen, rom_noreferensi, TO_CHAR(rom_tglreferensi,'dd/mm/yyyy') rom_tglreferensi,
                 rom_prdcd, prd_deskripsipanjang, prd_deskripsipendek, prd_unit||'/'||prd_frac kemasan, cus_kodemember,
                 cus_namamember,  rom_namadrive, rom_kodekasir, rom_station, rom_jenistransaksi, rom_qty, rom_qtyselisih,
-                rom_hrg, rom_ttl, trjd_discount, prd_prdcd, rom_flagbkp, rom_flagbkp2,
+                rom_hrg, rom_ttl, trjd_discount, prd_prdcd, rom_flagbkp, rom_flagbkp2, prd_ppn,
                 CASE WHEN nvl(rom_flagbkp,'N') <> 'Y' OR nvl(rom_flagbkp2,'N') IN('P','G','W') THEN
                        rom_ttl
                 ELSE
-                       rom_ttl / 1.1
+                       rom_ttl / (1 + (prd_ppn/ 100) )
                 END Total,
                 CASE WHEN nvl(rom_flagbkp,'N') <> 'Y' OR nvl(rom_flagbkp2,'N') IN('P','G','W') THEN
                        0
                 ELSE
-                       rom_ttl - (rom_ttl / 1.1)
+                       rom_ttl - (rom_ttl / (1 + (prd_ppn/ 100) ) )
                 END Ppn
             FROM TBTR_RETUROMI, TBMASTER_PRODMAST, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
             WHERE rom_kodeigr = '".Session::get('kdigr')."'
@@ -2170,14 +2175,15 @@ ORDER BY rom_nodokumen, rom_prdcd");
             $d->cp_plu = $temp->prd_prdcd;
             $d->cp_hsat = $temp->prd_hrgjual;
             $d->cp_total = $d->rom_qtyselisih * $d->cp_hsat - $d->trjd_discount;
+            $new_ppn = isset($d->prd_ppn)?1 + ($d->prd_ppn/100):1.1 ;
 
             if(self::nvl($d->rom_flagbkp, 'N') != 'Y' || in_array(self::nvl($d->rom_flagbkp2,'N'), ['P','G','W'])){
                 $d->cp_penjualan = $d->cp_total;
                 $d->cp_ppn = 0;
             }
             else{
-                $d->cp_penjualan = $d->cp_total / 1.1;
-                $d->cp_ppn = $d->cp_total - ($d->cp_total / 1.1);
+                $d->cp_penjualan = $d->cp_total / $new_ppn;
+                $d->cp_ppn = $d->cp_total - ($d->cp_total / $new_ppn);
             }
         }
 
@@ -2285,7 +2291,9 @@ ORDER BY rom_nodokumen, rom_prdcd");
         $seq++;
 
         $fname = 'RK_'.$request->kodetoko.'_'.date_format(Carbon::now(),'Y-m-d').'_'.substr('00'.$seq, -2).'.csv';
-
+        // nilai 1.1 belum diubah NILAI_RETUR_DPP dan NILAI_RETUR_PPN
+        // tdk diubah karena ambil dari file
+        // hen
         $data = DB::connection(Session::get('connection'))->select("SELECT   RK, NPWP, NAMA, KD_JENIS_TRANSAKSI, FG_PENGGANTI, NOMOR_FAKTUR, TANGGAL_FAKTUR,
                           NOMOR_DOKUMEN_RETUR, TANGGAL_RETUR, MASA_PAJAK_RETUR, TAHUN_PAJAK_RETUR,
                           ROUND (SUM (NILAI_RETUR_DPP)) NILAI_RETUR_DPP,
@@ -2311,6 +2319,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                FROM TBTR_RETUROMI,
                                     TBTR_RETUROMI_PAJAK,
                                     TBMASTER_CUSTOMER,
+                                    TBMASTER_PERUSAHAAN,
                                     (SELECT DISTINCT SUBSTR (FKT_NOSERI, 1, 19) NOSERI, FKT_KODEMEMBER,
                                                      TO_NUMBER
                                                          (SUBSTR (REPLACE (REPLACE (FKT_NOSERI, '-', ''),
@@ -2382,7 +2391,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
             fputcsv($file, $row, '|');
         }
         fclose($file);
-        return response()->download($fname, $fname, $headers)->deleteFileAfterSend(true);
+        return response()->download(storage_path($fname))->deleteFileAfterSend(true);
     }
 
     public function transferFileR(Request $request){
@@ -2511,6 +2520,8 @@ ORDER BY rom_nodokumen, rom_prdcd");
 
             $lok = true;
 
+//            dd($lok);
+
             if($lok){
                 return self::prosesTransfer($sesiproc, $v_filename);
             }
@@ -2526,7 +2537,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
         set_time_limit(0);
 
         try{
-            DB::connection(Session::get('connection'))->beginTransaction();
+//            DB::connection(Session::get('connection'))->beginTransaction();
 
             $all_nodoc = '';
 
@@ -2542,9 +2553,12 @@ ORDER BY rom_nodokumen, rom_prdcd");
                 ->where('tko_kodeigr','=',Session::get('kdigr'))
                 ->whereRaw("((TKO_KODEOMI = '".$tokoomi."' AND TKO_KODESBU = 'O')
             OR (TKO_KODEOMI = '".$tokoomi."' AND TKO_KODESBU = 'I'))")
-                ->first()->tko_kodecustomer;
+                ->first();
 
-            $paramPKP = self::checkPKP($memberomi);
+            if($memberomi){
+                $paramPKP = self::checkPKP($memberomi->tko_kodecustomer);
+            }
+            else $paramPKP = 'N';
 
             $tempketer = DB::connection(Session::get('connection'))->table('temp_retur_omi')
                 ->where('SESSID','=',$sesiproc)
@@ -3059,7 +3073,8 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                     'ROM_KODEIGR' => Session::get('kdigr'),
                                                     'ROM_NODOKUMEN' => $nodoc,
                                                     'ROM_TGLDOKUMEN' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
-                                                    'ROM_TGLJATUHTEMPO' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE) + ".$top),
+                                                    'ROM_TGLJATUHTEMPO' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE) + ".(($top == '' || $top == null) ? 0 : $top)
+                                                    ),
                                                     'ROM_NOREFERENSI' => $recno->bukti_no,
                                                     'ROM_TGLREFERENSI' => $recno->bukti_tgl,
                                                     'ROM_KODETOKO' => $recno->gudang,
@@ -3092,7 +3107,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                     'ROM_KODEIGR' => Session::get('kdigr'),
                                                     'ROM_NODOKUMEN' => $nodoc,
                                                     'ROM_TGLDOKUMEN' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE)"),
-                                                    'ROM_TGLJATUHTEMPO' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE) + ".$top),
+                                                    'ROM_TGLJATUHTEMPO' => DB::connection(Session::get('connection'))->raw("TRUNC(SYSDATE) + ".(($top == '' || $top == null) ? 0 : $top)),
                                                     'ROM_NOREFERENSI' => $recno->bukti_no,
                                                     'ROM_TGLREFERENSI' => $recno->bukti_tgl,
                                                     'ROM_KODETOKO' => $recno->gudang,
@@ -3129,7 +3144,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                 $ppnretur = 0;
 
                                 $recs = DB::connection(Session::get('connection'))->select("SELECT TBTR_RETUROMI.*, TBMASTER_PRODMAST.PRD_FLAGBKP1,
-                                           TBMASTER_PRODMAST.PRD_FLAGBKP2
+                                           TBMASTER_PRODMAST.PRD_FLAGBKP2, TBMASTER_PRODMAST.PRD_PPN
                                       FROM TBTR_RETUROMI, TBMASTER_PRODMAST
                                      WHERE ROM_KODEIGR = '".Session::get('kdigr')."'
                                        AND ROM_NODOKUMEN = '".$nodoc."'
@@ -3138,11 +3153,12 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                        AND PRD_PRDCD = ROM_PRDCD");
 
                                 foreach($recs as $rec){
+                                    $new_ppn = isset($rec->prd_ppn)?1 + ($rec->prd_ppn/100):1.1;
                                     $rpretur = $rpretur + ($rec->rom_qty * $rec->rom_hrg);
 
                                     if(self::nvl($rec->prd_flagbkp1,'N') == 'Y'){
                                         if(in_array(self::nvl($rec->prd_flagbkp2,'N'), ['P','G','W'])){
-                                            $ppnretur = $ppnretur + round((($rec->rom_hrg - ($rec->rom_hrg / 1.1)) * $rec->rom_qty),0);
+                                            $ppnretur = $ppnretur + round((($rec->rom_hrg - ($rec->rom_hrg / $new_ppn)) * $rec->rom_qty),0);
                                         }
                                     }
                                 }
@@ -3216,7 +3232,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                             'TRPT_SALESVALUE' => $rpretur,
                                             'TRPT_NETSALES' => $rpretur - $ppnretur,
                                             'TRPT_PPNTAXVALUE' => $ppnretur,
-                                            'TRPT_SALESDUEDATE' => DB::connection(Session::get('connection'))->raw("SYSDATE + ".$top),
+                                            'TRPT_SALESDUEDATE' => DB::connection(Session::get('connection'))->raw("SYSDATE + ".(($top == '' || $top == null) ? 0 : $top)),
                                             'TRPT_CREATE_BY' => Session::get('usid'),
                                             'TRPT_CREATE_DT' => Carbon::now(),
                                             'TRPT_SPH_AMOUNT' => 0,
@@ -3236,7 +3252,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                 }
             }
 
-            DB::connection(Session::get('connection'))->commit();
+//            DB::connection(Session::get('connection'))->commit();
 
             return [
                 'message' => 'Proses transfer file '.$namaFileR.' berhasil!',
@@ -3244,7 +3260,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
             ];
         }
         catch (QueryException $e){
-            DB::connection(Session::get('connection'))->rollBack();
+//            DB::connection(Session::get('connection'))->rollBack();
 
             return [
                 'message' => $e->getMessage(),

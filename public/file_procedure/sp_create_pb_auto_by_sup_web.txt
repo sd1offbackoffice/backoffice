@@ -1,0 +1,1996 @@
+CREATE OR REPLACE PROCEDURE sp_create_pb_auto_by_sup_web (
+   P_SESSION              VARCHAR2,
+   P_MEMCLASSCABANG       VARCHAR2,
+   P_MEMPERIODE           DATE,
+   P_MEMKODEIGR           VARCHAR2,
+   P_TIPEPB               VARCHAR2,
+   P_MEMPPN               VARCHAR2,
+   P_MEMUSERID            VARCHAR2,
+   P_MNTRSUP              VARCHAR2,
+   P_KDDEPT1              VARCHAR2,
+   P_KDDEPT2              VARCHAR2,
+   P_KDKATB1              VARCHAR2,
+   P_KDKATB2              VARCHAR2,
+   P_KDSUP1               VARCHAR2,
+   P_KDSUP2               VARCHAR2,
+   P_NOPB                 VARCHAR2,
+   P_SUKSES           OUT VARCHAR2,
+   P_ERRMSG           OUT VARCHAR2)
+IS
+   V_KETTOLAKAN        VARCHAR2 (100);
+   V_NOMORPB           VARCHAR2 (20);
+   V_TANGGAL           DATE := TRUNC (P_MEMPERIODE);
+   ---- Variable Untuk PB -----
+   V_SESSION           VARCHAR2 (20) := P_SESSION;
+   V_KODEIGR           VARCHAR2 (2);
+   V_RECORDID          VARCHAR2 (1);
+   V_NOPB              VARCHAR2 (9);
+   V_PRDCD             VARCHAR2 (7);
+   V_KODEDIVISI        VARCHAR2 (1);
+   V_KODEDIVISIPO      VARCHAR2 (1);
+   V_KODEDEPARTEMENT   VARCHAR2 (2);
+   V_KODEKATEGORIBRG   VARCHAR2 (2);
+   V_KODETAG           VARCHAR2 (1);
+   V_KODESUPPLIER      VARCHAR2 (5);
+   V_NOMORURUT         NUMBER;
+   V_TANGGALPB         DATE;
+   V_QTYPB             NUMBER;
+   V_QTYBPB            NUMBER;
+   V_HRGBELI           NUMBER;
+   ---** Variable Untuk Discount dan Bonus **---
+   V_FRACBONUS         NUMBER;
+   V_DISCPER1          NUMBER;
+   V_DISCRPH1          NUMBER;
+   V_DISCJNS1          VARCHAR2 (1);
+   V_DISCPER2          NUMBER;
+   V_DISCRPH2          NUMBER;
+   V_DISCJNS2          VARCHAR2 (1);
+   V_BONUS1            NUMBER;
+   V_BONUS2            NUMBER;
+   V_QBONUS1           NUMBER;
+   V_QBONUS2           NUMBER;
+   V_BONUSPO1          NUMBER;
+   V_BONUSPO2          NUMBER;
+   V_BONUSBPB1         NUMBER;
+   V_BONUSBPB2         NUMBER;
+   V_KLPT              NUMBER;
+   V_AQT               NUMBER;
+   V_BQT               NUMBER;
+   V_QTYBL1            NUMBER;
+   V_QTYBL2            NUMBER;
+   V_DISCOUNT          NUMBER;
+   ---*----------------------------------*---
+   V_PPN               NUMBER;
+   V_PPNBM             NUMBER;
+   V_PPNBTL            NUMBER;
+   V_NILPPN            NUMBER;
+   V_NILPPNBM          NUMBER;
+   V_NILPPNBTL         NUMBER;
+   V_QTYBESAR          NUMBER;
+   V_QTYKECIL          NUMBER;
+   V_GROSS             NUMBER;
+   V_KETERANGANPB      VARCHAR2 (30);
+   V_TOP               NUMBER;
+   V_QTYPBOUT          NUMBER;
+   V_QTYPOOUT          NUMBER;
+   V_JENISPB           VARCHAR2 (1);
+   V_LNAIK             BOOLEAN;
+   V_LTURUN            BOOLEAN;
+   V_LLIBUR1           BOOLEAN;
+   V_LLIBUR2           BOOLEAN;
+   V_LFLAG             BOOLEAN;
+   V_LFIRST            BOOLEAN;
+   V_TIMEA             NUMBER;
+   V_NCONT             NUMBER;
+   V_NQTY              NUMBER;
+   V_XQTY              NUMBER;
+   V_QTYMINT           NUMBER;
+   V_SALDOAKHIR        NUMBER;
+   V_TGLNOW            DATE := SYSDATE;
+   V_UNIT              VARCHAR2 (3);
+   V_FRAC              NUMBER;
+   V_ANOPO             VARCHAR2 (2000);
+   V_RECMIN            VARCHAR2 (1);
+   V_JTPO              NUMBER;
+   V_TEST       VARCHAR2(100);
+BEGIN
+   V_NOMORURUT := 0;
+   V_KODEIGR := P_MEMKODEIGR;
+   V_NOMORPB := P_NOPB;
+
+   /*
+                         (SELECT   SUBSTR (dpro_plu, 1, 6) || '0' AS prdcd,
+                                   MAX (hpro_tglmulai) AS tglawal,
+                                   MAX (hpro_tglakhir) AS tglakhir
+                              FROM tbmaster_promosi_hdr hdr,
+                                   tbmaster_promosi_dtl dtl
+                             WHERE hdr.hpro_kodeigr = dtl.dpro_kodeigr
+                               AND hdr.hpro_docno = dtl.dpro_docno
+                          GROUP BY SUBSTR (dpro_plu, 1, 6) || '0') promo,
+                          */
+   FOR REC
+      IN (SELECT NVL (ST_SALDOAKHIR, 0) AS ST_SALDOAKHIR,
+                 NVL (MIN_MINORDER, 0) AS MIN_MINIMUMORDER,
+                 MIN_PRDCD,
+                 NVL (PKM_PKMT, 0) AS PKM_PKMT,
+                 PKM_PRDCD,
+                 TAG_TIDAKBOLEHORDER,
+                 GND.PRDCDGNDL,
+                 KTK_CLASSKODEIGR,
+                 MPT_PRDCD,
+                 pmp_prdcd,
+                 (mpt_maxqty * prd_frac) mpt_maxqty,
+                 SUP.*,
+                 HGB.*,
+                 PRD.*
+            FROM TBMASTER_SUPPLIER SUP,
+                 TBMASTER_HARGABELI HGB,
+                 TBMASTER_PRODMAST PRD,
+                 TBMASTER_STOCK ST,
+                 TBMASTER_MINIMUMORDER MORD,
+                 TBMASTER_KKPKM PKM,
+                 TBMASTER_TAG TAG,
+                 (SELECT DISTINCT (GDL_PRDCD) AS PRDCDGNDL FROM TBTR_GONDOLA)
+                 GND,
+                 TBMASTER_KATEGORITOKO KTK,
+                 tbmaster_pb_maxpalet,
+                 tbmaster_maxpalet
+           WHERE     SUP.SUP_KODESUPPLIER = HGB.HGB_KODESUPPLIER
+                 AND (HGB_RECORDID IS NULL)
+                 AND HGB_TIPE = '2'
+                 AND HGB_PRDCD = PRD_PRDCD
+                 AND PRD_KODEIGR = V_KODEIGR
+                 AND NVL (PRD_LASTCOST, 0) <> 0
+                 AND HGB_PRDCD = ST_PRDCD(+)
+                 AND ST_LOKASI(+) = '01'
+                 AND HGB_PRDCD = MIN_PRDCD(+)
+                 AND HGB_PRDCD = PKM_PRDCD(+)
+                 AND PRD_KODEIGR = TAG.TAG_KODEIGR(+)
+                 AND PRD_KODETAG = TAG.TAG_KODETAG(+)
+                 AND HGB.HGB_PRDCD = GND.PRDCDGNDL(+)
+                 AND prd_prdcd = pmp_prdcd(+)
+                 AND 1 <> NVL (pmp_recordid, '0')
+                 AND prd_prdcd = mpt_prdcd(+)
+                 AND 0 <> NVL (mpt_maxqty(+), 0)
+                 AND PRD_KATEGORITOKO = KTK_KODEKATEGORITOKO(+)
+                 AND (SUP_KODESUPPLIER BETWEEN P_KDSUP1 AND P_KDSUP2)
+                 AND (PRD_KODEDEPARTEMENT BETWEEN P_KDDEPT1 AND P_KDDEPT2)
+                 AND (PRD_KODEKATEGORIBARANG BETWEEN P_KDKATB1 AND P_KDKATB2)
+                 --AND prd_prdcd = '1675590'
+                 AND (   HGB_KODESUPPLIER IN (SELECT MSU_KODESUPPLIER
+                                                FROM TBTR_MONITORINGSUPPLIER
+                                               WHERE     MSU_KODEIGR =
+                                                            V_KODEIGR
+                                                     AND MSU_KODEMONITORING =
+                                                            P_MNTRSUP)
+                      OR NVL (P_MNTRSUP, ' ') = ' ')
+                 AND SUP_FLAGDISCONTINUESUPPLIER <> 'Y'
+                 AND NVL (hgb_prdcd, 'z') NOT IN (SELECT NVL (mpl_prdcd, 'z')
+                                                    FROM tbtr_monitoringplu
+                                                   WHERE mpl_kodemonitoring IN ('F1',
+                                                                                'F2',
+                                                                                'NF1',
+                                                                                'NF2',
+                                                                                'O',
+                                                                                'G')))
+   LOOP
+      V_ANOPO := ' ';
+      V_LNAIK := FALSE;
+      V_LTURUN := FALSE;
+      V_LLIBUR1 := FALSE;
+      V_LLIBUR2 := FALSE;
+      V_LFLAG := FALSE;
+      V_LFIRST := FALSE;
+      V_HRGBELI := 0;
+      V_GROSS := 0;
+      V_KETERANGANPB := 'PB OTOMATIS';
+      V_QTYPB := 0;
+      V_QTYPBOUT := 0;
+      V_QTYPOOUT := 0;
+      V_JENISPB := 0;
+      V_SALDOAKHIR := NVL (REC.ST_SALDOAKHIR, 0);
+      V_UNIT := TRIM (REC.PRD_UNIT);
+      V_FRAC := NVL (REC.PRD_FRAC, 1);
+      V_HRGBELI :=
+           REC.HGB_HRGBELI
+         * CASE WHEN V_FRAC = 1000 AND V_UNIT = 'KG' THEN 1 ELSE V_FRAC END;
+
+      IF NVL (REC.PRD_FLAGGUDANG, ' ') = 'Y'
+      THEN
+         V_TOP := 0;
+      END IF;
+
+      --** Get TOP Supplier
+      IF REC.SUP_FLAGOPENTOP = 'Y'
+      THEN
+         V_TOP := REC.HGB_TOP;
+      ELSE
+         IF REC.SUP_KONDISIPBYKONSINYASI = 0
+         THEN
+            V_TOP := REC.SUP_KONDISIPBYKREDIT;
+         ELSE
+            V_TOP := REC.SUP_KONDISIPBYKONSINYASI;
+         END IF;
+      END IF;
+
+      LOOP
+         IF P_TIPEPB = 'R'
+         THEN
+            IF NVL (REC.PRD_FLAGGUDANG, ' ') IN ('Y', 'P')
+            THEN
+               EXIT;
+            END IF;
+         ELSE
+            IF NVL (REC.PRD_FLAGGUDANG, ' ') <> 'Y'
+            THEN
+               EXIT;
+            END IF;
+         END IF;
+
+         /*
+         IF    (TRIM (rec.prd_flaggudang) IN ('Y', 'P') AND p_tipepb = 'R')
+            AND (TRIM (rec.prd_flaggudang) <> 'Y' AND p_tipepb = 'G')
+         THEN
+            EXIT;
+         END IF;*/
+         IF P_TIPEPB = 'R'
+         THEN
+            --** Get Nilai Time Order
+
+            /*
+            CASE
+               WHEN REC.SUP_JANGKAWAKTUKIRIMBARANG = 0
+               THEN
+                  V_TIMEA := TO_NUMBER (TO_CHAR (CURRENT_DATE, 'D')) + 5;
+               WHEN REC.SUP_JANGKAWAKTUKIRIMBARANG > 5
+               THEN
+                  V_TIMEA := TO_NUMBER (TO_CHAR (CURRENT_DATE, 'D')) + 7;
+               ELSE
+                  V_TIMEA :=
+                       TO_NUMBER (TO_CHAR (CURRENT_DATE, 'D'))
+                     + REC.SUP_JANGKAWAKTUKIRIMBARANG
+                     + 2;
+            END CASE;
+
+            IF V_TIMEA > 7
+            THEN
+               V_TIMEA := V_TIMEA - 6;
+            END IF;*/
+
+            V_TIMEA :=
+               (  TO_NUMBER (TO_CHAR (CURRENT_DATE, 'D'))
+                + REC.SUP_JANGKAWAKTUKIRIMBARANG
+                + 2);
+
+            V_TIMEA := MOD (v_timea, 6);
+
+            IF v_timea = 0
+            THEN
+               v_timea := 6;
+            END IF;
+
+            IF v_timea = 1
+            THEN
+               v_timea := 7;
+            END IF;
+
+
+            /*IF V_TIMEA > 7
+            THEN
+               V_TIMEA := MOD (v_timea, 6);
+            END IF;*/
+
+            --** Cek Data Promosi Barang **--
+            FOR RECSPOT
+               IN (SELECT SPOT_PERIODEAWAL, SPOT_PERIODEAKHIR
+                     FROM TBTR_HADIAHKEJUTAN
+                    WHERE     SPOT_KODEIGR = V_KODEIGR
+                          AND SPOT_PRDCD = REC.PRD_PRDCD
+                          AND SPOT_PERIODEAWAL IS NOT NULL
+                          AND TRUNC (V_TANGGAL) < TRUNC (SPOT_PERIODEAKHIR))
+            LOOP
+               --IF recspot.spot_periodeawal IS NOT NULL
+               --THEN
+               IF     (TRUNC (RECSPOT.SPOT_PERIODEAWAL - V_TANGGAL) <= 7)
+                  AND (TRUNC (RECSPOT.SPOT_PERIODEAWAL - V_TANGGAL) >= -12)
+               THEN
+                  V_LNAIK := TRUE;
+               END IF;
+
+               IF     (TRUNC (RECSPOT.SPOT_PERIODEAWAL - V_TANGGAL) > 7)
+                  AND (TRUNC (RECSPOT.SPOT_PERIODEAWAL - V_TANGGAL) < 19)
+                  AND RECSPOT.SPOT_PERIODEAWAL > V_TANGGAL
+               THEN
+                  V_LTURUN := TRUE;
+               END IF;
+            --END IF;
+            END LOOP;
+
+            --** Cek Lead Time Supplier
+            --         v_kettolakan := REC.SUP_KODESUPPLIER;
+            IF NVL (SUBSTR (REC.SUP_HARIKUNJUNGAN, V_TIMEA, 1), ' ') <> 'Y'
+            THEN
+               V_LLIBUR1 := FALSE;
+
+               FOR LIBUR
+                  IN (SELECT 1
+                        FROM TBMASTER_HARILIBUR
+                       WHERE TRUNC (LIB_TGLLIBUR) = TRUNC (V_TANGGAL + 1))
+               LOOP
+                  V_LLIBUR1 := TRUE;
+               END LOOP;
+
+               V_LLIBUR2 := FALSE;
+
+               FOR LIBUR
+                  IN (SELECT 1
+                        FROM TBMASTER_HARILIBUR
+                       WHERE TRUNC (LIB_TGLLIBUR) = TRUNC (V_TANGGAL + 2))
+               LOOP
+                  V_LLIBUR2 := TRUE;
+               END LOOP;
+
+               IF     ( (TO_NUMBER (TO_CHAR (V_TANGGAL + 1, 'D')) - 1) <> 1)
+                  AND (V_LLIBUR1)
+                  AND SUBSTR (
+                         REC.SUP_HARIKUNJUNGAN,
+                         CASE
+                            WHEN MOD ( (V_TIMEA + 1), 6) = 0
+                            THEN
+                               6
+                            ELSE
+                               CASE
+                                  WHEN MOD ( (V_TIMEA + 1), 6) = 1 THEN 7
+                                  ELSE MOD ( (V_TIMEA + 1), 6)
+                               END
+                         END,
+                         1) = 'Y'
+               THEN
+                  V_LFLAG := TRUE;
+               ELSE
+                  IF     ( (TO_NUMBER (TO_CHAR (V_TANGGAL + 2, 'D')) - 1) <>
+                             1)
+                     AND V_LLIBUR2
+                     AND (SUBSTR (
+                             REC.SUP_HARIKUNJUNGAN,
+                             CASE
+                                WHEN MOD ( (V_TIMEA + 2), 6) = 0
+                                THEN
+                                   6
+                                ELSE
+                                   CASE
+                                      WHEN MOD ( (V_TIMEA + 2), 6) = 1 THEN 7
+                                      ELSE MOD ( (V_TIMEA + 2), 6)
+                                   END
+                             END,
+                             1) = 'Y')
+                  THEN
+                     V_LFLAG := TRUE;
+                  END IF;
+               END IF;
+            ELSE
+               V_LFLAG := TRUE;
+            END IF;
+
+            IF V_LFLAG = FALSE
+            THEN
+               EXIT;
+            END IF;
+
+            --** Save Tolakan PB ( Barang Kartonan )
+            IF    SUBSTR (TRIM (REC.HGB_PRDCD), -1) <> 0
+               OR TRIM (NVL (REC.PRD_RECORDID, 0)) = '1'
+               OR TRIM (REC.HGB_PRDCD) = ''
+            THEN
+               V_KETTOLAKAN := 'SUPPLIER TIDAK MEMPUNYAI PLU';
+               Sp_Save_Tolakanpb (P_MEMKODEIGR,
+                                  '',
+                                  V_NOMORPB,
+                                  V_TANGGAL,
+                                  REC.HGB_PRDCD,
+                                  REC.PRD_KODEDIVISIPO,
+                                  REC.PRD_KODEDIVISI,
+                                  REC.PRD_KODEDEPARTEMENT,
+                                  REC.PRD_KODEKATEGORIBARANG,
+                                  REC.PRD_KODETAG,
+                                  0,
+                                  REC.SUP_KODESUPPLIER,
+                                  V_KETTOLAKAN,
+                                  P_MEMUSERID);
+               EXIT;
+            END IF;
+         END IF;
+
+         --** Save Tolakan PB ( TAG)
+         IF     TRIM (NVL (REC.PRD_KODETAG, ' ')) <> ' '
+            AND TRIM (REC.TAG_TIDAKBOLEHORDER) = 'Y'
+         THEN
+            IF REC.PRD_KODETAG NOT IN ('O',
+                                       'N',
+                                       'H',
+                                       'X')
+            THEN
+               V_KETTOLAKAN :=
+                     'STATUS BARANG : TDK BLH ORDER (TAG '
+                  || TRIM (REC.PRD_KODETAG)
+                  || ') ';
+
+               IF REC.PRD_KODETAG IN ('T', 'U')
+               THEN
+                  V_KETTOLAKAN :=
+                        V_KETTOLAKAN
+                     || 'TGL AKTIF : '
+                     || TO_CHAR (REC.PRD_TGLDISCONTINUE, 'dd-MM-yyyy');
+               END IF;
+
+               IF REC.PRD_KODETAG IN ('A', 'G', 'I')
+               THEN
+                  V_KETTOLAKAN := V_KETTOLAKAN || 'BRG ALOKASI';
+               END IF;
+
+               Sp_Save_Tolakanpb (P_MEMKODEIGR,
+                                  '',
+                                  V_NOMORPB,
+                                  V_TANGGAL,
+                                  REC.HGB_PRDCD,
+                                  REC.PRD_KODEDIVISIPO,
+                                  REC.PRD_KODEDIVISI,
+                                  REC.PRD_KODEDEPARTEMENT,
+                                  REC.PRD_KODEKATEGORIBARANG,
+                                  REC.PRD_KODETAG,
+                                  0,
+                                  REC.SUP_KODESUPPLIER,
+                                  V_KETTOLAKAN,
+                                  P_MEMUSERID);
+            END IF;
+
+            EXIT;
+         END IF;
+
+         --** Resume ( FLAG GUDANG PUSAT) **--
+         /*
+         IF      Nvl(rec.prd_flaggudang,' ') = 'Y' Then
+            v_kettolakan :='f';
+         End If;
+         */
+
+         --** Save Tolakan PB ( FLAG BARANG ORDER TOKO) **--
+         IF TRIM (REC.PRD_FLAGBARANGORDERTOKO) = 'Y'
+         THEN
+            V_KETTOLAKAN := 'STATUS BARANG : BARANG ORDER LANGSUNG DI TOKO';
+            Sp_Save_Tolakanpb (P_MEMKODEIGR,
+                               '',
+                               V_NOMORPB,
+                               V_TANGGAL,
+                               REC.HGB_PRDCD,
+                               REC.PRD_KODEDIVISIPO,
+                               REC.PRD_KODEDIVISI,
+                               REC.PRD_KODEDEPARTEMENT,
+                               REC.PRD_KODEKATEGORIBARANG,
+                               REC.PRD_KODETAG,
+                               0,
+                               REC.SUP_KODESUPPLIER,
+                               V_KETTOLAKAN,
+                               P_MEMUSERID);
+            EXIT;
+         END IF;
+
+         --** Save Tolakan PB ( BARANG COUNTER) **--
+         IF TRIM (REC.PRD_KODEDEPARTEMENT) = '39'
+         THEN
+            V_KETTOLAKAN := 'STATUS BARANG : BARANG COUNTER';
+            Sp_Save_Tolakanpb (P_MEMKODEIGR,
+                               '',
+                               V_NOMORPB,
+                               V_TANGGAL,
+                               REC.HGB_PRDCD,
+                               REC.PRD_KODEDIVISIPO,
+                               REC.PRD_KODEDIVISI,
+                               REC.PRD_KODEDEPARTEMENT,
+                               REC.PRD_KODEKATEGORIBARANG,
+                               REC.PRD_KODETAG,
+                               0,
+                               REC.SUP_KODESUPPLIER,
+                               V_KETTOLAKAN,
+                               P_MEMUSERID);
+            EXIT;
+         END IF;
+
+         --** Save Tolakan PB ( KATEGORI BARANG ) **--
+         IF INSTR (REC.KTK_CLASSKODEIGR, P_MEMKODEIGR) = 0
+         THEN
+            V_KETTOLAKAN := 'STATUS BARANG : TIDAK SESUAI DENGAN KELAS TOKO';
+            Sp_Save_Tolakanpb (P_MEMKODEIGR,
+                               '',
+                               V_NOMORPB,
+                               V_TANGGAL,
+                               REC.HGB_PRDCD,
+                               REC.PRD_KODEDIVISIPO,
+                               REC.PRD_KODEDIVISI,
+                               REC.PRD_KODEDEPARTEMENT,
+                               REC.PRD_KODEKATEGORIBARANG,
+                               REC.PRD_KODETAG,
+                               0,
+                               REC.SUP_KODESUPPLIER,
+                               V_KETTOLAKAN,
+                               P_MEMUSERID);
+            EXIT;
+         END IF;
+
+         --** Save Tolakan PB ( KATEGORI TOKO dan KODE CABANG) **--
+         IF    (    NVL (REC.PRD_KATEGORITOKO, ' ') = ' '
+                AND NVL (REC.PRD_KODECABANG, ' ') = ' ')
+            OR (    REC.PRD_KODECABANG <> V_KODEIGR
+                AND NVL (REC.PRD_KODECABANG, ' ') <> ' ')
+         THEN
+            V_KETTOLAKAN :=
+               'STATUS BARANG : TIDAK BOLEH ORDER (KTGR dan KD.CAB)';
+            Sp_Save_Tolakanpb (P_MEMKODEIGR,
+                               '',
+                               V_NOMORPB,
+                               V_TANGGAL,
+                               REC.HGB_PRDCD,
+                               REC.PRD_KODEDIVISIPO,
+                               REC.PRD_KODEDIVISI,
+                               REC.PRD_KODEDEPARTEMENT,
+                               REC.PRD_KODEKATEGORIBARANG,
+                               REC.PRD_KODETAG,
+                               0,
+                               REC.SUP_KODESUPPLIER,
+                               V_KETTOLAKAN,
+                               P_MEMUSERID);
+            EXIT;
+         END IF;
+
+         --** Save Tolakan PB ( PKM KOSONG )
+         IF NVL (REC.PKM_PRDCD, '1234567') = '1234567'
+         THEN
+            V_KETTOLAKAN := 'TIDAK TERDAFTAR DI TABEL PKM';
+            Sp_Save_Tolakanpb (P_MEMKODEIGR,
+                               '',
+                               V_NOMORPB,
+                               V_TANGGAL,
+                               REC.HGB_PRDCD,
+                               REC.PRD_KODEDIVISIPO,
+                               REC.PRD_KODEDIVISI,
+                               REC.PRD_KODEDEPARTEMENT,
+                               REC.PRD_KODEKATEGORIBARANG,
+                               REC.PRD_KODETAG,
+                               0,
+                               REC.SUP_KODESUPPLIER,
+                               V_KETTOLAKAN,
+                               P_MEMUSERID);
+            EXIT;
+         ELSE
+            --* Hitung Nilai PB
+            V_NCONT := 0;
+            V_NQTY := 0;
+
+            IF NVL (REC.PRDCDGNDL, ' ') <> ' '
+            THEN
+               V_NCONT := 0;
+
+               FOR RGONDOLA
+                  IN (SELECT *
+                        FROM TBTR_PKMGONDOLA
+                       WHERE     PKMG_PRDCD = REC.PRD_PRDCD
+                             AND PKMG_TGLAWALPKM - 3 <= TRUNC (V_TANGGAL)
+                             AND TRUNC (V_TANGGAL) <= PKMG_TGLAKHIRPKM - 7)
+               LOOP
+                  V_NCONT := V_NCONT + 1;
+                  V_NQTY :=
+                       V_NQTY
+                     + RGONDOLA.PKMG_NILAIPKMG
+                     - (CASE
+                           WHEN V_NCONT > 1 THEN RGONDOLA.PKMG_NILAIPKMT
+                           ELSE 0
+                        END);
+               END LOOP;
+            END IF;
+
+            V_XQTY :=
+               (CASE WHEN V_NQTY <> 0 THEN V_NQTY ELSE REC.PKM_PKMT END);
+
+            IF V_LNAIK
+            THEN
+               V_QTYPB :=
+                    (V_XQTY * 1.5)
+                  - (CASE WHEN V_SALDOAKHIR <= 0 THEN 0 ELSE V_SALDOAKHIR END);
+               V_QTYMINT := REC.PKM_PKMT * 1.5;
+            ELSIF V_LTURUN
+            THEN
+               V_QTYPB :=
+                    (V_XQTY * 0.5)
+                  - (CASE WHEN V_SALDOAKHIR <= 0 THEN 0 ELSE V_SALDOAKHIR END);
+               V_QTYMINT := REC.PKM_PKMT * 0.5;
+            ELSE
+               V_QTYPB :=
+                    V_XQTY
+                  - (CASE WHEN V_SALDOAKHIR <= 0 THEN 0 ELSE V_SALDOAKHIR END);
+               V_QTYMINT := REC.PKM_PKMT;
+            END IF;
+         END IF;
+
+         --*/* BARU PER 14 OCT 2005 Cek IPB OutStanding ---------- */*
+         V_QTYPBOUT := 0;
+
+         FOR RECIPB
+            IN (SELECT *
+                  FROM TBTR_IPB
+                 WHERE     IPB_PRDCD = REC.PRD_PRDCD
+                       AND NOT (   (V_TGLNOW < IPB_TGLIPB)
+                                OR (V_TGLNOW > IPB_TGLPAJANG)))
+         LOOP
+            V_QTYPB := V_QTYPB - RECIPB.IPB_QTYPB;
+            V_QTYPBOUT := V_QTYPBOUT + RECIPB.IPB_QTYPB;
+         END LOOP;
+
+         --*/* --------- Cek PB OutStanding ---------- */*
+         --*/* --- 2 hari dr pembuatan PB terakhir --- */*
+         -- v_larraypo := 0;
+         FOR RECPB
+            IN (SELECT *
+                  FROM TBTR_PB_H HDR, TBTR_PB_D DTL
+                 WHERE     HDR.PBH_TIPEPB = P_TIPEPB
+                       AND HDR.PBH_NOPB = DTL.PBD_NOPB
+                       AND DTL.PBD_PRDCD = REC.PRD_PRDCD
+                       AND NVL (PBH_RECORDID, ' ') <> '1')
+         LOOP
+            IF TRUNC (
+                  (V_TANGGAL - CASE WHEN P_TIPEPB = 'R' THEN 2 ELSE 14 END)) <=
+                  TRUNC (RECPB.PBH_TGLPB)
+            THEN
+               IF NVL (RECPB.PBH_JENISPB, ' ') = ' '
+               THEN
+                  V_QTYPB := V_QTYPB - RECPB.PBD_QTYPB;
+                  V_QTYPBOUT := V_QTYPBOUT + RECPB.PBD_QTYPB;
+               ELSE
+                  IF NVL (RECPB.PBD_NOPO, ' ') <> ' '
+                  THEN
+                     V_ANOPO := V_ANOPO || TRIM (NVL (RECPB.PBD_NOPO, ' '));
+                  END IF;
+               END IF;
+            END IF;
+         END LOOP;
+
+         --*/* ------- Cek PO OutStanding ------- */*
+         V_QTYPOOUT := 0;
+
+         IF NOT V_LFIRST
+         THEN
+            FOR RECPO
+               IN (SELECT *
+                     FROM TBTR_PO_H, TBTR_PO_D
+                    WHERE     TPOH_KODEIGR = TPOD_KODEIGR
+                          AND TPOH_NOPO = TPOD_NOPO
+                          AND TPOD_PRDCD = REC.PRD_PRDCD
+                          AND NOT EXISTS
+                                     (SELECT mstd_nopo
+                                        FROM tbtr_mstran_d
+                                       WHERE     NVL (mstd_recordid, '0') <>
+                                                    '1'
+                                             AND mstd_nopo = tpoh_nopo
+                                             AND mstd_prdcd = tpod_prdcd))
+            LOOP
+               IF INSTR (V_ANOPO, TRIM (RECPO.TPOH_NOPO)) <= 0
+               THEN
+                  /*
+                     V_LLIBUR1 := FALSE;
+
+                     FOR LIBUR
+                        IN (SELECT 1
+                              FROM TBMASTER_HARILIBUR
+                             WHERE LIB_TGLLIBUR =
+                                        RECPO.TPOH_TGLPO
+                                      + REC.SUP_JANGKAWAKTUKIRIMBARANG
+                                      + 1)
+                     LOOP
+                        V_LLIBUR1 := TRUE;
+                     END LOOP;
+
+                     IF V_LLIBUR1
+                     THEN
+                        V_JTPO := REC.SUP_JANGKAWAKTUKIRIMBARANG + 2;
+                     ELSE
+                        IF TO_NUMBER (TO_CHAR (RECPO.TPOH_TGLPO + 1, 'D')) = 7
+                        THEN
+                           V_JTPO := REC.SUP_JANGKAWAKTUKIRIMBARANG + 2;
+                        ELSE
+                           V_JTPO := REC.SUP_JANGKAWAKTUKIRIMBARANG + 1;
+                        END IF;
+                     END IF;*/
+
+                  IF TRUNC (RECPO.TPOH_TGLPO + RECPO.TPOH_JWPB) >=
+                        TRUNC (V_TANGGAL)
+                  THEN
+                     V_QTYPB := V_QTYPB - RECPO.TPOD_QTYPO;
+                     V_QTYPOOUT := V_QTYPOOUT + RECPO.TPOD_QTYPO;
+                  END IF;
+               END IF;
+            END LOOP;
+         ELSE
+            FOR RECPO
+               IN (SELECT *
+                     FROM TBTR_PO_H, TBTR_PO_D
+                    WHERE     TPOH_KODEIGR = TPOD_KODEIGR
+                          AND TPOH_NOPO = TPOD_NOPO
+                          AND TPOD_PRDCD = REC.PRD_PRDCD
+                          AND NVL (TPOD_QTYPB, 0) = 0
+                          AND (   NVL (TPOH_RECORDID, ' ') = '1'
+                               OR NVL (TPOH_RECORDID, ' ') = ' '))
+            LOOP
+               IF INSTR (V_ANOPO, TRIM (RECPO.TPOH_NOPO)) <= 0
+               THEN
+                  V_QTYPB := V_QTYPB - RECPO.TPOD_QTYPO;
+                  V_QTYPOOUT := V_QTYPOOUT + RECPO.TPOD_QTYPO;
+               END IF;
+            END LOOP;
+         END IF;
+
+         ---** Pembulatan Ke Atas bila 50% keatas **---
+         IF P_TIPEPB = 'R'
+         THEN
+            IF V_QTYPB <= 0
+            THEN
+               EXIT;
+            END IF;
+
+            IF V_QTYPB MOD REC.PRD_ISIBELI <> 0
+            THEN
+               IF V_QTYPB MOD REC.PRD_ISIBELI >= REC.PRD_ISIBELI * 0.5
+               THEN
+                  V_QTYPB :=
+                       (  REC.PRD_ISIBELI
+                        * TRUNC (V_QTYPB / REC.PRD_ISIBELI, 0))
+                     + REC.PRD_ISIBELI;
+               ELSE
+                  V_QTYPB :=
+                     (REC.PRD_ISIBELI * TRUNC (V_QTYPB / REC.PRD_ISIBELI, 0));
+               END IF;
+            END IF;
+
+            IF V_QTYPB < REC.PRD_ISIBELI OR V_QTYPB <= 0
+            THEN
+               EXIT;
+            END IF;
+         ELSE
+            IF    NVL (REC.MIN_PRDCD, '1234567') = '1234567'
+               OR REC.MIN_MINIMUMORDER = 0
+            THEN
+               IF V_QTYPB MOD REC.PRD_ISIBELI <> 0
+               THEN
+                  IF V_QTYPB MOD REC.PRD_ISIBELI >= REC.PRD_ISIBELI * 0.5
+                  THEN
+                     V_QTYPB :=
+                          (  REC.PRD_ISIBELI
+                           * TRUNC (V_QTYPB / REC.PRD_ISIBELI, 0))
+                        + REC.PRD_ISIBELI;
+                  ELSE
+                     V_QTYPB :=
+                        (  REC.PRD_ISIBELI
+                         * TRUNC (V_QTYPB / REC.PRD_ISIBELI, 0));
+                  END IF;
+               END IF;
+
+               IF V_QTYPB < REC.PRD_ISIBELI OR V_QTYPB <= 0
+               THEN
+                  Sp_Save_Tolakanpb (
+                     P_MEMKODEIGR,
+                     '',
+                     V_NOMORPB,
+                     V_TANGGAL,
+                     REC.HGB_PRDCD,
+                     REC.PRD_KODEDIVISIPO,
+                     REC.PRD_KODEDIVISI,
+                     REC.PRD_KODEDEPARTEMENT,
+                     REC.PRD_KODEKATEGORIBARANG,
+                     REC.PRD_KODETAG,
+                     V_QTYPB,
+                     REC.SUP_KODESUPPLIER,
+                        'ORDER < DARI SAT BELI ('
+                     || TO_CHAR (V_QTYPB, '999999')
+                     || ' < '
+                     || TO_CHAR (REC.PRD_ISIBELI, '999999')
+                     || ' )',
+                     P_MEMUSERID);
+                  EXIT;
+               END IF;
+            ELSE
+               IF V_QTYPB MOD REC.MIN_MINIMUMORDER <> 0
+               THEN
+                  IF V_QTYPB MOD REC.MIN_MINIMUMORDER >=
+                        REC.MIN_MINIMUMORDER * 0.5
+                  THEN
+                     V_QTYPB :=
+                          (  REC.MIN_MINIMUMORDER
+                           * TRUNC (V_QTYPB / REC.MIN_MINIMUMORDER, 0))
+                        + REC.MIN_MINIMUMORDER;
+                  ELSE
+                     V_QTYPB :=
+                        (  REC.MIN_MINIMUMORDER
+                         * TRUNC (V_QTYPB / REC.MIN_MINIMUMORDER, 0));
+                  END IF;
+               END IF;
+
+               IF V_QTYPB < REC.MIN_MINIMUMORDER OR V_QTYPB <= 0
+               THEN
+                  Sp_Save_Tolakanpb (
+                     P_MEMKODEIGR,
+                     '',
+                     V_NOMORPB,
+                     V_TANGGAL,
+                     REC.HGB_PRDCD,
+                     REC.PRD_KODEDIVISIPO,
+                     REC.PRD_KODEDIVISI,
+                     REC.PRD_KODEDEPARTEMENT,
+                     REC.PRD_KODEKATEGORIBARANG,
+                     REC.PRD_KODETAG,
+                     V_QTYPB,
+                     REC.SUP_KODESUPPLIER,
+                        'ORDER < DARI SAT BELI ('
+                     || TO_CHAR (V_QTYPB, '999999')
+                     || ' < '
+                     || TO_CHAR (REC.MIN_MINIMUMORDER, '999999')
+                     || ' )',
+                     P_MEMUSERID);
+                  EXIT;
+               END IF;
+            END IF;
+         END IF;
+
+         ---** Start Untuk Hitung Bonus dan Discount
+         --Discount
+         V_DISCPER1 := 0;
+         V_DISCRPH1 := 0;
+         V_DISCPER2 := 0;
+         V_DISCRPH2 := 0;
+         V_DISCJNS1 := '';
+         V_DISCJNS2 := '';
+         V_BONUS1 := 0;
+         V_BONUS2 := 0;
+         V_QBONUS1 := 0;
+         V_QBONUS2 := 0;
+         V_PPN := 0;
+         V_PPNBM := 0;
+         V_PPNBTL := 0;
+         V_NILPPN := 0;
+         V_NILPPNBM := 0;
+         V_NILPPNBTL := 0;
+         V_DISCOUNT := 0;
+
+         ----** Discount I **----
+         IF REC.HGB_PERSENDISC01 <> 0
+         THEN
+            V_DISCPER1 := REC.HGB_PERSENDISC01;
+            V_DISCRPH1 := 0;
+            V_DISCJNS1 := '';
+         ELSE
+            V_DISCPER1 := 0;
+            V_DISCRPH1 := REC.HGB_RPHDISC01;
+            V_DISCJNS1 := REC.HGB_FLAGDISC01;
+         END IF;
+
+         ----** Discount II **----
+         IF     (REC.HGB_TGLMULAIDISC02 IS NOT NULL)
+            AND (REC.HGB_TGLAKHIRDISC02 IS NOT NULL)
+         THEN
+            IF     (V_TANGGAL >= REC.HGB_TGLMULAIDISC02)
+               AND (V_TANGGAL <= REC.HGB_TGLAKHIRDISC02)
+            THEN
+               V_DISCPER2 := REC.HGB_PERSENDISC02;
+               V_DISCRPH2 := REC.HGB_RPHDISC02;
+               V_DISCJNS2 := '';
+            END IF;
+         END IF;
+
+         V_PPNBM :=
+              REC.HGB_PPNBM
+            * (CASE
+                  WHEN (V_FRAC = 1000 AND V_UNIT = 'KG') THEN 1
+                  ELSE V_FRAC
+               END);
+         V_PPNBTL :=
+              REC.HGB_PPNBOTOL
+            * (CASE
+                  WHEN (V_FRAC = 1000 AND V_UNIT = 'KG') THEN 1
+                  ELSE V_FRAC
+               END);
+         V_KLPT := 0;
+         V_AQT := 0;
+         V_BQT := 0;
+         V_QTYBL1 := V_QTYPB;
+         V_QTYBL2 := V_QTYPB;
+         V_TANGGAL := TRUNC (SYSDATE);
+         ---** Bonus I **---
+         V_FRACBONUS :=
+            (CASE WHEN REC.HGB_JENISBONUS = 'B' THEN V_FRAC ELSE 1 END);
+
+         ---** Bonus I **---
+         IF (    TRUNC (REC.HGB_TGLMULAIBONUS01) <= TRUNC (V_TANGGAL)
+             AND TRUNC (REC.HGB_TGLAKHIRBONUS01) >= TRUNC (V_TANGGAL)
+             AND REC.HGB_TGLMULAIBONUS01 IS NOT NULL)
+         THEN
+            --** Bonus II Berlaku Kelipatan **--
+            IF    REC.HGB_FLAGKELIPATANBONUS01 = 'Y'
+               OR (    NVL (REC.HGB_FLAGKELIPATANBONUS01, ' ') = ' '
+                   AND REC.HGB_QTYMULAI1BONUS01 <> 0
+                   AND REC.HGB_QTYMULAI2BONUS01 = 0)
+            THEN
+               V_QTYBL1 := REC.HGB_QTYMULAI1BONUS01 * V_FRACBONUS;
+
+               IF V_QTYPB >= V_QTYBL1
+               THEN
+                  V_KLPT := TRUNC (V_QTYPB / V_QTYBL1);
+
+                  IF ( (MOD (V_QTYPB, V_QTYBL1) / V_QTYBL1) * 100) >= 50
+                  THEN
+                     V_QTYBL1 := (V_KLPT * V_QTYBL1) + V_QTYBL1;
+                  ELSE
+                     V_QTYBL1 := (V_KLPT * V_QTYBL1);
+                  END IF;
+               ELSE
+                  IF ( (V_QTYPB / V_QTYBL1) * 100) < 50
+                  THEN
+                     Sp_Save_Tolakanpb (P_MEMKODEIGR,
+                                        '',
+                                        V_NOMORPB,
+                                        V_TANGGAL,
+                                        REC.PRD_PRDCD,
+                                        REC.PRD_KODEDIVISIPO,
+                                        REC.PRD_KODEDIVISI,
+                                        REC.PRD_KODEDEPARTEMENT,
+                                        REC.PRD_KODEKATEGORIBARANG,
+                                        REC.PRD_KODETAG,
+                                        V_QTYPB,
+                                        REC.SUP_KODESUPPLIER,
+                                        'QTY ORDER < QTY YG DPT BNS 1',
+                                        P_MEMUSERID);
+                     EXIT;
+                  END IF;
+               END IF;
+
+               V_BONUS1 :=
+                    TRUNC (
+                       V_QTYBL1 / (REC.HGB_QTYMULAI1BONUS01 * V_FRACBONUS))
+                  * (REC.HGB_QTY1BONUS01 * V_FRACBONUS);
+            ELSE
+               CASE
+                  --** Bonus I Level 6 **--
+                  WHEN     (V_QTYPB >=
+                               (REC.HGB_QTYMULAI6BONUS01 * V_FRACBONUS))
+                       AND REC.HGB_QTYMULAI6BONUS01 <> 0
+                  THEN
+                     V_QTYBL1 := REC.HGB_QTYMULAI6BONUS01 * V_FRACBONUS;
+                     V_BONUS1 := REC.HGB_QTY6BONUS01 * V_FRACBONUS;
+                  --** Bonus I Level 5 **--
+                  WHEN     (V_QTYPB >= REC.HGB_QTYMULAI5BONUS01 * V_FRACBONUS)
+                       AND REC.HGB_QTYMULAI5BONUS01 <> 0
+                  THEN
+                     IF REC.HGB_QTYMULAI6BONUS01 = 0
+                     THEN
+                        V_QTYBL1 := REC.HGB_QTYMULAI5BONUS01 * V_FRACBONUS;
+                        V_BONUS1 := REC.HGB_QTY5BONUS01 * V_FRACBONUS;
+                     ELSE
+                        IF       (  V_QTYPB
+                                  / REC.HGB_QTYMULAI6BONUS01
+                                  * V_FRACBONUS)
+                               * 100 >= 50
+                           AND REC.HGB_QTYMULAI6BONUS01 <> 0
+                        THEN
+                           V_QTYBL1 := REC.HGB_QTYMULAI6BONUS01 * V_FRACBONUS;
+                           V_BONUS1 := REC.HGB_QTY6BONUS01 * V_FRACBONUS;
+                        ELSE
+                           V_QTYBL1 := REC.HGB_QTYMULAI5BONUS01 * V_FRACBONUS;
+                           V_BONUS1 := REC.HGB_QTY5BONUS01 * V_FRACBONUS;
+                        END IF;
+                     END IF;
+                  --** Bonus I Level 4 **--
+                  WHEN     (V_QTYPB >= REC.HGB_QTYMULAI4BONUS01 * V_FRACBONUS)
+                       AND REC.HGB_QTYMULAI4BONUS01 <> 0
+                  THEN
+                     IF REC.HGB_QTYMULAI5BONUS01 = 0
+                     THEN
+                        V_QTYBL1 := REC.HGB_QTYMULAI4BONUS01 * V_FRACBONUS;
+                        V_BONUS1 := REC.HGB_QTY4BONUS01 * V_FRACBONUS;
+                     ELSE
+                        IF       (  V_QTYPB
+                                  / REC.HGB_QTYMULAI5BONUS01
+                                  * V_FRACBONUS)
+                               * 100 >= 50
+                           AND REC.HGB_QTYMULAI5BONUS01 <> 0
+                        THEN
+                           V_QTYBL1 := REC.HGB_QTYMULAI5BONUS01 * V_FRACBONUS;
+                           V_BONUS1 := REC.HGB_QTY5BONUS01 * V_FRACBONUS;
+                        ELSE
+                           V_QTYBL1 := REC.HGB_QTYMULAI4BONUS01 * V_FRACBONUS;
+                           V_BONUS1 := REC.HGB_QTY4BONUS01 * V_FRACBONUS;
+                        END IF;
+                     END IF;
+                  --** Bonus I Level 3 **--
+                  WHEN     (V_QTYPB >= REC.HGB_QTYMULAI3BONUS01 * V_FRACBONUS)
+                       AND REC.HGB_QTYMULAI3BONUS01 <> 0
+                  THEN
+                     IF REC.HGB_QTYMULAI4BONUS01 = 0
+                     THEN
+                        V_QTYBL1 := REC.HGB_QTYMULAI3BONUS01 * V_FRACBONUS;
+                        V_BONUS1 := REC.HGB_QTY3BONUS01 * V_FRACBONUS;
+                     ELSE
+                        IF       (  V_QTYPB
+                                  / REC.HGB_QTYMULAI4BONUS01
+                                  * V_FRACBONUS)
+                               * 100 >= 50
+                           AND REC.HGB_QTYMULAI4BONUS01 <> 0
+                        THEN
+                           V_QTYBL1 := REC.HGB_QTYMULAI4BONUS01 * V_FRACBONUS;
+                           V_BONUS1 := REC.HGB_QTY4BONUS01 * V_FRACBONUS;
+                        ELSE
+                           V_QTYBL1 := REC.HGB_QTYMULAI3BONUS01 * V_FRACBONUS;
+                           V_BONUS1 := REC.HGB_QTY3BONUS01 * V_FRACBONUS;
+                        END IF;
+                     END IF;
+                  --** Bonus I Level 2 **--
+                  WHEN     (V_QTYPB >= REC.HGB_QTYMULAI2BONUS01 * V_FRACBONUS)
+                       AND REC.HGB_QTYMULAI2BONUS01 <> 0
+                  THEN
+                     IF REC.HGB_QTYMULAI3BONUS01 = 0
+                     THEN
+                        V_QTYBL1 := REC.HGB_QTYMULAI2BONUS01 * V_FRACBONUS;
+                        V_BONUS1 := REC.HGB_QTY2BONUS01 * V_FRACBONUS;
+                     ELSE
+                        IF       (  V_QTYPB
+                                  / REC.HGB_QTYMULAI3BONUS01
+                                  * V_FRACBONUS)
+                               * 100 >= 50
+                           AND REC.HGB_QTYMULAI3BONUS01 <> 0
+                        THEN
+                           V_QTYBL1 := REC.HGB_QTYMULAI3BONUS01 * V_FRACBONUS;
+                           V_BONUS1 := REC.HGB_QTY3BONUS01 * V_FRACBONUS;
+                        ELSE
+                           V_QTYBL1 := REC.HGB_QTYMULAI2BONUS01 * V_FRACBONUS;
+                           V_BONUS1 := REC.HGB_QTY2BONUS01 * V_FRACBONUS;
+                        END IF;
+                     END IF;
+                  --** Bonus I Level 1 **--
+                  WHEN     (V_QTYPB >= REC.HGB_QTYMULAI1BONUS01 * V_FRACBONUS)
+                       AND REC.HGB_QTYMULAI1BONUS01 <> 0
+                  THEN
+                     IF REC.HGB_QTYMULAI2BONUS01 = 0
+                     THEN
+                        V_QTYBL1 := REC.HGB_QTYMULAI1BONUS01 * V_FRACBONUS;
+                        V_BONUS1 := REC.HGB_QTY1BONUS01 * V_FRACBONUS;
+                     ELSE
+                        IF       (  V_QTYPB
+                                  / (REC.HGB_QTYMULAI2BONUS01 * V_FRACBONUS))
+                               * 100 >= 50
+                           AND REC.HGB_QTYMULAI2BONUS01 <> 0
+                        THEN
+                           V_QTYBL1 := REC.HGB_QTYMULAI2BONUS01 * V_FRACBONUS;
+                           V_BONUS1 := REC.HGB_QTY2BONUS01 * V_FRACBONUS;
+                        ELSE
+                           V_QTYBL1 := REC.HGB_QTYMULAI1BONUS01 * V_FRACBONUS;
+                           V_BONUS1 := REC.HGB_QTY1BONUS01 * V_FRACBONUS;
+                        END IF;
+                     END IF;
+                  ELSE
+                     IF REC.HGB_QTYMULAI1BONUS01 <> 0
+                     THEN
+                        IF   (  V_QTYPB
+                              / (REC.HGB_QTYMULAI1BONUS01 * V_FRACBONUS))
+                           * 100 >= 50
+                        THEN
+                           V_QTYBL1 := REC.HGB_QTYMULAI1BONUS01 * V_FRACBONUS;
+                           V_BONUS1 := REC.HGB_QTY1BONUS01 * V_FRACBONUS;
+                        ELSE
+                           Sp_Save_Tolakanpb (P_MEMKODEIGR,
+                                              '',
+                                              V_NOMORPB,
+                                              V_TANGGAL,
+                                              REC.PRD_PRDCD,
+                                              REC.PRD_KODEDIVISIPO,
+                                              REC.PRD_KODEDIVISI,
+                                              REC.PRD_KODEDEPARTEMENT,
+                                              REC.PRD_KODEKATEGORIBARANG,
+                                              REC.PRD_KODETAG,
+                                              V_QTYPB,
+                                              REC.SUP_KODESUPPLIER,
+                                              'QTY ORDER < QTY YG DPT BNS 1',
+                                              P_MEMUSERID);
+                           EXIT;
+                        END IF;
+                     ELSE
+                        V_QTYBL1 := 0;
+                        V_BONUS1 := 0;
+                     END IF;
+               END CASE;
+            END IF;
+         ELSE
+            V_QTYBL1 := 0;
+            V_BONUS1 := 0;
+         END IF;
+
+         ---** Bonus II **---
+         IF (    TRUNC (REC.HGB_TGLMULAIBONUS02) <= TRUNC (V_TANGGAL)
+             AND TRUNC (REC.HGB_TGLAKHIRBONUS02) >= TRUNC (V_TANGGAL)
+             AND REC.HGB_TGLMULAIBONUS02 IS NOT NULL)
+         THEN
+            IF    REC.HGB_FLAGKELIPATANBONUS02 = 'Y'
+               OR (    NVL (REC.HGB_FLAGKELIPATANBONUS02, ' ') = ' '
+                   AND REC.HGB_QTYMULAI1BONUS02 <> 0
+                   AND REC.HGB_QTYMULAI2BONUS02 = 0)
+            THEN
+               --** Bonus II Berlaku Kelipatan **--
+               V_QTYBL2 := REC.HGB_QTYMULAI1BONUS02 * V_FRACBONUS;
+
+               IF V_QTYPB >= V_QTYBL2
+               THEN
+                  V_KLPT := TRUNC (V_QTYPB / V_QTYBL2);
+
+                  IF ( (MOD (V_QTYPB, V_QTYBL2) / V_QTYBL2) * 100) >= 50
+                  THEN
+                     V_QTYBL2 := (V_KLPT * V_QTYBL2) + V_QTYBL2;
+                  ELSE
+                     V_QTYBL2 := (V_KLPT * V_QTYBL2);
+                  END IF;
+               ELSE
+                  IF ( (V_QTYPB / V_QTYBL2) * 100) < 50
+                  THEN
+                     Sp_Save_Tolakanpb (P_MEMKODEIGR,
+                                        '',
+                                        V_NOMORPB,
+                                        V_TANGGAL,
+                                        REC.PRD_PRDCD,
+                                        REC.PRD_KODEDIVISIPO,
+                                        REC.PRD_KODEDIVISI,
+                                        REC.PRD_KODEDEPARTEMENT,
+                                        REC.PRD_KODEKATEGORIBARANG,
+                                        REC.PRD_KODETAG,
+                                        V_QTYPB,
+                                        REC.SUP_KODESUPPLIER,
+                                        'QTY ORDER < QTY YG DPT BNS 2',
+                                        P_MEMUSERID);
+                     EXIT;
+                  END IF;
+               END IF;
+
+               V_BONUS2 :=
+                    TRUNC (
+                       V_QTYBL2 / (REC.HGB_QTYMULAI1BONUS02 * V_FRACBONUS))
+                  * (REC.HGB_QTY1BONUS02 * V_FRACBONUS);
+            ELSE
+               CASE
+                  --** Bonus II Level 3 **--
+                  WHEN     (V_QTYPB >= REC.HGB_QTYMULAI3BONUS02 * V_FRACBONUS)
+                       AND REC.HGB_QTYMULAI3BONUS02 <> 0
+                  THEN
+                     V_QTYBL2 := REC.HGB_QTYMULAI3BONUS02 * V_FRACBONUS;
+                     V_BONUS2 := REC.HGB_QTY3BONUS02 * V_FRACBONUS;
+                  --** Bonus II Level 2 **--
+                  WHEN     (V_QTYPB >= REC.HGB_QTYMULAI2BONUS02 * V_FRACBONUS)
+                       AND REC.HGB_QTYMULAI2BONUS02 <> 0
+                  THEN
+                     IF REC.HGB_QTYMULAI3BONUS02 = 0
+                     THEN
+                        V_QTYBL2 := REC.HGB_QTYMULAI2BONUS02 * V_FRACBONUS;
+                        V_BONUS2 := REC.HGB_QTY2BONUS02 * V_FRACBONUS;
+                     ELSE
+                        IF       (  V_QTYPB
+                                  / REC.HGB_QTYMULAI3BONUS02
+                                  * V_FRACBONUS)
+                               * 100 >= 50
+                           AND REC.HGB_QTYMULAI3BONUS02 <> 0
+                        THEN
+                           V_QTYBL2 := REC.HGB_QTYMULAI3BONUS02 * V_FRACBONUS;
+                           V_BONUS2 := REC.HGB_QTY3BONUS02 * V_FRACBONUS;
+                        ELSE
+                           V_QTYBL2 := REC.HGB_QTYMULAI2BONUS02 * V_FRACBONUS;
+                           V_BONUS2 := REC.HGB_QTY2BONUS02 * V_FRACBONUS;
+                        END IF;
+                     END IF;
+                  --** Bonus II Level 1 **--
+                  WHEN     (V_QTYPB >= REC.HGB_QTYMULAI1BONUS02 * V_FRACBONUS)
+                       AND REC.HGB_QTYMULAI1BONUS02 <> 0
+                  THEN
+                     IF REC.HGB_QTYMULAI2BONUS02 = 0
+                     THEN
+                        V_QTYBL2 := REC.HGB_QTYMULAI1BONUS02 * V_FRACBONUS;
+                        V_BONUS2 := REC.HGB_QTY1BONUS02 * V_FRACBONUS;
+                     ELSE
+                        IF       (  V_QTYPB
+                                  / (REC.HGB_QTYMULAI2BONUS02 * V_FRACBONUS))
+                               * 100 >= 50
+                           AND REC.HGB_QTYMULAI2BONUS02 <> 0
+                        THEN
+                           V_QTYBL2 := REC.HGB_QTYMULAI2BONUS02 * V_FRACBONUS;
+                           V_BONUS2 := REC.HGB_QTY2BONUS02 * V_FRACBONUS;
+                        ELSE
+                           V_QTYBL2 := REC.HGB_QTYMULAI1BONUS02 * V_FRACBONUS;
+                           V_BONUS2 := REC.HGB_QTY1BONUS02 * V_FRACBONUS;
+                        END IF;
+                     END IF;
+                  ELSE
+                     IF REC.HGB_QTYMULAI1BONUS02 <> 0
+                     THEN
+                        IF   (  V_QTYPB
+                              / (REC.HGB_QTYMULAI1BONUS02 * V_FRACBONUS))
+                           * 100 >= 50
+                        THEN
+                           V_QTYBL2 := REC.HGB_QTYMULAI1BONUS02 * V_FRACBONUS;
+                           V_BONUS2 := REC.HGB_QTY1BONUS02 * V_FRACBONUS;
+                        ELSE
+                           Sp_Save_Tolakanpb (P_MEMKODEIGR,
+                                              '',
+                                              V_NOMORPB,
+                                              V_TANGGAL,
+                                              REC.PRD_PRDCD,
+                                              REC.PRD_KODEDIVISIPO,
+                                              REC.PRD_KODEDIVISI,
+                                              REC.PRD_KODEDEPARTEMENT,
+                                              REC.PRD_KODEKATEGORIBARANG,
+                                              REC.PRD_KODETAG,
+                                              V_QTYPB,
+                                              REC.SUP_KODESUPPLIER,
+                                              'QTY ORDER < QTY YG DPT BNS 2',
+                                              P_MEMUSERID);
+                           EXIT;
+                        END IF;
+                     ELSE
+                        V_QTYBL2 := 0;
+                        V_BONUS2 := 0;
+                     END IF;
+               END CASE;
+            END IF;
+         END IF;
+
+         IF V_QTYBL1 >= V_QTYBL2
+         THEN
+            V_QTYPB := V_QTYBL1;
+         ELSE
+            V_QTYPB := V_QTYBL2;
+         END IF;
+
+         ---** Finish Untuk Hitung Bonus dan Discount
+         --**------------ Nilai PB dan Discount 1 dan 2 ------------**--
+         V_QTYBESAR := TRUNC (V_QTYPB / V_FRAC, 0);
+         V_QTYKECIL := (V_QTYPB MOD V_FRAC);
+         V_GROSS :=
+              ( (V_QTYBESAR * V_HRGBELI) + (V_QTYKECIL / V_FRAC * V_HRGBELI))
+            - (  (  (V_QTYBESAR * V_HRGBELI)
+                  + (V_QTYKECIL / V_FRAC * V_HRGBELI))
+               * V_DISCPER1
+               / 100);
+         V_GROSS := V_GROSS - (V_GROSS * (V_DISCPER2 / 100));
+
+         --** ------------- Discount 1 Rupiah -----------------**--
+         IF V_DISCRPH1 <> 0
+         THEN
+            IF V_DISCJNS1 = 'K'
+            THEN
+               V_GROSS := V_GROSS - (V_DISCRPH1 * V_QTYPB);
+            ELSE
+               V_GROSS := V_GROSS - (V_DISCRPH1 * V_QTYBESAR);
+            END IF;
+         END IF;
+
+         --** ------------- Discount 2 Rupiah ----------------- **
+         IF V_DISCRPH2 <> 0
+         THEN
+            IF V_DISCJNS1 = 'K'
+            THEN
+               V_GROSS := V_GROSS - (V_DISCRPH2 * V_QTYPB);
+            ELSE
+               V_GROSS := V_GROSS - (V_DISCRPH2 * V_QTYBESAR);
+            END IF;
+         END IF;
+
+         V_NILPPN :=
+            (CASE
+                WHEN ( (REC.SUP_PKP = 'Y') AND (REC.PRD_FLAGBKP1 = 'Y'))
+                THEN
+                   ( (V_GROSS * P_MEMPPN) / 100)
+                ELSE
+                   0
+             END);
+         V_NILPPNBM :=
+            (V_PPNBM * V_QTYBESAR) + (V_QTYKECIL / V_FRAC * V_PPNBM);
+         V_NILPPNBTL :=
+            (V_PPNBTL * V_QTYBESAR) + (V_QTYKECIL / V_FRAC * V_PPNBTL);
+         ---- Save PB
+         V_NOMORURUT := V_NOMORURUT + 1;
+
+         /*
+                  IF rec.hgb_prdcd = '0271030'
+                  THEN
+                     v_nomorurut := v_nomorurut - 1;
+                     v_nomorurut := v_nomorurut + 1;
+                  END IF;
+         */
+         IF P_TIPEPB = 'R'
+         THEN
+            -- penambahan Juli 2018
+            IF V_QTYPB < REC.PRD_MINORDER / 2
+            THEN
+               /*
+               --pengecekan untuk data pb yang stock nya masih 50% dr min order maka tidak ter create pb nya dan ngak masuk tolakan
+               IF REC.ST_SALDOAKHIR >= (REC.PRD_MINORDER / 2)
+               THEN
+                   EXIT;
+               END IF;
+
+               V_RECMIN := '2';*/
+               EXIT;
+            ELSE
+               IF NVL (rec.pmp_prdcd, '1234567') <> '1234567'
+               THEN
+                  IF v_qtypb < (rec.mpt_maxqty * 0.75)
+                  THEN
+                     EXIT;
+                  ELSE
+                     IF v_qtypb < REC.PRD_MINORDER
+                     THEN
+                        v_qtypb := REC.PRD_MINORDER;
+                     END IF;
+
+                     IF v_qtypb MOD rec.mpt_maxqty <> 0
+                     THEN
+                        IF v_qtypb MOD rec.mpt_maxqty <
+                              (rec.mpt_maxqty * 0.75)
+                        THEN
+                           v_qtypb :=
+                              (  rec.mpt_maxqty
+                               * TRUNC (v_qtypb / rec.mpt_maxqty, 0));
+                        ELSE
+                           v_qtypb :=
+                              (  (  rec.mpt_maxqty
+                                  * TRUNC (v_qtypb / rec.mpt_maxqty, 0))
+                               + rec.mpt_maxqty);
+                        END IF;
+                     ELSE
+                        v_qtypb :=
+                           (  rec.mpt_maxqty
+                            * TRUNC (v_qtypb / rec.mpt_maxqty, 0));
+                     END IF;
+
+                     V_RECMIN := NULL;
+                  END IF;
+               ELSE
+                  IF v_qtypb < REC.PRD_MINORDER
+                  THEN
+                     v_qtypb := REC.PRD_MINORDER;
+                  END IF;
+
+                  V_RECMIN := NULL;
+               END IF;
+
+               NULL;
+            END IF;
+         ELSE
+            IF NVL (REC.MIN_PRDCD, '1234567') = '1234567'
+            THEN
+               IF V_QTYPB < REC.PRD_MINORDER
+               THEN
+                  V_RECMIN := '2';
+               ELSE
+                  V_RECMIN := NULL;
+               END IF;
+            ELSE
+               IF V_QTYPB < REC.MIN_MINIMUMORDER
+               THEN
+                  V_RECMIN := '2';
+               ELSE
+                  V_RECMIN := NULL;
+               END IF;
+            END IF;
+         END IF;
+
+
+         Sp_Save_Pb_Temp (V_SESSION,
+                          V_KODEIGR,
+                          V_RECMIN,
+                          V_NOMORPB,
+                          REC.HGB_PRDCD,
+                          REC.PRD_KODEDIVISI,
+                          REC.PRD_KODEDIVISIPO,
+                          REC.PRD_KODEDEPARTEMENT,
+                          REC.PRD_KODEKATEGORIBARANG,
+                          REC.PRD_KODETAG,
+                          REC.HGB_KODESUPPLIER,
+                          V_TANGGAL,
+                          V_QTYPB,
+                          NVL (REC.SUP_MINKARTON, 0),
+                          NVL (REC.SUP_MINRPH, 0),
+                          V_HRGBELI,
+                          V_DISCPER1,
+                          V_DISCRPH1,
+                          V_DISCJNS1,
+                          V_DISCPER2,
+                          V_DISCRPH2,
+                          V_DISCJNS2,
+                          V_BONUS1,
+                          V_BONUS2,
+                          V_GROSS,
+                          V_DISCOUNT,
+                          V_NILPPN,
+                          V_NILPPNBM,
+                          V_NILPPNBTL,
+                          V_KETERANGANPB,
+                          V_QTYMINT,
+                          V_TOP,
+                          V_QTYPBOUT,
+                          V_QTYPOOUT,
+                          ' ',
+                          V_SALDOAKHIR);
+         EXIT;
+      END LOOP;
+   END LOOP;
+
+
+
+   COMMIT;
+
+   --*-------- Tolakan PB "< DARI MINOR PER ITEM"
+   INSERT INTO TBTR_TOLAKANPB (TLK_KODEIGR,
+                               TLK_RECORDID,
+                               TLK_NOPB,
+                               TLK_TGLPB,
+                               TLK_PRDCD,
+                               TLK_KODEDIVISIPO,
+                               TLK_KODEDIVISI,
+                               TLK_KODEDEPARTEMEN,
+                               TLK_KODEKATEGORI,
+                               TLK_KODETAG,
+                               TLK_QTY,
+                               TLK_KODESUPPLIER,
+                               TLK_KETERANGANTOLAKAN,
+                               TLK_CREATE_BY,
+                               TLK_CREATE_DT)
+      SELECT P_MEMKODEIGR,
+             '',
+             PBD_NOPB,
+             PBD_TGLPB,
+             PBD_PRDCD,
+             PBD_KODEDIVISIPO,
+             PBD_KODEDIVISI,
+             PBD_KODEDEPARTEMENT,
+             PBD_KODEKATEGORIBRG,
+             PBD_KODETAG,
+             PBD_QTYPB,
+             PBD_KODESUPPLIER,
+             '< DARI MINOR PER ITEM' KET,
+             P_MEMUSERID,
+             SYSDATE IDTRANS
+        FROM TBTR_PB_TEMP
+       WHERE     NVL (PBD_RECORDID, 0) = '2'
+             AND PBD_SESSION = V_SESSION
+             AND PBD_PRDCD NOT IN (SELECT TLK_PRDCD
+                                     FROM TBTR_TOLAKANPB
+                                    WHERE TRUNC (TLK_TGLPB) =
+                                             TRUNC (V_TANGGAL));
+
+
+
+   ------------- Tolakan PB "< DARI MINOR CARTON/RP PER SUPPLIER"
+   IF P_TIPEPB = 'R'
+   THEN
+      -- pak lili 10 juni 2014 info pak gao
+      /*INSERT INTO TBTR_TOLAKANPB
+                  (TLK_KODEIGR, TLK_RECORDID, TLK_NOPB, TLK_TGLPB, TLK_PRDCD, TLK_KODEDIVISIPO,
+                   TLK_KODEDIVISI, TLK_KODEDEPARTEMEN, TLK_KODEKATEGORI, TLK_KODETAG, TLK_QTY,
+                   TLK_KODESUPPLIER, TLK_KETERANGANTOLAKAN, TLK_CREATE_BY, TLK_CREATE_DT)
+          SELECT P_MEMKODEIGR, '', PBD_NOPB, PBD_TGLPB, PBD_PRDCD, PBD_KODEDIVISIPO,
+                 PBD_KODEDIVISI, PBD_KODEDEPARTEMENT, PBD_KODEKATEGORIBRG, PBD_KODETAG,
+                 PBD_QTYPB, PBD_KODESUPPLIER, '< DARI MINOR CARTON/RP PER SUPPLIER' KET,
+                 P_MEMUSERID, SYSDATE IDTRANS
+            FROM TBTR_PB_TEMP
+           WHERE PBD_KODESUPPLIER IN (
+                     SELECT PBD_KODESUPPLIER
+                       FROM (SELECT   PBD_NOPB, PBD_KODESUPPLIER, PBD_MINKARTON, PBD_MINRUPIAH,
+                                      SUM (PBD_QTYPB) AS QUANTITY,
+                                      SUM (PBD_GROSS + PBD_PPN + PBD_PPNBM + PBD_PPNBOTOL
+                                          ) AS RUPIAH
+                                 FROM TBTR_PB_TEMP
+                             GROUP BY PBD_NOPB, PBD_KODESUPPLIER, PBD_MINKARTON, PBD_MINRUPIAH) A
+                      WHERE (    A.QUANTITY < A.PBD_MINKARTON
+                             AND A.PBD_MINKARTON <> 0
+                             AND PBD_SESSION = V_SESSION
+                            )
+                         OR (A.RUPIAH < A.PBD_MINRUPIAH AND A.PBD_MINRUPIAH <> 0))
+             AND PBD_PRDCD NOT IN (SELECT TLK_PRDCD
+                                     FROM TBTR_TOLAKANPB
+                                    WHERE TRUNC (TLK_TGLPB) = TRUNC (V_TANGGAL)
+                                                                               --ORDER BY KodeSupplier
+                 )
+             AND PBD_SESSION = V_SESSION;
+      */
+
+      -- MINOR CARTON dan MINOR RUPIAH
+
+
+      INSERT INTO TBTR_TOLAKANPB (TLK_KODEIGR,
+                                  TLK_RECORDID,
+                                  TLK_NOPB,
+                                  TLK_TGLPB,
+                                  TLK_PRDCD,
+                                  TLK_KODEDIVISIPO,
+                                  TLK_KODEDIVISI,
+                                  TLK_KODEDEPARTEMEN,
+                                  TLK_KODEKATEGORI,
+                                  TLK_KODETAG,
+                                  TLK_QTY,
+                                  TLK_KODESUPPLIER,
+                                  TLK_KETERANGANTOLAKAN,
+                                  TLK_CREATE_BY,
+                                  TLK_CREATE_DT)
+         SELECT P_MEMKODEIGR,
+                '',
+                PBD_NOPB,
+                PBD_TGLPB,
+                PBD_PRDCD,
+                PBD_KODEDIVISIPO,
+                PBD_KODEDIVISI,
+                PBD_KODEDEPARTEMENT,
+                PBD_KODEKATEGORIBRG,
+                PBD_KODETAG,
+                PBD_QTYPB,
+                PBD_KODESUPPLIER,
+                CASE
+                   WHEN QUANTITY < MINKARTON
+                   THEN
+                         '< DARI MINOR CARTON PER SUPPLIER ( '
+                      || TRIM (TO_CHAR (QUANTITY, '9,999'))
+                      || ' < '
+                      || TRIM (TO_CHAR (MINKARTON, '9,999'))
+                      || ' )'
+                   ELSE
+                         '< DARI MINOR RPH PER SUPPLIER ( '
+                      || TRIM (TO_CHAR (RUPIAH, '999,999,999'))
+                      || ' < '
+                      || TRIM (TO_CHAR (MINRUPIAH, '999,999,999'))
+                      || ' )'
+                END
+                   KET,
+                P_MEMUSERID,
+                SYSDATE IDTRANS
+           FROM TBTR_PB_TEMP,
+                (SELECT NOPB,
+                        KODESUPPLIER,
+                        QUANTITY,
+                        RUPIAH,
+                        MINKARTON,
+                        MINRUPIAH
+                   FROM (  SELECT PBD_NOPB NOPB,
+                                  PBD_KODESUPPLIER KODESUPPLIER,
+                                  PBD_MINKARTON MINKARTON,
+                                  PBD_MINRUPIAH MINRUPIAH,
+                                  SUM (PBD_QTYPB) AS QUANTITY,
+                                  SUM (
+                                       NVL (PBD_GROSS, 0)
+                                     + NVL (PBD_PPN, 0)
+                                     + NVL (PBD_PPNBM, 0)
+                                     + NVL (PBD_PPNBOTOL, 0))
+                                     AS RUPIAH
+                             FROM TBTR_PB_TEMP
+                            WHERE PBD_SESSION = V_SESSION
+                         GROUP BY PBD_NOPB,
+                                  PBD_KODESUPPLIER,
+                                  PBD_MINKARTON,
+                                  PBD_MINRUPIAH) A
+                  WHERE    (A.QUANTITY < A.MINKARTON AND A.MINKARTON <> 0)
+                        OR (A.RUPIAH < A.MINRUPIAH AND A.MINRUPIAH <> 0))
+          WHERE     PBD_KODESUPPLIER = KODESUPPLIER
+                AND PBD_PRDCD NOT IN (SELECT TLK_PRDCD
+                                        FROM TBTR_TOLAKANPB
+                                       WHERE TRUNC (TLK_TGLPB) =
+                                                TRUNC (V_TANGGAL) --ORDER BY KodeSupplier
+                                                                 )
+                AND PBD_SESSION = V_SESSION;
+
+      -- DELETE PB TEMP
+      DELETE FROM TBTR_PB_TEMP
+            WHERE     PBD_KODESUPPLIER IN (SELECT PBD_KODESUPPLIER
+                                             FROM (  SELECT PBD_NOPB,
+                                                            PBD_KODESUPPLIER,
+                                                            PBD_MINKARTON,
+                                                            PBD_MINRUPIAH,
+                                                            SUM (PBD_QTYPB)
+                                                               AS QUANTITY,
+                                                            SUM (
+                                                                 NVL (
+                                                                    PBD_GROSS,
+                                                                    0)
+                                                               + NVL (PBD_PPN,
+                                                                      0)
+                                                               + NVL (
+                                                                    PBD_PPNBM,
+                                                                    0)
+                                                               + NVL (
+                                                                    PBD_PPNBOTOL,
+                                                                    0))
+                                                               AS RUPIAH
+                                                       FROM TBTR_PB_TEMP
+                                                   GROUP BY PBD_NOPB,
+                                                            PBD_KODESUPPLIER,
+                                                            PBD_MINKARTON,
+                                                            PBD_MINRUPIAH) A
+                                            WHERE     (   (    A.QUANTITY <
+                                                                  A.PBD_MINKARTON
+                                                           AND A.PBD_MINKARTON <>
+                                                                  0)
+                                                       OR (    A.RUPIAH <
+                                                                  A.PBD_MINRUPIAH
+                                                           AND A.PBD_MINRUPIAH <>
+                                                                  0))
+                                                  AND PBD_SESSION = V_SESSION)
+                  AND PBD_PRDCD NOT IN (SELECT TLK_PRDCD
+                                          FROM TBTR_TOLAKANPB
+                                         WHERE TRUNC (TLK_TGLPB) =
+                                                  TRUNC (V_TANGGAL) --ORDER BY KodeSupplier
+                                                                   )
+                  AND PBD_SESSION = V_SESSION;
+
+
+      ---*** Simpan Data PB Detail ***---
+
+      INSERT INTO TBTR_PB_D (PBD_KODEIGR,
+                             PBD_RECORDID,
+                             PBD_NOPB,
+                             PBD_PRDCD,
+                             PBD_KODEDIVISI,
+                             PBD_KODEDIVISIPO,
+                             PBD_KODEDEPARTEMENT,
+                             PBD_KODEKATEGORIBRG,
+                             PBD_KODETAG,
+                             PBD_KODESUPPLIER,
+                             PBD_NOURUT,
+                             PBD_QTYPB,
+                             PBD_QTYBPB,
+                             PBD_HRGSATUAN,
+                             PBD_PERSENDISC1,
+                             PBD_RPHDISC1,
+                             PBD_FLAGDISC1,
+                             PBD_PERSENDISC2,
+                             PBD_RPHDISC2,
+                             PBD_FLAGDISC2,
+                             PBD_BONUSPO1,
+                             PBD_BONUSPO2,
+                             PBD_BONUSBPB1,
+                             PBD_BONUSBPB2,
+                             PBD_GROSS,
+                             PBD_RPHTTLDISC,
+                             PBD_PPN,
+                             PBD_PPNBM,
+                             PBD_PPNBOTOL,
+                             PBD_TOP,
+                             PBD_NOPO,
+                             PBD_OSTPB,
+                             PBD_OSTPO,
+                             PBD_PKMT,
+                             PBD_SALDOAKHIR,
+                             PBD_FDXREV,
+                             PBD_CREATE_BY,
+                             PBD_CREATE_DT,
+                             PBD_MODIFY_BY,
+                             PBD_MODIFY_DT)
+         SELECT PBD_KODEIGR,
+                PBD_RECORDID,
+                PBD_NOPB,
+                PBD_PRDCD,
+                PBD_KODEDIVISI,
+                PBD_KODEDIVISIPO,
+                PBD_KODEDEPARTEMENT,
+                PBD_KODEKATEGORIBRG,
+                PBD_KODETAG,
+                PBD_KODESUPPLIER,
+                ROWNUM,
+                PBD_QTYPB,
+                0 QTYBPB,
+                PBD_HRGSATUAN,
+                PBD_PERSENDISC1,
+                PBD_RPHDISC1,
+                PBD_FLAGDISC1,
+                PBD_PERSENDISC2,
+                PBD_RPHDISC2,
+                PBD_FLAGDISC2,
+                PBD_BONUSPO1,
+                PBD_BONUSPO2,
+                0 BONUSBPB1,
+                0 BONUSBPB2,
+                PBD_GROSS,
+                PBD_RPHDISC,
+                PBD_PPN,
+                PBD_PPNBM,
+                PBD_PPNBOTOL,
+                PBD_TOP,
+                '' NOPO,
+                PBD_OSTPB,
+                PBD_OSTPO,
+                PBD_PKMT,
+                PBD_SALDOAKHIR,
+                NULL FDXREV,
+                P_MEMUSERID USERCRT,
+                SYSDATE TGL,
+                P_MEMUSERID USERMODI,
+                SYSDATE TGLMODY
+           FROM TBTR_PB_TEMP
+          WHERE     PBD_KODESUPPLIER IN (SELECT PBD_KODESUPPLIER
+                                           FROM (  SELECT PBD_NOPB,
+                                                          PBD_KODESUPPLIER,
+                                                          PBD_MINKARTON,
+                                                          PBD_MINRUPIAH,
+                                                          SUM (PBD_QTYPB)
+                                                             AS QUANTITY,
+                                                          SUM (
+                                                               NVL (PBD_GROSS,
+                                                                    0)
+                                                             + NVL (PBD_PPN, 0)
+                                                             + NVL (PBD_PPNBM,
+                                                                    0)
+                                                             + NVL (
+                                                                  PBD_PPNBOTOL,
+                                                                  0))
+                                                             AS RUPIAH
+                                                     FROM TBTR_PB_TEMP
+                                                 GROUP BY PBD_NOPB,
+                                                          PBD_KODESUPPLIER,
+                                                          PBD_MINKARTON,
+                                                          PBD_MINRUPIAH) A
+                                          WHERE     (A.QUANTITY >=
+                                                        A.PBD_MINKARTON)
+                                                AND (A.RUPIAH >=
+                                                        A.PBD_MINRUPIAH))
+                AND NVL (PBD_RECORDID, ' ') <> '2'
+                AND PBD_PRDCD NOT IN (SELECT TLK_PRDCD
+                                        FROM TBTR_TOLAKANPB
+                                       WHERE TRUNC (TLK_TGLPB) =
+                                                TRUNC (V_TANGGAL))
+                AND PBD_SESSION = V_SESSION;
+
+      ---*** Simpan Data PB Header ***---
+      INSERT INTO TBTR_PB_H
+           SELECT V_KODEIGR,
+                  '',
+                  PBD_NOPB,
+                  V_TANGGAL,
+                  P_TIPEPB,
+                  PBD_JENISPB,
+                  '' FLAG,
+                  SUM (PBD_QTYPB),
+                  0 QTYBPB,
+                  SUM (PBD_BONUSPO1),
+                  SUM (PBD_BONUSPO2),
+                  0 BONUSBPB1,
+                  0 BONUSBPB2,
+                  SUM (PBD_GROSS),
+                  SUM (PBD_RPHDISC),
+                  SUM (PBD_PPN),
+                  SUM (PBD_PPNBM),
+                  SUM (PBD_PPNBOTOL),
+                  PBD_KETERANGANPB,
+                  NULL,
+                  P_MEMUSERID,
+                  SYSDATE,
+                  P_MEMUSERID,
+                  SYSDATE
+             FROM TBTR_PB_TEMP
+            WHERE     PBD_KODESUPPLIER IN (SELECT PBD_KODESUPPLIER
+                                             FROM (  SELECT PBD_NOPB,
+                                                            PBD_KODESUPPLIER,
+                                                            PBD_MINKARTON,
+                                                            PBD_MINRUPIAH,
+                                                            SUM (PBD_QTYPB)
+                                                               AS QUANTITY,
+                                                            SUM (
+                                                                 NVL (PBD_GROSS,
+                                                                      0)
+                                                               + NVL (PBD_PPN, 0)
+                                                               + NVL (PBD_PPNBM,
+                                                                      0)
+                                                               + NVL (
+                                                                    PBD_PPNBOTOL,
+                                                                    0))
+                                                               AS RUPIAH
+                                                       FROM TBTR_PB_TEMP
+                                                   GROUP BY PBD_NOPB,
+                                                            PBD_KODESUPPLIER,
+                                                            PBD_MINKARTON,
+                                                            PBD_MINRUPIAH) A
+                                            WHERE     (A.QUANTITY >=
+                                                          A.PBD_MINKARTON)
+                                                  AND (A.RUPIAH >=
+                                                          A.PBD_MINRUPIAH))
+                  AND NVL (PBD_RECORDID, ' ') <> '2'
+                  AND PBD_SESSION = V_SESSION
+         GROUP BY PBD_KODEIGR,
+                  PBD_RECORDID,
+                  PBD_NOPB,
+                  PBD_JENISPB,
+                  PBD_KETERANGANPB;
+   ELSE
+
+      ---*** Simpan Data PB Detail ***---
+      INSERT INTO TBTR_PB_D (PBD_KODEIGR,
+                             PBD_RECORDID,
+                             PBD_NOPB,
+                             PBD_PRDCD,
+                             PBD_KODEDIVISI,
+                             PBD_KODEDIVISIPO,
+                             PBD_KODEDEPARTEMENT,
+                             PBD_KODEKATEGORIBRG,
+                             PBD_KODETAG,
+                             PBD_KODESUPPLIER,
+                             PBD_NOURUT,
+                             PBD_QTYPB,
+                             PBD_QTYBPB,
+                             PBD_HRGSATUAN,
+                             PBD_PERSENDISC1,
+                             PBD_RPHDISC1,
+                             PBD_FLAGDISC1,
+                             PBD_PERSENDISC2,
+                             PBD_RPHDISC2,
+                             PBD_FLAGDISC2,
+                             PBD_BONUSPO1,
+                             PBD_BONUSPO2,
+                             PBD_BONUSBPB1,
+                             PBD_BONUSBPB2,
+                             PBD_GROSS,
+                             PBD_RPHTTLDISC,
+                             PBD_PPN,
+                             PBD_PPNBM,
+                             PBD_PPNBOTOL,
+                             PBD_TOP,
+                             PBD_NOPO,
+                             PBD_OSTPB,
+                             PBD_OSTPO,
+                             PBD_PKMT,
+                             PBD_SALDOAKHIR,
+                             PBD_FDXREV,
+                             PBD_CREATE_BY,
+                             PBD_CREATE_DT,
+                             PBD_MODIFY_BY,
+                             PBD_MODIFY_DT)
+         SELECT PBD_KODEIGR,
+                PBD_RECORDID,
+                PBD_NOPB,
+                PBD_PRDCD,
+                PBD_KODEDIVISI,
+                PBD_KODEDIVISIPO,
+                PBD_KODEDEPARTEMENT,
+                PBD_KODEKATEGORIBRG,
+                PBD_KODETAG,
+                PBD_KODESUPPLIER,
+                ROWNUM,
+                PBD_QTYPB,
+                0 QTYBPB,
+                PBD_HRGSATUAN,
+                PBD_PERSENDISC1,
+                PBD_RPHDISC1,
+                PBD_FLAGDISC1,
+                PBD_PERSENDISC2,
+                PBD_RPHDISC2,
+                PBD_FLAGDISC2,
+                PBD_BONUSPO1,
+                PBD_BONUSPO2,
+                0 BONUSBPB1,
+                0 BONUSBPB2,
+                PBD_GROSS,
+                PBD_RPHDISC,
+                PBD_PPN,
+                PBD_PPNBM,
+                PBD_PPNBOTOL,
+                PBD_TOP,
+                '' NOPO,
+                PBD_OSTPB,
+                PBD_OSTPO,
+                PBD_PKMT,
+                PBD_SALDOAKHIR,
+                NULL FDXREV,
+                P_MEMUSERID USERCRT,
+                SYSDATE TGL,
+                P_MEMUSERID USERMODI,
+                SYSDATE TGLMODY
+           FROM TBTR_PB_TEMP
+          WHERE     PBD_KODESUPPLIER IN (SELECT PBD_KODESUPPLIER
+                                           FROM (  SELECT PBD_NOPB,
+                                                          PBD_KODESUPPLIER,
+                                                          PBD_MINKARTON,
+                                                          PBD_MINRUPIAH,
+                                                          SUM (PBD_QTYPB)
+                                                             AS QUANTITY,
+                                                          SUM (
+                                                               NVL (PBD_GROSS,
+                                                                    0)
+                                                             + NVL (PBD_PPN, 0)
+                                                             + NVL (PBD_PPNBM,
+                                                                    0)
+                                                             + NVL (
+                                                                  PBD_PPNBOTOL,
+                                                                  0))
+                                                             AS RUPIAH
+                                                     FROM TBTR_PB_TEMP
+                                                 GROUP BY PBD_NOPB,
+                                                          PBD_KODESUPPLIER,
+                                                          PBD_MINKARTON,
+                                                          PBD_MINRUPIAH) A)
+                --                 WHERE
+                --(a.quantity >= a.pbd_minkarton)
+                --AND (a.rupiah >= a.pbd_minrupiah))
+                AND NVL (PBD_RECORDID, ' ') <> '2'
+                AND PBD_SESSION = V_SESSION;
+
+      ---*** Simpan Data PB Header ***---
+      INSERT INTO TBTR_PB_H
+           SELECT V_KODEIGR,
+                  '',
+                  PBD_NOPB,
+                  V_TANGGAL,
+                  P_TIPEPB,
+                  PBD_JENISPB,
+                  '' FLAG,
+                  SUM (PBD_QTYPB),
+                  0 QTYBPB,
+                  SUM (PBD_BONUSPO1),
+                  SUM (PBD_BONUSPO2),
+                  0 BONUSBPB1,
+                  0 BONUSBPB2,
+                  SUM (PBD_GROSS),
+                  SUM (PBD_RPHDISC),
+                  SUM (PBD_PPN),
+                  SUM (PBD_PPNBM),
+                  SUM (PBD_PPNBOTOL),
+                  PBD_KETERANGANPB,
+                  NULL,
+                  P_MEMUSERID,
+                  SYSDATE,
+                  P_MEMUSERID,
+                  SYSDATE
+             FROM TBTR_PB_TEMP
+            WHERE     PBD_KODESUPPLIER IN (SELECT PBD_KODESUPPLIER
+                                             FROM (  SELECT PBD_NOPB,
+                                                            PBD_KODESUPPLIER,
+                                                            PBD_MINKARTON,
+                                                            PBD_MINRUPIAH,
+                                                            SUM (PBD_QTYPB)
+                                                               AS QUANTITY,
+                                                            SUM (
+                                                                 NVL (PBD_GROSS,
+                                                                      0)
+                                                               + NVL (PBD_PPN, 0)
+                                                               + NVL (PBD_PPNBM,
+                                                                      0)
+                                                               + NVL (
+                                                                    PBD_PPNBOTOL,
+                                                                    0))
+                                                               AS RUPIAH
+                                                       FROM TBTR_PB_TEMP
+                                                   GROUP BY PBD_NOPB,
+                                                            PBD_KODESUPPLIER,
+                                                            PBD_MINKARTON,
+                                                            PBD_MINRUPIAH) A)
+                  --                   WHERE
+                  --(a.quantity >= a.pbd_minkarton)
+                  --AND (a.rupiah >= a.pbd_minrupiah))
+                  AND NVL (PBD_RECORDID, ' ') <> '2'
+                  AND PBD_SESSION = V_SESSION
+         GROUP BY PBD_KODEIGR,
+                  PBD_RECORDID,
+                  PBD_NOPB,
+                  PBD_JENISPB,
+                  PBD_KETERANGANPB;
+   END IF;
+
+   --** Delete File Temporary **--
+   DELETE FROM TBTR_PB_TEMP
+         WHERE PBD_SESSION = V_SESSION;
+
+   COMMIT;
+   P_SUKSES := 'TRUE';
+EXCEPTION
+   WHEN OTHERS
+   THEN
+      P_SUKSES := 'FALSE';
+      P_ERRMSG := SQLERRM;
+      ROLLBACK;
+END;
+/
+
+ALTER PROCEDURE sp_create_pb_auto_by_sup_web COMPILE;
+/

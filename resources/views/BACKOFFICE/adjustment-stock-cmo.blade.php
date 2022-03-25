@@ -27,7 +27,7 @@
                                 <div class="col"></div>
                                 <label class="col-sm-1 pr-0 text-right col-form-label">Tanggal</label>
                                 <div class="col-sm-2">
-                                    <input type="text" class="form-control" id="tgl1" disabled>
+                                    <input type="text" class="form-control tgl" id="tgl1" disabled>
                                 </div>
                             </div>
                             <div class="row">
@@ -42,22 +42,22 @@
                                 <div class="col"></div>
                                 <label class="col-sm-1 pr-0 text-right col-form-label">s/d</label>
                                 <div class="col-sm-2">
-                                    <input type="text" class="form-control" id="tgl2" disabled>
+                                    <input type="text" class="form-control tgl" id="tgl2" disabled>
                                 </div>
                             </div>
                             <div class="row mt-2">
                                 <div class="col"></div>
                                 <div class="col-sm-2">
-                                    <button class="col btn btn-primary form-control">PROSES BA</button>
+                                    <button id="btnProsesBA" onclick="processBA()" class="col btn btn-primary form-control" disabled>PROSES BA</button>
                                 </div>
                                 <div class="col-sm-2">
-                                    <button class="col btn btn-primary form-control">BATAL BA</button>
+                                    <button id="btnBatalBA" onclick="cancelBA()" class="col btn btn-primary form-control" disabled>BATAL BA</button>
                                 </div>
                                 <div class="col-sm-2">
-                                    <button class="col btn btn-primary form-control">PROSES ADJ</button>
+                                    <button id="btnProsesAdj" onclick="processAdjust()" class="col btn btn-primary form-control" disabled>PROSES ADJ</button>
                                 </div>
                                 <div class="col-sm-2">
-                                    <button class="col btn btn-primary form-control">LISTING ADJ</button>
+                                    <button id="btnListingAdj" onclick="listingAdjust()" class="col btn btn-primary form-control" disabled>LISTING ADJ</button>
                                 </div>
                             </div>
                         </div>
@@ -91,10 +91,10 @@
                         <div class="row">
                             <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">Deskripsi</label>
                             <div class="col-sm-6">
-                                <input type="text" class="form-control" id="u_deskripsi" disabled>
+                                <input type="text" class="form-control" id="deskripsi" disabled>
                             </div>
                             <div class="col-sm-2">
-                                <input type="text" class="form-control text-right" id="u_qty1" disabled>
+                                <input type="text" class="form-control text-right" id="unit" disabled>
                             </div>
                             <div class="col"></div>
                             <div class="col-sm-2">
@@ -233,13 +233,14 @@
     <script>
         var currIndex = 0;
         var index = 0;
+        var arrDataBA = [];
 
         $(document).ready(function(){
-            tgltrn = $('#tgltrn').datepicker({
+            $('.tgl').datepicker({
                 "dateFormat" : "dd/mm/yy",
             });
 
-            tabel = $('#table_daftar').DataTable({
+            $('#table_daftar').DataTable({
                 "scrollY": "40vh",
                 "paging" : false,
                 "sort": false,
@@ -249,6 +250,8 @@
 
             getLovBA();
             getLovPLU();
+
+            $('#noBA').focus();
         });
 
         function getLovBA(){
@@ -312,6 +315,8 @@
                     $(document).on('click', '.row-lov-plu', function (e) {
                         $('#row-'+currIndex).find('.pluigr').val($(this).find('td:eq(0)').html());
 
+                        doCheckPLU(currIndex);
+
                         $('#m_lov_plu').modal('hide');
                     });
                 }
@@ -335,8 +340,75 @@
                     success: function (response) {
                         $('#modal-loader').modal('hide');
 
+                        header = response.header;
+
+                        $('#noBA').val(header.noba);
+                        $('#tglBA').val(header.tglba);
+
+                        arrDataBA = response.detail;
+
+                        index = 0;
+                        currIndex = 0;
+
+                        if($.fn.DataTable.isDataTable('#table_daftar')) {
+                            $('#table_daftar').DataTable().destroy();
+                        }
+
+                        $('#table_daftar tbody tr').remove();
+
+                        $('#table_daftar').DataTable({
+                            "scrollY": "40vh",
+                            "paging" : false,
+                            "sort": false,
+                            "bInfo": false,
+                            "searching": false
+                        });
+
+                        for(i=0;i<response.detail.length;i++){
+                            addRow();
+
+                            row = $('#row-'+i);
+                            data = response.detail[i];
+
+                            row.find('.pluigr').val(data.bac_prdcd);
+                            row.find('.pluidm').val(data.prc_pluidm);
+                            row.find('.qtysv').val(data.bac_qty_stock);
+                            row.find('.qtyba').val(data.bac_qty_ba);
+
+                            if(data.bac_recordid == '2')
+                                row.find('.qtyadj').val(data.bac_qty_adj);
+                            else row.find('.qtyadj').val(0);
+
+                            row.find('.keterangan').val(data.bac_keterangan);
+                        }
+
+                        $('#table_daftar .pluigr').prop('disabled',true);
+                        $('#table_daftar .btn-lov').prop('disabled',true);
+                        $('#table_daftar .qtyba').prop('disabled',true);
+                        $('#table_daftar .keterangan').prop('disabled',true);
+                        $('#table_daftar .btn-delete').prop('disabled',true);
+
+                        $('#btnProsesBA').prop('disabled',true);
+                        $('#btnListingAdj').prop('disabled',false);
+
+                        if(header.status == '2'){
+                            $('#tglAdj').val(header.tgladj);
+                            $('#userAdj').val(header.useradj);
+
+                            $('#table_daftar .qtyadj').prop('disabled',true);
+                            $('#btnProsesBA').prop('disabled',true);
+                            $('#btnBatalBA').prop('disabled',true);
+                            $('#btnProsesAdj').prop('disabled',true);
+                        }
+                        else{
+                            $('#table_daftar .qtyadj').prop('disabled',false);
+                            $('#btnBatalBA').prop('disabled',false);
+                            $('#btnProsesAdj').prop('disabled',false);
+                        }
                     },
                     error: function(error){
+                        $('#modal-loader').modal('hide');
+
                         swal({
                             title: error.responseJSON.message,
                             icon: 'error'
@@ -352,12 +424,12 @@
         }
 
         function addRow(){
-            if ($.fn.DataTable.isDataTable('#table_daftar')) {
+            if($.fn.DataTable.isDataTable('#table_daftar')) {
                 $('#table_daftar').DataTable().destroy();
             }
 
             $('#table_daftar tbody').append(`
-                <tr id="row-${index}">
+                <tr id="row-${index}" class="row-data" onmouseover="showDetail(${index})">
                     <td>
                         <button onclick="deleteRow(${index})" class="col-sm btn btn-danger btn-delete">X</button>
                     </td>
@@ -370,23 +442,41 @@
                         </div>
                     </td>
                     <td>
-                        <input type="text" class="form-control pluidm" autocomplete="off" disabled>
+                        <input type="text" class="form-control pluidm text-center" autocomplete="off" disabled>
                     </td>
                     <td>
-                        <input type="text" class="form-control qtysv" autocomplete="off" disabled>
+                        <input type="text" class="form-control qtysv text-right" autocomplete="off" disabled>
                     </td>
                     <td>
-                        <input type="text" class="form-control qtyba" autocomplete="off">
+                        <input type="text" class="form-control qtyba text-right" autocomplete="off">
                     </td>
                     <td>
-                        <input type="text" class="form-control qtyadj" autocomplete="off">
+                        <input type="text" class="form-control qtyadj text-right" autocomplete="off">
                     </td>
                     <td>
-                        <input type="text" class="form-control keterangan" autocomplete="off">
+                        <input type="text" class="form-control keterangan text-left" autocomplete="off">
                     </td>
                 </tr>`);
 
             index++;
+
+            $('#table_daftar').DataTable({
+                "scrollY": "40vh",
+                "paging" : false,
+                "sort": false,
+                "bInfo": false,
+                "searching": false
+            });
+
+            defaultAction();
+        }
+
+        function deleteRow(i){
+            if($.fn.DataTable.isDataTable('#table_daftar')) {
+                $('#table_daftar').DataTable().destroy();
+            }
+
+            $('#row-'+i).remove();
 
             $('#table_daftar').DataTable({
                 "scrollY": "40vh",
@@ -404,14 +494,176 @@
 
         function checkPLU(event, i){
             if(event.which == 13){
+                if($('#row-'+i).find('.pluigr').val()){
+                    found = 0;
+
+                    $('.pluigr').each(function(){
+                        if(convertPlu(this.value) == convertPlu($('#row-'+i).find('.pluigr').val())){
+                            found++;
+                        }
+                    });
+
+                    if(found < 2)
+                        doCheckPLU(i);
+                    else{
+                        swal({
+                            title: 'PLU '+ convertPlu($('#row-'+i).find('.pluigr').val()) + ' sudah ada!',
+                            icon: 'warning'
+                        }).then(() => {
+                            $('#row-'+i).find('.pluigr').select();
+                        });
+                    }
+                }
+            }
+        }
+
+        function doCheckPLU(i){
+            $.ajax({
+                url: '{{ url()->current() }}/check-plu',
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    plu: $('#row-'+i).find('.pluigr').val()
+                },
+                beforeSend: function(){
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+
+                    $('#row-'+i).find('.pluigr').val(response.plu);
+                    $('#row-'+i).find('.pluidm').val(response.pluidm);
+                    $('#row-'+i).find('.qtysv').val(response.qty);
+                    $('#row-'+i).find('.qtyba').select();
+
+                    arrDataBA[i] = response;
+
+                    showDetail(i);
+                },
+                error: function(error){
+                    $('#modal-loader').modal('hide');
+
+                    swal({
+                        title: error.responseJSON.message,
+                        icon: 'error'
+                    }).then(() => {
+                        $('#row-'+i).find('.pluigr').select();
+                    });
+                }
+            });
+        }
+
+        $('#noBA').on('keypress',function(event){
+            if(event.which == 13){
+                if(this.value){
+                   getDataBA(this.value);
+                }
+                else{
+                    $.ajax({
+                        url: '{{ url()->current() }}/get-new-no-ba',
+                        type: 'GET',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        beforeSend: function(){
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (response) {
+                            $('#modal-loader').modal('hide');
+
+                            arrDataBA = [];
+                            index = 0;
+                            currIndex = 0;
+
+                            if($.fn.DataTable.isDataTable('#table_daftar')) {
+                                $('#table_daftar').DataTable().destroy();
+                            }
+
+                            $('#table_daftar tbody tr').remove();
+
+                            $('#table_daftar').DataTable({
+                                "scrollY": "40vh",
+                                "paging" : false,
+                                "sort": false,
+                                "bInfo": false,
+                                "searching": false
+                            });
+
+                            $('#noBA').val(response.noba);
+                            $('#tglBA').val(response.tglba);
+                            $('#tglAdj').val('');
+                            $('#userAdj').val('');
+                            $('#deskripsi3').val('');
+                            $('#unit').val('');
+
+                            $('#btnProsesBA').prop('disabled',false);
+                            $('#btnBatalBA').prop('disabled',true);
+                            $('#btnProsesAdj').prop('disabled',true);
+                            $('#btnListingAdj').prop('disabled',false);
+
+                            $('#tgl1').prop('disabled',true);
+                            $('#tgl2').prop('disabled',true);
+
+                            addRow();
+
+                            $('#table_daftar .pluigr:eq(0)').focus();
+                        },
+                        error: function(error){
+                            swal({
+                                title: error.responseJSON.message,
+                                icon: 'error'
+                            }).then(() => {
+
+                            });
+                        }
+                    });
+                }
+            }
+        });
+
+        function defaultAction(){
+            $('.qtyba')
+                .off()
+                .on('keypress',function(e){
+                    if(e.which == 13){
+                        $(this).blur();
+                    }
+                })
+                .on('blur',function(){
+                    checkQtyBA($(this).closest('tr'));
+                    $('.qtyba').closest('tr').find('.keterangan').select();
+                });
+
+            $('.keterangan')
+                .off()
+                .on('keypress',function(e){
+                    if(e.which == 13){
+                        if($(this).closest('tr').is(':last-child')){
+                            addRow();
+                            $('.pluigr:eq(-1)').focus();
+                        }
+                        else{
+                            $(this).closest('tr').next().find('.pluigr').select();
+                        }
+                    }
+                });
+        }
+
+        function checkQtyBA(row){
+            if(row.find('.pluigr').val()){
                 $.ajax({
-                    url: '{{ url()->current() }}/check-plu',
+                    url: '{{ url()->current() }}/check-qty-ba',
                     type: 'GET',
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
                     data: {
-                        plu: $('#row-'+i).find('.pluigr').val()
+                        noba: $('#noBA').val(),
+                        plu: row.find('.pluigr').val(),
+                        qty: row.find('.qtyba').val(),
+                        qtysv: row.find('.qtysv').val()
                     },
                     beforeSend: function(){
                         $('#modal-loader').modal('show');
@@ -419,19 +671,273 @@
                     success: function (response) {
                         $('#modal-loader').modal('hide');
 
-                        $('#row-'+i).find('.qtyba').select();
+                        if(response.temp == 0)
+                            row.find('.keterangan').focus();
+                        else row.find('.qtyadj').focus();
                     },
                     error: function(error){
+                        $('#modal-loader').modal('hide');
+
                         swal({
                             title: error.responseJSON.message,
                             icon: 'error'
                         }).then(() => {
-
+                            row.find('.qtyba').select();
                         });
                     }
                 });
             }
         }
+
+        function showDetail(i){
+            if(arrDataBA[i]){
+                $('.row-data').removeClass('selected');
+                $('#row-'+i).addClass('selected');
+                $('#deskripsi').val(arrDataBA[i].prd_deskripsipanjang);
+                $('#unit').val(arrDataBA[i].unit);
+            }
+        }
+
+        function processBA(){
+            swal({
+                title: 'Yakin akan proses data?',
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true
+            }).then((ok) => {
+                if(ok){
+                    dataBA = [];
+
+                    $('.row-data').each(function(){
+                        if($(this).find('.pluidm').val()){
+                            d = {
+                                'pluigr' : $(this).find('.pluigr').val(),
+                                'qtyst' : $(this).find('.qtysv').val(),
+                                'qtyba' : $(this).find('.qtyba').val(),
+                                'keterangan' : $(this).find('.keterangan').val()
+                            };
+
+                            dataBA.push(d);
+                        }
+                    });
+
+                    $.ajax({
+                        url: '{{ url()->current() }}/process-ba',
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            noba: $('#noBA').val(),
+                            tglba: $('#tglBA').val(),
+                            dataBA: dataBA
+                        },
+                        beforeSend: function(){
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (response) {
+                            $('#modal-loader').modal('hide');
+
+                            swal({
+                                title: response.message,
+                                icon: 'success'
+                            }).then(() => {
+                                getDataBA($('#noBA').val());
+                                window.open(`{{ url()->current() }}/print-ba?noba=${response.noba}`,'_blank');
+                            });
+                        },
+                        error: function(error){
+                            $('#modal-loader').modal('hide');
+
+                            swal({
+                                title: error.responseJSON.message,
+                                icon: 'error'
+                            }).then(() => {
+
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        function cancelBA(){
+            swal({
+                title: 'Yakin ingin membatalkan?',
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true
+            }).then((ok) => {
+                if(ok){
+                    $.ajax({
+                        url: '{{ url()->current() }}/cancel-ba',
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            noba: $('#noBA').val(),
+                        },
+                        beforeSend: function(){
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (response) {
+                            $('#modal-loader').modal('hide');
+
+                            swal({
+                                title: response.message,
+                                icon: 'success'
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        },
+                        error: function(error){
+                            $('#modal-loader').modal('hide');
+
+                            swal({
+                                title: error.responseJSON.message,
+                                icon: 'error'
+                            }).then(() => {
+
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        function processAdjust(){
+            swal({
+                title: 'Yakin akan proses data?',
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true
+            }).then((ok) => {
+                if(ok){
+                    dataBA = [];
+
+                    $('.row-data').each(function(){
+                        if($(this).find('.pluidm').val()){
+                            d = {
+                                'pluigr' : $(this).find('.pluigr').val(),
+                                'qtyst' : $(this).find('.qtysv').val(),
+                                'qtyadj' : $(this).find('.qtyadj').val(),
+                            };
+
+                            dataBA.push(d);
+                        }
+                    });
+
+                    $.ajax({
+                        url: '{{ url()->current() }}/process-adjust',
+                        type: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            noba: $('#noBA').val(),
+                            dataBA: dataBA
+                        },
+                        beforeSend: function(){
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (response) {
+                            $('#modal-loader').modal('hide');
+
+                            swal({
+                                title: response.message,
+                                icon: 'success'
+                            }).then(() => {
+                                getDataBA($('#noBA').val());
+                                $('#userAdj').val(response.useradj);
+                                $('#tglAdj').val(response.tgladj);
+                            });
+                        },
+                        error: function(error){
+                            $('#modal-loader').modal('hide');
+
+                            swal({
+                                title: error.responseJSON.message,
+                                icon: 'error'
+                            }).then(() => {
+
+                            });
+                        }
+                    });
+                }
+            });
+        }
+
+        function listingAdjust(){
+            $('.tgl').prop('disabled',false);
+            $('#tgl1').val(formatDate('now')).select();
+            $('#tgl2').val(formatDate('now'));
+        }
+
+        $('.tgl').on('change',function(){
+            if(!this.value){
+                swal({
+                    title: 'Tanggal '+ ($(this).attr('id') == 'tgl1' ? '1' : '2') + ' tidak boleh null!',
+                    icon: 'warning'
+                }).then(() => {
+                    $(this).select();
+                });
+            }
+            else if($('#tgl1').val() > $('#tgl2').val()){
+                swal({
+                    title: 'Salah inputan periode tanggal proses!',
+                    icon: 'warning'
+                }).then(() => {
+                    $(this).select();
+                });
+            }
+        });
+
+        $('#tgl1').on('keypress',function(event){
+            if(event.which == 13){
+                if(!this.value){
+                    swal({
+                        title: 'Tanggal 1 tidak boleh null!',
+                        icon: 'warning'
+                    }).then(() => {
+                        $(this).select();
+                    });
+                }
+                else if($('#tgl1').val() > $('#tgl2').val()){
+                    swal({
+                        title: 'Salah inputan periode tanggal proses!',
+                        icon: 'warning'
+                    }).then(() => {
+                        $(this).select();
+                    });
+                }
+            }
+        });
+
+        $('#tgl2').on('keypress',function(event){
+            if(event.which == 13){
+                if(!this.value){
+                    swal({
+                        title: 'Tanggal 2 tidak boleh null!',
+                        icon: 'warning'
+                    }).then(() => {
+                        $(this).select();
+                    });
+                }
+                else if($('#tgl1').val() > $('#tgl2').val()){
+                    swal({
+                        title: 'Salah inputan periode tanggal proses!',
+                        icon: 'warning'
+                    }).then(() => {
+                        $(this).select();
+                    });
+                }
+                else{
+                    window.open(`{{ url()->current() }}/print-list?tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}`,'_blank');
+                    $('#noBA').select();
+                }
+            }
+        });
     </script>
 
 @endsection

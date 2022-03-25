@@ -151,6 +151,8 @@ IS
     BULAN_NO               VARCHAR2 (12);
     TAHUN_NO                             VARCHAR2 (35);
 
+    PRD_PPN                 NUMBER;
+
     --PARAM_PROSES            VARCHAR2 (100);
     PARAM_LBKP              VARCHAR2 (100);
     PARAM_BEBAS             VARCHAR2 (100);
@@ -188,6 +190,8 @@ IS
     flag_return2      BOOLEAN := FALSE;
     flag_return3      BOOLEAN := FALSE;
     flag_return4      BOOLEAN := FALSE;
+
+
 
 
 BEGIN
@@ -1005,7 +1009,7 @@ BEGIN
                                                       PRD_FLAGBKP1, PRD_FLAGBKP2, PRD_UNIT,
                                                       PRD_FRAC, PRD_AVGCOST, PRD_KODEDIVISI,
                                                       PRD_KODEDEPARTEMENT, PRD_KODEKATEGORIBARANG,
-                                                      PRD_LASTCOST, CUS_TOP, SUP_PKP, SUP_TOP
+                                                      PRD_LASTCOST, CUS_TOP, SUP_PKP, SUP_TOP, PRD_PPN
                                                  FROM TEMP_BKL_DALAMKOTA BKL,
                                                       TBMASTER_PRODCRM,
                                                       TBMASTER_PRODMAST,
@@ -1054,16 +1058,17 @@ BEGIN
                             FBKP1 := RECNO.PRD_FLAGBKP1;
                             FBKP2 := RECNO.PRD_FLAGBKP2;
                             TOP := RECNO.CUS_TOP;
+                            PRD_PPN := RECNO.PRD_PPN;
 
                             IF PPN = 0
                             THEN
                                 IF RECNO.PRD_FLAGBKP1 = 'Y' AND RECNO.PRD_FLAGBKP2 <> 'P'
                                 THEN
-                                    GROSS2 := FLOOR ((RECNO.GROSS / 1.1));
-                                    GROSS := FLOOR ((RECNO.GROSS / 1.1));
-                                    HRG2 := (RECNO.PRICE / 1.1);
-                                    HRG := (RECNO.PRICE / 1.1);
-                                    PPN := RECNO.GROSS - (RECNO.GROSS / 1.1);
+                                    GROSS2 := FLOOR ((RECNO.GROSS / (1+(nvl(prd_ppn, 10)/100))));
+                                    GROSS := FLOOR ((RECNO.GROSS / (1+(nvl(prd_ppn, 10)/100))));
+                                    HRG2 := (RECNO.PRICE / (1+(nvl(prd_ppn, 10)/100)));
+                                    HRG := (RECNO.PRICE / (1+(nvl(prd_ppn, 10)/100)));
+                                    PPN := RECNO.GROSS - (RECNO.GROSS / (1+(nvl(prd_ppn, 10)/100)));
                                 END IF;
                             END IF;
 
@@ -1074,11 +1079,11 @@ BEGIN
                                 THEN
                                     HRG2 := GROSS2 / RECNO.QTY;
                                 ELSE
-                                    GROSS2 := FLOOR ((RECNO.GROSS / 1.1));
-                                    GROSS := FLOOR ((RECNO.GROSS / 1.1));
-                                    HRG2 := (RECNO.PRICE / 1.1);
-                                    HRG := (RECNO.PRICE / 1.1);
-                                    PPN := (RECNO.GROSS - RECNO.GROSS / 1.1);
+                                    GROSS2 := FLOOR ((RECNO.GROSS / (1+(nvl(prd_ppn, 10)/100))));
+                                    GROSS := FLOOR ((RECNO.GROSS / (1+(nvl(prd_ppn, 10)/100))));
+                                    HRG2 := (RECNO.PRICE / (1+(nvl(prd_ppn, 10)/100)));
+                                    HRG := (RECNO.PRICE / (1+(nvl(prd_ppn, 10)/100)));
+                                    PPN := (RECNO.GROSS - RECNO.GROSS / (1+(nvl(prd_ppn, 10)/100)));
                                 END IF;
                             ELSE
                                 NULL;
@@ -1862,7 +1867,7 @@ BEGIN
 
                                 IF RECNO.PRD_FLAGBKP1 = 'Y' AND RECNO.PRD_FLAGBKP2 <> 'P'
                                 THEN
-                                    TOTPPN := TOTPPN + ((GROSS * 1.1) - GROSS);
+                                    TOTPPN := TOTPPN + ((GROSS * (1+(nvl(prd_ppn, 10)/100))) - GROSS);
                                 END IF;
                             /*ELSE
                                 TOTDIS1 := TOTDIS1 + NDISC12;
@@ -1873,7 +1878,7 @@ BEGIN
 
                                 IF RECNO.PRD_FLAGBKP1 = 'Y' AND RECNO.PRD_FLAGBKP2 <> 'P'
                                 THEN
-                                    TOTPPN := TOTPPN + ((GROSS2 * 1.1) - GROSS2);
+                                    TOTPPN := TOTPPN + ((GROSS2 * (1+(nvl(prd_ppn, 10)/100))) - GROSS2);
                                 END IF;
                             END IF;*/
 

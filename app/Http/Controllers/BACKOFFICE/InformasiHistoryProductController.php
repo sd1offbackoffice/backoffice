@@ -367,7 +367,7 @@ class InformasiHistoryProductController extends Controller
                         PRMD_JAMAKHIR'))
             ->orderBy('PRD_PRDCD')
             ->get();
-            
+
         for ($i = 0; $i < sizeof($sj); $i++) {
             if ($sj[$i]->unit == 'KG') {
                 $sj[$i]->frac = 1;
@@ -396,6 +396,7 @@ class InformasiHistoryProductController extends Controller
                         } else {
                             $marlcost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)):1.1) * (($sj[$i]->st_lastcost * $sj[$i]->frac)) / $nfmjual) * 100;
                             $maracost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)):1.1) * (($sj[$i]->st_lcost * $sj[$i]->frac)) / $nfmjual) * 100;
+
                         }
                     } else {
                         if ($sj[$i]->fmjual != 0) {
@@ -407,6 +408,7 @@ class InformasiHistoryProductController extends Controller
                         }
                         $marlcost = (1 - ($sj[$i]->st_lastcost * $sj[$i]->frac) / $nfmjual) * 100;
                         $maracost = (1 - ($sj[$i]->st_lcost * $sj[$i]->frac) / $nfmjual) * 100;
+
                     }
                 } else {
                     $cpromo = false;
@@ -417,6 +419,8 @@ class InformasiHistoryProductController extends Controller
                         } else {
                             $marlcost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)):1.1) * ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
                             $maracost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)):1.1) * ($sj[$i]->st_lcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                            //rumus ini
+
                         }
                     } else {
                         $marlcost = (1 - ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
@@ -736,726 +740,8 @@ class InformasiHistoryProductController extends Controller
             $pkmt->mplus = round($mplus);
             $pkmt->minory = round($minory);
         }
-//        DETAIL SALES
 
-
-        /*PENERIMAAN*/
-        $supplier = DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')->leftJoin('TBMASTER_SUPPLIER', 'MSTD_KODESUPPLIER', '=', 'SUP_KODESUPPLIER')
-            ->select('*')
-            ->whereRaw('substr(mstd_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
-            ->where('mstd_kodeigr', '=', '22')
-            ->whereIn('mstd_typetrn', ['L', 'I', 'B'])
-            ->whereRaw('NVL (MSTD_RECORDID, \'9\') != 1')
-            ->orderBy('mstd_prdcd')
-            ->orderBy('mstd_tgldoc')
-            ->get();
-
-        for ($i = 0; $i < sizeof($supplier); $i++) {
-            $supplier[$i]->trm_qtybns = $this->ceknull($supplier[$i]->mstd_qty, 0);
-            $supplier[$i]->trm_bonus = $this->ceknull($supplier[$i]->mstd_qtybonus1, 0);
-            $supplier[$i]->trm_bonus2 = $this->ceknull($supplier[$i]->mstd_qtybonus2, 0);
-            $supplier[$i]->trm_dokumen = $supplier[$i]->mstd_nodoc;
-            $supplier[$i]->trm_tanggal = $supplier[$i]->mstd_tgldoc;
-            $supplier[$i]->trm_supp = $supplier[$i]->sup_namasupplier;
-
-            if ($supplier[$i]->mstd_typetrn == 'I') {
-                $supplier[$i]->trm_top = 'Surat Jln';
-            } elseif ($supplier[$i]->mstd_typetrn == 'L') {
-                $supplier[$i]->trm_top = 'Lain2/Bns';
-            } elseif ($supplier[$i]->mstd_typetrn == 'B') {
-                $supplier[$i]->trm_top = 'BPB';
-            }
-
-            $supplier[$i]->trm_acost = $supplier[$i]->mstd_avgcost / $supplier[$i]->mstd_frac;
-
-            if ($supplier[$i]->mstd_typetrn == 'L') {
-                $supplier[$i]->trm_hpp = 0;
-            } else {
-                $supplier[$i]->trm_hpp = ($supplier[$i]->mstd_gross - ($supplier[$i]->mstd_discrph + $supplier[$i]->mstd_ppnbmrph + $supplier[$i]->mstd_ppnbtlrph)) / ($supplier[$i]->mstd_qty / $supplier[$i]->mstd_frac) / $supplier[$i]->mstd_frac;
-            }
-        }
-
-        $ntotalpo = 0;
-        $ntotalpb = 0;
-        $temppo = 'A,';
-        $temppb = 'A,';
-
-        $permintaan = array();
-        $pb = DB::connection(Session::get('connection'))->table('tbtr_po_d')
-            ->join('tbtr_po_h', 'tpoh_nopo', '=', 'tpod_nopo')
-            ->join('tbtr_pb_d', function ($join) {
-                $join->On(DB::connection(Session::get('connection'))->raw('SUBSTR (pbd_prdcd, 1, 6)'), '=', DB::connection(Session::get('connection'))->raw('SUBSTR (tpod_prdcd, 1, 6)'))->On('pbd_nopo', '=', 'tpod_nopo');
-            })->join('tbtr_pb_h', 'pbh_nopb', '=', 'pbd_nopb')
-            ->selectRaw('DISTINCT NVL (tpod_recordid, \'9\') recid,
-                                    tpod_prdcd,
-                                    tpod_nopo,
-                                    tpoh_tglpo,
-                                    NVL (tpod_qtypb, 0) tpod_qtypb,
-                                    tpoh_tglpo + tpoh_jwpb jwpb,
-                                    pbh_keteranganpb,
-                                    pbh_nopb,
-                                    pbh_tglpb,
-                                    NVL (pbh_qtypb, 0) pbh_qtypb,
-                                    pbd_nopo,
-                                    pbd_prdcd,
-                                    pbd_qtypb')
-            ->whereRaw('substr(tpod_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
-            ->orderBy('PBH_TGLPB')
-            ->orderBy('PBH_NOPB')
-            ->get();
-
-        for ($i = 0; $i < sizeof($pb); $i++) {
-            $pb_ketbpb = '';
-            $pb_no = '';
-            $pb_tgl = '';
-            $pb_qty = '';
-            $pb_ket = '';
-            $pb_nopo = '';
-            $pb_tglpo = '';
-            $pb_ketbpb = '';
-            $pb_qtybpb = '';
-            $step = 1;
-            $temppo = $temppo . $pb[$i]->tpod_nopo . ',';
-            $temppb = $temppb . $pb[$i]->pbh_nopb . ',';
-            $step = 2;
-            $pb_no = $pb[$i]->pbh_nopb;
-            $pb_tgl = $pb[$i]->pbh_tglpb;
-            $pb_qty = $pb[$i]->pbd_qtypb;
-            $pb_ket = $pb[$i]->pbh_keteranganpb;
-
-            $step = 3;
-            $pb_nopo = $pb[$i]->tpod_nopo;
-            $pb_tglpo = $pb[$i]->tpoh_tglpo;
-
-            $step = 4;
-            $pb_qtybpb = $pb[$i]->tpod_qtypb;
-
-
-            if (Self::ceknull($pb[$i]->tpod_qtypb, 0) == 0) {
-                if ($pb[$i]->recid == '9') {
-                    if ($pb[$i]->jwpb < Carbon::now()) {
-                        $step = 5;
-                        $pb_ketbpb = 'PO Mati/Kdlwarsa';
-                    } else {
-                        $step = 6;
-                        $pb_ketbpb = 'Brg.blm dikirim';
-                    }
-                } else {
-                    $step = 7;
-                    $pb_ketbpb = 'Qty BPB 0 (null)';
-                }
-            }
-            $step = 8;
-            if (Self::ceknull($pb[$i]->tpod_nopo, '') != '' and Self::ceknull($pb[$i]->tpoh_tglpo, '') == '') {
-                $step = 9;
-                $pb_ketbpb = 'PO Mati/Kdlwarsa';
-            }
-
-            $step = 10;
-            $ntotalpo = Self::ceknull($ntotalpo, 0) + Self::ceknull($pb[$i]->tpod_qtypb, 0);
-
-            if (Self::ceknull($pb[$i]->tpod_nopo, '') == '') {
-                if ($pb[$i]->pbh_tglpb < Carbon::now()->addDays(2)) {
-                    $step = 11;
-                    $pb_ketbpb = 'PB tdk.tRealiss';
-                } else {
-                    $step = 12;
-                    $pb_ketbpb = 'Blm.Transfer PO';
-                }
-            }
-
-            $dataPenerimaan["pb_no"] = $pb_no;
-            $dataPenerimaan["pb_tgl"] = $pb_tgl;
-            $dataPenerimaan["pb_qty"] = $pb_qty;
-            $dataPenerimaan["pb_ket"] = $pb_ket;
-            $dataPenerimaan["pb_nopo"] = $pb_nopo;
-            $dataPenerimaan["pb_tglpo"] = $pb_tglpo;
-            $dataPenerimaan["pb_ketbpb"] = $pb_ketbpb;
-            $dataPenerimaan["pb_qtybpb"] = $pb_qtybpb;
-            array_push($permintaan, $dataPenerimaan);
-        }
-
-        $step = 13;
-        $pb2 = DB::connection(Session::get('connection'))->table('tbtr_pb_d')
-            ->join('tbtr_pb_h', 'pbh_nopb', '=', 'pbd_nopb')
-            ->selectRaw('DISTINCT pbh_keteranganpb,
-                                     pbh_nopb,
-                                     pbh_tglpb,
-                                     NVL (pbh_qtypb, 0) pbh_qtypb,
-                                     pbd_nopo,
-                                     pbd_prdcd,
-                                     pbd_qtypb')
-            ->whereRaw('substr(pbd_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
-            ->orderBy('PBH_TGLPB')
-            ->orderBy('PBH_NOPB')
-            ->get();
-        for ($i = 0; $i < sizeof($pb2); $i++) {
-            if (strpos($temppb, $pb2[$i]->pbh_nopb) == 0) {
-                $pb_ketbpb = '';
-                $pb_no = '';
-                $pb_tgl = '';
-                $pb_qty = '';
-                $pb_ket = '';
-                $pb_nopo = '';
-                $pb_tglpo = '';
-                $pb_ketbpb = '';
-                $pb_qtybpb = '';
-                $step = 14;
-                $pb_no = $pb2[$i]->pbh_nopb;
-                $pb_tgl = $pb2[$i]->pbh_tglpb;
-                $pb_ket = $pb2[$i]->pbh_keteranganpb;
-                $pb_nopo = $pb2[$i]->pbd_nopo;
-                $pb_qty = $pb2[$i]->pbd_qtypb;
-
-                if (Self::ceknull($pb2[$i]->pbd_nopo, '') == '') {
-                    if ($pb2[$i]->pbh_tglpb < Carbon::now()->addDays(2)) {
-                        $step = 15;
-                        $pb_ketbpb = 'PB tdk.tRealiss';
-                    } else {
-                        $step = 16;
-                        $pb_ketbpb = 'Blm.Transfer PO';
-                    }
-                }
-                //nextrecord
-                $dataPenerimaan["pb_no"] = $pb_no;
-                $dataPenerimaan["pb_tgl"] = $pb_tgl;
-                $dataPenerimaan["pb_qty"] = $pb_qty;
-                $dataPenerimaan["pb_ket"] = $pb_ket;
-                $dataPenerimaan["pb_nopo"] = $pb_nopo;
-                $dataPenerimaan["pb_tglpo"] = $pb_tglpo;
-                $dataPenerimaan["pb_ketbpb"] = $pb_ketbpb;
-                $dataPenerimaan["pb_qtybpb"] = $pb_qtybpb;
-                array_push($permintaan, $dataPenerimaan);
-            }
-        }
-        $step = 17;
-        $po = DB::connection(Session::get('connection'))->table('tbtr_po_d')
-            ->join('tbtr_po_h', 'tpoh_nopo', '=', 'tpod_nopo')
-            ->selectRaw('DISTINCT NVL (tpod_recordid, \'9\') recid,
-                                tpod_prdcd,
-                                tpod_nopo,
-                                tpoH_tglpo,
-                                NVL (tpod_qtypb, 0) tpod_qtypb,
-                                tpoh_tglpo + tpoh_jwpb jwpb')
-            ->whereRaw('substr(tpod_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
-            ->orderBy('TPOH_TGLPO')
-            ->orderBy('TPOD_NOPO')
-            ->get();
-        for ($i = 0; $i < sizeof($po); $i++) {
-            if (strpos($temppo, $po[$i]->tpod_nopo) == 0) {
-                $pb_ketbpb = '';
-                $pb_no = '';
-                $pb_tgl = '';
-                $pb_qty = '';
-                $pb_ket = '';
-                $pb_nopo = '';
-                $pb_tglpo = '';
-                $pb_ketbpb = '';
-                $pb_qtybpb = '';
-                $step = 18;
-                $pb_nopo = $po[$i]->tpod_nopo;
-                $pb_tglpo = $po[$i]->tpoh_tglpo;
-                $step = 19;
-                $pb_qtybpb = $po[$i]->tpod_qtypb;
-                if (Self::ceknull($po[$i]->tpod_qtypb, 0) == 0) {
-                    if ($po[$i]->recid == '9') {
-                        if ($po[$i]->jwpb < Carbon::now()) {
-                            $step = 20;
-                            $pb_ketbpb = 'PO Mati/Kdlwarsa';
-                        } else {
-                            $step = 21;
-                            $pb_ketbpb = 'Brg.blm dikirim';
-                        }
-                    } else {
-                        $step = 22;
-                        $pb_ketbpb = 'Qty BPB 0 (nul)';
-                    }
-                }
-
-                if (Self::ceknull($po[$i]->tpod_nopo, '') != '' and Self::ceknull($po[$i]->tpoh_tglpo, '') == '') {
-                    $step = 23;
-                    $pb_ketbpb = 'PO Mati/Kdlwarsa';
-                }
-
-                $step = 24;
-                $ntotalpo = Self::ceknull($ntotalpo, 0) + Self::ceknull($po[$i]->tpod_qtypb, 0);
-
-                $step = 25;
-                $pb_ketbpb = 'PO Alokasi';
-                if (Self::ceknull($pb_qtybpb, 0) == 0) {
-                    $step = 26;
-                    $pb_ketbpb = 'PO Alokasi/Mati';
-                }
-                $step = 27;
-                if (Self::ceknull($pb_nopo, '') == '' and Self::ceknull($pb_tglpo, '') == '') {
-                    $step = 28;
-                    $pb_ketbpb = 'PO Mati/Kdlwarsa';
-                }
-//	        NEXT_RECORD;
-                $dataPenerimaan["pb_no"] = $pb_no;
-                $dataPenerimaan["pb_tgl"] = $pb_tgl;
-                $dataPenerimaan["pb_qty"] = $pb_qty;
-                $dataPenerimaan["pb_ket"] = $pb_ket;
-                $dataPenerimaan["pb_nopo"] = $pb_nopo;
-                $dataPenerimaan["pb_tglpo"] = $pb_tglpo;
-                $dataPenerimaan["pb_ketbpb"] = $pb_ketbpb;
-                $dataPenerimaan["pb_qtybpb"] = $pb_qtybpb;
-                array_push($permintaan, $dataPenerimaan);
-            }
-        }
-        $step = 29;
-
-        $temp = DB::connection(Session::get('connection'))->table('tbtr_ba_stockopname')
-            ->selectRaw('distinct sop_tglso')
-            ->where('sop_kodeigr', '=', '22')
-            ->orderBy('sop_tglso', 'desc')
-            ->get();
-
-        if (sizeof($temp) != 0) {
-            for ($i = 0; $i < sizeof($temp); $i++) {
-                $so_tgl = date('Y-m-d', strtotime(substr($temp[$i]->sop_tglso, 0, 10)));
-                break;
-            }
-        } else {
-            $so_tgl = date('Y-m-d');
-        }
-
-        $tempadjustso = DB::connection(Session::get('connection'))->raw('(Select ADJ_KODEIGR,
-                                ADJ_TGLSO,
-                                ADJ_PRDCD,
-                                ADJ_LOKASI,
-                                SUM (NVL (ADJ_QTY, 0)) QTY_ADJ
-                                from TBTR_ADJUSTSO
-                                Group by ADJ_KODEIGR,
-                                    ADJ_TGLSO,
-                                    ADJ_PRDCD,
-                                    ADJ_LOKASI) B');
-
-        $so = DB::connection(Session::get('connection'))->table('TBTR_BA_STOCKOPNAME')
-            ->join('TBMASTER_PRODMAST', 'PRD_PRDCD', '=', 'SOP_PRDCD')
-            ->leftJoin($tempadjustso, function ($join) {
-                $join->On(DB::connection(Session::get('connection'))->raw('SUBSTR (B.ADJ_PRDCD, 1, 6)'), '=', DB::connection(Session::get('connection'))->raw('SUBSTR (SOP_PRDCD, 1, 6)'))->On(DB::connection(Session::get('connection'))->raw('trunc(B.ADJ_TGLSO)'), '=', DB::connection(Session::get('connection'))->raw('trunc(SOP_TGLSO)'))->On('B.ADJ_LOKASI', '=', 'SOP_LOKASI');
-            })
-            ->selectRaw('SOP_QTYSO,
-                        SOP_QTYLPP,
-                        NVL (B.QTY_ADJ, 0) QTY_ADJ,
-                        SOP_QTYSO - SOP_QTYLPP + NVL (B.QTY_ADJ, 0) SELISIH,
-                        SOP_NEWAVGCOST,
-                        CASE
-                           WHEN PRD_UNIT = \'KG\'
-                               THEN ((SOP_QTYSO - SOP_QTYLPP + NVL (B.QTY_ADJ, 0)) * SOP_NEWAVGCOST) / 1000
-                           ELSE (SOP_QTYSO - SOP_QTYLPP + NVL (B.QTY_ADJ, 0)) * SOP_NEWAVGCOST
-                        END RUPIAH,
-                        PRD_UNIT')
-            ->whereRaw('substr(SOP_PRDCD, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
-            ->where('SOP_LOKASI', '=', '01')
-            ->whereRaw('SOP_TGLSO = to_date(\'' . $so_tgl . '\',\'yyyy-mm-dd\')')
-            ->get();
-
-        $adjustso = DB::connection(Session::get('connection'))->table('TBTR_ADJUSTSO')
-            ->select('*')
-            ->where('adj_kodeigr', '=', '22')
-            ->where('adj_lokasi', '=', '01')
-            ->whereRaw('substr(adj_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
-            ->whereRaw('adj_tglso = to_date(\'' . $so_tgl . '\',\'yyyy-mm-dd\')')
-            ->orderBy('adj_create_dt')
-            ->get();
-
-        $resetsoic = DB::connection(Session::get('connection'))->table('TBTR_RESET_SOIC')
-            ->select('*')
-            ->where('rso_kodeigr', '=', '22')
-            ->where('rso_lokasi', '=', '01')
-            ->whereRaw('substr(rso_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
-            ->whereRaw('to_char(rso_tglso, \'yyyyMM\') = to_char(sysdate, \'yyyyMM\')')
-            ->orderBy('rso_tglso')
-            ->orderBy('rso_kodeso')
-            ->get();
-
-        $hargabeli = DB::connection(Session::get('connection'))->table('tbmaster_hargabeli')
-            ->join('tbmaster_prodmast', 'prd_prdcd', '=', 'hgb_prdcd')
-            ->join('tbmaster_supplier', 'sup_kodesupplier', '=', 'hgb_kodesupplier')
-            ->leftJoin('tbmaster_tag', 'tag_kodetag', '=', 'prd_kodetag')
-            ->selectRaw('hgb_prdcd,
-                                         hgb_hrgbeli fmbeli,
-                                         NVL(hgb_ppnbm, 0) fmppnb,
-                                         NVL(hgb_ppnbotol, 0) fmnbtl,
-                                         NVL(hgb_ppn, 0) fmppnn,
-                                         hgb_tglmulaidisc01 fmd1tm,
-                                         hgb_tglakhirdisc01 fmd1ta,
-                                         hgb_flagdisc01 fmdirs,
-                                         hgb_rphdisc01 fmdirr,
-                                         hgb_tglmulaidisc02 fmditm,
-                                         hgb_tglakhirdisc02 fmdita,
-                                         hgb_rphdisc02 fmditr,
-                                         hgb_tglmulaibonus01 fmbntm,
-                                         hgb_tglakhirbonus01 fmbnta,
-                                         hgb_qty1bonus01 fmqbs1,
-                                         hgb_qtymulai1bonus01 fmqbl1,
-                                         hgb_jenishrgbeli fmjnsh,
-                                         hgb_jenisbonus fmfbns,
-                                         hgb_rphdisc02ii,
-                                         hgb_rphdisc02iii,
-                                         hgb_persendisc02ii,
-                                         hgb_persendisc02iii,
-                                         hgb_tglmulaidisc02ii,
-                                         hgb_tglakhirdisc02ii,
-                                         hgb_tglmulaidisc02iii,
-                                         hgb_tglakhirdisc02iii,
-                                         hgb_tglberlaku01 fmtgbu,
-                                         hgb_top fmjtop,
-                                         hgb_statusbarang fmkdsb,
-                                         hgb_persendisc01 fmdirp,
-                                         hgb_persendisc02 fmditp,
-                                         hgb_persendisc03 fmd3ps,
-                                         hgb_rphdisc03 fmd3rp,
-                                         hgb_persendisc06 fmd4p3,
-                                         hgb_rphdisc06 fmd4r3,
-                                         hgb_persendisc05 fmd4p2,
-                                         hgb_rphdisc05 fmd4r2,
-                                         hgb_persendisc04 fmd4p1,
-                                         hgb_rphdisc04 fmd4r1,
-                                         hgb_qtymulai2bonus01 fmqbl2,
-                                         hgb_qtymulai3bonus01 fmqbl3,
-                                         hgb_qty2bonus01 fmqbs2,
-                                         hgb_qty3bonus01 fmqbs3,
-                                         hgb_kodesupplier,
-                                         hgb_flagkelipatanbonus01 fmklpt,
-                                         hgb_tipe fmtipe,
-                                         hgb_prdcd fmplu,
-                                         prd_isibeli isib,
-                                         prd_unit unit,
-                                         prd_deskripsipanjang,
-                                         prd_kodetag ptag,
-                                         prd_satuanbeli satb,
-                                         prd_flagbkp1 bkp,
-                                         prd_flagbandrol,
-                                         prd_frac frac,
-                                         sup_namasupplier,
-                                         sup_pkp,
-                                         tag_kodetag,
-                                         tag_keterangan ftketr')
-            ->whereRaw('substr(hgb_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
-            ->orderBy('hgb_tipe')
-            ->orderBy('hgb_kodesupplier')
-            ->get();
-
-        for ($i = 0; $i < sizeof($hargabeli); $i++) {
-            $hb_plu = $hargabeli[$i]->hgb_prdcd . ' - ' . $hargabeli[$i]->prd_deskripsipanjang;
-            $hb_tglberlaku = $hargabeli[$i]->fmtgbu;
-            $hb_supplier = $hargabeli[$i]->hgb_kodesupplier . ' - ' . $hargabeli[$i]->sup_namasupplier;
-            $hb_statustag = $hargabeli[$i]->tag_kodetag . ' - ' . $hargabeli[$i]->ftketr;
-            $hb_satuanbl = $hargabeli[$i]->satb . '/' . $hargabeli[$i]->isib;
-            $hb_bkp = $hargabeli[$i]->bkp;
-            $hb_flagbandrol = $hargabeli[$i]->prd_flagbandrol;
-            $harga1 = Self::ceknull($hargabeli[$i]->fmbeli, 0) + Self::ceknull($hargabeli[$i]->fmppnb, 0) + Self::ceknull($hargabeli[$i]->fmnbtl, 0);
-
-            if (($hargabeli[$i]->fmd1tm <= Carbon::now() and $hargabeli[$i]->fmd1ta >= Carbon::now() and $hargabeli[$i]->fmd1tm != Carbon::now()) or $hargabeli[$i]->fmd1tm = Carbon::now()) {
-                if ($hargabeli[$i]->fmdirs == 'K') {
-                    $harga1 = $harga1 - $hargabeli[$i]->fmdirr;
-                } else {
-                    $harga1 = $harga1 - $hargabeli[$i]->fmdirr / $hargabeli[$i]->isib;
-                }
-            }
-
-            if ($hargabeli[$i]->fmditm <= Carbon::now() and $hargabeli[$i]->fmdita >= Carbon::now() and $hargabeli[$i]->fmditm != Carbon::now()) {
-                if ($hargabeli[$i]->fmdirs == 'K') {
-                    $harga1 = $harga1 - $hargabeli[$i]->fmditr;
-                } else {
-                    $harga1 = $harga1 - $hargabeli[$i]->fmditr / $hargabeli[$i]->isib;
-                }
-            }
-
-            if ($hargabeli[$i]->hgb_tglmulaidisc02ii <= Carbon::now()
-                and $hargabeli[$i]->hgb_tglakhirdisc02ii >= Carbon::now()
-                and $hargabeli[$i]->hgb_tglmulaidisc02ii != Carbon::now()) {
-                if ($hargabeli[$i]->fmdirs == 'K') {
-                    $harga1 = $harga1 - $hargabeli[$i]->hgb_rphdisc02ii;
-                } else {
-                    $harga1 = $harga1 - $hargabeli[$i]->hgb_rphdisc02ii / $hargabeli[$i]->isib;
-                }
-            }
-
-            if ($hargabeli[$i]->hgb_tglmulaidisc02iii <= Carbon::now()
-                and $hargabeli[$i]->hgb_tglakhirdisc02iii >= Carbon::now()
-                and $hargabeli[$i]->hgb_tglmulaidisc02iii != Carbon::now()) {
-                if ($hargabeli[$i]->fmdirs == 'K') {
-                    $harga1 = $harga1 - $hargabeli[$i]->hgb_rphdisc02iii;
-                } else {
-                    $harga1 = $harga1 - $hargabeli[$i]->hgb_rphdisc02iii / $hargabeli[$i]->isib;
-                }
-            }
-
-            if ($hargabeli[$i]->fmbntm <= Carbon::now()
-                and $hargabeli[$i]->fmbnta >= Carbon::now()
-                and $hargabeli[$i]->fmbnta != Carbon::now()
-                and $hargabeli[$i]->fmqbs1 + $hargabeli[$i]->fmqbl1 != 0
-            ) {
-                if ($hargabeli[$i]->fmfbns == 'K') {
-                    $harga1 = (($harga1 * $hargabeli[$i]->fmqbl1) / ($hargabeli[$i]->fmqbs1 + $hargabeli[$i]->fmqbl1));
-
-                    if ($hargabeli[$i]->unit == 'KG') {
-                        $harga1 = $harga1 * 1000;
-                    }
-
-                } else {
-                    $harga1 = (($harga1 * ($hargabeli[$i]->fmqbl1 * $hargabeli[$i]->isib))
-                        / (($hargabeli[$i]->fmqbs1 * $hargabeli[$i]->isib) + ($hargabeli[$i]->fmqbl1 * $hargabeli[$i]->isib))
-                    );
-                    if ($hargabeli[$i]->unit == 'KG') {
-                        $harga1 = $harga1 * 1000;
-                    }
-                }
-            }
-
-            $hb_hrgomi = $harga1;
-            $hb_jnshg = $hargabeli[$i]->fmjnsh;
-            $hb_top = $hargabeli[$i]->fmjtop;
-            $hb_pkp = $hargabeli[$i]->sup_pkp;
-
-            if ($hargabeli[$i]->unit == 'KG') {
-                $vkl = 1;
-            } else {
-                $vkl = $hargabeli[$i]->isib;
-            }
-
-            $hb_hgbeli = $hargabeli[$i]->fmbeli * $vkl;
-            $hb_kondisi = $hargabeli[$i]->fmkdsb;
-            $hb_ppnbm = $hargabeli[$i]->fmppnb * $vkl;
-            $hb_ppn = $hargabeli[$i]->fmppnn * $vkl;
-            $hb_btl = $hargabeli[$i]->fmppnb * $vkl;
-            $hb_total = $hb_hgbeli + $hb_ppnbm + $hb_ppn;
-            $hb_persendisc1 = Self::ceknull($hargabeli[$i]->fmdirp, 0);
-            $hb_rpdisc1 = Self::ceknull($hargabeli[$i]->fmdirr, 0);
-            $hb_satuan = $hargabeli[$i]->fmdirs;
-            $hb_persendisc2 = Self::ceknull($hargabeli[$i]->fmditp, 0);
-            $hb_rpdisc2 = Self::ceknull($hargabeli[$i]->fmditr, 0);
-            $hb_periode = "";
-            if (Self::ceknull($hargabeli[$i]->fmditm, "") != "") {
-                $hb_periode = Date('d-M-y', strtotime($hargabeli[$i]->fmditm)) . ' s/d ' . Date('d-M-y', strtotime($hargabeli[$i]->fmdita));
-            }
-            $hb_persendisc2ii = Self::ceknull($hargabeli[$i]->hgb_persendisc02ii, 0);
-            $hb_rpdisc2ii = Self::ceknull($hargabeli[$i]->hgb_rphdisc02ii, 0);
-            $hb_periodeii = "";
-            if (Self::ceknull($hargabeli[$i]->hgb_tglmulaidisc02ii, "") != "") {
-                $hb_periodeii = $hargabeli[$i]->hgb_tglmulaidisc02ii . ' s/d ' . $hargabeli[$i]->hgb_tglakhirdisc02ii;
-            }
-
-            $hb_persendisc2iii = Self::ceknull($hargabeli[$i]->hgb_persendisc02iii, 0);
-            $hb_rpdisc2iii = Self::ceknull($hargabeli[$i]->hgb_rphdisc02iii, 0);
-            $hb_periodeiii = "";
-            if (Self::ceknull($hargabeli[$i]->hgb_tglmulaidisc02iii, "") != "") {
-                $hb_periodeiii = $hargabeli[$i]->hgb_tglmulaidisc02iii . ' s/d ' . $hargabeli[$i]->hgb_tglakhirdisc02iii;
-            }
-
-            $hb_persendisc3 = Self::ceknull($hargabeli[$i]->fmd3ps, 0);
-            $hb_rpdisc3 = Self::ceknull($hargabeli[$i]->fmd3rp, 0);
-            $hb_persendisc4 = Self::ceknull($hargabeli[$i]->fmd4p3, 0);
-            $hb_rpdisc4 = Self::ceknull($hargabeli[$i]->fmd4r3, 0);
-            $hb_persencd = Self::ceknull($hargabeli[$i]->fmd4p2, 0);
-            $hb_rpcd = $hargabeli[$i]->fmd4r2;
-            $hb_persendf = Self::ceknull($hargabeli[$i]->fmd4p1, 0);
-            $hb_rpdf = Self::ceknull($hargabeli[$i]->fmd4r1, 0);
-            $hb_total2 = Self::ceknull($hargabeli[$i]->fmd4r1, 0) + Self::ceknull($hargabeli[$i]->fmd4r2, 0) + Self::ceknull($hargabeli[$i]->fmd4r3, 0);
-            $hb_bnslipat = $hargabeli[$i]->fmklpt;
-            $hb_periodbns = '';
-            if (Self::ceknull($hargabeli[$i]->fmbntm, "") != "") {
-                $hb_periodbns = $hargabeli[$i]->fmbntm . ' s/d ' . $hargabeli[$i]->fmbnta;
-            }
-
-            $hb_qtybeli1 = Self::ceknull($hargabeli[$i]->fmqbl1, 0) * $hargabeli[$i]->frac;
-            $hb_qtybeli2 = Self::ceknull($hargabeli[$i]->fmqbl2, 0) * $hargabeli[$i]->frac;
-            $hb_qtybeli3 = Self::ceknull($hargabeli[$i]->fmqbl3, 0) * $hargabeli[$i]->frac;
-            $hb_qtybns1 = Self::ceknull($hargabeli[$i]->fmqbs1, 0) * $hargabeli[$i]->frac;
-            $hb_qtybns2 = Self::ceknull($hargabeli[$i]->fmqbs2, 0) * $hargabeli[$i]->frac;
-            $hb_qtybns3 = Self::ceknull($hargabeli[$i]->fmqbs3, 0) * $hargabeli[$i]->frac;
-
-            $hargabeli[$i]->hb_plu = $hb_plu;
-            $hargabeli[$i]->hb_tglberlaku = $hb_tglberlaku;
-            $hargabeli[$i]->hb_supplier = $hb_supplier;
-            $hargabeli[$i]->hb_statustag = $hb_statustag;
-            $hargabeli[$i]->hb_satuanbl = $hb_satuanbl;
-            $hargabeli[$i]->hb_bkp = $hb_bkp;
-            $hargabeli[$i]->hb_flagbandrol = $hb_flagbandrol;
-            $hargabeli[$i]->harga1 = $harga1;
-            $hargabeli[$i]->hb_hrgomi = $hb_hrgomi;
-            $hargabeli[$i]->hb_jnshg = $hb_jnshg;
-            $hargabeli[$i]->hb_top = $hb_top;
-            $hargabeli[$i]->hb_pkp = $hb_pkp;
-
-            $hargabeli[$i]->hb_hgbeli = $hb_hgbeli;
-            $hargabeli[$i]->hb_kondisi = $hb_kondisi;
-            $hargabeli[$i]->hb_ppnbm = $hb_ppnbm;
-            $hargabeli[$i]->hb_ppn = $hb_ppn;
-            $hargabeli[$i]->hb_btl = $hb_btl;
-            $hargabeli[$i]->hb_total = $hb_total;
-            $hargabeli[$i]->hb_persendisc1 = $hb_persendisc1;
-            $hargabeli[$i]->hb_rpdisc1 = $hb_rpdisc1;
-            $hargabeli[$i]->hb_satuan = $hb_satuan;
-            $hargabeli[$i]->hb_persendisc2 = $hb_persendisc2;
-            $hargabeli[$i]->hb_rpdisc2 = $hb_rpdisc2;
-            $hargabeli[$i]->hb_periode = $hb_periode;
-
-            $hargabeli[$i]->hb_persendisc2ii = $hb_persendisc2ii;
-            $hargabeli[$i]->hb_rpdisc2ii = $hb_rpdisc2ii;
-            $hargabeli[$i]->hb_periodeii = $hb_periodeii;
-
-            $hargabeli[$i]->hb_persendisc2iii = $hb_persendisc2iii;
-            $hargabeli[$i]->hb_rpdisc2iii = $hb_rpdisc2iii;
-            $hargabeli[$i]->hb_periodeiii = $hb_periodeiii;
-
-            $hargabeli[$i]->hb_persendisc3 = $hb_persendisc3;
-            $hargabeli[$i]->hb_rpdisc3 = $hb_rpdisc3;
-            $hargabeli[$i]->hb_persendisc4 = $hb_persendisc4;
-            $hargabeli[$i]->hb_rpdisc4 = $hb_rpdisc4;
-            $hargabeli[$i]->hb_persencd = $hb_persencd;
-            $hargabeli[$i]->hb_rpcd = $hb_rpcd;
-            $hargabeli[$i]->hb_persendf = $hb_persendf;
-            $hargabeli[$i]->hb_rpdf = $hb_rpdf;
-            $hargabeli[$i]->hb_total2 = $hb_total2;
-            $hargabeli[$i]->hb_bnslipat = $hb_bnslipat;
-            $hargabeli[$i]->hb_periodbns = $hb_periodbns;
-
-            $hargabeli[$i]->hb_qtybeli1 = $hb_qtybeli1;
-            $hargabeli[$i]->hb_qtybeli2 = $hb_qtybeli2;
-            $hargabeli[$i]->hb_qtybeli3 = $hb_qtybeli3;
-            $hargabeli[$i]->hb_qtybns1 = $hb_qtybns1;
-            $hargabeli[$i]->hb_qtybns2 = $hb_qtybns2;
-            $hargabeli[$i]->hb_qtybns3 = $hb_qtybns3;
-        }
-
-        //STOCK CARTON
-        $flagreset = DB::connection(Session::get('connection'))->table('tbmaster_setting_so')
-            ->selectRaw('nvl(mso_flagreset, \'N\')')
-            ->whereRaw('to_char(mso_tglso, \'yyyy-MM\') = TO_CHAR (SYSDATE , \'yyyy-MM\')')
-            ->first();
-
-        if (is_null($flagreset)) {
-            $flagreset = 'Y';
-        }
-
-        $qty_soic = DB::connection(Session::get('connection'))->table('tbtr_reset_soic')
-            ->selectRaw('sum(nvl(rso_qtyreset,0)) qty')
-            ->whereRaw('substr(rso_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
-            ->whereRaw('to_char(rso_tglso, \'yyyyMM\') = to_char(sysdate, \'yyyyMM\')')
-            ->where('rso_lokasi', '=', '01')
-            ->first();
-        $qty_soic = $qty_soic->qty;
-        $stockcarton = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
-            ->join('tbmaster_stock', function ($join) {
-                $join->On(DB::connection(Session::get('connection'))->raw('substr(st_prdcd, 1, 6)'), '=', DB::connection(Session::get('connection'))->raw('substr(prd_prdcd, 1, 6)'));
-            })
-            ->selectRaw('prd_frac frac,
-                                    st_lokasi,
-                                    CASE
-                                       WHEN  \'' . $flagreset . '\' <> \'Y\' THEN
-                                            (st_saldoakhir - st_selisih_so)
-                                        ELSE
-                                            st_saldoakhir
-                                    END st_saldoakhir,
-                                    st_selisih_soic')
-            ->where('prd_prdcd', '=', $request->value)
-            ->get();
-
-        $title = "";
-        $qb_baik = "";
-        $qc_baik = "";
-        $qb_ret = "";
-        $qc_ret = "";
-        $qb_rus = "";
-        $qc_rus = "";
-        for ($i = 0; $i < sizeof($stockcarton); $i++) {
-            $title = 'Stok Akhir Satuan CARTON (' . $stockcarton[$i]->frac . ')';
-            $saldoakhir = $stockcarton[$i]->st_saldoakhir;
-            if ($stockcarton[$i]->st_lokasi == '01') {
-                $saldoakhir = $stockcarton[$i]->st_saldoakhir - Self::ceknull($stockcarton[$i]->st_selisih_soic, 0) + Self::ceknull($qty_soic, 0);
-            }
-
-            if ($stockcarton[$i]->st_lokasi == '01') {
-                if ($saldoakhir <= $stockcarton[$i]->frac) {
-                    $qc_baik = $saldoakhir;
-                    $qb_baik = 0;
-
-                    if ($saldoakhir == $stockcarton[$i]->frac) {
-                        $qc_baik = 0;
-                        $qb_baik = 1;
-                    }
-                } else {
-                    $qc_baik = fmod($saldoakhir, (int)$stockcarton[$i]->frac);
-                    $qb_baik = ($saldoakhir - $qc_baik) / $stockcarton[$i]->frac;
-                }
-            }
-
-
-            if ($stockcarton[$i]->st_lokasi == '02') {
-                if ($saldoakhir <= $stockcarton[$i]->frac) {
-                    $qc_ret = $saldoakhir;
-                    $qb_ret = 0;
-                    if ($saldoakhir == $stockcarton[$i]->frac) {
-                        $qc_ret = 0;
-                        $qb_ret = 1;
-                    }
-                } else {
-                    $qc_ret = fmod($saldoakhir, (int)$stockcarton[$i]->frac);
-                    $qb_ret = ($saldoakhir - $qc_ret) / $stockcarton[$i]->frac;
-                }
-            }
-
-            if ($stockcarton[$i]->st_lokasi == '03') {
-                if ($saldoakhir <= $stockcarton[$i]->frac) {
-                    $qc_rus = $saldoakhir;
-                    $qb_rus = 0;
-                    if ($saldoakhir == $stockcarton[$i]->frac) {
-                        $qc_rus = 0;
-                        $qb_rus = 1;
-                    }
-                } else {
-                    $qc_rus = fmod($saldoakhir, (int)$stockcarton[$i]->frac);
-                    $qb_rus = ($saldoakhir - $qc_rus) / $stockcarton[$i]->frac;
-                }
-            }
-        }
-
-        $stockcarton = [];
-        $stockcarton['STC_TITLE'] = $title;
-        $stockcarton['STC_baik'] = 'Baik';
-        $stockcarton['STC_CT1'] = $qb_baik;
-        $stockcarton['STC_PCS1'] = $qc_baik;
-        $stockcarton['STC_retur'] = 'Retur';
-        $stockcarton['STC_CT2'] = $qb_ret;
-        $stockcarton['STC_PCS2'] = $qc_ret;
-        $stockcarton['STC_rsk'] = 'Rusak';
-        $stockcarton['STC_CT3'] = $qb_rus;
-        $stockcarton['STC_PCS3'] = $qc_rus;
-
-//        $showpromosi = true;
-//        $promosi = '';
-
-//        $periodepromosi = DB::connection(Session::get('connection'))->table('tbtr_hadiahkejutan')
-//            ->selectRaw('max(spot_periodeawal) awal, max(spot_periodeakhir) akhir')
-//            ->where('spot_prdcd', $produk->prd_prdcd)
-//            ->where('spot_kodeigr', Session::get('kdigr'))
-//            ->first();
-//        //tanda
-//        $condition = DB::connection(Session::get('connection'))
-//            ->select("select case when trunc(sysdate) <= to_date('" . $periodepromosi->akhir . "','ddmmyyyy') and trunc(sysdate)  >= to_date('" . $periodepromosi->akhir . "','ddmmyyyy') then 1
-//else 2 end condition from dual");
-//        if ($condition == 1) {
-//            $datediff = DB::connection(Session::get('connection'))
-//                ->select("select to_date('" . $periodepromosi->akhir . "','ddmmyyyy')-to_date('" . $periodepromosi->awal . "','ddmmyyyy') from dual");
-//            if ($datediff > 10) {
-//                $promosi = 'SUPER PROMO';
-//            } else {
-//                if ($datediff> 5) {
-//                    $promosi = ' HARGA SPEC';
-//                } else {
-//                    $promosi = ' PROMO J.S.M ';
-//                }
-//            }
-//        } else {
-//            $showpromosi = false;
-//        }
-        
-        return compact(['produk', 'sj', 'trendsales', 'prodstock', 'AVGSALES', 'FMPBLNA', 'stock', 'pkmt', 'ITEM', 'flag', 'supplier', 'permintaan', 'so_tgl', 'so', 'adjustso', 'resetsoic', 'hargabeli', 'stockcarton', 'gdl', 'showpromo', 'message']);
+        return compact(['produk', 'sj', 'trendsales', 'prodstock', 'AVGSALES', 'FMPBLNA', 'stock', 'pkmt', 'ITEM', 'flag', 'gdl', 'showpromo', 'message']);
     }
 
     public function ceknull($value, $ret)
@@ -1843,6 +1129,714 @@ class InformasiHistoryProductController extends Controller
         $detailsales['avgmrh'] = $avgmrh;
         $detailsales['avgidm'] = $avgidm;
         return compact([ 'detailsales']);
+    }
+
+    public function getPenerimaan(Request $request)
+
+    {
+        $supplier = DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')
+            ->leftJoin('TBMASTER_SUPPLIER', 'MSTD_KODESUPPLIER', '=', 'SUP_KODESUPPLIER')
+            ->select('*')
+            ->whereRaw('substr(mstd_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
+            ->where('mstd_kodeigr', '=', '22')
+            ->whereIn('mstd_typetrn', ['L', 'I', 'B'])
+            ->whereRaw('NVL (MSTD_RECORDID, \'9\') != 1')
+            ->orderBy('mstd_prdcd')
+            ->orderBy('mstd_tgldoc')
+            ->get();
+
+        for ($i = 0; $i < sizeof($supplier); $i++) {
+            $supplier[$i]->trm_qtybns = $this->ceknull($supplier[$i]->mstd_qty, 0);
+            $supplier[$i]->trm_bonus = $this->ceknull($supplier[$i]->mstd_qtybonus1, 0);
+            $supplier[$i]->trm_bonus2 = $this->ceknull($supplier[$i]->mstd_qtybonus2, 0);
+            $supplier[$i]->trm_dokumen = $supplier[$i]->mstd_nodoc;
+            $supplier[$i]->trm_tanggal = $supplier[$i]->mstd_tgldoc;
+            $supplier[$i]->trm_supp = $supplier[$i]->sup_namasupplier;
+
+            if ($supplier[$i]->mstd_typetrn == 'I') {
+                $supplier[$i]->trm_top = 'Surat Jln';
+            } elseif ($supplier[$i]->mstd_typetrn == 'L') {
+                $supplier[$i]->trm_top = 'Lain2/Bns';
+            } elseif ($supplier[$i]->mstd_typetrn == 'B') {
+                $supplier[$i]->trm_top = 'BPB';
+            }
+
+            $supplier[$i]->trm_acost = $supplier[$i]->mstd_avgcost / $supplier[$i]->mstd_frac;
+
+            if ($supplier[$i]->mstd_typetrn == 'L') {
+                $supplier[$i]->trm_hpp = 0;
+            } else {
+                $supplier[$i]->trm_hpp = ($supplier[$i]->mstd_gross - ($supplier[$i]->mstd_discrph + $supplier[$i]->mstd_ppnbmrph + $supplier[$i]->mstd_ppnbtlrph)) / ($supplier[$i]->mstd_qty / $supplier[$i]->mstd_frac) / $supplier[$i]->mstd_frac;
+            }
+        }
+        return compact([ 'supplier']);
+    }
+
+    public function getPB(Request $request)
+
+    {
+        $ntotalpo = 0;
+        $ntotalpb = 0;
+        $temppo = 'A,';
+        $temppb = 'A,';
+
+        $permintaan = array();
+        $pb = DB::connection(Session::get('connection'))->table('tbtr_po_d')
+            ->join('tbtr_po_h', 'tpoh_nopo', '=', 'tpod_nopo')
+            ->join('tbtr_pb_d', function ($join) {
+                $join->On(DB::connection(Session::get('connection'))->raw('SUBSTR (pbd_prdcd, 1, 6)'), '=', DB::connection(Session::get('connection'))->raw('SUBSTR (tpod_prdcd, 1, 6)'))->On('pbd_nopo', '=', 'tpod_nopo');
+            })->join('tbtr_pb_h', 'pbh_nopb', '=', 'pbd_nopb')
+            ->selectRaw('DISTINCT NVL (tpod_recordid, \'9\') recid,
+                                    tpod_prdcd,
+                                    tpod_nopo,
+                                    tpoh_tglpo,
+                                    NVL (tpod_qtypb, 0) tpod_qtypb,
+                                    tpoh_tglpo + tpoh_jwpb jwpb,
+                                    pbh_keteranganpb,
+                                    pbh_nopb,
+                                    pbh_tglpb,
+                                    NVL (pbh_qtypb, 0) pbh_qtypb,
+                                    pbd_nopo,
+                                    pbd_prdcd,
+                                    pbd_qtypb')
+            ->whereRaw('substr(tpod_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
+            ->orderBy('PBH_TGLPB')
+            ->orderBy('PBH_NOPB')
+            ->get();
+
+        for ($i = 0; $i < sizeof($pb); $i++) {
+            $pb_ketbpb = '';
+            $pb_no = '';
+            $pb_tgl = '';
+            $pb_qty = '';
+            $pb_ket = '';
+            $pb_nopo = '';
+            $pb_tglpo = '';
+            $pb_ketbpb = '';
+            $pb_qtybpb = '';
+            $step = 1;
+            $temppo = $temppo . $pb[$i]->tpod_nopo . ',';
+            $temppb = $temppb . $pb[$i]->pbh_nopb . ',';
+            $step = 2;
+            $pb_no = $pb[$i]->pbh_nopb;
+            $pb_tgl = $pb[$i]->pbh_tglpb;
+            $pb_qty = $pb[$i]->pbd_qtypb;
+            $pb_ket = $pb[$i]->pbh_keteranganpb;
+
+            $step = 3;
+            $pb_nopo = $pb[$i]->tpod_nopo;
+            $pb_tglpo = $pb[$i]->tpoh_tglpo;
+
+            $step = 4;
+            $pb_qtybpb = $pb[$i]->tpod_qtypb;
+
+
+            if (Self::ceknull($pb[$i]->tpod_qtypb, 0) == 0) {
+                if ($pb[$i]->recid == '9') {
+                    if ($pb[$i]->jwpb < Carbon::now()) {
+                        $step = 5;
+                        $pb_ketbpb = 'PO Mati/Kdlwarsa';
+                    } else {
+                        $step = 6;
+                        $pb_ketbpb = 'Brg.blm dikirim';
+                    }
+                } else {
+                    $step = 7;
+                    $pb_ketbpb = 'Qty BPB 0 (null)';
+                }
+            }
+            $step = 8;
+            if (Self::ceknull($pb[$i]->tpod_nopo, '') != '' and Self::ceknull($pb[$i]->tpoh_tglpo, '') == '') {
+                $step = 9;
+                $pb_ketbpb = 'PO Mati/Kdlwarsa';
+            }
+
+            $step = 10;
+            $ntotalpo = Self::ceknull($ntotalpo, 0) + Self::ceknull($pb[$i]->tpod_qtypb, 0);
+
+            if (Self::ceknull($pb[$i]->tpod_nopo, '') == '') {
+                if ($pb[$i]->pbh_tglpb < Carbon::now()->addDays(2)) {
+                    $step = 11;
+                    $pb_ketbpb = 'PB tdk.tRealiss';
+                } else {
+                    $step = 12;
+                    $pb_ketbpb = 'Blm.Transfer PO';
+                }
+            }
+
+            $dataPenerimaan["pb_no"] = $pb_no;
+            $dataPenerimaan["pb_tgl"] = $pb_tgl;
+            $dataPenerimaan["pb_qty"] = $pb_qty;
+            $dataPenerimaan["pb_ket"] = $pb_ket;
+            $dataPenerimaan["pb_nopo"] = $pb_nopo;
+            $dataPenerimaan["pb_tglpo"] = $pb_tglpo;
+            $dataPenerimaan["pb_ketbpb"] = $pb_ketbpb;
+            $dataPenerimaan["pb_qtybpb"] = $pb_qtybpb;
+            array_push($permintaan, $dataPenerimaan);
+        }
+
+        $step = 13;
+        $pb2 = DB::connection(Session::get('connection'))->table('tbtr_pb_d')
+            ->join('tbtr_pb_h', 'pbh_nopb', '=', 'pbd_nopb')
+            ->selectRaw('DISTINCT pbh_keteranganpb,
+                                     pbh_nopb,
+                                     pbh_tglpb,
+                                     NVL (pbh_qtypb, 0) pbh_qtypb,
+                                     pbd_nopo,
+                                     pbd_prdcd,
+                                     pbd_qtypb')
+            ->whereRaw('substr(pbd_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
+            ->orderBy('PBH_TGLPB')
+            ->orderBy('PBH_NOPB')
+            ->get();
+        for ($i = 0; $i < sizeof($pb2); $i++) {
+            if (strpos($temppb, $pb2[$i]->pbh_nopb) == 0) {
+                $pb_ketbpb = '';
+                $pb_no = '';
+                $pb_tgl = '';
+                $pb_qty = '';
+                $pb_ket = '';
+                $pb_nopo = '';
+                $pb_tglpo = '';
+                $pb_ketbpb = '';
+                $pb_qtybpb = '';
+                $step = 14;
+                $pb_no = $pb2[$i]->pbh_nopb;
+                $pb_tgl = $pb2[$i]->pbh_tglpb;
+                $pb_ket = $pb2[$i]->pbh_keteranganpb;
+                $pb_nopo = $pb2[$i]->pbd_nopo;
+                $pb_qty = $pb2[$i]->pbd_qtypb;
+
+                if (Self::ceknull($pb2[$i]->pbd_nopo, '') == '') {
+                    if ($pb2[$i]->pbh_tglpb < Carbon::now()->addDays(2)) {
+                        $step = 15;
+                        $pb_ketbpb = 'PB tdk.tRealiss';
+                    } else {
+                        $step = 16;
+                        $pb_ketbpb = 'Blm.Transfer PO';
+                    }
+                }
+                //nextrecord
+                $dataPenerimaan["pb_no"] = $pb_no;
+                $dataPenerimaan["pb_tgl"] = $pb_tgl;
+                $dataPenerimaan["pb_qty"] = $pb_qty;
+                $dataPenerimaan["pb_ket"] = $pb_ket;
+                $dataPenerimaan["pb_nopo"] = $pb_nopo;
+                $dataPenerimaan["pb_tglpo"] = $pb_tglpo;
+                $dataPenerimaan["pb_ketbpb"] = $pb_ketbpb;
+                $dataPenerimaan["pb_qtybpb"] = $pb_qtybpb;
+                array_push($permintaan, $dataPenerimaan);
+            }
+        }
+        $po = DB::connection(Session::get('connection'))->table('tbtr_po_d')
+            ->join('tbtr_po_h', 'tpoh_nopo', '=', 'tpod_nopo')
+            ->selectRaw('DISTINCT NVL (tpod_recordid, \'9\') recid,
+                                tpod_prdcd,
+                                tpod_nopo,
+                                tpoH_tglpo,
+                                NVL (tpod_qtypb, 0) tpod_qtypb,
+                                tpoh_tglpo + tpoh_jwpb jwpb')
+            ->whereRaw('substr(tpod_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
+            ->orderBy('TPOH_TGLPO')
+            ->orderBy('TPOD_NOPO')
+            ->get();
+        for ($i = 0; $i < sizeof($po); $i++) {
+            if (strpos($temppo, $po[$i]->tpod_nopo) == 0) {
+                $pb_ketbpb = '';
+                $pb_no = '';
+                $pb_tgl = '';
+                $pb_qty = '';
+                $pb_ket = '';
+                $pb_nopo = '';
+                $pb_tglpo = '';
+                $pb_ketbpb = '';
+                $pb_qtybpb = '';
+                $step = 18;
+                $pb_nopo = $po[$i]->tpod_nopo;
+                $pb_tglpo = $po[$i]->tpoh_tglpo;
+                $step = 19;
+                $pb_qtybpb = $po[$i]->tpod_qtypb;
+                if (Self::ceknull($po[$i]->tpod_qtypb, 0) == 0) {
+                    if ($po[$i]->recid == '9') {
+                        if ($po[$i]->jwpb < Carbon::now()) {
+                            $step = 20;
+                            $pb_ketbpb = 'PO Mati/Kdlwarsa';
+                        } else {
+                            $step = 21;
+                            $pb_ketbpb = 'Brg.blm dikirim';
+                        }
+                    } else {
+                        $step = 22;
+                        $pb_ketbpb = 'Qty BPB 0 (nul)';
+                    }
+                }
+
+                if (Self::ceknull($po[$i]->tpod_nopo, '') != '' and Self::ceknull($po[$i]->tpoh_tglpo, '') == '') {
+                    $step = 23;
+                    $pb_ketbpb = 'PO Mati/Kdlwarsa';
+                }
+
+                $step = 24;
+                $ntotalpo = Self::ceknull($ntotalpo, 0) + Self::ceknull($po[$i]->tpod_qtypb, 0);
+
+                $step = 25;
+                $pb_ketbpb = 'PO Alokasi';
+                if (Self::ceknull($pb_qtybpb, 0) == 0) {
+                    $step = 26;
+                    $pb_ketbpb = 'PO Alokasi/Mati';
+                }
+                $step = 27;
+                if (Self::ceknull($pb_nopo, '') == '' and Self::ceknull($pb_tglpo, '') == '') {
+                    $step = 28;
+                    $pb_ketbpb = 'PO Mati/Kdlwarsa';
+                }
+//	        NEXT_RECORD;
+                $dataPenerimaan["pb_no"] = $pb_no;
+                $dataPenerimaan["pb_tgl"] = $pb_tgl;
+                $dataPenerimaan["pb_qty"] = $pb_qty;
+                $dataPenerimaan["pb_ket"] = $pb_ket;
+                $dataPenerimaan["pb_nopo"] = $pb_nopo;
+                $dataPenerimaan["pb_tglpo"] = $pb_tglpo;
+                $dataPenerimaan["pb_ketbpb"] = $pb_ketbpb;
+                $dataPenerimaan["pb_qtybpb"] = $pb_qtybpb;
+                array_push($permintaan, $dataPenerimaan);
+            }
+        }
+        return compact([ 'permintaan']);
+    }
+
+    public function getHargaBeli(Request $request){
+        $hargabeli = DB::connection(Session::get('connection'))->table('tbmaster_hargabeli')
+            ->join('tbmaster_prodmast', 'prd_prdcd', '=', 'hgb_prdcd')
+            ->join('tbmaster_supplier', 'sup_kodesupplier', '=', 'hgb_kodesupplier')
+            ->leftJoin('tbmaster_tag', 'tag_kodetag', '=', 'prd_kodetag')
+            ->selectRaw('hgb_prdcd,
+                                         hgb_hrgbeli fmbeli,
+                                         NVL(hgb_ppnbm, 0) fmppnb,
+                                         NVL(hgb_ppnbotol, 0) fmnbtl,
+                                         NVL(hgb_ppn, 0) fmppnn,
+                                         hgb_tglmulaidisc01 fmd1tm,
+                                         hgb_tglakhirdisc01 fmd1ta,
+                                         hgb_flagdisc01 fmdirs,
+                                         hgb_rphdisc01 fmdirr,
+                                         hgb_tglmulaidisc02 fmditm,
+                                         hgb_tglakhirdisc02 fmdita,
+                                         hgb_rphdisc02 fmditr,
+                                         hgb_tglmulaibonus01 fmbntm,
+                                         hgb_tglakhirbonus01 fmbnta,
+                                         hgb_qty1bonus01 fmqbs1,
+                                         hgb_qtymulai1bonus01 fmqbl1,
+                                         hgb_jenishrgbeli fmjnsh,
+                                         hgb_jenisbonus fmfbns,
+                                         hgb_rphdisc02ii,
+                                         hgb_rphdisc02iii,
+                                         hgb_persendisc02ii,
+                                         hgb_persendisc02iii,
+                                         hgb_tglmulaidisc02ii,
+                                         hgb_tglakhirdisc02ii,
+                                         hgb_tglmulaidisc02iii,
+                                         hgb_tglakhirdisc02iii,
+                                         hgb_tglberlaku01 fmtgbu,
+                                         hgb_top fmjtop,
+                                         hgb_statusbarang fmkdsb,
+                                         hgb_persendisc01 fmdirp,
+                                         hgb_persendisc02 fmditp,
+                                         hgb_persendisc03 fmd3ps,
+                                         hgb_rphdisc03 fmd3rp,
+                                         hgb_persendisc06 fmd4p3,
+                                         hgb_rphdisc06 fmd4r3,
+                                         hgb_persendisc05 fmd4p2,
+                                         hgb_rphdisc05 fmd4r2,
+                                         hgb_persendisc04 fmd4p1,
+                                         hgb_rphdisc04 fmd4r1,
+                                         hgb_qtymulai2bonus01 fmqbl2,
+                                         hgb_qtymulai3bonus01 fmqbl3,
+                                         hgb_qty2bonus01 fmqbs2,
+                                         hgb_qty3bonus01 fmqbs3,
+                                         hgb_kodesupplier,
+                                         hgb_flagkelipatanbonus01 fmklpt,
+                                         hgb_tipe fmtipe,
+                                         hgb_prdcd fmplu,
+                                         prd_isibeli isib,
+                                         prd_unit unit,
+                                         prd_deskripsipanjang,
+                                         prd_kodetag ptag,
+                                         prd_satuanbeli satb,
+                                         prd_flagbkp1 bkp,
+                                         prd_flagbandrol,
+                                         prd_frac frac,
+                                         sup_namasupplier,
+                                         sup_pkp,
+                                         tag_kodetag,
+                                         tag_keterangan ftketr')
+            ->whereRaw('substr(hgb_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
+            ->orderBy('hgb_tipe')
+            ->orderBy('hgb_kodesupplier')
+            ->get();
+
+        for ($i = 0; $i < sizeof($hargabeli); $i++) {
+            $hb_plu = $hargabeli[$i]->hgb_prdcd . ' - ' . $hargabeli[$i]->prd_deskripsipanjang;
+            $hb_tglberlaku = $hargabeli[$i]->fmtgbu;
+            $hb_supplier = $hargabeli[$i]->hgb_kodesupplier . ' - ' . $hargabeli[$i]->sup_namasupplier;
+            $hb_statustag = $hargabeli[$i]->tag_kodetag . ' - ' . $hargabeli[$i]->ftketr;
+            $hb_satuanbl = $hargabeli[$i]->satb . '/' . $hargabeli[$i]->isib;
+            $hb_bkp = $hargabeli[$i]->bkp;
+            $hb_flagbandrol = $hargabeli[$i]->prd_flagbandrol;
+            $harga1 = Self::ceknull($hargabeli[$i]->fmbeli, 0) + Self::ceknull($hargabeli[$i]->fmppnb, 0) + Self::ceknull($hargabeli[$i]->fmnbtl, 0);
+
+            if (($hargabeli[$i]->fmd1tm <= Carbon::now() and $hargabeli[$i]->fmd1ta >= Carbon::now() and $hargabeli[$i]->fmd1tm != Carbon::now()) or $hargabeli[$i]->fmd1tm = Carbon::now()) {
+                if ($hargabeli[$i]->fmdirs == 'K') {
+                    $harga1 = $harga1 - $hargabeli[$i]->fmdirr;
+                } else {
+                    $harga1 = $harga1 - $hargabeli[$i]->fmdirr / $hargabeli[$i]->isib;
+                }
+            }
+
+            if ($hargabeli[$i]->fmditm <= Carbon::now() and $hargabeli[$i]->fmdita >= Carbon::now() and $hargabeli[$i]->fmditm != Carbon::now()) {
+                if ($hargabeli[$i]->fmdirs == 'K') {
+                    $harga1 = $harga1 - $hargabeli[$i]->fmditr;
+                } else {
+                    $harga1 = $harga1 - $hargabeli[$i]->fmditr / $hargabeli[$i]->isib;
+                }
+            }
+
+            if ($hargabeli[$i]->hgb_tglmulaidisc02ii <= Carbon::now()
+                and $hargabeli[$i]->hgb_tglakhirdisc02ii >= Carbon::now()
+                and $hargabeli[$i]->hgb_tglmulaidisc02ii != Carbon::now()) {
+                if ($hargabeli[$i]->fmdirs == 'K') {
+                    $harga1 = $harga1 - $hargabeli[$i]->hgb_rphdisc02ii;
+                } else {
+                    $harga1 = $harga1 - $hargabeli[$i]->hgb_rphdisc02ii / $hargabeli[$i]->isib;
+                }
+            }
+
+            if ($hargabeli[$i]->hgb_tglmulaidisc02iii <= Carbon::now()
+                and $hargabeli[$i]->hgb_tglakhirdisc02iii >= Carbon::now()
+                and $hargabeli[$i]->hgb_tglmulaidisc02iii != Carbon::now()) {
+                if ($hargabeli[$i]->fmdirs == 'K') {
+                    $harga1 = $harga1 - $hargabeli[$i]->hgb_rphdisc02iii;
+                } else {
+                    $harga1 = $harga1 - $hargabeli[$i]->hgb_rphdisc02iii / $hargabeli[$i]->isib;
+                }
+            }
+
+            if ($hargabeli[$i]->fmbntm <= Carbon::now()
+                and $hargabeli[$i]->fmbnta >= Carbon::now()
+                and $hargabeli[$i]->fmbnta != Carbon::now()
+                and $hargabeli[$i]->fmqbs1 + $hargabeli[$i]->fmqbl1 != 0
+            ) {
+                if ($hargabeli[$i]->fmfbns == 'K') {
+                    $harga1 = (($harga1 * $hargabeli[$i]->fmqbl1) / ($hargabeli[$i]->fmqbs1 + $hargabeli[$i]->fmqbl1));
+
+                    if ($hargabeli[$i]->unit == 'KG') {
+                        $harga1 = $harga1 * 1000;
+                    }
+
+                } else {
+                    $harga1 = (($harga1 * ($hargabeli[$i]->fmqbl1 * $hargabeli[$i]->isib))
+                        / (($hargabeli[$i]->fmqbs1 * $hargabeli[$i]->isib) + ($hargabeli[$i]->fmqbl1 * $hargabeli[$i]->isib))
+                    );
+                    if ($hargabeli[$i]->unit == 'KG') {
+                        $harga1 = $harga1 * 1000;
+                    }
+                }
+            }
+
+            $hb_hrgomi = $harga1;
+            $hb_jnshg = $hargabeli[$i]->fmjnsh;
+            $hb_top = $hargabeli[$i]->fmjtop;
+            $hb_pkp = $hargabeli[$i]->sup_pkp;
+
+            if ($hargabeli[$i]->unit == 'KG') {
+                $vkl = 1;
+            } else {
+                $vkl = $hargabeli[$i]->isib;
+            }
+
+            $hb_hgbeli = $hargabeli[$i]->fmbeli * $vkl;
+            $hb_kondisi = $hargabeli[$i]->fmkdsb;
+            $hb_ppnbm = $hargabeli[$i]->fmppnb * $vkl;
+            $hb_ppn = $hargabeli[$i]->fmppnn * $vkl;
+            $hb_btl = $hargabeli[$i]->fmppnb * $vkl;
+            $hb_total = $hb_hgbeli + $hb_ppnbm + $hb_ppn;
+            $hb_persendisc1 = Self::ceknull($hargabeli[$i]->fmdirp, 0);
+            $hb_rpdisc1 = Self::ceknull($hargabeli[$i]->fmdirr, 0);
+            $hb_satuan = $hargabeli[$i]->fmdirs;
+            $hb_persendisc2 = Self::ceknull($hargabeli[$i]->fmditp, 0);
+            $hb_rpdisc2 = Self::ceknull($hargabeli[$i]->fmditr, 0);
+            $hb_periode = "";
+            if (Self::ceknull($hargabeli[$i]->fmditm, "") != "") {
+                $hb_periode = Date('d-M-y', strtotime($hargabeli[$i]->fmditm)) . ' s/d ' . Date('d-M-y', strtotime($hargabeli[$i]->fmdita));
+            }
+            $hb_persendisc2ii = Self::ceknull($hargabeli[$i]->hgb_persendisc02ii, 0);
+            $hb_rpdisc2ii = Self::ceknull($hargabeli[$i]->hgb_rphdisc02ii, 0);
+            $hb_periodeii = "";
+            if (Self::ceknull($hargabeli[$i]->hgb_tglmulaidisc02ii, "") != "") {
+                $hb_periodeii = $hargabeli[$i]->hgb_tglmulaidisc02ii . ' s/d ' . $hargabeli[$i]->hgb_tglakhirdisc02ii;
+            }
+
+            $hb_persendisc2iii = Self::ceknull($hargabeli[$i]->hgb_persendisc02iii, 0);
+            $hb_rpdisc2iii = Self::ceknull($hargabeli[$i]->hgb_rphdisc02iii, 0);
+            $hb_periodeiii = "";
+            if (Self::ceknull($hargabeli[$i]->hgb_tglmulaidisc02iii, "") != "") {
+                $hb_periodeiii = $hargabeli[$i]->hgb_tglmulaidisc02iii . ' s/d ' . $hargabeli[$i]->hgb_tglakhirdisc02iii;
+            }
+
+            $hb_persendisc3 = Self::ceknull($hargabeli[$i]->fmd3ps, 0);
+            $hb_rpdisc3 = Self::ceknull($hargabeli[$i]->fmd3rp, 0);
+            $hb_persendisc4 = Self::ceknull($hargabeli[$i]->fmd4p3, 0);
+            $hb_rpdisc4 = Self::ceknull($hargabeli[$i]->fmd4r3, 0);
+            $hb_persencd = Self::ceknull($hargabeli[$i]->fmd4p2, 0);
+            $hb_rpcd = $hargabeli[$i]->fmd4r2;
+            $hb_persendf = Self::ceknull($hargabeli[$i]->fmd4p1, 0);
+            $hb_rpdf = Self::ceknull($hargabeli[$i]->fmd4r1, 0);
+            $hb_total2 = Self::ceknull($hargabeli[$i]->fmd4r1, 0) + Self::ceknull($hargabeli[$i]->fmd4r2, 0) + Self::ceknull($hargabeli[$i]->fmd4r3, 0);
+            $hb_bnslipat = $hargabeli[$i]->fmklpt;
+            $hb_periodbns = '';
+            if (Self::ceknull($hargabeli[$i]->fmbntm, "") != "") {
+                $hb_periodbns = $hargabeli[$i]->fmbntm . ' s/d ' . $hargabeli[$i]->fmbnta;
+            }
+
+            $hb_qtybeli1 = Self::ceknull($hargabeli[$i]->fmqbl1, 0) * $hargabeli[$i]->frac;
+            $hb_qtybeli2 = Self::ceknull($hargabeli[$i]->fmqbl2, 0) * $hargabeli[$i]->frac;
+            $hb_qtybeli3 = Self::ceknull($hargabeli[$i]->fmqbl3, 0) * $hargabeli[$i]->frac;
+            $hb_qtybns1 = Self::ceknull($hargabeli[$i]->fmqbs1, 0) * $hargabeli[$i]->frac;
+            $hb_qtybns2 = Self::ceknull($hargabeli[$i]->fmqbs2, 0) * $hargabeli[$i]->frac;
+            $hb_qtybns3 = Self::ceknull($hargabeli[$i]->fmqbs3, 0) * $hargabeli[$i]->frac;
+
+            $hargabeli[$i]->hb_plu = $hb_plu;
+            $hargabeli[$i]->hb_tglberlaku = $hb_tglberlaku;
+            $hargabeli[$i]->hb_supplier = $hb_supplier;
+            $hargabeli[$i]->hb_statustag = $hb_statustag;
+            $hargabeli[$i]->hb_satuanbl = $hb_satuanbl;
+            $hargabeli[$i]->hb_bkp = $hb_bkp;
+            $hargabeli[$i]->hb_flagbandrol = $hb_flagbandrol;
+            $hargabeli[$i]->harga1 = $harga1;
+            $hargabeli[$i]->hb_hrgomi = $hb_hrgomi;
+            $hargabeli[$i]->hb_jnshg = $hb_jnshg;
+            $hargabeli[$i]->hb_top = $hb_top;
+            $hargabeli[$i]->hb_pkp = $hb_pkp;
+
+            $hargabeli[$i]->hb_hgbeli = $hb_hgbeli;
+            $hargabeli[$i]->hb_kondisi = $hb_kondisi;
+            $hargabeli[$i]->hb_ppnbm = $hb_ppnbm;
+            $hargabeli[$i]->hb_ppn = $hb_ppn;
+            $hargabeli[$i]->hb_btl = $hb_btl;
+            $hargabeli[$i]->hb_total = $hb_total;
+            $hargabeli[$i]->hb_persendisc1 = $hb_persendisc1;
+            $hargabeli[$i]->hb_rpdisc1 = $hb_rpdisc1;
+            $hargabeli[$i]->hb_satuan = $hb_satuan;
+            $hargabeli[$i]->hb_persendisc2 = $hb_persendisc2;
+            $hargabeli[$i]->hb_rpdisc2 = $hb_rpdisc2;
+            $hargabeli[$i]->hb_periode = $hb_periode;
+
+            $hargabeli[$i]->hb_persendisc2ii = $hb_persendisc2ii;
+            $hargabeli[$i]->hb_rpdisc2ii = $hb_rpdisc2ii;
+            $hargabeli[$i]->hb_periodeii = $hb_periodeii;
+
+            $hargabeli[$i]->hb_persendisc2iii = $hb_persendisc2iii;
+            $hargabeli[$i]->hb_rpdisc2iii = $hb_rpdisc2iii;
+            $hargabeli[$i]->hb_periodeiii = $hb_periodeiii;
+
+            $hargabeli[$i]->hb_persendisc3 = $hb_persendisc3;
+            $hargabeli[$i]->hb_rpdisc3 = $hb_rpdisc3;
+            $hargabeli[$i]->hb_persendisc4 = $hb_persendisc4;
+            $hargabeli[$i]->hb_rpdisc4 = $hb_rpdisc4;
+            $hargabeli[$i]->hb_persencd = $hb_persencd;
+            $hargabeli[$i]->hb_rpcd = $hb_rpcd;
+            $hargabeli[$i]->hb_persendf = $hb_persendf;
+            $hargabeli[$i]->hb_rpdf = $hb_rpdf;
+            $hargabeli[$i]->hb_total2 = $hb_total2;
+            $hargabeli[$i]->hb_bnslipat = $hb_bnslipat;
+            $hargabeli[$i]->hb_periodbns = $hb_periodbns;
+
+            $hargabeli[$i]->hb_qtybeli1 = $hb_qtybeli1;
+            $hargabeli[$i]->hb_qtybeli2 = $hb_qtybeli2;
+            $hargabeli[$i]->hb_qtybeli3 = $hb_qtybeli3;
+            $hargabeli[$i]->hb_qtybns1 = $hb_qtybns1;
+            $hargabeli[$i]->hb_qtybns2 = $hb_qtybns2;
+            $hargabeli[$i]->hb_qtybns3 = $hb_qtybns3;
+        }
+        return compact([ 'hargabeli']);
+
+    }
+
+    public function getStockCarton(Request $request){
+        //STOCK CARTON
+        $flagreset = DB::connection(Session::get('connection'))->table('tbmaster_setting_so')
+            ->selectRaw('nvl(mso_flagreset, \'N\')')
+            ->whereRaw('to_char(mso_tglso, \'yyyy-MM\') = TO_CHAR (SYSDATE , \'yyyy-MM\')')
+            ->first();
+
+        if (is_null($flagreset)) {
+            $flagreset = 'Y';
+        }
+
+        $qty_soic = DB::connection(Session::get('connection'))->table('tbtr_reset_soic')
+            ->selectRaw('sum(nvl(rso_qtyreset,0)) qty')
+            ->whereRaw('substr(rso_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
+            ->whereRaw('to_char(rso_tglso, \'yyyyMM\') = to_char(sysdate, \'yyyyMM\')')
+            ->where('rso_lokasi', '=', '01')
+            ->first();
+        $qty_soic = $qty_soic->qty;
+        $stockcarton = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+            ->join('tbmaster_stock', function ($join) {
+                $join->On(DB::connection(Session::get('connection'))->raw('substr(st_prdcd, 1, 6)'), '=', DB::connection(Session::get('connection'))->raw('substr(prd_prdcd, 1, 6)'));
+            })
+            ->selectRaw('prd_frac frac,
+                                    st_lokasi,
+                                    CASE
+                                       WHEN  \'' . $flagreset . '\' <> \'Y\' THEN
+                                            (st_saldoakhir - st_selisih_so)
+                                        ELSE
+                                            st_saldoakhir
+                                    END st_saldoakhir,
+                                    st_selisih_soic')
+            ->where('prd_prdcd', '=', $request->value)
+            ->get();
+
+        $title = "";
+        $qb_baik = "";
+        $qc_baik = "";
+        $qb_ret = "";
+        $qc_ret = "";
+        $qb_rus = "";
+        $qc_rus = "";
+        for ($i = 0; $i < sizeof($stockcarton); $i++) {
+            $title = 'Stok Akhir Satuan CARTON (' . $stockcarton[$i]->frac . ')';
+            $saldoakhir = $stockcarton[$i]->st_saldoakhir;
+            if ($stockcarton[$i]->st_lokasi == '01') {
+                $saldoakhir = $stockcarton[$i]->st_saldoakhir - Self::ceknull($stockcarton[$i]->st_selisih_soic, 0) + Self::ceknull($qty_soic, 0);
+            }
+
+            if ($stockcarton[$i]->st_lokasi == '01') {
+                if ($saldoakhir <= $stockcarton[$i]->frac) {
+                    $qc_baik = $saldoakhir;
+                    $qb_baik = 0;
+
+                    if ($saldoakhir == $stockcarton[$i]->frac) {
+                        $qc_baik = 0;
+                        $qb_baik = 1;
+                    }
+                } else {
+                    $qc_baik = fmod($saldoakhir, (int)$stockcarton[$i]->frac);
+                    $qb_baik = ($saldoakhir - $qc_baik) / $stockcarton[$i]->frac;
+                }
+            }
+
+
+            if ($stockcarton[$i]->st_lokasi == '02') {
+                if ($saldoakhir <= $stockcarton[$i]->frac) {
+                    $qc_ret = $saldoakhir;
+                    $qb_ret = 0;
+                    if ($saldoakhir == $stockcarton[$i]->frac) {
+                        $qc_ret = 0;
+                        $qb_ret = 1;
+                    }
+                } else {
+                    $qc_ret = fmod($saldoakhir, (int)$stockcarton[$i]->frac);
+                    $qb_ret = ($saldoakhir - $qc_ret) / $stockcarton[$i]->frac;
+                }
+            }
+
+            if ($stockcarton[$i]->st_lokasi == '03') {
+                if ($saldoakhir <= $stockcarton[$i]->frac) {
+                    $qc_rus = $saldoakhir;
+                    $qb_rus = 0;
+                    if ($saldoakhir == $stockcarton[$i]->frac) {
+                        $qc_rus = 0;
+                        $qb_rus = 1;
+                    }
+                } else {
+                    $qc_rus = fmod($saldoakhir, (int)$stockcarton[$i]->frac);
+                    $qb_rus = ($saldoakhir - $qc_rus) / $stockcarton[$i]->frac;
+                }
+            }
+        }
+
+        $stockcarton = [];
+        $stockcarton['STC_TITLE'] = $title;
+        $stockcarton['STC_baik'] = 'Baik';
+        $stockcarton['STC_CT1'] = $qb_baik;
+        $stockcarton['STC_PCS1'] = $qc_baik;
+        $stockcarton['STC_retur'] = 'Retur';
+        $stockcarton['STC_CT2'] = $qb_ret;
+        $stockcarton['STC_PCS2'] = $qc_ret;
+        $stockcarton['STC_rsk'] = 'Rusak';
+        $stockcarton['STC_CT3'] = $qb_rus;
+        $stockcarton['STC_PCS3'] = $qc_rus;
+        return compact([ 'stockcarton']);
+
+    }
+
+    public function getSO(Request $request){
+        $temp = DB::connection(Session::get('connection'))->table('tbtr_ba_stockopname')
+            ->selectRaw('distinct sop_tglso')
+            ->where('sop_kodeigr', '=', '22')
+            ->orderBy('sop_tglso', 'desc')
+            ->get();
+
+        if (sizeof($temp) != 0) {
+            for ($i = 0; $i < sizeof($temp); $i++) {
+                $so_tgl = date('Y-m-d', strtotime(substr($temp[$i]->sop_tglso, 0, 10)));
+                break;
+            }
+        } else {
+            $so_tgl = date('Y-m-d');
+        }
+
+        $tempadjustso = DB::connection(Session::get('connection'))->raw('(Select ADJ_KODEIGR,
+                                ADJ_TGLSO,
+                                ADJ_PRDCD,
+                                ADJ_LOKASI,
+                                SUM (NVL (ADJ_QTY, 0)) QTY_ADJ
+                                from TBTR_ADJUSTSO
+                                Group by ADJ_KODEIGR,
+                                    ADJ_TGLSO,
+                                    ADJ_PRDCD,
+                                    ADJ_LOKASI) B');
+
+        $so = DB::connection(Session::get('connection'))->table('TBTR_BA_STOCKOPNAME')
+            ->join('TBMASTER_PRODMAST', 'PRD_PRDCD', '=', 'SOP_PRDCD')
+            ->leftJoin($tempadjustso, function ($join) {
+                $join->On(DB::connection(Session::get('connection'))->raw('SUBSTR (B.ADJ_PRDCD, 1, 6)'), '=', DB::connection(Session::get('connection'))->raw('SUBSTR (SOP_PRDCD, 1, 6)'))->On(DB::connection(Session::get('connection'))->raw('trunc(B.ADJ_TGLSO)'), '=', DB::connection(Session::get('connection'))->raw('trunc(SOP_TGLSO)'))->On('B.ADJ_LOKASI', '=', 'SOP_LOKASI');
+            })
+            ->selectRaw('SOP_QTYSO,
+                        SOP_QTYLPP,
+                        NVL (B.QTY_ADJ, 0) QTY_ADJ,
+                        SOP_QTYSO - SOP_QTYLPP + NVL (B.QTY_ADJ, 0) SELISIH,
+                        SOP_NEWAVGCOST,
+                        CASE
+                           WHEN PRD_UNIT = \'KG\'
+                               THEN ((SOP_QTYSO - SOP_QTYLPP + NVL (B.QTY_ADJ, 0)) * SOP_NEWAVGCOST) / 1000
+                           ELSE (SOP_QTYSO - SOP_QTYLPP + NVL (B.QTY_ADJ, 0)) * SOP_NEWAVGCOST
+                        END RUPIAH,
+                        PRD_UNIT')
+            ->whereRaw('substr(SOP_PRDCD, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
+            ->where('SOP_LOKASI', '=', '01')
+            ->whereRaw('SOP_TGLSO = to_date(\'' . $so_tgl . '\',\'yyyy-mm-dd\')')
+            ->get();
+
+        $adjustso = DB::connection(Session::get('connection'))->table('TBTR_ADJUSTSO')
+            ->select('*')
+            ->where('adj_kodeigr', '=', '22')
+            ->where('adj_lokasi', '=', '01')
+            ->whereRaw('substr(adj_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
+            ->whereRaw('adj_tglso = to_date(\'' . $so_tgl . '\',\'yyyy-mm-dd\')')
+            ->orderBy('adj_create_dt')
+            ->get();
+
+        $resetsoic = DB::connection(Session::get('connection'))->table('TBTR_RESET_SOIC')
+            ->select('*')
+            ->where('rso_kodeigr', '=', '22')
+            ->where('rso_lokasi', '=', '01')
+            ->whereRaw('substr(rso_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
+            ->whereRaw('to_char(rso_tglso, \'yyyyMM\') = to_char(sysdate, \'yyyyMM\')')
+            ->orderBy('rso_tglso')
+            ->orderBy('rso_kodeso')
+            ->get();
+        return compact([ 'so_tgl','so', 'adjustso', 'resetsoic']);
+
     }
 
 }

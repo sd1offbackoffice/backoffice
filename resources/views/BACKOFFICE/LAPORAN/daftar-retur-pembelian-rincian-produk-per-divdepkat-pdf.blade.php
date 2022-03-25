@@ -83,7 +83,7 @@
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th colspan="2">---NPB---</th>
+            <th colspan="2">---NRB---</th>
             <th rowspan="2" class="left" style="vertical-align: middle;">PLU</th>
             <th rowspan="2" class="left" style="vertical-align: middle;">NAMA BARANG</th>
             <th rowspan="2" class="left" style="vertical-align: middle;">KEMASAN</th>

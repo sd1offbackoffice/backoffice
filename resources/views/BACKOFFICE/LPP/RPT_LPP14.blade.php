@@ -172,8 +172,6 @@
                 @endphp
             @endif
         @endfor
-        </tbody>
-        <tfoot style="border-bottom: 1px solid black;border-top: 1px solid black;">
         <tr>
             <td class="right">TOTAL</td>
             <td class="right">{{ $total_prdcd }}</td>
@@ -191,7 +189,7 @@
             <td align="right">{{ number_format($total_adjrph     ,0) }}</td>
             <td align="right">{{ number_format($total_akhirrph   ,0) }}</td>
         </tr>
-        </tfoot>
+        </tbody>
     </table>
 
 @endsection

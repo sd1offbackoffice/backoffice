@@ -22,6 +22,24 @@ class RestoreDataMonthEndController extends Controller
             $month = $request->month;
             $year = $request->year;
 
+            $isRunning = DB::connection(Session::get('connection'))
+                ->select("select  count(1) count
+                              from  " . 'gv$access' . "
+                              where type = 'PROCEDURE'
+                              and (object = 'SP_PROSES_LPP2'
+                              or object = 'SP_RESTORE_STOCK2')
+                                and (inst_id,sid) in (
+                                                      select  inst_id,
+                                                              sid
+                                                        from  " . 'gv$session' . "
+                                                        where type = 'USER'
+                                                     )")[0]->count;
+            if ($isRunning > 0) {
+                $message = 'Procedure Proses LPP / Restore Data Month End sedang berjalan!';
+                $status = 'info';
+                return compact(['status', 'message']);
+            }
+
             $p_sukses = 'FALSE';
             $errtxt = "";
             $namaf = "TBMASTER_STOCK_".$year."_".$month;
@@ -49,13 +67,55 @@ class RestoreDataMonthEndController extends Controller
                 if($p_sukses == 'TRUE'){
                     $errtxt = "Proses Restore Data Berhasil !";
 
-                    Schema::dropIfExists('TBHISTORY_STOCK');
-                    Schema::dropIfExists('TBMASTER_STOCK_CAB_ANAK');
-                    Schema::dropIfExists('TBTR_LPP');
-                    Schema::dropIfExists('TBTR_LPPRT');
-                    Schema::dropIfExists('TBTR_LPPRS');
-                    Schema::dropIfExists('TBTR_SALESBULANAN');
-                    Schema::dropIfExists('TBTR_REKAPSALESBULANAN');
+                    $cek = DB::connection(Session::get('connection'))
+                        ->select("select count(1) count FROM user_tables WHERE table_name = 'TBHISTORY_STOCK'")[0]->count;
+                    if($cek>0){
+                        DB::connection(Session::get('connection'))->statement('drop table TBHISTORY_STOCK');
+                    }
+
+                    $cek = DB::connection(Session::get('connection'))
+                        ->select("select count(1) count FROM user_tables WHERE table_name = 'TBMASTER_STOCK_CAB_ANAK'")[0]->count;
+                    if($cek>0){
+                        DB::connection(Session::get('connection'))->statement('drop table TBMASTER_STOCK_CAB_ANAK');
+                    }
+
+                    $cek = DB::connection(Session::get('connection'))
+                        ->select("select count(1) count FROM user_tables WHERE table_name = 'TBTR_LPP'")[0]->count;
+                    if($cek>0){
+                        DB::connection(Session::get('connection'))->statement('drop table TBTR_LPP');
+                    }
+
+                    $cek = DB::connection(Session::get('connection'))
+                        ->select("select count(1) count FROM user_tables WHERE table_name = 'TBTR_LPPRT'")[0]->count;
+                    if($cek>0){
+                        DB::connection(Session::get('connection'))->statement('drop table TBTR_LPPRT');
+                    }
+
+                    $cek = DB::connection(Session::get('connection'))
+                        ->select("select count(1) count FROM user_tables WHERE table_name = 'TBTR_LPPRS'")[0]->count;
+                    if($cek>0){
+                        DB::connection(Session::get('connection'))->statement('drop table TBTR_LPPRS');
+                    }
+
+                    $cek = DB::connection(Session::get('connection'))
+                        ->select("select count(1) count FROM user_tables WHERE table_name = 'TBTR_SALESBULANAN'")[0]->count;
+                    if($cek>0){
+                        DB::connection(Session::get('connection'))->statement('drop table TBTR_SALESBULANAN');
+                    }
+
+                    $cek = DB::connection(Session::get('connection'))
+                        ->select("select count(1) count FROM user_tables WHERE table_name = 'TBTR_REKAPSALESBULANAN'")[0]->count;
+                    if($cek>0){
+                        DB::connection(Session::get('connection'))->statement('drop table TBTR_REKAPSALESBULANAN');
+                    }
+
+//                    Schema::dropIfExists('TBHISTORY_STOCK');
+//                    Schema::dropIfExists('TBMASTER_STOCK_CAB_ANAK');
+//                    Schema::dropIfExists('TBTR_LPP');
+//                    Schema::dropIfExists('TBTR_LPPRT');
+//                    Schema::dropIfExists('TBTR_LPPRS');
+//                    Schema::dropIfExists('TBTR_SALESBULANAN');
+//                    Schema::dropIfExists('TBTR_REKAPSALESBULANAN');
 
 //                    Schema::create('TBHISTORY_STOCK', function (Blueprint $table) {
 //                        $table->id();
@@ -63,8 +123,11 @@ class RestoreDataMonthEndController extends Controller
 //                        $table->string('airline');
 //                        $table->timestamps();
 //                    });
+
                     $query = oci_parse($connect, "CREATE TABLE TBHISTORY_STOCK AS ( SELECT * FROM TBHISTORY_STOCK_".$year."_".$month.")");
                     oci_execute($query);
+                    DB::connection(Session::get('connection'))->statement('CREATE INDEX HST_IDX1 ON TBHISTORY_STOCK (ST_KODEIGR, ST_PRDCD, ST_LOKASI, ST_PERIODE)');
+
                     $query = oci_parse($connect, "CREATE TABLE TBMASTER_STOCK_CAB_ANAK AS ( SELECT * FROM TBMASTER_STOCK_CABANAK_".$year."_".$month.")");
                     oci_execute($query);
                     $query = oci_parse($connect, "CREATE TABLE TBTR_LPP AS ( SELECT * FROM TBTR_LPP_".$year."_".$month.")");

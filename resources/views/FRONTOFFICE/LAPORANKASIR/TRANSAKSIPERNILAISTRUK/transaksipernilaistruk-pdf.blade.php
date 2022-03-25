@@ -14,7 +14,7 @@
     Member : {{$member}}
 @endsection
 
-@section('paper_widht','842pt')
+@section('paper_width','842pt')
 @section('paper_height','595pt')
 
 @section('content')

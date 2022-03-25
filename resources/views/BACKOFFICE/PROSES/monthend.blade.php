@@ -34,6 +34,8 @@
                                                 <th>No.</th>
                                                 <th class="text-left">Nama Proses</th>
                                                 <th>Status</th>
+                                                <th>Start</th>
+                                                <th>Finish</th>
                                             </tr>
                                             </thead>
                                             <tbody id="tabel-urutan-proses">
@@ -41,72 +43,85 @@
                                                 <td>1</td>
                                                 <td class="text-left">Cek Proses Awal</td>
                                                 <td id="status-1"></td>
+                                                <td id="start-1"></td>
+                                                <td id="finish-1"></td>
                                             </tr>
 
                                             <tr>
                                                 <td>2</td>
                                                 <td class="text-left">Proses Hitung Stock</td>
                                                 <td id="status-2"></td>
-                                            </tr>
+                                                <td id="start-2"></td>
+                                                <td id="finish-2"></td></tr>
 
                                             <tr>
                                                 <td>3</td>
                                                 <td class="text-left">Proses Hitung Stock CMO</td>
                                                 <td id="status-3"></td>
-                                            </tr>
+                                                <td id="start-3"></td>
+                                                <td id="finish-3"></td></tr>
 
                                             <tr>
                                                 <td>4</td>
                                                 <td class="text-left">Proses Sales Rekap</td>
                                                 <td id="status-4"></td>
-                                            </tr>
+                                                <td id="start-4"></td>
+                                                <td id="finish-4"></td></tr>
 
                                             <tr>
                                                 <td>5</td>
                                                 <td class="text-left">Proses Sales LPP</td>
                                                 <td id="status-5"></td>
-                                            </tr>
+                                                <td id="start-5"></td>
+                                                <td id="finish-5"></td></tr>
 
                                             <tr>
                                                 <td>6</td>
                                                 <td class="text-left">Delete Data BackOffice</td>
                                                 <td id="status-6"></td>
-                                            </tr>
+                                                <td id="start-6"></td>
+                                                <td id="finish-6"></td></tr>
 
                                             <tr>
                                                 <td>7</td>
                                                 <td class="text-left">Proses Copy Stock</td>
                                                 <td id="status-7"></td>
-                                            </tr>
+                                                <td id="start-7"></td>
+                                                <td id="finish-7"></td></tr>
 
                                             <tr>
                                                 <td>8</td>
                                                 <td class="text-left">Proses Copy Stock CMO</td>
                                                 <td id="status-8"></td>
-                                            </tr>
+                                                <td id="start-8"></td>
+                                                <td id="finish-8"></td></tr>
 
                                             <tr>
                                                 <td>9</td>
                                                 <td class="text-left">Proses Hitung Stock Tahap 2</td>
                                                 <td id="status-9"></td>
-                                            </tr>
+                                                <td id="start-9"></td>
+                                                <td id="finish-9"></td></tr>
 
                                             <tr>
                                                 <td>10</td>
                                                 <td class="text-left">Proses Hitung Stock CMO Tahap 2</td>
                                                 <td id="status-10"></td>
-                                            </tr>
+                                                <td id="start-10"></td>
+                                                <td id="finish-10"></td></tr>
 
                                             <tr>
                                                 <td>11</td>
                                                 <td class="text-left">Proses LPP Point</td>
                                                 <td id="status-11"></td>
-                                            </tr>
+                                                <td id="start-11"></td>
+                                                <td id="finish-11"></td></tr>
                                             <tr>
                                                 <td>12</td>
                                                 <td class="text-left">Cek Proses Akhir</td>
                                                 <td id="status-12"></td>
-                                            </tr>
+                                                <td id="start-12"></td>
+                                                <td id="finish-12"></td></tr>
                                             <tr>
                                             </tbody>
                                             <tfoot></tfoot>
@@ -324,6 +339,8 @@
                             $('#status-' + id).html(`
                                 ${response.data[i].status == 'LOADING' ? '<i class="fas fa-spinner fa-spin"></i>' : response.data[i].status == 'DONE' ? '<i class="fas fa-check-circle text-success"></i>' : response.data[i].status == 'EXEC' ? '<button data="' + response.data[i].submenu.split('_')[0] + '" class="btn btn-primary btn-proses">Proses</button>' : response.data[i].status == 'ERROR' ? '<i class="fas fa-ban text-danger"></i><button data="' + response.data[i].submenu.split('_')[0] + '" class="btn btn-primary btn-proses">Proses</button>' : response.data[i].status}
                             `);
+                            $('#start-' + id).html(response.data[i].start_time);
+                            $('#finish-' + id).html(response.data[i].end_time);
                         }
                         if (selesai) {
                             $('#btn-proses-ulang').show();

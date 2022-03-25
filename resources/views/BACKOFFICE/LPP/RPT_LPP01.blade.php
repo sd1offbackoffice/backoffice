@@ -11,7 +11,7 @@
 @endsection
 
 @section('subtitle')
-    TANGGAL : {{$tgl1}} s/d {{$tgl2}}
+    TANGGAL : {{date('d/M/Y',strtotime(str_replace('/','-',$tgl1)))}} s/d {{date('d/M/Y',strtotime(str_replace('/','-',$tgl2)))}}
 @endsection
 
 @section('paper_height','595pt')
@@ -306,8 +306,6 @@
             @endif
 
         @endfor
-        </tbody>
-        <tfoot>
         <tr>
             <td class="left" colspan="2"><strong>TOTAL SELURUHNYA</strong></td>
             <td align="right">{{ number_format($total_sawalrph  ,0)}} <br> {{number_format($total_sawalqty  ,0)}}</td>
@@ -348,7 +346,7 @@
         <tr>
             <td class="left" colspan="4"><strong>Nilai SO termasuk : SONAS + SO IC</strong></td>
         </tr>
-        </tfoot>
+        </tbody>
     </table>
 
 @endsection

@@ -142,7 +142,7 @@ class cetakPBController extends Controller
         if ($kat2   == null) { $kat2    = 'ZZ'; }
 
 
-        $datas = DB::connection(Session::get('connection'))->select("SELECT pbh_nopb,
+        $data = DB::connection(Session::get('connection'))->select("SELECT pbh_nopb,
          tglpb pbh_tglpb,
          pbh_flagdoc,
          pbh_gross,
@@ -273,12 +273,14 @@ class cetakPBController extends Controller
 ORDER BY pbh_nopb,supplier, departement, kategori asc
 ");
 
-        $pdf = PDF::loadview('BACKOFFICE.cetakPB-laporan', ['datas' => $datas, 'date1' => $tgl1, 'date2' => $tgl2, 'tipepb' => $tipePB, 'kategori' => 0, 'totalkategori' => 0, 'totalsupplier' => 0]);
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
+
+        $pdf = PDF::loadview('BACKOFFICE.cetakPB-laporan', ['perusahaan' => $perusahaan, 'data' => $data, 'tgl_start' => $tgl1, 'tgl_end' => $tgl2, 'tipepb' => $tipePB, 'kategori' => 0, 'totalkategori' => 0, 'totalsupplier' => 0]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(535, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         DB::connection(Session::get('connection'))->table('tbtr_pb_h')
             ->whereRaw("trunc (pbh_tglpb) between '$tgl1' and '$tgl2'")

@@ -32,7 +32,7 @@ class MonthEndController extends Controller
         $data = '';
 
         $temp = DB::connection(Session::get('connection'))->table('tblog_laravel_ias')
-            ->select('menu', 'submenu', 'status')
+            ->select('menu', 'submenu', 'status','start_time','end_time')
             ->where('menu', '=', 'MonthEnd_' . $txt_bulan . '_' . $txt_tahun)
             ->count();
 
@@ -136,7 +136,7 @@ class MonthEndController extends Controller
 
         }
         $data = DB::connection(Session::get('connection'))->table('tblog_laravel_ias')
-            ->select('menu', 'submenu', 'status')
+            ->select('menu', 'submenu', 'status','start_time','end_time')
             ->where('menu', '=', 'MonthEnd_' . $txt_bulan . '_' . $txt_tahun)
             ->orderBy('submenu')
             ->get();
@@ -218,8 +218,8 @@ class MonthEndController extends Controller
         $p_sukses = '';
         $err_txt = '';
 
-        $p_awal = "to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY')";
-        $p_akhir = "add_months(to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY'), 1) - 1";
+        $p_awal = "to_date('" . $txt_bulan . "/01/" . $txt_tahun . "','MM/DD/YYYY')";
+        $p_akhir = "add_months("."$p_awal".", 1) - 1";
 
         $menu = 'MonthEnd_' . $txt_bulan . '_' . $txt_tahun;
         $submenu = '2_Proses Hitung Stock';
@@ -260,8 +260,8 @@ class MonthEndController extends Controller
         $submenu = '3_Proses Hitung Stock CMO';
         $next_submenu = '4_Proses Sales Rekap';
 
-        $p_awal = "to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY')";
-        $p_akhir = "add_months(to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY'), 1) - 1";
+        $p_awal = "to_date('" . $txt_bulan . "/01/" . $txt_tahun . "','MM/DD/YYYY')";
+        $p_akhir = "add_months("."$p_awal".", 1) - 1";
 
         $c = loginController::getConnectionProcedure();
         $sql = "BEGIN SP_HITUNG_STOCKCMO_log('" . Session::get('kdigr') . "'," . $p_awal . "," . $p_akhir . ",'" . $menu . "','" . $submenu . "','" . $next_submenu . "',:p_sukses,:err_txt); END;";
@@ -292,8 +292,8 @@ class MonthEndController extends Controller
         $p_sukses = '';
         $err_txt = '';
 
-        $p_awal = "to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY')";
-        $p_akhir = "add_months(to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY'), 1) - 1";
+        $p_awal = "to_date('" . $txt_bulan . "/01/" . $txt_tahun . "','MM/DD/YYYY')";
+        $p_akhir = "add_months("."$p_awal".", 1) - 1";
 
         $menu = 'MonthEnd_' . $txt_bulan . '_' . $txt_tahun;
         $submenu = '4_Proses Sales Rekap';
@@ -328,8 +328,8 @@ class MonthEndController extends Controller
         $p_sukses = '';
         $err_txt = '';
 
-        $p_awal = "to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY')";
-        $p_akhir = "add_months(to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY'), 1) - 1";
+        $p_awal = "to_date('" . $txt_bulan . "/01/" . $txt_tahun . "','MM/DD/YYYY')";
+        $p_akhir = "add_months("."$p_awal".", 1) - 1";
 
         $menu = 'MonthEnd_' . $txt_bulan . '_' . $txt_tahun;
         $submenu = '5_Proses Sales LPP';
@@ -427,8 +427,8 @@ class MonthEndController extends Controller
         $p_sukses = '';
         $err_txt = '';
 
-        $p_awal = "to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY')";
-        $p_akhir = "add_months(to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY'), 1) - 1";
+        $p_awal = "to_date('" . $txt_bulan . "/01/" . $txt_tahun . "','MM/DD/YYYY')";
+        $p_akhir = "add_months("."$p_awal".", 1) - 1";
 
         $menu = 'MonthEnd_' . $txt_bulan . '_' . $txt_tahun;
         $submenu = '7_Proses Copy Stock';
@@ -464,8 +464,8 @@ class MonthEndController extends Controller
         $p_sukses = '';
         $err_txt = '';
 
-        $p_awal = "to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY')";
-        $p_akhir = "add_months(to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY'), 1) - 1";
+        $p_awal = "to_date('" . $txt_bulan . "/01/" . $txt_tahun . "','MM/DD/YYYY')";
+        $p_akhir = "add_months("."$p_awal".", 1) - 1";
 
         $menu = 'MonthEnd_' . $txt_bulan . '_' . $txt_tahun;
         $submenu = '8_Proses Copy Stock CMO';
@@ -500,8 +500,8 @@ class MonthEndController extends Controller
         $p_sukses = '';
         $err_txt = '';
 
-        $p_awal = "to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY')";
-        $p_akhir = "add_months(to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY'), 1) - 1";
+        $p_awal = "to_date('" . $txt_bulan . "/01/" . $txt_tahun . "','MM/DD/YYYY')";
+        $p_akhir = "add_months("."$p_awal".", 1) - 1";
 
         $menu = 'MonthEnd_' . $txt_bulan . '_' . $txt_tahun;
         $submenu = '9_Proses Hitung Stock Tahap 2';
@@ -550,8 +550,8 @@ class MonthEndController extends Controller
         $submenu = '10_Proses Hitung Stock CMO Tahap 2';
         $next_submenu = '11_Proses LPP Point';
 
-        $p_awal = "to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY')";
-        $p_akhir = "add_months(to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY'), 1) - 1";
+        $p_awal = "to_date('" . $txt_bulan . "/01/" . $txt_tahun . "','MM/DD/YYYY')";
+        $p_akhir = "add_months("."$p_awal".", 1) - 1";
         $p_awal = $p_akhir . ' + 1';
 
         $re = DB::connection(Session::get('connection'))->select("select to_char(" . $p_awal . ",'YYYYMM') value from dual");
@@ -591,8 +591,8 @@ class MonthEndController extends Controller
         $p_sukses = '';
         $err_txt = '';
 
-        $p_awal = "to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY')";
-        $p_akhir = "add_months(to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY'), 1) - 1";
+        $p_awal = "to_date('" . $txt_bulan . "/01/" . $txt_tahun . "','MM/DD/YYYY')";
+        $p_akhir = "add_months("."$p_awal".", 1) - 1";
 
         $menu = 'MonthEnd_' . $txt_bulan . '_' . $txt_tahun;
         $submenu = '11_Proses LPP Point';
@@ -641,8 +641,8 @@ class MonthEndController extends Controller
         $txt_bulanold = $data->prs_bulanberjalan;
         $txt_tahunold = $data->prs_tahunberjalan;
 
-        $p_awal = "to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY')";
-        $p_akhir = "add_months(to_date('" . $txt_bulan . "01" . $txt_tahun . "','MM/DD/YYYY'), 1) - 1";
+        $p_awal = "to_date('" . $txt_bulan . "/01/" . $txt_tahun . "','MM/DD/YYYY')";
+        $p_akhir = "add_months("."$p_awal".", 1) - 1";
         $p_awal = $p_akhir . ' + 1';
 
         $re = DB::connection(Session::get('connection'))->select("select to_char(" . $p_awal . ",'YYYYMM') value from dual");

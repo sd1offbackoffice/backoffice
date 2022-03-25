@@ -288,7 +288,7 @@
                         }
                     },
                     {data: null, render: function(data){
-                            return convertToRupiah2(data.sales * 0.1);
+                            return convertToRupiah2(data.salesgross - data.sales);
                         }
                     },
                     {data: null, render: function(data){
@@ -296,7 +296,7 @@
                         }
                     },
                     {data: null, render: function(data){
-                            return convertToRupiah((data.margin / data.sales * 100))+'%';
+                            return convertToRupiah(data.sales == 0 ? 0 : (data.margin / data.sales * 100))+'%';
                         }
                     },
                 ],

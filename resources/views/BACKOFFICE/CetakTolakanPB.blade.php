@@ -466,10 +466,6 @@
         </div>
     </div>
 
-
-
-
-
     <style>
         body {
             background-color: #edece9;
@@ -523,6 +519,10 @@
 
     <script>
         currVar = '';
+
+        lovDivisi = $('#table_lov_divisi tbody').html();
+        lovDepartemen = $('#table_lov_departement tbody').html();
+        lovKategori = $('#table_lov_kategori tbody').html();
 
         $('.tanggal').datepicker({
             "dateFormat" : "dd/mm/yy"
@@ -714,7 +714,16 @@
         });
 
         function divisi_select(id){
-            if($('#div_divisi1').val() > $('#div_divisi2').val() && $('#div_divisi2').val() != ''){
+            if(!$('#'+id).val()){
+                $('#table_lov_departement tbody').empty().append(lovDepartemen);
+                $('#table_lov_kategori tbody').empty().append(lovKategori);
+
+                if(id == 'div_divisi1'){
+                    $('#div_divisi2').select();
+                }
+                else $('#div_departement1').select();
+            }
+            else if($('#div_divisi1').val() > $('#div_divisi2').val() && $('#div_divisi2').val() != ''){
                 swal({
                     title: 'Kode divisi kedua tidak boleh lebih kecil dari kode divisi pertama!',
                     icon: 'error'
@@ -774,7 +783,15 @@
         }
 
         function departement_select(id){
-            if($('#div_departement1').val() > $('#div_departement2').val() && $('#div_departement2').val() != '') {
+            if(!$('#'+id).val()){
+                $('#table_lov_kategori tbody').empty().append(lovKategori);
+
+                if(id == 'div_departement1'){
+                    $('#div_departement2').select();
+                }
+                else $('#div_kategori1').select();
+            }
+            else if($('#div_departement1').val() > $('#div_departement2').val() && $('#div_departement2').val() != '') {
                 swal({
                     title: 'Kode departement kedua tidak boleh lebih kecil dari kode departement pertama!',
                     icon: 'error'
@@ -832,7 +849,10 @@
         }
 
         function kategori_select(id, condition){
-            if($('#div_kategori1').val() > $('#div_kategori2').val() && $('#div_kategori2').val() != '' && condition) {
+            if(!$('#'+id).val()){
+
+            }
+            else if($('#div_kategori1').val() > $('#div_kategori2').val() && $('#div_kategori2').val() != '' && condition) {
                 swal({
                     title: 'Kode kategori kedua tidak boleh lebih kecil dari kode kategori pertama!',
                     icon: 'error'
@@ -976,22 +996,20 @@
             plu2 = $('#div_plu2').val();
 
             if(parseInt(plu1) > parseInt(plu2)){
-                if($('#m_lov_plu').is(':visible'))
-                    $('#m_lov_plu').modal('toggle');
-                if($('#modal-loader').is(':visible'))
-                    $('#modal-loader').modal('toggle');
+                $('#m_lov_plu').modal('hide');
+                $('#modal-loader').modal('hide');
+
                 swal({
                     title: 'PLU pertama tidak boleh lebih besar dari PLU kedua!',
                     icon: 'error'
                 }).then(function(){
                     $(this).select();
-                })
+                });
             }
             else{
                 $(this).val(convertPlu($(this).val()));
                 div_cek_plu($(this).attr('id'));
             }
-
         });
 
         $('#div_pilihan').on('keypress',function(e){
@@ -1085,14 +1103,14 @@
                 console.log(tgl1);
                 console.log(tgl2);
 
-                div1 = nvl($('#div_divisi1').val(),'ALL');
-                div2 = nvl($('#div_divisi2').val(),'ALL');
-                dep1 = nvl($('#div_departement1').val(),'ALL');
-                dep2 = nvl($('#div_departement2').val(),'ALL');
-                kat1 = nvl($('#div_kategori1').val(),'ALL');
-                kat2 = nvl($('#div_kategori2').val(),'ALL');
-                plu1 = nvl($('#div_plu1').val(),'ALL');
-                plu2 = nvl($('#div_plu2').val(),'ALL');
+                div1 = $('#div_divisi1').val();
+                div2 = $('#div_divisi2').val();
+                dep1 = $('#div_departement1').val();
+                dep2 = $('#div_departement2').val();
+                kat1 = $('#div_kategori1').val();
+                kat2 = $('#div_kategori2').val();
+                plu1 = $('#div_plu1').val();
+                plu2 = $('#div_plu2').val();
                 pil = nvl($('#div_pilihan').val(),'3');
 
 
