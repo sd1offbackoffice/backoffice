@@ -98,17 +98,20 @@ class ReprintBKLController extends Controller
             $noDoc = $data[0]->bkl_nodoc;
             $supplier = $data[0]->bkl_kodesupplier;
 
-            $temp = DB::connection(Session::get('connection'))->select("select bkl_nostruk || bkl_kodestation as all_kasir, bkl_kodeomi
+            $temp = DB::connection(Session::get('connection'))->select("select bkl_nostruk || bkl_kodestation as all_kasir, bkl_kodeomi, bkl_idfile, bkl_kodestation, bkl_nostruk
                                         from tbhistory_bkl
                                         where bkl_nodoc = '$noDoc'
                                         and bkl_nobukti = '$noBukti'
                                         and bkl_kodesupplier = '$supplier'");
 
-            $result     = $this->laporanStruk($kodeigr, $temp[0]->all_kasir, $temp[0]->bkl_kodeomi);
+            $result     = $this->laporanStruk($kodeigr, $temp[0]->all_kasir, $temp[0]->bkl_kodeomi, $temp[0]->bkl_kodestation, $temp[0]->bkl_nostruk);
             $bladeName  = "OMI.LAPORAN.reprint-bkl-struk-pdf";
             $pdfName    = "reprint-bkl-struk.pdf";
         }
-//dd($result);
+
+//        dd($result);
+
+
         $pdf = PDF::loadview("$bladeName",[ 'result' => $result]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
@@ -163,17 +166,17 @@ class ReprintBKLController extends Controller
                                            AND msth_nodoc = '$no_po'");
     }
 
-    public function laporanStruk($kodeigr, $kasir, $kodeomi){
+    public function laporanStruk($kodeigr, $kasir, $kodeomi, $station, $no_trans){
         return DB::connection(Session::get('connection'))->select("SELECT 'NPWP : ' || prs_npwp prs_npwp,  prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2||' '||prs_alamat3 alamat, 'Telp : ' || prs_telepon PRS_TELEPON,
                                         trjd_create_by, trjd_cashierstation, trjd_transactionno, prd_deskripsipendek, '( ' || trjd_prdcd || ')' TRJD_PRDCD, trjd_quantity,
                                         trjd_baseprice, nvl(trjd_discount,0) trjd_discount, trjd_nominalamt,
                                         trjd_admfee, trjd_cus_kodemember, cus_namamember, SUBSTR(jh_kmmcode,1, INSTR(jh_kmmcode,' ')-1) nobukti, tko_namaomi,
                                         prs_kodemto || '.BKL.' || trjd_cashierstation || '.' || trjd_transactionno nomor,
-                                        TO_CHAR(SYSDATE, 'dd-MM-yy hh:mm:ss') TANGGAL, round(tko_persendistributionfee) || ' %' fee
+                                        TO_CHAR(SYSDATE, 'dd-MM-yy hh:mm:ss') TANGGAL, round(tko_persendistributionfee) || ' %' fee, prd_ppn,prs_nilaippn
                                         FROM tbtr_jualdetail, tbtr_jualheader, tbmaster_prodmast, tbmaster_customer, tbmaster_tokoigr, tbmaster_perusahaan
                                         WHERE prs_kodeigr = '$kodeigr' and trjd_kodeigr = '$kodeigr'
                                         AND trjd_create_by = 'BKL'
-                                        --AND TRUNC(trjd_transactiondate) = trunc(sysdate)
+                                        --AND TRUNC(trjd_transactiondate) = trunc(sysdate) (tidak dipake)
                                         AND jh_kodeigr = '$kodeigr'
                                         AND jh_cashierid = 'BKL'
                                         AND jh_transactionno = trjd_transactionno
@@ -185,7 +188,8 @@ class ReprintBKLController extends Controller
                                         AND tko_kodeigr = '$kodeigr'
                                         AND tko_kodecustomer = trjd_cus_kodemember
                                         AND tko_kodeomi= '$kodeomi'
-                                        AND trjd_transactionno || trjd_cashierstation IN (''||'$kasir'||'')");
+                                       --and trjd_transactionno || trjd_cashierstation IN (''||''||''(diganti krna sering error)
+                                        AND (TRJD_TRANSACTIONNO  = '$no_trans' and TRJD_CASHIERSTATION = '$station')");
     }
 
 }

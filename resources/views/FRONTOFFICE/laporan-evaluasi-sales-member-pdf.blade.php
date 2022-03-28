@@ -53,7 +53,7 @@
                 <td width="8%" class="right">{{ number_format($d->qty, 0, '.', ',') }}</td>
                 <td width="8%" class="right">{{ number_format($d->salesgross, 0, '.', ',') }}</td>
                 <td width="8%" class="right">{{ number_format($d->sales, 0, '.', ',') }}</td>
-                <td width="8%" class="right">{{ number_format($d->sales * 0.1, 0, '.', ',') }}</td>
+                <td width="8%" class="right">{{ number_format($d->salesgross- $d->sales, 0, '.', ',') }}</td>
                 <td width="8%" class="right">{{ number_format($d->margin, 0, '.', ',') }}</td>
                 <td width="8%" class="right">{{ number_format($d->sales == 0 ? 0 : ($d->margin / $d->sales) * 100, 2, '.', ',') }}%</td>
             </tr>
@@ -64,7 +64,7 @@
                 $qty += $d->qty;
                 $salesgross += $d->salesgross;
                 $salesnet += $d->sales;
-                $ppn += $d->sales * 0.1;
+                $ppn += $d->salesgross - $d->sales;
                 $margin += $d->margin;
             @endphp
         @endforeach

@@ -115,7 +115,7 @@
                                             <li><a href="{{url("/bokkei/index")}}">Kertas Kerja Estimasi Kebutuhan Toko
                                                     IGR</a></li>
                                             <li><a href="{{url("/bopbotomatis/index")}}">PB Otomatis</a></li>
-                                            <li><a href="{{url("/bo/pb/pbperishable/")}}">PB Perishable</a></li>
+                                            <li><a href="{{url("/BACKOFFICE/PB/PBPerishable/")}}">PB Perishable</a></li>
                                             <li><a href="{{url("/bopbmanual/index")}}">PB Manual</a></li>
                                             <li><a href="{{url("/bo/pb/reorder-pb-go")}}">Reorder PB GO</a></li>
                                             <li><a href="{{url("/bokirimkkei/index")}}">Upload dan Monitoring KKEI Toko

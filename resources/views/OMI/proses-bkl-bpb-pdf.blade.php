@@ -212,7 +212,7 @@
                 </tr>
                 <tr><td colspan="9" style="height: 1px; border-bottom: 1px solid black"></td></tr>
                 {{$total = $total + $value->jumlah}}
-                {{$ppn = $ppn + ($value->prd_ppn * $value->jumlah)}}
+                {{$ppn = $ppn + $value->mstd_ppnrph}}
                 {{$disc4 = $disc4 + $value->dis4}}
             @endforeach
 {{--        @endfor--}}

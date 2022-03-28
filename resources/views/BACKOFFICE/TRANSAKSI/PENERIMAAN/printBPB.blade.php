@@ -114,7 +114,8 @@
         let tablePrintBPB;
         let btnCetak = $('#btnCetak');
         let documentTemp;
-
+        var currUrl = '{{ url()->current() }}';
+        currUrl = currUrl.replace("index", "");
         $(document).ready(function () {
             startAlert();
             // typeTrn = 'B'
@@ -165,7 +166,8 @@
 
             ajaxSetup();
             $.ajax({
-                method : 'POST',url: '{{ url()->current() }}/viewdata',
+                method : 'POST',
+                url: currUrl + 'viewdata',
                 data: {
                     startDate:startDate,
                     endDate :endDate,
@@ -233,7 +235,7 @@
 
             $.ajax({
                 method : 'POST',
-                url: '{{ url()->current() }}/cetakdata',
+                url: currUrl + 'cetakdata',
                 data: {
                     startDate:startDate,
                     endDate :endDate,
@@ -246,11 +248,12 @@
                     // $('#modal-loader').modal('show');
                 },
                 success: function (result) {
+                    console.log('test')
                     console.log(result);
 
                     if (result.kode == 1){
                         documentTemp = document;
-                        window.open('{{ url()->current() }}/viewreport/'+checked+'/'+result.data+'/'+documentTemp);
+                        window.open(currUrl + 'viewreport/'+checked+'/'+result.data+'/'+documentTemp);
                         // window.open('/BackOffice/public/bo/transaksi/penerimaan/printbpb/viewreport/'+checked+'/'+'lokasi'+'/'+documentTemp);
                     }
                 }, error: function (err) {

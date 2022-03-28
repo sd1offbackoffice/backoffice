@@ -12,7 +12,7 @@
 @endsection
 
 @section('subtitle')
-    {{ $tgl_start }} - {{ $tgl_end }}
+    {{ date('d/m/Y', strtotime($tgl_start)) }} - {{ date('d/m/Y', strtotime($tgl_end)) }}
 @endsection
 
 @section('content')
@@ -43,15 +43,16 @@
                     <th rowspan="2" class="">SP</th>
                 </tr>
                 <tr>
-                    <th class="">QTYB</th>
-                    <th class="">K</th>
-                    <th class="">QTYB</th>
-                    <th class="">K</th>
-                    <th class="">QTYB</th>
-                    <th class="">K</th>
+                    <th class="right">QTYB</th>
+                    <th class="right">K</th>
+                    <th class="right">QTYB</th>
+                    <th class="right">K</th>
+                    <th class="right">QTYB</th>
+                    <th class="right">K</th>
                 </tr>
                 </thead>
                 <tbody style="border-bottom: 1px solid black; border-top: 1px solid black">
+                {{$totalAll = 0}}
                 @for($j = $i; $j < sizeof($data); $j++)
                     @if($data[$j]->pbh_nopb == $data[$i]->pbh_nopb && $data[$j]->supplier == $data[$i]->supplier)
                         @if($j == 0)
@@ -123,6 +124,7 @@
                         {{$kategori = $kategori + $data[$j]->gross }}
                         {{$totalkategori = $totalkategori + $data[$j]->gross }}
                         {{$totalsupplier = $totalsupplier + $data[$j]->gross  }}
+                        {{$totalAll = $totalAll + $data[$j]->gross   }}
 
                         {{--                            PENULISAN TOTAL--}}
                         @if(isset($data[$j+1]))
@@ -166,7 +168,8 @@
             <div style="line-height: 0.3 !important;  ">
                 <p>No. PB : {{$data[$i]->pbh_nopb}}</p>
                 <p>Supplier: {{$data[$i]->supplier}}</p>
-                {{$totalsupplier = 0}}
+{{--                @php$totalsupplier = 0@endphp--}}
+                <p style="font-size: 0">{{$totalsupplier = 0}}</p>
             </div>
             <table class="table">
                 <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
@@ -259,13 +262,14 @@
                             @else
                                 <td style="text-align: center">*</td>
                             @endif
-                            <td style="text-align: center">?</td>
+                            <td style="text-align: center"> </td>
                         </tr>
 
                         {{--                            PERHITUNGAN TOTAL--}}
                         {{$kategori = $kategori + $data[$j]->gross }}
                         {{$totalkategori = $totalkategori + $data[$j]->gross }}
                         {{$totalsupplier = $totalsupplier + $data[$j]->gross  }}
+                        {{$totalAll = $totalAll + $data[$j]->gross   }}
 
                         {{--                            PENULISAN TOTAL--}}
                         @if(isset($data[$j+1]))
@@ -310,6 +314,10 @@
                             <td colspan="13">Total Supplier : </td>
                             <td>{{number_format( $totalsupplier,0,',','.')}}</td>
                         </tr>
+                        <tr style="text-align: right; font-weight: bold">
+                            <td colspan="13">Total Akhir : </td>
+                            <td>{{number_format( $totalAll,0,',','.')}}</td>
+                        </tr>
                         @endif
                     @endif
                 @endfor
@@ -319,7 +327,7 @@
         @endif
     @endfor
 
-    <p>Keterangan : Kolom Omi = '*'  -> Khusus Plu OMI: Kolom Idm = '*'  -> Khusus Plu IDM: Kolom Super Promo = '*'  -> Khusus Plu Promo</p>
+    <p class="right">Keterangan : Kolom Omi = '*'  -> Khusus Plu OMI: Kolom Idm = '*'  -> Khusus Plu IDM: Kolom Super Promo = '*'  -> Khusus Plu Promo</p>
 
 @endsection
 

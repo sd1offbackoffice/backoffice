@@ -75,7 +75,6 @@ class InputController extends Controller
             oci_bind_by_name($s, ':ret', $no, 32);
             oci_execute($s);
 
-
             DB::connection(Session::get('connection'))->table('tbtr_tac')
                 ->where('tac_kodeigr', Session::get('kdigr'))
                 ->where('tac_nodoc', $no)
@@ -83,6 +82,10 @@ class InputController extends Controller
         }
 
         return compact(['no', 'model', 'status', 'message']);
+    }
+
+    public function saveNewData(Request $request) {
+        
     }
 
     public function getDataPengeluaran(Request $request)
@@ -802,96 +805,129 @@ class InputController extends Controller
     public function delete(Request $request)
     {
         $nodoc = $request->nodoc;
-        DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
-            ->where('TRBO_NODOC', '=', $nodoc)
-            ->where('TRBO_TYPETRN', '=', 'K')
+        DB::connection(Session::get('connection'))
+            ->table('tbtr_backoffice')
+            ->where('trbo_nodoc', '=', $nodoc)
+            ->where('trbo_typetrn', '=', 'K')
             ->delete();
-        $message = 'Nodoc ' . $nodoc . ' Berhasil di hapus';
-        $status = 'warning';
-        return compact(['message', 'status']);
+
+        return response()->json(['kode' => 1, 'msg' => "Dokumen Berhasil dihapus"]);
+
     }
+
 
     public function save(Request $request)
     {
-
         $trbo_kodeigr = Session::get('kdigr');
-        $trbo_typetrn = 'K';
-        $trbo_flagdoc = 0;
-        $trbo_create_by = Session::get('usid');
-        $trbo_create_dt = Carbon::now()->format('Y-m-d');
-        DB::connection(Session::get('connection'))->beginTransaction();
-        foreach ($request->datas as $data)
-            $temp = DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
-                ->where([
-                    'trbo_kodeigr' => $trbo_kodeigr,
-                    'trbo_nodoc' => $data['nodoc'],
-                    'trbo_prdcd' => $data['plu']
-                ])
-                ->count();
-        $avg_cost = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
-            ->select('prd_avgcost')
-            ->where('prd_prdcd', '=', $data['plu'])
-            ->first();
-//        dd( Carbon::parse($data['tgldoc']));
-        $avg_cost = $avg_cost->prd_avgcost;
-        if ($temp > 0) {
-            DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
-                ->where([
-                    'trbo_kodeigr' => $trbo_kodeigr,
-                    'trbo_nodoc' => $data['nodoc'],
-                    'trbo_prdcd' => $data['plu']
-                ])
-                ->update([
-                    'trbo_typetrn' => $trbo_typetrn,
-                    'trbo_tgldoc' => Carbon::parse($data['tgldoc']),
-                    'trbo_noreff' => $data['noreff'],
-                    'trbo_istype' => $data['istype'],
-                    'trbo_invno' => $data['invno'],
-                    'trbo_tglinv' => $data['tglinv'],
-                    'trbo_kodesupplier' => $data['kdsup'],
-                    'trbo_qty' => $data['qty'],
-                    'trbo_hrgsatuan' => $data['hargasatuan'],
-                    'trbo_persendisc1' => $data['persendisc'],
-                    'trbo_gross' => $data['gross'],
-                    'trbo_discrph' => $data['discrph'],
-                    'trbo_ppnrph' => $data['ppnrph'],
-                    'trbo_averagecost' => $avg_cost,
-                    'trbo_posqty' => $data['posqty'],
-                    'trbo_flagdoc' => $trbo_flagdoc,
-                    'trbo_create_by' => $trbo_create_by,
-                    'trbo_create_dt' => $trbo_create_dt
-                ]);
+        // $trbo_typetrn = 'K';
+        // $trbo_flagdoc = 0;
+        // $trbo_create_by = Session::get('usid');
+        // $trbo_create_dt = Carbon::now()->format('Y-m-d');
+        $arrDeletedPlu = $request->arrDeletedPlu;
+        $nodoc = $request->nodoc;
+        // return dd($nodoc);
+        if (!$nodoc) {
+            return response()->json([
+                'status' => 'SUCCESS',
+                'message' => 'Successfully save'
+            ]);
         } else {
-            DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')->insert([
-                'trbo_kodeigr' => $trbo_kodeigr,
-                'trbo_nodoc' => $data['nodoc'],
-                'trbo_prdcd' => $data['plu'],
-                'trbo_typetrn' => $trbo_typetrn,
-                'trbo_tgldoc' => Carbon::parse($data['tgldoc']),
-                'trbo_noreff' => $data['noreff'],
-                'trbo_istype' => $data['istype'],
-                'trbo_invno' => $data['invno'],
-                'trbo_tglinv' => $data['tglinv'],
-                'trbo_kodesupplier' => $data['kdsup'],
-                'trbo_qty' => $data['qty'],
-                'trbo_hrgsatuan' => $data['hargasatuan'],
-                'trbo_persendisc1' => $data['persendisc'],
-                'trbo_gross' => $data['gross'],
-                'trbo_discrph' => $data['discrph'],
-                'trbo_ppnrph' => $data['ppnrph'],
-                'trbo_averagecost' => $avg_cost,
-                'trbo_posqty' => $data['posqty'],
-                'trbo_flagdoc' => $trbo_flagdoc,
-                'trbo_create_by' => $trbo_create_by,
-                'trbo_create_dt' => $trbo_create_dt
+            DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
+                ->where('trbo_kodeigr', '=', $trbo_kodeigr)
+                ->where('trbo_nodoc', '=', $nodoc)
+                ->whereIn('trbo_prdcd', $arrDeletedPlu)
+                ->delete();
+
+            return response()->json([
+                'status' => 'SUCCESS',
+                'message' => 'Successfully update data'
             ]);
         }
-        DB::connection(Session::get('connection'))->commit();
+        
 
-        $message = 'Nodoc ' . $request->datas[0]['nodoc'] . ' Berhasil di simpan';
-        $status = 'success';
-        return compact(['message', 'status']);
+            
+        // return compact(['message', 'status']);
     }
+//     public function save(Request $request)
+//     {
+//         $trbo_kodeigr = Session::get('kdigr');
+//         $trbo_typetrn = 'K';
+//         $trbo_flagdoc = 0;
+//         $trbo_create_by = Session::get('usid');
+//         $trbo_create_dt = Carbon::now()->format('Y-m-d');
+//         DB::connection(Session::get('connection'))->beginTransaction();
+//         foreach ($request->datas as $data)
+//             $temp = DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
+//                 ->where([
+//                     'trbo_kodeigr' => $trbo_kodeigr,
+//                     'trbo_nodoc' => $data['nodoc'],
+//                     'trbo_prdcd' => $data['plu']
+//                 ])
+//                 ->count();
+//         $avg_cost = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+//             ->select('prd_avgcost')
+//             ->where('prd_prdcd', '=', $data['plu'])
+//             ->first();
+// //        dd( Carbon::parse($data['tgldoc']));
+//         $avg_cost = $avg_cost->prd_avgcost;
+//         if ($temp > 0) {
+//             DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
+//                 ->where([
+//                     'trbo_kodeigr' => $trbo_kodeigr,
+//                     'trbo_nodoc' => $data['nodoc'],
+//                     'trbo_prdcd' => $data['plu']
+//                 ])
+//                 ->update([
+//                     'trbo_typetrn' => $trbo_typetrn,
+//                     'trbo_tgldoc' => Carbon::parse($data['tgldoc']),
+//                     'trbo_noreff' => isset($data['noreff']),
+//                     'trbo_istype' => isset($data['istype']),
+//                     'trbo_invno' => isset($data['invno']),
+//                     'trbo_tglinv' => isset($data['tglinv']),
+//                     'trbo_kodesupplier' => isset($data['kdsup']),
+//                     'trbo_qty' => isset($data['qty']),
+//                     'trbo_hrgsatuan' => isset($data['hargasatuan']),
+//                     'trbo_persendisc1' => isset($data['persendisc']),
+//                     'trbo_gross' => isset($data['gross']),
+//                     'trbo_discrph' => isset($data['discrph']),
+//                     'trbo_ppnrph' => isset($data['ppnrph']),
+//                     'trbo_averagecost' => $avg_cost,
+//                     'trbo_posqty' => isset($data['posqty']),
+//                     'trbo_flagdoc' => $trbo_flagdoc,
+//                     'trbo_create_by' => $trbo_create_by,
+//                     'trbo_create_dt' => $trbo_create_dt
+//                 ]);
+//         } else {
+//             DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')->insert([
+//                 'trbo_kodeigr' => $trbo_kodeigr,
+//                 'trbo_nodoc' => isset($data['nodoc']),
+//                 'trbo_prdcd' => isset($data['plu']),
+//                 'trbo_typetrn' => $trbo_typetrn,
+//                 'trbo_tgldoc' => Carbon::parse($data['tgldoc']),
+//                 'trbo_noreff' => isset($data['noreff']),
+//                 'trbo_istype' => isset($data['istype']),
+//                 'trbo_invno' => isset($data['invno']),
+//                 'trbo_tglinv' => isset($data['tglinv']),
+//                 'trbo_kodesupplier' => isset($data['kdsup']),
+//                 'trbo_qty' => isset($data['qty']),
+//                 'trbo_hrgsatuan' => isset($data['hargasatuan']),
+//                 'trbo_persendisc1' => isset($data['persendisc']),
+//                 'trbo_gross' => isset($data['gross']),
+//                 'trbo_discrph' => isset($data['discrph']),
+//                 'trbo_ppnrph' => isset($data['ppnrph']),
+//                 'trbo_averagecost' => $avg_cost,
+//                 'trbo_posqty' => isset($data['posqty']),
+//                 'trbo_flagdoc' => $trbo_flagdoc,
+//                 'trbo_create_by' => $trbo_create_by,
+//                 'trbo_create_dt' => $trbo_create_dt
+//             ]);
+//         }
+//         DB::connection(Session::get('connection'))->commit();
+
+//         $message = 'Nodoc ' . $request->datas[0]['nodoc'] . ' Berhasil di simpan';
+//         $status = 'success';
+//         return compact(['message', 'status']);
+//     }
 
     public function getDataUsulan(Request $request)
     {

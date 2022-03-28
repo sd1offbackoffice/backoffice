@@ -1784,8 +1784,6 @@ class ReturController extends Controller
         catch (QueryException $e){
             DB::connection(Session::get('connection'))->rollBack();
 
-            dd($e->getMessage());
-
             return response()->json([
                 'message' => $e->getMessage()
             ], 500);

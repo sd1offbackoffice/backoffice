@@ -1,6 +1,6 @@
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0001
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -51,7 +51,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0002
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0002
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -101,7 +101,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0003
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0003
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -152,7 +152,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0004
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0004
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -202,7 +202,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0005
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0005
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -253,7 +253,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0006
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0006
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -303,7 +303,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0007
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0007
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -354,7 +354,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0008
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0008
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -404,7 +404,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0009
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0009
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -455,7 +455,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0010
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0010
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -505,7 +505,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0011
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0011
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -556,7 +556,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0012
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0012
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -606,7 +606,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0013
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0013
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -657,7 +657,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0014
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0014
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -707,7 +707,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0015
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0015
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -758,7 +758,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0016
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0016
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -808,7 +808,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0017
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0017
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -859,7 +859,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0018
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0018
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -909,7 +909,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0019
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0019
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -960,7 +960,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0020
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0020
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1010,7 +1010,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0021
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0021
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1061,7 +1061,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0022
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0022
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1111,7 +1111,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0023
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0023
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1162,7 +1162,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0024
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0024
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1212,7 +1212,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0025
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0025
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1263,7 +1263,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0026
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0026
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1313,7 +1313,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0027
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0027
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1364,7 +1364,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0028
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0028
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1414,7 +1414,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0029
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0029
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1465,7 +1465,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0030
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0030
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1515,7 +1515,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0031
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0031
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1566,7 +1566,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0032
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0032
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1616,7 +1616,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0033
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0033
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1667,7 +1667,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0034
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0034
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1717,7 +1717,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0035
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0035
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1768,7 +1768,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0036
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0036
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1818,7 +1818,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0037
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0037
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1869,7 +1869,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0038
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0038
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1901,7 +1901,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 =======================================================================================================
   1560 Item(s) Transferred                                                          ** AKHIR LAPORAN **                                  listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0039
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -1952,7 +1952,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0040
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0040
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2002,7 +2002,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0041
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0041
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2053,7 +2053,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0042
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0042
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2103,7 +2103,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0043
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0043
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2154,7 +2154,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0044
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0044
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2204,7 +2204,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0045
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0045
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2255,7 +2255,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0046
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0046
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2305,7 +2305,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0047
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0047
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2356,7 +2356,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0048
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0048
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2406,7 +2406,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0049
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0049
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2457,7 +2457,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0050
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0050
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2507,7 +2507,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0051
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0051
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2558,7 +2558,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0052
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0052
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2608,7 +2608,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0053
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0053
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2659,7 +2659,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0054
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0054
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2709,7 +2709,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0055
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0055
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2760,7 +2760,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0056
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0056
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2810,7 +2810,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0057
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0057
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2861,7 +2861,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0058
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0058
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2911,7 +2911,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0059
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0059
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -2962,7 +2962,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0060
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0060
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3012,7 +3012,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0061
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0061
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3063,7 +3063,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0062
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0062
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3113,7 +3113,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0063
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0063
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3164,7 +3164,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0064
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0064
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3214,7 +3214,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0065
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0065
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3265,7 +3265,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0066
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0066
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3315,7 +3315,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0067
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0067
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3366,7 +3366,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0068
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0068
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3416,7 +3416,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0069
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0069
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3467,7 +3467,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0070
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0070
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3517,7 +3517,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0071
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0071
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3568,7 +3568,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0072
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0072
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3618,7 +3618,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0073
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0073
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3669,7 +3669,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0074
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0074
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3719,7 +3719,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0075
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0075
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3770,7 +3770,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0076
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0076
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3820,7 +3820,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0077
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0077
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3871,7 +3871,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0078
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0078
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3921,7 +3921,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0079
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0079
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -3972,7 +3972,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0080
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0080
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4022,7 +4022,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0081
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0081
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4073,7 +4073,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0082
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0082
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4123,7 +4123,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0083
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0083
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4174,7 +4174,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0084
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0084
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4224,7 +4224,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0085
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0085
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4275,7 +4275,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0086
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0086
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4325,7 +4325,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0087
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0087
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4376,7 +4376,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0088
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0088
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4426,7 +4426,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0089
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0089
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4477,7 +4477,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0090
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0090
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4527,7 +4527,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0091
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0091
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4578,7 +4578,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0092
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0092
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4628,7 +4628,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0093
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0093
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4679,7 +4679,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0094
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0094
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4729,7 +4729,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0095
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0095
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4780,7 +4780,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0096
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0096
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4830,7 +4830,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0097
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0097
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4881,7 +4881,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0098
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0098
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4931,7 +4931,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0099
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0099
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -4982,7 +4982,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0100
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0100
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5032,7 +5032,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0101
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0101
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5083,7 +5083,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0102
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0102
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5133,7 +5133,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0103
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0103
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5184,7 +5184,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0104
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0104
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5234,7 +5234,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0105
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0105
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5285,7 +5285,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0106
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0106
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5335,7 +5335,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0107
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0107
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5386,7 +5386,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0108
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0108
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5436,7 +5436,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0109
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0109
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5487,7 +5487,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0110
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0110
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5537,7 +5537,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0111
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0111
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5588,7 +5588,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0112
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0112
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5638,7 +5638,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0113
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0113
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5689,7 +5689,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0114
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0114
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5739,7 +5739,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0115
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0115
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5790,7 +5790,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0116
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0116
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5840,7 +5840,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0117
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0117
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5891,7 +5891,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0118
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0118
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5941,7 +5941,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0119
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0119
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -5992,7 +5992,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0120
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0120
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -6042,7 +6042,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0121
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0121
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -6093,7 +6093,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0122
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0122
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -6143,7 +6143,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0123
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0123
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -6194,7 +6194,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0124
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0124
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -6244,7 +6244,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0125
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0125
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -6295,7 +6295,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0126
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0126
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -6345,7 +6345,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0127
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0127
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -6396,7 +6396,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0128
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0128
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -6446,7 +6446,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0129
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0129
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -6497,7 +6497,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0130
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0130
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -6547,7 +6547,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0131
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0131
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -6598,7 +6598,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0132
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0132
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -6648,7 +6648,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0133
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0133
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -6699,7 +6699,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0134
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0134
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -6749,7 +6749,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0135
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0135
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -6800,7 +6800,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0136
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0136
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -6850,7 +6850,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0137
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0137
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -6901,7 +6901,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0138
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0138
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -6951,7 +6951,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0139
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0139
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7002,7 +7002,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0140
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0140
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7052,7 +7052,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0141
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0141
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7103,7 +7103,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0142
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0142
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7153,7 +7153,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0143
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0143
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7204,7 +7204,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0144
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0144
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7254,7 +7254,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0145
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0145
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7305,7 +7305,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0146
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0146
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7355,7 +7355,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0147
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0147
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7406,7 +7406,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0148
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0148
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7456,7 +7456,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0149
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0149
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7507,7 +7507,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0150
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0150
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7557,7 +7557,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0151
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0151
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7608,7 +7608,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0152
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0152
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7658,7 +7658,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0153
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0153
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7709,7 +7709,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0154
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0154
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7759,7 +7759,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0155
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0155
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7810,7 +7810,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0156
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0156
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7860,7 +7860,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0157
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0157
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7911,7 +7911,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0158
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0158
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -7961,7 +7961,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0159
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0159
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8012,7 +8012,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0160
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0160
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8062,7 +8062,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0161
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0161
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8113,7 +8113,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0162
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0162
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8163,7 +8163,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0163
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0163
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8214,7 +8214,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0164
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0164
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8264,7 +8264,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0165
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0165
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8315,7 +8315,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0166
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0166
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8365,7 +8365,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0167
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0167
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8416,7 +8416,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0168
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0168
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8466,7 +8466,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0169
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0169
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8517,7 +8517,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0170
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0170
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8567,7 +8567,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0171
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0171
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8618,7 +8618,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0172
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0172
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8668,7 +8668,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0173
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0173
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8719,7 +8719,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0174
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0174
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8769,7 +8769,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0175
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0175
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8820,7 +8820,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0176
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0176
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8870,7 +8870,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0177
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0177
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8921,7 +8921,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0178
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0178
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -8971,7 +8971,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0179
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0179
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9022,7 +9022,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0180
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0180
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9072,7 +9072,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0181
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0181
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9123,7 +9123,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0182
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0182
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9173,7 +9173,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0183
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0183
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9224,7 +9224,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0184
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0184
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9274,7 +9274,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0185
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0185
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9325,7 +9325,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0186
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0186
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9375,7 +9375,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0187
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0187
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9426,7 +9426,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0188
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0188
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9476,7 +9476,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0189
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0189
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9527,7 +9527,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0190
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0190
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9577,7 +9577,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0191
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0191
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9628,7 +9628,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0192
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0192
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9678,7 +9678,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0193
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0193
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9729,7 +9729,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0194
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0194
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9779,7 +9779,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0195
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0195
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9830,7 +9830,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0196
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0196
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9880,7 +9880,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0197
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0197
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9931,7 +9931,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0198
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0198
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -9981,7 +9981,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0199
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0199
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -10032,7 +10032,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0200
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0200
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -10082,7 +10082,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0201
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0201
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -10133,7 +10133,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0202
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0202
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -10183,7 +10183,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0203
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0203
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -10234,7 +10234,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0204
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0204
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -10284,7 +10284,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0205
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0205
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi
@@ -10335,7 +10335,7 @@ INDOGROSIR SEMARANG                                           program : transfer
 ** BERSAMBUNG KE HAL 0206
                                   listing plu dimensi nol
 
-PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 11:12:26
+PT.INTI CAKRAWALA CITRA                                       tanggal : 25/Mar/2022      jam : 15:33:28
 INDOGROSIR SEMARANG                                           program : transfer plu     hal : 0206
 =======================================================================================================
  plu     deskripsi                                                              panjang   lebar  tinggi

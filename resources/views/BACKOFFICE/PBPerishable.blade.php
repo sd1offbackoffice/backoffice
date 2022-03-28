@@ -14,32 +14,42 @@
                                     <div class="row text-right">
                                         <div class="col-sm-12">
                                             {{-- <label for="model" class="col-sm-2 col-form-label"></label> --}}
-                                            <div class="col-sm-4">
-                                                <input type="text" class="form-control text-center" id="model" disabled>
-                                            </div>
-                                            <div class="form-group row mb-0">
-                                                <label for="no-pb" class="col-sm-2 col-form-label">NOMOR PB</label>
-                                                <div class="col-sm-2 buttonInside">
-                                                    <input type="text" class="form-control" id="no-pb">
-                                                    <button id="btn-no-pb" type="button" class="btn btn-lov p-0" onclick="getNmrPB()">
-                                                        <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
-                                                    </button>
+                                            <div class="form-group row mb-1 mt-1 justify-content-center">
+                                                <div class="col-sm-3">
+                                                    <input type="text" class="form-control text-center" id="model" disabled>
                                                 </div>
-                                            </div>
-                                            <div class="form-group row mb-0">
-                                                <label for="tgl-pb" class="col-sm-2 col-form-label">TANGGAL PB</label>
-                                                <div class="col-sm-2">
-                                                    <input type="text" class="form-control" id="tgl-pb">
-                                                </div>
-                                            </div>
-                                            <div class="form-group row mb-0 ml-5">
-                                                 <button class="btn btn-primary btn-sm float-left" id="btn-proses" {{--onclick="deleteDoc(event)"--}}> 
-                                                    PROSES
-                                                </button>
-                                                <button class="btn btn-primary btn-sm float-left" id="btn-hapus" onclick="deleteDoc(event)">
-                                                    DELETE AND CLOSE
-                                                </button>
-                                            </div>
+                                            </div> 
+                                            <div class="row">                                            
+                                                <div class="col">
+                                                    <div class="form-group row mb-0">
+                                                        <label for="no-pb" class="col-sm-3 col-form-label">NOMOR PB</label>
+                                                        <div class="col-sm-4 buttonInside">
+                                                            <input type="text" class="form-control" id="no-pb">
+                                                            <button id="btn-no-pb" type="button" class="btn btn-lov p-0" onclick="getNmrPB()">
+                                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group row mb-0">
+                                                        <label for="tgl-pb" class="col-sm-3 col-form-label">TANGGAL PB</label>
+                                                        <div class="col-sm-4">
+                                                            <input type="text" class="form-control" id="tgl-pb">
+                                                        </div>
+                                                    </div>
+                                                </div>  
+                                                <div class="col">
+                                                    <div class="form-group row mt-2 mb-0 mr-1">
+                                                        <button class="btn btn-primary btn-lg float-left col-sm-2" id="btn-proses" {{--onclick="deleteDoc(event)"--}}> 
+                                                           PROSES
+                                                       </button>
+
+
+                                                       <button class="btn btn-primary btn-lg float-left ml-4" id="btn-hapus" onclick="deleteDoc(event)">
+                                                           DELETE AND CLOSE
+                                                       </button>
+                                                   </div>
+                                                </div> 
+                                            </div>                                       
                                         </div>
                                     </div>
                                 </form>
@@ -48,103 +58,102 @@
                 <fieldset class="card border-secondary">
                     <legend class="w-auto ml-5">Detail</legend>
                     <div class="card-body shadow-lg cardForm">
-                        <div class="col-sm-12">
-                            <div class="card-body p-0 tableFixedHeader" style="border-bottom: 1px solid black">
-                                <table class="table table-striped table-bordered" id="table-detail">
-                                    <thead class="header-table">
-                                    <tr class="d-flex text-center">
-                                        {{-- <th style="width: 3%">X</th> --}}
-                                        <th style="width: 7%">SUPPLIER</th>
-                                        <th style="width: 7%">KODE SARANA</th>
-                                        <th style="width: 7%">VOLUME SARANA</th>
-                                        <th style="width: 7%">TOTAL KUBIKASE ITEM</th>                                       
-                                    </tr>
-                                    </thead>
-                                    <tbody id="tbody1">
-                                    @for($i = 0; $i< 5; $i++)
-                                        <tr class="d-flex baris">
-                                            <td style="width: 7%"><input type="text" class="form-control supplierid" id="supplierid" no="{{$i}}"></td>
-                                            <td style="width: 7%"><input disabled type="text" class="form-control kodesarana" id="kodesarana"></td>
-                                            <td style="width: 7%"><input disabled type="text" class="form-control volumesar text-right"></td>
-                                            <td style="width: 7%"><input disabled type="text" class="form-control totalkubik text-right"></td>
-                                        </tr>
-                                    @endfor
-                                    </tbody>
-                                </table>
-                                <table class="table table-striped table-bordered" id="table-detail">
-                                    <thead class="header-table">
-                                    <tr class="d-flex text-center">
-                                        {{-- <th style="width: 3%">X</th> --}}
-                                        <th style="width: 7%">PLU</th>
-                                        <th style="width: 5%">PKM</th>
-                                        <th style="width: 7%">AVG SALES</th>
-                                        <th style="width: 5%">ISI CTN</th>
-                                        <th style="width: 5%">STOCK</th>
-                                        <th style="width: 5%">PO OUT</th>
-                                        <th style="width: 5%">PBOUT</th>
-                                        <th style="width: 5%">MIN DISPLAY</th>
-                                        <th style="width: 5%">MIN ORDER</th>
-                                        <th style="width: 5%">QTY PB</th>
-                                        <th style="width: 5%">DIMENSI</th>
-                                        <th style="width: 8%">KUBIKASE</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="tbody2">
-                                    @for($i = 0; $i< 10; $i++)
-                                        <tr class="d-flex baris">
-                                            {{-- <td style="width: 3%" class="text-center">
-                                                <button class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
-                                            </td> --}}
-
-                                            <td class="buttonInside" style="width: 7%">
-                                                <input type="text" class="form-control plu" id="plu" no="{{$i}}">
-                                                <button id="btn-no-plu" type="button" class="btn btn-lov ml-3" onclick="getPlu(this)" no="{{$i}}">
-                                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
-                                                </button>
-                                            </td>
-                                            {{-- <td style="width: 5%"><input disabled type="text" class="form-control deskripsi" id="deskripsi"></td> --}}
-                                            <td style="width: 5%"><input disabled type="text" class="form-control pkm" id="pkm"></td>
-                                            <td style="width: 7%"><input disabled type="text" class="form-control avgsales"></td>
-                                            <td style="width: 5%"><input disabled type="text" class="form-control isictn"></td>
-                                            <td style="width: 5%"><input disabled type="text" class="form-control stock text-right"></td>
-                                            <td style="width: 5%"><input disabled type="text" class="form-control poout"></td>                                            
-                                            <td style="width: 5%"><input type="text" class="form-control pbout text-right"></td>
-                                            <td style="width: 5%"><input type="text" class="form-control mindisp text-right"></td>
-                                            <td style="width: 5%"><input type="text" class="form-control minord text-right" ></td>
-                                            <td style="width: 5%"><input disabled type="text" class="form-control qtypb text-right"id="{{$i}}" onchange="qty(this.value,this.id,1)"></td>
-                                            <td style="width: 5%"><input type="text" class="form-control dimensi text-right"></td>
-                                            <td style="width: 8%"><input type="text" class="form-control kubikase"></td>
-                                        </tr>
-                                    @endfor
-                                    </tbody>
-                                    <tfoot>
-                                    <tr>
-                                        <td>
-                                            <input disabled type="text" class="mt-1 form-control deskripsiPanjang">
-                                            {{-- <button class="btn btn-primary btn-block" id="btn-addRow" >
-                                                TAMBAH BARIS BARU
-                                            </button> --}}
-                                        </td>
-                                    </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-                        </div>
                         <div class="row">
-                            {{-- <div class="col-sm-12">
+                            <div class="col-sm-4">
+                                <div class="card-body p-0 tableFixedHeader" style="border-bottom: 1px solid black">
+                                    <table class="table table-striped table-bordered float-left" id="table-supply">
+                                        <thead class="header-table">
+                                        <tr class="d-flex text-center">
+                                            {{-- <th style="width: 3%">X</th> --}}
+                                            <th style="width: 25%">SUPPLIER</th>
+                                            <th style="width: 25%">KODE SARANA</th>
+                                            <th style="width: 25%">VOLUME SARANA</th>
+                                            <th style="width: 25%">TOTAL KUBIKASE ITEM</th>                                       
+                                        </tr>
+                                        </thead>
+                                        <tbody id="tbody1">
+                                        @for($i = 0; $i< 5; $i++)
+                                            <tr class="d-flex baris">
+                                                <td style="width: 25%"><input type="text" class="form-control supplierid" id="supplierid" no="{{$i}}"></td>
+                                                <td style="width: 25%"><input disabled type="text" class="form-control kodesarana" id="kodesarana"></td>
+                                                <td style="width: 25%"><input disabled type="text" class="form-control volumesar text-right"></td>
+                                                <td style="width: 25%"><input disabled type="text" class="form-control totalkubik text-right"></td>
+                                            </tr>
+                                        @endfor
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="card-body p-0 tableFixedHeader" style="border-bottom: 1px solid black">
+                                    <table class="table table-striped table-bordered float-left" id="table-detail">
+                                            <thead class="header-table">
+                                            <tr class="d-flex text-center">
+                                                {{-- <th style="width: 3%">X</th> --}}
+                                                <th style="width: 10%">PLU</th>
+                                                <th style="width: 10%">PKM</th>
+                                                <th style="width: 10%">AVG SALES</th>
+                                                <th style="width: 10%">ISI CTN</th>
+                                                <th style="width: 10%">STOCK</th>
+                                                <th style="width: 10%">PO OUT</th>
+                                                <th style="width: 10%">PBOUT</th>
+                                                <th style="width: 10%">MIN DISPLAY</th>
+                                                <th style="width: 10%">MIN ORDER</th>
+                                                <th style="width: 10%">QTY PB</th>
+                                                <th style="width: 10%">DIMENSI</th>
+                                                <th style="width: 10%">KUBIKASE</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="tbody2">
+                                            @for($i = 0; $i< 10; $i++)
+                                                <tr class="d-flex baris">
+                                                    {{-- <td style="width: 3%" class="text-center">
+                                                        <button class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
+                                                    </td> --}}
+
+                                                    <td class="buttonInside" style="width: 10%"><input disabled type="text" class="form-control plu" id="plu" no="{{$i}}"></td>
+                                                    {{-- <td style="width: 10%"><input disabled type="text" class="form-control deskripsi" id="deskripsi"></td> --}}
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control pkm" id="pkm"></td>
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control avgsales"></td>
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control isictn"></td>
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control stock text-right"></td>
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control poout"></td>                                            
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control pbout text-right"></td>
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control mindisp text-right"></td>
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control minord text-right" ></td>
+                                                    <td style="width: 10%"><input type="text" class="form-control qtypb text-right"id="{{$i}}" onchange="qty(this.value,this.id,1)"></td>
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control dimensi text-right"></td>
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control kubikase"></td>
+                                                </tr>
+                                            @endfor
+                                            </tbody>
+                                            {{-- <tfoot>
+                                            <tr>
+                                                <td>
+                                                    <input disabled type="text" class="mt-1 form-control deskripsiPanjang">
+                                                    <button class="btn btn-primary btn-block" id="btn-addRow" >
+                                                        TAMBAH BARIS BARU
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tfoot> --}}
+                                        </table>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-sm-12">
                                 <form class="form">
-                                    <div class="form-group row mb-0">
-                                        <label for="deskripsiPanjang" class="col-sm-1 col-form-label text-right"></label>
-                                        <div class="col-sm-6">
+                                    <div class="form-group row mb-3 mt-3 d-flex flex-row-reverse ">
+                                        <label for="deskripsiPanjang" class="col-sm-1 col-form-label text-left"></label>
+                                        <div class="col-sm-7">
                                             <input type="text" class="form-control" id="deskripsiPanjang" disabled>
-                                        </div>
-                                        <label for="avg-cost" class="col-sm-2 col-form-label text-right">AVG COST</label>
-                                        <div class="col-sm-2">
-                                            <input type="text" class="form-control text-right" id="avg-cost" disabled>
-                                        </div>
+                                        </div>                                       
                                     </div>
                                 </form>
-                            </div> --}}
+                            </div>
                         </div>
                         <fieldset class="card border-secondary">
                             <div class="card-body">
@@ -152,22 +161,28 @@
                                     <div class="col-sm-10">
                                         <form>
                                             <div class="row text-right">
-                                                <div class="col-sm-12">
+                                                <div class="col-sm-12 ml-2">
                                                     <div class="form-group row mb-0">
-                                                        <p class="col-sm-2" >DIMENSI -> dimensi in CTN</p>
+                                                        <p class="col-sm-6 text-left" >DIMENSI -> dimensi in CTN</p>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <p class="col-sm-2" >KUBIKASE -> ((STOCK + PO OUT + PB OUT + qty PB)/ ISI CTN) * DIMENSI</p>
+                                                        <p class="col-sm-6 text-left" >KUBIKASE -> ((STOCK + PO OUT + PB OUT + qty PB)/ ISI CTN) * DIMENSI</p>
                                                     </div>
                                                     <div class="form-group row mb-0">                                                       
                                                         <div class="col-sm-10">
-                                                            <button class="btn btn-primary pl-4 pr-4 mr-4" id="btn-save" type="button">
+                                                            <button class="btn btn-primary btn-lg pl-4 pr-4 mr-4" id="btn-save" type="button">
                                                                 SIMPAN PB
                                                             </button>
                                                         </div>
                                                     </div>
+                                                    <div class="form-group row">
+                                                        <div class="col-sm-12">
+                                                            <p id="lastmodif">Last Edited</p> 
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                                
+                                            </div> 
                                         </form>
                                     </div>
                                 </div>
@@ -214,9 +229,8 @@
                                     <table class="table table-sm" id="modal-table-1">
                                         <thead class="header-modal">
                                         <tr class="font">
-                                            <td>NO. DOC</td>
-                                            <td>TIPE</td>
-                                            <td>NOTA</td>
+                                            <td>NO. PB</td>
+                                            <td>TANGGAL PB</td>
                                         </tr>
                                         </thead>
                                         <tbody class="tbody-modal-1">
@@ -371,10 +385,9 @@
                     // console.log(result)
                     $('.modalRow').remove();
                     for (i = 0; i< result.length; i++){
-                        let temp = ` <tr class="modalRow" onclick=chooseDoc('`+ result[i].trbo_nodoc+`')>
-                                        <td>`+ result[i].trbo_nodoc +`</td>
-                                        <td>`+ result[i].trbo_tipe +`</td>
-                                        <td>`+ result[i].nota +`</td>
+                        let temp = ` <tr class="modalRow" onclick=chooseDoc('`+ result[i].pbp_nopb+`')>
+                                        <td>`+ result[i].pbp_nopb +`</td>
+                                        <td>`+ result[i].pbp_tglpb +`</td>
                                      </tr>`;
                         $('.tbody-modal-1').append(temp);
                     }
@@ -397,10 +410,9 @@
                         //console.log(result)
                         $('.modalRow').remove();
                         for (i = 0; i< result.length; i++){
-                            let temp = `<tr class="modalRow" onclick=chooseDoc('`+ result[i].trbo_nodoc+`')>
-                                        <td>`+ result[i].trbo_nodoc +`</td>
-                                        <td>`+ result[i].trbo_tipe +`</td>
-                                        <td>`+ result[i].nota +`</td>
+                            let temp = ` <tr class="modalRow" onclick=chooseDoc('`+ result[i].pbp_nopb+`')>
+                                        <td>`+ result[i].pbp_nopb +`</td>
+                                        <td>`+ result[i].pbp_tglpb +`</td>
                                      </tr>`;
                             $('.tbody-modal-1').append(temp);
                         }
@@ -439,30 +451,30 @@
             }
         });
 
-        function getPlu(temp) {
-            $('#search-modal-2').val('')
-            let index = temp['attributes'][4]['value']; //value nya string makanya pake petik
-            // console.log(index)
-            ajaxSetup();
-            $.ajax({
-                url: '{{ url()->current() }}/lov_plu',
-                type: 'post',
-                data: {index:index},
-                success: function (result) {
-                    $('.modalRow').remove();
-                    for (i = 0; i< result.length; i++){
-                        let temp = "<tr onclick=choosePlu('"+ result[i].prd_prdcd +"','"+ index +"') class='modalRow'>" +
-                            "<td>"+ result[i].prd_deskripsipanjang +"</td> " +
-                            "<td>"+ result[i].prd_prdcd +"</td>" +
-                            "</tr>"
-                        $('.tbody-modal-2').append(temp);
-                    }
-                    $('#modal-help-2').modal('show');
-                }, error: function () {
-                    alert('error');
-                }
-            });
-        }
+        // function getPlu(temp) {
+        //     $('#search-modal-2').val('')
+        //     let index = temp['attributes'][4]['value']; //value nya string makanya pake petik
+        //     // console.log(index)
+        //     ajaxSetup();
+        //     $.ajax({
+        //         url: '{{ url()->current() }}/lov_plu',
+        //         type: 'post',
+        //         data: {index:index},
+        //         success: function (result) {
+        //             $('.modalRow').remove();
+        //             for (i = 0; i< result.length; i++){
+        //                 let temp = "<tr onclick=choosePlu('"+ result[i].prd_prdcd +"','"+ index +"') class='modalRow'>" +
+        //                     "<td>"+ result[i].prd_deskripsipanjang +"</td> " +
+        //                     "<td>"+ result[i].prd_prdcd +"</td>" +
+        //                     "</tr>"
+        //                 $('.tbody-modal-2').append(temp);
+        //             }
+        //             $('#modal-help-2').modal('show');
+        //         }, error: function () {
+        //             alert('error');
+        //         }
+        //     });
+        // }
 
         function chooseDoc(nodoc) {
             let tempgross = 0;
@@ -506,20 +518,20 @@
                                 
 
                                 html2 = `<tr class="d-flex baris">                                               
-                                                <td class="buttonInside" style="width: 7%">
+                                                <td class="buttonInside" style="width: 10%">
                                                     <input type="text" class="form-control plu" value="`+ result[i].pbp_prdcd +`">
                                                 </td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control pkm" value="`+ result[i].pbp_pkm +`"></td>
-                                                <td style="width: 7%"><input disabled type="text" class="form-control avgsales" value="`+ result[i].pbp_avgsales +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control isictn" value="`+ result[i].pbp_isictn +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control stock text-right" value="`+ result[i].pbp_stock +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control poout" value="`+ result[i].pbp_qtypoout +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control pbout text-right" value="`+ result[i].pbp_qtypnout +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control mindisp text-right" value="`+ result[i].pbp_mindisplay +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control minord text-right" value="`+ result[i].pbp_minorder +`"></td>
-                                                <td style="width: 5%"><input type="text" class="form-control qtypb text-right" value="` + result[i].pbp_qtypb +`" id="`+ i +`" onchange="qty(this.value,this.id,2)"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control dimensi text-right" value="`+ result[i].pbp_dimensi +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control kubikase text-right" value="`+ result[i].pbp_kubikase +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control pkm" value="`+ result[i].pbp_pkm +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control avgsales" value="`+ result[i].pbp_avgsales +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control isictn" value="`+ result[i].pbp_isictn +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control stock text-right" value="`+ result[i].pbp_stock +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control poout" value="`+ result[i].pbp_qtypoout +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control pbout text-right" value="`+ result[i].pbp_qtypnout +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control mindisp text-right" value="`+ result[i].pbp_mindisplay +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control minord text-right" value="`+ result[i].pbp_minorder +`"></td>
+                                                <td style="width: 10%"><input type="text" class="form-control qtypb text-right" value="` + result[i].pbp_qtypb +`" id="`+ i +`" onchange="qty(this.value,this.id,2)"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control dimensi text-right" value="`+ result[i].pbp_dimensi +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control kubikase text-right" value="`+ result[i].pbp_kubikase +`"></td>
                                             </tr>`;
                                 
                                 
@@ -551,20 +563,20 @@
 
 
                                 html2 = `<tr class="d-flex baris">                                               
-                                                <td class="buttonInside" style="width: 7%">
+                                                <td class="buttonInside" style="width: 10%">
                                                     <input type="text" class="form-control plu" value="`+ result[i].pbp_prdcd +`">
                                                 </td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control pkm" value="`+ result[i].pbp_pkm +`"></td>
-                                                <td style="width: 7%"><input disabled type="text" class="form-control avgsales" value="`+ result[i].pbp_avgsales +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control isictn" value="`+ result[i].pbp_isictn +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control stock text-right" value="`+ result[i].pbp_stock +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control poout" value="`+ result[i].pbp_qtypoout +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control pbout text-right" value="`+ result[i].pbp_qtypnout +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control mindisp text-right" value="`+ result[i].pbp_mindisplay +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control minord text-right" value="`+ result[i].pbp_minorder +`"></td>
-                                                <td style="width: 5%"><input type="text" class="form-control qtypb text-right" value="` + result[i].pbp_qtypb +`" id="`+ i +`" onchange="qty(this.value,this.id,2)"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control dimensi text-right" value="`+ result[i].pbp_dimensi +`"></td>
-                                                <td style="width: 5%"><input disabled type="text" class="form-control kubikase text-right" value="`+ result[i].pbp_kubikase +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control pkm" value="`+ result[i].pbp_pkm +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control avgsales" value="`+ result[i].pbp_avgsales +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control isictn" value="`+ result[i].pbp_isictn +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control stock text-right" value="`+ result[i].pbp_stock +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control poout" value="`+ result[i].pbp_qtypoout +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control pbout text-right" value="`+ result[i].pbp_qtypnout +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control mindisp text-right" value="`+ result[i].pbp_mindisplay +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control minord text-right" value="`+ result[i].pbp_minorder +`"></td>
+                                                <td style="width: 10%"><input type="text" class="form-control qtypb text-right" value="` + result[i].pbp_qtypb +`" id="`+ i +`" onchange="qty(this.value,this.id,2)"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control dimensi text-right" value="`+ result[i].pbp_dimensi +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control kubikase text-right" value="`+ result[i].pbp_kubikase +`"></td>
                                             </tr>`;
 
                                 $('#tbody2').append(html2);
@@ -582,10 +594,10 @@
                             }
                         }
                         html1 = `<tr class="d-flex baris">
-                                <td style="width: 7%"><input type="text" class="form-control supplierid" value="`+ result[i].pbp_kodesupplier +`"></td>
-                                <td style="width: 7%"><input disabled type="text" class="form-control kodesarana" value="`+ result[i].pbp_kodesarana +`"></td>
-                                <td style="width: 7%"><input disabled type="text" class="form-control volumesar text-right" value="`+ result[i].pbp_volsarana +`"></td>
-                                <td style="width: 7%"><input disabled type="text" class="form-control totalkubik text-right" value="`+ result[i].pbp_kubikase +`"></td>
+                                <td style="width: 10%"><input type="text" class="form-control supplierid" value="`+ result[i].pbp_kodesupplier +`"></td>
+                                <td style="width: 10%"><input disabled type="text" class="form-control kodesarana" value="`+ result[i].pbp_kodesarana +`"></td>
+                                <td style="width: 10%"><input disabled type="text" class="form-control volumesar text-right" value="`+ result[i].pbp_volsarana +`"></td>
+                                <td style="width: 10%"><input disabled type="text" class="form-control totalkubik text-right" value="`+ result[i].pbp_kubikase +`"></td>
                                 </tr>`;
 
                         $('#tbody1').append(html1);
@@ -820,7 +832,7 @@
             let nodoc = $('#no-pb').val();
 
                 swal({
-                    title: 'Nomor Dokumen Akan dihapus?',
+                    title: 'Nomor PB Akan dihapus?',
                     icon: 'warning',
                     dangerMode: true,
                     buttons: true,
@@ -856,22 +868,17 @@
             var temp = $('#tbody').find('tr').length;
             let index = parseInt(temp, 10)
             html = `<tr class="d-flex baris">
-                                            <td class="buttonInside" style="width: 7%">
-                                                <input type="text" class="form-control plu" id="plu" no="{{$i}}">
-                                                <button id="btn-no-plu" type="button" class="btn btn-lov ml-3" onclick="getPlu(this)" no="{{$i}}">
-                                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
-                                                </button>
-                                            </td>
-                                            <td style="width: 5%"><input disabled type="text" class="form-control pkm" id="pkm"></td>
-                                            <td style="width: 7%"><input disabled type="text" class="form-control avgsales"></td>
-                                            <td style="width: 5%"><input disabled type="text" class="form-control isictn"></td>
-                                            <td style="width: 5%"><input disabled type="text" class="form-control stock text-right"></td>
-                                            <td style="width: 5%"><input disabled type="text" class="form-control poout"></td>                                            
-                                            <td style="width: 5%"><input type="text" class="form-control pbout text-right"></td>
-                                            <td style="width: 5%"><input type="text" class="form-control mindisp text-right"></td>
-                                            <td style="width: 5%"><input type="text" class="form-control minord text-right" ></td>
-                                            <td style="width: 5%"><input disabled type="text" class="form-control qtypb text-right"id="{{$i}}" onchange="qty(this.value,this.id,1)"></td>
-                                            <td style="width: 5%"><input type="text" class="form-control dimensi text-right"></td>
+                                            <td style="width: 10%"><input type="text" class="form-control plu" id="plu" no="{{$i}}"></td>
+                                            <td style="width: 10%"><input disabled type="text" class="form-control pkm" id="pkm"></td>
+                                            <td style="width: 10%"><input disabled type="text" class="form-control avgsales"></td>
+                                            <td style="width: 10%"><input disabled type="text" class="form-control isictn"></td>
+                                            <td style="width: 10%"><input disabled type="text" class="form-control stock text-right"></td>
+                                            <td style="width: 10%"><input disabled type="text" class="form-control poout"></td>                                            
+                                            <td style="width: 10%"><input type="text" class="form-control pbout text-right"></td>
+                                            <td style="width: 10%"><input type="text" class="form-control mindisp text-right"></td>
+                                            <td style="width: 10%"><input type="text" class="form-control minord text-right" ></td>
+                                            <td style="width: 10%"><input disabled type="text" class="form-control qtypb text-right"id="{{$i}}" onchange="qty(this.value,this.id,1)"></td>
+                                            <td style="width: 10%"><input type="text" class="form-control dimensi text-right"></td>
                                             <td style="width: 8%"><input type="text" class="form-control kubikase"></td>
                                         </tr>`;
             $('#tbody').append(html);
@@ -924,22 +931,17 @@
 
         function temptable(index){
             var tmptbl = `<tr class="d-flex baris">
-                                            <td class="buttonInside" style="width: 7%">
-                                                <input type="text" class="form-control plu" id="plu" no="{{$i}}">
-                                                <button id="btn-no-plu" type="button" class="btn btn-lov ml-3" onclick="getPlu(this)" no="{{$i}}">
-                                                    <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
-                                                </button>
-                                            </td>
-                                            <td style="width: 5%"><input disabled type="text" class="form-control pkm" id="pkm"></td>
-                                            <td style="width: 7%"><input disabled type="text" class="form-control avgsales"></td>
-                                            <td style="width: 5%"><input disabled type="text" class="form-control isictn"></td>
-                                            <td style="width: 5%"><input disabled type="text" class="form-control stock text-right"></td>
-                                            <td style="width: 5%"><input disabled type="text" class="form-control poout"></td>                                            
-                                            <td style="width: 5%"><input type="text" class="form-control pbout text-right"></td>
-                                            <td style="width: 5%"><input type="text" class="form-control mindisp text-right"></td>
-                                            <td style="width: 5%"><input type="text" class="form-control minord text-right" ></td>
-                                            <td style="width: 5%"><input disabled type="text" class="form-control qtypb text-right"id="{{$i}}" onchange="qty(this.value,this.id,1)"></td>
-                                            <td style="width: 5%"><input type="text" class="form-control dimensi text-right"></td>
+                                            <td style="width: 10%"><input type="text" class="form-control plu" id="plu" no="{{$i}}"></td>
+                                            <td style="width: 10%"><input disabled type="text" class="form-control pkm" id="pkm"></td>
+                                            <td style="width: 10%"><input disabled type="text" class="form-control avgsales"></td>
+                                            <td style="width: 10%"><input disabled type="text" class="form-control isictn"></td>
+                                            <td style="width: 10%"><input disabled type="text" class="form-control stock text-right"></td>
+                                            <td style="width: 10%"><input disabled type="text" class="form-control poout"></td>                                            
+                                            <td style="width: 10%"><input type="text" class="form-control pbout text-right"></td>
+                                            <td style="width: 10%"><input type="text" class="form-control mindisp text-right"></td>
+                                            <td style="width: 10%"><input type="text" class="form-control minord text-right" ></td>
+                                            <td style="width: 10%"><input disabled type="text" class="form-control qtypb text-right"id="{{$i}}" onchange="qty(this.value,this.id,1)"></td>
+                                            <td style="width: 10%"><input type="text" class="form-control dimensi text-right"></td>
                                             <td style="width: 8%"><input type="text" class="form-control kubikase"></td>
                                         </tr>`;
 

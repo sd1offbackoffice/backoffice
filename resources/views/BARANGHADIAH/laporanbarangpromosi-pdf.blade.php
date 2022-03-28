@@ -34,15 +34,29 @@
     </table> --}}
     <table>
         <thead style="border-top: 1px solid black; border-bottom: 1px solid black; text-align: left">
-            <tr>
+            <tr>              
                 <th>No.</th>
-                <th colspan="4" style="width: 150px">Periode Promosi</th>
-                <th colspan="2" style="width: 30px">PLU</th>
-                <th colspan="10" style="width: 200px">Nama Barang</th>
-                <th style="width: 200px">Frac / Unit</th>                
+                <th>Periode Promosi</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>PLU</th>
+                <th></th>
+                <th>Nama Barang</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th>Frac / Unit</th>                                
             </tr>
             <tr>
-                <th colspan="3">Saldo Awal</th>
+                <th></th>
+                <th colspan="2">Saldo Awal</th>
                 <th colspan="2">Dr. Supplier</th>
                 <th colspan="2">Dr. Cabang</th>
                 <th colspan="2">Hdh. Customer</th>
@@ -51,24 +65,34 @@
                 <th colspan="2">Penyesuaian</th>
                 <th colspan="2">Saldo Akhir</th>
                 <th>Nama Event Prom</th>
+                {{-- <th colspan="3">Saldo Awal</th>
+                <th colspan="2">Dr. Supplier</th>
+                <th colspan="2">Dr. Cabang</th>
+                <th colspan="2">Hdh. Customer</th>
+                <th colspan="2">Ke Cabang</th>
+                <th colspan="2">Dr. Kasir</th>
+                <th colspan="2">Penyesuaian</th>
+                <th colspan="2">Saldo Akhir</th>
+                <th>Nama Event Prom</th> --}}
             </tr>
             <tr>
-                <th colspan="2" style="width: 30px">Qty</th>
-                <th style="width: 30px">Fr.</th>
-                <th style="width: 30px">Qty</th>
-                <th style="width: 30px">Fr.</th>
-                <th style="width: 30px">Qty</th>
-                <th style="width: 30px">Fr.</th>
-                <th style="width: 30px">Qty</th>
-                <th style="width: 30px">Fr.</th>
-                <th style="width: 30px">Qty</th>
-                <th style="width: 30px">Fr.</th>
-                <th style="width: 30px">Qty</th>
-                <th style="width: 30px">Fr.</th>
-                <th style="width: 30px">Qty</th>
-                <th style="width: 30px">Fr.</th>
-                <th style="width: 30px">Qty</th>
-                <th style="width: 30px">Fr.</th>
+                <th></th>
+                <th>Qty</th>
+                <th>Fr.</th>
+                <th>Qty</th>
+                <th>Fr.</th>
+                <th>Qty</th>
+                <th>Fr.</th>
+                <th>Qty</th>
+                <th>Fr.</th>
+                <th>Qty</th>
+                <th>Fr.</th>
+                <th>Qty</th>
+                <th>Fr.</th>
+                <th>Qty</th>
+                <th>Fr.</th>
+                <th>Qty</th>
+                <th>Fr.</th>
             </tr>
         </thead>
 
@@ -77,7 +101,8 @@
             @foreach ($data as $d)
             @if ($dataType == 'early')
                 @php
-                    $i = 1;
+                    $index = 1;
+
                     if (substr($d->bom, 4, 2) == '01') {
                         $cp_qtyawal = $d->qtyawal01;
                         $cp_qtykawal = $d->qtykawal01;
@@ -284,7 +309,7 @@
                 @endphp                
             @else
                 @php
-                    $i = 1;
+                    $index = 1;
 
                     if ($d->bprp_frackonversi == 0) {
                         $frac = 1;
@@ -308,62 +333,73 @@
                     $cp_qtykakhir = mod($d->qtyakhir, $frac);
                 @endphp
             @endif
-
+                
                 @php
-                    if ($cp_qtyawal == null) {
+                    if (isset($cp_qtyawal) == null) {
                         $cp_qtyawal = 0;
                     }
-                    
-                    if ($cp_qtykawal == null) {
+                    if (isset($cp_qtykawal) == null) {
                         $cp_qtykawal = 0;
                     }
-                    if ($cp_qtybpb == null) {
+                    if (isset($cp_qtybpb) == null) {
                         $cp_qtybpb = 0;
                     }
-                    if ($cp_qtykbpb == null) {
+                    if (isset($cp_qtykbpb) == null) {
                         $cp_qtykbpb = 0;
                     }
-                    if ($cp_qtydrcab == null) {
+                    if (isset($cp_qtydrcab) == null) {
                         $cp_qtydrcab = 0;
                     }
-                    if ($cp_qtykdrcab == null) {
+                    if (isset($cp_qtykdrcab) == null) {
                         $cp_qtykdrcab = 0;
                     }
-                    if ($cp_qtysales == null) {
+                    if (isset($cp_qtysales) == null) {
                         $cp_qtysales = 0;
                     }
-                    if ($cp_qtyksales == null) {
+                    if (isset($cp_qtyksales) == null) {
                         $cp_qtyksales = 0;
                     }
-                    if ($cp_qtykecab == null) {
+                    if (isset($cp_qtykecab) == null) {
                         $cp_qtykecab = 0;
                     }
-                    if ($cp_qtykkecab == null) {
+                    if (isset($cp_qtykkecab) == null) {
                         $cp_qtykkecab = 0;
                     }
-                    if ($cp_qtympp == null) {
+                    if (isset($cp_qtympp) == null) {
                         $cp_qtympp = 0;
                     }
-                    if ($cp_qtykmpp == null) {
+                    if (isset($cp_qtykmpp) == null) {
                         $cp_qtykmpp = 0;
                     }
-                    if ($cp_qtyakhir == null) {
+                    if (isset($cp_qtyakhir) == null) {
                         $cp_qtyakhir = 0;
                     }
-                    if ($cp_qtykakhir == null) {
+                    if (isset($cp_qtykakhir) == null) {
                         $cp_qtykakhir = 0;
                     }
                 @endphp
-            
                 <tr>
-                    <td>{{ $i }}</td>
-                    <td>{{ $d->gfh_tglawal }}</td>
-                    <td>{{ $d->gfh_tglakhir }}</td>
+                    {{-- <th colspan="3">Saldo Awal</th>
+                    <th colspan="2">Dr. Supplier</th>
+                    <th colspan="2">Dr. Cabang</th>
+                    <th colspan="2">Hdh. Customer</th>
+                    <th colspan="2">Ke Cabang</th>
+                    <th colspan="2">Dr. Kasir</th>
+                    <th colspan="2">Penyesuaian</th>
+                    <th colspan="2">Saldo Akhir</th>
+                    <th>Nama Event Prom</th> --}}
+
+                    <td>{{ $index }}</td>
+                    <td colspan="3">{{ date_format(new Datetime($d->gfh_tglawal), "d-m-Y") }}</td>
+                    <td colspan="3">s/d {{ date_format(new Datetime($d->gfh_tglakhir), "d-m-Y") }}</td>
+                    <td></td>
+                    {{-- <td></td> --}}
                     <td>{{ $d->prdcd }}</td>
                     <td>{{ $d->bprp_ketpanjang }}</td>
                     <td>{{ $d->kemasan }}</td>
                 </tr>
                 <tr>
+                    <td></td>
                     <td>{{ $cp_qtyawal }}</td>
                     <td>{{ $cp_qtykawal }}</td>
                     <td>{{ $cp_qtybpb }}</td>
@@ -378,9 +414,11 @@
                     <td>{{ $cp_qtykmpp }}</td>
                     <td>{{ $cp_qtyakhir }}</td>
                     <td>{{ $cp_qtykakhir }}</td>
+                    <td>{{ $d->gfh_kodepromosi }}</td>
+                    <td>{{ $d->gfh_namapromosi }}</td>
                 </tr>
                 @php
-                    $i++;
+                    $index++;
                 @endphp
             @endforeach
         </tbody>

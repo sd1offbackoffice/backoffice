@@ -122,6 +122,8 @@
                 $dist_fee = 0;
                 $total_item = 0;
                 $grand_total = 0;
+                 $ppn        = 0;
+                $ppnDF        = 0;
             @endphp
 
             @foreach($result as $data)
@@ -138,6 +140,8 @@
                 {{$penjualan = $penjualan +  $data->trjd_nominalamt}}
                 {{$dist_fee = $dist_fee +  $data->trjd_admfee}}
                 {{$total_item = $total_item + 1}}
+                {{$ppn = $ppn + ($data->trjd_nominalamt * ($data->prd_ppn/100))}}
+                {{$ppnDF = $ppnDF + ($data->trjd_admfee * ($data->prd_ppn/100))}}
             @endforeach
 
             </tbody>
@@ -151,12 +155,12 @@
             <tr>
                 <td class="left" colspan="1">PPN</td>
                 <td class="left">:</td>
-                <td class="right" colspan="2">{{ number_format(($penjualan * 0.1),0,'.',',') }}</td>
+                <td class="right" colspan="2">{{ number_format(($ppn),0,'.',',') }}</td>
             </tr>
             <tr>
                 <td class="left" colspan="1">TOTAL PENJUALAN</td>
                 <td class="left">:</td>
-                <td class="right" colspan="2">{{ number_format($penjualan + ($penjualan * 0.1),0,'.',',') }}</td>
+                <td class="right" colspan="2">{{ number_format(($penjualan + $ppn),0,'.',',') }}</td>
             </tr>
             <tr>
                 <td class="left" colspan="1">DISTRIBUTION FEE</td>
@@ -166,14 +170,14 @@
             <tr>
                 <td class="left" colspan="1">PPN (DF)</td>
                 <td class="left">:</td>
-                <td class="right" colspan="2">{{ number_format(($dist_fee * 0.1),0,'.',',') }}</td>
+                <td class="right" colspan="2">{{ number_format(($ppnDF),0,'.',',') }}</td>
             </tr>
             <tr>
                 <td class="left" colspan="1">TOTAL FEE</td>
                 <td class="left">:</td>
-                <td class="right" colspan="2">{{ number_format($dist_fee + ($dist_fee * 0.1),0,'.',',') }}</td>
+                <td class="right" colspan="2">{{ number_format(($dist_fee + $ppnDF),0,'.',',') }}</td>
             </tr>
-            {{$grand_total = ($penjualan + ($penjualan * 0.1)) + ($dist_fee + ($dist_fee * 0.1))}}
+            {{$grand_total = ($penjualan + $ppn) + ($dist_fee + $ppnDF)}}
             <tr>
                 <td class="left" colspan="1">TOTAL SELURUH</td>
                 <td class="left">:</td>

@@ -63,6 +63,7 @@ IS
    V_PPN               NUMBER;
    V_PPNBM             NUMBER;
    V_PPNBTL            NUMBER;
+   v_persenppn number;
    V_NILPPN            NUMBER;
    V_NILPPNBM          NUMBER;
    V_NILPPNBTL         NUMBER;
@@ -92,7 +93,7 @@ IS
    V_ANOPO             VARCHAR2 (2000);
    V_RECMIN            VARCHAR2 (1);
    V_JTPO              NUMBER;
-   V_TEST       VARCHAR2(100);
+--10-06-2021 qty palet 0 (mpt_mazqty) juga masuk hitungan
 BEGIN
    V_NOMORURUT := 0;
    V_KODEIGR := P_MEMKODEIGR;
@@ -119,7 +120,7 @@ BEGIN
                  KTK_CLASSKODEIGR,
                  MPT_PRDCD,
                  pmp_prdcd,
-                 (mpt_maxqty * prd_frac) mpt_maxqty,
+                 NVL ( (mpt_maxqty * prd_frac), 0) mpt_maxqty,
                  SUP.*,
                  HGB.*,
                  PRD.*
@@ -133,7 +134,9 @@ BEGIN
                  (SELECT DISTINCT (GDL_PRDCD) AS PRDCDGNDL FROM TBTR_GONDOLA)
                  GND,
                  TBMASTER_KATEGORITOKO KTK,
-                 tbmaster_pb_maxpalet,
+                 (SELECT pmp_prdcd
+                    FROM tbmaster_pb_maxpalet
+                   WHERE 1 <> NVL (pmp_recordid, '0')),
                  tbmaster_maxpalet
            WHERE     SUP.SUP_KODESUPPLIER = HGB.HGB_KODESUPPLIER
                  AND (HGB_RECORDID IS NULL)
@@ -149,14 +152,17 @@ BEGIN
                  AND PRD_KODETAG = TAG.TAG_KODETAG(+)
                  AND HGB.HGB_PRDCD = GND.PRDCDGNDL(+)
                  AND prd_prdcd = pmp_prdcd(+)
-                 AND 1 <> NVL (pmp_recordid, '0')
+                 --AND 1 <> NVL (pmp_recordid, '0')
                  AND prd_prdcd = mpt_prdcd(+)
-                 AND 0 <> NVL (mpt_maxqty(+), 0)
+                 --AND 0 <> NVL (mpt_maxqty(+), 0)
                  AND PRD_KATEGORITOKO = KTK_KODEKATEGORITOKO(+)
                  AND (SUP_KODESUPPLIER BETWEEN P_KDSUP1 AND P_KDSUP2)
                  AND (PRD_KODEDEPARTEMENT BETWEEN P_KDDEPT1 AND P_KDDEPT2)
                  AND (PRD_KODEKATEGORIBARANG BETWEEN P_KDKATB1 AND P_KDKATB2)
-                 --AND prd_prdcd = '1675590'
+                 AND prd_prdcd NOT IN (SELECT pfrz_prdcd
+                                         FROM tbmaster_plufreezer)
+                 --AND prd_prdcd = '1306180'
+                 --and sup_kodesupplier='S0674'
                  AND (   HGB_KODESUPPLIER IN (SELECT MSU_KODESUPPLIER
                                                 FROM TBTR_MONITORINGSUPPLIER
                                                WHERE     MSU_KODEIGR =
@@ -174,6 +180,11 @@ BEGIN
                                                                                 'O',
                                                                                 'G')))
    LOOP
+      --      IF rec.prd_prdcd = '1652570'
+      --      THEN
+      --         NULL;
+      --      END IF;
+
       V_ANOPO := ' ';
       V_LNAIK := FALSE;
       V_LTURUN := FALSE;
@@ -629,7 +640,10 @@ BEGIN
          --*/* --- 2 hari dr pembuatan PB terakhir --- */*
          -- v_larraypo := 0;
          FOR RECPB
-            IN (SELECT *
+            IN (SELECT PBH_TGLPB,
+                       PBH_JENISPB,
+                       PBD_NOPO,
+                       NVL (PBD_QTYPB, 0) PBD_QTYPB
                   FROM TBTR_PB_H HDR, TBTR_PB_D DTL
                  WHERE     HDR.PBH_TIPEPB = P_TIPEPB
                        AND HDR.PBH_NOPB = DTL.PBD_NOPB
@@ -669,8 +683,8 @@ BEGIN
                                         FROM tbtr_mstran_d
                                        WHERE     NVL (mstd_recordid, '0') <>
                                                     '1'
-                                             AND mstd_nopo = tpoh_nopo
-                                             AND mstd_prdcd = tpod_prdcd))
+                                             AND mstd_nopo = tpoh_nopo --AND mstd_prdcd = tpod_prdcd
+                                                                      ))
             LOOP
                IF INSTR (V_ANOPO, TRIM (RECPO.TPOH_NOPO)) <= 0
                THEN
@@ -850,6 +864,7 @@ BEGIN
          V_BONUS2 := 0;
          V_QBONUS1 := 0;
          V_QBONUS2 := 0;
+         V_persenPPN := 0;
          V_PPN := 0;
          V_PPNBM := 0;
          V_PPNBTL := 0;
@@ -1282,11 +1297,13 @@ BEGIN
             END IF;
          END IF;
 
+         v_persenppn := rec.prd_ppn;
+
          V_NILPPN :=
             (CASE
                 WHEN ( (REC.SUP_PKP = 'Y') AND (REC.PRD_FLAGBKP1 = 'Y'))
                 THEN
-                   ( (V_GROSS * P_MEMPPN) / 100)
+                   ( (V_GROSS * rec.prd_ppn) / 100)
                 ELSE
                    0
              END);
@@ -1330,25 +1347,38 @@ BEGIN
                         v_qtypb := REC.PRD_MINORDER;
                      END IF;
 
-                     IF v_qtypb MOD rec.mpt_maxqty <> 0
+                     IF rec.mpt_maxqty = 0
                      THEN
-                        IF v_qtypb MOD rec.mpt_maxqty <
-                              (rec.mpt_maxqty * 0.75)
+                        v_qtypb := 0;
+                     ELSE
+                        IF v_qtypb MOD rec.mpt_maxqty <> 0
                         THEN
+                           IF v_qtypb MOD rec.mpt_maxqty <
+                                 (rec.mpt_maxqty * 0.75)
+                           THEN
+                              v_qtypb :=
+                                 (  rec.mpt_maxqty
+                                  * TRUNC (v_qtypb / rec.mpt_maxqty, 0));
+                           ELSE
+                              v_qtypb :=
+                                 (  (  rec.mpt_maxqty
+                                     * TRUNC (v_qtypb / rec.mpt_maxqty, 0))
+                                  + rec.mpt_maxqty);
+                           END IF;
+                        ELSE
                            v_qtypb :=
                               (  rec.mpt_maxqty
                                * TRUNC (v_qtypb / rec.mpt_maxqty, 0));
-                        ELSE
-                           v_qtypb :=
-                              (  (  rec.mpt_maxqty
-                                  * TRUNC (v_qtypb / rec.mpt_maxqty, 0))
-                               + rec.mpt_maxqty);
                         END IF;
-                     ELSE
-                        v_qtypb :=
-                           (  rec.mpt_maxqty
-                            * TRUNC (v_qtypb / rec.mpt_maxqty, 0));
                      END IF;
+
+                     --++email rbt tgl 23 mar21, cek lagi minor nya
+                     IF v_qtypb < REC.PRD_MINORDER
+                     THEN
+                        v_qtypb := REC.PRD_MINORDER;
+                     END IF;
+
+                     ----
 
                      V_RECMIN := NULL;
                   END IF;
@@ -1382,7 +1412,6 @@ BEGIN
             END IF;
          END IF;
 
-
          Sp_Save_Pb_Temp (V_SESSION,
                           V_KODEIGR,
                           V_RECMIN,
@@ -1409,6 +1438,7 @@ BEGIN
                           V_BONUS2,
                           V_GROSS,
                           V_DISCOUNT,
+                          V_PERSENPPN,
                           V_NILPPN,
                           V_NILPPNBM,
                           V_NILPPNBTL,
@@ -1422,8 +1452,6 @@ BEGIN
          EXIT;
       END LOOP;
    END LOOP;
-
-
 
    COMMIT;
 
@@ -1466,8 +1494,6 @@ BEGIN
                                     WHERE TRUNC (TLK_TGLPB) =
                                              TRUNC (V_TANGGAL));
 
-
-
    ------------- Tolakan PB "< DARI MINOR CARTON/RP PER SUPPLIER"
    IF P_TIPEPB = 'R'
    THEN
@@ -1503,7 +1529,6 @@ BEGIN
       */
 
       -- MINOR CARTON dan MINOR RUPIAH
-
 
       INSERT INTO TBTR_TOLAKANPB (TLK_KODEIGR,
                                   TLK_RECORDID,
@@ -1669,7 +1694,8 @@ BEGIN
                              PBD_CREATE_BY,
                              PBD_CREATE_DT,
                              PBD_MODIFY_BY,
-                             PBD_MODIFY_DT)
+                             PBD_MODIFY_DT,
+                             PBD_PERSENPPN)
          SELECT PBD_KODEIGR,
                 PBD_RECORDID,
                 PBD_NOPB,
@@ -1709,7 +1735,8 @@ BEGIN
                 P_MEMUSERID USERCRT,
                 SYSDATE TGL,
                 P_MEMUSERID USERMODI,
-                SYSDATE TGLMODY
+                SYSDATE TGLMODY,
+                PBD_PERSENPPN
            FROM TBTR_PB_TEMP
           WHERE     PBD_KODESUPPLIER IN (SELECT PBD_KODESUPPLIER
                                            FROM (  SELECT PBD_NOPB,
@@ -1805,7 +1832,6 @@ BEGIN
                   PBD_JENISPB,
                   PBD_KETERANGANPB;
    ELSE
-
       ---*** Simpan Data PB Detail ***---
       INSERT INTO TBTR_PB_D (PBD_KODEIGR,
                              PBD_RECORDID,

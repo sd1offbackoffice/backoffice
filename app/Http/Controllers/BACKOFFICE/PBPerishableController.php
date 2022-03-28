@@ -20,7 +20,7 @@ class PBPerishableController extends Controller
         $search = $request->search;
 
         $result = DB::connection(Session::get('connection'))->table('tbtr_pb_perishable')
-            ->selectRaw("pbp_nopb, pbp_createdt, pbp_modifydt, pbp_tglpb")
+            ->selectRaw("pbp_nopb, pbp_tglpb, pbp_recordid")
             ->whereRaw("nvl(pbp_recordid,'_') <> '1'")
             ->where('pbp_nopb', 'LIKE', '%' . $search . '%')
             ->orderBy('pbp_nopb')

@@ -97,10 +97,8 @@ class TransferPLUController extends Controller
             ->where('req_id', '=', $N_REQ_ID)
             ->orderBy('filename')
             ->get();
-
         foreach ($data as $x) {
-
-            if (substr($x->filename, -3, 3) == '.' . Session::get('kdigr')) {
+            if ( substr($x->filename, -3, 3) == '.' . Session::get('kdigr')) {
                 $ADADTA = true;
                 $PROSES = true;
             }
@@ -141,9 +139,10 @@ class TransferPLUController extends Controller
                 $sql = "BEGIN SP_TRF_PLU(:n_req_id,'" . Session::get('usid') . "',:result); END;";
                 $s = oci_parse($c, $sql);
 
-                oci_bind_by_name($s, ':n_req_id', $PATHDTA, 200);
+                oci_bind_by_name($s, ':n_req_id', $N_REQ_ID, 200);
                 oci_bind_by_name($s, ':result', $V_RESULT_PLU, 200);
                 oci_execute($s);
+
                 DB::connection(Session::get('connection'))->commit();
                 $this->CETAK_HGBELI($N_REQ_ID);
 //                --**cetak lap**--
@@ -173,6 +172,7 @@ class TransferPLUController extends Controller
                 oci_bind_by_name($s, ':n_req_id', $PATHDTA, 200);
                 oci_bind_by_name($s, ':result', $V_RESULT_HGB, 200);
                 oci_execute($s);
+
                 DB::connection(Session::get('connection'))->commit();
 
 //                --**cetak lap**--
@@ -274,13 +274,13 @@ class TransferPLUController extends Controller
 //        $N_REQ_ID = '19216823774';
 
 
-        $EOF = DB::connection(Session::get('connection'))->table('TEMP_PLUBARU')
+        $eoof = DB::connection(Session::get('connection'))->table('TEMP_PLUBARU')
             ->selectRaw('NVL(count(1),0) as count')
             ->where('REQ_ID', $N_REQ_ID)
             ->whereRaw("SUBSTR(fmkode,7,1) <> '4'")
             ->first()->count;
 
-        if ($EOF > 0) {
+        if ($eoof > 0) {
             $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
                 ->select('PRS_NAMAPERUSAHAAN', 'PRS_NAMACABANG')
                 ->where('PRS_KODEIGR', Session::get('kdigr'))
@@ -326,11 +326,11 @@ class TransferPLUController extends Controller
 
 //  	-- FOOTER --
                     if ($hal % 2 == 0) {
-                        if ($r == 48 || $r2 == $EOF) {
+                        if ($r == 48 || $r2 == $eoof) {
                             $linebuff = $linebuff . str_pad(' = ', 88, ' = ', STR_PAD_LEFT) . chr(13) . chr(10);
                             $hal = $hal + 1;
-                            if ($r2 == $EOF) {
-                                $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 68, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
+                            if ($r2 == $eoof) {
+                                $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 68, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
                             } else {
                                 $linebuff = $linebuff . ' ** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                             }
@@ -338,11 +338,11 @@ class TransferPLUController extends Controller
                             fwrite($file, $linebuff);
                         }
                     } else {
-                        if ($r == 49 || $r2 == $EOF) {
+                        if ($r == 49 || $r2 == $eoof) {
                             $linebuff = $linebuff . str_pad(' = ', 88, ' = ', STR_PAD_LEFT) . chr(13) . chr(10);
                             $hal = $hal + 1;
-                            if ($r2 == $EOF) {
-                                $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 68, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
+                            if ($r2 == $eoof) {
+                                $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 68, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
                             } else {
                                 $linebuff = $linebuff . ' ** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                             }
@@ -370,7 +370,7 @@ class TransferPLUController extends Controller
 //        DIBUKA!!!!! contoh
 //        $N_REQ_ID = '123123';
 
-        $EOF = DB::connection(Session::get('connection'))->table('temp_TRFPLU')
+        $eoof = DB::connection(Session::get('connection'))->table('temp_TRFPLU')
             ->selectRaw('NVL(count(1),0) as count')
             ->where('REQ_ID', $N_REQ_ID)
             ->first()->count;
@@ -392,7 +392,7 @@ class TransferPLUController extends Controller
         $r = 0;
         $r2 = 0;
         $hal = 1;
-        if ($EOF > 0) {
+        if ($eoof > 0) {
 
             $plus = DB::connection(Session::get('connection'))->table('TEMP_TRFPLU')
                 ->where('REQ_ID', $N_REQ_ID)
@@ -471,12 +471,12 @@ class TransferPLUController extends Controller
 
 //                    --FOOTER --
                     if ($hal % 2 == 0) {
-                        if ($r == 48 || $r2 == $EOF) {
+                        if ($r == 48 || $r2 == $eoof) {
                             $linebuff = $linebuff . str_pad('=', 200, '=', STR_PAD_LEFT) . chr(13) . chr(10);
 
                             $hal = $hal + 1;
-                            if ($r2 == $EOF) {
-                                $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 175, ' ', STR_PAD_RIGHT) . '** AKHIR LAPORAN **';
+                            if ($r2 == $eoof) {
+                                $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 175, ' ', STR_PAD_RIGHT) . '** AKHIR LAPORAN **';
                             } else {
                                 $linebuff = $linebuff . '** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                             }
@@ -486,13 +486,13 @@ class TransferPLUController extends Controller
 
                         }
                     } else {
-                        if ($r == 49 or $r2 == $EOF) {
+                        if ($r == 49 or $r2 == $eoof) {
                             $linebuff = $linebuff . str_pad('=', 200, '=', STR_PAD_LEFT) . chr(13) . chr(10);
 
                             $hal = $hal + 1;
-                            if ($r2 == $EOF) {
+                            if ($r2 == $eoof) {
 
-                                $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 175, ' ', STR_PAD_RIGHT) . '** AKHIR LAPORAN **';
+                                $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 175, ' ', STR_PAD_RIGHT) . '** AKHIR LAPORAN **';
                             } else {
                                 $linebuff = $linebuff . '** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                             }
@@ -516,7 +516,7 @@ class TransferPLUController extends Controller
         $r = 0;
         $r2 = 0;
         $hal = 1;
-        $eof = '';
+        $eoof = '';
         $ldel = '';
         $nmbutton = '';
         $dirname = 'S:\TRF_MCG';
@@ -533,13 +533,13 @@ class TransferPLUController extends Controller
         $fname = 'TEMP_BCX_DOBEL.txt';
         $step = 6;
 
-        $eof = DB::connection(Session::get('connection'))->table('tbbarcode_bcx_dobel')
+        $eoof = DB::connection(Session::get('connection'))->table('tbbarcode_bcx_dobel')
             ->selectRaw('NVL(count(1),0) as count')
             ->where('REQ_ID', $N_REQ_ID)
             ->whereRaw('TRUNC(tgltrf) = TRUNC(SYSDATE)')
             ->first()->count;
 
-        if ($eof > 0) {
+        if ($eoof > 0) {
             File::delete(storage_path($fname));
             $file = fopen(storage_path($fname), "w");
             $this->txtFile[] = $fname;
@@ -551,7 +551,8 @@ class TransferPLUController extends Controller
                 ->first();
             $npers = $perusahaan->prs_namaperusahaan;
             $ncab = $perusahaan->prs_namacabang;
-            $barcodes = DB::connection(Session::get('connection'))->select("SELECT SUBSTR(fmkode, 1, 6) . fmksjl AS prdcd,prd_deskripsipanjang AS desk, fmbarc AS barcode, TO_CHAR(fmtgup, 'DD-MM-RRRR') AS tanggal FROM tbbarcode_bcx_dobel, tbmaster_prodmast WHERE req_id = " . $N_REQ_ID . " AND TRUNC(tgltrf) = TRUNC(SYSDATE) AND SUBSTR(fmkode, 1, 6) . fmksjl = prd_prdcd ORDER BY fmkode");
+            $barcodes = DB::connection(Session::get('connection'))
+                ->select("SELECT SUBSTR(fmkode, 1, 6) || fmksjl AS prdcd,prd_deskripsipanjang AS desk, fmbarc AS barcode, TO_CHAR(fmtgup, 'DD-MM-RRRR') AS tanggal FROM tbbarcode_bcx_dobel, tbmaster_prodmast WHERE req_id = " . $N_REQ_ID . " AND TRUNC(tgltrf) = TRUNC(SYSDATE) AND SUBSTR(fmkode, 1, 6)|| fmksjl = prd_prdcd ORDER BY fmkode");
             if ($barcodes) {
                 foreach ($barcodes as $barcode) {
 //            -- HEADER
@@ -587,13 +588,13 @@ class TransferPLUController extends Controller
 
 //            --FOOTER --
                     if ($hal % 2 == 0) {
-                        if ($r == 48 || $r2 == $eof) {
-                            $linebuff = $linebuff . LPAD('=', 95, '=') . CHR(13) . CHR(10);
+                        if ($r == 48 || $r2 == $eoof) {
+                            $linebuff = $linebuff . str_pad('=', 95, '=',STR_PAD_LEFT) . CHR(13) . CHR(10);
                             $hal = $hal + 1;
 
-                            if ($r2 == $eof) {
+                            if ($r2 == $eoof) {
                                 $linebuff =
-                                    $linebuff . str_pad('  ' . eof . ' Item(s) Transferred ', 75, ' ', STR_PAD_RIGHT)
+                                    $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 75, ' ', STR_PAD_RIGHT)
                                     . '** AKHIR LAPORAN **';
                             } else {
                                 $linebuff =
@@ -605,13 +606,13 @@ class TransferPLUController extends Controller
                             fwrite($file, $linebuff);
                         }
                     } else {
-                        if ($r == 49 or $r2 == $eof) {
+                        if ($r == 49 or $r2 == $eoof) {
                             $linebuff = $linebuff . str_pad('=', 95, '=', STR_PAD_RIGHT) . CHR(13) . CHR(10);
                             $hal = $hal + 1;
 
-                            if ($r2 == $eof) {
+                            if ($r2 == $eoof) {
                                 $linebuff =
-                                    $linebuff . str_pad('  ' . $eof . ' Item(s) Transferred ', 75, ' ', STR_PAD_RIGHT)
+                                    $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 75, ' ', STR_PAD_RIGHT)
                                     . '** AKHIR LAPORAN **';
                             } else {
                                 $linebuff =
@@ -635,7 +636,7 @@ class TransferPLUController extends Controller
         $r = 0;
         $r2 = 0;
         $hal = 1;
-        $eof = '';
+        $eoof = '';
         $ldel = '';
         $nmbutton = '';
         $dirname = 'S:\TRF_MCG';
@@ -650,12 +651,12 @@ class TransferPLUController extends Controller
 
         $FNAME = 'TEMP_PLU_BYK_BRC.txt';
 
-        $EOF = DB::connection(Session::get('connection'))->table('TBPLU_BANYAK_BARCODE')
+        $eoof = DB::connection(Session::get('connection'))->table('TBPLU_BANYAK_BARCODE')
             ->selectRaw('NVL(count(1),0) as count')
             ->first()->count;
 
 
-        if ($EOF > 0) {
+        if ($eoof > 0) {
 
 
             File::delete(storage_path($FNAME));
@@ -698,11 +699,11 @@ class TransferPLUController extends Controller
 
 //  	-- FOOTER --
                     if ($hal % 2 == 0) {
-                        if ($r == 48 || $r2 == $EOF) {
+                        if ($r == 48 || $r2 == $eoof) {
                             $linebuff = $linebuff . str_pad(' = ', 88, ' = ', STR_PAD_LEFT) . chr(13) . chr(10);
                             $hal = $hal + 1;
-                            if ($r2 == $EOF) {
-                                $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 68, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
+                            if ($r2 == $eoof) {
+                                $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 68, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
                             } else {
                                 $linebuff = $linebuff . ' ** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                             }
@@ -710,12 +711,12 @@ class TransferPLUController extends Controller
                             fwrite($file, $linebuff);
                         }
                     } else {
-                        if ($r == 49 || $r2 == $EOF) {
+                        if ($r == 49 || $r2 == $eoof) {
                             $linebuff = $linebuff . str_pad('=', 83, '=', STR_PAD_LEFT) . chr(13) . chr(10);
                             $hal = $hal + 1;
-                            if ($r2 == $EOF) {
+                            if ($r2 == $eoof) {
 
-                                $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 70, ' ', STR_PAD_RIGHT) . '** AKHIR LAPORAN **';
+                                $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 70, ' ', STR_PAD_RIGHT) . '** AKHIR LAPORAN **';
                             } else {
                                 $linebuff = $linebuff . '** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                             }
@@ -737,7 +738,7 @@ class TransferPLUController extends Controller
         $r = 0;
         $r2 = 0;
         $hal = 1;
-        $eof = '';
+        $eoof = '';
         $ldel = '';
         $nmbutton = '';
         $dirname = 'S:\TRF_MCG';
@@ -752,11 +753,11 @@ class TransferPLUController extends Controller
 
         $FNAME = 'TEMP_PLU_DMS_NOL.txt';
 
-        $EOF = DB::connection(Session::get('connection'))->table('TBPLU_BANYAK_BARCODE')
+        $eoof = DB::connection(Session::get('connection'))->table('TBPLU_BANYAK_BARCODE')
             ->selectRaw('NVL(count(1),0) as count')
             ->first()->count;
 
-        if ($EOF > 0) {
+        if ($eoof > 0) {
 
             File::delete(storage_path($FNAME));
             $file = fopen(storage_path($FNAME), "w");
@@ -818,13 +819,13 @@ class TransferPLUController extends Controller
 
 //  	-- FOOTER --
                     if ($hal % 2 == 0) {
-                        if ($r == 48 || $r2 == $EOF) {
+                        if ($r == 48 || $r2 == $eoof) {
                             $linebuff = $linebuff . str_pad('=', 103, '=', STR_PAD_LEFT) . chr(13) . chr(10);
                             $hal = $hal + 1;
-                            if ($r2 == $EOF) {
+                            if ($r2 == $eoof) {
                                 $linebuff =
                                     $linebuff
-                                    . str_pad('  ' . $EOF . ' Item(s) Transferred ', 84, ' ', STR_PAD_RIGHT)
+                                    . str_pad('  ' . $eoof . ' Item(s) Transferred ', 84, ' ', STR_PAD_RIGHT)
                                     . '** AKHIR LAPORAN **';
                             } else {
                                 $linebuff =
@@ -838,14 +839,14 @@ class TransferPLUController extends Controller
                             fwrite($file, $linebuff);
                         }
                     } else {
-                        if ($r == 49 || $r2 == $EOF) {
+                        if ($r == 49 || $r2 == $eoof) {
                             $linebuff = $linebuff . str_pad('=', 103, '=', STR_PAD_LEFT) . chr(13) . chr(10);
                             $hal = $hal + 1;
-                            if ($r2 == $EOF) {
+                            if ($r2 == $eoof) {
 
                                 $linebuff =
                                     $linebuff
-                                    . str_pad('  ' . $EOF . ' Item(s) Transferred ', 84, ' ', STR_PAD_RIGHT)
+                                    . str_pad('  ' . $eoof . ' Item(s) Transferred ', 84, ' ', STR_PAD_RIGHT)
                                     . '** AKHIR LAPORAN **';
                             } else {
                                 $linebuff =
@@ -870,7 +871,7 @@ class TransferPLUController extends Controller
 //        DIBUKA!!!!! contoh
 //        $N_REQ_ID = '19216823774';
 
-        $EOF = DB::connection(Session::get('connection'))->select('Select NVL(count(1),0) count
+        $eoof = DB::connection(Session::get('connection'))->select('Select NVL(count(1),0) count
                 From temp_hgbeli,
 			        tbmaster_prodmast,
 			        tbmaster_supplier
@@ -945,11 +946,11 @@ class TransferPLUController extends Controller
 
 //  	-- FOOTER --
                 if ($hal % 2 == 0) {
-                    if ($r == 48 || $r2 == $EOF) {
+                    if ($r == 48 || $r2 == $eoof) {
                         $linebuff = $linebuff . str_pad(' = ', 88, ' = ', STR_PAD_LEFT) . chr(13) . chr(10);
                         $hal = $hal + 1;
-                        if ($r2 == $EOF) {
-                            $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 220, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
+                        if ($r2 == $eoof) {
+                            $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 220, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
                         } else {
                             $linebuff = $linebuff . ' ** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                         }
@@ -957,11 +958,11 @@ class TransferPLUController extends Controller
                         fwrite($file, $linebuff);
                     }
                 } else {
-                    if ($r == 49 || $r2 == $EOF) {
+                    if ($r == 49 || $r2 == $eoof) {
                         $linebuff = $linebuff . str_pad(' = ', 88, ' = ', STR_PAD_LEFT) . chr(13) . chr(10);
                         $hal = $hal + 1;
-                        if ($r2 == $EOF) {
-                            $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 220, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
+                        if ($r2 == $eoof) {
+                            $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 220, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
                         } else {
                             $linebuff = $linebuff . ' ** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                         }
@@ -987,7 +988,7 @@ class TransferPLUController extends Controller
 //        DIBUKA!!!!! contoh
 //        $N_REQ_ID = '19216823774';
 
-        $EOF = DB::connection(Session::get('connection'))->table('TEMP_SUPPLIER')
+        $eoof = DB::connection(Session::get('connection'))->table('TEMP_SUPPLIER')
             ->selectRaw('NVL(count(1),0) count')
             ->where('REQ_ID', $N_REQ_ID)
             ->first()->count;
@@ -1051,11 +1052,11 @@ class TransferPLUController extends Controller
 
 //  	-- FOOTER --
                 if ($hal % 2 == 0) {
-                    if ($r == 48 || $r2 == $EOF) {
+                    if ($r == 48 || $r2 == $eoof) {
                         $linebuff = $linebuff . str_pad(' = ', 240, ' = ', STR_PAD_LEFT) . chr(13) . chr(10);
                         $hal = $hal + 1;
-                        if ($r2 == $EOF) {
-                            $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 220, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
+                        if ($r2 == $eoof) {
+                            $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 220, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
                         } else {
                             $linebuff = $linebuff . ' ** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                         }
@@ -1063,11 +1064,11 @@ class TransferPLUController extends Controller
                         fwrite($file, $linebuff);
                     }
                 } else {
-                    if ($r == 49 || $r2 == $EOF) {
+                    if ($r == 49 || $r2 == $eoof) {
                         $linebuff = $linebuff . str_pad(' = ', 240, ' = ', STR_PAD_LEFT) . chr(13) . chr(10);
                         $hal = $hal + 1;
-                        if ($r2 == $EOF) {
-                            $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 220, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
+                        if ($r2 == $eoof) {
+                            $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 220, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
                         } else {
                             $linebuff = $linebuff . ' ** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                         }
@@ -1093,7 +1094,7 @@ class TransferPLUController extends Controller
 //        DIBUKA!!!!! contoh
 //        $N_REQ_ID = '19216823774';
 
-        $EOF = DB::connection(Session::get('connection'))->table('TEMP_HRG_PROMO')
+        $eoof = DB::connection(Session::get('connection'))->table('TEMP_HRG_PROMO')
             ->select('FMKODE')
             ->where('REQ_ID', $N_REQ_ID)
             ->whereRaw('TRUNC(FMFRTG) >=  TRUNC(sysdate)')
@@ -1155,11 +1156,11 @@ class TransferPLUController extends Controller
 
 //  	-- FOOTER --
                 if ($hal % 2 == 0) {
-                    if ($r == 48 || $r2 == $EOF) {
+                    if ($r == 48 || $r2 == $eoof) {
                         $linebuff = $linebuff . str_pad(' = ', 171, ' = ', STR_PAD_LEFT) . chr(13) . chr(10);
                         $hal = $hal + 1;
-                        if ($r2 == $EOF) {
-                            $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 152, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
+                        if ($r2 == $eoof) {
+                            $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 152, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
                         } else {
                             $linebuff = $linebuff . ' ** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                         }
@@ -1167,11 +1168,11 @@ class TransferPLUController extends Controller
                         fwrite($file, $linebuff);
                     }
                 } else {
-                    if ($r == 49 || $r2 == $EOF) {
+                    if ($r == 49 || $r2 == $eoof) {
                         $linebuff = $linebuff . str_pad(' = ', 171, ' = ', STR_PAD_LEFT) . chr(13) . chr(10);
                         $hal = $hal + 1;
-                        if ($r2 == $EOF) {
-                            $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 152, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
+                        if ($r2 == $eoof) {
+                            $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 152, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
                         } else {
                             $linebuff = $linebuff . ' ** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                         }
@@ -1197,7 +1198,7 @@ class TransferPLUController extends Controller
 //        DIBUKA!!!!! contoh
 //        $N_REQ_ID = '19216823774';
 
-        $EOF = DB::connection(Session::get('connection'))->table('TEMP_BTL_PROMO')
+        $eoof = DB::connection(Session::get('connection'))->table('TEMP_BTL_PROMO')
             ->select('FMKODE')
             ->where('REQ_ID', $N_REQ_ID)
             ->distinct()->count();
@@ -1255,11 +1256,11 @@ class TransferPLUController extends Controller
 
 //  	-- FOOTER --
                 if ($hal % 2 == 0) {
-                    if ($r == 48 || $r2 == $EOF) {
+                    if ($r == 48 || $r2 == $eoof) {
                         $linebuff = $linebuff . str_pad(' = ', 116, ' = ', STR_PAD_LEFT) . chr(13) . chr(10);
                         $hal = $hal + 1;
-                        if ($r2 == $EOF) {
-                            $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 142, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
+                        if ($r2 == $eoof) {
+                            $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 142, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
                         } else {
                             $linebuff = $linebuff . ' ** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                         }
@@ -1267,11 +1268,11 @@ class TransferPLUController extends Controller
                         fwrite($file, $linebuff);
                     }
                 } else {
-                    if ($r == 49 || $r2 == $EOF) {
+                    if ($r == 49 || $r2 == $eoof) {
                         $linebuff = $linebuff . str_pad(' = ', 116, ' = ', STR_PAD_LEFT) . chr(13) . chr(10);
                         $hal = $hal + 1;
-                        if ($r2 == $EOF) {
-                            $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 152, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
+                        if ($r2 == $eoof) {
+                            $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 152, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
                         } else {
                             $linebuff = $linebuff . ' ** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                         }
@@ -1297,7 +1298,7 @@ class TransferPLUController extends Controller
 //        DIBUKA!!!!! contoh
 //        $N_REQ_ID = '19216823774';
 
-        $EOF = DB::connection(Session::get('connection'))->select('SELECT NVL(COUNT(1),0) count
+        $eoof = DB::connection(Session::get('connection'))->select('SELECT NVL(COUNT(1),0) count
             FROM
 			    TEMP_MGN,
 			    TBMASTER_DEPARTEMENT,
@@ -1364,11 +1365,11 @@ class TransferPLUController extends Controller
 
 //  	-- FOOTER --
                 if ($hal % 2 == 0) {
-                    if ($r == 48 || $r2 == $EOF) {
+                    if ($r == 48 || $r2 == $eoof) {
                         $linebuff = $linebuff . str_pad(' = ', 108, ' = ', STR_PAD_LEFT) . chr(13) . chr(10);
                         $hal = $hal + 1;
-                        if ($r2 == $EOF) {
-                            $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 88, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
+                        if ($r2 == $eoof) {
+                            $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 88, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
                         } else {
                             $linebuff = $linebuff . ' ** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                         }
@@ -1376,11 +1377,11 @@ class TransferPLUController extends Controller
                         fwrite($file, $linebuff);
                     }
                 } else {
-                    if ($r == 49 || $r2 == $EOF) {
+                    if ($r == 49 || $r2 == $eoof) {
                         $linebuff = $linebuff . str_pad(' = ', 108, ' = ', STR_PAD_LEFT) . chr(13) . chr(10);
                         $hal = $hal + 1;
-                        if ($r2 == $EOF) {
-                            $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 88, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
+                        if ($r2 == $eoof) {
+                            $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 88, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
                         } else {
                             $linebuff = $linebuff . ' ** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                         }
@@ -1406,7 +1407,7 @@ class TransferPLUController extends Controller
 //        DIBUKA!!!!! contoh
 //        $N_REQ_ID = '19216823774';
 
-        $EOF = DB::connection(Session::get('connection'))->select('SELECT NVL(COUNT(1),0) count
+        $eoof = DB::connection(Session::get('connection'))->select('SELECT NVL(COUNT(1),0) count
             FROM temp_brgdel_omi, tbmaster_prodmast
      WHERE sessid = ' . $N_REQ_ID . ' AND prd_kodeigr(+) = nkdigr AND prd_prdcd(+) = pluigr')[0]->count;
 
@@ -1461,11 +1462,11 @@ class TransferPLUController extends Controller
 
 //  	-- FOOTER --
                 if ($hal % 2 == 0) {
-                    if ($r == 48 || $r2 == $EOF) {
+                    if ($r == 48 || $r2 == $eoof) {
                         $linebuff = $linebuff . str_pad(' = ', 104, ' = ', STR_PAD_LEFT) . chr(13) . chr(10);
                         $hal = $hal + 1;
-                        if ($r2 == $EOF) {
-                            $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 84, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
+                        if ($r2 == $eoof) {
+                            $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 84, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
                         } else {
                             $linebuff = $linebuff . ' ** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                         }
@@ -1473,11 +1474,11 @@ class TransferPLUController extends Controller
                         fwrite($file, $linebuff);
                     }
                 } else {
-                    if ($r == 49 || $r2 == $EOF) {
+                    if ($r == 49 || $r2 == $eoof) {
                         $linebuff = $linebuff . str_pad(' = ', 104, ' = ', STR_PAD_LEFT) . chr(13) . chr(10);
                         $hal = $hal + 1;
-                        if ($r2 == $EOF) {
-                            $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 84, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
+                        if ($r2 == $eoof) {
+                            $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 84, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
                         } else {
                             $linebuff = $linebuff . ' ** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                         }
@@ -1503,7 +1504,7 @@ class TransferPLUController extends Controller
 //        DIBUKA!!!!! contoh
 //        $N_REQ_ID = '19216823774';
 
-        $EOF = DB::connection(Session::get('connection'))->select('SELECT NVL(COUNT(1),0) count
+        $eoof = DB::connection(Session::get('connection'))->select('SELECT NVL(COUNT(1),0) count
             FROM TEMP_BRX_OMI, tbmaster_prodmast
      WHERE sessid = ' . $N_REQ_ID . ' AND (PLUIGR IS NULL OR PLUOMI IS NULL) AND PRD_PRDCD(+) = PLUIGR')[0]->count;
 
@@ -1558,11 +1559,11 @@ class TransferPLUController extends Controller
 
 //  	-- FOOTER --
                 if ($hal % 2 == 0) {
-                    if ($r == 48 || $r2 == $EOF) {
+                    if ($r == 48 || $r2 == $eoof) {
                         $linebuff = $linebuff . str_pad(' = ', 104, ' = ', STR_PAD_LEFT) . chr(13) . chr(10);
                         $hal = $hal + 1;
-                        if ($r2 == $EOF) {
-                            $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 84, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
+                        if ($r2 == $eoof) {
+                            $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 84, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
                         } else {
                             $linebuff = $linebuff . ' ** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                         }
@@ -1570,11 +1571,11 @@ class TransferPLUController extends Controller
                         fwrite($file, $linebuff);
                     }
                 } else {
-                    if ($r == 49 || $r2 == $EOF) {
+                    if ($r == 49 || $r2 == $eoof) {
                         $linebuff = $linebuff . str_pad(' = ', 104, ' = ', STR_PAD_LEFT) . chr(13) . chr(10);
                         $hal = $hal + 1;
-                        if ($r2 == $EOF) {
-                            $linebuff = $linebuff . str_pad('  ' . $EOF . ' Item(s) Transferred ', 84, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
+                        if ($r2 == $eoof) {
+                            $linebuff = $linebuff . str_pad('  ' . $eoof . ' Item(s) Transferred ', 84, ' ', STR_PAD_RIGHT) . ' ** AKHIR LAPORAN ** ';
                         } else {
                             $linebuff = $linebuff . ' ** BERSAMBUNG KE HAL ' . str_pad($hal, 4, '0', STR_PAD_LEFT) . chr(13) . chr(10);
                         }
@@ -1643,7 +1644,6 @@ class TransferPLUController extends Controller
             oci_bind_by_name($s, ':sukses', $sukses, 200);
             oci_bind_by_name($s, ':v_result', $v_result, 200);
             oci_execute($s);
-
             if ($sukses == 'false') {
                 $message = 'CEK ' . $v_result;
                 $status = 'error';

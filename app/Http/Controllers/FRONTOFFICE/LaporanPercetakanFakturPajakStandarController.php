@@ -40,7 +40,7 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
             + +CASE
                   WHEN NVL (OBI_ATTRIBUTE2, 'N') IN ('KlikIGR', 'Corp')
                   THEN
-                     ROUND (OBI_EKSPEDISI / 1.1)
+                     ROUND (OBI_EKSPEDISI / (1+(COALESCE(PRD_PPN, 0)/100)))
                   ELSE
                      0
                END,
@@ -51,7 +51,7 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
             + +CASE
                   WHEN NVL (OBI_ATTRIBUTE2, 'N') IN ('KlikIGR', 'Corp')
                   THEN
-                     (OBI_EKSPEDISI - ROUND (OBI_EKSPEDISI / 1.1))
+                     (OBI_EKSPEDISI - ROUND (OBI_EKSPEDISI / (1+(COALESCE(PRD_PPN, 0)/100))))
                   ELSE
                      0
                END,
@@ -65,7 +65,7 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                    no_seri_fp,
                    tgl_fp,
                    TRUNC (SUM (DPP + DF + TTL_REFUND)) dpp,
-                   TRUNC (SUM (dpp + DF + TTL_REFUND) * 0.1) ppn
+                   TRUNC (SUM (dpp + DF + TTL_REFUND) * (COALESCE(PRD_PPN, 0)/100)) ppn
               FROM (  SELECT a.*, NVL (b.nominal, 0) TTL_REFUND
                         FROM (  SELECT TRUNC (fkt_tglfaktur) tgl_struk,
                                        cus_kodemember || ' - ' || cus_namamember
@@ -108,7 +108,7 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                                              END
                                           ELSE
                                              FLOOR (
-                                                SUM (NVL (TRJD_NOMINALAMT / 1.1, 0)))
+                                                SUM (NVL (TRJD_NOMINALAMT / (1+(COALESCE(PRD_PPN, 0)/100)), 0)))
                                        END
                                           DPP,
                                        CASE
@@ -120,13 +120,13 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                                                   SUM (
                                                        NVL (TRJD_NOMINALAMT, 0)
                                                      + NVL (TRJD_ADMFEE, 0))
-                                                * 0.1)
+                                                * (COALESCE(PRD_PPN, 0)/100))
                                           ELSE
                                              FLOOR (
                                                   SUM (
-                                                       NVL (TRJD_NOMINALAMT / 1.1, 0)
+                                                       NVL (TRJD_NOMINALAMT / (1+(COALESCE(PRD_PPN, 0)/100)), 0)
                                                      + NVL (TRJD_ADMFEE, 0))
-                                                * 0.1)
+                                                * (COALESCE(PRD_PPN, 0)/100))
                                        END
                                           PPN,
                                        CASE
@@ -139,12 +139,14 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                                           DF,
                                        FKT_KODEMEMBER,
                                        FKT_NOFAKTUR,
-                                       FKT_TGL
+                                       FKT_TGL,
+                                       PRD_PPN
                                   FROM tbmaster_faktur,
                                        tbtr_jualdetail,
                                        tbmaster_customer,
                                        tbmaster_tokoigr,
-                                       tbmaster_npwp
+                                       tbmaster_npwp,
+                                       tbmaster_prodmast
                                  WHERE     (   fkt_nofaktur = trjd_noinvoice1
                                             OR fkt_nofaktur = trjd_noinvoice2)
                                        AND trjd_cus_kodemember = cus_kodemember
@@ -156,6 +158,7 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                                             OR TRJD_ADMFEE > 0)
                                        AND cus_flagpkp = 'Y'
                                        AND trjd_transactiontype = 'S'
+                                       AND prd_recordid(+) = fkt_recordid
                                        AND TRUNC (trjd_transactiondate) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy')
                               GROUP BY fkt_tglfaktur,
                                        cus_kodemember,
@@ -168,7 +171,8 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                                        FKT_NOFAKTUR,
                                        FKT_TGL,
                                        TRJD_CREATE_BY,
-                                       TRJD_FLAGTAX1) a
+                                       TRJD_FLAGTAX1,
+                                       PRD_PPN) a
                              FULL JOIN
                              (  SELECT kdmember,
                                        nofaktur,
@@ -191,13 +195,14 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                                                     THEN
                                                        TRJD_NOMINALAMT
                                                     ELSE
-                                                       FLOOR (TRJD_NOMINALAMT / 1.1)
+                                                       FLOOR (TRJD_NOMINALAMT / (1+(COALESCE(PRD_PPN, 0)/100)))
                                                  END
                                                   nominal,
                                                TRUNC (jh_referencedate) tgltrans
                                           FROM tbtr_jualheader,
                                                tbmaster_customer,
-                                               tbtr_jualdetail
+                                               tbtr_jualdetail,
+                                               tbmaster_prodmast
                                          WHERE     jh_transactiontype = 'R'
                                                AND cus_flagpkp = 'Y'
                                                AND (   NVL (TRJD_FLAGTAX1, 'N') = 'Y'
@@ -215,7 +220,8 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                                                       TRUNC (TRJD_TRANSACTIONDATE)
                                                AND JH_CASHIERSTATION =
                                                       TRJD_CASHIERSTATION
-                                               AND JH_CASHIERID = TRJD_CREATE_BY) BB
+                                               AND JH_CASHIERID = TRJD_CREATE_BY
+                                               AND PRD_RECORDID(+) = JH_RECORDID) BB
                               GROUP BY kdmember, nofaktur, tgltrans) B
                                 ON     a.FKT_KODEMEMBER = b.kdmember
                                    AND TRUNC (a.fkt_tgl) = TRUNC (b.tgltrans)
@@ -228,16 +234,19 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                    kasir,
                    struk_no,
                    no_seri_fp,
-                   tgl_fp) x,
+                   tgl_fp,
+                   prd_ppn) x,
          tbmaster_perusahaan,
          TBTR_FAKTUR_HDR,
-         tbtr_obi_h
+         tbtr_obi_h,
+         tbmaster_prodmast
    WHERE     no_seri_fp = nomor_faktur(+)
          AND TRUNC (transactiondate) = TRUNC (obi_tglstruk(+))
          AND transactionno = obi_nostruk(+)
          AND cashierstation = obi_kdstation(+)
          AND kodemember = obi_kdmember(+)
          AND cashierid = obi_cashierid(+)
+         AND prd_recordid(+) = obi_recid
 ORDER BY tgl_struk, no_seri_fp");
         $filename = 'igr-fo-cetak-fpstd';
 
@@ -289,22 +298,6 @@ order by customer");
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
-//        $date = Carbon::now();
-//        $dompdf = new PDF();
-//
-//        $pdf = PDF::loadview('FRONTOFFICE.LAPORANPERCETAKANFAKTURPAJAKSTANDAR.' . $filename . '-pdf', compact(['perusahaan', 'data', 'periode']));
-//
-//        error_reporting(E_ALL ^ E_DEPRECATED);
-//
-//        $pdf->output();
-//        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-//
-//        $canvas = $dompdf->get_canvas();
-//        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-//
-//        $dompdf = $pdf;
-//
-//        return $dompdf->stream($filename . ' - ' . $date . '.pdf');
         return view('FRONTOFFICE.LAPORANPERCETAKANFAKTURPAJAKSTANDAR.' . $filename.'-pdf', compact(['perusahaan', 'data', 'periode']));
 
     }
@@ -388,7 +381,7 @@ ORDER BY transactiondate, nomor_faktur");
                    NAMA,
                    ALAMAT,
                    TRUNC (SUM (DPP + DF + TTL_REFUND)) DPP,
-                   TRUNC (SUM (DPP + DF + TTL_REFUND) * 0.1) PPN,
+                   TRUNC (SUM (DPP + DF + TTL_REFUND) * (COALESCE(PRD_PPN, 0)/100)) PPN,
                    PPNBM,
                    KET,
                    FG_UM,
@@ -405,7 +398,7 @@ ORDER BY transactiondate, nomor_faktur");
                    trjd_transactiondate
               FROM (SELECT A.*, NVL (B.NOMINAL, 0) TTL_REFUND
                       FROM (  SELECT REPLACE (FKT_NOSERI, 'Y', '') NOFAK,
-                                     TO_DATE (FKT_TGLFAKTUR, 'dd/mm/yy') TGLFAK,
+                                     FKT_TGLFAKTUR TGLFAK,
                                      NVL (CUS_NPWP, '00.000.000.0-000.000') NPWP,
                                      NVL (CUS_NAMAMEMBER, 0) NAMA,
                                      CASE
@@ -443,7 +436,7 @@ ORDER BY transactiondate, nomor_faktur");
                                            END
                                         ELSE
                                            FLOOR (
-                                              SUM (NVL (TRJD_NOMINALAMT / 1.1, 0)))
+                                              SUM (NVL (TRJD_NOMINALAMT / (1+(COALESCE(PRD_PPN, 0)/100)), 0)))
                                      END
                                         DPP,
                                      CASE
@@ -455,13 +448,13 @@ ORDER BY transactiondate, nomor_faktur");
                                                 SUM (
                                                      NVL (TRJD_NOMINALAMT, 0)
                                                    + NVL (TRJD_ADMFEE, 0))
-                                              * 0.1)
+                                              * (COALESCE(PRD_PPN, 0)/100))
                                         ELSE
                                            FLOOR (
                                                 SUM (
-                                                     NVL (TRJD_NOMINALAMT / 1.1, 0)
+                                                     NVL (TRJD_NOMINALAMT / (1+(COALESCE(PRD_PPN, 0)/100)), 0)
                                                    + NVL (TRJD_ADMFEE, 0))
-                                              * 0.1)
+                                              * (COALESCE(PRD_PPN, 0)/100))
                                      END
                                         PPN,
                                      CASE
@@ -486,12 +479,14 @@ ORDER BY transactiondate, nomor_faktur");
                                      FKT_TGL,
                                      TRJD_CREATE_BY,
                                      TRUNC (trjd_transactiondate)
-                                        trjd_transactiondate
+                                        trjd_transactiondate,
+                                        PRD_PPN
                                 FROM TBMASTER_FAKTUR,
                                      TBTR_JUALDETAIL,
                                      TBMASTER_CUSTOMER,
                                      TBMASTER_TOKOIGR,
-                                     TBMASTER_NPWP
+                                     TBMASTER_NPWP,
+                                     TBMASTER_PRODMAST
                                WHERE     (   FKT_NOFAKTUR = TRJD_NOINVOICE1
                                           OR FKT_NOFAKTUR = TRJD_NOINVOICE2)
                                      AND TRJD_CUS_KODEMEMBER = CUS_KODEMEMBER
@@ -505,7 +500,7 @@ ORDER BY transactiondate, nomor_faktur");
                                      AND (   NVL (TKO_KODESBU, 'N') = 'I'
                                           OR TRJD_CREATE_BY = 'BKL'
                                           OR NVL (TKO_KODESBU, 'N') = 'O')
-AND NVL(CUS_flagPKP,'N')  <> 'Y'
+                                     AND NVL(CUS_flagPKP,'N')  <> 'Y'
                                      AND NOT EXISTS
                                                 (SELECT *
                                                    FROM TBTR_OBI_H
@@ -519,8 +514,9 @@ AND NVL(CUS_flagPKP,'N')  <> 'Y'
                                                         AND TRUNC (OBI_TGLSTRUK) =
                                                                TRUNC (
                                                                   TRJD_TRANSACTIONDATE)
-                                                        AND TRUNC (OBI_TGLSTRUK) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy'))
-                                     AND TRUNC (TRJD_TRANSACTIONDATE) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy')
+                                                        AND TRUNC (OBI_TGLSTRUK) BETWEEN  to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy'))
+                                     AND TRUNC (TRJD_TRANSACTIONDATE) BETWEEN  to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy')
+                                     AND PRD_RECORDID(+) = TRJD_RECORDID
                             GROUP BY FKT_NOSERI,
                                      FKT_TGLFAKTUR,
                                      CUS_NPWP,
@@ -543,7 +539,8 @@ AND NVL(CUS_flagPKP,'N')  <> 'Y'
                                      CUS_FLAGPKP,
                                      CUS_NOKTP,
                                      TRJD_FLAGTAX1,
-                                     TRUNC (trjd_transactiondate)) A
+                                     TRUNC (trjd_transactiondate),
+                                     PRD_PPN) A
                            FULL JOIN
                            (  SELECT DISTINCT
                                      CUS_KODEMEMBER KDMEMBER,
@@ -560,7 +557,7 @@ AND NVL(CUS_flagPKP,'N')  <> 'Y'
                                              THEN
                                                 TRJD_NOMINALAMT
                                              ELSE
-                                                FLOOR (TRJD_NOMINALAMT / 1.1)
+                                                FLOOR (TRJD_NOMINALAMT / (1+(COALESCE(PRD_PPN, 0)/100)))
                                           END)
                                         NOMINAL,
                                      JH_REFERENCEDATE TGLTRANS,
@@ -569,7 +566,8 @@ AND NVL(CUS_flagPKP,'N')  <> 'Y'
                                      JH_REFERENCECASHIERSTATION REF_CASHIER_STATION
                                 FROM TBTR_JUALHEADER,
                                      TBMASTER_CUSTOMER,
-                                     TBTR_JUALDETAIL
+                                     TBTR_JUALDETAIL,
+                                     TBMASTER_PRODMAST
                                WHERE     JH_TRANSACTIONTYPE = 'R'
                                      AND (   NVL (TRJD_FLAGTAX1, 'N') = 'Y'
                                           OR TRJD_ADMFEE > 0)
@@ -584,14 +582,16 @@ AND NVL(CUS_flagPKP,'N')  <> 'Y'
                                             TRUNC (TRJD_TRANSACTIONDATE)
                                      AND JH_CASHIERSTATION = TRJD_CASHIERSTATION
                                      AND JH_CASHIERID = TRJD_CREATE_BY
-AND NVL(CUS_flagPKP,'N')  <> 'Y'
+                                     AND NVL(CUS_flagPKP,'N')  <> 'Y'
+                                     AND PRD_RECORDID(+) = TRJD_RECORDID
                             GROUP BY CUS_KODEMEMBER,
                                      TRJD_NOINVOICE1,
                                      JH_TRANSACTIONTYPE,
                                      JH_REFERENCEDATE,
                                      JH_REFERENCECASHIERID,
                                      TRUNC (JH_REFERENCEDATE),
-                                     JH_REFERENCECASHIERSTATION) B
+                                     JH_REFERENCECASHIERSTATION,
+                                     PRD_PPN) B
                               ON     A.FKT_KODEMEMBER = B.KDMEMBER
                                  AND TRUNC (A.FKT_TGL) = TRUNC (B.TGLTRANS)
                                  AND A.FKT_NOFAKTUR = B.NOFAKTUR) C
@@ -614,7 +614,8 @@ AND NVL(CUS_flagPKP,'N')  <> 'Y'
                    FKT_NOFAKTUR,
                    FKT_TGL,
                    TRJD_CREATE_BY,
-                   trjd_transactiondate) d,
+                   trjd_transactiondate,
+                   PRD_PPN) d,
          tbmaster_perusahaan
    WHERE prs_kodeigr = '" . Session::get('kdigr') . "'
 ORDER BY trjd_transactiondate, NOFAK");
@@ -663,8 +664,7 @@ ORDER BY trjd_transactiondate, NOFAK");
             + +CASE
                   WHEN NVL (OBI_ATTRIBUTE2, 'N') IN ('KlikIGR', 'Corp')
                   THEN
-                     -- ROUND (OBI_EKSPEDISI / 1.1)
-                     ROUND (OBI_EKSPEDISI / (NVL (NVL (PRS_NILAIPPN, 11) / 10 ), 1.1) )
+                     ROUND (OBI_EKSPEDISI / (1+(COALESCE(PRD_PPN, 0)/100)))
                   ELSE
                      0
                END,
@@ -675,14 +675,13 @@ ORDER BY trjd_transactiondate, NOFAK");
             + +CASE
                   WHEN NVL (OBI_ATTRIBUTE2, 'N') IN ('KlikIGR', 'Corp')
                   THEN
-                     -- (OBI_EKSPEDISI - ROUND (OBI_EKSPEDISI / 1.1))
-                     (OBI_EKSPEDISI - ROUND (OBI_EKSPEDISI / (NVL (NVL (PRS_NILAIPPN, 11) / 10 ), 1.1) ))
+                     (OBI_EKSPEDISI - ROUND (OBI_EKSPEDISI / (1+(COALESCE(PRD_PPN, 0)/100))))
                   ELSE
                      0
                END,
             0)
             ppn
-    FROM tbmaster_perusahaan, TBTR_FAKTUR_HDR fkt, tbtr_obi_h obi
+    FROM tbmaster_perusahaan, TBTR_FAKTUR_HDR fkt, tbtr_obi_h obi, tbmaster_prodmast
    WHERE     kodemember = '280676'
          AND TRUNC (transactiondate) = TRUNC (obi_tglstruk(+))
          AND transactionno = obi_nostruk(+)
@@ -690,6 +689,7 @@ ORDER BY trjd_transactiondate, NOFAK");
          AND kodemember = obi_kdmember(+)
          AND cashierid = obi_cashierid(+)
          AND TRUNC (transactiondate) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy')
+         AND prd_recordid(+) = obi_recid
 ORDER BY tgl_struk, no_seri_fp");
         $filename = 'igr-fo-cetak-fpstd-freepassklik';
 

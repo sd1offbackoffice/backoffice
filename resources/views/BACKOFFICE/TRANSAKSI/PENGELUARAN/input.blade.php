@@ -18,11 +18,11 @@
                                             <button type="button" class="btn btn-lov p-0" data-target="#m_lov_trn" data-toggle="modal" id="btn-lov-trn">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px"></button>
                                         </div>
-                                        <div class="col-sm-2"> <button type="button" class="btn btn-danger btn-sm float-left" id="btnHapus" disabled><i class="icon fas fa-trash"></i>Hapus Dokumen</button></div>
+                                        <div class="col-sm-2"> <button class="btn btn-danger btn-sm float-left" id="btn-hapus" onclick="deleteDoc(event)">HAPUS DOKUMEN</button></div>
 
                                         <div class="col-sm-3">
                                             <input type="text" id="txtModel" class="text-center form-control" disabled></div>
-                                        <div class="offset-2 col-sm-2"><button type="button" class="btn btn-primary" id="btnSimpan"><i class="icon fas fa-save"></i>Simpan</button>
+                                        <div class="offset-2 col-sm-2"><button type="button" class="btn btn-primary" id="btn-save"><i class="icon fas fa-save"></i>Simpan</button>
                                         </div>
                                     </div>
                                     <div class="form-group row mb-0">
@@ -76,27 +76,6 @@
                                 </tr>
                                 </thead>
                                 <tbody id="tBodyHeader">
-
-                                @for($i = 0; $i< 1; $i++)
-                                    <tr class="d-flex baris" onclick="putDesPanjang(this)">
-                                        <td width="3%" class="text-center">
-                                            <button class="btn btn-danger btn-delete"  style="width: 40px" onclick="deleteRow(this)">X</button>
-                                        </td>
-                                        <td class="buttonInside" width="10%">
-                                            <input type="text" class="form-control plu" no="{{$i}}">
-                                            <button id="btn-no-doc" type="button" class="btn btn-lov ml-3" onclick="getPlu(this, '')" no="{{$i}}">
-                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
-                                            </button>
-                                        </td>
-                                        <td width="20%"><input disabled type="text"  class="form-control deskripsi"></td>
-                                        <td width="5%"><input disabled type="text" class="form-control satuan"></td>
-                                        <td width="7%"><input disabled type="text" class="form-control bkp"></td>
-                                        <td width="7%"><input disabled type="text" class="form-control stock"></td>
-                                        <td width="7%"><input type="text" class="form-control ctn text-right" id="{{$i}}" onchange="calculateQty(this.value, this.id, 1)"></td>
-                                        <td width="7%"><input type="text" class="form-control pcs text-right" id="{{$i}}" onchange="calculateQty(this.value, this.id, 2)"></td>
-                                        <td width="25%"><input type="text" class="form-control keterangan"></td>
-                                    </tr>
-                                @endfor
 
                                 </tbody>
                             </table>
@@ -380,6 +359,9 @@
         var rowheader;
         var row = 1;
         var kdsup = '';
+        let arrDeletedPlu = [];
+        let arrNewData = [];
+
         $(document).ready(function () {
             reset();
             $('#tgl-doc').datepicker({
@@ -514,51 +496,42 @@
             $('#m_lov_plu').modal('hide');
         });
 
-        $(document).on('click', '#btnHapus', function () {
-            var nodoc = $('#no-trn').val();
+
+
+
+        function deleteDoc(event) {
+            event.preventDefault();
+            let nodoc = $('#no-trn').val();
+
             swal({
-                title: "Hapus No Doc" + nodoc + " ?",
-                text: "Tekan Tombol Ya untuk Melanjutkan!",
-                icon: "question",
+                title: 'Nomor Dokumen Akan dihapus?',
+                icon: 'warning',
+                dangerMode: true,
                 buttons: true,
-            }).then((yes) => {
-                if (yes) {
+            }).then(function(confirm){
+                if(confirm){
                     ajaxSetup();
                     $.ajax({
-                        type: "POST",
-                        url: "{{ url('/bo/transaksi/pengeluaran/input/delete') }}",
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        beforeSend: function () {
-                            $('#modal-loader').modal('show');
-                        },
-                        success: function (response) {
-                            $('#modal-loader').modal('hide');
+                        url: '{{ url()->current() }}/delete',
+                        type: 'post',
+                        data: {nodoc: nodoc},
+
+                        success: function (result){
+                            clearField();
                             swal({
-                                title: response.status,
-                                text: response.message,
-                                icon: 'error'
-                            }).then(() => {
-                                window.location.reload();
-                            });
-                        },
-                        error: function (error) {
-                            $('#modal-loader').modal('hide');
-                            //  error
-                            swal({
-                                title: error.responseJSON.exception,
-                                text: error.responseJSON.message,
-                                icon: 'error'
-                            }).then(() => {
-                            });
+                                title: result.msg,
+                                icon: 'success'
+                            }).then(() => {});
+                        }, error: function () {
+                            alert('error');
                         }
-                    });
+                    })
                 } else {
-                    return false;
+                    console.log('Tidak dihapus');
                 }
-            });
-        });
+            })
+        }
+
 
         function getDataPLU(plu) {
             if (kdsup == '' || kdsup == null) {
@@ -670,9 +643,9 @@
             $('#tBodyHeader').empty();
             $('#tBodyDetail').empty();
             $('#tBodyUsulan').empty();
-            $('#btnHapus').attr('disabled', false);
+            $('#btn-hapus').attr('disabled', true);
             $('#btnUsulanRetur').attr('disabled', false);
-            $('#btnSimpan').attr('disabled', false);
+            $('#btn-save').attr('disabled', false);
             $('#txtKodeSupplier').attr('disabled', false);
 
             $('#txtKodeSupplier').val('');
@@ -695,6 +668,56 @@
         }
 
         function getDataTrn(notrn) {
+            // if (notrn == '') {
+            //     swal({
+            //         title: "Buat Nomor Pengeluaran Baru?",
+            //         text: "Tekan tombol Ya untuk melanjutkan!",
+            //         icon: "info",
+            //         buttons: true,
+            //     }).then((yes) => {                   
+            //         if (yes) {
+            //             $('#btn-save').attr('id', 'btn-save-new');
+                        
+            //             $('#tBodyDetail tr').each(function(){
+            //                 $(this).find('td .plu').each(function(){
+            //                     if ($(this).val() === plu) {                        
+            //                         $(this).parents('tr').remove();
+            //                         arrDeletedPlu.push(plu);
+            //                         console.log(arrDeletedPlu);
+            //                     }
+            //                 })
+            //             })
+
+            //             ajaxSetup();
+            //             $.ajax({
+            //                 type: "post",
+            //                 url: "{{ url()->current() }}/save-new-data-trn",
+            //                 data: {
+            //                     notrn: notrn
+            //                 },
+            //                 beforeSend: function () {
+            //                     $('#modal-loader').modal('show');
+            //                     reset();
+            //                 },
+            //                 success: function (response) {
+                                
+            //                 },
+            //                 error: function (error) {
+            //                     $('#modal-loader').modal('hide');
+            //                     // error
+            //                     swal({
+            //                         title: error.responseJSON.exception,
+            //                         text: error.responseJSON.message,
+            //                         icon: 'error'
+            //                     }).then(() => {
+            //                     });
+            //                 }
+            //             });
+            //         } else {
+            //             return false;
+            //         }
+            //     });
+            // }
             if (notrn == '') {
                 swal({
                     title: "Buat Nomor Pengeluaran Baru?",
@@ -717,7 +740,7 @@
                                 $('#no-trn').prop('disabled', true);
                                 $('#tgl-doc').prop('disabled', true);
                                 $('#btn-lov-trn').prop('disabled', true);
-                                $('#btnSimpan').attr('disabled', false);
+                                $('#btn-save').attr('disabled', false);
                                 $('#btnUsulanRetur').attr('disabled', false);
 
                                 $('#modal-loader').modal('hide');
@@ -727,7 +750,7 @@
                                         text: response.message,
                                         icon: 'error'
                                     }).then(() => {
-                                        window.location.reload();
+                                        no
                                     });
                                 }
                                 else {
@@ -773,6 +796,84 @@
                     }
                 });
             }
+            // if (notrn == '') {
+            //     swal({
+            //         title: "Buat Nomor Pengeluaran Baru?",
+            //         text: "Tekan tombol Ya untuk melanjutkan!",
+            //         icon: "info",
+            //         buttons: true,
+            //     }).then((yes) => {
+            //         if (yes) {
+            //             $.ajax({
+            //                 type: "GET",
+            //                 url: "{{ url('/bo/transaksi/pengeluaran/input/get-new-no-trn') }}",
+            //                 headers: {
+            //                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            //                 },
+            //                 beforeSend: function () {
+            //                     $('#modal-loader').modal('show');
+            //                     reset();
+            //                 },
+            //                 success: function (response) {
+            //                     $('#no-trn').prop('disabled', true);
+            //                     $('#tgl-doc').prop('disabled', true);
+            //                     $('#btn-lov-trn').prop('disabled', true);
+            //                     $('#btn-save').attr('disabled', false);
+            //                     $('#btnUsulanRetur').attr('disabled', false);
+
+            //                     $('#modal-loader').modal('hide');
+            //                     if (response.status == 'error') {
+            //                         swal({
+            //                             title: response.status,
+            //                             text: response.message,
+            //                             icon: 'error'
+            //                         }).then(() => {
+            //                             no
+            //                         });
+            //                     }
+            //                     else {
+            //                         $('#no-trn').val(response.no);
+            //                         $("#tgl-doc").datepicker().datepicker("setDate", new Date());
+            //                         $('#txtModel').val(response.model);
+            //                         $('#txtKodeSupplier').focus();
+
+            //                         $('#tBodyHeader').append(
+            //                             '<tr class="row-header-1">' +
+            //                             '<td><button class="btn btn-block btn-danger btn-delete-row-header" rowheader="1"><i class="icon fas fa-times"></i></button></td>' +
+            //                             '<td class="buttonInside" style="width: 8%">' +
+            //                             '<input type="text" class="form-control plu-header-1 plu-header" rowheader="1">' +
+            //                             '<button type="button" class="btn btn-lov-plu btn-lov ml-3" rowheader="1" data-target="#m_lov_plu" data-toggle="modal">' +
+            //                             '<img src="../../../../public/image/icon/help.png" width="30px">' +
+            //                             '</button>' +
+            //                             '</td>' +
+            //                             '<td><input disabled class="form-control deskripsi-header-1" type="text"></td>' +
+            //                             '<td><input disabled class="form-control satuan-header satuan-header-1" type="text"></td>' +
+            //                             '<td><input disabled class="form-control bkp-header-1" type="text"></td>' +
+            //                             '<td><input disabled class="form-control stock-header-1" type="text"></td>' +
+            //                             '<td><input class="form-control ctn-header ctn-header-1" rowheader=1 type="text"></td>' +
+            //                             '<td><input class="form-control pcs-header pcs-header-1" rowheader=1 type="text"></td>' +
+            //                             '<td><input class="form-control keterangan-header keterangan-header-1" rowheader=1 type="text"></td>' +
+            //                             '</tr>');
+
+            //                     }
+
+            //                 },
+            //                 error: function (error) {
+            //                     $('#modal-loader').modal('hide');
+            //                     // error
+            //                     swal({
+            //                         title: error.responseJSON.exception,
+            //                         text: error.responseJSON.message,
+            //                         icon: 'error'
+            //                     }).then(() => {
+            //                     });
+            //                 }
+            //             });
+            //         } else {
+            //             return false;
+            //         }
+            //     });
+            // }
             else {
                 $.ajax({
                     type: "GET",
@@ -801,10 +902,10 @@
                         }
                         else {
                             if (response.model == '* NOTA SUDAH DICETAK *') {
-                                $('#btnHapus').attr('disabled', true);
+                                $('#btn-hapus').attr('disabled', true);
                             }
                             else {
-                                $('#btnHapus').attr('disabled', false);
+                                $('#btn-hapus').attr('disabled', false);
                             }
 
                             $('#txtModel').val(response.model);
@@ -831,7 +932,7 @@
                                 var ket = dh.h_ket == null ? '' : dh.h_ket;
 
                                 $('#tBodyHeader').append('<tr id="row' + plu + '">' +
-                                    '<td><button class="btn btn-block btn-danger btn-delete-row-header" onclick=deleteDataTest("'+ plu +'")><i class="icon fas fa-times"></i></button></td>' +
+                                    '<td><button class="btn btn-block btn-danger btn-delete-row-header" onclick=deleteRow("'+ plu +'")><i class="icon fas fa-times"></i></button></td>' +
                                     '<td><input class="form-control " type="text" value="' + plu + '"></td>' +
                                     '<td><input disabled class="form-control " type="text" value="' + deskripsi + '"></td>' +
                                     '<td><input disabled class="form-control " type="text" value="' + satuan + '"></td>' +
@@ -931,18 +1032,19 @@
                     }
                 });
             }
-
         }
 
-        function deleteDataTest(plu) {
+        function deleteRow(plu) {
             $('#row' + plu).remove();
             console.log(plu);
             //gunakan plu disini
 
             $('#tBodyDetail tr').each(function(){
                 $(this).find('td .plu').each(function(){
-                    if ($(this).val() === plu) {
+                    if ($(this).val() === plu) {                        
                         $(this).parents('tr').remove();
+                        arrDeletedPlu.push(plu);
+                        console.log(arrDeletedPlu);
                     }
                 })
             })
@@ -1499,13 +1601,9 @@
             }
         });
 
-        $(document).on('click', '#btnSimpan', function () {
-            var currentButton = $(this);
-            var count = 0;
-            $('#tBodyDetail tr').each(function () {
-                count++;
-            });
-            if (count > 0) {
+        $(document).on('click', '#btn-save', function () {
+                let nodoc = $('#no-trn').val();
+                ajaxSetup();
                 swal({
                     title: "Simpan Data?",
                     text: "Tekan tombol Ya untuk melanjutkan!",
@@ -1513,40 +1611,12 @@
                     buttons: true,
                 }).then((yes) => {
                     if (yes) {
-                        var nodoc = $('#no-trn').val();
-                        var tgldoc = $('#tgl-doc').val();
-                        var kdsup = $('#txtKodeSupplier').val();
-
-                        datas = [];
-                        $('#tBodyDetail tr').each(function () {
-                            var data = {};
-
-                            data.nodoc = nodoc;
-                            data.tgldoc = tgldoc;
-                            data.noreff = $(this).find(".noreff").val();
-                            data.istype = $(this).find(".istype").val();
-                            data.invno = $(this).find(".invno").val();
-                            data.tglinv = $(this).find(".tglinv").val();
-                            data.kdsup = kdsup;
-                            data.plu = $(this).find(".plu").val();
-                            data.ctn = $(this).find(".qtyctn").val();
-                            data.qty = $(this).find(".qtypcs").val();
-                            data.hargasatuan = $(this).find(".hargasatuan").val();
-                            data.persendisc = $(this).find(".persendisc").val();
-                            data.gross = parseFloat($(this).find(".gross").val());
-                            data.discrph = parseFloat($(this).find(".discrph").val());
-                            data.ppnrph = parseFloat($(this).find(".ppn").val());
-                            data.posqty = parseFloat($(this).find(".posqty").val());
-                            data.keterangan = $(this).find(".keterangan").val();
-                            datas.push(data);
-                        });
-
-                        ajaxSetup();
                         $.ajax({
-                            type: "Post",
-                            url: "{{ url('/bo/transaksi/pengeluaran/input/save') }}",
+                            type: "post",
+                            url: "{{ url()->current() }}/save",
                             data: {
-                                datas: datas
+                                arrDeletedPlu: arrDeletedPlu,
+                                nodoc: nodoc
                             },
                             beforeSend: function () {
                                 $('#modal-loader').modal('show');
@@ -1577,16 +1647,104 @@
                         return false;
                     }
                 });
-            }
-            else {
-                swal({
-                    title: "Error",
-                    text: 'Tidak ada data yang dapat disimpan!',
-                    icon: 'error'
-                }).then(() => {
-                });
-            }
+            
+            // else {
+            //     swal({
+            //         title: "Error",
+            //         text: 'Tidak ada data yang dapat disimpan!',
+            //         icon: 'error'
+            //     }).then(() => {
+            //     });
+            // }
         });
+        // $(document).on('click', '#btn-save', function () {
+        //     var currentButton = $(this);
+        //     var count = 0;
+        //     $('#tBodyDetail tr').each(function () {
+        //         count++;
+        //     });
+        //     if (count > 0) {
+        //         swal({
+        //             title: "Simpan Data?",
+        //             text: "Tekan tombol Ya untuk melanjutkan!",
+        //             icon: "info",
+        //             buttons: true,
+        //         }).then((yes) => {
+        //             if (yes) {
+        //                 var nodoc = $('#no-trn').val();
+        //                 var tgldoc = $('#tgl-doc').val();
+        //                 var kdsup = $('#txtKodeSupplier').val();
+
+        //                 datas = [];
+        //                 $('#tBodyDetail tr').each(function () {
+        //                     var data = {};
+
+        //                     data.nodoc = nodoc;
+        //                     data.tgldoc = tgldoc;
+        //                     data.noreff = $(this).find(".noreff").val();
+        //                     data.istype = $(this).find(".istype").val();
+        //                     data.invno = $(this).find(".invno").val();
+        //                     data.tglinv = $(this).find(".tglinv").val();
+        //                     data.kdsup = kdsup;
+        //                     data.plu = $(this).find(".plu").val();
+        //                     data.ctn = $(this).find(".qtyctn").val();
+        //                     data.qty = $(this).find(".qtypcs").val();
+        //                     data.hargasatuan = $(this).find(".hargasatuan").val();
+        //                     data.persendisc = $(this).find(".persendisc").val();
+        //                     data.gross = parseFloat($(this).find(".gross").val());
+        //                     data.discrph = parseFloat($(this).find(".discrph").val());
+        //                     data.ppnrph = parseFloat($(this).find(".ppn").val());
+        //                     data.posqty = parseFloat($(this).find(".posqty").val());
+        //                     data.keterangan = $(this).find(".keterangan").val();
+        //                     datas.push(data);
+        //                 });
+
+        //                 ajaxSetup();
+        //                 $.ajax({
+        //                     type: "post",
+        //                     url: "{{ url()->current() }}/save",
+        //                     data: {
+        //                         datas: datas
+        //                     },
+        //                     beforeSend: function () {
+        //                         $('#modal-loader').modal('show');
+        //                     },
+        //                     success: function (response) {
+        //                         $('#modal-loader').modal('hide');
+        //                         swal({
+        //                             title: response.status,
+        //                             text: response.message,
+        //                             icon: response.status
+        //                         }).then(() => {
+        //                             window.location.reload();
+        //                         });
+
+        //                     },
+        //                     error: function (error) {
+        //                         $('#modal-loader').modal('hide');
+        //                         // error
+        //                         swal({
+        //                             title: 'Gagal!',
+        //                             text: 'Data tidak berhasil disimpan!',
+        //                             icon: 'error'
+        //                         }).then(() => {
+        //                         });
+        //                     }
+        //                 });
+        //             } else {
+        //                 return false;
+        //             }
+        //         });
+        //     }
+        //     else {
+        //         swal({
+        //             title: "Error",
+        //             text: 'Tidak ada data yang dapat disimpan!',
+        //             icon: 'error'
+        //         }).then(() => {
+        //         });
+        //     }
+        // });
 
         function getDataUsulan() {
             var nodoc = $('#no-trn').val();

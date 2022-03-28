@@ -70,7 +70,7 @@ class ProsesBKLDalamKotaController extends Controller
                     'bukti_no' => $record->get('bukti_no'), 'bukti_tgl' => $record->get('bukti_tgl'), 'supco' => $record->get('supco'),
                     'cr_term' => $record->get('cr_term'), 'prdcd' => $record->get('prdcd'), 'qty' => $record->get('qty'),
                     'bonus' => $record->get('bonus'), 'price' => $record->get('price'), 'gross' => $record->get('gross'),
-                    'ppn' => $record->get('ppn'), 'fmdfee' => $record->get('fmdfee'), 'ppnfee' => $record->get('ppnfee'),
+                    'ppn' => $record->get('ppn'), 'vnppn' => $record->get('vnppn'), 'fmdfee' => $record->get('fmdfee'), 'ppnfee' => $record->get('ppnfee'),
                     'ppnbm' => $record->get('ppnbm'), 'hrg_botol' => $record->get('hrg_botol'), 'disc1' => $record->get('disc1'),
                     'disc2' => $record->get('disc2'), 'disc3' => $record->get('disc3'), 'disc4cr' => $record->get('disc4cr'),
                     'disc4rr' => $record->get('disc4rr'), 'disc4jr' => $record->get('disc4jr'), 'invno' => $record->get('invno'),
@@ -154,6 +154,7 @@ class ProsesBKLDalamKotaController extends Controller
         $pageNum2   = -10;
         $result     = '';
 
+
         if ($report_id == 1){
             $result     = ($size == 'K') ? $this->laporanList($filename,$sesiproc,$kodeigr) : $this->laporanListDetail($filename,$sesiproc,$kodeigr);
             $bladeName  = ($size == 'K') ? "OMI.proses-bkl-list-pdf" : "OMI.proses-bkl-list-detail-pdf";
@@ -173,13 +174,18 @@ class ProsesBKLDalamKotaController extends Controller
             $result     = $this->laporanBpb($kodeigr, $noPO[0]->msth_nodoc ?? '00000');
             $bladeName  = "OMI.proses-bkl-bpb-pdf";
         } elseif ($report_id == 3){
-            $result     = $this->laporanStruk($kodeigr, $kasir);
+            $stat = DB::connection(Session::get('connection'))->table('tbmaster_computer')->select('station')
+                ->where('ip', $ip)->where('kodeigr', $kodeigr)->get()->first();
+            $stat = $stat->station ?? ' ';
+
+            $result     = $this->laporanStruk($kodeigr, $kasir, $stat, $filename, $sesiproc);
             $bladeName  = "OMI.proses-bkl-struk-pdf";
         } elseif ($report_id == 4){
             $connect = loginController::getConnectionProcedure();
             $execute = oci_parse($connect, "BEGIN :ret := F_IGR_GET_NOMOR('".Session::get('kdigr')."','RST','Nomor Reset Kasir','R' || TO_CHAR(SYSDATE, 'yy'),5,TRUE); END;");
             oci_bind_by_name($execute, ':ret', $noDoc, 32);
             oci_execute($execute);
+
 
             $stat = DB::connection(Session::get('connection'))->table('tbmaster_computer')->select('station')
                 ->where('ip', $ip)->where('kodeigr', $kodeigr)->get()->first();
@@ -317,13 +323,15 @@ class ProsesBKLDalamKotaController extends Controller
                                            AND msth_nodoc = '$no_po'");
     }
 
-    public function laporanStruk($kodeigr, $kasir){
+    public function laporanStruk($kodeigr, $kasir, $station, $filename,$sesiproc){
+        $trans_no = DB::connection(Session::get('connection'))->table('temp_list_bkldalamkota')->select('no_tran')->where('sessid', $sesiproc)->where('namafile', $filename)->get()->first();
+
         return DB::connection(Session::get('connection'))->select("SELECT 'NPWP : ' || prs_npwp prs_npwp,  prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2||' '||prs_alamat3 alamat, 'Telp : ' || prs_telepon PRS_TELEPON,
-                                        trjd_create_by, trjd_cashierstation, trjd_transactionno, prd_deskripsipendek, '( ' || trjd_prdcd || ')' TRJD_PRDCD, trjd_quantity,
-                                        trjd_baseprice, nvl(trjd_discount,0) trjd_discount, trjd_nominalamt,
-                                        trjd_admfee, trjd_cus_kodemember, cus_namamember, SUBSTR(jh_kmmcode,1, INSTR(jh_kmmcode,' ')-1) nobukti, tko_namaomi,
-                                        prs_kodemto || '.BKL.' || trjd_cashierstation || '.' || trjd_transactionno nomor,
-                                        TO_CHAR(SYSDATE, 'dd-MM-yy hh:mm:ss') TANGGAL, round(tko_persendistributionfee) || ' %' fee
+                                            trjd_create_by, trjd_cashierstation, trjd_transactionno, prd_deskripsipendek, '( ' || trjd_prdcd || ')' TRJD_PRDCD, trjd_quantity,
+                                            trjd_baseprice, nvl(trjd_discount,0) trjd_discount, trjd_nominalamt,
+                                            trjd_admfee, trjd_cus_kodemember, cus_namamember, SUBSTR(jh_kmmcode,1, INSTR(jh_kmmcode,' ')-1) nobukti, tko_namaomi,
+                                            prs_kodemto || '.BKL.' || trjd_cashierstation || '.' || trjd_transactionno nomor,
+                                            TO_CHAR(SYSDATE, 'dd-MM-yy hh:mm:ss') TANGGAL, round(tko_persendistributionfee) || ' %' fee,prd_ppn,prs_nilaippn
                                         FROM tbtr_jualdetail, tbtr_jualheader, tbmaster_prodmast, tbmaster_customer, tbmaster_tokoigr, tbmaster_perusahaan
                                         WHERE prs_kodeigr = '$kodeigr' and trjd_kodeigr = '$kodeigr'
                                         AND trjd_create_by = 'BKL'
@@ -338,7 +346,8 @@ class ProsesBKLDalamKotaController extends Controller
                                         AND cus_kodemember = trjd_cus_kodemember
                                         AND tko_kodeigr = '$kodeigr'
                                         AND tko_kodecustomer = trjd_cus_kodemember
-                                        and trjd_transactionno || trjd_cashierstation IN (''||'$kasir'||'')");
+                                        --and trjd_transactionno || trjd_cashierstation IN (''||'$kasir'||''(diganti krna sering error)
+                                        AND (TRJD_TRANSACTIONNO  = '$trans_no->no_tran' OR TRJD_CASHIERSTATION = '$station')");
     }
 
     public function laporanReset($noDoc, $kodeigr, $station, $userId){

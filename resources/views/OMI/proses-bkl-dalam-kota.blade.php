@@ -61,7 +61,8 @@
             </div>
         </div>
     </div>
-    <a href="http://172.20.28.17/BackOffice/public/file_procedure/sp_proses_data_bkl_omi_web.txt" target="blank">Procedure</a>
+    <a href="http://172.20.28.17/BackOffice/public/file_procedure/sp_proses_data_bkl_omi_query.txt" target="blank">Query Table</a> <br>
+    <a href="http://172.20.28.17/BackOffice/public/file_procedure/sp_proses_data_bkl_omi_web_ppn.txt" target="blank">Procedure</a>
 
 
     <script>

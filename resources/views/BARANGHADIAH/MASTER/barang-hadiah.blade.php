@@ -24,7 +24,7 @@
                                             </div>
                                             <div class="col-sm-3">
                                                 <button onclick="" id="barang_berhadiah" type="button" class="btn btn-danger">
-                                                    BARANG BERHADIAH
+                                                    BARANG HADIAH
                                                 </button>
                                             </div>
                                             

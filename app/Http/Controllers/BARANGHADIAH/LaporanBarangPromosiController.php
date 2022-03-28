@@ -236,6 +236,6 @@ class LaporanBarangPromosiController extends Controller
                             AND GFH_KODEPROMOSI(+) = BPRS_KODEPROMOSI
                             AND BPRP_PRDCD(+) LIKE SUBSTR (BPRS_PRDCD, 1, 6) || '%'");
         
-        return view('BARANGHADIAH.laporanbarangpromosi-pdf', compact('data', 'perusahaan', 'date'));
+        return view('BARANGHADIAH.laporanbarangpromosi-pdf', compact('data', 'perusahaan', 'date', 'dataType'));
     }
 }
