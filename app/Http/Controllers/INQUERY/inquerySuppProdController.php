@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\MASTER;
+namespace App\Http\Controllers\INQUERY;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 
 
@@ -18,7 +19,7 @@ class inquerySuppProdController extends Controller
             ->limit(1000)
             ->get();
 
-        return view('MASTER.inquerySuppProd')->with(compact('plu'));
+        return view('INQUERY.inquerySuppProd')->with(compact('plu'));
     }
 
     public function suppProd(Request $request)

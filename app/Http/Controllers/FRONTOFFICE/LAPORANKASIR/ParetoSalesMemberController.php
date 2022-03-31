@@ -114,7 +114,7 @@ class ParetoSalesMemberController extends Controller
                                                ELSE
                                                       trjd_nominalAmt - ( CASE WHEN SUBSTR(trjd_create_By,1,2) = 'EX' THEN 0
                                                                            ELSE
-                                                                          CASE WHEN trjd_flagTax1 = 'Y' AND NVL(trjd_flagTax2,'zzz') <> 'P' AND NVL(prd_KodeTag,'zzz') <> 'Q' THEN ( trjd_nominalAmt - (trjd_nominalAmt / 1.1) )
+                                                                          CASE WHEN trjd_flagTax1 = 'Y' AND NVL(trjd_flagTax2,'zzz') <> 'P' AND NVL(prd_KodeTag,'zzz') <> 'Q' THEN ( trjd_nominalAmt - (trjd_nominalAmt / (1 + (coalesce(prd_ppn,10)/100)) ) )
                                                                            ELSE 0
                                                                          END
                                                                      END )

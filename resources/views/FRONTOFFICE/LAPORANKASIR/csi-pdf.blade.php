@@ -3,7 +3,7 @@
 @section('table_font_size','7 px')
 
 @section('page_title')
-    LAPORAN-CASH BACK / SUPPLIER / ITEM
+    LAPORAN POTONGAN / SUPPLIER / ITEM
 @endsection
 
 @section('title')

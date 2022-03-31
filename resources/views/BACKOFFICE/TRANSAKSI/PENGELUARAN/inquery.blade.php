@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','Inquery NPB')
+@section('title','INQUERY NPB')
 @section('content')
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">

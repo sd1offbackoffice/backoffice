@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\MASTER;
+namespace App\Http\Controllers\INQUERY;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Psr\Log\NullLogger;
 
@@ -12,26 +13,16 @@ class inqueryProdSuppController extends Controller
 {
     public function index()
     {
-//        $supplier = DB::connection(Session::get('connection'))->table('tbtr_mstran_d')
-//            ->join('tbmaster_supplier', function ($join) {
-//                $join->on('sup_kodeigr', '=', 'mstd_kodeigr')
-//                    ->on('sup_kodesupplier', '=', 'mstd_kodesupplier');
-//            })
-//            ->selectRaw("NVL (COUNT (1), 0)")
-//            ->get();
-//
-//        if($supplier==NULL) {
-//            return 'not-found';
-//        }else{
+        $kodeigr = Session::get('kdigr');
 
-            $supplier = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
-                ->select('sup_kodesupplier', 'sup_namasupplier')
-                ->where('sup_kodeigr', '=', '22')
-                ->orderBy('sup_kodesupplier')
-                ->limit(100)
-                ->get();
+        $result = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
+            ->select('sup_kodesupplier', 'sup_namasupplier','sup_kodesuppliermcg')
+            ->where('sup_kodeigr', '=', $kodeigr)
+            ->orderBy('sup_kodesupplier')
+            ->limit(100)
+            ->get();
 
-        return view('MASTER.inqueryProdSupp')->with(compact('supplier'));
+        return view('INQUERY.inqueryProdSupp')->with(compact('result'));
     }
 
     public function prodSupp(Request $request)
@@ -87,12 +78,18 @@ class inqueryProdSuppController extends Controller
             ->json(['kodesupp' => strtoupper($kodesupp), 'data' => $result, 'count' => $count]);
     }
 
-    public function helpSelect(Request $request)
+    public function helpSearch(Request $request)
     {
+        $search = strtoupper($request->search);
+        $kodeigr = Session::get('kdigr');
+
         $result = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
-            ->select('*')
-            ->where('sup_kodesupplier', $request->value)
-            ->first();
+            ->select('sup_kodesupplier', 'sup_namasupplier','sup_kodesuppliermcg')
+            ->whereRaw("(sup_namasupplier LIKE '%". $search."%' or sup_kodesupplier LIKE '%". $search."%')")
+            ->where('sup_kodeigr', '=', $kodeigr)
+            ->orderBy('sup_kodesupplier')
+            ->limit(100)
+            ->get();
 
         return response()->json($result);
     }

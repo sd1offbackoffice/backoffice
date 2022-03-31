@@ -263,7 +263,8 @@ class ActualController extends Controller
     public function cashback($tanggal){
         try{
             $c = loginController::getConnectionProcedure();
-            $sql = "BEGIN sp_job_lpt_cashback(to_date('" . $tanggal . "','dd/mm/yyyy'),to_date('" . $tanggal . "','dd/mm/yyyy'),'".Session::get('usid')."'); END;";
+//            $sql = "BEGIN sp_job_lpt_cashback(to_date('" . $tanggal . "','dd/mm/yyyy'),to_date('" . $tanggal . "','dd/mm/yyyy'),'".Session::get('usid')."'); END;";
+            $sql = "BEGIN sp_job_lpt_cashback(); END;";
             $s = oci_parse($c, $sql);
             oci_execute($s);
 
@@ -420,6 +421,8 @@ class ActualController extends Controller
          AND vir_cashierstation(+) = js_cashierstation
          ORDER BY js_cashierstation, js_cashierid");
 
+        $ppn_perushaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
+            ->selectRaw('COALESCE(prs_nilaippn,10) prs_ppn')->first()->prs_ppn;
         foreach($data as $d){
             $temp = DB::connection(Session::get('connection'))->table('tbtr_jualheader')
                 ->select('jh_transactionno')
@@ -433,7 +436,7 @@ class ActualController extends Controller
             $d->struk = $temp ? $temp->jh_transactionno : '00000';
 
             if(substr($d->js_cashierid,0,2) == 'OM' || $d->js_cashierid == 'BKL'){
-                $fee = DB::connection(Session::get('connection'))->select("SELECT NVL((SUM(FEE) * 1.1),0) FEE FROM (
+                $fee = DB::connection(Session::get('connection'))->select("SELECT NVL((SUM(FEE) * (1+($ppn_perushaan/100) )),0) FEE FROM (
 		SELECT TRJD_CASHIERSTATION , TRJD_CREATE_BY, (CASE WHEN TRJD_TRANSACTIONTYPE = 'S' THEN 1 ELSE -1 END * TRJD_ADMFEE) FEE
 		FROM TBTR_JUALDETAIL, TBMASTER_TOKOIGR
 		WHERE TRJD_KODEIGR = '".Session::get('kdigr')."' AND TRUNC(TRJD_TRANSACTIONDATE) = TO_DATE('".$tanggal."','dd/mm/yyyy')
@@ -953,7 +956,7 @@ ORDER BY trpt_cus_kodemember");
           SUM(gross) grsomi, SUM(ppnomi) ppnomi
          FROM
          (    SELECT trjd_cus_kodemember, tko_namaomi,
-                   CASE WHEN trjd_transactiontype = 'R' THEN -1 ELSE 1 END * (trjd_admfee * 1.1) trjd_admfee,
+                   CASE WHEN trjd_transactiontype = 'R' THEN -1 ELSE 1 END * (trjd_admfee * (1 + (coalesce(prd_ppn,10)/100))) trjd_admfee,
                    (CASE WHEN trjd_transactiontype = 'R' THEN -1 ELSE 1 END *
                         (CASE WHEN prd_unit = 'KG' THEN
                               (trjd_quantity / 1000) * trjd_baseprice
@@ -962,13 +965,13 @@ ORDER BY trpt_cus_kodemember");
                         END)) dppomi,
                    (CASE WHEN trjd_transactiontype = 'R' THEN -1 ELSE 1 END *
                         (CASE WHEN trjd_flagtax1 = 'Y' THEN
-                              trjd_nominalamt * 1.1
+                              trjd_nominalamt * (1 + (coalesce(prd_ppn,10)/100))
                         ELSE
                               trjd_nominalamt
                         END)) gross,
                    (CASE WHEN trjd_transactiontype = 'R' THEN -1 ELSE 1 END *
                         (CASE WHEN trjd_flagtax1 = 'Y' THEN
-                              (trjd_nominalamt * 1.1) - trjd_nominalamt
+                              (trjd_nominalamt * (1 + (coalesce(prd_ppn,10)/100))) - trjd_nominalamt
                         ELSE
                               0
                         END)) ppnomi

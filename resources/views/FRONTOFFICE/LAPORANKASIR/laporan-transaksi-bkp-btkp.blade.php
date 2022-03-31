@@ -33,7 +33,10 @@
 
     <script>
         $(document).ready(function () {
-
+            swal({
+                title: 'Data sementara menggunakan data di SIMTGR',
+                icon: 'warning'
+            });
         });
 
         $('#tanggal').daterangepicker({

@@ -70,12 +70,16 @@
                     <th colspan="5" style="text-align: right; border-bottom: 2px solid black">{{$data[$i]->namasbu}} : {{$data[$i]->omikod}} {{$data[$i]->namaomi}}</th>
                 </tr>
                 <tr style="text-align: center; vertical-align: center">
-                    <th colspan="2" style="text-align: left; border-right: 1px solid black; border-bottom: 1px solid black;">DEPARTEMEN</th>
-                    <th style="width: 100px;border-right: 1px solid black; border-bottom: 1px solid black">PENJUALAN KOTOR</th>
-                    <th style="width: 80px; border-right: 1px solid black; border-left: 1px solid black;">PAJAK</th>
-                    <th style="width: 100px; border-right: 1px solid black; border-left: 1px solid black;">PENJUALAN BERSIH</th>
-                    <th style="width: 100px;border-right: 1px solid black; border-left: 1px solid black;">H.P.P RATA2</th>
+                    <th rowspan="2" class="tengah" colspan="2" style="text-align: left; border-right: 1px solid black; border-bottom: 1px solid black;">DEPARTEMEN</th>
+                    <th rowspan="2" class="tengah" style="width: 100px;border-right: 1px solid black; border-bottom: 1px solid black">PENJUALAN KOTOR</th>
+                    <th rowspan="2" class="tengah" style="width: 80px; border-right: 1px solid black; border-left: 1px solid black;">PAJAK</th>
+                    <th rowspan="2" class="tengah" style="width: 100px; border-right: 1px solid black; border-left: 1px solid black;">PENJUALAN BERSIH</th>
+                    <th rowspan="2" class="tengah" style="width: 100px;border-right: 1px solid black; border-left: 1px solid black;">H.P.P RATA2</th>
                     <th colspan="2" style="border-left: 1px solid black;">------MARGIN------</th>
+                </tr>
+                <tr>
+                    <th class="right">Rp</th>
+                    <th class="right">%</th>
                 </tr>
                 </thead>
                 <tbody style="border-bottom: 3px solid black; text-align: right">
@@ -268,7 +272,7 @@
             <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{percent($marginpersen['i'])}}</td>
         </tr>
         <tr>
-            <td colspan="2" style="text-align: left; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">TOTAL SELURUH INDOMARET</td>
+            <td colspan="2" style="text-align: left; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">TOTAL SELURUH INDOMARET + OMI</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($gross['total'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($tax['total'])}}</td>
             <td style="text-align: right; font-weight: bold;font-size: 10px; border-bottom: 1px solid black;">{{rupiah($net['total'])}}</td>

@@ -102,6 +102,11 @@ class LaporanEvaluasiSalesMemberController extends Controller
             $whereMonitoringPLU = " AND mpl_kodemonitoring   = '" . $monitoringPLU . "'";
         }
 
+        if($member == 'KHUSUS')
+            $whereMember = " AND cus_flagmemberkhusus = 'Y'";
+        else if($member == 'BIASA')
+            $whereMember = " AND nvl(cus_flagmemberkhusus,'N') <> 'Y'";
+
         switch($sort){
             case 'NAMAMEMBER' : $whereSort = 'ORDER BY a.cus_namamember';break;
             case 'KUNJUNGAN' : $whereSort = 'ORDER BY a.kunj';break;
@@ -667,6 +672,7 @@ class LaporanEvaluasiSalesMemberController extends Controller
                                 ".$whereSuboutlet."
                                 ".$whereMonitoringMember."
                                 ".$whereMonitoringPLU."
+                                ".$whereMember."
                                 group by cus_kodemember,cus_namamember
                                 order by cus_namamember,cus_kodemember
                             ) a
@@ -719,7 +725,7 @@ class LaporanEvaluasiSalesMemberController extends Controller
 
         foreach ($data as $d) {
             $tempdata = [
-                $d->trjd_cus_kodemember,
+                $d->cus_kodemember,
                 $d->cus_namamember,
                 $d->kunj,
                 $d->struk,

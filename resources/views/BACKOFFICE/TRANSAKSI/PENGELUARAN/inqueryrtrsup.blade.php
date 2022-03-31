@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','Inquery Retur Supplier')
+@section('title','INQUERY Retur Supplier')
 @section('content')
     <div class="container-fluid mt-0">
         <div class="row justify-content-center">
@@ -185,8 +185,8 @@
             var currentButton = $(this);
             var kdsup = currentButton.children().last().text();
             $('#txtSup').val(kdsup);
-            $('#m_lov').modal('hide');
             getData(kdsup);
+            $('#m_lov').modal('hide');
         });
 
         function getData(kdsup) {
@@ -251,11 +251,47 @@
                                 }
                             ],
                             "createdRow": function (row, data, dataIndex) {
+                                $(row).children().first().next().css({
+                                    'vertical-align': 'middle'
+                                });
+                                $(row).children().first().next().next().css({
+                                    'vertical-align': 'middle'
+                                });
+                                $(row).children().first().next().next().next().css({
+                                    'vertical-align': 'middle',
+                                    'text-align': 'center'
+                                });
                                 $(row).children().first().next().next().next().next().css({
                                     'vertical-align': 'middle',
                                     'text-align': 'right'
                                 });
+                                $(row).children().first().next().next().next().next().next().css({
+                                    'vertical-align': 'middle',
+                                    'text-align': 'right'
+                                });
+                                $(row).children().first().next().next().next().next().next().next().css({
+                                    'vertical-align': 'middle',
+                                    'text-align': 'right'
+                                });
+                                $(row).children().first().next().next().next().next().next().next().next().css({
+                                    'vertical-align': 'middle',
+                                    'text-align': 'right'
+                                });
+                                $(row).children().last().css({
+                                    'vertical-align': 'middle',
+                                    'text-align': 'right'
+                                });
                                 $(row).children().first().next().next().next().next().text(convertToRupiah2($(row).children().first().next().next().next().next().text()));
+                                $(row).children().first().next().next().next().next().next().text(convertToRupiah2($(row).children().first().next().next().next().next().next().text()));
+                                $(row).children().first().next().next().next().next().next().next().text(convertToRupiah2($(row).children().first().next().next().next().next().next().next().text()));
+                                $(row).children().first().next().next().next().next().next().next().next().text(convertToRupiah2($(row).children().first().next().next().next().next().next().next().next().text()));
+
+                                $('#total-item').val(dataIndex + 1);
+
+                                $('#txtNamaSup').val(response.supplier.supplier);
+                                $('#txtAlamat').val(response.supplier.alamat);
+                                $('#txtTelpon').val(response.supplier.telp);
+                                $('#txtCP').val(response.supplier.cp);
 
                                 $('#modal-loader').modal('hide');
 

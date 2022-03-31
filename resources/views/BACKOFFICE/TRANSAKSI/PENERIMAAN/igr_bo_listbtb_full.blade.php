@@ -70,7 +70,7 @@
             <p>PRG : IGR_BO_CTBTBLIS</p>
         </div>
         <div style="line-height: 0.1 !important; margin-top: -50px">
-            <h2 style="text-align: center">** EDIT LIST PENERIMAAN BARANG **</h2>
+            <h2 style="text-align: left">** EDIT LIST PENERIMAAN BARANG **</h2>
         </div>
         {{-- <div>--}}
         {{-- <table>--}}
@@ -147,27 +147,27 @@
 
             <table class="table table-bordered table-responsive">
                 <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
-                    <tr style="text-align: center;">
-                        <th rowspan="2" style="width: 20px">NO</th>
-                        <th rowspan="2" style="width: 40px">PLU</th>
-                        <th rowspan="2" style="width: 155px !important; text-align: left">NAMA BARANG</th>
-                        <th rowspan="2" style="width: 50px">KEMASAN</th>
+                    <tr>
+                        <th rowspan="2" style="width: 20px; text-align: center">NO</th>
+                        <th rowspan="2" style="width: 40px; text-align: center">PLU</th>
+                        <th rowspan="2" style="width: 80px !important; text-align: center">NAMA BARANG</th>
+                        <th rowspan="2" style="width: 50px; text-align: center">KEMASAN</th>
                         <th colspan="2" style="width: 60px; text-align: center">KWANTUM</th>
-                        <th colspan="2" style="width: 50px; text-align: center">--- BONUS ---</th>
-                        <th rowspan="2" style="width: 60px">HARGA BELI</th>
-                        <th colspan="2" style="width: 100px; text-align: center">--- POTONGAN ---</th>
-                        <th rowspan="2" style="width: 30px; text-align: left">PPN</th>
-                        <th rowspan="2" style="width: 30px; text-align: left">BM</th>
-                        <th rowspan="2" style="width: 30px; text-align: left">BOTOL</th>
-                        <th rowspan="2" style="width: 50px; text-align: left">TOTAL</th>
+                        <th colspan="2" style="width: 50px; text-align: center">-- BONUS --</th>
+                        <th rowspan="2" style="width: 60px; text-align: center">HARGA BELI</th>
+                        <th colspan="2" style="width: 100px; text-align: center">-- POTONGAN --</th>
+                        <th rowspan="2" style="width: 30px; text-align: center">PPN</th>
+                        <th rowspan="2" style="width: 20px; text-align: center">BM</th>
+                        <th rowspan="2" style="width: 20px; text-align: center">BOTOL</th>
+                        <th rowspan="2" style="width: 20px; text-align: center">TOTAL</th>
                     </tr>
                     <tr>
-                        <th style="width: 30px">BESAR</th>
-                        <th style="width: 30px">KECIL</th>
-                        <th style="width: 30px">1</th>
-                        <th style="width: 30px">2</th>
-                        <th style="width: 30px">1</th>
-                        <th style="width: 30px">2</th>
+                        <th style="width: 30px; text-align: center">BESAR</th>
+                        <th style="width: 30px; text-align: center">KECIL</th>
+                        <th style="width: 30px; text-align: center">1</th>
+                        <th style="width: 30px; text-align: center">2</th>
+                        <th style="width: 30px; text-align: center">1</th>
+                        <th style="width: 30px; text-align: center">2</th>
                     </tr>
                 </thead>
                 <tbody style="border-bottom: 1px solid black">
@@ -175,7 +175,7 @@
                     @for($j=$i; $j< sizeof($datas); $j++) <tr>
                         <td style="width: 20px; text-align: center">{{$no = $no+1}}</td>
                         <td style="width: 40px; text-align: center">{{$datas[$j]->trbo_prdcd}}</td>
-                        <td style="width: 155px; text-align: center">{{$datas[$j]->prd_deskripsipanjang}}</td>
+                        <td style="width: 80px; text-align: center">{{$datas[$j]->prd_deskripsipanjang}}</td>
                         <td style="width: 50px; text-align: center">{{$datas[$j]->kemasan}}</td>
                         <td style="width: 30px; text-align: center">{{$datas[$j]->qtyk}}</td>
                         <td style="width: 30px; text-align: center">{{$datas[$j]->qty}}</td>
@@ -185,9 +185,17 @@
                         <td style="width: 30px; text-align: center">{{number_format( $datas[$j]->ptg1 ,2,',','.')}}</td>
                         <td style="width: 30px; text-align: center">{{number_format( $datas[$j]->ptg2 ,2,',','.')}}</td>
                         <td style="width: 30px; text-align: center">{{number_format( $datas[$j]->trbo_ppnrph ,2,',','.')}}</td>
-                        <td style="width: 30px; text-align: center">{{number_format( $datas[$j]->trbo_ppnbmrph ,2,',','.')}}</td>
-                        <td style="width: 30px; text-align: center">{{number_format( $datas[$j]->trbo_ppnbtlrph ,2,',','.')}}</td>
-                        <td>{{number_format( $datas[$j]->total ,2,',','.')}}</td>
+                        <td style="width: 20px; text-align: center">{{number_format( $datas[$j]->trbo_ppnbmrph ,2,',','.')}}</td>
+                        <td style="width: 20px; text-align: center">{{number_format( $datas[$j]->trbo_ppnbtlrph ,2,',','.')}}</td>
+                        <td style="width: 20px; text-align: center">{{number_format( $datas[$j]->total ,2,',','.')}}</td>
+                        <tr>
+                            <td colspan="3"></td>
+                            <td style="width: 30px; text-align: center">DISC 3</td>
+                            <td style="width: 30px; text-align: center">{{number_format($datas[$j]->trbo_rphdisc3,2,',','.')}}</td>
+                            <td style="width: 30px; text-align: center">DISC 4</td>
+                            <td style="width: 30px; text-align: center">{{number_format($datas[$j]->trbo_rphdisc4,2,',','.')}}</td>
+                            <td colspan="3"></td>
+                        </tr>
                         </tr>
                         {{$totalDisc3 = $totalDisc3 + $datas[$j]->trbo_rphdisc3}}
                         {{$totalDisc4 = $totalDisc4 + $datas[$j]->trbo_rphdisc4}}
@@ -202,12 +210,12 @@
                             <td colspan="15" style="border-bottom: 1px black solid"></td>
                         </tr>
                         <tr style="padding-top: 50px !important;">
-                            <td colspan="3" style="text-align: left">**TOTAL KESELURUHAN</td>
-                            <td colspan="2">TOTAL DISC 3</td>
+                            <td colspan="3" style="text-align: center">**TOTAL KESELURUHAN</td>
+                            <td style="width: 30px; text-align: center">TOTAL DISC 3</td>
                             <td style="width: 30px; text-align: center">{{number_format($totalDisc3 ,2,',','.')}}</td>
-                            <td colspan="2">TOTAL DISC 4</td>
+                            <td style="width: 30px; text-align: center">TOTAL DISC 4</td>
                             <td style="width: 30px;  text-align: center">{{number_format($totalDisc4 ,2,',','.')}}</td>
-
+                            <td colspan="2"></td>
                             <td style="width: 30px;  text-align: center">{{number_format($totalPtg1 ,2,',','.')}}</td>
                             <td style="width: 30px;  text-align: center">{{number_format($totalPtg2 ,2,',','.')}}</td>
                             <td style="width: 30px;  text-align: center">{{number_format($totalPPN ,2,',','.')}}</td>
@@ -235,8 +243,8 @@
             <p>{{ date("d-M-y  H:i:s") }}</p>
             <p> </p>
         </div>
-        <div style="line-height: 0.3 !important; text-align: center !important;">
-            <h2 style="text-align: center">EDIT LIST PENERIMAAN BARANG</h2>
+        <div style="line-height: 0.3 !important; text-align: left !important;">
+            <h2 style="text-align: left">EDIT LIST PENERIMAAN BARANG</h2>
         </div>
     </header>
 
@@ -244,7 +252,7 @@
 
         {{-- <table class="table table-bordered table-responsive" style="">--}}
         {{-- <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">--}}
-        {{-- <tr style="text-align: center;">--}}
+        {{-- <tr style="text-align: left;">--}}
         {{-- <th rowspan="2" style="width: 20px">NO</th>--}}
         {{-- <th rowspan="2" style="width: 40px">PLU</th>--}}
         {{-- <th rowspan="2" style="width: 285px !important; text-align: left">DESKRIPSI</th>--}}
@@ -261,7 +269,7 @@
         {{-- </thead>--}}
         {{-- <tbody style="border-bottom: 1px solid black">--}}
         {{-- <tr>--}}
-        {{-- <td colspan="8" style="text-align: center">** No Data **</td>--}}
+        {{-- <td colspan="8" style="text-align: left">** No Data **</td>--}}
         {{-- </tr>--}}
         {{-- </tbody>--}}
         {{-- </table>--}}

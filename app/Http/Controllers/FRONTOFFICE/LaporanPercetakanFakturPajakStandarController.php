@@ -25,8 +25,7 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
         $tgl2 = $request->tgl2;
         $w = 545;
         $h = 50.75;
-
-        $data = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan,
+        $data = DB::connection(Session::get('connection'))->select("  SELECT prs_namaperusahaan,
          prs_namacabang,
          tgl_struk,
          customer,
@@ -65,8 +64,8 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                    no_seri_fp,
                    tgl_fp,
                    TRUNC (SUM (DPP + DF + TTL_REFUND)) dpp,
-                   TRUNC (SUM (dpp + DF + TTL_REFUND) * (COALESCE(PRD_PPN, 0)/100)) ppn
-              FROM (  SELECT a.*, NVL (b.nominal, 0) TTL_REFUND
+                   TRUNC (SUM (dpp + DF + TTL_REFUND) * (COALESCE(PRS_NILAIPPN, 0)/100)) ppn
+              FROM tbmaster_perusahaan, (  SELECT a.*, NVL (b.nominal, 0) TTL_REFUND
                         FROM (  SELECT TRUNC (fkt_tglfaktur) tgl_struk,
                                        cus_kodemember || ' - ' || cus_namamember
                                           customer,
@@ -235,7 +234,7 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                    struk_no,
                    no_seri_fp,
                    tgl_fp,
-                   prd_ppn) x,
+                   prs_nilaippn) x,
          tbmaster_perusahaan,
          TBTR_FAKTUR_HDR,
          tbtr_obi_h,
@@ -248,6 +247,9 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
          AND cashierid = obi_cashierid(+)
          AND prd_recordid(+) = obi_recid
 ORDER BY tgl_struk, no_seri_fp");
+
+
+
         $filename = 'igr-fo-cetak-fpstd';
 
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
@@ -277,7 +279,7 @@ ORDER BY tgl_struk, no_seri_fp");
         $w = 545;
         $h = 50.75;
 
-        $data = DB::connection(Session::get('connection'))->select(" select prs_namaperusahaan,
+        $data = DB::connection(Session::get('connection'))->select("select prs_namaperusahaan,
          prs_namacabang, customer,
          nomor_faktur,
          tgl_faktur,
@@ -381,7 +383,7 @@ ORDER BY transactiondate, nomor_faktur");
                    NAMA,
                    ALAMAT,
                    TRUNC (SUM (DPP + DF + TTL_REFUND)) DPP,
-                   TRUNC (SUM (DPP + DF + TTL_REFUND) * (COALESCE(PRD_PPN, 0)/100)) PPN,
+                   TRUNC (SUM (DPP + DF + TTL_REFUND) * (COALESCE(PRS_NILAIPPN, 0)/100)) PPN,
                    PPNBM,
                    KET,
                    FG_UM,
@@ -396,7 +398,7 @@ ORDER BY transactiondate, nomor_faktur");
                    FKT_TGL,
                    TRJD_CREATE_BY,
                    trjd_transactiondate
-              FROM (SELECT A.*, NVL (B.NOMINAL, 0) TTL_REFUND
+              FROM tbmaster_perusahaan, (SELECT A.*, NVL (B.NOMINAL, 0) TTL_REFUND
                       FROM (  SELECT REPLACE (FKT_NOSERI, 'Y', '') NOFAK,
                                      FKT_TGLFAKTUR TGLFAK,
                                      NVL (CUS_NPWP, '00.000.000.0-000.000') NPWP,
@@ -514,8 +516,8 @@ ORDER BY transactiondate, nomor_faktur");
                                                         AND TRUNC (OBI_TGLSTRUK) =
                                                                TRUNC (
                                                                   TRJD_TRANSACTIONDATE)
-                                                        AND TRUNC (OBI_TGLSTRUK) BETWEEN  to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy'))
-                                     AND TRUNC (TRJD_TRANSACTIONDATE) BETWEEN  to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy')
+                                                        AND TRUNC (OBI_TGLSTRUK) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy'))
+                                     AND TRUNC (TRJD_TRANSACTIONDATE) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy')
                                      AND PRD_RECORDID(+) = TRJD_RECORDID
                             GROUP BY FKT_NOSERI,
                                      FKT_TGLFAKTUR,
@@ -615,9 +617,9 @@ ORDER BY transactiondate, nomor_faktur");
                    FKT_TGL,
                    TRJD_CREATE_BY,
                    trjd_transactiondate,
-                   PRD_PPN) d,
+                   PRS_NILAIPPN) d,
          tbmaster_perusahaan
-   WHERE prs_kodeigr = '" . Session::get('kdigr') . "'
+   WHERE prs_kodeigr = '".Session::get('kdigr')."'
 ORDER BY trjd_transactiondate, NOFAK");
         $filename = 'igr-fo-cetak-fpstd-ominonpkp';
 
@@ -664,7 +666,7 @@ ORDER BY trjd_transactiondate, NOFAK");
             + +CASE
                   WHEN NVL (OBI_ATTRIBUTE2, 'N') IN ('KlikIGR', 'Corp')
                   THEN
-                     ROUND (OBI_EKSPEDISI / (1+(COALESCE(PRD_PPN, 0)/100)))
+                     ROUND (OBI_EKSPEDISI / (1+(NVL(PRD_PPN, 0)/100)))
                   ELSE
                      0
                END,
@@ -675,15 +677,15 @@ ORDER BY trjd_transactiondate, NOFAK");
             + +CASE
                   WHEN NVL (OBI_ATTRIBUTE2, 'N') IN ('KlikIGR', 'Corp')
                   THEN
-                     (OBI_EKSPEDISI - ROUND (OBI_EKSPEDISI / (1+(COALESCE(PRD_PPN, 0)/100))))
+                     (OBI_EKSPEDISI - ROUND (OBI_EKSPEDISI / (1+(NVL(PRD_PPN, 0)/100))))
                   ELSE
                      0
                END,
             0)
             ppn
     FROM tbmaster_perusahaan, TBTR_FAKTUR_HDR fkt, tbtr_obi_h obi, tbmaster_prodmast
-   WHERE     kodemember = '280676'
-         AND TRUNC (transactiondate) = TRUNC (obi_tglstruk(+))
+   WHERE     --kodemember = '280676'
+                  TRUNC (transactiondate) = TRUNC (obi_tglstruk(+))
          AND transactionno = obi_nostruk(+)
          AND cashierstation = obi_kdstation(+)
          AND kodemember = obi_kdmember(+)

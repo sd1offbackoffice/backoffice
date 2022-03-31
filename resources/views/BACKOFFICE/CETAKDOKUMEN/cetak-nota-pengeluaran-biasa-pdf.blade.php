@@ -128,7 +128,7 @@
                     <td class="right padding-right" >{{ $i }}</td>
                     <td class="left" >{{ $d->mstd_prdcd }}</td>
                     <td class="left" >{{ $d->prd_deskripsipanjang}}</td>
-                    <td class="left" >{{ $d->mstd_unit }}</td>
+                    <td class="left" >{{ $d->mstd_unit }}/{{ $d->mstd_frac }}</td>
                     <td class="right">{{ $d->ctn }}</td>
                     <td class="right">{{ $d->pcs }}</td>
                     <td class="right">{{ number_format(round($d->mstd_hrgsatuan), 0, '.', ',') }}</td>

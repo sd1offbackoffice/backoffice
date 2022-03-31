@@ -1554,7 +1554,7 @@ class ReturController extends Controller
                                 ->whereRaw("nvl(rom_qtyselisih,0) <> 0")
                                 ->update([
                                     'rom_kodekasir' => 'SOS',
-                                    'rom_staton' => '99',
+                                    'rom_station' => '99',
                                     'rom_jenistransaksi' => $dokdriver,
                                     'rom_tgltransaksi' => Carbon::now()
                                 ]);

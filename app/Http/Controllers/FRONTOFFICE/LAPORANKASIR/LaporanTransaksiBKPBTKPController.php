@@ -31,12 +31,12 @@ class LaporanTransaksiBKPBTKPController extends Controller
         $data = DB::connection('simtgr')
             ->select("select trjd_division, dept, kat_kodekategori, kat_namakategori, sum(sbkp) sbkp, sum(rbkp) rbkp,
       sum(sexp) sexp, sum(rexp) rexp,sum(sokp) sokp, sum(rokp) rokp, sum(scki) scki, sum(rcki) rcki, sum(stkp) stkp,
-      sum(rtkp) rtkp
+      sum(rtkp) rtkp, sum(sbkpx) sbkpx, sum(rbkpx) rbkpx
 from( SELECT trjd_division, SUBSTR(trjd_division,1,2) dept, kat_kodekategori, kat_namakategori,
     CASE WHEN trjd_transactiontype = 'S' THEN
        CASE WHEN tko_tipeomi = 'HR'  OR tko_tipeomi IS NULL THEN
           CASE WHEN (trjd_flagtax1 = 'Y' AND trjd_flagtax2 = 'Y') AND NVL(prd_kodetag,'9') <> 'Q'  AND tko_kodecustomer = trjd_cus_kodemember THEN
-	 trjd_nominalamt * 1.1
+	 trjd_nominalamt * (1+(nvl(prd_ppn,10)/100))
           ELSE
                 CASE WHEN (trjd_flagtax1 = 'Y' AND trjd_flagtax2 = 'Y') AND NVL(prd_kodetag,'9') <> 'Q' THEN
                        trjd_nominalamt
@@ -48,10 +48,25 @@ from( SELECT trjd_division, SUBSTR(trjd_division,1,2) dept, kat_kodekategori, ka
           END
        END
     END sbkp,
+    CASE WHEN trjd_transactiontype = 'S' THEN
+       CASE WHEN tko_tipeomi = 'HR'  OR tko_tipeomi IS NULL THEN
+          CASE WHEN (trjd_flagtax1 = 'Y' AND trjd_flagtax2 = 'Y') AND NVL(prd_kodetag,'9') <> 'Q'  AND tko_kodecustomer = trjd_cus_kodemember THEN
+	 trjd_nominalamt * (1+(nvl(prd_ppn,10)/100))
+          ELSE
+                CASE WHEN (trjd_flagtax1 = 'Y' AND trjd_flagtax2 = 'Y') AND NVL(prd_kodetag,'9') <> 'Q' THEN
+                       trjd_nominalamt
+                END
+          END
+       ELSE
+          CASE WHEN (trjd_flagtax1 = 'Y' AND trjd_flagtax2 = 'Y') AND NVL(prd_kodetag,'9') <> 'Q' THEN
+                  trjd_nominalamt
+          END
+       END
+    END / (1+(nvl(prd_ppn,10)/100)) sbkpx,
     CASE WHEN trjd_transactiontype = 'R' THEN
        CASE WHEN tko_tipeomi = 'HR' OR tko_tipeomi IS NULL THEN
           CASE WHEN (trjd_flagtax1 = 'Y' AND trjd_flagtax2 = 'Y') AND NVL(prd_kodetag,'9') <> 'Q' AND tko_kodecustomer = trjd_cus_kodemember THEN
-                 trjd_nominalamt * 1.1
+                 trjd_nominalamt * (1+(nvl(prd_ppn,10)/100))
           ELSE
                 CASE WHEN (trjd_flagtax1 = 'Y' AND trjd_flagtax2 = 'Y') AND NVL(prd_kodetag,'9') <> 'Q' THEN
                      trjd_nominalamt
@@ -63,6 +78,21 @@ from( SELECT trjd_division, SUBSTR(trjd_division,1,2) dept, kat_kodekategori, ka
            END
         END
     END rbkp,
+    CASE WHEN trjd_transactiontype = 'R' THEN
+       CASE WHEN tko_tipeomi = 'HR' OR tko_tipeomi IS NULL THEN
+          CASE WHEN (trjd_flagtax1 = 'Y' AND trjd_flagtax2 = 'Y') AND NVL(prd_kodetag,'9') <> 'Q' AND tko_kodecustomer = trjd_cus_kodemember THEN
+                 trjd_nominalamt * (1+(nvl(prd_ppn,10)/100))
+          ELSE
+                CASE WHEN (trjd_flagtax1 = 'Y' AND trjd_flagtax2 = 'Y') AND NVL(prd_kodetag,'9') <> 'Q' THEN
+                     trjd_nominalamt
+                END
+          END
+        ELSE
+           CASE WHEN (trjd_flagtax1 = 'Y' AND trjd_flagtax2 = 'Y') AND NVL(prd_kodetag,'9') <> 'Q' THEN
+                  trjd_nominalamt
+           END
+        END
+    END / (1+(nvl(prd_ppn,10)/100)) rbkpx,
     CASE WHEN trjd_transactiontype = 'S' THEN
        CASE WHEN (trjd_flagtax1 = 'Y' AND trjd_flagtax2 = 'Y') AND NVL(prd_kodetag,'9') = 'Q' AND NVL(cus_jenismember,'9') ='E' THEN
 	   trjd_nominalamt

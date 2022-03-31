@@ -53,6 +53,8 @@
             $totRtkp = 0;
             $totRcki = 0;
             $totRef = 0;
+            $totNet = 0;
+            $totPpn = 0;
 
             $totSexp = 0;
             $totRexp = 0;
@@ -67,6 +69,8 @@
             $totRtkp43 = 0;
             $totRcki43 = 0;
             $totRef43 = 0;
+            $totNet43 = 0;
+            $totPpn43 = 0;
 
             $totSbkp40 = 0;
             $totSokp40 = 0;
@@ -78,6 +82,8 @@
             $totRtkp40 = 0;
             $totRcki40 = 0;
             $totRef40 = 0;
+            $totNet40 = 0;
+            $totPpn40 = 0;
 
             $totSbkpAll = 0;
             $totSokpAll = 0;
@@ -89,6 +95,8 @@
             $totRtkpAll = 0;
             $totRckiAll = 0;
             $totRefAll = 0;
+            $totNetAll = 0;
+            $totPpnAll = 0;
         @endphp
         @foreach($data as $d)
             @php
@@ -103,6 +111,8 @@
                     $totRtkp43 = $d->rtkp;
                     $totRcki43 = $d->rcki;
                     $totRef43 = $d->rbkp + $d->rokp + $d->rtkp + $d->rcki;
+                    $totNet43 = ($d->sbkpx + $d->sokp + $d->stkp + $d->scki) - $totRef43;
+                    $totPpn43 = $d->sbkp - $d->sbkpx;
                 }
                 if($d->dept == '40'){
                     $totSbkp40 = $d->sbkp;
@@ -115,6 +125,8 @@
                     $totRtkp40 = $d->rtkp;
                     $totRcki40 = $d->rcki;
                     $totRef40 = $d->rbkp + $d->rokp + $d->rtkp + $d->rcki;
+                    $totNet40 = ($d->sbkpx + $d->sokp + $d->stkp + $d->scki) - $totRef40;
+                    $totPpn40 = $d->sbkp - $d->sbkpx;
                 }
 
                 $totSbkpAll += $d->sbkp;
@@ -127,6 +139,8 @@
                 $totRtkpAll += $d->rtkp;
                 $totRckiAll += $d->rcki;
                 $totRefAll += $d->rbkp + $d->rokp + $d->rtkp + $d->rcki;
+                $totNetAll += ($d->sbkpx + $d->sokp + $d->stkp + $d->scki) - $totRefAll;
+                $totPpnAll += $d->sbkp - $d->sbkpx;
             @endphp
 
 
@@ -144,8 +158,8 @@
                         <td class="right">{{ number_format($totRtkp) }}</td>
                         <td class="right">{{ number_format($totRcki) }}</td>
                         <td class="right">{{ number_format($totRef) }}</td>
-                        <td class="right">{{ number_format(($totPenj - $totRef) - (($totPenj - $totRef) / 111 * 11)) }}</td>
-                        <td class="right">{{ number_format(($totPenj - $totRef) / 111 * 11) }}</td>
+                        <td class="right">{{ number_format($totNet) }}</td>
+                        <td class="right">{{ number_format($totPpn) }}</td>
                     </tr>
                 @endif
                 @php
@@ -160,6 +174,8 @@
                     $totRtkp = 0;
                     $totRcki = 0;
                     $totRef = 0;
+                    $totNet = 0;
+                    $totPpn = 0;
                 @endphp
             @endif
             @php
@@ -176,6 +192,8 @@
                 $totRtkp += $d->rtkp;
                 $totRcki += $d->rcki;
                 $totRef += $totalRefund;
+                $totNet += ($d->sbkpx + $d->sokp + $d->stkp + $d->scki) - $totRef;
+                $totPpn += $d->sbkp - $d->sbkpx;
 
                 $totSexp += $d->sexp;
                 $totRexp += $d->rexp;
@@ -208,8 +226,8 @@
                 <td class="right">{{ number_format($totRtkp) }}</td>
                 <td class="right">{{ number_format($totRcki) }}</td>
                 <td class="right">{{ number_format($totRef) }}</td>
-                <td class="right">{{ number_format(($totPenj - $totRef) - (($totPenj - $totRef) / 111 * 11)) }}</td>
-                <td class="right">{{ number_format(($totPenj - $totRef) / 111 * 11) }}</td>
+                <td class="right">{{ number_format($totNet) }}</td>
+                <td class="right">{{ number_format($totPpn) }}</td>
             </tr>
             <tr class="bold" style="border-top: 1px solid black">
                 <td colspan="2" class="left">** TOTAL BARANG EXPORT</td>
@@ -238,8 +256,8 @@
                 <td class="right">{{ number_format($totRtkp43) }}</td>
                 <td class="right">{{ number_format($totRcki43) }}</td>
                 <td class="right">{{ number_format($totRef43) }}</td>
-                <td class="right">{{ number_format(($totPenj43 - $totRef43) - (($totPenj43 - $totRef43) / 111 * 11)) }}</td>
-                <td class="right">{{ number_format(($totPenj43 - $totRef43) / 111 * 11) }}</td>
+                <td class="right">{{ number_format($totNet43) }}</td>
+                <td class="right">{{ number_format($totPpn43) }}</td>
             </tr>
             <tr class="bold">
                 <td colspan="2" class="left">** TOTAL AKHIR (TANPA DEPT 40)</td>
@@ -253,8 +271,8 @@
                 <td class="right">{{ number_format($totRtkpAll - $totRtkp40) }}</td>
                 <td class="right">{{ number_format($totRckiAll - $totRcki40) }}</td>
                 <td class="right">{{ number_format($totRefAll - $totRef40) }}</td>
-                <td class="right">{{ number_format((($totPenjAll - $totPenj40) - ($totRefAll - $totRef40)) - ((($totPenjAll - $totPenj40) - ($totRefAll - $totRef40)) / 111 * 11)) }}</td>
-                <td class="right">{{ number_format((($totPenjAll - $totPenj40) - ($totRefAll - $totRef40)) / 111 * 11) }}</td>
+                <td class="right">{{ number_format($totNetAll - $totNet40) }}</td>
+                <td class="right">{{ number_format($totPpnAll - $totPpn40) }}</td>
             </tr>
             <tr class="bold">
                 <td colspan="2" class="left">** TOTAL AKHIR (+ DEPT 40)</td>
@@ -268,8 +286,8 @@
                 <td class="right">{{ number_format($totRtkpAll) }}</td>
                 <td class="right">{{ number_format($totRckiAll) }}</td>
                 <td class="right">{{ number_format($totRefAll) }}</td>
-                <td class="right">{{ number_format(($totPenjAll - $totRefAll) - (($totPenjAll - $totRefAll) / 111 * 11)) }}</td>
-                <td class="right">{{ number_format(($totPenjAll - $totRefAll) / 111 * 11) }}</td>
+                <td class="right">{{ number_format($totNetAll) }}</td>
+                <td class="right">{{ number_format($totPpnAll) }}</td>
             </tr>
         </tbody>
         <tfoot>

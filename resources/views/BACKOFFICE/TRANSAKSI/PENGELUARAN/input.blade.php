@@ -361,6 +361,7 @@
         var kdsup = '';
         let arrDeletedPlu = [];
         let arrNewData = [];
+        let index = 1;
 
         $(document).ready(function () {
             reset();
@@ -521,7 +522,7 @@
                             swal({
                                 title: result.msg,
                                 icon: 'success'
-                            }).then(() => {});
+                            });
                         }, error: function () {
                             alert('error');
                         }
@@ -531,9 +532,7 @@
                 }
             })
         }
-
-
-        function getDataPLU(plu) {
+                function getDataPLU(plu) {
             if (kdsup == '' || kdsup == null) {
                 swal({
                     title: 'Info',
@@ -568,7 +567,7 @@
                         });
                     }
                     if (response.result) {
-                        $(".plu-header-" + rowheader).val(response.result.st_prdcd);
+                        $(".plu-header-" + rowheader).val(response.result.st_F);
                         $(".plu-header-" + rowheader).attr('max_qty', response.result.qtypb);
                         $(".deskripsi-header-" + rowheader).val(response.result.prd_deskripsipendek);
                         $(".satuan-header-" + rowheader).val(response.result.satuan);
@@ -674,13 +673,13 @@
             //         text: "Tekan tombol Ya untuk melanjutkan!",
             //         icon: "info",
             //         buttons: true,
-            //     }).then((yes) => {                   
+            //     }).then((yes) => {
             //         if (yes) {
             //             $('#btn-save').attr('id', 'btn-save-new');
-                        
+
             //             $('#tBodyDetail tr').each(function(){
             //                 $(this).find('td .plu').each(function(){
-            //                     if ($(this).val() === plu) {                        
+            //                     if ($(this).val() === plu) {
             //                         $(this).parents('tr').remove();
             //                         arrDeletedPlu.push(plu);
             //                         console.log(arrDeletedPlu);
@@ -700,7 +699,7 @@
             //                     reset();
             //                 },
             //                 success: function (response) {
-                                
+
             //                 },
             //                 error: function (error) {
             //                     $('#modal-loader').modal('hide');
@@ -726,6 +725,9 @@
                     buttons: true,
                 }).then((yes) => {
                     if (yes) {
+                        $('#btn-save').attr('id', 'btn-save-new');
+                        $('#btn-save-new').attr('onclick', 'saveNewData()');
+
                         $.ajax({
                             type: "GET",
                             url: "{{ url('/bo/transaksi/pengeluaran/input/get-new-no-trn') }}",
@@ -775,6 +777,11 @@
                                         '<td><input class="form-control ctn-header ctn-header-1" rowheader=1 type="text"></td>' +
                                         '<td><input class="form-control pcs-header pcs-header-1" rowheader=1 type="text"></td>' +
                                         '<td><input class="form-control keterangan-header keterangan-header-1" rowheader=1 type="text"></td>' +
+                                        '</tr>' +
+                                        '<tr>' +
+                                        '<td>' +
+                                        '<button class="btn btn-primary" id="btnAddRow" onclick="addNewRow()">+</button>' +
+                                        '</td>' +
                                         '</tr>');
 
                                 }
@@ -942,6 +949,20 @@
                                     '<td><input class="form-control " type="text" value="' + pcs + '"></td>' +
                                     '<td><input class="form-control " type="text" value="' + ket + '"></td>' +
                                     '</tr>');
+                                $('#tBodyHeader').find('tr:last').append(
+                                    '<tr>' +
+                                    '<td>' +
+                                    '<button class="btn btn-primary" id="btnAddRow" onclick="addNewRow()">+</button>' +
+                                    '</td>' +
+                                    '</tr>'
+                                );
+                                // $('#tBodyHeader #row:last').append(
+                                //     '<tr>' +
+                                //     '<td>' +
+                                //     '<button class="btn btn-primary" id="btnAddRow" onclick="addNewRow()">+</button>' +
+                                //     '</td>' +
+                                //     '</tr>'
+                                // );
                             });
 
                             var datas_detail = response.datas_detail;
@@ -1034,6 +1055,37 @@
             }
         }
 
+        function addNewRow() {
+            console.log('clicked');
+            $('#tBodyHeader').find('#row').remove();
+            $('#tBodyHeader').find('#btnAddRow').remove();
+            $('#tBodyHeader').append(
+
+                `<tr class="row-header-${index + 1}">` +
+                `<td><button class="btn btn-block btn-danger btn-delete-row-header" rowheader="${index + 1}"><i class="icon fas fa-times"></i></button></td>` +
+                `<td class="buttonInside" style="width: 8%">` +
+                `<input type="text" class="form-control plu-header-${index + 1} plu-header" rowheader="${index + 1}">` +
+
+                `<button type="button" class="btn btn-lov-plu btn-lov ml-3" rowheader="${index + 1}" data-target="#m_lov_plu" data-toggle="modal">` +
+                `<img src="../../../../public/image/icon/help.png" width="30px">` +
+                `</button>` +
+                `</td>` +
+                `<td><input disabled class="form-control deskripsi-header-${index + 1}" type="text"></td>` +
+                `<td><input disabled class="form-control satuan-header satuan-header-${index + 1}" type="text"></td>` +
+                `<td><input disabled class="form-control bkp-header-${index + 1}" type="text"></td>` +
+                `<td><input disabled class="form-control stock-header-${index + 1}" type="text"></td>` +
+                `<td><input class="form-control ctn-header ctn-header-${index + 1}" rowheader="${index + 1}" type="text"></td>` +
+                `<td><input class="form-control pcs-header pcs-header-${index + 1}" rowheader="${index + 1}" type="text"></td>` +
+                `<td><input class="form-control keterangan-header keterangan-header-${index + 1}" rowheader="${index + 1}" type="text"></td>` +
+                `</tr>`  +
+                `<tr>` +
+                `<td>` +
+                `<button class="btn btn-primary" id="btnAddRow" onclick="addNewRow()">+</button>` +
+                `</td>` +
+                `</tr>`);
+
+            index++;
+        }
         function deleteRow(plu) {
             $('#row' + plu).remove();
             console.log(plu);
@@ -1041,7 +1093,7 @@
 
             $('#tBodyDetail tr').each(function(){
                 $(this).find('td .plu').each(function(){
-                    if ($(this).val() === plu) {                        
+                    if ($(this).val() === plu) {
                         $(this).parents('tr').remove();
                         arrDeletedPlu.push(plu);
                         console.log(arrDeletedPlu);
@@ -1054,7 +1106,6 @@
             var rh = current.attr('rowheader');
             $('.row-header-' + rh).empty();
             $('.row-detail-' + rh).empty();
-
         });
 
         $(document).on('keypress', '.ctn-header', function (e) {
@@ -1647,7 +1698,7 @@
                         return false;
                     }
                 });
-            
+
             // else {
             //     swal({
             //         title: "Error",
@@ -1864,6 +1915,39 @@
                 }
             });
         });
+
+        function saveNewData(){
+            let supplier = $('#txtKodeSupplier').val();
+            let nodoc = $('#no-trn').val();
+            let tgldoc = $('#tgl-doc').val();
+
+            $('#tBodyDetail tr').each(function () {
+                var data = {};
+
+                data.nodoc = nodoc;
+                data.tgldoc = tgldoc;
+                data.noreff = $(this).find(".noreff").val();
+                data.istype = $(this).find(".istype").val();
+                data.invno = $(this).find(".invno").val();
+                data.tglinv = $(this).find(".tglinv").val();
+                data.kdsup = kdsup;
+                data.plu = $(this).find(".plu-header").val();
+                data.ctn = $(this).find(".qtyctn").val();
+                data.qty = $(this).find(".qtypcs").val();
+                data.hargasatuan = $(this).find(".hargasatuan").val();
+                data.persendisc = $(this).find(".persendisc").val();
+                data.gross = parseFloat($(this).find(".gross").val());
+                data.discrph = parseFloat($(this).find(".discrph").val());
+                data.ppnrph = parseFloat($(this).find(".ppn").val());
+                data.posqty = parseFloat($(this).find(".posqty").val());
+                data.keterangan = $(this).find(".keterangan").val();
+                arrNewData.push(data);
+            });
+
+            console.log(supplier);
+            console.log(nodoc);
+            console.log(arrNewData);
+        }
 
 
     </script>

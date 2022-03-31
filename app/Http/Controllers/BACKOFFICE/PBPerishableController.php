@@ -19,7 +19,7 @@ class PBPerishableController extends Controller
     {
         $search = $request->search;
 
-        $result = DB::connection(Session::get('connection'))->table('tbtr_pb_perishable')
+        $result = DB::connection('simbdg')->table('tbtr_pb_perishable')
             ->selectRaw("pbp_nopb, pbp_tglpb, pbp_recordid")
             ->whereRaw("nvl(pbp_recordid,'_') <> '1'")
             ->where('pbp_nopb', 'LIKE', '%' . $search . '%')
@@ -35,7 +35,7 @@ class PBPerishableController extends Controller
     {
         $search = strtoupper($request->search);
 
-        $result = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+        $result = DB::connection('simbdg')->table('tbmaster_prodmast')
             ->select('prd_prdcd', 'prd_deskripsipanjang')
             ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
             ->whereRaw("nvl(prd_recordid,'9')<>'1'")
@@ -46,12 +46,33 @@ class PBPerishableController extends Controller
         return response()->json($result);
     }
 
+    public function showSup(Request $request){
+        $kodesupplier = $request->kodesupplier;
+
+        $result = DB::connection('simbdg')->table('tbtr_pb_perishable')
+            ->leftJoin('tbtr_pb_h','pbp_nopb','=','pbh_nopb')
+            ->leftJoin('tbmaster_supplier', 'pbp_kodesupplier', '=', 'sup_kodesupplier')
+//            ->leftJoin('tbmaster_stock','pbp_prdcd','=','st_prdcd')
+            ->selectRaw("COUNT(1)")
+            ->selectRaw('pbp_kodesarana')
+            ->selectRaw('pbp_volsarana')
+            ->selectRaw('pbp_kodesupplier')
+            ->selectRaw('sup_namasupplier')
+            ->where('PBP_KODESUPPLIER', '=', $kodesupplier)
+            ->whereNull('pbp_recordid')
+            ->orderBy('PBP_KODESUPPLIER')
+            ->get();
+
+        return response()->json($result);
+    }
+
     public function showTrn(Request $request){
         $nopb = $request->nopb;
         $kodesupplier = $request->kodesupplier;
 
-        $result = DB::connection(Session::get('connection'))->table('tbtr_pb_perishable')
+        $result = DB::connection('simbdg')->table('tbtr_pb_perishable')
             ->leftJoin('tbmaster_prodmast', 'pbp_prdcd', '=', 'prd_prdcd')
+            ->leftJoin('tbmaster_supplier', 'pbp_kodesupplier', '=', 'sup_kodesupplier')
 //            ->leftJoin('tbmaster_stock','pbp_prdcd','=','st_prdcd')
             ->selectRaw('pbp_nopb')
             ->selectRaw('pbp_tglpb')
@@ -66,18 +87,12 @@ class PBPerishableController extends Controller
             ->selectRaw('pbp_dimensi')
             ->selectRaw('pbp_kubikase')
             ->selectRaw('prd_deskripsipanjang')
-            ->selectRaw('prd_kodetag')
-            ->selectRaw("prd_flagbkp1")
             ->selectRaw('pbp_qtypb')
-            ->selectRaw('prd_frac')
-            ->selectRaw('prd_unit')
-            ->select("SELECT SUM PBP_KUBIKASE AS TOTALKUBIK FROM TBTR_PB_PERISHABLE WHERE PBP_KODESUPPLIER = $kodesupplier")
-            ->selectRaw('TRUNC(trbo_qty/prd_frac) as QTYCTN')
-            ->selectRaw('MOD(trbo_qty, prd_frac) as QTNPCS')
-            ->selectRaw('trbo_gross')
-            ->selectRaw('trbo_keterangan')
+            ->selectRaw('pbp_kubikase')
             ->selectRaw('prd_deskripsipanjang')
             ->selectRaw('pbp_avgsales')
+            ->selectRaw('pbp_kodesupplier')
+            ->selectRaw('sup_namasupplier')
             ->where('PBP_NOPB', '=', $nopb)
             ->whereNull('pbp_recordid')
             ->orderBy('PBP_NOPB')
@@ -93,8 +108,8 @@ class PBPerishableController extends Controller
         $ppn = '';
         $trim = 0;
 
-        $result = DB::connection(Session::get('connection'))->select("SELECT PRD_DESKRIPSIPENDEK,PRD_DESKRIPSIPANJANG,PRD_FRAC,PRD_UNIT,PRD_KODETAG,PRD_FLAGBKP1, PRD_AVGCOST,
-                ST_AVGCOST,NVL(ST_PRDCD,'XXXXXXX') as ST_PRDCD,Nvl(ST_SALDOAKHIR,0) as ST_SALDOAKHIR, PRD_KODESUPPLIER
+        $result = DB::connection('simbdg')->select("SELECT ,PRD_DESKRIPSIPANJANG
+               NVL(ST_PRDCD,'XXXXXXX') as ST_PRDCD, PRD_KODESUPPLIER
                 FROM TBMASTER_PRODMAST tp
                 LEFT JOIN TBMASTER_STOCK ts ON tp.prd_prdcd = ts.st_prdcd and st_lokasi = '01'
                 where  PRD_PRDCD = '$noplu'");
@@ -159,37 +174,45 @@ class PBPerishableController extends Controller
         oci_bind_by_name($s, ':ret', $docNo, 32);
         oci_execute($s);
 
-        $getDoc = DB::connection(Session::get('connection'))->table('tbtr_pb_perishable')->where('trbo_nodoc', $nopb)->first();
+        $getDoc = DB::connection('simbdg')->table('tbtr_pb_perishable')->where('pbp_nopb', $nopb)->first();
 
         if($getDoc){
-            DB::connection(Session::get('connection'))->table('tbtr_pb_perishable')->where('trbo_nodoc', $nopb)->delete();
+            DB::connection('simbdg')->table('tbtr_pb_perishable')->where('pbp_nopb', $nopb)->delete();
 
             for ($i = 1; $i < sizeof($data); $i++){
                 $temp = $data[$i];
 
-                $prodmast = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
-                    ->where('prd_kodeigr', $kodeigr)
-                    ->where('prd_prdcd', $temp['plu'])
+                $prodmast = DB::connection('simbdg')->table('tbmaster_prodmast')
+                    ->where('pbp_kodeigr', $kodeigr)
+                    ->where('pbp_prdcd', $temp['plu'])
                     ->first();
 
                 //update data
-                DB::connection(Session::get('connection'))->table('tbtr_pb_perishable')
+                DB::connection('simbdg')->table('tbtr_pb_perishable')
                     ->insert([
-                        'trbo_kodeigr' => $kodeigr, 'trbo_recordid' => '', 'trbo_typetrn' => 'H','trbo_nodoc' => $getDoc->trbo_nodoc,
-                        'trbo_tgldoc' => $date, 'trbo_noreff' => '', 'trbo_tglreff' => '', 'trbo_nopo' => '', 'trbo_tglpo' => '',
-                        'trbo_nofaktur' => '', 'trbo_tglfaktur' => '', 'trbo_istype' => '', 'trbo_invno' => '', 'trbo_tglinv' => '',
-                        'trbo_nott' => '', 'trbo_tgltt' => '', 'trbo_kodesupplier' => '', 'trbo_kodeigr2' => '', 'trbo_seqno' => $i,
-                        'pbp_prdcd' => $temp['plu'], 'trbo_qty' => $temp['qty'], 'trbo_qtybonus1' => '', 'trbo_qtybonus2' => '',
-                        'trbo_hrgsatuan' => $temp['hrgsatuan'], 'trbo_persendisc1' => '', 'trbo_rphdisc1' => '', 'trbo_flagdisc1' => '1',
-                        'trbo_persendisc2' => '', 'trbo_rphdisc2' => '', 'trbo_flagdisc2' => '', 'trbo_persendisc2ii' => '',
-                        'trbo_rphdisc2ii' => '', 'trbo_persendisc3' => '', 'trbo_rphdisc3' => '', 'trbo_flagdisc3' => '', 'trbo_persendisc4' => '',
-                        'trbo_rphdisc4' => '', 'trbo_flagdisc4' => '', 'trbo_dis4cp' => '', 'trbo_dis4cr' => '', 'trbo_dis4rp' => '',
-                        'trbo_dis4jp' => '', 'trbo_dis4jr' => '', 'trbo_gross' => $temp['gross'], 'trbo_discrph' => '', 'trbo_ppnrph' => '0',
-                        'trbo_ppnbmrph' => '', 'trbo_averagecost' => $prodmast->prd_avgcost, 'trbo_oldcost' => '', 'trbo_posqty' => '',
-                        'trbo_keterangan' => strtoupper($temp['keterangan']), 'trbo_furgnt' => '', 'trbo_gdg' => '', 'trbo_flagdoc' => '0',
-                        'trbo_create_by' => $getDoc->trbo_create_by, 'trbo_create_dt' => $getDoc->trbo_create_dt, 'trbo_modify_by' => $userid,
-                        'trbo_modify_dt' => $today, 'trbo_stokqty' => '', 'trbo_loc' => '', 'trbo_notaok' => '', 'trbo_nonota' => '',
-                        'trbo_tglnota' => ''
+                        'pbp_kodeigr' => $kodeigr, 
+                        'pbp_recordid' => '', 
+                        'pbp_nopb' => $getDoc->pbp_nopb,
+                        'pbp_tglpb' => $date,
+                        'pbp_kodesupplier' => $getDoc->pbp_kodesupplier,
+                        'pbp_kodesarana' => $getDoc->pbp_kodesarana,
+                        'pbp_volsarana' => $getDoc->pbp_volsarana,
+                        'pbp_prdcd' => $temp['plu'], 
+                        'pbp_pkm' => $getDoc->pbp_pkm,
+                        'pbp_avgsales' => $getDoc->pbp_avgsales,
+                        'pbp_stock' => $getDoc->pbp_stock,
+                        'pbp_mindisplay' => 1,
+                        'pbp_minorder' => $getDoc->pbp_minorder,
+                        'pbp_qtypb' => $temp['qty'],
+                        'pbp_qtypbout' => $getDoc->pbp_qtypbout,
+                        'pbp_qtypoout' => $getDoc->pbp_qtypoout,
+                        'pbp_dimensi' => $getDoc->pbp_dimensi,
+                        'pbp_kubikase' => $getDoc->pbp_kubikase,
+                        'pbp_createby' => $getDoc->pbp_createby, 
+                        'pbp_createdt' => $getDoc->pbp_createdt, 
+                        'pbp_modifyby' => $userid, 
+                        'pbp_modifydt' => $today,
+                        'pbp_isictn' => ''
                     ]);
             }
 
@@ -198,26 +221,36 @@ class PBPerishableController extends Controller
             for ($i = 1; $i < sizeof($data); $i++) {
                 $temp = $data[$i];
 
-                $prodmast = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+                $prodmast = DB::connection('simbdg')->table('tbmaster_prodmast')
                     ->where('prd_kodeigr', $kodeigr)
                     ->where('prd_prdcd', $temp['plu'])
                     ->first();
 
-                DB::connection(Session::get('connection'))->table('tbtr_pb_perishable')
+                DB::connection('simbdg')->table('tbtr_pb_perishable')
                     ->insert([
                         'pbp_kodeigr' => $kodeigr, 
                         'pbp_recordid' => '', 
                         'pbp_nopb' => $docNo,
                         'pbp_tglpb' => $date,
                         'pbp_kodesupplier' => $temp[''],
+                        'pbp_kodesarana' => $temp[''],
+                        'pbp_volsarana' => $temp[''],
                         'pbp_prdcd' => $temp['plu'], 
-                        'pbp_qtypb' => $temp['qty'],
+                        'pbp_pkm' => $temp[''],
                         'pbp_avgsales' => '',
-                        'trbo_keterangan' => strtoupper($temp['keterangan']),
+                        'pbp_stock' => '',
+                        'pbp_mindisplay' => '',
+                        'pbp_minorder' => '',
+                        'pbp_qtypb' => $temp['qty'],
+                        'pbp_qtypbout' => '',
+                        'pbp_qtypoout' => '',
+                        'pbp_dimensi' => '',
+                        'pbp_kubikase' => '',
                         'pbp_createby' => $userid, 
                         'pbp_createdt' => $today, 
-                        'pbp_modifyby' => $userid, 
-                        'pbp_modifydt' => $today
+                        'pbp_modifyby' => '', 
+                        'pbp_modifydt' => '',
+                        'pbp_isictn' => '',
                     ]);
             }
             return response()->json(['kode' => 1, 'msg' => $docNo]);
@@ -227,7 +260,7 @@ class PBPerishableController extends Controller
     public function deleteDoc(Request $request){
         $nopb = $request->nopb;
 
-        DB::connection(Session::get('connection'))
+        DB::connection('simbdg')
             ->table('tbtr_pb_perishable')
             ->where('pbp_nopb', $nopb)
             ->delete();

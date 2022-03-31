@@ -1,4 +1,5 @@
 @extends('navbar')
+@section('title', 'INQUERY | INQUIRY PRODUK PER SUPPPLIER')
 @section('content')
 
 
@@ -6,30 +7,32 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Inquiry Produk Per Supplier</legend>
+                    <legend  class="w-auto ml-5">INQUIRY PRODUK PER SUPPLIER</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="row">
                             <div class="col-sm-10">
                                 {{--<fieldset class="card border-secondary">--}}
-                                    <form>
-                                        <div class="row text-right">
-                                            <div class="col-sm-12">
-                                                <div class="form-group row mb-0">
-                                                    <label for="i_kodesupplier" class="col-sm-2 col-form-label">Supplier</label>
-                                                    <div class="col-sm-2">
-                                                        <input type="text" class="form-control" id="i_kodesupplier">
-                                                    </div>
-                                                    <button type="button" class="btn p-0" data-toggle="modal" data-target="#modal_supp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
-                                                    <label for="i_namasupplier" class="col-sm-2 col-form-label">Nama Supplier</label>
-                                                    <div class="col-sm-5">
-                                                        <input type="text" class="form-control" id="i_namasupplier" disabled>
-                                                    </div>
+                                <form>
+                                    <div class="row text-right">
+                                        <div class="col-sm-12">
+                                            <div class="form-group row mb-0">
+                                                <label for="i_kodesupplier" class="col-sm-2 col-form-label">Supplier</label>
+                                                <div class="col-sm-2 buttonInside">
+                                                    <input type="text" class="form-control" id="i_kodesupplier">
+                                                    <button type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#modal_supp">
+                                                        <img src="{{asset('image/icon/help.png')}}" width="30px">
+                                                    </button>
+                                                </div>
+                                                <label>-</label>
+                                                <div class="col-sm-5">
+                                                    <input type="text" class="form-control" id="i_namasupplier" disabled>
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
-                                    <tbody>
-                                    </tbody>
+                                    </div>
+                                </form>
+                                <tbody>
+                                </tbody>
                             </div>
                             <div class="col-sm-12">
                                 <fieldset class="card border-secondary">
@@ -52,18 +55,6 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                    {{--<form>--}}
-                                    {{--<div class="row text-right">--}}
-                                    {{--<div class="col-sm-12">--}}
-                                    {{--<div class="form-group row mb-2">--}}
-                                    {{--<label for="i_totalitem" class="col-sm-2 col-form-label">Total Item</label>--}}
-                                    {{--<div class="col-sm-1">--}}
-                                    {{--<input type="text" class="form-control" id="i_totalitem" value="">--}}
-                                    {{--</div>--}}
-                                    {{--</div>--}}
-                                    {{--</div>--}}
-                                    {{--</div>--}}
-                                    {{--</form>--}}
                                 </fieldset>
                             </div>
                         </div>
@@ -78,9 +69,9 @@
                             </div>
                         </div>
                     </div>
-            </fieldset>
+                </fieldset>
+            </div>
         </div>
-    </div>
     </div>
 
     <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="vertical-align: middle;">
@@ -105,41 +96,42 @@
 
             {{--<!-- Modal content-->--}}
             <div class="modal-content">
-                {{--<div class="modal-header">--}}
-                    {{--<div class="form-row col-sm">--}}
-                    {{--<input id="helpSearch" class="form-control helpSearch" type="text" placeholder="Inputkan Nama / Kode Supplier" aria-label="Search">--}}
-                    {{--<div class="invalid-feedback">--}}
-                    {{--Inputkan minimal 3 karakter</div>--}}
-                    {{--</div>--}}
-                {{--</div>--}}
+{{--                <div class="modal-header">--}}
+{{--                <div class="form-row col-sm">--}}
+{{--                <input id="helpSearch" class="form-control helpSearch" type="text" placeholder="..." aria-label="Search">--}}
+{{--                <div class="invalid-feedback">--}}
+{{--                Inputkan minimal 3 karakter</div>--}}
+{{--                </div>--}}
+{{--                </div>--}}
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col">
                                 {{--<div class="tableFixedHeader">--}}
-                                    <table class="table table-sm" id="table_lov">
-                                        <thead>
-                                        <tr>
-                                            <td>Kode Supplier</td>
-                                            <td>Nama Supplier</td>
+                                <table class="table table-sm" id="table_lov">
+                                    <thead>
+                                    <tr>
+                                        <td>Kode Supplier</td>
+                                        <td>Kode Supplier MCG</td>
+                                        <td>Nama Supplier</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="tbodyModal">
+                                    @foreach($result as $s)
+                                        <tr onclick="helpSelect('{{ $s->sup_kodesupplier }}')" class="row_lov">
+                                            <td>{{ $s->sup_kodesupplier }}</td>
+                                            <td>{{ $s->sup_kodesuppliermcg }}</td>
+                                            <td>{{ $s->sup_namasupplier }}</td>
                                         </tr>
-                                        </thead>
-                                        <tbody>
-                                        @foreach($supplier as $s)
-                                            <tr onclick="helpSelect('{{ $s->sup_kodesupplier }}')" class="row_lov">
-                                                <td>{{ $s->sup_kodesupplier }}</td>
-                                                <td>{{ $s->sup_namasupplier }}</td>
-                                            </tr>
-                                        @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
+                                    @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
-                {{--<div class="modal-footer"></div>--}}
-            {{--</div>--}}
+            </div>
+            <div class="modal-footer"></div>
         </div>
     </div>
 
@@ -165,7 +157,7 @@
         }
         .row_lov:hover{
             cursor: pointer;
-            background-color: #acacac;
+            background-color: grey;
         }
 
         .rowdetail:hover{
@@ -189,8 +181,8 @@
                 e.preventDefault();
                 let kodesupp = $('#i_kodesupplier').val();
                 helpSelect(kodesupp);
-                }
-            });
+            }
+        });
 
         function helpSelect(kodesupp) {
             $('#modal_supp').modal('hide');
@@ -229,7 +221,7 @@
                         }
                     }
                 }, error: function () {
-                   alert('error');
+                    alert('error');
                 }
             })
         }

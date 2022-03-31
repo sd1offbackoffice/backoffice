@@ -148,49 +148,49 @@ $datetime->setTimezone($timezone);
 
                     <table class="table table-bordered table-responsive" style="margin-top: 25px">
                         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
-                        <tr style="text-align: center;">
-                            <th rowspan="2" style="width: 20px">NO</th>
-                            <th rowspan="2" style="width: 40px">PLU</th>
-                            <th rowspan="2" style="width: 120px">NAMA BARANG</th>
-                            <th rowspan="2" style="width: 30px">BKP</th>
-                            <th rowspan="2" style="width: 60px">KEMASAN</th>
-                            <th colspan="2" style="width: 60px">* KWANTUM *</th>
-                            <th colspan="2" style="width: 60px">* BONUS *</th>
-                            <th rowspan="2" style="width: 50px; text-align: right">H.P.P</th>
-                            <th rowspan="2" style="width: 50px; text-align: right">TOTAL</th>
+                        <tr>
+                            <th rowspan="2" style="width: 20px; text-align: center">NO</th>
+                            <th rowspan="2" style="width: 40px; text-align: center">PLU</th>
+                            <th rowspan="2" style="width: 90px; text-align: center">NAMA BARANG</th>
+                            <th rowspan="2" style="width: 30px; text-align: center">BKP</th>
+                            <th rowspan="2" style="width: 60px; text-align: center">KEMASAN</th>
+                            <th colspan="2" style="width: 60px; text-align: center">* KWANTUM *</th>
+                            <th colspan="2" style="width: 60px; text-align: center">* BONUS *</th>
+                            <th rowspan="2" style="width: 50px; text-align: center">H.P.P</th>
+                            <th rowspan="2" style="width: 50px; text-align: center">TOTAL</th>
                             <th rowspan="2" style="width: 50px; text-align: center">HPP RATA2</th>
-                            <th rowspan="2" style="width: 50px; text-align: right">HRG JUAL</th>
-                            <th colspan="2" style="width: 60px">*** MARGIN ***</th>
-                            <th rowspan="2" style="width: 40px;">TAG</th>
+                            <th rowspan="2" style="width: 50px; text-align: center">HRG JUAL</th>
+                            <th colspan="2" style="width: 60px; text-align: center">*** MARGIN ***</th>
+                            <th rowspan="2" style="width: 40px; text-align: center">TAG</th>
                         </tr>
                         <tr>
-                            <th style="width: 30px">BESAR</th>
-                            <th style="width: 30px">KECIL</th>
-                            <th style="width: 30px">1</th>
-                            <th style="width: 30px">2</th>
-                            <th style="width: 30px">SID</th>
-                            <th style="width: 30px">AKTUAL</th>
+                            <th style="width: 30px; text-align: center">BESAR</th>
+                            <th style="width: 30px; text-align: center">KECIL</th>
+                            <th style="width: 30px; text-align: center">1</th>
+                            <th style="width: 30px; text-align: center">2</th>
+                            <th style="width: 30px; text-align: center">SID</th>
+                            <th style="width: 30px; text-align: center">AKTUAL</th>
                         </tr>
                         </thead>
                         <tbody style="border-bottom: 1px solid black">
                         @for($j = $i ; $j < sizeof($datas); $j++)
                             <tr>
-                                <td>{{$no = $no+1}}</td>
+                                <td style="text-align: center">{{$no = $no+1}}</td>
                                 <td style="text-align: center">{{$datas[$j]->mstd_prdcd}}</td>
-                                <td>{{$datas[$j]->prd_deskripsipanjang}}</td>
+                                <td style="text-align: center">{{$datas[$j]->prd_deskripsipanjang}}</td>
                                 <td style="text-align: center">{{$datas[$j]->mstd_bkp}}</td>
                                 <td style="text-align: center">{{$datas[$j]->satuan}}</td>
                                 <td style="text-align: center">{{$datas[$j]->qty}}</td>
                                 <td style="text-align: center">{{$datas[$j]->qtyk}}</td>
                                 <td style="text-align: center">{{$datas[$j]->mstd_qtybonus1}}</td>
                                 <td style="text-align: center">{{$datas[$j]->mstd_qtybonus2}}</td>
-                                <td style="text-align: right">{{number_format($datas[$j]->nlcost ,2,',','.')}}</td>
-                                <td style="text-align: right">{{number_format($datas[$j]->namt ,2,',','.')}}</td>
-                                <td style="text-align: right">{{number_format($datas[$j]->mstd_avgcost ,2,',','.')}}</td>
-                                <td style="text-align: right">{{number_format($datas[$j]->prd_hrgjual ,2,',','.')}}</td>
-                                <td>{{$datas[$j]->prd_markupstandard}}</td>
-                                <td>{{number_format($datas[$j]->nmargin_aktual ,2,',','.')}}</td>
-                                <td>{{$datas[$j]->prd_kodetag}}</td>
+                                <td style="text-align: center">{{number_format($datas[$j]->nlcost ,2,',','.')}}</td>
+                                <td style="text-align: center">{{number_format($datas[$j]->namt ,2,',','.')}}</td>
+                                <td style="text-align: center">{{number_format($datas[$j]->mstd_avgcost ,2,',','.')}}</td>
+                                <td style="text-align: center">{{number_format($datas[$j]->prd_hrgjual ,2,',','.')}}</td>
+                                <td style="text-align: center">{{$datas[$j]->prd_markupstandard}}</td>
+                                <td style="text-align: center">{{number_format($datas[$j]->nmargin_aktual ,2,',','.')}}</td>
+                                <td style="text-align: center">{{$datas[$j]->prd_kodetag}}</td>
 
                                 @php
                                     $grant_total = $grant_total + $datas[$j]->namt;
@@ -199,7 +199,7 @@ $datetime->setTimezone($timezone);
                             @if($j == sizeof($datas)-1 || $datas[$j]->nomor != $datas[$j+1]->nomor)
                                 <tr>
                                     <td colspan="9">TOTAL SELURUHNYA :</td>
-                                    <td style="text-align: right">{{number_format($grant_total ,2,',','.')}}</td>
+                                    <td style="text-align: center">{{number_format($grant_total ,2,',','.')}}</td>
                                 </tr>
                                 @break
                             @endif

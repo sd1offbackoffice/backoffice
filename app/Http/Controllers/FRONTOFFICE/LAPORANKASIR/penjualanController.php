@@ -2416,7 +2416,7 @@ ORDER BY FDKDIV, FDKDEP");
                          case when '" . $nlist . "' = '1' then lph_gross_igr+lph_gross_omi+lph_gross_idm
                               when '" . $nlist . "' = '2' then lph_gross_igr
                               when '" . $nlist . "' = '3' then lph_gross_omi+lph_gross_idm
-                         end nGross,
+                         end nGrossOld,
                          case when '" . $nlist . "' = '1' then lph_csb_igr+lph_csb_omi+lph_csb_idm
                               when '" . $nlist . "' = '2' then lph_csb_igr
                               when '" . $nlist . "' = '3' then lph_csb_omi+lph_csb_idm
@@ -2428,13 +2428,22 @@ ORDER BY FDKDIV, FDKDEP");
                          case when '" . $nlist . "' = '1' then lph_tax_igr+lph_tax_omi+lph_tax_idm
                               when '" . $nlist . "' = '2' then lph_tax_igr
                               when '" . $nlist . "' = '3' then lph_tax_omi+lph_tax_idm
-                         end nTax
-                        from tbtr_lpt_hdr, TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT
+                         end nTaxOld,
+                         case when '" . $nlist . "' = '1' then lph_net_igr+lph_net_omi+lph_net_idm
+                              when '" . $nlist . "' = '2' then lph_net_igr
+                              when '" . $nlist . "' = '3' then lph_net_omi+lph_net_idm
+                         end * (1+(nvl(prd_ppn,10)/100)) nGross,
+                         case when '" . $nlist . "' = '1' then lph_net_igr+lph_net_omi+lph_net_idm
+                              when '" . $nlist . "' = '2' then lph_net_igr
+                              when '" . $nlist . "' = '3' then lph_net_omi+lph_net_idm
+                         end * ((nvl(prd_ppn,10)/100)) nTax
+                        from tbtr_lpt_hdr, TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_PRODMAST
                         where lph_periode BETWEEN TO_DATE('" . $sDate . "','dd-mm-yyyy') AND TO_DATE('" . $eDate . "','dd-mm-yyyy')
                         and lph_kodeigr = prs_kodeigr
                         and prs_kodeigr = '" . Session::get('kdigr') . "'
                         and trim(lph_kodedivisi)=div_kodedivisi
                         and trim(lph_kodedepartement)=dep_kodedepartement
+                        and lph_prdcd = prd_prdcd
                         order by  cdiv,cdept");
 
         $cp_nkgross = 0;

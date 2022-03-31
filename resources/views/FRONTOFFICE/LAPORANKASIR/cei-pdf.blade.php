@@ -3,11 +3,11 @@
 @section('table_font_size','7 px')
 
 @section('page_title')
-    LAPORAN CASH BACK / EVENT / ITEM
+    LAPORAN POTONGAN / EVENT / ITEM
 @endsection
 
 @section('title')
-    ** LAPORAN CASH BACK PER EVENT PROMOSI PER ITEM **
+    ** LAPORAN POTONGAN PER EVENT PROMOSI PER ITEM **
 @endsection
 
 @section('subtitle')

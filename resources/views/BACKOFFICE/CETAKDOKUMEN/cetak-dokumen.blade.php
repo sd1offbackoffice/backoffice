@@ -28,7 +28,7 @@
                                     <label class="col-sm-3 text-right col-form-label">Jenis Dokumen</label>
                                     <div class="col-sm-4">
                                         <select class="form-control" id="dokumen">
-{{--                                            <option value="K">PENGELUARAN</option>--}}
+                                            <option value="K">PENGELUARAN</option>
                                             <option value="H">BARANG HILANG</option>
                                         </select>
                                     </div>

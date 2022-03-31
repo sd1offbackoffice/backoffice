@@ -459,6 +459,7 @@
                 setTimeout(function() {
                     $('#menu1Kat2Input').focus();
                 }, 10);
+                console.log(`kat2: ${kode}`);
                 break;
         }
     }

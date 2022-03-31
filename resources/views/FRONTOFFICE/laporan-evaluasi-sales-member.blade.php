@@ -265,7 +265,7 @@
                     },
                 },
                 "columns": [
-                    {data: 'trjd_cus_kodemember'},
+                    {data: 'cus_kodemember'},
                     {data: 'cus_namamember'},
                     {data: null, render: function(data){
                             return convertToRupiah2(data.kunj);

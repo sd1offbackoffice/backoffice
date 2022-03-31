@@ -273,11 +273,11 @@ ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
         }
         $and_tipe =" and hdr.tipe = 'S'";
         $and_csbck =" and dtl.cashback > 0";
-        $judul = "LAPORAN CASH BACK / SUPPLIER / ITEM";
+        $judul = "LAPORAN POTONGAN / SUPPLIER / ITEM";
         if ($p_tipe == 'R'){
             $and_tipe =" and hdr.tipe = 'R'";
             $and_csbck = " and dtl.cashback < 0";
-            $judul = "LAPORAN REFUND CASH BACK / SUPPLIER /ITEM";
+            $judul = "LAPORAN REFUND POTONGAN / SUPPLIER /ITEM";
         }
         $andsupp = " AND HGB_KODESUPPLIER IS NOT NULL";
         if($sup1 != '' && $sup2 != ''){
@@ -351,11 +351,11 @@ ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
         }
         $and_tipe =" and hdr.tipe = 'S'";
         $and_csbck =" and dtl.cashback > 0";
-        $judul = "LAPORAN CASH BACK / SUPPLIER / ITEM";
+        $judul = "LAPORAN POTONGAN / SUPPLIER / ITEM";
         if ($p_tipe == 'R'){
             $and_tipe =" and hdr.tipe = 'R'";
             $and_csbck = " and dtl.cashback < 0";
-            $judul = "LAPORAN REFUND CASH BACK / SUPPLIER /ITEM";
+            $judul = "LAPORAN REFUND POTONGAN / SUPPLIER /ITEM";
         }
         $andsupp = " AND HGB_KODESUPPLIER IS NOT NULL";
         if($sup1 != '' && $sup2 != ''){
@@ -421,11 +421,11 @@ ORDER BY SUP_KODESUPPLIER, A.PLU, A.TANGGAL");
         }
         $and_tipe =" and hdr.tipe = 'S'";
         $and_csbck =" and dtl.cashback > 0";
-        $judul = "LAPORAN CASH BACK / SUPPLIER / ITEM";
+        $judul = "LAPORAN POTONGAN / SUPPLIER / ITEM";
         if ($p_tipe == 'R'){
             $and_tipe =" and hdr.tipe = 'R'";
             $and_csbck = " and dtl.cashback < 0";
-            $judul = "LAPORAN REFUND CASH BACK / SUPPLIER /ITEM";
+            $judul = "LAPORAN REFUND POTONGAN / SUPPLIER /ITEM";
         }
         $andsupp = " AND HGB_KODESUPPLIER IS NOT NULL";
         if($sup1 != '' && $sup2 != ''){

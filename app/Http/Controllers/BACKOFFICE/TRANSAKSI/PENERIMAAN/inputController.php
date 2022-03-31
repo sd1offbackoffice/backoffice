@@ -31,11 +31,6 @@ class inputController extends Controller
         return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.input');
     }
 
-    public function testing()
-    {
-        return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.input-copy');
-    }
-
     public function showBTB(Request $request)
     {
         $kodeigr = Session::get('kdigr');
@@ -90,7 +85,7 @@ class inputController extends Controller
 
             if ($recId) {
                 if ($recId[0]->trbo_recordid == '2') {
-                    $msg = "Data BTB ini sudah Cetak NOTA, silakan dilihat di Menu Inquery BTB";
+                    $msg = "Data BTB ini sudah Cetak NOTA, silakan dilihat di Menu INQUERY BTB";
 
                     return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
                 }

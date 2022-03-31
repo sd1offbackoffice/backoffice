@@ -85,7 +85,7 @@ class InputController extends Controller
     }
 
     public function saveNewData(Request $request) {
-        
+
     }
 
     public function getDataPengeluaran(Request $request)
@@ -843,9 +843,9 @@ class InputController extends Controller
                 'message' => 'Successfully update data'
             ]);
         }
-        
 
-            
+
+
         // return compact(['message', 'status']);
     }
 //     public function save(Request $request)
