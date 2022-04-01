@@ -245,7 +245,7 @@ Route::middleware(['CheckLogin'])->group(function () {
         Route::prefix('/prod-supp')->group(function () {
             Route::get('/', 'INQUERY\inqueryProdSuppController@index');
             Route::post('/prodSupp', 'INQUERY\inqueryProdSuppController@prodSupp');
-            Route::post('/helpSearch', 'INQUERY\inqueryProdSuppController@helpSearch');
+            Route::post('/suppLOV', 'INQUERY\inqueryProdSuppController@suppLOV');
 
         });
         Route::prefix('/supp-prod')->group(function () {
@@ -1523,6 +1523,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/get-produk','BARANGHADIAH\MASTER\BarangHadiahController@getProduk');
                 Route::post('/get-data-produk','BARANGHADIAH\MASTER\BarangHadiahController@getDataProduk');
                 Route::get('/get-card-produk','BARANGHADIAH\MASTER\BarangHadiahController@getCardProduk');
+                Route::post('/convert-barang-dagangan','BARANGHADIAH\MASTER\BarangHadiahController@convertBarangDagangan');
             });
 
         });

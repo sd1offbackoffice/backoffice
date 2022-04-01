@@ -399,7 +399,8 @@
                         let param4 = result.param[3];
                         let param5 = result.param[4];
 
-                        window.open('{{ url()->current() }}/cetakreport/'+param1 +'/'+param2 +'/'+param3 +'/'+param4 +'/'+param5 +'/')
+                        window.open(`{{ url()->current() }}/cetakreport?kodeigr=${param1}&date1=${param2}&date2=${param3}&sup1=${param4}&sup2=${param5}`)
+                        {{--window.open('{{ url()->current() }}/cetakreport/'+param1 +'/'+param2 +'/'+param3 +'/'+param4 +'/'+param5 +'/')--}}
                     } else {
                         swal('Failed', result.msg, 'error');
                     }

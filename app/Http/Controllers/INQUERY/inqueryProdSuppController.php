@@ -13,21 +13,13 @@ class inqueryProdSuppController extends Controller
 {
     public function index()
     {
-        $kodeigr = Session::get('kdigr');
-
-        $result = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
-            ->select('sup_kodesupplier', 'sup_namasupplier','sup_kodesuppliermcg')
-            ->where('sup_kodeigr', '=', $kodeigr)
-            ->orderBy('sup_kodesupplier')
-            ->limit(100)
-            ->get();
-
-        return view('INQUERY.inqueryProdSupp')->with(compact('result'));
+        return view('INQUERY.inqueryProdSupp');
     }
 
     public function prodSupp(Request $request)
     {
-        $kodesupp = $request->kodesupp;
+        $kodesupp = strtoupper($request->kodesupp);
+        $kodeigr = Session::get('kdigr');
 
         $result = DB::connection(Session::get('connection'))->table('tbtr_mstran_d')
             ->join('tbmaster_supplier', function ($join) {
@@ -67,25 +59,25 @@ class inqueryProdSuppController extends Controller
            END nfrac,
           mstd_kodesupplier, sup_namasupplier")
             ->where('mstd_kodesupplier', '=', $kodesupp)
+            ->where('mstd_kodeigr', '=', $kodeigr)
             ->where('st_lokasi', '=', '01')
             ->distinct()
             ->orderBy('mstd_prdcd')
             ->get();
 
-        $count = $result->count();
+            $count = $result->count();
 
-        return response()
-            ->json(['kodesupp' => strtoupper($kodesupp), 'data' => $result, 'count' => $count]);
+            return response()->json(['kodesupp' => $kodesupp, 'data' => $result, 'count' => $count]);
     }
 
-    public function helpSearch(Request $request)
+    public function suppLOV(Request $request)
     {
         $search = strtoupper($request->search);
         $kodeigr = Session::get('kdigr');
 
         $result = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->select('sup_kodesupplier', 'sup_namasupplier','sup_kodesuppliermcg')
-            ->whereRaw("(sup_namasupplier LIKE '%". $search."%' or sup_kodesupplier LIKE '%". $search."%')")
+            ->whereRaw("sup_kodesupplier LIKE '%". $search."%' or sup_namasupplier LIKE '%". $search."%' or sup_kodesuppliermcg LIKE '%". $search."%'")
             ->where('sup_kodeigr', '=', $kodeigr)
             ->orderBy('sup_kodesupplier')
             ->limit(100)

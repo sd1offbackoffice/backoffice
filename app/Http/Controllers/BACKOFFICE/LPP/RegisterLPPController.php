@@ -122,7 +122,7 @@ class RegisterLPPController extends Controller
         $sup1 = $request->sup1;
         $sup2 = $request->sup2;
         $tipe = $request->tipe;
-        $banyakitem = $request->banyakitem==''?99999:$request->banyakitem;
+        $banyakitem = $request->banyakitem == '' ? 99999 : $request->banyakitem;
 
         $and_tipe = '';
         $and_plu = '';
@@ -507,11 +507,6 @@ ORDER BY lpp_kodedivisi,
          lpp_kategoribrg,
          lpp_prdcd");
             set_time_limit(0);
-//            $datas =[];
-//for ($i = 0 ;$i<1000;$i++){
-//    $datas[] = $data[$i];
-//}
-//$data = $datas;
             $title = '** POSISI & MUTASI PERSEDIAAN BARANG BAIK **';
 //
 //            $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid,compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
@@ -529,6 +524,81 @@ ORDER BY lpp_kodedivisi,
 //            return $pdf->download('test.pdf');
 
             return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
+
+//            $filename = 'LAPORAN EVALUASI SALES MEMBER.csv';
+
+//            $columnHeader = [
+//                'SALDO AWAL',
+//                'MURNI',
+//                'BONUS',
+//                'TRANSFER IN',
+//                'RETUR PENJUALAN',
+//                'REPACK IN (REPACK)',
+//                'LAIN-LAIN',
+//                'PENJUALAN',
+//                'TRANSFER OUT',
+//                'REPACK OUT (PREPACK)',
+//                'HILANG',
+//                'LAIN-LAIN',
+//                'SO',
+//                'INTRANSIT',
+//                'PENYESUAIAN',
+//                'KOREKSI',
+//                'SALDO AKHIR',
+//                'GUDANG-X SRV. SUP',
+//                'SERV TOKO',
+//                'SALDO TOKO',
+//            ];
+//
+//            $linebuffs = array();
+//
+//            for ($i = 0; $i < 2;$i++){
+//                foreach ($data as $d) {
+//                    $tempdata = [
+//                        $d->sawalqty,
+//                        $d->beliqty,
+//                        $d->bonusqty,
+//                        $d->trmcbqty,
+//                        $d->retursalesqty,
+//                        $d->repackqty,
+//                        $d->laininqty,
+//                        $d->salesqty,
+//                        $d->kirimqty,
+//                        $d->prepackqty,
+//                        $d->hilangqty,
+//                        $d->lainoutqty,
+//                        $d->rph_sel_so,
+//                        $d->intrstqty,
+//                        $d->adjqty,
+//                        0,
+//                        $d->akhirqty,
+//                        $d->servqsup,
+//                        $d->servqtok,
+//                        $d->saldotoko,
+//                    ];
+//
+//                    array_push($linebuffs, $tempdata);
+//                }
+//            }
+//            return [
+//                (new DownloadExcel)->withHeadings('#', 'Name', 'E-mail'),
+//            ];
+//            $headers = [
+//                "Content-type" => "text/csv",
+//                "Pragma" => "no-cache",
+//                "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+//                "Expires" => "0"
+//            ];
+//
+//            $file = fopen(storage_path($filename), 'w');
+//
+//            fputcsv($file, $columnHeader, '|');
+//            foreach ($linebuffs as $linebuff) {
+//                fputcsv($file, $linebuff, '|');
+//            }
+//            fclose($file);
+//
+//            return response()->download(storage_path($filename))->deleteFileAfterSend(true);
 
         } else if ($menu == 'LPP03') {
             $p_prog = 'LPP03';
@@ -772,8 +842,7 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
 WHERE ROWNUM <= " . $banyakitem . "
 ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
 
-            }
-            else if (trim($tipe) == '2') {
+            } else if (trim($tipe) == '2') {
 //                $repid = 'RPT_LPP05B';
                 $repid = 'RPT_LPP05A';
                 $rep_name = 'IGR_BO_LPPBAIKPKOR_PLUS.jsp';
@@ -878,8 +947,7 @@ ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
 	 ORDER BY KOREKSI DESC) A
 WHERE ROWNUM <= " . $banyakitem . "
 ORDER BY lpp_kodedivisi, lpp_kodedepartemen, lpp_kategoribrg, lpp_prdcd");
-            }
-            else {
+            } else {
 //                $repid = 'RPT_LPP05C';
                 $repid = 'RPT_LPP05A';
                 $rep_name = 'IGR_BO_LPPBAIKPKOR.jsp';
@@ -1115,8 +1183,7 @@ ORDER BY lrt_kodedivisi, lrt_kodedepartemen, lrt_kategoribrg");
 
             return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 
-        }
-        else if ($menu == 'LPP09') {
+        } else if ($menu == 'LPP09') {
             $p_prog = 'LPP09';
             $repid = 'RPT_LPP09';
             $rep_name = 'IGR_BO_LPPRETURRCDDK.jsp';
@@ -1124,11 +1191,11 @@ ORDER BY lrt_kodedivisi, lrt_kodedepartemen, lrt_kategoribrg");
                 $and_plu = " and lrt_prdcd between '" . $prdcd1 . "' and '" . $prdcd2 . "'";
             }
 
-            if ($tipe=='1') {
+            if ($tipe == '1') {
                 $and_tipe = ' and lrt_rphakhir < 0';
-            }else if ($tipe=='2') {
+            } else if ($tipe == '2') {
                 $and_tipe = ' and lrt_rphakhir >= 0';
-            }else {
+            } else {
                 $and_tipe = ' ';
             }
 
@@ -1237,11 +1304,11 @@ ORDER BY lrs_kodedivisi, lrs_kodedepartemen, lrs_kategoribrg");
             $p_prog = 'LPP11';
             $repid = 'RPT_LPP11';
             $rep_name = 'IGR_BO_LPPRUSAKRCDDK.jsp';
-            if ($tipe=='1') {
+            if ($tipe == '1') {
                 $and_tipe = ' and lrs_rphakhir < 0';
-            }else if ($tipe=='2') {
+            } else if ($tipe == '2') {
                 $and_tipe = ' and lrs_rphakhir >= 0';
-            }else {
+            } else {
                 $and_tipe = ' ';
             }
             if (isset($prdcd1) && isset($prdcd2)) {
@@ -1828,7 +1895,7 @@ order by prd_kodedivisi,
                         ->Where('DIV', '=', $data->prd_kodedivisi)
                         ->Where('DEPT', '=', $data->prd_kodedepartement)
                         ->Where('KATB', '=', $data->prd_kodekategoribarang)
-                        ->update(['BEGBAL_RP' => DB::connection(Session::get('connection'))->raw('NVL(begbal_rp, 0) + NVL(' . isset($data->st_rpsaldoawal)  ? $data->st_rpsaldoawal : 0 . ', 0)')]);
+                        ->update(['BEGBAL_RP' => DB::connection(Session::get('connection'))->raw('NVL(begbal_rp, 0) + NVL(' . isset($data->st_rpsaldoawal) ? $data->st_rpsaldoawal : 0 . ', 0)')]);
                 } else {
                     DB::connection(Session::get('connection'))->table('TEMP_LPP06')->insert([
                         'PRDCD' => $data->st_prdcd,

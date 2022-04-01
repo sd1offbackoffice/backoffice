@@ -472,6 +472,7 @@
                             title: 'Data tidak ada!',
                             icon: 'error'
                         })
+
                     }
                     else{
                         for(i=0; i<result.length; i++){

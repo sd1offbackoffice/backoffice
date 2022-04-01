@@ -47,23 +47,31 @@ class PBPerishableController extends Controller
     }
 
     public function showSup(Request $request){
-        $kodesupplier = $request->kodesupplier;
+        $nopb = $request->nopb;
+
+
+        // SELECT @FLAG = (CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END)
+        // FROM EMPLOYEE E
+        // WHERE E.EMPID = @EMPID;
 
         $result = DB::connection('simbdg')->table('tbtr_pb_perishable')
             ->leftJoin('tbtr_pb_h','pbp_nopb','=','pbh_nopb')
             ->leftJoin('tbmaster_supplier', 'pbp_kodesupplier', '=', 'sup_kodesupplier')
-//            ->leftJoin('tbmaster_stock','pbp_prdcd','=','st_prdcd')
-            ->selectRaw("COUNT(1)")
+            ->select("SELECT TEMP = (CASE WHEN COUNT(*) > 0 THEN 1 ELSE 0 END) 
+                FROM TBTR_PB_H pbh
+                LEFT JOIN TBTR_PB_PERISHABLE pbp ON pbh.pbh_kodesupplier = pbp.pbp_kodesupplier  
+                where  PBPNOPB = '$nopb'")
             ->selectRaw('pbp_kodesarana')
             ->selectRaw('pbp_volsarana')
             ->selectRaw('pbp_kodesupplier')
             ->selectRaw('sup_namasupplier')
-            ->where('PBP_KODESUPPLIER', '=', $kodesupplier)
+            ->where('PBP_NOPB', '=', $nopb)
             ->whereNull('pbp_recordid')
             ->orderBy('PBP_KODESUPPLIER')
             ->get();
 
         return response()->json($result);
+
     }
 
     public function showTrn(Request $request){
@@ -140,7 +148,7 @@ class PBPerishableController extends Controller
         }
     }
 
-    public function nmrBaruTrn(){
+    public function nmrBaruPb(){
 
         $kodeigr = Session::get('kdigr');
         $ip = str_replace('.', '0', SUBSTR(Session::get('ip'), -3));

@@ -24,6 +24,8 @@ class BarangHadiahController extends Controller
 
     public function getProduk()
     {
+        $kodeigr = Session::get('kdigr');
+
         $datas = DB::connection(Session::get('connection'))
         ->select("SELECT  
             PRD_PRDCD, 
@@ -31,7 +33,7 @@ class BarangHadiahController extends Controller
             PRD_UNIT, 
             PRD_FRAC
         FROM TBMASTER_PRODMAST
-        WHERE PRD_KODEIGR = :parameter.kodeigr
+        WHERE PRD_KODEIGR = $kodeigr
         AND SUBSTR(PRD_PRDCD,7,1) = '0'
         ORDER BY PRD_PRDCD");
 
@@ -40,7 +42,7 @@ class BarangHadiahController extends Controller
 
    public function getDataProduk(Request $request)
    {
-        $value = $request->bprp_prdcd;
+        $value = $request->prd_prdcd;
         // $checkString = strpos($value, 'H');
 
         // dd($checkString);
@@ -52,14 +54,15 @@ class BarangHadiahController extends Controller
         //     }
         // }
 
-        $datas = DB::connection(Session::get('connection'))->table('TBMASTER_BRGPROMOSI')
-            ->selectRaw("bprp_prdcd,bprp_ketpendek,bprp_frackonversi,bprp_unit")
-            ->where('bprp_prdcd',$value)
-            ->orderBy('bprp_prdcd')
+        $datas = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
+            ->selectRaw("PRD_PRDCD, 
+            PRD_DESKRIPSIPENDEK, 
+            PRD_UNIT, 
+            PRD_FRAC,'BARANG DAGANGAN' AS STATUS")
+            ->where('PRD_PRDCD',$value)
+            ->orderBy('PRD_PRDCD')
             ->limit(100)
             ->get();
-
-        // DD($datas);
 
         return compact(['datas']);
    }
@@ -74,5 +77,61 @@ class BarangHadiahController extends Controller
         ->get();
 
         return Datatables::of($datas)->make(true);
+    }
+
+    public function convertBarangDagangan(Request $request)
+    {
+        $bprp_prdcd = $request->prd_prdcd;
+        $bprp_ketpendek = $request->prd_deskripsipendek;
+        $bprp_frackonversi = $request->prd_frac;
+        $bprp_unit = $request->prd_unit;
+
+        $data_promosi = DB::connection(Session::get('connection'))->table('TBMASTER_BRGPROMOSI')
+        ->selectRaw("bprp_recordid,bprp_prdcd,bprp_ketpendek,bprp_frackonversi,bprp_unit")
+        ->where('bprp_prdcd',$bprp_prdcd)
+        ->orderBy('bprp_prdcd')
+        ->get();
+
+        $check = count($data_promosi);
+
+        // dd($check);
+
+        if($check == 0)
+        {
+            if($bprp_prdcd != NULL && $bprp_ketpendek != NULL || $bprp_frackonversi != NULL || $bprp_unit != NULL )
+            {
+                $insert_barang_dagangan = DB::connection(Session::get('connection'))->table('TBMASTER_BRGPROMOSI')
+                ->insert([
+                    'bprp_prdcd' => $bprp_prdcd,
+                    'bprp_ketpendek' => $bprp_ketpendek,
+                    'bprp_frackonversi' => $bprp_frackonversi,
+                    'bprp_unit' => $bprp_unit
+                ]);
+
+                if($insert_barang_dagangan)
+                {
+                    return response()->json([
+                        'title' => 'success',
+                        'message' => 'Data success converted to barang hadiah  !'
+                    ], 200);
+                }
+            }
+            else 
+            {
+                return response()->json([
+                    'title' => 'An error occurred !',
+                    'message' => 'Data cannot be NULL  !',
+                    'status' => 'error'
+                ], 500);
+            }
+        }
+        else
+        {
+            return response()->json([
+                'title' => 'An error occurred !',
+                'message' => 'Data already exist in Table Master Barang Hadiah !',
+                'status' => 'error'
+            ], 500);
+        }
     }
 }

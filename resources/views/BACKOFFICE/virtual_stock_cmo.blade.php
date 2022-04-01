@@ -299,14 +299,13 @@
     }
 
     function chooseDiv(div){
-        console.log(div,'ini div');
         $('#div'+cursor).val(div);
         $('#modalHelp').modal('hide');
     }
 
     function GetDept(val) {
         cursor = val.id;
-        console.log($('#div1').val(),'ini div 1');
+      
         if($('#div1').val() == '' || $('#div2').val() == ''){
             swal('', "Kode div 1 dan div 2 harus di isi untuk mencari departemen !!", 'warning');
         }else{
@@ -457,7 +456,6 @@
             },
             success: function (result) {
 
-                console.log(result);
                 $('#modal-loader').modal('hide');
                 $('#kodemcg').val(result.datas.sup_kodesuppliermcg);
                 $('#namasupplier').val(result.datas.sup_namasupplier);

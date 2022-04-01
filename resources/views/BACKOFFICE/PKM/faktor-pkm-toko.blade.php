@@ -175,5 +175,9 @@
             $('.m-form').show();            
         });
     });
+
+    function getData(params) {
+        
+    }
 </script>
 @endsection

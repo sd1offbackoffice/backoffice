@@ -1,11 +1,12 @@
 @extends('navbar')
+@section('title', 'INQUIRY | INQUIRY SUPPLIER PER PRODUK')
 @section('content')
 
     <div class="container mt-3">
         <div class="row">
             <div class="col-sm-11">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Inquiry Supplier Per Produk</legend>
+                    <legend  class="w-auto ml-5">INQUIRY PRODUK PER SUPPLIER</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="row">
                             <div class="col-sm-12">
@@ -14,12 +15,14 @@
                                         <div class="row text-right">
                                             <div class="col-sm-12 ">
                                                 <div class="form-group row mb-0">
-                                                    <label for="i_kodeplu" class="col-sm-1 col-form-label">PLU</label>
-                                                    <div class="col-sm-2">
+                                                    <label for="i_kodeplu" class="col-sm-2 col-form-label">PLU</label>
+                                                    <div class="col-sm-2 buttonInside">
                                                         <input type="text" class="form-control" id="i_kodeplu">
+                                                        <button type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#modal_plu">
+                                                            <img src="{{asset('image/icon/help.png')}}" width="30px">
+                                                        </button>
                                                     </div>
-                                                    <button type="button" class="btn p-0" data-toggle="modal" data-target="#modal_plu"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>
-                                                    <label for="i_deskripsi" class="col-sm-2 col-form-label">Deskripsi</label>
+                                                    <label>-</label>
                                                     <div class="col-sm-6">
                                                         <input type="text" class="form-control" id="i_deskripsi" disabled>
                                                     </div>
@@ -47,7 +50,7 @@
                                     <legend  class="w-auto ml-4">Detail</legend>
                                     <div class="table-wrapper-scroll-y my-custom-scrollbar">
                                         <table id="table_detail" class="table table-sm">
-                                            <thead>
+                                            <thead class="theadDataTables">
                                             <tr class="d-flex">
                                                 <th class="col-sm-1">Supplier</th>
                                                 <th class="col-sm-4">Nama Supplier</th>
@@ -95,12 +98,12 @@
 
                 <!-- Modal content-->
                 <div class="modal-content">
-                    {{--<div class="modal-header">--}}
-                    {{--<div class="form-row col-sm">--}}
-                    {{--<input id="helpSearch" class="form-control helpSearch" type="text" placeholder="Inputkan Nama / Kode Supplier" aria-label="Search">--}}
-                    {{--<div class="invalid-feedback">Inputkan minimal 3 karakter</div>--}}
-                    {{--</div>--}}
-                    {{--</div>--}}
+{{--                    <div class="modal-header">--}}
+{{--                    <div class="form-row col-sm">--}}
+{{--                    <input id="helpSearch" class="form-control helpSearch" type="text" placeholder="Inputkan Nama / Kode Supplier" aria-label="Search">--}}
+{{--                    <div class="invalid-feedback">Inputkan minimal 3 karakter</div>--}}
+{{--                    </div>--}}
+{{--                    </div>--}}
                     <div class="modal-body">
                         <div class="container">
                             <div class="row">
@@ -127,14 +130,11 @@
                             </div>
                         </div>
                     </div>
-                    {{--<div class="modal-footer">--}}
-                    {{--</div>--}}
+                <div class="modal-footer"></div>
                 </div>
 
             </div>
     </div>
-
-
 
     <style>
         body {
@@ -175,8 +175,6 @@
         .table-wrapper-scroll-y {
             display: block;
         }
-
-
 
     </style>
 

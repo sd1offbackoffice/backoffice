@@ -488,82 +488,82 @@ class LaporanEvaluasiSalesMemberController extends Controller
                                         END) qty,
                                         SUM (trjd_nominalamt) salesgross,
                                         SUM (
-                                                                CASE
-                                                                   WHEN     trjd_flagtax1 = 'Y'
-                                                                        AND trjd_flagtax2 = 'Y'
-                                                                        AND tko_kodecustomer IS NULL
-                                                                        AND NVL (trjd_admfee, 0) = 0
-                                                                   THEN
-                                                                      (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
-                                                                   ELSE
-                                                                      CASE
-                                                                         WHEN TRUNC (tko_tgltutup) <=
-                                                                                 TRUNC (trjd_transactiondate)
-                                                                         THEN
-                                                                            (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
-                                                                         ELSE
-                                                                            trjd_nominalamt
-                                                                      END
-                                                                END
-                                                              * CASE
-                                                                   WHEN trjd_transactiontype = 'R' THEN -1
-                                                                   ELSE 1
-                                                                END)
-                                                              sales,
-                                                              (SUM (trjd_nominalamt) - (SUM (
-                                                                CASE
-                                                                   WHEN     trjd_flagtax1 = 'Y'
-                                                                        AND trjd_flagtax2 = 'Y'
-                                                                        AND tko_kodecustomer IS NULL
-                                                                        AND NVL (trjd_admfee, 0) = 0
-                                                                   THEN
-                                                                      (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
-                                                                   ELSE
-                                                                      CASE
-                                                                         WHEN TRUNC (tko_tgltutup) <=
-                                                                                 TRUNC (trjd_transactiondate)
-                                                                         THEN
-                                                                            (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
-                                                                         ELSE
-                                                                            trjd_nominalamt
-                                                                      END
-                                                                END
-                                                              * CASE
-                                                                   WHEN trjd_transactiontype = 'R' THEN -1
-                                                                   ELSE 1
-                                                                END))) ppn,
-                                                              SUM (
-                                                                (  CASE
-                                                                      WHEN     trjd_flagtax1 = 'Y'
-                                                                           AND trjd_flagtax2 = 'Y'
-                                                                           AND tko_kodecustomer IS NULL
-                                                                           AND NVL (trjd_admfee, 0) = 0
-                                                                      THEN
-                                                                         (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
-                                                                      ELSE
-                                                                         CASE
-                                                                            WHEN TRUNC (tko_tgltutup) <=
-                                                                                    TRUNC (trjd_transactiondate)
-                                                                            THEN
-                                                                               (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
-                                                                            ELSE
-                                                                               trjd_nominalamt
-                                                                         END
-                                                                   END
-                                                                 - (  trjd_baseprice
-                                                                    * CASE
-                                                                         WHEN prd_unit = 'KG'
-                                                                         THEN
-                                                                            trjd_quantity / prd_frac
-                                                                         ELSE
-                                                                            trjd_quantity
-                                                                      END))
-                                                              * CASE
-                                                                   WHEN trjd_transactiontype = 'R' THEN -1
-                                                                   ELSE 1
-                                                                END)
-                                                              margin,
-                                                              SUM (
+                                            CASE
+                                               WHEN     trjd_flagtax1 = 'Y'
+                                                    AND trjd_flagtax2 = 'Y'
+                                                    AND tko_kodecustomer IS NULL
+                                                    AND NVL (trjd_admfee, 0) = 0
+                                               THEN
+                                                  (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
+                                               ELSE
+                                                  CASE
+                                                     WHEN TRUNC (tko_tgltutup) <=
+                                                             TRUNC (trjd_transactiondate)
+                                                     THEN
+                                                        (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
+                                                     ELSE
+                                                        trjd_nominalamt
+                                                  END
+                                            END
+                                          * CASE
+                                               WHEN trjd_transactiontype = 'R' THEN -1
+                                               ELSE 1
+                                            END)
+                                          sales,
+                                          (SUM (trjd_nominalamt) - (SUM (
+                                            CASE
+                                               WHEN     trjd_flagtax1 = 'Y'
+                                                    AND trjd_flagtax2 = 'Y'
+                                                    AND tko_kodecustomer IS NULL
+                                                    AND NVL (trjd_admfee, 0) = 0
+                                               THEN
+                                                  (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
+                                               ELSE
+                                                  CASE
+                                                     WHEN TRUNC (tko_tgltutup) <=
+                                                             TRUNC (trjd_transactiondate)
+                                                     THEN
+                                                        (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
+                                                     ELSE
+                                                        trjd_nominalamt
+                                                  END
+                                            END
+                                          * CASE
+                                               WHEN trjd_transactiontype = 'R' THEN -1
+                                               ELSE 1
+                                            END))) ppn,
+                                          SUM (
+                                            (  CASE
+                                                  WHEN     trjd_flagtax1 = 'Y'
+                                                       AND trjd_flagtax2 = 'Y'
+                                                       AND tko_kodecustomer IS NULL
+                                                       AND NVL (trjd_admfee, 0) = 0
+                                                  THEN
+                                                     (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
+                                                  ELSE
+                                                     CASE
+                                                        WHEN TRUNC (tko_tgltutup) <=
+                                                                TRUNC (trjd_transactiondate)
+                                                        THEN
+                                                           (trjd_nominalamt / (1+(nvl(prd_ppn,10)/100)))
+                                                        ELSE
+                                                           trjd_nominalamt
+                                                     END
+                                               END
+                                             - (  trjd_baseprice
+                                                * CASE
+                                                     WHEN prd_unit = 'KG'
+                                                     THEN
+                                                        trjd_quantity / prd_frac
+                                                     ELSE
+                                                        trjd_quantity
+                                                  END))
+                                          * CASE
+                                               WHEN trjd_transactiontype = 'R' THEN -1
+                                               ELSE 1
+                                            END)
+                                          margin,
+                                          SUM (
                                           (trjd_baseprice * trjd_quantity)
                                         * CASE
                                              WHEN trjd_transactiontype = 'R'

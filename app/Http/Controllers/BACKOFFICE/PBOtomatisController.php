@@ -112,7 +112,8 @@ class PBOtomatisController extends Controller
 
             $temp1  = DB::connection(Session::get('connection'))->table('temp_go')->select('isi_toko', 'per_awal_pdisc_go', 'per_akhir_pdisc_go')->where('kodeigr', $kodeigr)->get()->toArray();
 
-            if ($temp1[0]->isi_toko == 'Y' && (date('Y-m-d', strtotime($date >= $temp1[0]->per_awal_pdisc_go)) && date('Y-m-d', strtotime($date >= $temp1[0]->per_akhir_pdisc_go)) )){
+//            if ($temp1[0]->isi_toko == 'Y' && (date('Y-m-d', strtotime($date >= $temp1[0]->per_awal_pdisc_go)) && date('Y-m-d', strtotime($date >= $temp1[0]->per_akhir_pdisc_go)) )){
+            if ($temp1[0]->isi_toko == 'Y' && (date('Y-m-d', strtotime($date))) >= $temp1[0]->per_awal_pdisc_go && (date('Y-m-d', strtotime($date))) <= $temp1[0]->per_akhir_pdisc_go){
                 DB::connection(Session::get('connection'))->table('tbtr_pb_d')->where('pbd_nopb', $nomorPB)->update(['pbd_fdxrev' => 'T']);
             }
 
@@ -142,6 +143,9 @@ class PBOtomatisController extends Controller
         $sup2       = $request->sup2;
 
         if ($sup1   == 'null') { $sup1    = ' '; }
+        $sup1 = $sup1 ?? '00000';
+        $sup2 = $sup2 ?? 'zzzzz';
+
 
         $datas  = DB::connection(Session::get('connection'))->table('TBMASTER_PERUSAHAAN')
             ->selectRaw("PRS_KODEIGR, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, TRUNC (TLK_TGLPB) TGLPB, TLK_NOPB NOPB,
@@ -182,6 +186,8 @@ class PBOtomatisController extends Controller
             ->where('prs_kodeigr', $kodeigr)
             ->whereRaw("trunc (tlk_tglpb) between '$tgl1' and '$tgl2'")
             ->whereBetween('tlk_kodesupplier', [$sup1, $sup2])
+            ->whereBetween('prd_prdcd', ['0000000', 'ZZZZZZZ'])
+           // AND PRD_PRDCD BETWEEN NVL (:P_PLU1, '0000000') AND NVL (:P_PLU2, 'ZZZZZZZ') (Query aslinya baca plu lemparan parameter)
             ->where('tlk_keterangantolakan', 'not like', 'STATUS%')
             ->where('tlk_keterangantolakan', 'not like', '%PKM')
             ->orderBy('prd_prdcd')

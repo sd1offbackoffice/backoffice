@@ -71,7 +71,7 @@
                                         </thead>
                                         <tbody id="tbody1">
                                         @for($i = 0; $i< 5; $i++)
-                                            <tr class="d-flex baris">
+                                            <tr class="d-flex baris1">
                                                 <td style="width: 25%"><input type="text" class="form-control supplierid" id="supplierid" no="{{$i}}"></td>
                                                 <td style="width: 25%"><input disabled type="text" class="form-control kodesarana" id="kodesarana"></td>
                                                 <td style="width: 25%"><input disabled type="text" class="form-control volsarana text-right"></td>
@@ -104,7 +104,7 @@
                                             </thead>
                                             <tbody id="tbody2">
                                             @for($i = 0; $i< 10; $i++)
-                                                <tr class="d-flex baris">
+                                                <tr class="d-flex baris2">
                                                     {{-- <td style="width: 3%" class="text-center">
                                                         <button class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                                     </td> --}}
@@ -337,11 +337,11 @@
             if(e.which == 13) {
                 e.preventDefault();
                 let nopb = $('#no-pb').val();
-                nmrBaruTrn(nopb);
+                nmrBaruPb(nopb);
             }
         });
 
-        function nmrBaruTrn(nopb){
+        function nmrBaruPb(nopb){
             if(nopb == ''){
                 swal({
                     title: 'Buat Nomor PB Baru?',
@@ -351,7 +351,7 @@
                     if(confirm){
                         ajaxSetup();
                         $.ajax({
-                            url: '{{ url()->current() }}/nmrBaruTrn',
+                            url: '{{ url()->current() }}/nmrBaruPb',
                             type: 'post',
                             data: {nopb: nopb},
                             // beforeSend: function () {
@@ -487,128 +487,11 @@
         //     });
         // }
 
-        function chooseSup(kodesup) {
+        function chooseSup(nopb) {
             // let tempgross = 0;
             ajaxSetup();
             $.ajax({
                 url: '{{ url()->current() }}/showSup',
-                type: 'post',
-                data: {kodesup: kodesup},
-                // beforeSend: function () {
-                //     $('#modal-loader').modal('show');
-                // },
-                success: function (result) {
-                   // $('#modal-loader').modal('hide');
-
-                    if(result.length == 0){
-                        swal({
-                            title: 'Data tidak ada!',
-                            icon: 'error'
-                        })
-                    }
-                    else{
-                        // for(i=0; i<result.length; i++){
-                        //     tempgross = parseFloat(tempgross) + parseFloat(result[i].trbo_gross)
-                        // }
-                        // $('#totalgross').val(convertToRupiah(tempgross));
-
-                        if(result[0].nota === 'Belum Cetak PB'){
-                            //console.log(result[0])
-                            var html1 = "";
-                            var html2 = "";
-                            var i;
-                            $('.baris').remove();
-
-                            for(i=0; i<result.length; i++){
-                                // qtyctn = result[i].trbo_qty / result[i].prd_frac;
-                                // qtypcs = result[i].trbo_qty % result[i].prd_frac;
-                                // ppn = result[i].trbo_ppnrph * 0;
-
-                                html1 = `<tr class="d-flex baris">
-                                <td style="width: 10%"><input type="text" class="form-control supplierid" value="`+ result[i].pbp_kodesupplier +`"></td>
-                                <td style="width: 10%"><input disabled type="text" class="form-control kodesarana" value="`+ result[i].pbp_kodesarana +`"></td>
-                                <td style="width: 10%"><input disabled type="text" class="form-control volumesar text-right" value="`+ result[i].pbp_volsarana +`"></td>
-                                <td style="width: 10%"><input disabled type="text" class="form-control totalkubik text-right" value="`+ result[i].pbp_kubikase +`"></td>
-                                </tr>`;
-                                
-                                
-                                $('#tbody1').append(html1);
-                                $('#no-pb').val(result[i].pbp_nopb);
-                                $('#tgl-pb').val(formatDate(result[i].pbp_tglpb));
-                                $('#model').val('* KOREKSI *');
-                                $('#deskripsiPanjang').val(result[i].prd_deskripsipanjang);
-                                $('#avg-cost').val(convertToRupiah(result[i].trbo_averagecost));
-                                $('#total-item').val(result.length);
-                                $('#ppn').val('0');
-                                $('#btn-save').attr('disabled', false);
-                                $('#btn-hapus').attr('disabled', false);
-                                // total = tempgross + ppn;
-                                // $('#total').val(convertToRupiah(tempgross));
-                            }
-                        } else {
-                            var html2 = "";
-                            var i;
-                            $('.baris').remove();
-                            totalkubikase = 0;
-                            for (i = 0; i < result.length; i++) {
-                                // qtyctn = result[i].trbo_qty / result[i].prd_frac;
-                                // qtypcs = result[i].trbo_qty % result[i].prd_frac;
-                                // ppn = result[i].trbo_ppnrph * 0;
-                                kubikase = ((result[i].pbp_stock + result[i].pbp_poout + result[i].pbp_pbout + result[i].pbp_qtypb)/ result[i].pbp_isictn) * result[i].pbp_dimensi; 
-                                result[i].pbp_kubikase = kubikase;
-
-
-                                html2 = `<tr class="d-flex baris">                                               
-                                                <td class="buttonInside" style="width: 10%">
-                                                    <input type="text" class="form-control plu" value="`+ result[i].pbp_prdcd +`">
-                                                </td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control pkm" value="`+ result[i].pbp_pkm +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control avgsales" value="`+ result[i].pbp_avgsales +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control isictn" value="`+ result[i].pbp_isictn +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control stock text-right" value="`+ result[i].pbp_stock +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control poout" value="`+ result[i].pbp_qtypoout +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control pbout text-right" value="`+ result[i].pbp_qtypnout +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control mindisp text-right" value="`+ result[i].pbp_mindisplay +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control minord text-right" value="`+ result[i].pbp_minorder +`"></td>
-                                                <td style="width: 10%"><input type="text" class="form-control qtypb text-right" value="` + result[i].pbp_qtypb +`" id="`+ i +`" onchange="qty(this.value,this.id,2)"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control dimensi text-right" value="`+ result[i].pbp_dimensi +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control kubikase text-right" value="`+ result[i].pbp_kubikase +`"></td>
-                                            </tr>`;
-
-                                $('#tbody2').append(html2);
-                                $('#no-pb').val(result[i].pbp_nopb);
-                                $('#tgl-pb').val(formatDate(result[i].pbp_createdt));
-                                $('#model').val('* PB SUDAH DICETAK / TRANSFER *');
-                                $('#deskripsiPanjang').val(result[i].prd_deskripsipanjang);
-                                $('#total-item').val(result.length);
-                                $('#ppn').val('0');
-                                $('#btn-save').attr('disabled', true);
-                                $('#btn-hapus').attr('disabled', true);
-                                // total = tempgross + ppn;
-                                // $('#total').val(convertToRupiah(tempgross));
-                            }
-                        }
-                        html1 = `<tr class="d-flex baris">
-                                <td style="width: 10%"><input type="text" class="form-control supplierid" value="`+ result[i].pbp_kodesupplier +`"></td>
-                                <td style="width: 10%"><input disabled type="text" class="form-control kodesarana" value="`+ result[i].pbp_kodesarana +`"></td>
-                                <td style="width: 10%"><input disabled type="text" class="form-control volumesar text-right" value="`+ result[i].pbp_volsarana +`"></td>
-                                <td style="width: 10%"><input disabled type="text" class="form-control totalkubik text-right" value="`+ result[i].pbp_kubikase +`"></td>
-                                </tr>`;
-
-                        $('#tbody1').append(html1);
-
-                    }
-                }
-                // alert("No DOC yg dipilih : " + val)
-            })
-            $('#modal-help-1').modal('hide');
-        }
-
-        function chooseDoc(nopb) {
-            // let tempgross = 0;
-            ajaxSetup();
-            $.ajax({
-                url: '{{ url()->current() }}/showTrn',
                 type: 'post',
                 data: {nopb: nopb},
                 // beforeSend: function () {
@@ -629,108 +512,114 @@
                         // }
                         // $('#totalgross').val(convertToRupiah(tempgross));
 
-                        if(result[0].nota === 'Belum Cetak PB'){
+                        if(result[0].temp > 0){
                             //console.log(result[0])
                             var html1 = "";
-                            var html2 = "";
                             var i;
-                            $('.baris').remove();
+                            var kodesup = "";
+                            .
+                            var tglpb = result[0].pbp_tglpb;
+                            $('.baris1').remove();
 
                             for(i=0; i<result.length; i++){
                                 // qtyctn = result[i].trbo_qty / result[i].prd_frac;
                                 // qtypcs = result[i].trbo_qty % result[i].prd_frac;
                                 // ppn = result[i].trbo_ppnrph * 0;
-                                kubikase = ((result[i].pbp_stock + result[i].pbp_poout + result[i].pbp_pbout + result[i].pbp_qtypb)/ result[i].pbp_isictn) * result[i].pbp_dimensi; 
-                                result[i].pbp_kubikase = kubikase;
+                                kodesup = result[0].pbp_kodesupplier;
+                                chooseDoc(kodesup);
 
-                                
-
-                                html2 = `<tr class="d-flex baris">                                               
-                                                <td class="buttonInside" style="width: 10%">
-                                                    <input type="text" class="form-control plu" value="`+ result[i].pbp_prdcd +`">
-                                                </td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control pkm" value="`+ result[i].pbp_pkm +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control avgsales" value="`+ result[i].pbp_avgsales +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control isictn" value="`+ result[i].pbp_isictn +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control stock text-right" value="`+ result[i].pbp_stock +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control poout" value="`+ result[i].pbp_qtypoout +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control pbout text-right" value="`+ result[i].pbp_qtypnout +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control mindisp text-right" value="`+ result[i].pbp_mindisplay +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control minord text-right" value="`+ result[i].pbp_minorder +`"></td>
-                                                <td style="width: 10%"><input type="text" class="form-control qtypb text-right" value="` + result[i].pbp_qtypb +`" id="`+ i +`" onchange="qty(this.value,this.id,2)"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control dimensi text-right" value="`+ result[i].pbp_dimensi +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control kubikase text-right" value="`+ result[i].pbp_kubikase +`"></td>
-                                            </tr>`;
-                                
-                                
-                                $('#tbody2').append(html2);
-                                $('#no-pb').val(result[i].pbp_nopb);
-                                $('#tgl-pb').val(formatDate(result[i].pbp_tglpb));
-                                $('#model').val('* KOREKSI *');
-                                $('#deskripsiPanjang').val(result[i].prd_deskripsipanjang);
-                                $('#avg-cost').val(convertToRupiah(result[i].trbo_averagecost));
-                                $('#total-item').val(result.length);
-                                $('#ppn').val('0');
-                                $('#btn-save').attr('disabled', false);
-                                $('#btn-hapus').attr('disabled', false);
-                                $('#btn-addRow').attr('disabled', false);
-                                // total = tempgross + ppn;
-                                // $('#total').val(convertToRupiah(tempgross));
-                            }
-                        } else {
-                            var html2 = "";
-                            var i;
-                            $('.baris').remove();
-                            totalkubikase = 0;
-                            for (i = 0; i < result.length; i++) {
-                                // qtyctn = result[i].trbo_qty / result[i].prd_frac;
-                                // qtypcs = result[i].trbo_qty % result[i].prd_frac;
-                                // ppn = result[i].trbo_ppnrph * 0;
-                                kubikase = ((result[i].pbp_stock + result[i].pbp_poout + result[i].pbp_pbout + result[i].pbp_qtypb)/ result[i].pbp_isictn) * result[i].pbp_dimensi; 
-                                result[i].pbp_kubikase = kubikase;
-
-
-                                html2 = `<tr class="d-flex baris">                                               
-                                                <td class="buttonInside" style="width: 10%">
-                                                    <input type="text" class="form-control plu" value="`+ result[i].pbp_prdcd +`">
-                                                </td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control pkm" value="`+ result[i].pbp_pkm +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control avgsales" value="`+ result[i].pbp_avgsales +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control isictn" value="`+ result[i].pbp_isictn +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control stock text-right" value="`+ result[i].pbp_stock +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control poout" value="`+ result[i].pbp_qtypoout +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control pbout text-right" value="`+ result[i].pbp_qtypnout +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control mindisp text-right" value="`+ result[i].pbp_mindisplay +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control minord text-right" value="`+ result[i].pbp_minorder +`"></td>
-                                                <td style="width: 10%"><input type="text" class="form-control qtypb text-right" value="` + result[i].pbp_qtypb +`" id="`+ i +`" onchange="qty(this.value,this.id,2)"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control dimensi text-right" value="`+ result[i].pbp_dimensi +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control kubikase text-right" value="`+ result[i].pbp_kubikase +`"></td>
-                                            </tr>`;
-
-                                $('#tbody2').append(html2);
-                                $('#no-pb').val(result[i].pbp_nopb);
-                                $('#tgl-pb').val(formatDate(result[i].pbp_createdt));
-                                $('#model').val('* PB SUDAH DICETAK / TRANSFER *');
-                                $('#deskripsiPanjang').val(result[i].prd_deskripsipanjang);
-                                $('#total-item').val(result.length);
-                                $('#ppn').val('0');
-                                $('#btn-save').attr('disabled', true);
-                                $('#btn-hapus').attr('disabled', true);
-                                $('#btn-addRow').attr('disabled', true);
-                                // total = tempgross + ppn;
-                                // $('#total').val(convertToRupiah(tempgross));
-                            }
-                        }
-                        html1 = `<tr class="d-flex baris">
+                                html1 = `<tr class="d-flex baris">
                                 <td style="width: 10%"><input type="text" class="form-control supplierid" value="`+ result[i].pbp_kodesupplier +`"></td>
                                 <td style="width: 10%"><input disabled type="text" class="form-control kodesarana" value="`+ result[i].pbp_kodesarana +`"></td>
                                 <td style="width: 10%"><input disabled type="text" class="form-control volumesar text-right" value="`+ result[i].pbp_volsarana +`"></td>
                                 <td style="width: 10%"><input disabled type="text" class="form-control totalkubik text-right" value="`+ result[i].pbp_kubikase +`"></td>
                                 </tr>`;
+                                
+                                
+                                $('#tbody1').append(html1);
+                                $('#no-pb').val(result[i].pbp_nopb);
+                                $('#tgl-pb').val(formatDate(result[i].pbp_tglpb));
+                                $('#model').val('* PB SUDAH DICETAK / TRANSFER *');
+                                $('#namasupplier').val(result[i].sup_namasupplier);
+                                $('#btn-save').attr('disabled', false);
+                                $('#btn-hapus').attr('disabled', false);
+                                // total = tempgross + ppn;
+                                // $('#total').val(convertToRupiah(tempgross));
 
-                        $('#tbody1').append(html1);
-
+                                chooseDoc(kodesup);
+                            }
+                        } else {
+                                alert('Tidak ada PLU yang bisa di PB untuk tgl ' ||:TGL_PB)
+                            }
+                        }
+                        
                     }
+                }
+                // alert("No DOC yg dipilih : " + val)
+            })
+            $('#modal-help-1').modal('hide');
+        }
+
+        function chooseDoc(nopb) {
+            // let tempgross = 0;
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/showTrn',
+                type: 'post',
+                data: {nopb: nopb},
+                // beforeSend: function () {
+                //     $('#modal-loader').modal('show');
+                // },
+                success: function (result) {
+                   // $('#modal-loader').modal('hide');
+                   
+                        // for(i=0; i<result.length; i++){
+                        //     tempgross = parseFloat(tempgross) + parseFloat(result[i].trbo_gross)
+                        // }
+                        // $('#totalgross').val(convertToRupiah(tempgross));
+
+                    for(i=0; i<result.length; i++){
+                        // qtyctn = result[i].trbo_qty / result[i].prd_frac;
+                        // qtypcs = result[i].trbo_qty % result[i].prd_frac;
+                        // ppn = result[i].trbo_ppnrph * 0;
+                        kubikase = ((result[i].pbp_stock + result[i].pbp_poout + result[i].pbp_pbout + result[i].pbp_qtypb)/ result[i].pbp_isictn) * result[i].pbp_dimensi; 
+                        result[i].pbp_kubikase = kubikase;      
+
+                        html2 = `<tr class="d-flex baris">                                               
+                                        <td class="buttonInside" style="width: 10%">
+                                            <input type="text" class="form-control plu" value="`+ result[i].pbp_prdcd +`">
+                                        </td>
+                                        <td style="width: 10%"><input disabled type="text" class="form-control pkm" value="`+ result[i].pbp_pkm +`"></td>
+                                        <td style="width: 10%"><input disabled type="text" class="form-control avgsales" value="`+ result[i].pbp_avgsales +`"></td>
+                                        <td style="width: 10%"><input disabled type="text" class="form-control isictn" value="`+ result[i].pbp_isictn +`"></td>
+                                        <td style="width: 10%"><input disabled type="text" class="form-control stock text-right" value="`+ result[i].pbp_stock +`"></td>
+                                        <td style="width: 10%"><input disabled type="text" class="form-control poout" value="`+ result[i].pbp_qtypoout +`"></td>
+                                        <td style="width: 10%"><input disabled type="text" class="form-control pbout text-right" value="`+ result[i].pbp_qtypnout +`"></td>
+                                        <td style="width: 10%"><input disabled type="text" class="form-control mindisp text-right" value="`+ result[i].pbp_mindisplay +`"></td>
+                                        <td style="width: 10%"><input disabled type="text" class="form-control minord text-right" value="`+ result[i].pbp_minorder +`"></td>
+                                        <td style="width: 10%"><input type="text" class="form-control qtypb text-right" value="` + result[i].pbp_qtypb +`" id="`+ i +`" onchange="qty(this.value,this.id,2)"></td>
+                                        <td style="width: 10%"><input disabled type="text" class="form-control dimensi text-right" value="`+ result[i].pbp_dimensi +`"></td>
+                                        <td style="width: 10%"><input disabled type="text" class="form-control kubikase text-right" value="`+ result[i].pbp_kubikase +`"></td>
+                                    </tr>`;
+                        
+                        
+                        $('#tbody2').append(html2);
+                        $('#no-pb').val(result[i].pbp_nopb);
+                        $('#tgl-pb').val(formatDate(result[i].pbp_tglpb));
+                        $('#model').val('* KOREKSI *');
+                        $('#deskripsiPanjang').val(result[i].prd_deskripsipanjang);
+                        $('#avg-cost').val(convertToRupiah(result[i].trbo_averagecost));
+                        $('#total-item').val(result.length);
+                        $('#ppn').val('0');
+                        $('#btn-save').attr('disabled', false);
+                        $('#btn-hapus').attr('disabled', false);
+                        $('#btn-addRow').attr('disabled', false);
+                        // total = tempgross + ppn;
+                        // $('#total').val(convertToRupiah(tempgross));
+                    }
+                    
+
+                
                 }
                 // alert("No DOC yg dipilih : " + val)
             })
@@ -1050,7 +939,8 @@
             $('#model').val("");
             $('#deskripsiPanjang').val("");
 
-            $('.baris').remove();
+            $('.baris1').remove();
+            $('.baris2').remove();
 
             for (i = 0; i< 15; i++) {
                 $('#tbody2').append(temptable2(i));

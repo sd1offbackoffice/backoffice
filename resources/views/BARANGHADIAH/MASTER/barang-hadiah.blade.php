@@ -181,6 +181,62 @@
     $(document).ready(function(){
         getProduk();
         getDataTable();
+
+    });
+
+    $('#kodePLU').keyup(function(event) {
+        if (event.which === 13)
+        {
+            event.preventDefault();
+            if($('#kodePLU').val() == '')
+            {
+                swal('PLU tidak terdaftar di master barang', '', 'warning')
+            }
+            else
+            {
+                swal({
+                    title: 'PLU ini bukan termasuk barang hadiah, akan didaftar sebagai PLU Hadiah ? ',
+                    icon: 'warning',
+                    buttons: true,
+                    dangerMode: true
+                }).then(function(ok){
+                    if(ok){
+                        ajaxSetup();
+                        $.ajax({
+                            url: '{{ url()->current().'/convert-barang-dagangan' }}',
+                            type: 'post',
+                            data: {
+                                prd_prdcd: $('#kodePLU').val(),
+                                prd_deskripsipendek: $('#deskripsi').val(),
+                                prd_frac: $('#unit').val(),
+                                prd_unit: $('#frac').val()
+                            },
+                            // beforeSend: function () {
+                            //     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                            // },
+                            success: function (response) {
+                                swal({
+                                    title: response.title,
+                                    text: response.message,
+                                    icon: 'success'
+                                });
+                            }, error: function (error) {
+                                swal({
+                                    // title: 'There is error !',
+                                    // text: 'Data already exist in Table Master Barang Hadiah !',
+                                    // icon: 'error'
+                                    title: error.responseJSON.title,
+                                    text: error.responseJSON.message,
+                                    icon: 'error'
+                                });
+                            }
+                        })// ajax
+                    }// if ok
+                })
+            }
+            
+
+        }// if
     });
 
     function getDataTable()
@@ -231,7 +287,7 @@
     }
 
     function getProduk() {
-        if ($.fn.DataTable.isDataTable('#table_supplier')) {
+        if ($.fn.DataTable.isDataTable('#table_produk')) {
             $('#table_produk').DataTable().destroy();
         }
         table_produk = $('#table_produk').DataTable({
@@ -239,10 +295,10 @@
                 url: '{{ url()->current() }}/get-produk',
             },
             "columns": [
-                {data: 'bprp_prdcd'},
-                {data: 'bprp_ketpendek'},
-                {data: 'bprp_frackonversi'},
-                {data: 'bprp_unit'},
+                {data: 'prd_prdcd'},
+                {data: 'prd_deskripsipendek'},
+                {data: 'prd_unit'},
+                {data: 'prd_frac'},
             ],
             "paging": true,
             "lengthChange": true,
@@ -253,13 +309,14 @@
             "responsive": true,
             "createdRow": function (row, data, dataIndex) {
                 $(row).addClass('row-produk').css({'cursor': 'pointer'});
+               
                 
             },
             "order": [],
             "initComplete": function () {
 
                 $(document).on('click', '.row-produk', function (e) {
-                    reset();
+                    // reset();
                     $('#kodePLU').val($(this).find('td:eq(0)').html());
                     $('#deskripsi').val($(this).find('td:eq(1)').html());
                     $('#unit').val($(this).find('td:eq(2)').html());
@@ -277,7 +334,7 @@
             url: '{{ url()->current().'/get-data-produk' }}',
             type: 'post',
             data: {
-                bprp_prdcd: $('#kodePLU').val(),
+                prd_prdcd: $('#kodePLU').val(),
             },
             beforeSend: function () {
                 $('#modal-loader').modal({backdrop: 'static', keyboard: false});
@@ -285,10 +342,11 @@
             success: function (result) {
                
                 $('#modal-loader').modal('hide');
-                $('#kodePLU').val(result.datas[0].bprp_prdcd);
-                $('#deskripsi').val(result.datas[0].bprp_ketpendek);
-                $('#unit').val(result.datas[0].bprp_frackonversi);
-                $('#frac').val(result.datas[0].bprp_unit);
+                $('#kodePLU').val(result.datas[0].prd_prdcd);
+                $('#deskripsi').val(result.datas[0].prd_deskripsipendek);
+                $('#unit').val(result.datas[0].prd_frac);
+                $('#frac').val(result.datas[0].prd_unit);
+                $('#status').val(result.datas[0].status);
             }, error: function (e) {
                 swal('Error get data produk !!', '', 'warning');
             }

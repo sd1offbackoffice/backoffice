@@ -1,11 +1,12 @@
 @extends('navbar')
-@section('title', 'INQUERY | INQUIRY PRODUK PER SUPPPLIER')
+@section('title', 'INQUIRY | INQUIRY PRODUK PER SUPPPLIER')
 @section('content')
 
 
     <div class="container mt-3">
-        <div class="row">
+        <div class="row justify-content-center mb-3">
             <div class="col-sm-12">
+
                 <fieldset class="card border-secondary">
                     <legend  class="w-auto ml-5">INQUIRY PRODUK PER SUPPLIER</legend>
                     <div class="card-body shadow-lg cardForm">
@@ -19,12 +20,12 @@
                                                 <label for="i_kodesupplier" class="col-sm-2 col-form-label">Supplier</label>
                                                 <div class="col-sm-2 buttonInside">
                                                     <input type="text" class="form-control" id="i_kodesupplier">
-                                                    <button type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#modal_supp">
+                                                    <button type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#modal_supp" onclick="showLOV()">
                                                         <img src="{{asset('image/icon/help.png')}}" width="30px">
                                                     </button>
                                                 </div>
                                                 <label>-</label>
-                                                <div class="col-sm-5">
+                                                <div class="col-sm-6">
                                                     <input type="text" class="form-control" id="i_namasupplier" disabled>
                                                 </div>
                                             </div>
@@ -39,8 +40,8 @@
                                     <legend  class="w-auto ml-4">Detail</legend>
                                     <div class="table-wrapper-scroll-y my-custom-scrollbar">
                                         <table id="tabledetail" class="table table-sm">
-                                            <thead>
-                                            <tr class="d-flex">
+                                            <thead class="headerTable">
+                                            <tr class="d-flex fontTable">
                                                 <th class="col-sm-1">PLU</th>
                                                 <th class="col-sm-3">Nama Barang</th>
                                                 <th class="col-sm-1 pl-0 pr-0 text-right">Stok</th>
@@ -50,7 +51,7 @@
                                                 <th class="col-sm-1 text-right">Tag</th>
                                             </tr>
                                             </thead>
-                                            <tbody>
+                                            <tbody id="body-table">
                                             <tr class="rowdetail d-flex"></tr>
                                             </tbody>
                                         </table>
@@ -96,42 +97,42 @@
 
             {{--<!-- Modal content-->--}}
             <div class="modal-content">
-{{--                <div class="modal-header">--}}
-{{--                <div class="form-row col-sm">--}}
-{{--                <input id="helpSearch" class="form-control helpSearch" type="text" placeholder="..." aria-label="Search">--}}
-{{--                <div class="invalid-feedback">--}}
-{{--                Inputkan minimal 3 karakter</div>--}}
-{{--                </div>--}}
-{{--                </div>--}}
+                <div class="modal-header">
+                    <div class="form-row col-sm">
+                        <input id="helpSearch" class="form-control helpSearch" type="text" placeholder="..." aria-label="Search">
+                            <div class="invalid-feedback"></div>
+                    </div>
+                </div>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row">
                             <div class="col">
-                                {{--<div class="tableFixedHeader">--}}
-                                <table class="table table-sm" id="table_lov">
-                                    <thead>
-                                    <tr>
-                                        <td>Kode Supplier</td>
-                                        <td>Kode Supplier MCG</td>
-                                        <td>Nama Supplier</td>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="tbodyModal">
-                                    @foreach($result as $s)
-                                        <tr onclick="helpSelect('{{ $s->sup_kodesupplier }}')" class="row_lov">
-                                            <td>{{ $s->sup_kodesupplier }}</td>
-                                            <td>{{ $s->sup_kodesuppliermcg }}</td>
-                                            <td>{{ $s->sup_namasupplier }}</td>
+                                <div class="tableFixedHeader">
+                                    <table class="table table-sm" id="table_lov">
+                                        <thead class="headerModalSupp">
+                                        <tr class="fontModal">
+                                            <td>Kode Supplier</td>
+                                            <td>Kode Supplier MCG</td>
+                                            <td>Nama Supplier</td>
                                         </tr>
-                                    @endforeach
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody id="tbodyModal">
+{{--                                        @foreach($result as $s)--}}
+{{--                                            <tr class="row_lov" onclick="helpSelect('{{ $s->sup_kodesupplier }}')">--}}
+{{--                                                <td>{{ $s->sup_kodesupplier }}</td>--}}
+{{--                                                <td>{{ $s->sup_kodesuppliermcg }}</td>--}}
+{{--                                                <td>{{ $s->sup_namasupplier }}</td>--}}
+{{--                                            </tr>--}}
+{{--                                        @endforeach--}}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer"></div>
             </div>
-            <div class="modal-footer"></div>
         </div>
     </div>
 
@@ -155,14 +156,26 @@
             -webkit-appearance: none;
             margin: 0;
         }
-        .row_lov:hover{
-            cursor: pointer;
-            background-color: grey;
+        .headerTable{
+            background: #0079C2;
+            /*position: sticky; top: 0;*/
         }
-
+        .fontTable{
+            color: white;
+            font-weight: bold;
+        }
+        .headerModalSupp{
+            background: #0079C2;
+            position: sticky; top: 0;
+        }
+        .fontModal{
+            color: white;
+            font-weight: bold;
+        }
         .rowdetail:hover{
             cursor: pointer;
-            background-color: grey;
+            background-color: cornflowerblue;
+            color: white;
         }
         .my-custom-scrollbar {
             position: relative;
@@ -172,6 +185,8 @@
         .table-wrapper-scroll-y {
             display: block;
         }
+
+        tr:nth-child(even) {background-color: #f2f2f2;}
     </style>
 
     <script>
@@ -196,10 +211,15 @@
                 },
                 success: function (result) {
                     $('#modal-loader').modal('hide');
-                    //console.log(result);
                     $('#tabledetail .rowdetail').remove();
-                    if (result) {
-                        console.log(result.data[0]);
+
+                    if(result.data.length == 0){
+                        swal({
+                            title: 'Data tidak ada',
+                            icon: 'error'
+                        })
+                    } else {
+                        //console.log(result.data[0]);
                         var html = "";
                         var i;
                         for (i = 0; i < result.data.length; i++) {
@@ -225,6 +245,55 @@
                 }
             })
         }
+
+        function showLOV() {
+            $('#helpSearch').val('')
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/suppLOV',
+                type: 'post',
+                data: {},
+                success: function (result) {
+                    $('.modalRow').remove();
+                    for (i = 0; i< result.length; i++){
+                        var temp = `<tr class="modalRow" onclick="helpSelect( '`+ result[i].sup_kodesupplier +`' )">
+                                <td>`+ result[i].sup_kodesupplier +`</td>
+                                <td>`+ result[i].sup_kodesuppliermcg +`</td>
+                                <td>`+ result[i].sup_namasupplier +`</td>
+                                <tr>`;
+                        $('#table_lov').append(temp);
+                    }
+                    $('#modal_supp').modal('show');
+                }, error: function () {
+                    alert('error');
+                }
+            });
+        }
+
+        $('#helpSearch').keypress(function (e) {
+            if (e.which === 13) {
+                let search = $('#helpSearch').val();
+                ajaxSetup();
+                $.ajax({
+                    url: '{{ url()->current() }}/suppLOV',
+                    type: 'post',
+                    data: {search:search},
+                    success: function (result) {
+                        $('.modalRow').remove();
+                        for (var i = 0; i < result.length; i++){
+                            var temp = `<tr class="modalRow" onclick="helpSelect( '`+ result[i].sup_kodesupplier +`' )">
+                                <td>`+ result[i].sup_kodesupplier +`</td>
+                                <td>`+ result[i].sup_kodesuppliermcg +`</td>
+                                <td>`+ result[i].sup_namasupplier +`</td>
+                                <tr>`;
+                            $('#table_lov').append(temp);
+                        }
+                    }, error: function () {
+                        alert('error');
+                    }
+                });
+            }
+        })
 
     </script>
 

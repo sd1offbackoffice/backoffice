@@ -14,7 +14,7 @@ class inquerySuppProdController extends Controller
     {
         $plu = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd','prd_deskripsipanjang')
-            ->where(DB::connection(Session::get('connection'))->raw('SUBSTR(prd_prdcd,7,1)'),'=','0')
+//            ->whereRaw('SUBSTR(prd_prdcd,7,1) = '0'')
             ->orderBy('prd_prdcd')
             ->limit(1000)
             ->get();
@@ -24,7 +24,10 @@ class inquerySuppProdController extends Controller
 
     public function suppProd(Request $request)
     {
-        $getKodeigr = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')->select('prd_kodeigr')->first();
+        $getKodeigr = DB::connection(Session::get('connection'))
+            ->table('tbmaster_prodmast')
+            ->select('prd_kodeigr')
+            ->first();
         $kodeigr    = $getKodeigr->prd_kodeigr;
         $kodeplu = $request->kodeplu;
 
@@ -41,10 +44,10 @@ class inquerySuppProdController extends Controller
             ->select('b.prd_prdcd','b.prd_deskripsipanjang','a.kodesup','a.namasup', 'a.qty', 'a.nobpb', 'a.tglbpb', 'a.term', 'a.hpp' )
             ->where('b.prd_kodeigr', '=', '22')
             ->where('b.prd_prdcd', '=', $kodeplu)
-            ->get()->toArray();
+            ->get()
+            ->toArray();
 
-        return response()
-            ->json(['kodeplu' => $kodeplu, 'data' => $result]);
+        return response()->json(['kodeplu' => $kodeplu, 'data' => $result]);
     }
 
     public function helpSelect(Request $request){
@@ -53,8 +56,8 @@ class inquerySuppProdController extends Controller
             ->where('prd_prdcd',$request->value)
             ->first();
 
-        if(!result)
-            return not-found;
+        if(!$result)
+            return 'not-found';
         else
             return response()->json($result);
     }

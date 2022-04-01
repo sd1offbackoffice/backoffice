@@ -259,7 +259,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="container">
-                        <div class="form-group row mb-0 ">
+                        <div class="form-group row mb-0">
                             <label class="col-sm-2 col-form-label text-sm-right" style="font-size: 12px">No. Dok</label>
                             <div class="col-sm-3">
                                 <input type="text" id="txt-usl-nodok" class="text-center form-control" disabled>
@@ -316,7 +316,6 @@
                         <div class="col-sm-5">
                             <button type="button" class="btn btn-primary" id="btnKirimUsulan" data-dismiss="modal"><i class="icon fas fa-upload"></i>KIRIM USULAN KE FINANCE</button>
                         </div>
-
                     </div>
                     <div class="row">
                         <label class="col-sm col-form-label text-danger text-left" style="font-size: 12px">*Qty usulan adalah qty yang diinput oleh user dengan batasan qty maksimal dari semua nomor referensi BPB yang ada</label>
@@ -496,9 +495,7 @@
             getDataPLU(plu);
             $('#m_lov_plu').modal('hide');
         });
-
-
-
+        
 
         function deleteDoc(event) {
             event.preventDefault();
@@ -675,142 +672,9 @@
             //         buttons: true,
             //     }).then((yes) => {
             //         if (yes) {
-            //             $('#btn-save').attr('id', 'btn-save-new');
+            //             // $('#btn-save').attr('id', 'btn-save-new');
+            //             // $('#btn-save-new').attr('onclick', 'saveNewData()');
 
-            //             $('#tBodyDetail tr').each(function(){
-            //                 $(this).find('td .plu').each(function(){
-            //                     if ($(this).val() === plu) {
-            //                         $(this).parents('tr').remove();
-            //                         arrDeletedPlu.push(plu);
-            //                         console.log(arrDeletedPlu);
-            //                     }
-            //                 })
-            //             })
-
-            //             ajaxSetup();
-            //             $.ajax({
-            //                 type: "post",
-            //                 url: "{{ url()->current() }}/save-new-data-trn",
-            //                 data: {
-            //                     notrn: notrn
-            //                 },
-            //                 beforeSend: function () {
-            //                     $('#modal-loader').modal('show');
-            //                     reset();
-            //                 },
-            //                 success: function (response) {
-
-            //                 },
-            //                 error: function (error) {
-            //                     $('#modal-loader').modal('hide');
-            //                     // error
-            //                     swal({
-            //                         title: error.responseJSON.exception,
-            //                         text: error.responseJSON.message,
-            //                         icon: 'error'
-            //                     }).then(() => {
-            //                     });
-            //                 }
-            //             });
-            //         } else {
-            //             return false;
-            //         }
-            //     });
-            // }
-            if (notrn == '') {
-                swal({
-                    title: "Buat Nomor Pengeluaran Baru?",
-                    text: "Tekan tombol Ya untuk melanjutkan!",
-                    icon: "info",
-                    buttons: true,
-                }).then((yes) => {
-                    if (yes) {
-                        $('#btn-save').attr('id', 'btn-save-new');
-                        $('#btn-save-new').attr('onclick', 'saveNewData()');
-
-                        $.ajax({
-                            type: "GET",
-                            url: "{{ url('/bo/transaksi/pengeluaran/input/get-new-no-trn') }}",
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            beforeSend: function () {
-                                $('#modal-loader').modal('show');
-                                reset();
-                            },
-                            success: function (response) {
-                                $('#no-trn').prop('disabled', true);
-                                $('#tgl-doc').prop('disabled', true);
-                                $('#btn-lov-trn').prop('disabled', true);
-                                $('#btn-save').attr('disabled', false);
-                                $('#btnUsulanRetur').attr('disabled', false);
-
-                                $('#modal-loader').modal('hide');
-                                if (response.status == 'error') {
-                                    swal({
-                                        title: response.status,
-                                        text: response.message,
-                                        icon: 'error'
-                                    }).then(() => {
-                                        no
-                                    });
-                                }
-                                else {
-                                    $('#no-trn').val(response.no);
-                                    $("#tgl-doc").datepicker().datepicker("setDate", new Date());
-                                    $('#txtModel').val(response.model);
-                                    $('#txtKodeSupplier').focus();
-
-                                    $('#tBodyHeader').append(
-                                        '<tr class="row-header-1">' +
-                                        '<td><button class="btn btn-block btn-danger btn-delete-row-header" rowheader="1"><i class="icon fas fa-times"></i></button></td>' +
-                                        '<td class="buttonInside" style="width: 8%">' +
-                                        '<input type="text" class="form-control plu-header-1 plu-header" rowheader="1">' +
-                                        '<button type="button" class="btn btn-lov-plu btn-lov ml-3" rowheader="1" data-target="#m_lov_plu" data-toggle="modal">' +
-                                        '<img src="../../../../public/image/icon/help.png" width="30px">' +
-                                        '</button>' +
-                                        '</td>' +
-                                        '<td><input disabled class="form-control deskripsi-header-1" type="text"></td>' +
-                                        '<td><input disabled class="form-control satuan-header satuan-header-1" type="text"></td>' +
-                                        '<td><input disabled class="form-control bkp-header-1" type="text"></td>' +
-                                        '<td><input disabled class="form-control stock-header-1" type="text"></td>' +
-                                        '<td><input class="form-control ctn-header ctn-header-1" rowheader=1 type="text"></td>' +
-                                        '<td><input class="form-control pcs-header pcs-header-1" rowheader=1 type="text"></td>' +
-                                        '<td><input class="form-control keterangan-header keterangan-header-1" rowheader=1 type="text"></td>' +
-                                        '</tr>' +
-                                        '<tr>' +
-                                        '<td>' +
-                                        '<button class="btn btn-primary" id="btnAddRow" onclick="addNewRow()">+</button>' +
-                                        '</td>' +
-                                        '</tr>');
-
-                                }
-
-                            },
-                            error: function (error) {
-                                $('#modal-loader').modal('hide');
-                                // error
-                                swal({
-                                    title: error.responseJSON.exception,
-                                    text: error.responseJSON.message,
-                                    icon: 'error'
-                                }).then(() => {
-                                });
-                            }
-                        });
-                    } else {
-                        return false;
-                    }
-                });
-            }
-            // if (notrn == '') {
-            //     swal({
-            //         title: "Buat Nomor Pengeluaran Baru?",
-            //         text: "Tekan tombol Ya untuk melanjutkan!",
-            //         icon: "info",
-            //         buttons: true,
-            //     }).then((yes) => {
-            //         if (yes) {
             //             $.ajax({
             //                 type: "GET",
             //                 url: "{{ url('/bo/transaksi/pengeluaran/input/get-new-no-trn') }}",
@@ -860,6 +724,11 @@
             //                             '<td><input class="form-control ctn-header ctn-header-1" rowheader=1 type="text"></td>' +
             //                             '<td><input class="form-control pcs-header pcs-header-1" rowheader=1 type="text"></td>' +
             //                             '<td><input class="form-control keterangan-header keterangan-header-1" rowheader=1 type="text"></td>' +
+            //                             '</tr>' +
+            //                             '<tr>' +
+            //                             '<td>' +
+            //                             '<button class="btn btn-primary" id="btnAddRow" onclick="addNewRow()">+</button>' +
+            //                             '</td>' +
             //                             '</tr>');
 
             //                     }
@@ -881,6 +750,84 @@
             //         }
             //     });
             // }
+            if (notrn == '') {
+                swal({
+                    title: "Buat Nomor Pengeluaran Baru?",
+                    text: "Tekan tombol Ya untuk melanjutkan!",
+                    icon: "info",
+                    buttons: true,
+                }).then((yes) => {
+                    if (yes) {
+                        $.ajax({
+                            type: "GET",
+                            url: "{{ url('/bo/transaksi/pengeluaran/input/get-new-no-trn') }}",
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            beforeSend: function () {
+                                $('#modal-loader').modal('show');
+                                reset();
+                            },
+                            success: function (response) {
+                                $('#no-trn').prop('disabled', true);
+                                $('#tgl-doc').prop('disabled', true);
+                                $('#btn-lov-trn').prop('disabled', true);
+                                $('#btn-save').attr('disabled', false);
+                                $('#btnUsulanRetur').attr('disabled', false);
+
+                                $('#modal-loader').modal('hide');
+                                if (response.status == 'error') {
+                                    swal({
+                                        title: response.status,
+                                        text: response.message,
+                                        icon: 'error'
+                                    }).then(() => {
+                                        no
+                                    });
+                                }
+                                else {
+                                    $('#no-trn').val(response.no);
+                                    $("#tgl-doc").datepicker().datepicker("setDate", new Date());
+                                    $('#txtModel').val(response.model);
+                                    $('#txtKodeSupplier').focus();
+
+                                    $('#tBodyHeader').append(
+                                        '<tr class="row-header-1">' +
+                                        '<td><button class="btn btn-block btn-danger btn-delete-row-header" rowheader="1"><i class="icon fas fa-times"></i></button></td>' +
+                                        '<td class="buttonInside" style="width: 8%">' +
+                                        '<input type="text" class="form-control plu-header-1 plu-header" rowheader="1">' +
+                                        '<button type="button" class="btn btn-lov-plu btn-lov ml-3" rowheader="1" data-target="#m_lov_plu" data-toggle="modal">' +
+                                        '<img src="../../../../public/image/icon/help.png" width="30px">' +
+                                        '</button>' +
+                                        '</td>' +
+                                        '<td><input disabled class="form-control deskripsi-header-1" type="text"></td>' +
+                                        '<td><input disabled class="form-control satuan-header satuan-header-1" type="text"></td>' +
+                                        '<td><input disabled class="form-control bkp-header-1" type="text"></td>' +
+                                        '<td><input disabled class="form-control stock-header-1" type="text"></td>' +
+                                        '<td><input class="form-control ctn-header ctn-header-1" rowheader=1 type="text"></td>' +
+                                        '<td><input class="form-control pcs-header pcs-header-1" rowheader=1 type="text"></td>' +
+                                        '<td><input class="form-control keterangan-header keterangan-header-1" rowheader=1 type="text"></td>' +
+                                        '</tr>');
+
+                                }
+
+                            },
+                            error: function (error) {
+                                $('#modal-loader').modal('hide');
+                                // error
+                                swal({
+                                    title: error.responseJSON.exception,
+                                    text: error.responseJSON.message,
+                                    icon: 'error'
+                                }).then(() => {
+                                });
+                            }
+                        });
+                    } else {
+                        return false;
+                    }
+                });
+            }
             else {
                 $.ajax({
                     type: "GET",
@@ -949,21 +896,15 @@
                                     '<td><input class="form-control " type="text" value="' + pcs + '"></td>' +
                                     '<td><input class="form-control " type="text" value="' + ket + '"></td>' +
                                     '</tr>');
-                                $('#tBodyHeader').find('tr:last').append(
+                            });
+
+                            $('#tBodyHeader tr:last-child').append(
                                     '<tr>' +
                                     '<td>' +
                                     '<button class="btn btn-primary" id="btnAddRow" onclick="addNewRow()">+</button>' +
                                     '</td>' +
                                     '</tr>'
                                 );
-                                // $('#tBodyHeader #row:last').append(
-                                //     '<tr>' +
-                                //     '<td>' +
-                                //     '<button class="btn btn-primary" id="btnAddRow" onclick="addNewRow()">+</button>' +
-                                //     '</td>' +
-                                //     '</tr>'
-                                // );
-                            });
 
                             var datas_detail = response.datas_detail;
                             var i = 1;
