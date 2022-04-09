@@ -6,7 +6,8 @@ use App\Http\Controllers\Connection;
 use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
@@ -20,7 +21,7 @@ class PBManualController extends Controller
     public function lov_nopb(Request $request)
     {
         $pb = DB::connection(Session::get('connection'))->table('tbTr_PB_H')
-            ->select('pbh_nopb','pbh_tglpb','pbh_flagdoc')
+            ->select('pbh_nopb', 'pbh_tglpb', 'pbh_flagdoc')
             ->where('PBH_KodeIGR', '=', Session::get('kdigr'))
             ->where('PBH_NOPB', 'like', '%' . $request->value . '%')
             ->orderBy('pbh_nopb', 'desc')
@@ -30,7 +31,7 @@ class PBManualController extends Controller
 
     public function lov_search_plu(Request $request)
     {
-        $result='';
+        $result = '';
         if (is_numeric($request->value)) {
             $result = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->select('prd_prdcd', 'prd_deskripsipanjang')
@@ -46,6 +47,17 @@ class PBManualController extends Controller
                 ->orderBy('prd_deskripsipanjang')
                 ->get();
         }
+        return Datatables::of($result)->make(true);
+    }
+
+    public function lov_search_plu_pb(Request $request)
+    {
+        $result = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+            ->join('tbtr_pb_d','prd_prdcd','=','pbd_prdcd')
+            ->select('prd_prdcd', 'prd_deskripsipanjang')
+            ->where('pbd_nopb', '=',$request->value)
+            ->orderBy('prd_prdcd')
+            ->get();
         return Datatables::of($result)->make(true);
     }
 
@@ -141,13 +153,13 @@ class PBManualController extends Controller
                 NVL(MIN_MINORDER,0) vMinOrderMin,
                 NVL(PRD_MINORDER,0) vMinOrderPrd,
                 NVL(PRD_ISIBELI,1) vPrdisiBeli,
-                PBD_FDXREV,PBD_HRGSATUAN,PBD_RPHDISC1,PBD_PERSENDISC1,PBD_RPHDISC2,PBD_PERSENDISC2,PBD_BONUSPO1,PBD_BONUSPO2,PBD_GROSS,PBD_PPN,PBD_PPNBM,PBD_PPNBOTOL,PRD_HRGJUAL,PBD_PKMT,PBD_SALDOAKHIR,PBD_FLAGDISC1,PBD_FLAGDISC2,PBD_TOP')
+                PBD_FDXREV,PBD_HRGSATUAN,PBD_RPHDISC1,PBD_PERSENDISC1,PBD_RPHDISC2,PBD_PERSENDISC2,PBD_BONUSPO1,PBD_BONUSPO2,PBD_GROSS,PBD_PPN,PBD_PPNBM,PBD_PPNBOTOL,PRD_HRGJUAL,PBD_PKMT,PBD_SALDOAKHIR,PBD_FLAGDISC1,PBD_FLAGDISC2,PBD_TOP,PBD_PERSENPPN')
                 ->where('PBD_NOPB', $request->value)
                 ->groupBy(DB::connection(Session::get('connection'))->raw('pbd_nourut,PBD_PRDCD,PRD_DESKRIPSIPANJANG,PRD_DESKRIPSIPENDEK,PRD_KODEDIVISI, PRD_KODEDIVISIPO, PRD_KODEDEPARTEMENT, PRD_KODEKATEGORIBARANG, PRD_FRAC,PRD_UNIT,
                     PRD_KODETAG,ST_SALDOAKHIR,PRD_FLAGBKP1,PBD_KODESUPPLIER,SUP_NAMASUPPLIER,
                     CASE WHEN NVL(PLUOMI,\' \')=\' \' THEN \'N\' ELSE \'Y\' END,
                     CASE WHEN NVL(PLUIDM,\' \')=\' \' THEN \'N\' ELSE \'Y\' END,
-                  NVL(MIN_MINORDER,0),NVL(PRD_MINORDER,0),NVL(PRD_ISIBELI,1),PBD_FDXREV,PBD_HRGSATUAN,PBD_RPHDISC1,PBD_PERSENDISC1,PBD_RPHDISC2,PBD_PERSENDISC2,PBD_BONUSPO1,PBD_BONUSPO2,PBD_GROSS,PBD_PPN,PBD_PPNBM,PBD_PPNBOTOL,PRD_HRGJUAL,PBD_PKMT,PBD_SALDOAKHIR,PBD_FLAGDISC1,PBD_FLAGDISC2,PBD_TOP'))
+                  NVL(MIN_MINORDER,0),NVL(PRD_MINORDER,0),NVL(PRD_ISIBELI,1),PBD_FDXREV,PBD_HRGSATUAN,PBD_RPHDISC1,PBD_PERSENDISC1,PBD_RPHDISC2,PBD_PERSENDISC2,PBD_BONUSPO1,PBD_BONUSPO2,PBD_GROSS,PBD_PPN,PBD_PPNBM,PBD_PPNBOTOL,PRD_HRGJUAL,PBD_PKMT,PBD_SALDOAKHIR,PBD_FLAGDISC1,PBD_FLAGDISC2,PBD_TOP,PBD_PERSENPPN'))
                 ->orderBy('pbd_nourut')
                 ->get();
 
@@ -169,7 +181,7 @@ class PBManualController extends Controller
 
             }
         }
-        return compact(['pb', 'MODEL', 'pbd', 'message', 'status','TGLTRF']);
+        return compact(['pb', 'MODEL', 'pbd', 'message', 'status', 'TGLTRF']);
 
     }
 
@@ -180,16 +192,16 @@ class PBManualController extends Controller
         $status = '';
         $plu = [];
 
-        $v_oke = false;
+        $v_oke = "FALSE";
         $PBD_PRDCD = $request->plu;
         $PBD_NOPB = $request->nopb;
         $PBD_KODEIGR = Session::get('kdigr');
-        $FLAG = is_null($request->flag)?'':$request->flag;
+        $FLAG = is_null($request->flag) ? '' : $request->flag;
         $TGLPB = $request->tglpb;
 
         $c = loginController::getConnectionProcedure();
 
-        $sql = "BEGIN sp_igr_bo_pb_cek_plu2('" . $PBD_KODEIGR . "','" . $PBD_PRDCD . "',to_date('" . $TGLPB . "','dd/mm/yyyy'),'" . $FLAG . "'," . ":DESKPDK, :DESKPJG, :UNIT, :FRAC, :BKP,:PBD_KODESUPPLIER, :SUPPLIER, :SUPPKP, :HG_JUAL, :ISI_BELI, :PBD_SALDOAKHIR, :MINOR, :PBD_PKMT, :PBD_PERSENDISC1, :PBD_RPHDISC1, :PBD_FLAGDISC1, :PBD_PERSENDISC2, :PBD_RPHDISC2, :PBD_FLAGDISC2, :PBD_TOP, :F_OMI, :F_IDM, :PBD_HRGSATUAN, :PBD_PPNBM,:PBD_PPNBOTOL, :v_oke, :v_message);END;";
+        $sql = "BEGIN sp_igr_bo_pb_cek_plu_migrasi('" . $PBD_KODEIGR . "','" . $PBD_PRDCD . "',to_date('" . $TGLPB . "','dd/mm/yyyy'),'" . $FLAG . "'," . ":DESKPDK, :DESKPJG, :UNIT, :FRAC, :BKP,:PBD_KODESUPPLIER, :SUPPLIER, :SUPPKP, :HG_JUAL, :ISI_BELI, :PBD_SALDOAKHIR, :MINOR, :PBD_PKMT, :PBD_PERSENDISC1, :PBD_RPHDISC1, :PBD_FLAGDISC1, :PBD_PERSENDISC2, :PBD_RPHDISC2, :PBD_FLAGDISC2, :PBD_TOP, :F_OMI, :F_IDM, :PBD_HRGSATUAN, :PBD_PPNBM,:PBD_PPNBOTOL,:PBD_PERSENPPN, :v_oke, :v_message);END;";
 //        dd($sql);
         $s = oci_parse($c, $sql);
 
@@ -218,6 +230,7 @@ class PBManualController extends Controller
         oci_bind_by_name($s, ':PBD_HRGSATUAN', $plu['pbd_hrgsatuan'], 100);
         oci_bind_by_name($s, ':PBD_PPNBM', $plu['pbd_ppnbm'], 100);
         oci_bind_by_name($s, ':PBD_PPNBOTOL', $plu['pbd_ppnbotol'], 100);
+        oci_bind_by_name($s, ':PBD_PERSENPPN', $plu['pbd_persenppn'], 100);
         oci_bind_by_name($s, ':v_oke', $v_oke, 100);
         oci_bind_by_name($s, ':v_message', $v_message, 100);
         oci_execute($s);
@@ -261,14 +274,14 @@ class PBManualController extends Controller
         $message = '';
         $status = '';
         $prd = [];
-        $prd['qtypb'] = $request->qtypb;
+        $qtypb = (int)$request->qtypb;
         $c = loginController::getConnectionProcedure();
 
-        $sql = "BEGIN sp_igr_bo_pb_cek_bonus2('" . $request->plu . "','" . $request->kdsup . "',to_date('" . $request->tgl . "','dd/mm/yyyy'),'" . $request->frac . "', :qtypb, :bonus1, :bonus2, :ppn, :ppnbm, :ppnbtl,:lok, :message);END;";
+        $sql = "BEGIN sp_igr_bo_pb_cek_bonus2('" . $request->plu . "','" . $request->kdsup . "',to_date('" . $request->tgl . "','dd/mm/yyyy')," . (int)$request->frac . ", :qtypb, :bonus1, :bonus2, :ppn, :ppnbm, :ppnbtl,:lok, :message);END;";
 
         $s = oci_parse($c, $sql);
 
-        oci_bind_by_name($s, ':qtypb', $prd['qtypb'], 100);
+        oci_bind_by_name($s, ':qtypb', $qtypb, 100);
         oci_bind_by_name($s, ':bonus1', $prd['bonus1'], 100);
         oci_bind_by_name($s, ':bonus2', $prd['bonus2'], 100);
         oci_bind_by_name($s, ':ppn', $prd['ppn'], 100);
@@ -277,9 +290,9 @@ class PBManualController extends Controller
         oci_bind_by_name($s, ':lok', $prd['v_oke'], 100);
         oci_bind_by_name($s, ':message', $v_message, 100);
         oci_execute($s);
-
+        $prd['qtypb'] = $qtypb;
         $message = $v_message;
-        $status = 'error';
+        $status = 'info';
         return compact(['prd', 'message', 'status']);
 
     }
@@ -292,8 +305,8 @@ class PBManualController extends Controller
         $v_message = '';
         $gantiaku = 0;
         DB::connection(Session::get('connection'))->beginTransaction();
-        $temp= DB::connection(Session::get('connection'))->table('tbtr_pb_d')
-            ->where('PBD_NOPB','=',$request->nopb)
+        $temp = DB::connection(Session::get('connection'))->table('tbtr_pb_d')
+            ->where('PBD_NOPB', '=', $request->nopb)
             ->delete();
         for ($i = 0; $i < sizeof($request->data['prdcd']); $i++) {
 //            $request->data['gantiaku'][$i]="kosong";
@@ -312,28 +325,28 @@ class PBManualController extends Controller
                     'PBD_QTYPB' => (int)$request->data['qtypb'][$i],
                     'PBD_KODETAG' => '',
                     'PBD_QTYBPB' => (int)$gantiaku,
-                    'PBD_HRGSATUAN' => (int)$request->data['hargasatuan'][$i],
-                    'PBD_PERSENDISC1' => (int)$request->data['persendisc1'][$i],
-                    'PBD_RPHDISC1' => (int)$request->data['rphdisc1'][$i],
+                    'PBD_HRGSATUAN' => (float)$request->data['hargasatuan'][$i],
+                    'PBD_PERSENDISC1' => (float)$request->data['persendisc1'][$i],
+                    'PBD_RPHDISC1' => (float)$request->data['rphdisc1'][$i],
                     'PBD_FLAGDISC1' => $request->data['flagdisc1'][$i],
-                    'PBD_PERSENDISC2' => (int)$request->data['persendisc2'][$i],
-                    'PBD_RPHDISC2' => (int)$request->data['rphdisc2'][$i],
+                    'PBD_PERSENDISC2' => (float)$request->data['persendisc2'][$i],
+                    'PBD_RPHDISC2' => (float)$request->data['rphdisc2'][$i],
                     'PBD_FLAGDISC2' => $request->data['flagdisc2'][$i],
                     'PBD_PERSENDISC2II' => null,
                     'PBD_RPHDISC2II' => null,
                     'PBD_PERSENDISC2III' => null,
                     'PBD_RPHDISC2III' => null,
-                    'PBD_BONUSPO1' => Self::ceknull((int)$request->data['bonuspo1'][$i], 0),
-                    'PBD_BONUSPO2' => Self::ceknull((int)$request->data['bonuspo2'][$i], 0),
+                    'PBD_BONUSPO1' => Self::ceknull((float)$request->data['bonuspo1'][$i], 0),
+                    'PBD_BONUSPO2' => Self::ceknull((float)$request->data['bonuspo2'][$i], 0),
                     'PBD_BONUSBPB1' => 0,
                     'PBD_BONUSBPB2' => 0,
-                    'PBD_GROSS' => Self::ceknull((int)$request->data['gross'][$i], 0),
+                    'PBD_GROSS' => Self::ceknull((float)$request->data['gross'][$i], 0),
                     'PBD_RPHTTLDISC' => 0,
-                    'PBD_PPN' => (int)$request->data['ppn'][$i],
-                    'PBD_PPNBM' => (int)$request->data['ppnbm'][$i],
-                    'PBD_PPNBOTOL' => (int)$request->data['ppnbotol'][$i],
-                    'PBD_TOP' => (int)$request->data['top'][$i],
-                    'PBD_NOPO' => 0,
+                    'PBD_PPN' => (float)$request->data['ppn'][$i],
+                    'PBD_PPNBM' => (float)$request->data['ppnbm'][$i],
+                    'PBD_PPNBOTOL' => (float)$request->data['ppnbotol'][$i],
+                    'PBD_TOP' => (float)$request->data['top'][$i],
+                    'PBD_NOPO' => null,
                     'PBD_OSTPB' => 0,
                     'PBD_OSTPO' => 0,
                     'PBD_PKMT' => (int)$request->data['pkmt'][$i],
@@ -343,7 +356,8 @@ class PBManualController extends Controller
                     'PBD_CREATE_BY' => Session::get('usid'),
                     'PBD_CREATE_DT' => Carbon::now(),
                     'PBD_MODIFY_BY' => Session::get('usid'),
-                    'PBD_MODIFY_DT' =>  Carbon::now()
+                    'PBD_MODIFY_DT' => Carbon::now(),
+                    'PBD_PERSENPPN' => $request->data['persenppn'][$i]
                 ]);
         }
         $pbh = DB::connection(Session::get('connection'))->table('tbtr_pb_h')
@@ -367,7 +381,7 @@ class PBManualController extends Controller
                                  sup_minrph,
                                  SUM (pbd_qtypb) quantity,
                                  SUM (  pbd_gross + pbd_ppn + pbd_ppnbm + pbd_ppnbotol ) rupiah')
-                    ->whereRaw('pbd_nopb =' .$request->nopb)
+                    ->whereRaw('pbd_nopb =' . $request->nopb)
                     ->groupBy('pbd_nopb', 'pbd_kodesupplier', 'sup_minkarton', 'sup_minrph')
                     ->toSql();
 
@@ -392,11 +406,11 @@ class PBManualController extends Controller
                         'pbd_kodetag',
                         'pbd_qtypb',
                         'pbd_kodesupplier')
-                    ->whereRaw('pbd_kodesupplier in('.$pbdsupp.')')
-                    ->whereRaw('pbd_prdcd not in('.$tolakanpb.')')
-                    ->whereRaw('pbd_nopb ='.$request->nopb)
+                    ->whereRaw('pbd_kodesupplier in(' . $pbdsupp . ')')
+                    ->whereRaw('pbd_prdcd not in(' . $tolakanpb . ')')
+                    ->whereRaw('pbd_nopb =' . $request->nopb)
                     ->first();
-                if(isset($pbd)) {
+                if (isset($pbd)) {
                     DB::connection(Session::get('connection'))->table('tbtr_tolakanpb')
                         ->insert(['tlk_kodeigr' => Session::get('kdigr'),
                             'tlk_recordid' => '',
@@ -418,11 +432,11 @@ class PBManualController extends Controller
 //	  ----->>>> Detele PB Tolakan Item
                 $deletein = DB::connection(Session::get('connection'))->table('tbtr_tolakanpb')
                     ->select('tlk_prdcd')
-                    ->whereRaw('tlk_nopb='. $request->nopb)
+                    ->whereRaw('tlk_nopb=' . $request->nopb)
                     ->toSql();
                 DB::connection(Session::get('connection'))->table('TBTR_PB_D')
                     ->where('PBD_NOPB', '=', $request->nopb)
-                    ->whereRaw('pbd_prdcd in('. $deletein . ')')
+                    ->whereRaw('pbd_prdcd in(' . $deletein . ')')
                     ->delete();
             }
 
@@ -479,9 +493,9 @@ class PBManualController extends Controller
                     'PBH_KETERANGANPB' => $request->keterangan,
                     'PBH_TGLTRANSFER' => '',
                     'PBH_CREATE_BY' => Session::get('usid'),
-                    'PBH_CREATE_DT' => DB::connection(Session::get('connection'))->raw('trunc(sysdate)'),
+                    'PBH_CREATE_DT' => DB::connection(Session::get('connection'))->raw('sysdate'),
                     'PBH_MODIFY_BY' => Session::get('usid'),
-                    'PBH_MODIFY_DT' => DB::connection(Session::get('connection'))->raw('trunc(sysdate)')]);
+                    'PBH_MODIFY_DT' => DB::connection(Session::get('connection'))->raw('sysdate')]);
         }
         DB::connection(Session::get('connection'))->commit();
         $message = 'Data berhasil disimpan!';

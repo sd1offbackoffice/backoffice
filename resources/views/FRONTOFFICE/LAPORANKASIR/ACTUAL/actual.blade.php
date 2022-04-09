@@ -158,10 +158,59 @@
                     $(this).select();
                 });
             }
-            else $('#m_result').modal('show')
+            else $('#m_result').modal('show');
         }
 
         function cetak(url){
+            if(url == 'sales' || url == 'cb-nk'){
+                swal({
+                    title: 'sp_job_lpt_cashback harus dijalankan terlebih dahulu!',
+                    text: 'Proses mungkin membutuhkan waktu beberapa saat',
+                    icon: 'info'
+                }).then((ok) => {
+                    if(ok){
+                        $.ajax({
+                            url: '{{ url()->current() }}/process-cashback',
+                            type: 'GET',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            data: {
+
+                            },
+                            beforeSend: function(){
+                                $('#m_result').modal('hide')
+                                $('#modal-loader').modal('show');
+                            },
+                            success: function (response) {
+                                $('#modal-loader').modal('hide');
+
+                                swal({
+                                    title: response.message,
+                                    icon: 'success'
+                                }).then(() => {
+                                    print(url);
+                                    $('#m_result').modal('show')
+                                });
+                            },
+                            error: function(error){
+                                $('#modal-loader').modal('hide');
+
+                                swal({
+                                    title: error.responseJSON.message,
+                                    icon: 'error'
+                                }).then(() => {
+
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+            else print(url);
+        }
+
+        function print(url){
             window.open(`{{ url()->current() }}/cetak-${url}?tanggal=${$('#tanggal').val()}`, '_blank');
         }
     </script>

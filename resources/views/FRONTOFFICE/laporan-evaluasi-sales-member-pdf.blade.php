@@ -53,7 +53,7 @@
                 <td width="8%" class="right">{{ number_format($d->qty, 0, '.', ',') }}</td>
                 <td width="8%" class="right">{{ number_format($d->salesgross, 0, '.', ',') }}</td>
                 <td width="8%" class="right">{{ number_format($d->sales, 0, '.', ',') }}</td>
-                <td width="8%" class="right">{{ number_format($d->salesgross- $d->sales, 0, '.', ',') }}</td>
+                <td width="8%" class="right">{{ number_format($d->ppn, 0, '.', ',') }}</td>
                 <td width="8%" class="right">{{ number_format($d->margin, 0, '.', ',') }}</td>
                 <td width="8%" class="right">{{ number_format($d->sales == 0 ? 0 : ($d->margin / $d->sales) * 100, 2, '.', ',') }}%</td>
             </tr>
@@ -64,7 +64,7 @@
                 $qty += $d->qty;
                 $salesgross += $d->salesgross;
                 $salesnet += $d->sales;
-                $ppn += $d->salesgross - $d->sales;
+                $ppn += $d->ppn;
                 $margin += $d->margin;
             @endphp
         @endforeach
@@ -74,7 +74,7 @@
             <td width="8%" class="tengah center">{{ $struk }}</td>
             <td width="8%" class="right">{{ number_format($qty, 0, '.', ',') }}</td>
             <td width="8%" class="right">{{ number_format($salesgross, 0, '.', ',') }}</td>
-            <td width="8%" class="right">{{ number_format($salesnet, 0, '.', ',') }}</td>
+            <td width="8%" class="right">{{ number_format(ceil($salesnet), 0, '.', ',') }}</td>
             <td width="8%" class="right">{{ number_format($ppn, 0, '.', ',') }}</td>
             <td width="8%" class="right">{{ number_format($margin, 0, '.', ',') }}</td>
             <td width="8%" class="right">{{ number_format($salesnet == 0 ? 0 : ($margin / $salesnet * 100), 2, '.', ',') }}%</td>

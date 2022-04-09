@@ -151,9 +151,7 @@ AND kat_kodekategori = SUBSTR(trjd_division,3,2))
 GROUP BY trjd_division, dept, kat_kodekategori, kat_namakategori
 ORDER BY dept, kat_kodekategori");
 
-//        dd($data);
 
-//        return view('FRONTOFFICE.LAPORANKASIR.laporan-transaksi-bkp-btkp-min-pdf',compact(['perusahaan','data','tgl1','tgl2']));
 
         return view('FRONTOFFICE.LAPORANKASIR.laporan-transaksi-bkp-btkp-pdf',compact(['perusahaan','data','tgl1','tgl2']));
     }

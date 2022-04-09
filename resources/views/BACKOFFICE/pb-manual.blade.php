@@ -132,8 +132,13 @@
                                 <input type="text" class="form-control text-left" id="deskripsi" disabled>
                             </div>
 
-                            <div class="col-sm-2 offset-1">
+                            <div class="col-sm-2 offset-1 buttonInside">
                                 <input type="text" class="form-control text-left" id="cari">
+                                <button id="btn_lov_nopb" type="button" class="btn btn-primary btn-lov p-0"
+                                        data-toggle="modal"
+                                        data-target="#m_plu_pb">
+                                    <i class="fas fa-question"></i>
+                                </button>
                             </div>
                             <div class="col-sm-2">
                                 <button class="btn btn-primary" onclick="cari()">CARI</button>
@@ -217,10 +222,39 @@
         </div>
     </div>
 
+
+    <div class="modal fade" id="m_plu_pb" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-xl modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <br>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col lov">
+                                <table class="table table-sm mb-0 text-center" id="table_lov_plu_pb">
+                                    <thead class="thColor">
+                                    <tr>
+                                        <th>PLU</th>
+                                        <th>DESKRIPSI</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="">
+                                    </tbody>
+                                    <tfoot></tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <script>
         let rowIterator = 0;
         let readonly = '';
         let disabled = '';
+        let disabled_delete = '';
         let detail = [];
 
         let plurow;
@@ -358,6 +392,46 @@
             })
         }
 
+        function getLovPLUSearch(val) {
+            if ($.fn.DataTable.isDataTable('#table_lov_plu_pb')) {
+                $('#table_lov_plu_pb').DataTable().destroy();
+                $("#table_lov_plu_pb tbody [role='row']").remove();
+            }
+
+            lovplu = $('#table_lov_plu_pb').DataTable({
+                "ajax": {
+                    type: 'GET',
+                    url: '{{ url()->current().'/lov_search_plu_pb' }}',
+                    data: {
+                        value: val
+                    }
+                },
+                "columns": [
+                    {data: 'prd_prdcd', name: 'prd_prdcd'},
+                    {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    // $(row).find(':eq(0)').addClass('text-left');
+                    $(row).addClass('row-plu-pb').css({'cursor': 'pointer'});
+                },
+                "order": [],
+                "initComplete": function () {
+                    $(document).on('click', '.row-plu-pb', function (e) {
+                        $('#cari').val($(this).find(':eq(0)').html());
+                        $('#m_plu_pb').modal('hide');
+                    });
+                }
+            });
+
+        }
+
         $('#nopb').on('keypress', function (e) {
             if (e.which == 13) {
                 if ($('#nopb').val() == '') {
@@ -412,6 +486,7 @@
 
                             readonly = '';
                             disabled = '';
+                            disabled_delete='disabled';
                         } else if (response['MODEL'] == 'KOREKSI') {
                             $('#tglpb').prop('disabled', false);
                             $('#flag').prop('disabled', false);
@@ -419,9 +494,12 @@
                             $('.tipe').prop('disabled', false);
                             $('#btnHapusDokumen').prop('disabled', false);
                             $('#btn-save').prop('disabled', false);
-
+                            swal('KOREKSI', '', 'info').then(function () {
+                                $('#modal-loader').modal('hide');
+                            });
                             readonly = '';
-                            disabled = '';
+                            disabled = 'disabled';
+                            disabled_delete='';
                         } else {
                             $('#tglpb').prop('disabled', true);
                             $('#flag').prop('disabled', true);
@@ -429,20 +507,21 @@
                             $('.tipe').prop('disabled', true);
                             readonly = 'readonly';
                             disabled = 'disabled';
+                            disabled_delete='disabled';
                             $('#btnHapusDokumen').prop('disabled', true);
                             $('#btn-save').prop('disabled', true);
                         }
+                        getLovPLUSearch(val);
                         detail = response['pbd'];
                         $('#tbody-detail').empty();
-                        console.log(response['pbd']);
                         for (i = 0; i < response['pbd'].length; i++) {
                             $('#tbody-detail').append(
                                 "<tr id='row-" + i + "' class='baris " + response["pbd"][i].pbd_prdcd + "' onclick='setDataPLU(\"" + i + "\",\"" + response["pbd"][i].pbd_prdcd + "\",\"" + response["pbd"][i].prd_deskripsipanjang.replace(/\'/g, ' ') + "\",\"" + response["pbd"][i].pbd_kodesupplier + "\",\"" + response["pbd"][i].sup_namasupplier + "\",\"" + response["pbd"][i].prd_hrgjual + "\",\"" + nvl(response["pbd"][i].pbd_pkmt, 0) + "\",\"" + nvl(response["pbd"][i].st_saldoakhir, 0) + "\",\"" + response["pbd"][i].minor + "\")'>\n" +
                                 "    <td class='p-0'>\n" +
-                                "        <button class='btn btn-sm btn-danger btn-delete' onclick='hapusBaris(\"" + i + "\")' " + disabled + ">X</button>\n" +
+                                "        <button class='btn btn-sm btn-danger btn-delete' onclick='hapusBaris(\"" + i + "\")' " + disabled_delete + ">X</button>\n" +
                                 "    </td>\n" +
                                 "    <td class='p-0'>\n" +
-                                "<input type='text' class='form-control form-control-sm text-small input-plu' maxlength='7' value='" + nvl(response['pbd'][i].pbd_prdcd, '') + "' id='plu-" + rowIterator + "' onkeypress='cek_plu(" + i + ", this.value, event)' " + readonly + ">" +
+                                "<input type='text' class='form-control form-control-sm text-small input-plu' maxlength='7' value='" + nvl(response['pbd'][i].pbd_prdcd, '') + "' id='plu-" + rowIterator + "' onkeypress='cek_plu(" + i + ",  event)' " + disabled + ">" +
                                 "    </td>\n" +
                                 "    <td class='p-0'>\n" +
                                 "<button type='button' class='btn btn-sm btn-lov-plu p-0' data-toggle='modal' data-target='#m_pluHelp' onclick='pluhelp(" + i + ")' " + disabled + "><img src='{{asset('image/icon/help.png')}}' width='25px' ></button>" +
@@ -451,10 +530,10 @@
                                 "        <input disabled class='form-control form-control-sm input-satuan' value='" + response["pbd"][i].satuan + "' >\n" +
                                 "    </td>\n" +
                                 "    <td class='p-0'>\n" +
-                                "        <input class='form-control form-control-sm text-right input-ctn' value='" + response["pbd"][i].qtyctn + "' onkeypress='cek_ctn(\"" + i + "\", this.value, event)' " + readonly + ">\n" +
+                                "        <input class='form-control form-control-sm text-right input-ctn' value='" + response["pbd"][i].qtyctn + "' onkeypress='cek_ctn(\"" + i + "\",  event)' " + readonly + ">\n" +
                                 "    </td>\n" +
                                 "    <td class='p-0'>\n" +
-                                "        <input class='form-control form-control-sm text-right input-pcs' value='" + response["pbd"][i].qtypcs + "' onkeypress='cek_pcs(\"" + i + "\", this.value, event)' " + readonly + ">\n" +
+                                "        <input class='form-control form-control-sm text-right input-pcs' value='" + response["pbd"][i].qtypcs + "' onkeypress='cek_pcs(\"" + i + "\",  event)' " + readonly + ">\n" +
                                 "    </td>\n" +
                                 "    <td class='p-0'>\n" +
                                 "        <input disabled class='form-control form-control-sm' value='" + response["pbd"][i].f_omi + "'\n" +
@@ -470,16 +549,16 @@
                                 "               value='" + convertToRupiah2(response["pbd"][i].pbd_hrgsatuan) + "'>\n" +
                                 "    </td>\n" +
                                 "    <td class='p-0'>\n" +
-                                "        <input disabled class='form-control form-control-sm text-right' value='" + response["pbd"][i].pbd_rphdisc1 + "'>\n" +
+                                "        <input disabled class='form-control form-control-sm text-right' value='" + convertToRupiah2(response["pbd"][i].pbd_rphdisc1) + "'>\n" +
                                 "    </td>\n" +
                                 "    <td class='p-0'>\n" +
-                                "        <input disabled class='form-control form-control-sm text-right persendisc1' value='" + convertToRupiah(response["pbd"][i].pbd_persendisc1) + "'>\n" +
+                                "        <input disabled class='form-control form-control-sm text-right persendisc1' value='" + (response["pbd"][i].pbd_persendisc1) + "'>\n" +
                                 "    </td>\n" +
                                 "    <td class='p-0'>\n" +
-                                "        <input disabled class='form-control form-control-sm text-right' value='" + convertToRupiah2(response["pbd"][i].pbd_rphdisc2) + "'>\n" +
+                                "        <input disabled class='form-control form-control-sm text-right' value='" + convertToRupiah(response["pbd"][i].pbd_rphdisc2) + "'>\n" +
                                 "    </td>\n" +
                                 "    <td class='p-0'>\n" +
-                                "        <input disabled class='form-control form-control-sm text-right persendisc2' value='" + convertToRupiah(response["pbd"][i].pbd_persendisc2) + "'>\n" +
+                                "        <input disabled class='form-control form-control-sm text-right persendisc2' value='" + (response["pbd"][i].pbd_persendisc2) + "'>\n" +
                                 "    </td>\n" +
                                 "    <td class='p-0'>\n" +
                                 "        <input disabled class='form-control form-control-sm text-right bonus1' value='" + response["pbd"][i].pbd_bonuspo1 + "'>\n" +
@@ -565,7 +644,7 @@
                 '        <button class="btn btn-sm btn-danger btn-delete" onclick="hapusBaris(\'' + rowIterator + '\')">X</button>\n' +
                 '    </td>\n' +
                 '    <td class="p-0">\n' +
-                '           <input type="text" class="form-control form-control-sm text-small input-plu" maxlength="7" id="plu-' + rowIterator + '" onkeypress="cek_plu(\'' + rowIterator + '\', this.value, event)">' +
+                '           <input type="text" class="form-control form-control-sm text-small input-plu" maxlength="7" id="plu-' + rowIterator + '" onkeypress="cek_plu(\'' + rowIterator + '\',  event)">' +
                 '    </td>\n' +
                 '    <td class="p-0">\n' +
                 '           <button type="button" class="btn btn-sm btn-lov-plu p-0" data-toggle="modal" data-target="#m_pluHelp" onclick="pluhelp(\'' + rowIterator + '\')"><img src="{{asset('image/icon/help.png')}}" width="25px"></button>' +
@@ -574,10 +653,10 @@
                 '        <input disabled class="form-control form-control-sm input-satuan" value="">\n' +
                 '    </td>\n' +
                 '    <td class="p-0">\n' +
-                '        <input class="form-control form-control-sm text-right input-ctn" value="0" onkeypress="cek_ctn(' + rowIterator + ', this.value, event)">\n' +
+                '        <input class="form-control form-control-sm text-right input-ctn" value="0" onkeypress="cek_ctn(' + rowIterator + ',  event)">\n' +
                 '    </td>\n' +
                 '    <td class="p-0">\n' +
-                '        <input class="form-control form-control-sm text-right input-pcs" value="0" onkeypress="cek_pcs(' + rowIterator + ', this.value, event)">\n' +
+                '        <input class="form-control form-control-sm text-right input-pcs" value="0" onkeypress="cek_pcs(' + rowIterator + ',  event)">\n' +
                 '    </td>\n' +
                 '    <td class="p-0">\n' +
                 '        <input disabled class="form-control form-control-sm" value="">\n' +
@@ -636,8 +715,9 @@
             $('#pkm').val("");
             $('#stock').val("");
             $('#minor').val("");
+
+            $('#row-'+rowIterator).find('.input-plu').focus();
             rowIterator++;
-            console.log("rowit+:" + rowIterator);
         }
 
         function pluhelp(row) {
@@ -653,9 +733,9 @@
             });
         }
 
-        function cek_plu(row, value, e) {
+        function cek_plu(row, e) {
             var div = $('#row-' + row);
-            value = convertPlu(value);
+            value = convertPlu($('#row-' + row).find('.input-plu').val());
             value = value.substring(0, 6) + '0';
             if (e.which == '13') {
                 div.find('.input-plu').val(value);
@@ -674,7 +754,6 @@
                             pluCount++;
                         }
                     });
-                    console.log("plu:" + pluCount);
                     if (pluCount < 2) {
                         tgl = $('#tglpb').val();
                         nopb = $('#nopb').val();
@@ -707,7 +786,7 @@
                                         "        <button class='btn btn-sm btn-danger btn-delete' onclick='hapusBaris(\"" + row + "\")'>X</button>\n" +
                                         "    </td>\n" +
                                         "    <td class='p-0'>\n" +
-                                        '<input type="text" class="form-control form-control-sm text-small input-plu" maxlength="7" value="' + nvl(response["plu"].pbd_prdcd, '') + '" id="plu-' + row + '" onkeypress="cek_plu(\'' + row + '\', this.value, event)">' +
+                                        '<input type="text" class="form-control form-control-sm text-small input-plu" maxlength="7" value="' + nvl(response["plu"].pbd_prdcd, '') + '" id="plu-' + row + '" onkeypress="cek_plu(\'' + row + '\',  event)">' +
                                         "    </td>\n" +
                                         "<td class='p-0'>\n" +
                                         '<button type="button" class="btn btn-sm btn-lov-plu p-0" data-toggle="modal" data-target="#m_pluHelp" onclick="pluhelp(\'' + row + '\')"><img src="{{asset('image/icon/help.png')}}" width="25px"></button>' +
@@ -716,10 +795,10 @@
                                         "        <input disabled class='form-control form-control-sm input-satuan' value='" + response["plu"].satuan + "' >\n" +
                                         "    </td>\n" +
                                         "    <td class='p-0'>\n" +
-                                        "        <input class='form-control form-control-sm text-right input-ctn' value='0' onkeypress='cek_ctn(\"" + row + "\", this.value, event)'>\n" +
+                                        "        <input class='form-control form-control-sm text-right input-ctn' value='0' onkeypress='cek_ctn(\"" + row + "\",  event)'>\n" +
                                         "    </td>\n" +
                                         "    <td class='p-0'>\n" +
-                                        "        <input class='form-control form-control-sm text-right input-pcs' value='0' onkeypress='cek_pcs(\"" + row + "\", this.value, event)'>\n" +
+                                        "        <input class='form-control form-control-sm text-right input-pcs' value='0' onkeypress='cek_pcs(\"" + row + "\",  event)'>\n" +
                                         "    </td>\n" +
                                         "    <td class='p-0'>\n" +
                                         "        <input disabled class='form-control form-control-sm' value='" + response["plu"].f_omi + "'\n" +
@@ -735,16 +814,16 @@
                                         "               value='" + convertToRupiah2(response["plu"].pbd_hrgsatuan) + "'>\n" +
                                         "    </td>\n" +
                                         "    <td class='p-0'>\n" +
-                                        "        <input disabled class='form-control form-control-sm text-right' value='" + response["plu"].pbd_rphdisc1 + "'>\n" +
+                                        "        <input disabled class='form-control form-control-sm text-right' value='" + convertToRupiah2(response["plu"].pbd_rphdisc1) + "'>\n" +
                                         "    </td>\n" +
                                         "    <td class='p-0'>\n" +
-                                        "        <input disabled class='form-control form-control-sm text-right persendisc1' value='" + convertToRupiah(response["plu"].pbd_persendisc1) + "'>\n" +
+                                        "        <input disabled class='form-control form-control-sm text-right persendisc1' value='" + (response["plu"].pbd_persendisc1) + "'>\n" +
                                         "    </td>\n" +
                                         "    <td class='p-0'>\n" +
                                         "        <input disabled class='form-control form-control-sm text-right' value='" + convertToRupiah2(response["plu"].pbd_rphdisc2) + "'>\n" +
                                         "    </td>\n" +
                                         "    <td class='p-0'>\n" +
-                                        "        <input disabled class='form-control form-control-sm text-right persendisc2' value='" + convertToRupiah(response["plu"].pbd_persendisc2) + "'>\n" +
+                                        "        <input disabled class='form-control form-control-sm text-right persendisc2' value='" + (response["plu"].pbd_persendisc2) + "'>\n" +
                                         "    </td>\n" +
                                         "    <td class='p-0'>\n" +
                                         "        <input disabled class='form-control form-control-sm text-right bonus1' value=''>\n" +
@@ -773,8 +852,8 @@
                                         "</tr>"
                                     );
                                     detail[row] = response["plu"];
-                                    console.log("row: " + row);
                                     $('#row-' + row).find('.input-ctn').click().focus().select();
+                                    $('#row-' + row).find('.input-plu,.btn-lov-plu').prop('disabled', true);
                                 }
                             },
                             complete: function () {
@@ -794,31 +873,113 @@
             }
         }
 
-        function cek_ctn(row, value, e) {
+        function cek_ctn(row, e) {
             if (e.which == '13') {
                 var div = $('#row-' + row);
+                if ($.trim(div.find('.input-ctn').val()) == '') {
+                    div.find('.input-ctn').val(0);
+                }
+                if ($.trim(div.find('.input-pcs').val()) == '') {
+                    div.find('.input-pcs').val(0);
+                }
+
                 hitung(row);
                 div.find('.input-pcs').click().focus().select();
             }
         }
 
-        function cek_pcs(row, value, e) {
+        function cek_bonus(row) {
             var div = $('#row-' + row);
+            var next = div[0].nextElementSibling;
+
+            var qtypb = parseFloat(div.find('.input-ctn').val()) * parseFloat(detail[row].prd_frac) + parseFloat(div.find('.input-pcs').val());
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/cek_bonus',
+                type: 'POST',
+                data: {
+
+                    plu: detail[row].pbd_prdcd,
+                    kdsup: detail[row].pbd_kodesupplier,
+                    tgl: $('#tglpb').val(),
+                    frac: detail[row].prd_frac,
+                    qtypb: qtypb
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                },
+                success: function (response) {
+
+                    console.log(detail[row].pbd_prdcd);
+                    console.log(detail[row].pbd_kodesupplier);
+                    console.log($('#tglpb').val());
+                    console.log(detail[row].prd_frac);
+                    console.log(qtypb);
+
+
+                    if (response['prd'].v_oke == 'TRUE') {
+                        div.find('.bonus1').val(response['prd'].bonus1);
+                        div.find('.bonus2').val(response['prd'].bonus2);
+                        div.find('.ppn').val(convertToRupiah(response['prd'].ppn));
+                        div.find('.ppnbm').val(convertToRupiah(response['prd'].ppnbm));
+                        div.find('.ppnbotol').val(convertToRupiah(response['prd'].ppnbtl));
+                        detail[row].pbd_qtypb = response['prd'].qtypb;
+                        detail[row].pbd_bonuspo1 = response['prd'].bonus1;
+                        detail[row].pbd_bonuspo2 = response['prd'].bonus2;
+                        detail[row].pbd_ppn = response['prd'].ppn;
+                        detail[row].pbd_ppnbm = response['prd'].ppnbm;
+                        detail[row].pbd_ppnbotol = response['prd'].ppnbtl;
+                        console.log(response['prd']);
+                        grandtotal(row);
+                        if (next == null) {
+                            tambah_row();
+                            $('#row-' + parseFloat(row + 1)).find('.input-plu').click().focus();
+                        }
+                        swal({
+                            title: response['message'],
+                            icon: response['status']
+                        }).then((createData) => {
+                        });
+                    } else {
+                        swal({
+                            title: response['message'],
+                            icon: response['status']
+                        }).then((createData) => {
+                        });
+                    }
+                },
+                complete: function () {
+                    $('#modal-loader').modal('hide');
+                }
+            });
+        }
+
+        function cek_pcs(row, e) {
+            var div = $('#row-' + row);
+            if ($.trim(div.find('.input-ctn').val()) == '') {
+                div.find('.input-ctn').val(0);
+            }
+            if ($.trim(div.find('.input-pcs').val()) == '') {
+                div.find('.input-pcs').val(0);
+            }
             if (e.which == '13') {
                 var target = e.srcElement || e.target;
                 var next = div[0].nextElementSibling;
 
-                qtypb = parseInt(div.find('.input-ctn').val() * detail[row].prd_frac) + parseInt(value);
 
-
-                if ((div.find('.input-ctn').val() * detail[row].prd_frac) + value < detail[row].minor) {
+                hitung(row);
+                if (((parseFloat(div.find('.input-ctn').val()) * parseFloat(detail[row].prd_frac)) + parseFloat(div.find('.input-pcs').val())) < parseFloat(detail[row].minor)) {
                     swal({
                         title: "QTYB + QTYK < MINOR !",
                         icon: "error"
                     }).then((createData) => {
-                        div.find('.input-ctn').focus();
+                        div.find('.input-ctn').val(parseFloat(detail[row].minor) / parseFloat(detail[row].prd_frac));
+                        div.find('.input-pcs').val(parseFloat(detail[row].minor) % parseFloat(detail[row].prd_frac));
+                        hitung(row);
+
+                        div.find('.input-pcs').focus();
                     });
-                } else if ((div.find('.input-ctn').val() * detail[row].prd_frac) + value <= 0) {
+                } else if (((parseFloat(div.find('.input-ctn').val()) * parseFloat(detail[row].prd_frac)) + parseFloat(div.find('.input-pcs').val())) <= 0) {
                     swal({
                         title: "QTYB + QTYK <= 0",
                         icon: "error"
@@ -826,44 +987,7 @@
                         div.find('.input-ctn').focus();
                     });
                 } else {
-                    ajaxSetup();
-                    $.ajax({
-                        url: '{{ url()->current() }}/cek_bonus',
-                        type: 'POST',
-                        data: {
-
-                            plu: detail[row].pbd_prdcd,
-                            kdsup: detail[row].pbd_kodesupplier,
-                            tgl: $('#tglpb').val(),
-                            frac: detail[row].prd_frac,
-                            qtypb: qtypb
-                        },
-                        beforeSend: function () {
-                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                        },
-                        success: function (response) {
-                            if (response['prd'].v_oke == 'TRUE') {
-                                div.find('.ppn').val(convertToRupiah(response['prd'].ppn));
-                                div.find('.ppnbm').val(convertToRupiah(response['prd'].ppnbm));
-                                div.find('.ppnbotol').val(convertToRupiah(response['prd'].ppnbtl));
-                                hitung(row);
-                                if (next == null) {
-                                    $('#row-' + row).find('.input-plu,.btn-lov-plu').prop('disabled', true);
-                                    tambah_row();
-                                    $('#row-' + parseInt(row + 1)).find('.input-plu').click().focus();
-                                }
-                            } else {
-                                swal({
-                                    title: response['message'],
-                                    icon: response['status']
-                                }).then((createData) => {
-                                });
-                            }
-                        },
-                        complete: function () {
-                            $('#modal-loader').modal('hide');
-                        }
-                    });
+                    cek_bonus(row);
                 }
             }
         }
@@ -871,32 +995,79 @@
         function hitung(row) {
             var div = $('#row-' + row);
             div.find('.input-pcs').focus();
-            frac = detail[row].prd_frac;
-            hargasatuan = detail[row].pbd_hrgsatuan;
-            qtyctn = div.find('.input-ctn').val();
-            qtypcs = div.find('.input-pcs').val();
-            persendisc1 = detail[row].pbd_persendisc1;
-            persendisc2 = detail[row].pbd_persendisc2;
-            hargabeli = (qtyctn * hargasatuan) + (qtypcs * (hargasatuan / frac));
-            gross = hargabeli - (hargabeli * persendisc1 / 100);
-            hargabeli = gross;
-            gross = hargabeli - (hargabeli * persendisc2 / 100);
-            ppn = gross * 10 / 100;
-            ppnbm = nvl(detail[row].pbd_ppnbm, 0) * nvl(detail[row].pbd_qtypb, 0);
-            ppnbotol = nvl(detail[row].pbd_ppnbotol, 0) * nvl(detail[row].pbd_qtypb, 0);
-            total = gross + ppn + ppnbm + ppnbotol;
+            frac = parseFloat(detail[row].prd_frac);
+            hargasatuan = parseFloat(detail[row].pbd_hrgsatuan);
+            qtyctn = parseFloat(div.find('.input-ctn').val());
+            qtypcs = parseFloat(div.find('.input-pcs').val());
+            persendisc1 = parseFloat(detail[row].pbd_persendisc1);
+            persendisc2 = parseFloat(detail[row].pbd_persendisc2);
+            ppnbm = parseFloat(detail[row].pbd_ppnbm);
+            ppnbotol = parseFloat(detail[row].pbd_ppnbotol);
+            persenppn = parseFloat(detail[row].pbd_persenppn);
+            qtypb = parseFloat(qtyctn * frac) + parseFloat(qtypcs);
+            detail[row].pbd_qtypb = qtypb;
+            bkp = detail[row].bkp;
 
-            detail[row].pbd_gross = gross;
-            detail[row].pbd_ppn = ppn;
-            detail[row].pbd_ppnbm = ppnbm;
-            detail[row].pbd_ppnbotol = ppnbotol;
-            detail[row].total = total;
+            persendisc1 = persendisc1 != '' ? persendisc1 : 0;
+            persendisc2 = persendisc2 != '' ? persendisc2 : 0;
+
+            qtyctn = (qtyctn != '' ? qtyctn : 0);
+            qtypcs = (qtypcs != '' ? qtypcs : 0);
+
+            qtypb = (qtyctn * frac) + qtypcs;
+            qtyctn = Math.round(qtypb / frac);
+            qtypcs = qtypb % frac;
+            gross = (qtyctn * hargasatuan) + ((hargasatuan / frac) * (qtypcs != '' ? qtypcs : 0));
+
+            if (persendisc1 > 0) {
+                gross = gross - ((gross * persendisc1) / 100);
+            }
+
+            ppn = 0;
+            if (bkp == 'Y') {
+                ppn = (gross * persenppn) / 100;
+            }
+
+            div.find('.input-ctn').val(qtyctn);
+            div.find('.input-pcs').val(qtypcs);
+            div.find('.gross').val(convertToRupiah(gross));
+            div.find('.ppn').val(convertToRupiah(ppn));
+        }
+
+        function grandtotal(row) {
+            var div = $('#row-' + row);
+
+            frac = parseFloat(detail[row].prd_frac);
+            hargasatuan = parseFloat(detail[row].pbd_hrgsatuan);
+            qtyctn = parseFloat(div.find('.input-ctn').val());
+            qtypcs = parseFloat(div.find('.input-pcs').val());
+            persendisc1 = parseFloat(detail[row].pbd_persendisc1);
+            persendisc2 = parseFloat(detail[row].pbd_persendisc2);
+            ppnbm = parseFloat(detail[row].pbd_ppnbm);
+            ppnbotol = parseFloat(detail[row].pbd_ppnbotol);
+            persenppn = parseFloat(detail[row].pbd_persenppn);
+            qtypb = parseFloat(detail[row].pbd_qtypb);
+
+            HrgBeli = (qtyctn * hargasatuan) + (qtypcs * (hargasatuan / frac));
+            gross = HrgBeli - (HrgBeli * persendisc1 / 100);
+            HrgBeli = gross;
+            gross = HrgBeli - (HrgBeli * persendisc2 / 100);
+            ppn = (gross * persenppn) / 100;
+            ppnbm = ppnbm * qtypb;
+            ppnbotol = ppnbotol * qtypb;
+            total = gross + ppn + ppnbm + ppnbotol;
 
             div.find('.gross').val(convertToRupiah(gross));
             div.find('.ppn').val(convertToRupiah(ppn));
             div.find('.ppnbm').val(convertToRupiah(ppnbm));
             div.find('.ppnbotol').val(convertToRupiah(ppnbotol));
             div.find('.total').val(convertToRupiah(total));
+
+            detail[row].pbd_gross = gross;
+            detail[row].pbd_ppn = ppn;
+            detail[row].pbd_ppnbm = ppnbm;
+            detail[row].pbd_ppnbotol = ppnbotol;
+            detail[row].total = total;
         }
 
         function saveData() {
@@ -940,7 +1111,7 @@
                     data.pkmt = [];
                     data.saldoakhir = [];
                     data.fdxrev = [];
-
+                    data.persenppn = [];
                     data.gantiaku = [];
                     i = 0;
                     $("#tbody-detail").find('tr').each(function () {
@@ -948,27 +1119,52 @@
                         rid = $(this)[0].id;
                         splitted_id = rid.split('-');
                         id = splitted_id[1];
-
+                        var div = $('#row-' + id);
                         $(this).find("td").each(function () {
                             temp.push($(this).find("input").val());
                         });
                         if (temp[1] != '') {
-                            if ((temp[4] * detail[id].prd_frac) + temp[5] < detail[id].minor) {
+                            if ((parseFloat(temp[4]) * parseFloat(detail[id].prd_frac)) + parseFloat(temp[5]) < parseFloat(detail[id].minor)) {
                                 swal({
                                     title: "QTYB + QTYK < MINOR !",
                                     icon: "error"
                                 }).then((createData) => {
-                                    $(rid).find('.input-ctn').focus();
+                                    div.find('.input-ctn').val(parseFloat(detail[id].minor) / parseFloat(detail[id].prd_frac));
+                                    div.find('.input-pcs').val(parseFloat(detail[id].minor) % parseFloat(detail[id].prd_frac));
+                                    var e = jQuery.Event("keypress");
+                                    e.which = 13; //choose the one you want
+                                    e.keyCode = 13;
+                                    cek_ctn(id,e);
+                                    cek_pcs(id,e);
+                                    div.find('.input-ctn').focus();
                                 });
-                            } else if ((temp[4] * detail[id].prd_frac) + temp[5] <= 0) {
+                            } else if ((parseFloat(temp[4]) * parseFloat(detail[id].prd_frac)) + parseFloat(temp[5]) <= 0) {
                                 simpan = false;
                                 swal({
                                     title: "QTYB + QTYK <= 0",
                                     icon: "error"
                                 }).then((createData) => {
-                                    $(rid).find('.input-ctn').focus();
+                                    div.find('.input-ctn').focus();
                                 });
                             } else {
+                                //itunglagi buat plu 1362600
+                                hargasatuan = parseFloat(detail[id].pbd_hrgsatuan);
+                                frac = parseFloat(detail[id].prd_frac);
+                                qtypb = parseFloat(detail[id].pbd_qtypb);
+                                persendisc1 = parseFloat(detail[id].pbd_persendisc1);
+                                persendisc2 = parseFloat(detail[id].pbd_persendisc2);
+
+                                qtyctn = qtypb / frac;
+                                qtypcs = qtypb % frac;
+                                HrgBeli = (qtyctn * hargasatuan) + (qtypcs * (hargasatuan / frac));
+                                gross = HrgBeli - (HrgBeli * persendisc1 / 100);
+                                HrgBeli = gross;
+                                gross = HrgBeli - (HrgBeli * persendisc2 / 100);
+                                ppn = (gross * persenppn) / 100;
+                                ppnbm = ppnbm * qtypb;
+                                ppnbotol = ppnbotol * qtypb;
+                                total = gross + ppn + ppnbm + ppnbotol;
+
                                 data.prdcd[i] = temp[1];
                                 data.kodedivisi[i] = detail[id].prd_kodedivisi;
                                 data.kodedivisipo[i] = detail[id].prd_kodedivisipo;
@@ -976,7 +1172,7 @@
                                 data.kodekategoribrg[i] = detail[id].prd_kodekategoribarang;
                                 data.kodesupplier[i] = detail[id].pbd_kodesupplier;
                                 data.nourut[i] = i + 1;
-                                data.qtypb[i] = parseInt(temp[4] * detail[id].prd_frac) + parseInt(temp[5]);
+                                data.qtypb[i] = detail[id].pbd_qtypb;
                                 data.hargasatuan[i] = detail[id].pbd_hrgsatuan;
                                 data.persendisc1[i] = detail[id].pbd_persendisc1;
                                 data.rphdisc1[i] = detail[id].pbd_rphdisc1;
@@ -984,24 +1180,22 @@
                                 data.persendisc2[i] = detail[id].pbd_persendisc2;
                                 data.rphdisc2[i] = detail[id].pbd_rphdisc2;
                                 data.flagdisc2[i] = detail[id].pbd_flagdisc2;
-                                data.bonuspo1[i] = temp[13];
-                                data.bonuspo2[i] = temp[14];
-                                data.gross[i] = unconvertToRupiah(temp[16]);
-                                data.ppn[i] = unconvertToRupiah(temp[17]);
-                                data.ppnbm[i] = unconvertToRupiah(temp[18]);
-                                data.ppnbotol[i] = unconvertToRupiah(temp[19]);
+                                data.bonuspo1[i] = detail[id].pbd_bonuspo1;
+                                data.bonuspo2[i] = detail[id].pbd_bonuspo2;
+                                data.gross[i] = gross;
+                                data.ppn[i] = ppn;
+                                data.ppnbm[i] = ppnbm;
+                                data.ppnbotol[i] = ppnbotol;
                                 data.top[i] = detail[id].pbd_top;
                                 data.pkmt[i] = detail[id].pbd_pkmt;
                                 data.saldoakhir[i] = detail[id].st_saldoakhir;
                                 data.fdxrev[i] = detail[id].pbd_fdxrev;
-                                console.log('detail :');
-                                console.log(detail);
+                                data.persenppn[i] = detail[id].pbd_persenppn;
                             }
                         }
 
                         i++;
                     });
-                    console.log(data);
                     ajaxSetup();
                     $.ajax({
                         url: '{{ url()->current() }}/save_data',
@@ -1019,11 +1213,6 @@
                             $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                         },
                         success: function (response) {
-                            // $('#nopb').val('');
-                            // $('#flag option[value="0"]').attr('selected', 'selected');
-                            // $("input[name=tipe][value='R']").prop("checked", true);
-                            // $('.baris').remove();
-                            // clear_field();
                             swal({
                                 title: response['message'],
                                 icon: response['status']
@@ -1039,7 +1228,7 @@
             });
         }
 
-        function hapusDokumen(){
+        function hapusDokumen() {
             swal({
                 title: 'Hapus Dokumen ini?',
                 icon: 'warning',
@@ -1058,10 +1247,9 @@
                             $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                         },
                         success: function (response) {
-                            if (response['status'] == 'error'){
+                            if (response['status'] == 'error') {
                                 location.reload();
-                            }
-                            else {
+                            } else {
                                 swal({
                                     title: response['message'],
                                     icon: response['status']
@@ -1078,6 +1266,8 @@
             });
 
         }
+
+
     </script>
 
 @endsection

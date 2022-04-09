@@ -181,7 +181,7 @@
             <td class="right">{{ number_format($tot_member + $tot_member_lain, 0, '.', ',') }}</td>
             <td class="right">{{ number_format($tot_kunjungan + $tot_kunjungan_lain, 0, '.', ',') }}</td>
             <td class="right">{{ number_format($tot_kont1 + $tot_kont1_lain, 2, '.', ',') }}</td>
-            <td class="right">{{ number_format($tot_rupiah + $tot_rupiah_lain, 0, '.', ',') }}</td>
+            <td class="right">{{ number_format(ceil($tot_rupiah + $tot_rupiah_lain), 0, '.', ',') }}</td>
             <td class="right">{{ number_format($tot_kont2 + $tot_kont2_lain, 2, '.', ',') }}</td>
             <td class="right">{{ number_format($tot_margin + $tot_margin_lain, 0, '.', ',') }}</td>
             <td class="right">{{ number_format($tot_kont3 + $tot_kont3_lain, 2, '.', ',') }}</td>

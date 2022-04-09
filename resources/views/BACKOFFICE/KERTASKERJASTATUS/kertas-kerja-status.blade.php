@@ -15,7 +15,7 @@
                                 <div class="row form-group">
                                     <label class="col-sm-2 text-right col-form-label  text-right pl-0">Periode Proses</label>
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control text-left" id="periode">
+                                        <input type="text" class="form-control text-left" id="periode" autocomplete="off">
                                     </div>
                                 </div>
                                 <div class="row form-group">
@@ -133,8 +133,9 @@
 
         $(document).ready(function(){
             $('#periode').datepicker({
-                "dateFormat": "dd/mm/yy",
-                "maxDate" : new Date()
+                changeMonth: true,
+                changeYear: true,
+                dateFormat : "mm/yy",
             });
 
             $('#rowstoragebesar').val(130);
@@ -178,15 +179,13 @@
         }
 
         function print(){
-            periode = formatDateCustom($('#periode').val(), 'mmyyyy');
-
             swal({
-                title: 'Yakin ingin mencetak KK Status periode '+periode+'?',
+                title: 'Yakin ingin mencetak KK Status periode '+$('#periode').val()+'?',
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true
             }).then(function(){
-                window.open(`{{ url()->current() }}/print?periode=${periode}&koderak=${$('#koderak').val()}&rowsb=${$('#rowstoragebesar').val()}&rowsk=${$('#rowstoragekecil').val()}`,'_blank');
+                window.open(`{{ url()->current() }}/print?periode=${$('#periode').val()}&koderak=${$('#koderak').val()}&rowsb=${$('#rowstoragebesar').val()}&rowsk=${$('#rowstoragekecil').val()}`,'_blank');
             })
         }
     </script>

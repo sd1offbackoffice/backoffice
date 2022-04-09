@@ -4,50 +4,73 @@
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-sm-12">
-                <fieldset class="card border-secondary">
+                <fieldset class="card border-dark">
                     <legend class="w-auto ml-5"></legend>
                     <div class="card-body cardForm ">
                         <div class="row">
                             <div class="col-sm-12">
                                 <form class="form">
-
+                                    {{--<div class="form-group row mb-0 ">--}}
+                                    {{--<label class="col-sm-1 col-form-label text-sm-right" style="font-size: 12px">I0519</label>--}}
+                                    {{--<label class="col-sm-1 col-form-label text-sm-right" style="font-size: 12px">000390</label>--}}
+                                    {{--</div>--}}
                                     <div class="form-group row mb-0 ">
-                                        <label for="no-trn" class="col-sm-1 col-form-label text-sm-right">NOMOR TRN</label>
+                                        <label class="col-sm-1 col-form-label text-sm-right" style="font-size: 12px">NOMOR
+                                            TRN</label>
                                         <div class="col-sm-2 buttonInside">
-                                            <input type="text" class="form-control" id="no-trn">
-                                            <button type="button" class="btn btn-lov p-0" data-target="#m_lov_trn" data-toggle="modal" id="btn-lov-trn">
-                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px"></button>
+                                            <input type="text" class="form-control" id="txtNoDoc">
+                                            <button type="button" class="btn btn-lov p-0" data-target="#m_lov_trn"
+                                                    data-toggle="modal" id="btn-lov-trn">
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                            </button>
                                         </div>
-                                        <div class="col-sm-2"> <button class="btn btn-danger btn-sm float-left" id="btn-hapus" onclick="deleteDoc(event)">HAPUS DOKUMEN</button></div>
-
-                                        <div class="col-sm-3">
-                                            <input type="text" id="txtModel" class="text-center form-control" disabled></div>
-                                        <div class="offset-2 col-sm-2"><button type="button" class="btn btn-primary" id="btn-save"><i class="icon fas fa-save"></i>Simpan</button>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row mb-0">
-                                        <label for="tgl-doc" class="col-sm-1 col-form-label text-sm-right">TANGGAL</label>
                                         <div class="col-sm-2">
-                                            <input type="text" class="form-control" id="tgl-doc">
+                                            <button type="button" id="btnHapusDokumen"
+                                                    class="btn btn-danger float-left" disabled><i
+                                                    class="icon fas fa-trash"></i> Hapus Dokumen
+                                            </button>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <input type="text" id="txtModel"
+                                                   class="text-center form-control" disabled>
+                                        </div>
+                                        <div class="offset-2 col-sm-2">
+                                            <button type="button" id="btnSimpan" class="btn btn-primary"><i
+                                                    class="icon fas fa-save"></i> Simpan
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row mb-0 ">
+                                        <label class="col-sm-1 col-form-label text-sm-right" style="font-size: 12px">TANGGAL</label>
+                                        <div class="col-sm-2">
+                                            <input type="text" id="dtTglDoc"
+                                                   class="text-center form-control">
                                         </div>
                                     </div>
                                     <div class="form-group row mb-0">
-                                        <label for="supp-doc" class="col-sm-1 col-form-label text-sm-right">SUPPLIER</label>
+                                        <label class="col-sm-1 col-form-label text-sm-right" style="font-size: 12px">SUPPLIER</label>
                                         <div class="col-sm-2 buttonInside">
-                                            <input type="text" class="form-control" id="txtKodeSupplier">
-                                            <button type="button" class="btn btn-lov p-0" data-target="#m_lov_supplier" data-toggle="modal" id="btn-lov-trn">
+                                            <input type="text" class="form-control" id="txtKdSupplier">
+                                            <button type="button" class="btn btn-lov p-0" data-target="#m_lov_supplier"
+                                                    data-toggle="modal" id="btn-lov-trn">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
                                         <div class=" col-sm-4">
-                                            <input type="text" id="txtNamaSupplier" class="form-control" disabled>
+                                            <input type="text" id="txtNmSupplier"
+                                                   class="form-control" disabled>
                                         </div>
-                                        <label class="col-sm-1 col-form-label text-sm-right">PKP</label>
+                                        <label class="col-form-label text-sm-right col-sm-1"
+                                               style="font-size: 12px">PKP</label>
                                         <div class="col-sm-1">
-                                            <input type="text" id="txtPKP" class="form-control text-center" disabled>
+                                            <input type="text" id="txtPKP"
+                                                   class="form-control text-center" disabled>
                                         </div>
                                         <div class="offset-1 col-sm-2">
-                                            <button type="button" id="btnUsulanRetur" data-target="#m_usulan_retur" data-toggle="modal" class="btn btn-info"><i class="icon fas fa-upload"></i> Usulan Retur</button>
+                                            <button type="button" id="btnUsulanRetur" data-target="#m_usulan_retur"
+                                                    data-toggle="modal" class="btn btn-info"><i
+                                                    class="icon fas fa-upload"></i> Usulan Retur
+                                            </button>
                                         </div>
                                     </div>
                                 </form>
@@ -56,38 +79,41 @@
                     </div>
                 </fieldset>
 
-                <fieldset class="card border-secondary card-hdr cardForm">
-                    <legend class="ml-5">Header</legend>
+                <fieldset class="card border-dark card-hdr cardForm">
+                    <legend class="w-auto ml-5"> Header</legend>
 
                     <div class="card-body">
                         <div class="card-body p-0 tableFixedHeader" style="height: 250px;">
-                            <table class="table table-sm table-striped table-bordered" id="table-header">
+                            <table class="table table-sm table-striped table-bordered "
+                                   id="table-header">
                                 <thead class="theadDataTables">
                                 <tr class="table-sm text-center">
-                                    <th width="3%" class="text-center small">X</th>
+                                    <th width="3%" class="text-center small"></th>
                                     <th width="10%" class="text-center small">PLU</th>
                                     <th width="20%" class="text-center small">DESKRIPSI</th>
-                                    <th width="5%" class="text-center small">SATUAN</th>
+                                    <th width="10%" class="text-center small">SATUAN</th>
                                     <th width="7%" class="text-center small">BKP</th>
                                     <th width="7%" class="text-center small">STOCK</th>
                                     <th width="7%" class="text-center small">CTN</th>
                                     <th width="7%" class="text-center small">PCS</th>
-                                    <th width="25%" class="text-center small">KETERANGAN</th>
+                                    <th width="29%" class="text-center small">KETERANGAN</th>
                                 </tr>
                                 </thead>
-                                <tbody id="tBodyHeader">
-
+                                <tbody id="body-table-header">
                                 </tbody>
                             </table>
                         </div>
+
+                        <button type="button" class="col-12 btn btn-primary" id="btnAddRow">+ Tambah Row</button>
                     </div>
                 </fieldset>
 
-                <fieldset class="card border-dark card-dtl">
+                <fieldset class="card border-dark  card-dtl">
                     <legend class="w-auto ml-5">Detail</legend>
                     <div class="card-body cardForm">
                         <div class="card-body p-0 tableFixedHeader">
-                            <table class="table table-sm table-striped table-bordered" id="table-detail">
+                            <table class="table table-sm table-striped table-bordered"
+                                   id="table-detail">
                                 <thead class="theadDataTables">
                                 <tr class="table-sm text-center">
                                     <th class="text-center small">PLU</th>
@@ -109,40 +135,46 @@
                                     <th class="text-center small">KETERANGAN</th>
                                 </tr>
                                 </thead>
-                                <tbody id="tBodyDetail">
+                                <tbody id="body-table-detail">
                                 </tbody>
                             </table>
                         </div>
 
                         <br>
-                        <input type="text" id="label-deskripsi" class="text-center form-control col-sm-6 font-weight-bold" disabled>
+                        <input type="text" id="label-deskripsi"
+                               class="text-center form-control col-sm-6 font-weight-bold" disabled>
                     </div>
                 </fieldset>
 
-                <fieldset class="card border-secondary">
+                <fieldset class="card border-dark">
                     <legend class="w-auto ml-5">Total</legend>
                     <div class="card-body cardForm">
                         <div class="form-group row mb-0">
-                            <label class="col-sm-1 col-form-label text-sm-right">TOTAL ITEM</label>
-                            <input type="text" id="total-item" class="text-center form-control col-sm-2" disabled>
-
-                            <label class="col-sm-1 col-form-label text-sm-right offset-3">GROSS</label>
-                            <input type="text" id="gross" class="text-center form-control col-sm-2" disabled>
+                            <label class="col-sm-1 col-form-label text-sm-right" style="font-size: 12px">TOTAL
+                                ITEM</label>
+                            <input type="text" id="total-item"
+                                   class="text-center form-control  col-sm-2" disabled>
+                            <label class="col-sm-1 col-form-label text-sm-right offset-3"
+                                   style="font-size: 12px">GROSS</label>
+                            <input type="text" id="gross"
+                                   class="text-center form-control  col-sm-2" disabled>
                         </div>
-
                         <div class="form-group row mb-0">
-                            <label class="col-sm-1 col-form-label text-sm-right offset-6">POTONGAN</label>
-                            <input type="text" id="potongan" class="text-center form-control col-sm-2" disabled>
+                            <label class="col-sm-1 col-form-label text-sm-right offset-6" style="font-size: 12px">POTONGAN</label>
+                            <input type="text" id="potongan"
+                                   class="text-center form-control  col-sm-2" disabled>
                         </div>
-
                         <div class="form-group row mb-0">
-                            <label class="col-sm-1 col-form-label text-sm-right offset-6">PPN</label>
-                            <input type="text" id="ppn" class="text-center form-control  col-sm-2" disabled>
+                            <label class="col-sm-1 col-form-label text-sm-right offset-6"
+                                   style="font-size: 12px">PPN</label>
+                            <input type="text" id="ppn"
+                                   class="text-center form-control  col-sm-2" disabled>
                         </div>
-
                         <div class="form-group row mb-0">
-                            <label class="col-sm-1 col-form-label text-sm-right offset-6">TOTAL</label>
-                            <input type="text" id="total" class="text-center form-control col-sm-2" disabled>
+                            <label class="col-sm-1 col-form-label text-sm-right offset-6"
+                                   style="font-size: 12px">TOTAL</label>
+                            <input type="text" id="total"
+                                   class="text-center form-control  col-sm-2" disabled>
                         </div>
                     </div>
                 </fieldset>
@@ -150,8 +182,9 @@
         </div>
     </div>
 
-    {{--MODAL NOMOR DOKUMEN RETUR--}}
-    <div class="modal fade" id="m_lov_trn" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    {{--MODAL NODOK RETUR--}}
+    <div class="modal fade" id="m_lov_trn" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -180,6 +213,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    {{--<button type="button" class="btn btn-primary">Save changes</button>--}}
                 </div>
             </div>
         </div>
@@ -187,7 +221,8 @@
 
 
     {{--MODAL KODE SUPPLIER--}}
-    <div class="modal fade" id="m_lov_supplier" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="m_lov_supplier" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -214,13 +249,15 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    {{--<button type="button" class="btn btn-primary">Save changes</button>--}}
                 </div>
             </div>
         </div>
     </div>
 
     {{--MODAL PLU--}}
-    <div class="modal fade" id="m_lov_plu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="m_lov_plu" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -246,12 +283,14 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    {{--<button type="button" class="btn btn-primary">Save changes</button>--}}
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal fade" id="m_usulan_retur" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="m_usulan_retur" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -259,7 +298,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="container">
-                        <div class="form-group row mb-0">
+                        <div class="form-group row mb-0 ">
                             <label class="col-sm-2 col-form-label text-sm-right" style="font-size: 12px">No. Dok</label>
                             <div class="col-sm-3">
                                 <input type="text" id="txt-usl-nodok" class="text-center form-control" disabled>
@@ -269,14 +308,16 @@
                             </div>
                         </div>
                         <div class="form-group row mb-0 ">
-                            <label class="col-sm-2 col-form-label text-sm-right" style="font-size: 12px">Supplier</label>
+                            <label class="col-sm-2 col-form-label text-sm-right"
+                                   style="font-size: 12px">Supplier</label>
                             <div class="col-sm-2">
                                 <input type="text" id="txt-usl-kode-supplier" class="text-center form-control" disabled>
                             </div>
                             <div class="col-sm-5">
                                 <input type="text" id="txt-usl-nama-supplier" class="text-center form-control" disabled>
                             </div>
-                            <label class="col-sm-1 col-form-label text-sm-right" style="font-size: 12px;text-align: right">PKP</label>
+                            <label class="col-sm-1 col-form-label text-sm-right"
+                                   style="font-size: 12px;text-align: right">PKP</label>
                             <div class="col-sm-2">
                                 <input type="text" id="txt-usl-pkp" class="text-center form-control" disabled>
                             </div>
@@ -291,11 +332,11 @@
                                         <tr class="table-sm text-center">
                                             <th class="text-center small">PRDCD</th>
                                             <th class="text-center small">DESKRIPSI</th>
-                                            <th class="text-center small">QTY YANG BISA RETUR</th>
+                                            <th class="text-center small">QTY YG BISA RETUR</th>
                                             <th class="text-center small">*QTY USULAN</th>
                                         </tr>
                                         </thead>
-                                        <tbody id="tBodyUsulan">
+                                        <tbody id="body-table-usulan">
                                         </tbody>
                                     </table>
                                 </div>
@@ -306,19 +347,27 @@
                 <div class="modal-footer justify-content-center row">
                     <div class="row">
                         <div class="col-sm-2">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><i class="icon fas fa-times"></i>CANCEL</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
+                                    class="icon fas fa-times"></i> CANCEL
+                            </button>
                         </div>
 
-                        <label class="col-sm-2 col-form-label text-sm-right" style="font-size: 12px;text-align: right">One Time Password</label>
+                        <label class="col-sm-2 col-form-label text-sm-right"
+                               style="font-size: 12px;text-align: right">One Time Password</label>
                         <div class="col-sm-3">
                             <input type="text" id="txt-usl-otp" class="text-center form-control">
                         </div>
                         <div class="col-sm-5">
-                            <button type="button" class="btn btn-primary" id="btnKirimUsulan" data-dismiss="modal"><i class="icon fas fa-upload"></i>KIRIM USULAN KE FINANCE</button>
+                            <button type="button" class="btn btn-primary" id="btnKirimUsulan" data-dismiss="modal"><i
+                                    class="icon fas fa-upload"></i> KIRIM USULAN KE FINANCE
+                            </button>
                         </div>
+
                     </div>
                     <div class="row">
-                        <label class="col-sm col-form-label text-danger text-left" style="font-size: 12px">*Qty usulan adalah qty yang diinput oleh user dengan batasan qty maksimal dari semua nomor referensi BPB yang ada</label>
+                        <label class="col-sm col-form-label text-danger text-left"
+                               style="font-size: 12px">*Qty usulan adalah qty yang diinput oleh user
+                            dengan batasan qty maksimal dari semua nomor referensi BPB yang ada</label>
                     </div>
                 </div>
             </div>
@@ -328,19 +377,24 @@
     <style>
         .row-lov-trn:hover {
             cursor: pointer;
-            background-color: #0079C2;
+            background-color: grey;
             color: white;
         }
+
         .row-lov-supplier:hover {
             cursor: pointer;
-            background-color: #0079C2;
+            background-color: grey;
             color: white;
         }
+
         .buttonInside {
             position: relative;
         }
+
         .btn-lov-plu {
             position: absolute;
+            /*right: 4px;*/
+            /*top: 1px;*/
             border: none;
             height: 30px;
             width: 30px;
@@ -348,45 +402,46 @@
             outline: none;
             text-align: center;
             font-weight: bold;
+
         }
+
         .input-group-text {
             background-color: white;
         }
     </style>
 
+
     <script>
         var rowheader;
         var row = 1;
         var kdsup = '';
-        let arrDeletedPlu = [];
-        let arrNewData = [];
-        let index = 1;
 
         $(document).ready(function () {
             reset();
-            $('#tgl-doc').datepicker({
+            $('#dtTglDoc').datepicker({
                 "dateFormat": "mm/dd/yy",
                 "setDate": new Date()
             });
+            $('#btnAddRow').hide();
         });
 
-        $('#no-trn').keypress(function (e) {
+        $('#txtNoDoc').keypress(function (e) {
             if (e.keyCode == 13) {
                 var nodoc = $(this).val();
                 getDataTrn(nodoc);
             }
         });
 
-        $('#txtKodeSupplier').keypress(function (e) {
+        $('#txtKdSupplier').keypress(function (e) {
             if (e.keyCode == 13) {
-                kdsup = $('#txtKodeSupplier').val();
+                kdsup = $('#txtKdSupplier').val();
                 getDataSupplier(kdsup);
             }
         });
 
         $(document).on('click', '.card-hdr,.card-dtl', function () {
-            if ($('#txtKodeSupplier').val() == '' && $('#no-trn').val() != '' && $('#tgl-doc').val() != '') {
-                $('#txtKodeSupplier').focus();
+            if ($('#txtKdSupplier').val() == '' && $('#txtNoDoc').val() != '' && $('#dtTglDoc').val() != '') {
+                $('#txtKdSupplier').focus();
             }
         });
 
@@ -415,7 +470,7 @@
         $(document).on('click', '.row-lov-trn', function () {
             var currentButton = $(this);
             nodoc = currentButton.children().first().text();
-            $('#no-trn').val(nodoc);
+            $('#txtNoDoc').val(nodoc);
             getDataTrn(nodoc);
             $('#m_lov_trn').modal('hide');
         });
@@ -483,7 +538,9 @@
                 }
                 temp = temp + $(this).val();
                 $(this).val(temp);
-                getDataPLU(temp);
+                let currRowHeader = $(this).attr('rowheader');
+                getDataPLU(temp, currRowHeader);
+                console.log('currRowHeader: '+currRowHeader);
             }
         });
 
@@ -495,48 +552,61 @@
             getDataPLU(plu);
             $('#m_lov_plu').modal('hide');
         });
-        
 
-        function deleteDoc(event) {
-            event.preventDefault();
-            let nodoc = $('#no-trn').val();
-
+        $(document).on('click', '#btnHapusDokumen', function () {
+            var nodoc = $('#txtNoDoc').val();
             swal({
-                title: 'Nomor Dokumen Akan dihapus?',
-                icon: 'warning',
-                dangerMode: true,
+                title: "Hapus No Doc" + nodoc + " ?",
+                text: "Tekan Tombol Ya untuk Melanjutkan!",
+                icon: "question",
                 buttons: true,
-            }).then(function(confirm){
-                if(confirm){
+            }).then((yes) => {
+                if (yes) {
                     ajaxSetup();
                     $.ajax({
-                        url: '{{ url()->current() }}/delete',
-                        type: 'post',
-                        data: {nodoc: nodoc},
-
-                        success: function (result){
-                            clearField();
+                        type: "POST",
+                        url: "{{ url('/bo/transaksi/pengeluaran/input/delete') }}",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        beforeSend: function () {
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (response) {
+                            $('#modal-loader').modal('hide');
                             swal({
-                                title: result.msg,
-                                icon: 'success'
+                                title: response.status,
+                                text: response.message,
+                                icon: 'error'
+                            }).then(() => {
+                                window.location.reload();
                             });
-                        }, error: function () {
-                            alert('error');
+                        },
+                        error: function (error) {
+                            $('#modal-loader').modal('hide');
+                            // handle error
+                            swal({
+                                title: error.responseJSON.exception,
+                                text: error.responseJSON.message,
+                                icon: 'error'
+                            }).then(() => {
+                            });
                         }
-                    })
+                    });
                 } else {
-                    console.log('Tidak dihapus');
+                    return false;
                 }
-            })
-        }
-                function getDataPLU(plu) {
+            });
+        });
+
+        function getDataPLU(plu, rowheader) {
             if (kdsup == '' || kdsup == null) {
                 swal({
                     title: 'Info',
                     text: 'Tentukan Supplier Terlebih dahulu',
                     icon: 'warning'
                 }).then(() => {
-                    $('#txtKodeSupplier').focus();
+                    $('#txtKdSupplier').focus();
                 });
                 return false;
             }
@@ -563,13 +633,15 @@
                         }).then(() => {
                         });
                     }
-                    if (response.result) {
-                        $(".plu-header-" + rowheader).val(response.result.st_F);
-                        $(".plu-header-" + rowheader).attr('max_qty', response.result.qtypb);
-                        $(".deskripsi-header-" + rowheader).val(response.result.prd_deskripsipendek);
-                        $(".satuan-header-" + rowheader).val(response.result.satuan);
-                        $(".bkp-header-" + rowheader).val(response.result.prd_flagbkp1);
-                        $(".stock-header-" + rowheader).val(response.result.st_saldoakhir);
+                    if (response.data) {
+                        // let totalHeaderRow = $('#body-table-header tr').length;
+                        // console.log(totalHeaderRow);
+                        $(".plu-header-" + rowheader).val(response.data.st_prdcd);
+                        $(".plu-header-" + rowheader).attr('max_qty', response.data.qtypb);
+                        $(".deskripsi-header-" + rowheader).val(response.data.prd_deskripsipendek);
+                        $(".satuan-header-" + rowheader).val(response.data.satuan);
+                        $(".bkp-header-" + rowheader).val(response.data.prd_flagbkp1);
+                        $(".stock-header-" + rowheader).val(response.data.st_saldoakhir);
                         $(".ctn-header-" + rowheader).focus();
                     }
 
@@ -587,7 +659,7 @@
 
         function getDataSupplier(k) {
             kdsup = k.toUpperCase();
-            $('#txtKodeSupplier').val(kdsup);
+            $('#txtKdSupplier').val(kdsup);
             $.ajax({
                 type: "GET",
                 url: "{{ url('/bo/transaksi/pengeluaran/input/get-data-supplier') }}",
@@ -616,8 +688,8 @@
                         namasupplier = response.result.sup_namasupplier;
                         pkp = response.result.sup_pkp;
 
-                        $('#txtKodeSupplier').val(kdsup);
-                        $('#txtNamaSupplier').val(namasupplier);
+                        $('#txtKdSupplier').val(kdsup);
+                        $('#txtNmSupplier').val(namasupplier);
                         $('#txtPKP').val(pkp);
                     }
 
@@ -636,16 +708,16 @@
         }
 
         function reset() {
-            $('#tBodyHeader').empty();
-            $('#tBodyDetail').empty();
-            $('#tBodyUsulan').empty();
-            $('#btn-hapus').attr('disabled', true);
-            $('#btnUsulanRetur').attr('disabled', false);
-            $('#btn-save').attr('disabled', false);
-            $('#txtKodeSupplier').attr('disabled', false);
+            $('#body-table-header').empty();
+            $('#body-table-detail').empty();
+            $('#body-table-usulan').empty();
+            $('#btnHapusDokumen').attr('disabled', true);
+            $('#btnUsulanRetur').attr('disabled', true);
+            $('#btnSimpan').attr('disabled', true);
+            $('#txtKdSupplier').attr('disabled', false);
 
-            $('#txtKodeSupplier').val('');
-            $('#txtNamaSupplier').val('');
+            $('#txtKdSupplier').val('');
+            $('#txtNmSupplier').val('');
             $('#txtPKP').val('');
             $('#txtModel').val('');
 
@@ -664,96 +736,10 @@
         }
 
         function getDataTrn(notrn) {
-            // if (notrn == '') {
-            //     swal({
-            //         title: "Buat Nomor Pengeluaran Baru?",
-            //         text: "Tekan tombol Ya untuk melanjutkan!",
-            //         icon: "info",
-            //         buttons: true,
-            //     }).then((yes) => {
-            //         if (yes) {
-            //             // $('#btn-save').attr('id', 'btn-save-new');
-            //             // $('#btn-save-new').attr('onclick', 'saveNewData()');
-
-            //             $.ajax({
-            //                 type: "GET",
-            //                 url: "{{ url('/bo/transaksi/pengeluaran/input/get-new-no-trn') }}",
-            //                 headers: {
-            //                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            //                 },
-            //                 beforeSend: function () {
-            //                     $('#modal-loader').modal('show');
-            //                     reset();
-            //                 },
-            //                 success: function (response) {
-            //                     $('#no-trn').prop('disabled', true);
-            //                     $('#tgl-doc').prop('disabled', true);
-            //                     $('#btn-lov-trn').prop('disabled', true);
-            //                     $('#btn-save').attr('disabled', false);
-            //                     $('#btnUsulanRetur').attr('disabled', false);
-
-            //                     $('#modal-loader').modal('hide');
-            //                     if (response.status == 'error') {
-            //                         swal({
-            //                             title: response.status,
-            //                             text: response.message,
-            //                             icon: 'error'
-            //                         }).then(() => {
-            //                             no
-            //                         });
-            //                     }
-            //                     else {
-            //                         $('#no-trn').val(response.no);
-            //                         $("#tgl-doc").datepicker().datepicker("setDate", new Date());
-            //                         $('#txtModel').val(response.model);
-            //                         $('#txtKodeSupplier').focus();
-
-            //                         $('#tBodyHeader').append(
-            //                             '<tr class="row-header-1">' +
-            //                             '<td><button class="btn btn-block btn-danger btn-delete-row-header" rowheader="1"><i class="icon fas fa-times"></i></button></td>' +
-            //                             '<td class="buttonInside" style="width: 8%">' +
-            //                             '<input type="text" class="form-control plu-header-1 plu-header" rowheader="1">' +
-            //                             '<button type="button" class="btn btn-lov-plu btn-lov ml-3" rowheader="1" data-target="#m_lov_plu" data-toggle="modal">' +
-            //                             '<img src="../../../../public/image/icon/help.png" width="30px">' +
-            //                             '</button>' +
-            //                             '</td>' +
-            //                             '<td><input disabled class="form-control deskripsi-header-1" type="text"></td>' +
-            //                             '<td><input disabled class="form-control satuan-header satuan-header-1" type="text"></td>' +
-            //                             '<td><input disabled class="form-control bkp-header-1" type="text"></td>' +
-            //                             '<td><input disabled class="form-control stock-header-1" type="text"></td>' +
-            //                             '<td><input class="form-control ctn-header ctn-header-1" rowheader=1 type="text"></td>' +
-            //                             '<td><input class="form-control pcs-header pcs-header-1" rowheader=1 type="text"></td>' +
-            //                             '<td><input class="form-control keterangan-header keterangan-header-1" rowheader=1 type="text"></td>' +
-            //                             '</tr>' +
-            //                             '<tr>' +
-            //                             '<td>' +
-            //                             '<button class="btn btn-primary" id="btnAddRow" onclick="addNewRow()">+</button>' +
-            //                             '</td>' +
-            //                             '</tr>');
-
-            //                     }
-
-            //                 },
-            //                 error: function (error) {
-            //                     $('#modal-loader').modal('hide');
-            //                     // error
-            //                     swal({
-            //                         title: error.responseJSON.exception,
-            //                         text: error.responseJSON.message,
-            //                         icon: 'error'
-            //                     }).then(() => {
-            //                     });
-            //                 }
-            //             });
-            //         } else {
-            //             return false;
-            //         }
-            //     });
-            // }
             if (notrn == '') {
                 swal({
                     title: "Buat Nomor Pengeluaran Baru?",
-                    text: "Tekan tombol Ya untuk melanjutkan!",
+                    text: "Tekan Tombol Ya untuk Melanjutkan!",
                     icon: "info",
                     buttons: true,
                 }).then((yes) => {
@@ -769,29 +755,34 @@
                                 reset();
                             },
                             success: function (response) {
-                                $('#no-trn').prop('disabled', true);
-                                $('#tgl-doc').prop('disabled', true);
+                                $('#txtNoDoc').prop('disabled', true);
+                                $('#dtTglDoc').prop('disabled', true);
                                 $('#btn-lov-trn').prop('disabled', true);
-                                $('#btn-save').attr('disabled', false);
+                                $('#btnSimpan').attr('disabled', false);
                                 $('#btnUsulanRetur').attr('disabled', false);
 
+                                // $('#btnAddRow').modal('show');
                                 $('#modal-loader').modal('hide');
+
                                 if (response.status == 'error') {
                                     swal({
                                         title: response.status,
                                         text: response.message,
                                         icon: 'error'
                                     }).then(() => {
-                                        no
+                                        window.location.reload();
                                     });
                                 }
                                 else {
-                                    $('#no-trn').val(response.no);
-                                    $("#tgl-doc").datepicker().datepicker("setDate", new Date());
-                                    $('#txtModel').val(response.model);
-                                    $('#txtKodeSupplier').focus();
+                                    $('#txtNoDoc').val(response.data.no);
+                                    $("#dtTglDoc").datepicker().datepicker("setDate", new Date());
+                                    $('#txtModel').val(response.data.model);
+                                    $('#txtKdSupplier').focus();
+                                    // getDataSupplier('I0519');
+                                    // 0000390
+                                    $('#btnAddRow').show();
 
-                                    $('#tBodyHeader').append(
+                                    $('#body-table-header').append(
                                         '<tr class="row-header-1">' +
                                         '<td><button class="btn btn-block btn-danger btn-delete-row-header" rowheader="1"><i class="icon fas fa-times"></i></button></td>' +
                                         '<td class="buttonInside" style="width: 8%">' +
@@ -809,12 +800,33 @@
                                         '<td><input class="form-control keterangan-header keterangan-header-1" rowheader=1 type="text"></td>' +
                                         '</tr>');
 
+                                    // $('.plu-header-1').focus();
+
+                                    // $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail">' +
+                                    //     '<td><input class="form-control " type="text" value="' + plu + '"></td>' +
+                                    //     '<td><input disabled class="form-control " type="text"></td>' +
+                                    //     '<td><input disabled class="form-control " type="text"></td>' +
+                                    //     '<td><input disabled class="form-control " type="text"></td>' +
+                                    //     '<td><input disabled class="form-control " type="text"></td>' +
+                                    //     '<td><input class="form-control " type="text"></td>' +
+                                    //     '<td><input class="form-control " type="text"></td>' +
+                                    //     '<td><input class="form-control " type="text"></td>' +
+                                    //     '<td><input class="form-control " type="text"></td>' +
+                                    //     '<td><input class="form-control " type="text"></td>' +
+                                    //     '<td><input class="form-control " type="text"></td>' +
+                                    //     '<td><input disabled class="form-control " type="text"></td>' +
+                                    //     '<td><input disabled class="form-control " type="text"></td>' +
+                                    //     '<td><input disabled class="form-control " type="text"></td>' +
+                                    //     '<td><input disabled class="form-control " type="text"></td>' +
+                                    //     '<td><input disabled class="form-control " type="text"></td>' +
+                                    //     '<td><input class="form-control " type="text"></td>' +
+                                    //     '</tr>');
                                 }
 
                             },
                             error: function (error) {
                                 $('#modal-loader').modal('hide');
-                                // error
+                                // handle error
                                 swal({
                                     title: error.responseJSON.exception,
                                     text: error.responseJSON.message,
@@ -843,6 +855,7 @@
                         reset();
                     },
                     success: function (response) {
+                        console.log(response);
                         $('#modal-loader').modal('hide');
                         $('#btnUsulanRetur').attr('disabled', false);
 
@@ -856,17 +869,17 @@
                         }
                         else {
                             if (response.model == '* NOTA SUDAH DICETAK *') {
-                                $('#btn-hapus').attr('disabled', true);
+                                $('#btnHapusDokumen').attr('disabled', true);
                             }
                             else {
-                                $('#btn-hapus').attr('disabled', false);
+                                $('#btnHapusDokumen').attr('disabled', false);
                             }
 
                             $('#txtModel').val(response.model);
 
-                            $('#tgl-doc').val(response.tgldoc);
-                            $('#txtKodeSupplier').val(response.supplier);
-                            $('#txtNamaSupplier').val(response.nmsupplier);
+                            $('#dtTglDoc').val(response.tgldoc);
+                            $('#txtKdSupplier').val(response.supplier);
+                            $('#txtNmSupplier').val(response.nmsupplier);
                             $('#txtPKP').val(response.pkp);
 
                             $('#txt-usl-nodok').val(notrn);
@@ -885,8 +898,8 @@
                                 var pcs = dh.h_pcs == null ? '' : dh.h_pcs;
                                 var ket = dh.h_ket == null ? '' : dh.h_ket;
 
-                                $('#tBodyHeader').append('<tr id="row' + plu + '">' +
-                                    '<td><button class="btn btn-block btn-danger btn-delete-row-header" onclick=deleteRow("'+ plu +'")><i class="icon fas fa-times"></i></button></td>' +
+                                $('#body-table-header').append('<tr>' +
+                                    '<td><button class="btn btn-block btn-danger btn-delete-row-header"><i class="icon fas fa-times"></i></button></td>' +
                                     '<td><input class="form-control " type="text" value="' + plu + '"></td>' +
                                     '<td><input disabled class="form-control " type="text" value="' + deskripsi + '"></td>' +
                                     '<td><input disabled class="form-control " type="text" value="' + satuan + '"></td>' +
@@ -897,14 +910,6 @@
                                     '<td><input class="form-control " type="text" value="' + ket + '"></td>' +
                                     '</tr>');
                             });
-
-                            $('#tBodyHeader tr:last-child').append(
-                                    '<tr>' +
-                                    '<td>' +
-                                    '<button class="btn btn-primary" id="btnAddRow" onclick="addNewRow()">+</button>' +
-                                    '</td>' +
-                                    '</tr>'
-                                );
 
                             var datas_detail = response.datas_detail;
                             var i = 1;
@@ -935,8 +940,8 @@
                                 var frac = dd.frac == null ? '' : dd.frac;
                                 var unit = dd.unit == null ? '' : dd.unit;
 
-                                $('#tBodyDetail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + i + '" deskripsi="' + deskripsi + '">' +
-                                    '<td><input disabled class="form-control plu" type="text" value="' + plu + '"></td>' +
+                                $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + i + '" deskripsi="' + deskripsi + '">' +
+                                    '<td><input disabled class="form-control " type="text" value="' + plu + '"></td>' +
                                     '<td><input disabled class="form-control " type="text" value="' + desk + '"></td>' +
                                     '<td><input disabled class="form-control " type="text" value="' + satuan + '"></td>' +
                                     '<td><input disabled class="form-control " type="text" value="' + bkp + '"></td>' +
@@ -968,13 +973,13 @@
                             $('#total-item').val(convertToRupiah2(i - 1));
 
                             // if
-                            // $('.btn-delete-row-header').attr('disabled', true); //edit disini
+                            $('.btn-delete-row-header').attr('disabled', true);
 
                             if (response.model == '* NOTA SUDAH DICETAK *') {
                                 $('.card-hdr input').attr('disabled', true);
                                 $('.card-dtl input').attr('disabled', true);
-                                $('#txtKodeSupplier').attr('disabled', true);
-                                $('#tgl-doc').attr('disabled', true);
+                                $('#txtKdSupplier').attr('disabled', true);
+                                $('#dtTglDoc').attr('disabled', true);
                             }
                             if (response.status == 'info') {
                                 swal({
@@ -989,64 +994,20 @@
                     },
                     error: function (error) {
                         $('#modal-loader').modal('hide');
-                        // error
+                        // handle error
                         console.log(error);
                     }
                 });
             }
+
         }
 
-        function addNewRow() {
-            console.log('clicked');
-            $('#tBodyHeader').find('#row').remove();
-            $('#tBodyHeader').find('#btnAddRow').remove();
-            $('#tBodyHeader').append(
-
-                `<tr class="row-header-${index + 1}">` +
-                `<td><button class="btn btn-block btn-danger btn-delete-row-header" rowheader="${index + 1}"><i class="icon fas fa-times"></i></button></td>` +
-                `<td class="buttonInside" style="width: 8%">` +
-                `<input type="text" class="form-control plu-header-${index + 1} plu-header" rowheader="${index + 1}">` +
-
-                `<button type="button" class="btn btn-lov-plu btn-lov ml-3" rowheader="${index + 1}" data-target="#m_lov_plu" data-toggle="modal">` +
-                `<img src="../../../../public/image/icon/help.png" width="30px">` +
-                `</button>` +
-                `</td>` +
-                `<td><input disabled class="form-control deskripsi-header-${index + 1}" type="text"></td>` +
-                `<td><input disabled class="form-control satuan-header satuan-header-${index + 1}" type="text"></td>` +
-                `<td><input disabled class="form-control bkp-header-${index + 1}" type="text"></td>` +
-                `<td><input disabled class="form-control stock-header-${index + 1}" type="text"></td>` +
-                `<td><input class="form-control ctn-header ctn-header-${index + 1}" rowheader="${index + 1}" type="text"></td>` +
-                `<td><input class="form-control pcs-header pcs-header-${index + 1}" rowheader="${index + 1}" type="text"></td>` +
-                `<td><input class="form-control keterangan-header keterangan-header-${index + 1}" rowheader="${index + 1}" type="text"></td>` +
-                `</tr>`  +
-                `<tr>` +
-                `<td>` +
-                `<button class="btn btn-primary" id="btnAddRow" onclick="addNewRow()">+</button>` +
-                `</td>` +
-                `</tr>`);
-
-            index++;
-        }
-        function deleteRow(plu) {
-            $('#row' + plu).remove();
-            console.log(plu);
-            //gunakan plu disini
-
-            $('#tBodyDetail tr').each(function(){
-                $(this).find('td .plu').each(function(){
-                    if ($(this).val() === plu) {
-                        $(this).parents('tr').remove();
-                        arrDeletedPlu.push(plu);
-                        console.log(arrDeletedPlu);
-                    }
-                })
-            })
-        }
         $(document).on('click', '.btn-delete-row-header', function (e) {
             var current = $(this);
             var rh = current.attr('rowheader');
             $('.row-header-' + rh).empty();
             $('.row-detail-' + rh).empty();
+
         });
 
         $(document).on('keypress', '.ctn-header', function (e) {
@@ -1071,7 +1032,7 @@
                     });
                     return false;
                 }
-
+                // ????
                 if ((ctn * frac) + pcs > stock) {
                     ctn = 0;
                     current.val(ctn);
@@ -1094,9 +1055,9 @@
                 var current = $(this);
                 var rh = current.attr('rowheader');
                 var model = $('#txtModel').val();
-                var nodoc = $('#no-trn').val();
-                var tgldoc = $('#tgl-doc').val();
-                var kdsup = $('#txtKodeSupplier').val();
+                var nodoc = $('#txtNoDoc').val();
+                var tgldoc = $('#dtTglDoc').val();
+                var kdsup = $('#txtKdSupplier').val();
                 var plu = $('.plu-header-' + rh).val();
                 var ctn = parseInt($('.ctn-header-' + rh).val());
                 var fracTemp = $('.satuan-header-' + rh).val().split('/');
@@ -1104,6 +1065,7 @@
                 var pcs = parseInt($('.pcs-header-' + rh).val());
                 var stock = parseInt($('.stock-header-' + rh).val());
                 var bkp = $('.bkp-header-' + rh).val();
+                // var keterangan = $('.keterangan-header-' + rh).val();
 
                 var message = '';
                 var status = '';
@@ -1150,7 +1112,7 @@
 
                         return false;
                     }
-
+                    //step 1
                     ajaxSetup();
                     $.ajax({
                         type: "POST",
@@ -1162,10 +1124,11 @@
                         beforeSend: function () {
                         },
                         success: function (response) {
-                            qtypb = response.qtypb;
-                            qtyretur = response.qtyretur;
-                            qtysisa = response.qtysisa;
-                            console.log(qtyretur);
+                            // console.log(response);
+                            qtypb = response.data.qtypb;
+                            qtyretur = response.data.qtyretur;
+                            qtysisa = response.data.qtysisa;
+                            // console.log(qtyretur);
 
                             inputan = ((ctn * frac) + pcs);
                             if (inputan > qtyretur && qtysisa > qtyretur) {
@@ -1186,11 +1149,11 @@
                                     + inputan
                                     + ') tidak boleh lebih dari '
                                     + qtyretur
-                                    + ', untuk sisanya silahkan untuk membuat Struk Penjualan atau minta otorisasi Finance.'
+                                    + ', untuk sisanya silahkan buat Struk Penjualan atau minta otorisasi Finance.'
                                     + 'Proses untuk otorisasi Finance?';
                                 status = 'info';
                                 swal({
-                                    title: "Mohon untuk dijawab.",
+                                    title: "Mohon dijawab.",
                                     text: message,
                                     icon: status,
                                     buttons: true,
@@ -1224,8 +1187,11 @@
                                                 qtyretur: qtyretur
                                             },
                                             success: function (response) {
-                                            }, error: function (error) {
+                                                // console.log(response);
+                                            }, 
+                                            error: function (error) {
                                                 console.log(error);
+
                                             }
                                         });
 
@@ -1253,7 +1219,7 @@
                                     success: function (response) {
                                         if (response.status == 'question') {
                                             swal({
-                                                title: "Mohon untuk dijawab.",
+                                                title: "Mohon dijawab.",
                                                 text: response.message,
                                                 icon: response.status,
                                                 buttons: true,
@@ -1278,11 +1244,13 @@
                                                             console.log(error);
                                                         }
                                                     });
+
                                                 }
                                             });
                                         }
                                     }, error: function (error) {
                                         console.log(error);
+
                                     }
                                 });
                             }
@@ -1310,17 +1278,20 @@
                         },
                         error: function (error) {
                             $('#modal-loader').modal('hide');
-                            // error
+                            // handle error
                             console.log(error);
+
                         }
                     });
+
+
                 }
                 $('#modal-loader').modal('hide');
             }
         });
 
         function proses(plu, qtyretur, rh) {
-            var nodoc = $('#no-trn').val();
+            var nodoc = $('#txtNoDoc').val();
             var pkp = $('#txtPKP').val();
             var keterangan = $('.keterangan-header-' + rh).val();
 
@@ -1342,7 +1313,7 @@
                         console.log(response);
                         $('.row-detail-' + rh).remove();
                         datas_detail.forEach(function (dd) {
-                            $('#tBodyDetail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + rowheader + '" deskripsi="' + dd.deskripsi + '">' +
+                            $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + rowheader + '" deskripsi="' + dd.deskripsi + '">' +
                                 '<td><input disabled class="form-control plu" type="text" value="' + dd.trbo_prdcd + '"></td>' +
                                 '<td><input disabled class="form-control " type="text" value="' + dd.desk + '"></td>' +
                                 '<td><input disabled class="form-control satuan" type="text" value="' + dd.satuan + '"></td>' +
@@ -1364,7 +1335,7 @@
                         });
 
                         row++;
-                        $('#tBodyHeader').append(
+                        $('#body-table-header').append(
                             '<tr class="row-header-' + row + '">' +
                             '<td><button class="btn btn-block btn-danger btn-delete-row-header" rowheader="' + row + '"><i class="icon fas fa-times"></i></button></td>' +
                             '<td class="buttonInside" style="width: 8%">' +
@@ -1387,7 +1358,7 @@
                         var tot_ppn = 0;
                         var tot_total = 0;
                         var i = 0;
-                        $('#tBodyDetail tr').each(function () {
+                        $('#body-table-detail tr').each(function () {
                             var gross = parseFloat($(this).find(".gross").val());
                             var potongan = parseFloat($(this).find(".discrph").val());
                             var ppn = parseFloat($(this).find(".ppn").val());
@@ -1422,14 +1393,14 @@
         $(document).on('keyup', '#txt-usl-otp', function (e) {
             var currentElement = $(this);
             if (e.keyCode == 13) {
-                var nodoc = $('#no-trn').val();
+                var nodoc = $('#txtNoDoc').val();
                 var otp = currentElement.val();
-                var tgldoc = $('#tgl-doc').val();
-                var kdsup = $('#txtKodeSupplier').val();
+                var tgldoc = $('#dtTglDoc').val();
+                var kdsup = $('#txtKdSupplier').val();
                 var pkp = $('#txtPKP').val();
                 var datas = [];
 
-                $('#tBodyUsulan tr').each(function () {
+                $('#body-table-usulan tr').each(function () {
                     var data = {};
                     data.prdcd = $(this).find(".usl-prdcd").val();
                     data.qty = $(this).find(".usl-qty").val();
@@ -1437,7 +1408,7 @@
                 });
 
                 var datah = [];
-                $('#tBodyHeader tr').each(function () {
+                $('#body-table-header tr').each(function () {
                     var data = {};
 
                     data.plu = $(this).find(".plu-header").val();
@@ -1450,7 +1421,7 @@
                 });
 
                 var datad = [];
-                $('#tBodyDetail tr').each(function () {
+                $('#body-table-detail tr').each(function () {
                     var data = {};
 
                     data.plu = $(this).find(".plu").val();
@@ -1511,7 +1482,7 @@
                                 var pcs = dh.h_pcs == null ? '' : dh.h_pcs;
                                 var ket = dh.h_ket == null ? '' : dh.h_ket;
 
-                                $('#tBodyHeader').append('<tr>' +
+                                $('#body-table-header').append('<tr>' +
                                     '<td><button class="btn btn-block btn-danger btn-delete-row-header"><i class="icon fas fa-times"></i></button></td>' +
                                     '<td><input class="form-control " type="text" value="' + plu + '"></td>' +
                                     '<td><input disabled class="form-control " type="text" value="' + deskripsi + '"></td>' +
@@ -1553,7 +1524,7 @@
                                 var frac = dd.frac == null ? '' : dd.frac;
                                 var unit = dd.unit == null ? '' : dd.unit;
 
-                                $('#tBodyDetail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + i + '" deskripsi="' + deskripsi + '">' +
+                                $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + i + '" deskripsi="' + deskripsi + '">' +
                                     '<td><input disabled class="form-control " type="text" value="' + plu + '"></td>' +
                                     '<td><input disabled class="form-control " type="text" value="' + desk + '"></td>' +
                                     '<td><input disabled class="form-control " type="text" value="' + satuan + '"></td>' +
@@ -1593,22 +1564,54 @@
             }
         });
 
-        $(document).on('click', '#btn-save', function () {
-                let nodoc = $('#no-trn').val();
-                ajaxSetup();
+        $(document).on('click', '#btnSimpan', function () {
+            var currentButton = $(this);
+            var count = 0;
+            $('#body-table-detail tr').each(function () {
+                count++;
+            });
+            if (count > 0) {
                 swal({
                     title: "Simpan Data?",
-                    text: "Tekan tombol Ya untuk melanjutkan!",
+                    text: "Tekan Tombol Ya untuk Melanjutkan!",
                     icon: "info",
                     buttons: true,
                 }).then((yes) => {
                     if (yes) {
+                        var nodoc = $('#txtNoDoc').val();
+                        var tgldoc = $('#dtTglDoc').val();
+                        var kdsup = $('#txtKdSupplier').val();
+
+                        datas = [];
+                        $('#body-table-detail tr').each(function () {
+                            var data = {};
+
+                            data.nodoc = nodoc;
+                            data.tgldoc = tgldoc;
+                            data.noreff = $(this).find(".noreff").val();
+                            data.istype = $(this).find(".istype").val();
+                            data.invno = $(this).find(".invno").val();
+                            data.tglinv = $(this).find(".tglinv").val();
+                            data.kdsup = kdsup;
+                            data.plu = $(this).find(".plu").val();
+                            data.ctn = $(this).find(".qtyctn").val();
+                            data.qty = $(this).find(".qtypcs").val();
+                            data.hargasatuan = $(this).find(".hargasatuan").val();
+                            data.persendisc = $(this).find(".persendisc").val();
+                            data.gross = parseFloat($(this).find(".gross").val());
+                            data.discrph = parseFloat($(this).find(".discrph").val());
+                            data.ppnrph = parseFloat($(this).find(".ppn").val());
+                            data.posqty = parseFloat($(this).find(".posqty").val());
+                            data.keterangan = $(this).find(".keterangan").val();
+                            datas.push(data);
+                        });
+
+                        ajaxSetup();
                         $.ajax({
-                            type: "post",
-                            url: "{{ url()->current() }}/save",
+                            type: "POST",
+                            url: "{{ url('/bo/transaksi/pengeluaran/input/save') }}",
                             data: {
-                                arrDeletedPlu: arrDeletedPlu,
-                                nodoc: nodoc
+                                datas: datas
                             },
                             beforeSend: function () {
                                 $('#modal-loader').modal('show');
@@ -1626,10 +1629,10 @@
                             },
                             error: function (error) {
                                 $('#modal-loader').modal('hide');
-                                // error
+                                // handle error
                                 swal({
                                     title: 'Gagal!',
-                                    text: 'Data tidak berhasil disimpan!',
+                                    text: 'Data gagal disimpan!',
                                     icon: 'error'
                                 }).then(() => {
                                 });
@@ -1639,110 +1642,22 @@
                         return false;
                     }
                 });
-
-            // else {
-            //     swal({
-            //         title: "Error",
-            //         text: 'Tidak ada data yang dapat disimpan!',
-            //         icon: 'error'
-            //     }).then(() => {
-            //     });
-            // }
+            }
+            else {
+                swal({
+                    title: "Error",
+                    text: 'Tidak ada data yang bisa disimpan!',
+                    icon: 'error'
+                }).then(() => {
+                });
+            }
         });
-        // $(document).on('click', '#btn-save', function () {
-        //     var currentButton = $(this);
-        //     var count = 0;
-        //     $('#tBodyDetail tr').each(function () {
-        //         count++;
-        //     });
-        //     if (count > 0) {
-        //         swal({
-        //             title: "Simpan Data?",
-        //             text: "Tekan tombol Ya untuk melanjutkan!",
-        //             icon: "info",
-        //             buttons: true,
-        //         }).then((yes) => {
-        //             if (yes) {
-        //                 var nodoc = $('#no-trn').val();
-        //                 var tgldoc = $('#tgl-doc').val();
-        //                 var kdsup = $('#txtKodeSupplier').val();
-
-        //                 datas = [];
-        //                 $('#tBodyDetail tr').each(function () {
-        //                     var data = {};
-
-        //                     data.nodoc = nodoc;
-        //                     data.tgldoc = tgldoc;
-        //                     data.noreff = $(this).find(".noreff").val();
-        //                     data.istype = $(this).find(".istype").val();
-        //                     data.invno = $(this).find(".invno").val();
-        //                     data.tglinv = $(this).find(".tglinv").val();
-        //                     data.kdsup = kdsup;
-        //                     data.plu = $(this).find(".plu").val();
-        //                     data.ctn = $(this).find(".qtyctn").val();
-        //                     data.qty = $(this).find(".qtypcs").val();
-        //                     data.hargasatuan = $(this).find(".hargasatuan").val();
-        //                     data.persendisc = $(this).find(".persendisc").val();
-        //                     data.gross = parseFloat($(this).find(".gross").val());
-        //                     data.discrph = parseFloat($(this).find(".discrph").val());
-        //                     data.ppnrph = parseFloat($(this).find(".ppn").val());
-        //                     data.posqty = parseFloat($(this).find(".posqty").val());
-        //                     data.keterangan = $(this).find(".keterangan").val();
-        //                     datas.push(data);
-        //                 });
-
-        //                 ajaxSetup();
-        //                 $.ajax({
-        //                     type: "post",
-        //                     url: "{{ url()->current() }}/save",
-        //                     data: {
-        //                         datas: datas
-        //                     },
-        //                     beforeSend: function () {
-        //                         $('#modal-loader').modal('show');
-        //                     },
-        //                     success: function (response) {
-        //                         $('#modal-loader').modal('hide');
-        //                         swal({
-        //                             title: response.status,
-        //                             text: response.message,
-        //                             icon: response.status
-        //                         }).then(() => {
-        //                             window.location.reload();
-        //                         });
-
-        //                     },
-        //                     error: function (error) {
-        //                         $('#modal-loader').modal('hide');
-        //                         // error
-        //                         swal({
-        //                             title: 'Gagal!',
-        //                             text: 'Data tidak berhasil disimpan!',
-        //                             icon: 'error'
-        //                         }).then(() => {
-        //                         });
-        //                     }
-        //                 });
-        //             } else {
-        //                 return false;
-        //             }
-        //         });
-        //     }
-        //     else {
-        //         swal({
-        //             title: "Error",
-        //             text: 'Tidak ada data yang dapat disimpan!',
-        //             icon: 'error'
-        //         }).then(() => {
-        //         });
-        //     }
-        // });
 
         function getDataUsulan() {
-            var nodoc = $('#no-trn').val();
-            var kdsup = $('#txtKodeSupplier').val();
+            var nodoc = $('#txtNoDoc').val();
+            var kdsup = $('#txtKdSupplier').val();
             var pkp = $('#txtPKP').val();
-            var namasup = $('#txtNamaSupplier').val();
+            var namasup = $('#txtNmSupplier').val();
             ajaxSetup();
             $.ajax({
                 type: "POST",
@@ -1766,7 +1681,7 @@
                         });
                     }
                     else {
-                        $('#tBodyUsulan').empty();
+                        $('#body-table-usulan').empty();
                         $('#txt-usl-pkp').val(pkp);
                         $('#txt-usl-nama-supplier').val(namasup);
                         $('#txt-usl-kode-supplier').val(kdsup);
@@ -1774,21 +1689,22 @@
                         $('#txt-usl-nodok').val(nodoc);
 
                         for (var i = 0; i < response.dataUsulan.length; i++) {
-                            $('#tBodyUsulan').append('<tr class="table-sm">\n' +
-                                '<td class="small usl-prdcd">' + response.dataUsulan[i].usl_prdcd + '</td>\n' +
-                                '<td class="small usl-desk">' + response.dataUsulan[i].prd_deskripsipanjang + '</td>\n' +
-                                '<td class="small usl-qty">' + response.dataUsulan[i].usl_qty_sisaretur + '</td>\n' +
-                                '<td class="small usl-status">' + response.dataUsulan[i].usl_status + '</td>\n' +
-                                '</tr>')
+                            $('#body-table-usulan').append('<tr class="table-sm">\n' +
+                                '                               <td class="small usl-prdcd">' + response.dataUsulan[i].usl_prdcd + '</td>\n' +
+                                '                               <td class="small usl-desk">' + response.dataUsulan[i].prd_deskripsipanjang + '</td>\n' +
+                                '                               <td class="small usl-qty">' + response.dataUsulan[i].usl_qty_sisaretur + '</td>\n' +
+                                '                               <td class="small usl-status">' + response.dataUsulan[i].usl_status + '</td>\n' +
+                                '                            </tr>')
                         }
                     }
+
                 },
                 error: function (error) {
                     $('#modal-loader').modal('hide');
-                    // error
+                    // handle error
                     swal({
                         title: 'Gagal!',
-                        text: 'Data tidak berhasil diambil!',
+                        text: 'Data gagal diambil!',
                         icon: 'error'
                     }).then(() => {
                     });
@@ -1807,12 +1723,12 @@
             var kdsup = $('#txt-usl-kode-supplier').val();
             var pkp = $('#txt-usl-pkp').val();
             var status = $('#txt-usl-status').val();
-            var tgldoc = $('#tgl-doc').val();
+            var tgldoc = $('#dtTglDoc').val();
 
             if (status != 'USULAN') {
                 swal({
                     title: 'Info',
-                    text: 'Usulan sudah diretur!',
+                    text: 'Usulan Sudah Diretur!',
                     icon: 'info'
                 }).then(() => {
                 });
@@ -1847,6 +1763,7 @@
                 },
                 error: function (error) {
                     $('#modal-loader').modal('hide');
+                    // handle error
                     swal({
                         title: 'Gagal!',
                         text: 'Data gagal diambil!',
@@ -1857,40 +1774,28 @@
             });
         });
 
-        function saveNewData(){
-            let supplier = $('#txtKodeSupplier').val();
-            let nodoc = $('#no-trn').val();
-            let tgldoc = $('#tgl-doc').val();
-
-            $('#tBodyDetail tr').each(function () {
-                var data = {};
-
-                data.nodoc = nodoc;
-                data.tgldoc = tgldoc;
-                data.noreff = $(this).find(".noreff").val();
-                data.istype = $(this).find(".istype").val();
-                data.invno = $(this).find(".invno").val();
-                data.tglinv = $(this).find(".tglinv").val();
-                data.kdsup = kdsup;
-                data.plu = $(this).find(".plu-header").val();
-                data.ctn = $(this).find(".qtyctn").val();
-                data.qty = $(this).find(".qtypcs").val();
-                data.hargasatuan = $(this).find(".hargasatuan").val();
-                data.persendisc = $(this).find(".persendisc").val();
-                data.gross = parseFloat($(this).find(".gross").val());
-                data.discrph = parseFloat($(this).find(".discrph").val());
-                data.ppnrph = parseFloat($(this).find(".ppn").val());
-                data.posqty = parseFloat($(this).find(".posqty").val());
-                data.keterangan = $(this).find(".keterangan").val();
-                arrNewData.push(data);
-            });
-
-            console.log(supplier);
-            console.log(nodoc);
-            console.log(arrNewData);
-        }
-
-
+        $('#btnAddRow').click(function () {
+            let totalHeaderRow = $('#body-table-header tr').length;
+            // console.log(totalHeaderRow);
+            $('#body-table-header').append(
+                `<tr class="row-header-${totalHeaderRow + 1}">` +
+                `<td><button class="btn btn-block btn-danger btn-delete-row-header" rowheader="${totalHeaderRow + 1}"><i class="icon fas fa-times"></i></button></td>` +
+                `<td class="buttonInside" style="width: 8%">` +
+                `<input type="text" class="form-control plu-header-${totalHeaderRow + 1} plu-header" rowheader="${totalHeaderRow + 1}">` +
+                `<button type="button" class="btn btn-lov-plu btn-lov ml-3" rowheader="${totalHeaderRow + 1}" data-target="#m_lov_plu" data-toggle="modal">` +
+                `<img src="../../../../public/image/icon/help.png" width="30px">` +
+                `</button>` +
+                `</td>` +
+                `<td><input disabled class="form-control deskripsi-header-${totalHeaderRow + 1}" type="text"></td>` +
+                `<td><input disabled class="form-control satuan-header satuan-header-${totalHeaderRow + 1}" type="text"></td>` +
+                `<td><input disabled class="form-control bkp-header-${totalHeaderRow + 1}" type="text"></td>` +
+                `<td><input disabled class="form-control stock-header-${totalHeaderRow + 1}" type="text"></td>` +
+                `<td><input class="form-control ctn-header ctn-header-${totalHeaderRow + 1}" rowheader="${totalHeaderRow + 1}" type="text"></td>` +
+                `<td><input class="form-control pcs-header pcs-header-${totalHeaderRow + 1}" rowheader="${totalHeaderRow + 1}" type="text"></td>` +
+                `<td><input class="form-control keterangan-header keterangan-header-${totalHeaderRow + 1}" rowheader="${totalHeaderRow + 1}" type="text"></td>` +
+                `</tr>`
+            );
+        });
     </script>
 
 

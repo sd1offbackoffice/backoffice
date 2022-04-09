@@ -207,18 +207,18 @@ class RekapEvaluasiController extends Controller
 			(	SELECT trjd_kodeigr kodeigr, TRUNC(trjd_transactiondate) trjd_transactiondate, NVL(trjd_cus_kodemember,'0') cusnoA, trjd_transactiontype,
 					   cus_kodeigr, cus_kodeoutlet, UPPER(cus_kodesuboutlet) cus_kodesuboutlet,
 					   CASE WHEN trjd_divisioncode = '5' AND SUBSTR(trjd_division,1, 2) = '39' THEN
-					      CASE WHEN '".$request->counter."' = 'Y' THEN
+					      CASE WHEN upper('".$request->counter."') = 'Y' THEN
 						     trjd_nominalAmt
 						  END
 					   ELSE
 					      CASE WHEN NVL(tko_kodesbu,'z') IN ('O','I') THEN
-						     CASE WHEN NVL(tko_tipeOMI,'zz') IN ('HE','HG') THEN
-							    trjd_nominalAmt - ( CASE WHEN trjd_flagTax1 = 'Y' AND NVL(trjd_flagTax2,'z') IN ('Y','z') AND NVL(prd_kodetag,'zz') <> 'Q' THEN ( trjd_nominalAmt - (trjd_nominalAmt / 1.1) ) ELSE 0 END )
+						     CASE WHEN tko_tipeOMI IN ('HE','HG') THEN
+							    trjd_nominalAmt - ( CASE WHEN trjd_flagTax1 = 'Y' AND NVL(trjd_flagTax2,'z') IN ('Y','z') AND NVL(prd_kodetag,'zz') <> 'Q' THEN ( trjd_nominalAmt - (trjd_nominalAmt / (1+(nvl(prd_ppn,10)/100))) ) ELSE 0 END )
 							 ELSE
 							    trjd_nominalAmt
 							 END
 						  ELSE
-						     trjd_nominalAmt - (CASE WHEN SUBSTR(trjd_create_By,1,2) = 'EX' THEN 0 ELSE CASE WHEN trjd_flagTax1 = 'Y' AND NVL(trjd_flagTax2,'z') IN ('Y','z') AND NVL(PRD_kodeTAG,'zz') <> 'Q' THEN ( trjd_nominalAmt - (trjd_nominalAmt / 1.1) ) ELSE 0 END END )
+						     trjd_nominalAmt - (CASE WHEN SUBSTR(trjd_create_By,1,2) = 'EX' THEN 0 ELSE CASE WHEN trjd_flagTax1 = 'Y' AND NVL(trjd_flagTax2,'z') IN ('Y','z') AND NVL(PRD_kodeTAG,'zz') <> 'Q' THEN ( trjd_nominalAmt - (trjd_nominalAmt / (1+(nvl(prd_ppn,10)/100))) ) ELSE 0 END END )
 						  END
 					   END nNet,
 					   CASE WHEN trjd_divisioncode = '5' AND SUBSTR(trjd_division,1,2) = '39' THEN
@@ -420,7 +420,8 @@ class RekapEvaluasiController extends Controller
 		FROM
 		(	SELECT kodeigr, cusnoA AS cusNo, cus_namamember, trjd_transactiondate AS fdtglt, cus_kodeoutlet, cus_kodesuboutlet,
 				   SUM(CASE WHEN trjd_transactiontype ='R' THEN (nNet*-1) ELSE nNet END) fdnAmt,
-				   SUM(CASE WHEN trjd_transactiontype ='R' THEN (nHpp*-1) ELSE nHpp END) flCost
+				   SUM(CASE WHEN trjd_transactiontype ='R' THEN (nHpp*-1) ELSE nHpp END) flCost,
+				   SUM(nMargin) nMargin
 			FROM
 			(	SELECT trjd_kodeigr kodeigr, TRUNC(trjd_transactiondate) trjd_transactiondate, NVL(trjd_cus_kodemember,'0') cusnoA, trjd_transactiontype,
 					   cus_kodeoutlet, cus_kodesuboutlet, cus_namamember,
@@ -431,14 +432,20 @@ class RekapEvaluasiController extends Controller
 					   ELSE
 					      CASE WHEN NVL(tko_kodesbu,'z') IN ('O','I') THEN
 						     CASE WHEN tko_tipeOMI IN ('HE','HG') THEN
-							    trjd_nominalAmt - ( CASE WHEN trjd_flagTax1 = 'Y' AND NVL(trjd_flagTax2,'z') IN ('Y','z') AND NVL(prd_kodetag,'zz') <> 'Q' THEN ( trjd_nominalAmt - (trjd_nominalAmt / 1.1) ) ELSE 0 END )
+							    trjd_nominalAmt - ( CASE WHEN trjd_flagTax1 = 'Y' AND NVL(trjd_flagTax2,'z') IN ('Y','z') AND NVL(prd_kodetag,'zz') <> 'Q' THEN ( trjd_nominalAmt - (trjd_nominalAmt / (1+(nvl(prd_ppn,10)/100))) ) ELSE 0 END )
 							 ELSE
 							    trjd_nominalAmt
 							 END
 						  ELSE
-						     trjd_nominalAmt - (CASE WHEN SUBSTR(trjd_create_By,1,2) = 'EX' THEN 0 ELSE CASE WHEN trjd_flagTax1 = 'Y' AND NVL(trjd_flagTax2,'z') IN ('Y','z') AND NVL(PRD_kodeTAG,'zz') <> 'Q' THEN ( trjd_nominalAmt - (trjd_nominalAmt / 1.1) ) ELSE 0 END END )
+						     trjd_nominalAmt - (CASE WHEN SUBSTR(trjd_create_By,1,2) = 'EX' THEN 0 ELSE CASE WHEN trjd_flagTax1 = 'Y' AND NVL(trjd_flagTax2,'z') IN ('Y','z') AND NVL(PRD_kodeTAG,'zz') <> 'Q' THEN ( trjd_nominalAmt - (trjd_nominalAmt / (1+(nvl(prd_ppn,10)/100))) ) ELSE 0 END END )
 						  END
 					   END nNet,
+					   CASE WHEN trjd_divisioncode = '5' AND trjd_divisioncode = '39' THEN
+                         CASE WHEN prd_markUpStandard IS NULL THEN ((5*trjd_nominalAmt)/100) ELSE ((prd_markUpStandard*trjd_nominalAmt)/100) END
+                      ELSE
+                         (CASE WHEN  tko_kodeSBU = 'O' OR tko_kodeSBU = 'I' THEN trjd_nominalAmt ELSE trjd_nominalAmt-(CASE WHEN trjd_flagtax1 = 'Y' THEN (trjd_nominalAmt-(trjd_nominalAmt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END) END) -
+                         ( trjd_baseprice/(CASE WHEN prd_unit='KG'THEN 1000 ELSE 1 END)*trjd_baseprice)
+                      END nMargin,
 					   ------
 					   CASE WHEN trjd_divisioncode = '5' AND SUBSTR(trjd_division,1,2) = '39' THEN
 					      CASE WHEN upper('".$request->counter."') = 'Y' THEN

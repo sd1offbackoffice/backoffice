@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE;
 
+use App\Http\Controllers\Auth\loginController;
 use Dompdf\Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -348,6 +349,8 @@ class KKEIController extends Controller
 
         $periode = substr($request->periode,0,2).' '.$bulan[(int) substr($request->periode,2,2)].' '.substr($request->periode,4,4);
 
+        return view('BACKOFFICE.KKEI-pdf',compact(['data','perusahaan','periode']));
+
         $data = [
             'data' => $data,
             'perusahaan' => $perusahaan,
@@ -359,7 +362,7 @@ class KKEIController extends Controller
 
         $dompdf = new PDF();
 
-        $pdf = PDF::loadview('BACKOFFICE.KKEI-laporan',$data);
+        $pdf = PDF::loadview('BACKOFFICE.KKEI-pdf',$data);
 
         error_reporting(E_ALL ^ E_DEPRECATED);
 
@@ -377,66 +380,5 @@ class KKEIController extends Controller
         // Render the HTML as PDF
 
         return $dompdf->download('laporan-kkei '.$now.'.pdf');
-    }
-
-    public function laporan_view(){
-        $rperiode = $_GET['periode'];
-
-        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
-            ->first();
-
-        $data = DB::connection(Session::get('connection'))->table('temp_kkei')
-            ->where('kke_periode',$rperiode)
-            ->orderBy('kke_kdsup')
-            ->get();
-
-        if(count($data) == 0)
-            return '<h1 style="text-align: center">Data laporan KKEI tidak ditemukan!</h1>';
-        else{
-            $bulan = array(
-                'Januari', 'Februri', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-            );
-
-            $periode = substr($rperiode, 0, 2) . ' ' . $bulan[(int)substr($rperiode, 2, 2) - 1] . ' ' . substr($rperiode, 4, 4);
-
-            $data = [
-                'data' => $data,
-                'perusahaan' => $perusahaan,
-                'periode' => $periode
-            ];
-
-            $now = Carbon::now('Asia/Jakarta');
-            $now = date_format($now, 'd-m-Y H-i-s');
-
-            $dompdf = new PDF();
-
-            $pdf = PDF::loadview('BACKOFFICE.KKEI-laporan', $data);
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf ->get_canvas();
-            $canvas->page_text(1000, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-            $dompdf = $pdf;
-
-            // (Optional) Setup the paper size and orientation
-            //        $dompdf->setPaper('a4', 'landscape');
-
-            // Render the HTML as PDF
-
-            return $dompdf->stream('laporan-kkei ' . $now . '.pdf');
-        }
-    }
-
-    public function test(){
-//        $test = DB::connection('pgigrbdl')
-//            ->table('tbmaster_customer')
-//            ->limit(50000)
-//            ->get();
-//        dd($test);
-        return view('BACKOFFICE.test');
     }
 }

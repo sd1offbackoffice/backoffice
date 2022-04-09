@@ -107,14 +107,14 @@ class KertasKerjaStatusController extends Controller
                                                ELSE 0
                                            END) HARIIGR, SLS_PRDCD
               FROM TBTR_SUMSALES
-             WHERE TRUNC (SLS_PERIODE) BETWEEN ADD_MONTHS (TO_DATE ('01' || '".$periode."',
-                                                                    'ddmmyyyy'
+             WHERE TRUNC (SLS_PERIODE) BETWEEN ADD_MONTHS (TO_DATE ('01/' || '".$periode."',
+                                                                    'dd/mm/yyyy'
                                                                    ),
                                                            -3
                                                           )
-                                           AND LAST_DAY (ADD_MONTHS (TO_DATE (   '01'
+                                           AND LAST_DAY (ADD_MONTHS (TO_DATE (   '01/'
                                                                               || '".$periode."',
-                                                                              'ddmmyyyy'
+                                                                              'dd/mm/yyyy'
                                                                              ),
                                                                      -1
                                                                     )
@@ -147,17 +147,17 @@ class KertasKerjaStatusController extends Controller
                              WHERE TPOD_KODEIGR = '".Session::get('kdigr')."'
                                AND NVL (TPOD_RECORDID, '9') <> '1'
                                AND TRUNC (TPOD_TGLPO)
-                                       BETWEEN TRUNC (ADD_MONTHS (TO_DATE ('01' || '".$periode."',
-                                                                           'ddmmyyyy'
+                                       BETWEEN TRUNC (ADD_MONTHS (TO_DATE ('01/' || '".$periode."',
+                                                                           'dd/mm/yyyy'
                                                                           ),
                                                                   -3
                                                                  ),
                                                       'MM'
                                                      )
                                            AND LAST_DAY
-                                                      (TRUNC (ADD_MONTHS (TO_DATE (   '01'
+                                                      (TRUNC (ADD_MONTHS (TO_DATE (   '01/'
                                                                                    || '".$periode."',
-                                                                                   'ddmmyyyy'
+                                                                                   'dd/mm/yyyy'
                                                                                   ),
                                                                           -1
                                                                          )
@@ -209,7 +209,20 @@ ORDER BY TRANSLATE (RAK, 'OD', 'YZ'), SR, TR, SH, NU");
 
 //        dd($data);
 
+        return view('BACKOFFICE.KERTASKERJASTATUS.kertas-kerja-status-pdf',compact(['perusahaan','data','periode','rowsb','rowsk']));
 
+        $pdf = PDF::loadview('BACKOFFICE.KERTASKERJASTATUS.kertas-kerja-status-pdf',compact(['perusahaan','data','periode','rowsb','rowsk']));
 
+        error_reporting(E_ALL ^ E_DEPRECATED);
+
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+
+        $dompdf = $pdf;
+
+        return $dompdf->stream('Evaluasi per Member '.$tgl1.' - '.$tgl2.'.pdf');
     }
 }

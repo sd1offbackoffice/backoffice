@@ -17,7 +17,7 @@
                                    </div>
                                    <div class="form-group">
                                        <label for="">2. BULAN SEASONAL</label>
-                                       <button type="button" id="#" class="form-control btn btn-primary" onclick="callProc2()">TARIK DATA BULAN SEASONAL DARI OMI IIO</button>
+                                       <button type="button" id="#" class="form-control btn btn-primary" onclick="callProc2()">TARIK DATA BULAN SEASONAL DARI OMI HO</button>
                                    </div>
                                    <div class="form-group">
                                        <label for="">3. M PLUS.O</label>
@@ -27,7 +27,7 @@
                                        <label for="">4. Laporan Pembentukan  M PLUS.I dan M PLUS.O</label> <br>
                                        <div class="form-row ml-2">
                                            <label class="col-sm-3 text-right">Periode Proses Data</label>
-                                           <input type="month" class="form-control mb-2 ml-2 text-right" style="width: 100px !important;" id="dateLaporan" value="{{\Carbon\Carbon::today()->format('m/Y')}}">
+                                           <input type="text" class="form-control mb-2 ml-2 text-right" style="width: 200px !important;" id="dateLaporan" value="{{\Carbon\Carbon::today()->format('m/Y')}}">
                                        </div>
                                        <button type="button" id="#" class="form-control btn btn-primary " onclick="callProc4()">PROSES LAPORAN</button>
                                    </div>
@@ -39,6 +39,10 @@
             </div>
         </div>
     </div>
+
+    <a href="http://172.20.28.17/BackOffice/public/file_procedure/sp_hitung_mpluso_web.txt" target="blank">SP_HITUNG_MPLUSO_WEB</a> <br>
+    <a href="http://172.20.28.17/BackOffice/public/file_procedure/sp_hitung_mplusi_web.txt" target="blank">SP_HITUNG_MPLUSI_WEB</a> <br>
+    <a href="http://172.20.28.17/BackOffice/public/file_procedure/sp_tarik_seasonalomi_web.txt" target="blank">SP_TARIK_SEASONALOMI_WEB</a>
 
     <script>
         $("#dateLaporan").datepicker({
@@ -112,7 +116,8 @@
         }
 
         function callProc4(){
-            let date = $('#dateLaporan').val();
+            // let date = $('#dateLaporan').val();
+            let date = $("#dateLaporan").datepicker("getDate");
 
             if (!date){
                 swal('Error','Periode 1 Tidak Boleh Kosong !!', 'error')
@@ -127,7 +132,7 @@
             $.ajax({
                 url:'{{ url()->current() }}/chekproc4',
                 type:'Post',
-                data: {date:date},
+                data: {date: $.datepicker.formatDate("yymm", date)},
                 beforeSend: function () {
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
@@ -136,9 +141,9 @@
                     if (result.kode === '0'){
                         swal('', result.return, 'warning');
                     } else {
-                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                        $('#modal-loader').modal('hide');
                         // window.open('/BackOffice/public/utilitypbigr/callproc4/'+date+'', '_blank');
-                        window.open('{{ url()->current() }}/callproc4/'+date+'');
+                        window.open('{{ url()->current() }}/callproc4/'+($.datepicker.formatDate("yymm", date))+'');
                     }
                     console.log(result);
                 }, error: function (error) {

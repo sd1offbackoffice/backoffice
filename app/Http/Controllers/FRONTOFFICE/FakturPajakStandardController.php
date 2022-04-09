@@ -46,6 +46,12 @@ AND ROWNUM <= 1");
             ], 500);
         }
         else{
+            if($this->cekProcedure("'sp_csv_fk_mm_nonpkp'") > 0){
+                return response()->json([
+                    'message' => 'sp_csv_fk_mm_nonpkp sedang berjalan!',
+                ], 500);
+            }
+
             $connect = loginController::getConnectionProcedure();
 
             $query = oci_parse($connect, "BEGIN sp_csv_fk_mm_nonpkp('".Session::get('kdigr')."', to_date('".$request->periode."','mm/yyyy')); END;");

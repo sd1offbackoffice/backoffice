@@ -251,6 +251,7 @@ Route::middleware(['CheckLogin'])->group(function () {
         Route::prefix('/supp-prod')->group(function () {
             Route::get('/', 'INQUERY\inquerySuppProdController@index');
             Route::post('/suppProd', 'INQUERY\inquerySuppProdController@suppProd');
+            Route::post('/showLOV', 'INQUERY\inquerySuppProdController@showLOV');
         });
     });
     Route::prefix('/master')->group(function () {
@@ -491,6 +492,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/', 'BACKOFFICE\PBManualController@index');
                 Route::get('/lov_nopb', 'BACKOFFICE\PBManualController@lov_nopb');
                 Route::get('/lov_search_plu', 'BACKOFFICE\PBManualController@lov_search_plu');
+                Route::get('/lov_search_plu_pb', 'BACKOFFICE\PBManualController@lov_search_plu_pb');
                 Route::get('/get-data-pb', 'BACKOFFICE\PBManualController@getDataPB');
                 Route::post('/hapus-dokumen', 'BACKOFFICE\PBManualController@hapusDokumen');
                 Route::post('/cek_plu', 'BACKOFFICE\PBManualController@cek_plu');
@@ -553,11 +555,13 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/', 'BACKOFFICE\PBPerishableController@index');
                 Route::post('/lov_trn', 'BACKOFFICE\PBPerishableController@lov_trn');
                 Route::post('/lov_plu', 'BACKOFFICE\PBPerishableController@lov_plu');
+                Route::post('/showSup', 'BACKOFFICE\PBPerishableController@showSup');
                 Route::post('/showTrn', 'BACKOFFICE\PBPerishableController@showTrn');
                 Route::post('/showPlu', 'BACKOFFICE\PBPerishableController@showPlu');
-                Route::post('/nmrBaruTrn', 'BACKOFFICE\PBPerishableController@nmrBaruTrn');
+                Route::post('/nmrBaruPb', 'BACKOFFICE\PBPerishableController@nmrBaruPb');
                 Route::post('/saveDoc', 'BACKOFFICE\PBPerishableController@saveDoc');
                 Route::post('/deleteDoc', 'BACKOFFICE\PBPerishableController@deleteDoc');
+                Route::post('/prosesDoc', 'BACKOFFICE\PBPerishableController@prosesDoc');
             });
 
             /*BACK OFFICE - KERTAS KERJA KEBUTUHAN TOKO IGR*/
@@ -566,8 +570,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::post('/get_detail_produk', 'BACKOFFICE\KKEIController@get_detail_produk');
                 Route::post('/get_detail_kkei', 'BACKOFFICE\KKEIController@get_detail_kkei');
                 Route::post('/save', 'BACKOFFICE\KKEIController@save');
-                Route::post('/laporan', 'BACKOFFICE\KKEIController@laporan');
-                Route::get('/laporan', 'BACKOFFICE\KKEIController@laporan_view');
+                Route::get('/laporan', 'BACKOFFICE\KKEIController@laporan');
 
                 Route::get('/test', 'BACKOFFICE\KKEIController@test');
             });
@@ -613,7 +616,9 @@ Route::middleware(['CheckLogin'])->group(function () {
         Route::prefix('/lpp')->group(function () {
             Route::prefix('/proses-lpp')->group(function () {
                 Route::get('/', 'BACKOFFICE\LPP\ProsesLPPController@index');
+                Route::get('/get-status', 'BACKOFFICE\LPP\ProsesLPPController@getStatus');
                 Route::post('/proses', 'BACKOFFICE\LPP\ProsesLPPController@proses');
+                Route::post('/proses-ulang', 'BACKOFFICE\LPP\ProsesLPPController@prosesUlang');
             });
             Route::prefix('/proses-lpp-harian')->group(function () {
                 Route::get('/', 'BACKOFFICE\LPP\ProsesLPPHarianController@index');
@@ -1198,6 +1203,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::post('/lov_monitoring', 'BACKOFFICE\LAPORAN\LaporanServiceLevelController@lov_monitoring');
                 Route::post('/cetak_laporan', 'BACKOFFICE\LAPORAN\LaporanServiceLevelController@cetak_laporan');
             });
+
             Route::prefix('/daftar-pembelian')->group(function () {
                 Route::get('/', 'BACKOFFICE\LAPORAN\DaftarPembelianController@index');
                 Route::get('/get-data-lov-div', 'BACKOFFICE\LAPORAN\DaftarPembelianController@getDataLovDiv');
@@ -1400,9 +1406,10 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/cetak', 'BACKOFFICE\PKM\LaporanKertasKerjaPKMController@cetak');
             });
 
-            // Cesar
+            // Cesar & Steven
             Route::prefix('/faktor-pkm-toko')->group(function () {
                 Route::get('/', 'BACKOFFICE\PKM\FaktorPKMTokoController@index');
+                Route::get('/get-data-table-m', 'BACKOFFICE\PKM\FaktorPKMTokoController@getDataTableM')->name('get-data-table-m');
             });
         });
 
@@ -1917,6 +1924,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/cetak-omi', 'FRONTOFFICE\LAPORANKASIR\ActualController@cetakOmi');
                 Route::get('/cetak-struk', 'FRONTOFFICE\LAPORANKASIR\ActualController@cetakStruk');
                 Route::get('/cetak-shopeepay', 'FRONTOFFICE\LAPORANKASIR\ActualController@cetakShopeepay');
+                Route::get('/process-cashback', 'FRONTOFFICE\LAPORANKASIR\ActualController@cashback');
             });
 
             Route::prefix('/kartu-kredit')->group(function () {

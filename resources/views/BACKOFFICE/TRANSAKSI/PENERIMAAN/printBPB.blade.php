@@ -178,13 +178,12 @@
                 typeTrn: typeTrn
             },
             beforeSend: () => {
-                // $('#modal-loader').modal('show');
+                $('#modal-loader').modal('show');
                 // tablePrintBPB.row().remove();
                 $('.rowTbodyTableBTB').remove();
             },
             success: function(result) {
-                console.log(result);
-
+                $('#modal-loader').modal('hide');
                 if (type == 2) {
                     $('#changeTheadName').text('No Dokumen');
                 } else {
@@ -249,16 +248,22 @@
                 document: document
             },
             beforeSend: () => {
-                // $('#modal-loader').modal('show');
+                $('#modal-loader').modal('show');
             },
             success: function(result) {
-                console.log('test')
-                console.log(document)
-
+                $('#modal-loader').modal('hide');
                 if (result.kode == 1) {
                     documentTemp = document;
-                    window.open(currUrl + 'viewreport/' + checked + '/' + result.data + '/' + documentTemp);
-                    // window.open('/BackOffice/public/bo/transaksi/penerimaan/printbpb/viewreport/'+checked+'/'+'lokasi'+'/'+documentTemp);
+                    if (result.list == 1) {
+                        window.open(currUrl + 'viewreport/' + checked + '/' + result.data + '/' + documentTemp);
+                    } else {
+                        if (result.lokasi == 1) {
+                            window.open(currUrl + 'viewreport/' + checked + '/' + 'lokasi' + '/' + documentTemp);
+                        }
+                        if (result.nota != null || result.nota != '') {
+                            window.open(currUrl + 'viewreport/' + checked + '/' + result.data + '/' + result.nota);
+                        }
+                    }
                 }
             },
             error: function(err) {

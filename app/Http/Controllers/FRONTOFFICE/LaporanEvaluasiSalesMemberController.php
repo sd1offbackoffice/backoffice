@@ -487,6 +487,15 @@ class LaporanEvaluasiSalesMemberController extends Controller
                                            ELSE 1
                                         END) qty,
                                         SUM (trjd_nominalamt) salesgross,
+                                        SUM(CASE WHEN trjd_divisioncode = '5' AND trjd_divisioncode = '39' THEN
+                                             trjd_nominalamt
+                                          ELSE
+                                             CASE WHEN  tko_kodeSBU = 'O' OR tko_kodeSBU = 'I' THEN
+                                                trjd_nominalamt
+                                             ELSE
+                                                trjd_nominalamt-(CASE WHEN trjd_flagtax1 = 'Y' THEN (trjd_nominalamt-(trjd_nominalamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END)
+                                             END
+                                          END) sales,
                                         SUM (
                                             CASE
                                                WHEN     trjd_flagtax1 = 'Y'
@@ -509,7 +518,7 @@ class LaporanEvaluasiSalesMemberController extends Controller
                                                WHEN trjd_transactiontype = 'R' THEN -1
                                                ELSE 1
                                             END)
-                                          sales,
+                                          salesxx,
                                           (SUM (trjd_nominalamt) - (SUM (
                                             CASE
                                                WHEN     trjd_flagtax1 = 'Y'
@@ -531,7 +540,16 @@ class LaporanEvaluasiSalesMemberController extends Controller
                                           * CASE
                                                WHEN trjd_transactiontype = 'R' THEN -1
                                                ELSE 1
-                                            END))) ppn,
+                                            END))) ppnxxx,
+                                            sum(CASE WHEN trjd_divisioncode = '5' AND trjd_divisioncode = '39' THEN
+                                                 0
+                                              ELSE
+                                                 CASE WHEN tko_kodeSBU = 'O' OR tko_kodeSBU = 'I' THEN
+                                                   CASE WHEN trjd_flagtax1 = 'Y' THEN ((trjd_nominalamt*(1+(nvl(prd_ppn,10)/100)))-trjd_nominalamt) ELSE 0 END
+                                                 ELSE
+                                                   CASE WHEN trjd_flagtax1 = 'Y' THEN (trjd_nominalamt-(trjd_nominalamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END
+                                                 END
+                                              END) ppn,
                                           SUM (
                                             (  CASE
                                                   WHEN     trjd_flagtax1 = 'Y'
@@ -722,6 +740,13 @@ class LaporanEvaluasiSalesMemberController extends Controller
         ];
 
         $linebuffs = array();
+        $kunj = 0;
+        $struk = 0;
+        $qty = 0;
+        $salesgross = 0;
+        $salesnet = 0;
+        $ppn = 0;
+        $margin = 0;
 
         foreach ($data as $d) {
             $tempdata = [
@@ -729,16 +754,39 @@ class LaporanEvaluasiSalesMemberController extends Controller
                 $d->cus_namamember,
                 $d->kunj,
                 $d->struk,
-                $d->qty,
-                $d->salesgross,
-                $d->sales,
-                $d->sales * 0.1,
-                $d->margin,
-                number_format($d->margin / $d->sales * 100, 2),
+                number_format($d->qty, 0, '.', ','),
+                number_format($d->salesgross, 0, '.', ','),
+                number_format($d->sales, 0, '.', ','),
+                number_format($d->ppn, 0, '.', ','),
+                number_format($d->margin, 0, '.', ','),
+                number_format($d->sales == 0 ? 0 : ($d->margin / $d->sales) * 100, 2, '.', ',')
             ];
 
             array_push($linebuffs, $tempdata);
+
+            $kunj += $d->kunj;
+            $struk += $d->struk;
+            $qty += $d->qty;
+            $salesgross += $d->salesgross;
+            $salesnet += $d->sales;
+            $ppn += $d->ppn;
+            $margin += $d->margin;
         }
+
+        $total = [
+            '',
+            'TOTAL',
+            $kunj,
+            $struk,
+            number_format($qty, 0, '.', ','),
+            number_format($salesgross, 0, '.', ','),
+            number_format(ceil($salesnet), 0, '.', ','),
+            number_format($ppn, 0, '.', ','),
+            number_format($margin, 0, '.', ','),
+            number_format($salesnet == 0 ? 0 : ($margin / $salesnet * 100), 2, '.', ',')
+        ];
+
+        array_push($linebuffs, $total);
 
         $headers = [
             "Content-type" => "text/csv",

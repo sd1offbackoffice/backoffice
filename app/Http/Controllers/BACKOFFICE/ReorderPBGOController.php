@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE;
 
+use App\Http\Controllers\Auth\loginController;
 use App\Http\Controllers\MASTER\departementController;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;

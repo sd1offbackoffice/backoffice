@@ -1,7 +1,7 @@
 @extends('navbar')
+
+@section('title','PB | Upload dan Monitoring KKEI Toko IGR')
 @section('content')
-
-
     <div class="container-fluid mt-3">
         <div class="row">
             <div class="col-sm-2"></div>
@@ -203,26 +203,26 @@
                 },
                 data: {periode: periode},
                 beforeSend: function () {
-                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                    $('#modal-loader').modal('show');
                     console.log(periode);
                 },
                 success: function (response, xhr) {
-                    console.log(xhr.status);
-                    $('#modal-loader').modal('toggle');
-                    if(response.status == 'success'){
-                        swal({
-                            title: response.message,
-                            icon: "success"
-                        }).then(function(){
-                            refresh();
-                        });
-                    }
-                    else{
-                        swal({
-                            title: response.message,
-                            icon: "error"
-                        });
-                    }
+                    $('#modal-loader').modal('hide');
+
+                    swal({
+                        title: response.message,
+                        icon: "success"
+                    }).then(function(){
+                        refresh();
+                    });
+                },
+                error: function (error) {
+                    swal({
+                        title: error.responseJSON.message,
+                        icon: 'error',
+                    }).then(() => {
+                        $('#modal-loader').modal('hide');
+                    });
                 }
             });
         }

@@ -266,6 +266,8 @@
 
         .header-table{
             background: #0079C2;
+            position: sticky; top: 0;
+            z-index: 10;
         }
 
         .font{

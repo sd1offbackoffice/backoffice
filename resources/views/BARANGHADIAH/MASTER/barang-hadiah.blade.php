@@ -17,7 +17,7 @@
                                         <label for="kodePLU" class="col-sm-2 col-form-label">Kode PLU</label>
                                         <div class="col-sm-10 row">
                                             <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="kodePLU" maxlength="5">
+                                                <input type="text" class="form-control" id="kodePLU" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)" maxlength="7">
                                             </div>
                                             <div class="col-sm-4">
                                                 <label></label>
@@ -78,7 +78,7 @@
                                             </div>
 
                                             <div class="col-sm-2">
-                                                <button onclick="" id="2" type="button" class="btn btn-primary">
+                                                <button onclick="edit()" id="2" type="button" class="btn btn-primary">
                                                     EDIT
                                                 </button>
                                             </div>
@@ -188,9 +188,14 @@
         if (event.which === 13)
         {
             event.preventDefault();
-            if($('#kodePLU').val() == '')
+            if($('#kodePLU').val() == '' )
             {
                 swal('PLU tidak terdaftar di master barang', '', 'warning')
+            }
+            if($('#kodePLU').val().length != 7)
+            {
+                console.log($('#kodePLU').val().length)
+                swal('Kode PLU harus terdiri dari 7 angka', '', 'warning')
             }
             else
             {
@@ -211,9 +216,6 @@
                                 prd_frac: $('#unit').val(),
                                 prd_unit: $('#frac').val()
                             },
-                            // beforeSend: function () {
-                            //     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                            // },
                             success: function (response) {
                                 swal({
                                     title: response.title,
@@ -351,6 +353,14 @@
                 swal('Error get data produk !!', '', 'warning');
             }
         })
+    }
+
+    function edit()
+    {
+        if($('#status').val() == 'BARANG DAGANGAN')
+        {
+            swal('Deskripsi Barang Dagangan Tidak Boleh Diubah !','','warning');
+        }
     }
 </script>
 

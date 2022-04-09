@@ -288,7 +288,7 @@
                         }
                     },
                     {data: null, render: function(data){
-                            return convertToRupiah2(data.salesgross - data.sales);
+                            return convertToRupiah2(data.ppn);
                         }
                     },
                     {data: null, render: function(data){

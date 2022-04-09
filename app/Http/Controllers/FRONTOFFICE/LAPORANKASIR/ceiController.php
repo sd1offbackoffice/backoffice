@@ -139,125 +139,134 @@ ORDER BY A.CBH_KODEPROMOSI, A.PLU");
             $and_even = " and dtl.kd_promosi between '".$event1."' and '".$event2."'";
         }
         $datas = DB::connection(Session::get('connection'))
-                    ->select("
-                        SELECT A.PLU,
-                                 A.CBH_KODEPROMOSI,
-                                 A.CBH_NAMAPROMOSI,
-                                 A.CBH_KODEPERJANJIAN,
-                                 A.CBH_TGLAWAL,
-                                 A.CBH_TGLAKHIR,
-                                 NILSLS_BKP,
-                                 NILSLS_BTKP,
-                                 NILREF_BKP,
-                                 NILREF_BTKP,
-                                 PRD_PPN,
-                                 ROUND ( (NVL (NILSLS_BKP, 0) / NVL ((1 + ( NVL (PRD_PPN, 10) / 100)), 1.1 )) + NVL (NILSLS_BTKP, 0), 2) SLS_DPP,
-                                 ROUND ( ( (NVL (NILSLS_BKP, 0) / NVL ((1 + ( NVL (PRD_PPN, 10) / 100)), 1.1 )) * NVL ((NVL (PRD_PPN, 10) / 100), 0.1)), 2) SLS_PPN,
-                                 ROUND ( (NVL (NILREF_BKP, 0) / NVL ((1 + ( NVL (PRD_PPN, 10) / 100)), 1.1 )) + NVL (NILREF_BTKP, 0), 2) REF_DPP,
-                                 ROUND ( ( (NVL (NILREF_BKP, 0) / NVL ((1 + ( NVL (PRD_PPN, 10) / 100)), 1.1 )) * NVL ((NVL (PRD_PPN, 10) / 100), 0.1)), 2) REF_PPN,
-                                 PRD_DESKRIPSIPANJANG,
-                                 SUP_KODESUPPLIER,
-                                 SUP_NAMASUPPLIER,
-                                 PRS_NAMAPERUSAHAAN,
-                                 PRS_NAMACABANG,
-                                 PRS_NAMAWILAYAH
-                            FROM (  SELECT '1111111' PLU,
-                                           CBH_KODEPROMOSI,
-                                           CBH_NAMAPROMOSI,
-                                           CBH_KODEPERJANJIAN,
-                                           CBH_TGLAWAL,
-                                           CBH_TGLAKHIR,
-                                           SUM (
-                                              CASE
-                                                 WHEN TRP_TRANSACTIONTYPE = 'R' AND TRP_FLAGBKP = 'Y'
-                                                 THEN
-                                                    TRP_CASHBACK
-                                              END)
-                                              NILREF_BKP,
-                                           SUM (
-                                              CASE
-                                                 WHEN TRP_TRANSACTIONTYPE = 'R' AND TRP_FLAGBKP <> 'Y'
-                                                 THEN
-                                                    TRP_CASHBACK
-                                              END)
-                                              NILREF_BTKP,
-                                           SUM (
-                                              CASE
-                                                 WHEN TRP_TRANSACTIONTYPE = 'S' AND TRP_FLAGBKP = 'Y'
-                                                 THEN
-                                                    TRP_CASHBACK
-                                              END)
-                                              NILSLS_BKP,
-                                           SUM (
-                                              CASE
-                                                 WHEN TRP_TRANSACTIONTYPE = 'S' AND TRP_FLAGBKP <> 'Y'
-                                                 THEN
-                                                    TRP_CASHBACK
-                                              END)
-                                              NILSLS_BTKP
-                                      FROM tbtr_transaksi_promosi, TBTR_CASHBACK_HDR HDR
-                                     WHERE     TRP_KODEIGR = '$kodeigr'
-                                           AND TRUNC (TRP_TRANSACTIONDATE) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-                                           AND TRP_KODEPROMOSI = HDR.CBH_KODEPROMOSI
-                                           AND CBH_JENISPROMOSI IN ('1', '2', '6')
-                                  GROUP BY CBH_KODEPROMOSI,
-                                           CBH_NAMAPROMOSI,
-                                           CBH_KODEPERJANJIAN,
-                                           CBH_TGLAWAL,
-                                           CBH_TGLAKHIR
-                                  UNION ALL
-                                    SELECT SUBSTR (TRP_PRDCD, 1, 6) || '1' PLU,
-                                           CBH_KODEPROMOSI,
-                                           CBH_NAMAPROMOSI,
-                                           CBH_KODEPERJANJIAN,
-                                           CBH_TGLAWAL,
-                                           CBH_TGLAKHIR,
-                                           SUM (
-                                              CASE
-                                                 WHEN TRP_TRANSACTIONTYPE = 'R' AND TRP_FLAGBKP = 'Y'
-                                                 THEN
-                                                    TRP_CASHBACK
-                                              END)
-                                              NILREF_BKP,
-                                           SUM (
-                                              CASE
-                                                 WHEN TRP_TRANSACTIONTYPE = 'R' AND TRP_FLAGBKP <> 'Y'
-                                                 THEN
-                                                    TRP_CASHBACK
-                                              END)
-                                              NILREF_BTKP,
-                                           SUM (
-                                              CASE
-                                                 WHEN TRP_TRANSACTIONTYPE = 'S' AND TRP_FLAGBKP = 'Y'
-                                                 THEN
-                                                    TRP_CASHBACK
-                                              END)
-                                              NILSLS_BKP,
-                                           SUM (
-                                              CASE
-                                                 WHEN TRP_TRANSACTIONTYPE = 'S' AND TRP_FLAGBKP <> 'Y'
-                                                 THEN
-                                                    TRP_CASHBACK
-                                              END)
-                                              NILSLS_BTKP
-                                      FROM tbtr_transaksi_promosi, TBTR_CASHBACK_HDR HDR
-                                     WHERE     TRP_KODEIGR = '$kodeigr'
-                                           AND TRUNC (TRP_TRANSACTIONDATE) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-                                           AND TRP_KODEPROMOSI = HDR.CBH_KODEPROMOSI
-                                           AND CBH_JENISPROMOSI NOT IN ('1', '2', '6')
-                                  GROUP BY SUBSTR (TRP_PRDCD, 1, 6) || '1',
-                                           CBH_KODEPROMOSI,
-                                           CBH_NAMAPROMOSI,
-                                           CBH_KODEPERJANJIAN,
-                                           CBH_TGLAWAL,
-                                           CBH_TGLAKHIR) A,
-                                 TBMASTER_PRODMAST,
-                                 TBMASTER_SUPPLIER,
-                                 TBMASTER_PERUSAHAAN
-                           WHERE     substr(a.plu,1,6) ||'0' = prd_prdcd(+)
-                                 AND PRD_KODESUPPLIER = SUP_KODESUPPLIER(+)
-                                 AND PRS_KODEIGR = '$kodeigr'
-                        ORDER BY A.CBH_KODEPROMOSI, A.PLU");
+                    ->select("SELECT A.PLU,
+         A.CBH_KODEPROMOSI,
+         A.CBH_NAMAPROMOSI,
+         A.CBH_KODEPERJANJIAN,
+         A.CBH_TGLAWAL,
+         A.CBH_TGLAKHIR,
+         NILSLS_BKP,
+         NILSLS_BTKP,
+         NILREF_BKP,
+         NILREF_BTKP,
+         SLS_DPP,
+         SLS_PPN,
+         REF_DPP,
+         REF_PPN,
+         /*ROUND ( (NVL (NILSLS_BKP, 0) / (1+(COALESCE(PRD_PPN, 0)/100)) ) + NVL (NILSLS_BTKP, 0), 2) SLS_DPP,
+         ROUND ( ( (NVL (NILSLS_BKP, 0) / (1+(COALESCE(PRD_PPN, 0)/100)) ) * (PRD_PPN/100)), 2) SLS_PPN,
+         ROUND ( (NVL (NILREF_BKP, 0) / (1+(COALESCE(PRD_PPN, 0)/100)) ) + NVL (NILREF_BTKP, 0), 2) REF_DPP,
+         ROUND ( ( (NVL (NILREF_BKP, 0) / (1+(COALESCE(PRD_PPN, 0)/100))) * (PRD_PPN/100)), 2) REF_PPN,*/
+         PRD_DESKRIPSIPANJANG,
+         SUP_KODESUPPLIER,
+         SUP_NAMASUPPLIER,
+         PRS_NAMAPERUSAHAAN,
+         PRS_NAMACABANG,
+         PRS_NAMAWILAYAH
+    FROM (  SELECT '1111111' PLU,
+                   CBH_KODEPROMOSI,
+                   CBH_NAMAPROMOSI,
+                   CBH_KODEPERJANJIAN,
+                   CBH_TGLAWAL,
+                   CBH_TGLAKHIR,
+                   SUM (
+                      CASE
+                         WHEN TRP_TRANSACTIONTYPE = 'R' AND TRP_FLAGBKP = 'Y'
+                         THEN
+                            TRP_CASHBACK
+                      END)
+                      NILREF_BKP,
+                   SUM (
+                      CASE
+                         WHEN TRP_TRANSACTIONTYPE = 'R' AND TRP_FLAGBKP <> 'Y'
+                         THEN
+                            TRP_CASHBACK
+                      END)
+                      NILREF_BTKP,
+                   SUM (
+                      CASE
+                         WHEN TRP_TRANSACTIONTYPE = 'S' AND TRP_FLAGBKP = 'Y'
+                         THEN
+                            TRP_CASHBACK
+                      END)
+                      NILSLS_BKP,
+                   SUM (
+                      CASE
+                         WHEN TRP_TRANSACTIONTYPE = 'S' AND TRP_FLAGBKP <> 'Y'
+                         THEN
+                            TRP_CASHBACK
+                      END)
+                      NILSLS_BTKP,
+         ROUND ( (NVL (SUM (CASE WHEN TRP_TRANSACTIONTYPE = 'S' AND TRP_FLAGBKP = 'Y' THEN TRP_CASHBACK END), 0) / (1+(COALESCE((PRD_PPN), 0)/100)) ) + NVL (SUM (CASE WHEN TRP_TRANSACTIONTYPE = 'S' AND TRP_FLAGBKP <> 'Y' THEN TRP_CASHBACK END), 0), 2) SLS_DPP,
+                      ROUND ( ( (NVL (SUM (CASE WHEN TRP_TRANSACTIONTYPE = 'S' AND TRP_FLAGBKP = 'Y' THEN TRP_CASHBACK END), 0) / (1+(COALESCE((PRD_PPN), 0)/100)) ) * ((PRD_PPN)/100)), 2) SLS_PPN,
+                      ROUND ( (NVL (SUM (CASE WHEN TRP_TRANSACTIONTYPE = 'R' AND TRP_FLAGBKP = 'Y' THEN TRP_CASHBACK END), 0) / (1+(COALESCE((PRD_PPN), 0)/100)) ) + NVL (SUM (CASE WHEN TRP_TRANSACTIONTYPE = 'R' AND TRP_FLAGBKP <> 'Y' THEN TRP_CASHBACK END), 0), 2) REF_DPP,
+                      ROUND ( ( (NVL (SUM (CASE WHEN TRP_TRANSACTIONTYPE = 'R' AND TRP_FLAGBKP = 'Y' THEN TRP_CASHBACK END), 0) / (1+(COALESCE((PRD_PPN), 0)/100))) * ((PRD_PPN)/100)), 2) REF_PPN
+              FROM tbtr_transaksi_promosi, TBTR_CASHBACK_HDR HDR, tbmaster_prodmast
+             WHERE     TRP_KODEIGR = '$kodeigr'
+                   AND TRUNC (TRP_TRANSACTIONDATE) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+                   AND TRP_KODEPROMOSI = HDR.CBH_KODEPROMOSI
+                   AND CBH_JENISPROMOSI IN ('1', '2', '6')
+                   AND PRD_PRDCD = TRP_PRDCD
+          GROUP BY 1111111, CBH_KODEPROMOSI, CBH_NAMAPROMOSI, CBH_KODEPERJANJIAN, CBH_TGLAWAL, CBH_TGLAKHIR, PRD_PPN
+--          ROUND ( (NVL (NILSLS_BKP, 0) / (1+(COALESCE(PRD_PPN, 0)/100)) ) + NVL (NILSLS_BTKP, 0), 2), ROUND ( ( (NVL (NILSLS_BKP, 0) / (1+(COALESCE(PRD_PPN, 0)/100)) ) * (PRD_PPN/100)), 2), ROUND ( (NVL (NILREF_BKP, 0) / (1+(COALESCE(PRD_PPN, 0)/100)) ) + NVL (NILREF_BTKP, 0), 2), ROUND ( ( (NVL (NILREF_BKP, 0) / (1+(COALESCE(PRD_PPN, 0)/100))) * (PRD_PPN/100)), 2)
+          UNION ALL
+            SELECT SUBSTR (TRP_PRDCD, 1, 6) || '1' PLU,
+                   CBH_KODEPROMOSI,
+                   CBH_NAMAPROMOSI,
+                   CBH_KODEPERJANJIAN,
+                   CBH_TGLAWAL,
+                   CBH_TGLAKHIR,
+                   SUM (
+                      CASE
+                         WHEN TRP_TRANSACTIONTYPE = 'R' AND TRP_FLAGBKP = 'Y'
+                         THEN
+                            TRP_CASHBACK
+                      END)
+                      NILREF_BKP,
+                   SUM (
+                      CASE
+                         WHEN TRP_TRANSACTIONTYPE = 'R' AND TRP_FLAGBKP <> 'Y'
+                         THEN
+                            TRP_CASHBACK
+                      END)
+                      NILREF_BTKP,
+                   SUM (
+                      CASE
+                         WHEN TRP_TRANSACTIONTYPE = 'S' AND TRP_FLAGBKP = 'Y'
+                         THEN
+                            TRP_CASHBACK
+                      END)
+                      NILSLS_BKP,
+                   SUM (
+                      CASE
+                         WHEN TRP_TRANSACTIONTYPE = 'S' AND TRP_FLAGBKP <> 'Y'
+                         THEN
+                            TRP_CASHBACK
+                      END)
+                      NILSLS_BTKP,
+                      ROUND ( (NVL (SUM (CASE WHEN TRP_TRANSACTIONTYPE = 'S' AND TRP_FLAGBKP = 'Y' THEN TRP_CASHBACK END), 0) / (1+(COALESCE((PRD_PPN), 0)/100)) ) + NVL (SUM (CASE WHEN TRP_TRANSACTIONTYPE = 'S' AND TRP_FLAGBKP <> 'Y' THEN TRP_CASHBACK END), 0), 2) SLS_DPP,
+                      ROUND ( ( (NVL (SUM (CASE WHEN TRP_TRANSACTIONTYPE = 'S' AND TRP_FLAGBKP = 'Y' THEN TRP_CASHBACK END), 0) / (1+(COALESCE((PRD_PPN), 0)/100)) ) * ((PRD_PPN)/100)), 2) SLS_PPN,
+                      ROUND ( (NVL (SUM (CASE WHEN TRP_TRANSACTIONTYPE = 'R' AND TRP_FLAGBKP = 'Y' THEN TRP_CASHBACK END), 0) / (1+(COALESCE((PRD_PPN), 0)/100)) ) + NVL (SUM (CASE WHEN TRP_TRANSACTIONTYPE = 'R' AND TRP_FLAGBKP <> 'Y' THEN TRP_CASHBACK END), 0), 2) REF_DPP,
+                      ROUND ( ( (NVL (SUM (CASE WHEN TRP_TRANSACTIONTYPE = 'R' AND TRP_FLAGBKP = 'Y' THEN TRP_CASHBACK END), 0) / (1+(COALESCE((PRD_PPN), 0)/100))) * ((PRD_PPN)/100)), 2) REF_PPN
+              FROM tbtr_transaksi_promosi, TBTR_CASHBACK_HDR HDR, tbmaster_prodmast
+             WHERE     TRP_KODEIGR = '$kodeigr'
+                   AND TRUNC (TRP_TRANSACTIONDATE) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+                   AND TRP_KODEPROMOSI = HDR.CBH_KODEPROMOSI
+                   AND CBH_JENISPROMOSI NOT IN ('1', '2', '6')
+                   AND PRD_PRDCD = TRP_PRDCD
+          GROUP BY SUBSTR (TRP_PRDCD, 1, 6) || '1',
+                   CBH_KODEPROMOSI,
+                   CBH_NAMAPROMOSI,
+                   CBH_KODEPERJANJIAN,
+                   CBH_TGLAWAL,
+                   CBH_TGLAKHIR, PRD_PPN) A,
+         TBMASTER_PRODMAST,
+         TBMASTER_SUPPLIER,
+         TBMASTER_PERUSAHAAN
+   WHERE     substr(a.plu,1,6) ||'0' = prd_prdcd(+)
+         AND PRD_KODESUPPLIER = SUP_KODESUPPLIER(+)
+         AND PRS_KODEIGR = '$kodeigr'
+ORDER BY A.CBH_KODEPROMOSI, A.PLU");
 
 
 

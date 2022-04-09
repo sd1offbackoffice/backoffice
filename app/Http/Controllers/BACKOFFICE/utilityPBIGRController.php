@@ -51,7 +51,7 @@ class utilityPBIGRController extends Controller
         $connection = $this->connection;
 
         try{
-            $exec = oci_parse($connection, "BEGIN  sp_hitung_mplusi_web(:param,:sukses,:errtxt); END;"); // ganti 2 pakai _webg
+            $exec = oci_parse($connection, "BEGIN  sp_hitung_mplusi_web(:param,:sukses,:errtxt); END;"); // ganti 2 pakai _web
             oci_bind_by_name($exec, ':param',$v_param);
             oci_bind_by_name($exec, ':sukses', $v_sukses,10);
             oci_bind_by_name($exec, ':errtxt', $v_errtxt,1000);
@@ -72,7 +72,7 @@ class utilityPBIGRController extends Controller
         $connection = $this->connection;
 
         try{
-            $exec = oci_parse($connection, "BEGIN  sp_tarik_seasonalomi_web(:sukses,:errtxt); END;");
+            $exec = oci_parse($connection, "BEGIN  sp_tarik_seasonalomi_web(:sukses,:errtxt); END;"); // ganti 2 pakai _web
             oci_bind_by_name($exec, ':sukses', $v_sukses,10);
             oci_bind_by_name($exec, ':errtxt', $v_errtxt,1000);
             oci_execute($exec);
@@ -99,7 +99,7 @@ class utilityPBIGRController extends Controller
         }
 
         try{
-            $exec = oci_parse($connection, "BEGIN  sp_hitung_mpluso2(:param,:sukses,:errtxt); END;");
+            $exec = oci_parse($connection, "BEGIN  sp_hitung_mpluso_web(:param,:sukses,:errtxt); END;"); // ganti 2 pakai _web
             oci_bind_by_name($exec, ':param',$v_param);
             oci_bind_by_name($exec, ':sukses', $v_sukses,10);
             oci_bind_by_name($exec, ':errtxt', $v_errtxt,1000);
@@ -120,7 +120,7 @@ class utilityPBIGRController extends Controller
 
     public function checkProc4(Request $request){
         $date   = $request->date;
-        $date   = date('Ym', strtotime($date));
+//        $date2   = date('m/Y', strtotime($date));
         $kodeigr= Session::get('kdigr');
 
         $search = DB::connection(Session::get('connection'))->table('tbtr_hitung_pb')->where('thp_periode', $date)->get()->toArray();
@@ -134,28 +134,31 @@ class utilityPBIGRController extends Controller
 
     public function callProc4(Request $request){
         $date   = $request->date;
-        $date   = date('Ym', strtotime($date));
+        $periode   = date('Ym', strtotime($date));
         $kodeigr= Session::get('kdigr');
 
-        $search = DB::connection(Session::get('connection'))->table('tbtr_hitung_pb')->where('thp_periode', $date)->get()->toArray();
+        $search = DB::connection(Session::get('connection'))->table('tbtr_hitung_pb')->where('thp_periode', $periode)->get()->toArray();
 
         if (!$search){
             return response()->json(['kode' => '0', 'return' => 'Data MPLUS-I Tidak Ada !!']);
         }
 
 
-        $report = $this->isiLaporan($date,$kodeigr);
-//        dd($report);
+        $data = $this->isiLaporan($periode,$kodeigr);
 
-        $pdf = PDF::loadview('BACKOFFICE.utilityPBIGR-laporan',['datas' =>$report, 'periode' => $date]);
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
 
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(1000, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+        return view('BACKOFFICE.utilityPBIGR-laporan', compact(['perusahaan', 'data', 'periode']));
 
-
-        return $pdf->stream('utilityPBIGR-laporan.pdf');
+//        $pdf = PDF::loadview('BACKOFFICE.utilityPBIGR-laporan',['data' =>$report, 'periode' => $date, 'perusahaan' => $perusahaan]);
+//        $pdf->output();
+//        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+//
+//        $canvas = $dompdf ->get_canvas();
+//        $canvas->page_text(1000, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+//
+//
+//        return $pdf->stream('utilityPBIGR-laporan.pdf');
 
     }
 
@@ -292,7 +295,6 @@ class utilityPBIGRController extends Controller
                                            AND prs_kodeigr(+) = '$kodeigr'
                                            AND lokb.prdcdB(+) = thp_prdcd
                                            AND lokc.prdcdC(+) = thp_Prdcd
-                                           and rownum <=100
                                             ");
 
 //        dd($data);

@@ -22,18 +22,8 @@ class RestoreDataMonthEndController extends Controller
             $month = $request->month;
             $year = $request->year;
 
-            $isRunning = DB::connection(Session::get('connection'))
-                ->select("select  count(1) count
-                              from  " . 'gv$access' . "
-                              where type = 'PROCEDURE'
-                              and (object = 'SP_PROSES_LPP2'
-                              or object = 'SP_RESTORE_STOCK2')
-                                and (inst_id,sid) in (
-                                                      select  inst_id,
-                                                              sid
-                                                        from  " . 'gv$session' . "
-                                                        where type = 'USER'
-                                                     )")[0]->count;
+            $isRunning = $this->cekProcedure("'SP_PROSES_LPP2','SP_RESTORE_STOCK2'");
+
             if ($isRunning > 0) {
                 $message = 'Procedure Proses LPP / Restore Data Month End sedang berjalan!';
                 $status = 'info';

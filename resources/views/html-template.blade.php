@@ -311,7 +311,6 @@
                                     @yield('content')
                                 @endif
                                 <p class="right" style="border-top:1px solid black;font-size: @yield('table_font_size','10px')">@yield('footer','** Akhir dari laporan **')</p>
-
                             </main>
                         </div>
                     </div>

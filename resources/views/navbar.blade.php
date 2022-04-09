@@ -252,6 +252,7 @@
                                                     <li><a href="{{url("/bo/transaksi/penerimaan/cetakbpb/index")}}">Cetak
                                                             Laporan BPB</a></li>
                                                 </ul>
+                                                <!-- disini udah bener, tapi di webnya salah (pbp bukan bpb) -->
                                             </li>
                                             <li class="dropdown">
                                                 <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"

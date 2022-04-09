@@ -5,9 +5,12 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PENERIMAAN;
 use App\AllModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use DateTime;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
+use Exception;
 
 class printBPBController extends Controller
 {
@@ -23,7 +26,6 @@ class printBPBController extends Controller
         $type = $request->type;
         $checked = $request->checked;
         $typeTrn = $request->typeTrn;
-
         if ($type == 1) {
             $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT trbo_nodoc as nodoc, trbo_tgldoc as tgldoc
                                        FROM tbtr_backoffice
@@ -45,80 +47,81 @@ class printBPBController extends Controller
             } else {
                 $data = DB::connection(Session::get('connection'))->select("SELECT msth_nodoc as nodoc, msth_tgldoc as tgldoc
                                           FROM tbtr_mstran_h
-                                         WHERE (msth_tgldoc BETWEEN ('$startDate') AND ('$endDate'))
-                                           AND msth_typetrn = '$typeTrn'
+                                         WHERE msth_typetrn = '$typeTrn'
                                            AND NVL (msth_flagdoc, ' ') = '$checked'
+                                           AND msth_tgldoc BETWEEN ('$startDate') AND ('$endDate')
                                            order by msth_nodoc");
-
                 return response()->json($data);
             }
         }
     }
 
-    public function cetakData(Request  $request)
+    public function cetakData(Request $request)
     {
         $document   = $request->document;
         $type       = $request->type;
         $reprint    = $request->checked;
         $size       = $request->size;
         $trnType    = $request->typeTrn;
-        $dummyvar   = 1;
+        $is_list    = 0;
         $kodeigr    = Session::get('kdigr');
         $userid     = Session::get('usid');
-
+        $lokasi     = 0;
         $counter    = 0;
         $v_print    = 0;
-        $temp       = [];
         $temp_lokasi = [];
-
+        $temp_nota = [];
         $model  = new AllModel();
         $conn   = $model->connectionProcedure();
 
         if ($type == 1) {
-            $temp = $document;
             $v_print = $reprint;
+            $is_list = 1;
         } else {
             if ($reprint == 0) {
                 foreach ($document as $data) {
-                    $updateData = $this->update_data($document[0], $kodeigr, $userid, $conn, $type, $trnType);
-
-                    if ($updateData['kode'] == 0) {
-                        return response()->json($updateData);
+                    $updateData = $this->update_data($data, $kodeigr, $userid, $conn, $type, $trnType);
+                    if ($updateData != null) {
+                        if ($updateData['kode'] == 0) {
+                            return response()->json($updateData);
+                        }
+                        $temp_nota[] = $updateData['nota'];
                     }
                     $updateData = $this->update_data2($kodeigr, $conn, $type);
-
-                    $ct = DB::connection(Session::get('connection'))->select("select nvl(count(1),0) as ct
-						            	from tbtr_backoffice, tbmaster_lokasi
-						            	where trbo_nodoc = '$data'
-							            	and lks_prdcd = trbo_prdcd
-														and lks_kodeigr= trbo_kodeigr
-														and substr(lks_koderak,1,1) = 'A'");
-
-                    if ($ct[0]->ct > 0) {
+                    $ct = DB::connection(Session::get('connection'))->select(
+                        "SELECT nvl(count(1),0) as ct
+						    from tbtr_backoffice, tbmaster_lokasi
+						    where   trbo_nodoc              = '$data'
+							and     lks_prdcd               = trbo_prdcd
+							and     lks_kodeigr             = trbo_kodeigr
+							and     substr(lks_koderak,1,1) = 'A'"
+                    );
+                    if (count($ct) > 0) {
                         array_push($temp_lokasi, [$data]);
-                        $counter = $counter + 1;
+                        $counter++;
                     }
                 }
+            } else {
+                $temp_nota[] = $document;
             }
-        } // End Else ($type = 1)
-
+        }
         if ($counter > 0) {
             $this->print_lokasi($temp_lokasi, $type, $v_print);
+            $lokasi = 1;
         }
 
-
-        if ($temp) {
+        if ($document) {
             if ($type == 1 && $reprint == 0) {
                 DB::connection(Session::get('connection'))->table('tbtr_backoffice')
-                    ->whereIn('trbo_nodoc', $temp)
+                    ->whereIn('trbo_nodoc', $document)
                     ->update(['trbo_flagdoc' => '1']);
-            } elseif ($type == 2 && $reprint == 0) {
+            } else if ($type == 2 && $reprint == 0) {
                 DB::connection(Session::get('connection'))->table('tbtr_backoffice')
-                    ->whereIn('trbo_nodoc', $temp)
+                    ->whereIn('trbo_nodoc', $document)
                     ->update(['trbo_flagdoc' => '*', 'trbo_recordid' => 2]);
             }
 
-            $print_btb = $this->print_btb($temp, $type, $v_print, $size);
+            $print_btb = $this->print_btb($document, $type, $v_print, $size);
         }
 
         //        if ($type == 1){
@@ -126,29 +129,263 @@ class printBPBController extends Controller
         //        } else {
         //            $this->getData2();
         //        }
+        return response()->json(['kode' => 1, 'message' => 'Create Report Success', 'data' => $print_btb, 'lokasi' => $lokasi, 'nota' => $temp_nota, 'list' => $is_list]);
+    }
 
-        return response()->json(['kode' => 1, 'message' => 'Create Report Success', 'data' => $print_btb]);
+    public function SP_PKM_BPB($kodeigr, $sub_prdcd, $userId, $P_SUKSES, $P_ERROR)
+    {
+        try {
+            $sysdatef = Carbon::now();
+            $ADA = 0;
+            $DIMENSI = 0;
+            $MINORDER = 0;
+            $PKMM = 0;
+            $PKMT = 0;
+            $LEADTIME = 0;
+            $MIND = 0;
+            $MPKM = 0;
+            $N = 0;
+            $AVGSPD = 0;
+            $KSUP = '';
+            $test = DB::connection(Session::get('connection'))
+                ->select("SELECT COUNT (1)
+                    INTO $ADA
+                    FROM tbmaster_kkpkm
+                    WHERE pkm_kodeigr = $kodeigr AND pkm_prdcd = $sub_prdcd;");
+            if ($ADA > 0) {
+                $P_SUKSES = 'Y';
+                return;
+            } else {
+                $sp_pkm_bpb = DB::connection(Session::get('connection'))->select("SELECT PRD_PRDCD,
+                PRD_LASTCOST,
+                PRD_KODETAG,
+                PRD_KODECABANG,
+                PRD_KATEGORITOKO,
+                PRD_KODEDIVISI,
+                PRD_KODEDEPARTEMENT,
+                PRD_KODEKATEGORIBARANG,
+                PRD_TGLDAFTAR,
+                PRD_FLAGGUDANG,
+                MINORD = 
+                        CASE 
+                            WHEN PRD_MINORDER =  0 THEN PRD_ISIBELI
+                            ELSE PRD_MINORDER
+                        END
+                        FROM TBMASTER_PRODMAST,
+                             TBMASTER_KKPKM,
+                             TBMASTER_PRODCRM,
+                             TBMASTER_PKMPLUS
+                        WHERE   PRD_KODEIGR     = $kodeigr
+                        AND     PRD_PRDCD       = $sub_prdcd
+                        AND     PKM_KODEIGR(+)  = $kodeigr
+                        AND     PKM_PRDCD(+)    = $sub_prdcd
+                        AND     PRC_KODEIGR(+)  = $kodeigr
+                        AND     PRC_PLUIGR(+)   = $sub_prdcd
+                        AND     PRC_GROUP(+)    = 'O'
+                        AND     PKMP_KODEIGR(+) = $kodeigr
+                        AND     PKMP_PRDCD(+)   = $sub_prdcd
+                        
+                ");
+                foreach ($sp_pkm_bpb as $data) {
+                    DB::connection(Session::get('connection'))
+                        ->select("SELECT COUNT (1)
+                    INTO $ADA
+                    FROM TBMASTER_LOKASI
+                    WHERE LKS_KODEIGR = $kodeigr 
+                    AND LKS_PRDCD = $sub_prdcd
+                    AND (LKS_KODERAK NOT LIKE 'X%'
+                    AND LKS_KODERAK NOT LIKE 'A%'
+                    AND LKS_KODERAK NOT LIKE 'G%')
+                    AND LKS_TIPERAK <> 'S';
+                    ;");
+
+                    if ($ADA == 0) {
+                        $DIMENSI = 0;
+                    } else {
+                        DB::connection(Session::get('connection'))
+                            ->select("SELECT SUM (NILAI)
+                        INTO $DIMENSI
+                        FROM (SELECT LKS_PRDCD, (LKS_TIRKIRIKANAN * LKS_TIRDEPANBELAKANG * LKS_TIRATASBAWAH) NILAI
+                        FROM TBMASTER_LOKASI
+                        WHERE LKS_KODEIGR = $kodeigr 
+                        AND LKS_PRDCD = $sub_prdcd
+                        AND (LKS_KODERAK NOT LIKE 'X%'
+                        AND LKS_KODERAK NOT LIKE 'A%'
+                        AND LKS_KODERAK NOT LIKE 'G%')
+                        AND LKS_TIPERAK <> 'S';
+                        GROUP BY LKS_PRDCD;");
+                    }
+
+                    $MINORDER = $data->MINORD;
+                    DB::connection(Session::get('connection'))
+                        ->select("SELECT COUNT (1),
+                        IF ($data->PRD_FLAGGUDANG = 'N' IN ('Y','P'))
+                        INTO $ADA
+                        FROM TBMASTER_MINIMUMORDER
+                        WHERE MIN_KODEIGR   = $kodeigr 
+                        AND   MIN_PRDCD     = $sub_prdcd;");
+
+                    if ($ADA > 0) {
+                        DB::connection(Session::get('connection'))
+                            ->select("SELECT MIN_MINORDER,
+                        INTO $MINORDER
+                        FROM TBMASTER_MINIMUMORDER
+                        WHERE MIN_KODEIGR   = $kodeigr 
+                        AND   MIN_PRDCD     = $sub_prdcd;");
+                    }
+                }
+                $arr = ['Y', 'P'];
+                $MIND = $DIMENSI;
+                if (in_array('N', $arr)) {
+                    $LEADTIME = 15;
+                } else {
+                    DB::connection(Session::get('connection'))
+                        ->select("SELECT COUNT (1),
+                        IF ($data->PRD_FLAGGUDANG = 'N' IN ('Y','P'))
+                        INTO $ADA
+                        FROM (SELECT *
+                        FROM (SELECT HGB_KODESUPPLIER
+                        FROM TBMASTER_HARGABELI
+                        WHERE     HGB_KODEIGR = P_MEMKODEIGR
+                                AND HGB_PRDCD = P_PRDCD
+                        ORDER BY HGB_TIPE)
+                        WHERE ROWNUM = 1) A,
+                        TBMASTER_SUPPLIER
+                        WHERE     SUP_KODEIGR = $kodeigr
+                        AND       SUP_KODESUPPLIER = HGB_KODESUPPLIER;");
+
+                    if ($ADA == 0) {
+                        $LEADTIME = 1;
+                        $KSUP = '';
+                    } else {
+                        DB::connection(Session::get('connection'))
+                            ->select("SELECT SUP_JANGKAWAKTUKIRIMBARANG, SUP_KODESUPPLIER
+                        INTO $LEADTIME, $KSUP
+                        FROM (SELECT *
+                        FROM (SELECT HGB_KODESUPPLIER
+                        FROM TBMASTER_HARGABELI
+                        WHERE     HGB_KODEIGR = P_MEMKODEIGR
+                                AND HGB_PRDCD = P_PRDCD
+                        ORDER BY HGB_TIPE)
+                        WHERE ROWNUM = 1) A,
+                        TBMASTER_SUPPLIER
+                        WHERE     SUP_KODEIGR = $kodeigr
+                        AND       SUP_KODESUPPLIER = HGB_KODESUPPLIER;");
+                    }
+                    $N = 2;
+                }
+                $AVGSPD = 0;
+                $PKMM   = $MIND + $MINORDER;
+                $MPKM   = 0;
+
+                if ($PKMM <= ($MIND + $MINORDER) || ($PKMM > $MIND && $PKMM < ($MIND + $MINORDER))) {
+                    $MPKM = $MIND + $MINORDER;
+                } else if ($PKMM > $MIND && $PKMM > ($MIND + $MINORDER)) {
+                    $MPKM = $PKMM;
+                }
+
+                $PKMT = $MPKM + $data->PKMP_QTYMINOR;
+
+                if ($data->PKM_PRDCD == '1234567') {
+                    DB::connection(Session::get('connection'))->table('TBMASTER_KKPKM')->insert([
+                        "PKM_KODEIGR" => $kodeigr,
+                        "PKM_KODEDIVISI" => $data->prd_kodedivisi,
+                        "PKM_KODEDEPARTEMENT" => $data->prd_kodedepartement,
+                        "PKM_PERIODEPROSES" => $sysdatef->format('MMyyyy'),
+                        "PKM_KODEKATEGORIBARANG" => $data->prd_kodekategoribarang,
+                        "PKM_PRDCD" => $data->prd_prdcd,
+                        "PKM_KODESUPPLIER" => $KSUP,
+                        "PKM_MINDISPLAY" => $MIND,
+                        "PKM_MINORDER" => $MINORDER,
+                        "PKM_LEADTIME" => $LEADTIME,
+                        "PKM_KOEFISIEN" => $N,
+                        "PKM_PKM" => $PKMM,
+                        "PKM_PKMT" => $PKMT,
+                        "PKM_MPKM" => $MPKM,
+                        "PKM_CREATE_BY" => $userId,
+                        "PKM_CREATE_DT" => $sysdatef,
+                    ]);
+                } else {
+                    DB::connection(Session::get('connection'))->table('TBMASTER_KKPKM')
+                        ->where('PKM_KODEIGR', $kodeigr)
+                        ->where('PKM_PRDCD', $sub_prdcd)
+                        ->update([
+                            'PKM_PERIODEPROSES' => $sysdatef->format('MMyyyy'), 'PKM_KODESUPPLIER' => $KSUP,
+                            'PKM_MINDISPLAY' => $MIND,
+                            'PKM_MINORDER' => $MINORDER,
+                            'PKM_LEADTIME' => $LEADTIME,
+                            'PKM_KOEFISIEN' => $N,
+                            'PKM_PKM' => $PKMM,
+                            'PKM_PKMT' => $PKMT,
+                            'PKM_MPKM' => $MPKM,
+                            'PKM_MODIFY_BY' => $userId,
+                            'PKM_MODIFY_DT' => $sysdatef
+                        ]);
+
+                    $gondola = DB::connection(Session::get('connection'))->table('TBTR_PKMGONDOLA')
+                        ->where('PKMG_KODEIGR', $kodeigr)
+                        ->where('PKMG_PRDCD', $sub_prdcd)
+                        ->get('PKMG_NILAIGONDOLA');
+
+                    DB::connection(Session::get('connection'))->table('TBTR_PKMGONDOLA')
+                        ->where('PKMG_KODEIGR', $kodeigr)
+                        ->where('PKMG_PRDCD', $sub_prdcd)
+                        ->update([
+                            'PKMG_NILAIPKMG' => $gondola + $PKMT
+                        ]);
+                }
+                $P_SUKSES = 'Y';
+                return response()->json(['kode' => $P_SUKSES, 'msg' => 'Sukses']);
+            }
+        } catch (Exception $e) {
+            $P_SUKSES = 'N';
+            return response()->json(['kode' => $P_SUKSES, 'msg' => $e]);
+        }
     }
 
     public function update_data($noDoc, $kodeigr, $userId, $conn, $type, $trnType)
     {
+        $CKODE = '';
+        $SUPCO = '';
+        $NOPO = '';
+        $NOFAKTUR = '';
+        $PKP = '';
+        $NACOST = 0;
+        $NOLDACOSTX = 0;
+        $NOLDACOST = 0;
+        $NDISC4 = 0;
+        $NACOSTX = 0;
+        $TEMP = 0;
+        $QTY_O = 0;
+        $QTY_OK = 0;
+        $ORDER1 = 0;
+        $NLCOST = 0;
+        $TGL = Carbon::now();
+        $TGLPO = Carbon::now();
+        $TGLFAKTUR = Carbon::now();
+        $CKSJ = false;
+        $TRUET = false;
+        $SUPTOP = 0;
+        $UPDPLU = false;
         $P_SUKSES = 0;
         $P_ERROR = 0;
-        $dummyvar = '';
-        $sysdate = date("d/m/Y");
-        $btb_no = '';
+        $dummyvar = 0;
+        $SUPCO = null;
+        $sysdatef = Carbon::now();
+        $btb_date = Carbon::now()->format('y');
+        $no_btb = '';
         if ($trnType == 'B') {
-            $query = oci_parse($conn, "BEGIN :no_btb := F_IGR_GET_NOMOR (:IGR, 'BPB', 'Nomor BPB', '$sysdate' || '0', 5, TRUE); END;");
+            $query = oci_parse($conn, "BEGIN :no_btb := F_IGR_GET_NOMOR (:IGR, 'BPB', 'Nomor BPB', '$btb_date' || '0' || '$btb_date', 5, TRUE); END;");
             oci_bind_by_name($query, ':IGR', $kodeigr);
             oci_bind_by_name($query, ':no_btb', $result, 32);
             oci_execute($query);
-            $btb_no = $result;
+            $no_btb = $result;
         } else {
-            $query = oci_parse($conn, "BEGIN :no_btb := F_IGR_GET_NOMOR (:IGR, 'BPL', 'Nomor BPB Lain-Lain', '$sysdate' || '0', 5, TRUE); END;");
+            $query = oci_parse($conn, "BEGIN :no_btb := F_IGR_GET_NOMOR (:IGR, 'BPL', 'Nomor BPB Lain-Lain', '$btb_date' || '1' || '$btb_date', 5, TRUE); END;");
             oci_bind_by_name($query, ':IGR', $kodeigr);
             oci_bind_by_name($query, ':no_btb', $result, 32);
             oci_execute($query);
-            $btb_no = $result;
+            $no_btb = $result;
         }
         $record = DB::connection(Session::get('connection'))->select("SELECT 
                     TRBO_PRDCD, TRBO_TYPETRN, TRBO_DIS4CR, ST_PRDCD, PRD_PRDCD, PRD_UNIT,
@@ -197,21 +434,19 @@ class printBPBController extends Controller
                     AND HH.STA_KODEIGR(+) = AA.TRBO_KODEIGR
                     AND HH.STA_LOKASI(+) = '01'
                     ORDER BY AA.TRBO_PRDCD");
-        // dd($checkDummyVar);
         foreach ($record as $data) {
-            $updplu = false;
+            $UPDPLU = false;
             $prd_code = '';
             $NDISC4 =  $data->trbo_dis4cr +  $data->trbo_dis4jr +  $data->trbo_dis4rr;
-            try {
+            if ($data->st_prdcd != null || $data->st_prdcd != 0) {
                 $prd_code = $data->st_prdcd;
-                throw new TestException();
-            } catch (TestException $e) {
+            } else if ($data->prd_prdcd != null || $data->prd_prdcd != 0) {
                 $prd_code = $data->prd_prdcd;
-            } catch (Exception $e) {
+            } else {
                 $prd_code = 0;
             }
-            if ($prd_code == 0) {
-                $updplu = true;
+            if ($data->st_prdcd == null) {
+                $UPDPLU = true;
 
                 DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')->insert([
                     "ST_KODEIGR" => $data->trbo_kodeigr,
@@ -220,16 +455,16 @@ class printBPBController extends Controller
                 ]);
             }
             if ($data->prd_lastcost == 0 && $data->prd_avgcost == 0) {
-                $updplu = true;
+                $UPDPLU = true;
             }
-            if (substr($prd_code, -1) == '1' || $data->prd_unit == 'KG') {
+            if (substr($prd_code, -1) == '1' || strtoupper($data->prd_unit) == 'KG') {
                 $NOLDACOST  = $data->prd_avgcost;
                 $NOLDACOSTX = $data->st_avgcost;
             } else {
                 $NOLDACOST = $data->prd_avgcost / $data->prd_frac;
             }
 
-            if ($data->prd_unit != 'KG') {
+            if (strtoupper($data->prd_unit) != 'KG') {
                 if ($data->st_saldoakhir > 0) {
                     $NACOST = (($data->st_saldoakhir * $NOLDACOST) + ($data->trbo_gross - $data->trbo_discrph + $NDISC4 + $data->trbo_ppnbmrph + $data->trbo_ppnbtlrph)) / ($data->st_saldoakhir + ($data->trbo_qty + $data->trbo_qtybonus1));
                     $NACOSTX = (($data->st_saldoakhir * $NOLDACOSTX) + ($data->trbo_gross - $data->trbo_discrph + $NDISC4 + $data->trbo_ppnbmrph + $data->trbo_ppnbtlrph)) / ($data->st_saldoakhir + ($data->trbo_qty + $data->trbo_qtybonus1));
@@ -253,32 +488,45 @@ class printBPBController extends Controller
             } else {
                 $SUPTOP = $data->tpoh_top;
             }
-            //--                //belum kelar
+            $TODATE = Carbon::now();
+            $TODATEF = $TODATE->format('d/m/Y');
+            try {
+                $sub_prdcd = substr($data->trbo_prdcd, 1, 6);
+            } catch (Exception $e) {
+                $sub_prdcd = 0;
+            }
             if ($data->prd_lastcost == 0) {
                 if ($data->prd_avgcost > 0) {
                     return ['kode' => 0, 'message' => "PLU " . $data->prd_prdcd . " Avg Cost <> 0, Lakukan Update PKM?"];
-                    $dummyvar = 0;
-                    try {
-                        $sub_prdcd = substr($data->trbo_prdcd, 1, 6);
-                    } catch (Exception $e) {
-                        $sub_prdcd = 0;
-                    }
-                    $query = oci_parse($conn, "BEGIN :test := SP_PKM_BPB (:IGR, :PRDCD, :USID, :PS, :PE); END;");
-                    oci_bind_by_name($query, ':IGR', $kodeigr);
-                    oci_bind_by_name($query, ':PRDCD', $sub_prdcd);
-                    oci_bind_by_name($query, ':USID', $userId);
-                    oci_bind_by_name($query, ':PS', $P_SUKSES);
-                    oci_bind_by_name($query, ':PE', $P_ERROR);
-                    oci_bind_by_name($query, ':test', $test);
-                    oci_execute($query);
-                    //P_SUKSES + P_ERROR buat apa?
-                    dd($test);
+                    // $query = oci_parse($conn, "BEGIN :test := SP_PKM_BPB (:IGR, :PRDCD, :USID, :PS, :PE); END;");
+                    // oci_bind_by_name($query, ':IGR', $kodeigr);
+                    // oci_bind_by_name($query, ':PRDCD', $sub_prdcd);
+                    // oci_bind_by_name($query, ':USID', $userId);
+                    // oci_bind_by_name($query, ':PS', $P_SUKSES);
+                    // oci_bind_by_name($query, ':PE', $P_ERROR);
+                    // oci_execute($query);
+
+                    $this->SP_PKM_BPB($kodeigr, $sub_prdcd, $userId, $P_SUKSES, $P_ERROR);
                     DB::connection(Session::get('connection'))->table('TBMASTER_BARANGBARU')
                         ->where('PLN_PRDCD', $data->trbo_prdcd)
-                        ->update(['PLN_TGLBPB' => date("d/m/Y")]);
+                        ->where('PLN_TGLBPB', $TODATEF)
+                        ->update(['PLN_TGLBPB' => $sysdatef]);
                 }
+            } else {
+                // $query = oci_parse($conn, "BEGIN :test := SP_PKM_BPB (:IGR, :PRDCD, :USID, :PS, :PE); END;");
+                // oci_bind_by_name($query, ':IGR', $kodeigr);
+                // oci_bind_by_name($query, ':PRDCD', $sub_prdcd);
+                // oci_bind_by_name($query, ':USID', $userId);
+                // oci_bind_by_name($query, ':PS', $P_SUKSES);
+                // oci_bind_by_name($query, ':PE', $P_ERROR);
+                // oci_execute($query);
+
+                $this->SP_PKM_BPB($kodeigr, $sub_prdcd, $userId, $P_SUKSES, $P_ERROR);
+                DB::connection(Session::get('connection'))->table('TBMASTER_BARANGBARU')
+                    ->where('PLN_PRDCD', $data->trbo_prdcd)
+                    ->where('PLN_TGLBPB', $TODATEF)
+                    ->update(['PLN_TGLBPB' => $sysdatef]);
             }
-            //--                //belum kelar
 
             $trbo_nopo = '';
             $unit = '';
@@ -294,15 +542,15 @@ class printBPBController extends Controller
                 $frac = $data->tpod_isibeli;
             }
 
-            if ($data->prd_unit != 'KG') {
+            if (strtoupper($data->prd_unit) != 'KG') {
                 $sum = 1;
             } else {
                 $sum = 1000;
             }
             DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')->insert([
                 "MSTD_TYPETRN" => $data->trbo_typetrn,
-                "MSTD_NODOC" => $data->trbo_nodoc,
-                "MSTD_TGLDOC" => date("d/m/Y"),
+                "MSTD_NODOC" => $no_btb,
+                "MSTD_TGLDOC" => $sysdatef,
                 "MSTD_NOPO" => $data->trbo_nopo,
                 "MSTD_TGLPO" => $data->trbo_tglpo,
                 "MSTD_NOFAKTUR" => $data->trbo_nofaktur,
@@ -359,10 +607,10 @@ class printBPBController extends Controller
                 "MSTD_KODETAG" => $data->prd_kodetag,
                 "MSTD_FURGNT" => $data->trbo_furgnt,
                 "MSTD_CREATE_BY" => $userId,
-                "MSTD_CREATE_DT" => date("d/m/Y"),
+                "MSTD_CREATE_DT" => $sysdatef,
                 "MSTD_CTERM" => $data->sup_top
             ]);
-            //ini apa?                // CKSJ := FALSE;
+            $CKSJ == FALSE;
             if ($trnType == 'B') {
                 if ($data->trbo_furgnt == '3') {
                     $record2 = DB::connection(Session::get('connection'))->select("SELECT *
@@ -399,16 +647,15 @@ class printBPBController extends Controller
                                     $CKODE = '6';
                                 }
 
-                                $temp = 0;
                                 $recordtemp = DB::connection(Session::get('connection'))->select("SELECT COUNT(*)
-                                INTO $temp
+                                INTO $TEMP
                                 FROM TBTR_LISTPACKING
                                 WHERE   PCL_RECORDID    IS NULL
                                 AND     PCL_KODECABANG  = '$datapbc->pbc_kodecabang'
                                 AND     PCL_NOREFERENSI = '$datapbc->pbc_nopbcabang'
                                 AND     PCL_PRDCD       = '$data->trbo_prdcd'");
 
-                                if ($temp == 0) {
+                                if ($TEMP == 0) {
                                     DB::connection(Session::get('connection'))->table('TBTR_LISTPACKING')->insert([
                                         "PCL_KODEIGR" => $kodeigr,
                                         "PCL_RECORDID" => null,
@@ -420,13 +667,13 @@ class printBPBController extends Controller
                                 }
 
                                 if ($datapbc->pbc_recordid == '3') {
-                                    $QTY_O = round((($datapbc->pbc_qtypb - $datapbc->pbc_qtybbp) / $data->prd_frac), 0);
+                                    $QTY_O = floor((($datapbc->pbc_qtypb - $datapbc->pbc_qtybbp) / $data->prd_frac), 0);
 
-                                    $QTY_OK = ($datapbc->pbc_qtypb - $datapbc->pbc_qtybbp) - (round(($datapbc->pbc_qtypb - $datapbc->pbc_qtybbp) / $data->prd_frac, 0)) * $data->prd_frac;
+                                    $QTY_OK = ($datapbc->pbc_qtypb - $datapbc->pbc_qtybbp) - (floor(($datapbc->pbc_qtypb - $datapbc->pbc_qtybbp) / $data->prd_frac, 0)) * $data->prd_frac;
                                 } else {
-                                    $QTY_O = round($datapbc->pbc_qtypb / $data->prd_frac, 0);
+                                    $QTY_O = floor($datapbc->pbc_qtypb / $data->prd_frac, 0);
 
-                                    $QTY_OK = $datapbc->pbc_qtypb - round(($datapbc->pbc_qtypb / $data->prd_frac) * $data->prd_frac, 0);
+                                    $QTY_OK = $datapbc->pbc_qtypb - floor(($datapbc->pbc_qtypb / $data->prd_frac) * $data->prd_frac, 0);
                                 }
                                 DB::connection(Session::get('connection'))->table('TBTR_LISTPACKING')
                                     ->where('PCL_RECORDID', null)
@@ -435,7 +682,7 @@ class printBPBController extends Controller
                                     ->where('PCL_PRDCD', $data->trbo_prdcd)
                                     ->update([
                                         'PCL_KODE' => $CKODE, 'PCL_TGLREFERENSI' => $datapbc->pbc_tglpbcabang,
-                                        'PCL_NODOKUMEN' => $btb_no || $datapbc->pbc_kodecabang, 'PCL_TGLDOKUMEN' => date('d/m/Y'),
+                                        'PCL_NODOKUMEN' => $no_btb || $datapbc->pbc_kodecabang, 'PCL_TGLDOKUMEN' => $sysdatef,
                                         'PCL_QTY_O' => $QTY_O, 'PCL_QTY_OK' => $QTY_OK,
                                         'PCL_QTYBONUS1' => $data->trbo_qtybonus1, 'PCL_QTYBONUS2' => $data->trbo_qtybonus2,
                                         'PCL_HRG' => $data->trbo_hrgsatuan, 'PCL_DISCPERSEN1' => $data->trbo_persendisc1,
@@ -451,7 +698,7 @@ class printBPBController extends Controller
                                         'PCL_DISCRPH' => $data->rebo_discrph, 'PCL_PPNRPH' => $data->trbo_ppnrph,
                                         'PCL_PPNBMRPH' => $data->trbo_ppnbmrph, 'PCL_PPNBTLRPH' => $data->trbo_ppnbtlrph,
                                         'PCL_AVGCOST' => ($NACOSTX * $data->trbo_frac) / $sum, 'PCL_KETERANGAN' => 'PACKLIST OTOMATIS BPB GMS',
-                                        'PCL_CREATE_DT' => date('d/m/Y'), 'PCL_CREATE_BY' => $userId,
+                                        'PCL_CREATE_DT' => $sysdatef, 'PCL_CREATE_BY' => $userId,
                                         'PCL_FURGNT' => $data->trbo_furgnt
                                     ]);
                             }
@@ -467,17 +714,15 @@ class printBPBController extends Controller
                                 $TRUET = false;
                             }
                             if ($TRUET == true) {
-                                $temp2 = 0;
                                 DB::connection(Session::get('connection'))->select("SELECT COUNT(*)
-                                INTO $temp2
+                                INTO $TEMP
                                 FROM TBTR_LISTPACKING
                                 WHERE   PCL_RECORDID IS NULL
                                 AND     PCL_KODECABANG  = '$kodeigr'
                                 AND     PCL_NOREFERENSI = '$datapbc2->pbc_nopbcabang'
                                 AND     PCL_PRDCD = '$datapbc2->pbc_prdcd'");
 
-                                if ($temp2 == 0) {
-                                    $order1 = 0;
+                                if ($TEMP == 0) {
                                     $record3 = DB::connection(Session::get('connection'))->select("SELECT *
                                     FROM TBTR_PBCABANG_GUDANGPUSAT
                                     WHERE   PBC_NOPBGUDANGPUSAT = $data2->pbd_nopb
@@ -485,30 +730,30 @@ class printBPBController extends Controller
 
                                     foreach ($record3 as $data3) {
                                         if ($datapbc2->pbc_recordid == '1' || $datapbc2->pbc_recordid == '3') {
-                                            $order1 = $order1 + $datapbc2->pbc_qtypb;
+                                            $ORDER1 = $ORDER1 + $datapbc2->pbc_qtypb;
                                         }
                                     }
 
-                                    if ($order1 < $data->trbo_qty) {
+                                    if ($ORDER1 < $data->trbo_qty) {
                                         $CKODE = '6';
-                                        $temp3 = 0;
                                         DB::connection(Session::get('connection'))->select("SELECT COUNT(*)
-                                        INTO $temp3
-                                    FROM TBTR_LISTPACKING
-                                    WHERE   PCL_RECORDID IS NULL
-                                    AND     PCL_KODECABANG  = '$kodeigr'
-                                    AND     PCL_NOREFERENSI  = '$datapbc2->pbc_nopbcabang'
-                                    AND     PCL_PRDCD  = '$datapbc2->pbc_prdcd'");
-                                        if ($temp3 == 0) {
-                                            DB::connection(Session::get('connection'))->table('TBTR_LISTPACKING')->insert([
-                                                "PCL_KODEIGR" => $kodeigr,
-                                                "PCL_RECORDID" => null,
-                                                "PCL_KODECABANG" => $datapbc2->pbc_kodecabang,
-                                                "PCL_NOREFERENSI" => $datapbc2->pbc_nopbcabang,
-                                                "PCL_NOREFERENSI1" => $data->trbo_nodoc,
-                                                "PCL_PRDCD" => $data->trbo_prdcd
-                                            ]);
-
+                                        INTO $TEMP
+                                        FROM TBTR_LISTPACKING
+                                        WHERE   PCL_RECORDID IS NULL
+                                        AND     PCL_KODECABANG  = '$kodeigr'
+                                        AND     PCL_NOREFERENSI  = '$datapbc2->pbc_nopbcabang'
+                                        AND     PCL_PRDCD  = '$datapbc2->pbc_prdcd'");
+                                        if ($TEMP == 0) {
+                                            if ($TEMP == 0) {
+                                                DB::connection(Session::get('connection'))->table('TBTR_LISTPACKING')->insert([
+                                                    "PCL_KODEIGR" => $kodeigr,
+                                                    "PCL_RECORDID" => null,
+                                                    "PCL_KODECABANG" => $datapbc2->pbc_kodecabang,
+                                                    "PCL_NOREFERENSI" => $datapbc2->pbc_nopbcabang,
+                                                    "PCL_NOREFERENSI1" => $data->trbo_nodoc,
+                                                    "PCL_PRDCD" => $data->trbo_prdcd
+                                                ]);
+                                            }
                                             DB::connection(Session::get('connection'))->table('TBTR_LISTPACKING')
                                                 ->where('PCL_RECORDID', null)
                                                 ->where('PCL_KODECABANG', $kodeigr)
@@ -516,7 +761,7 @@ class printBPBController extends Controller
                                                 ->where('PCL_PRDCD', $datapbc2->pbc_prdcd)
                                                 ->update([
                                                     'PCL_KODE' => $CKODE, 'PCL_TGLREFERENSI' => $datapbc2->pbc_tglpbcabang,
-                                                    'PCL_NODOKUMEN' => $btb_no || $datapbc2->pbc_kodecabang, 'PCL_TGLDOKUMEN' => date('d/m/Y'),
+                                                    'PCL_NODOKUMEN' => $no_btb || $datapbc2->pbc_kodecabang, 'PCL_TGLDOKUMEN' => $sysdatef,
                                                     'PCL_QTY_O' => $QTY_O, 'PCL_QTY_OK' => $QTY_OK,
                                                     'PCL_QTYBONUS1' => $data->trbo_qtybonus1, 'PCL_QTYBONUS2' => $data->trbo_qtybonus2,
                                                     'PCL_HRG' => $data->trbo_hrgsatuan, 'PCL_DISCPERSEN1' => $data->trbo_persendisc1,
@@ -532,7 +777,7 @@ class printBPBController extends Controller
                                                     'PCL_DISCRPH' => $data->rebo_discrph, 'PCL_PPNRPH' => $data->trbo_ppnrph,
                                                     'PCL_PPNBMRPH' => $data->trbo_ppnbmrph, 'PCL_PPNBTLRPH' => $data->trbo_ppnbtlrph,
                                                     'PCL_AVGCOST' => ($NACOSTX * $data->trbo_frac) / $sum, 'PCL_KETERANGAN' => 'PACKLIST OTOMATIS BPB GMS',
-                                                    'PCL_CREATE_DT' => date('d/m/Y'), 'PCL_CREATE_BY' => $userId,
+                                                    'PCL_CREATE_DT' => $sysdatef, 'PCL_CREATE_BY' => $userId,
                                                     'PCL_FURGNT' => $data->trbo_furgnt
                                                 ]);
                                         }
@@ -543,160 +788,281 @@ class printBPBController extends Controller
                     }
                 }
             }
-        }
 
-        if ($NACOSTX != 0) {
-            DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
-                ->where('ST_PRDCD', $data->trbo_prdcd)
-                ->where('ST_LOKASI', '01')
-                ->where('ST_KODEIGR', $kodeigr)
-                ->update([
-                    'ST_AVGCOST' => $NACOSTX,
-                    'ST_SALDOAKHIR' => ST_SALDOAKHIR + $data->trbo_qty + $data->trbo_qtybonus1,
-                    'ST_TRFIN' => ST_TRFIN + $data->trbo_qty + $data->trbo_qtybonus1,
-                    'ST_MODIFY_BY' => $userId,
-                    'ST_MODIFY_DT' => date('d/m/Y')
-                ]);
 
-            $record2 = DB::connection(Session::get('connection'))->select("SELECT PRD_PRDCD, PRD_UNIT, PRD_FRAC
-            FROM TBMASTER_PRODMAST,
-            WHERE   SUBSTR (PRD_PRDCD, 1, 6) = SUBSTR ($data->trbo_prdcd, 1, 6)
-            AND     PRD_KODEIGR  = '$kodeigr'");
+            if ($NACOSTX != 0) {
+                $master_stock = DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
+                    ->where('ST_PRDCD', $data->trbo_prdcd)
+                    ->where('ST_LOKASI', '01')
+                    ->where('ST_KODEIGR', $kodeigr)
+                    ->get();
 
-            foreach ($record2 as $data2) {
-                if (substr($data2->prd_prdcd, -1) == 1 || $data2->prd_unit == 'KG') {
-                    DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
-                        ->where('PRD_PRDCD', $data2->prd_prdcd)
-                        ->where('PRD_KODEIGR', $kodeigr)
+                foreach ($master_stock as $mstock) {
+                    DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
+                        ->where('ST_PRDCD', $data->trbo_prdcd)
+                        ->where('ST_LOKASI', '01')
+                        ->where('ST_KODEIGR', $kodeigr)
                         ->update([
-                            'PRD_AVGCOST' => $NACOSTX,
-                        ]);
-                } else {
-                    DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
-                        ->where('PRD_PRDCD', $data2->prd_prdcd)
-                        ->where('PRD_KODEIGR', $kodeigr)
-                        ->update([
-                            'PRD_AVGCOST' => $NACOST * $data2->prd_frac
+                            'ST_AVGCOST' => $NACOSTX,
+                            'ST_SALDOAKHIR' => $mstock->st_saldoakhir + $data->trbo_qty + $data->trbo_qtybonus1,
+                            'ST_TRFIN' => $mstock->st_trfin + $data->trbo_qty + $data->trbo_qtybonus1,
+                            'ST_MODIFY_BY' => $userId,
+                            'ST_MODIFY_DT' => $sysdatef
                         ]);
                 }
+                //original code
+                // $record2 = DB::connection(Session::get('connection'))->select("SELECT PRD_PRDCD, PRD_UNIT, PRD_FRAC
+                //             FROM TBMASTER_PRODMAST,
+                //             WHERE   SUBSTR (PRD_PRDCD, 1, 6) = SUBSTR ($data->trbo_prdcd, 1, 6)
+                //             AND     PRD_KODEIGR  = '$kodeigr'");
+
+                $record2 = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
+                    ->where('PRD_PRDCD', $data->trbo_prdcd)
+                    ->where('PRD_KODEIGR', $kodeigr)
+                    ->get();
+                foreach ($record2 as $data2) {
+                    if (substr($data2->prd_prdcd, -1) == 1 || $data2->prd_unit == 'KG') {
+                        DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
+                            ->where('PRD_PRDCD', $data2->prd_prdcd)
+                            ->where('PRD_KODEIGR', $kodeigr)
+                            ->update([
+                                'PRD_AVGCOST' => $NACOSTX,
+                            ]);
+                    } else {
+                        DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
+                            ->where('PRD_PRDCD', $data2->prd_prdcd)
+                            ->where('PRD_KODEIGR', $kodeigr)
+                            ->update([
+                                'PRD_AVGCOST' => $NACOST * $data2->prd_frac
+                            ]);
+                    }
+                }
             }
-        }
 
-        $temp4 = 0;
-        DB::connection(Session::get('connection'))->select("SELECT COUNT(*), 
-            INTO $temp4
-            FROM TBHISTORY_COST,
-            WHERE   HCS_PRDCD = $data->trbo_prdcd
-            AND     HCS_TGLBPB  = date('d/m/Y')
-            AND     HCS_NODOCBPB = $btb_no");
+            $TEMP = 0;
+            $record2 = DB::connection(Session::get('connection'))->table('TBHISTORY_COST')
+                ->where('HCS_PRDCD', $data->trbo_prdcd)
+                ->where('HCS_TGLBPB', $sysdatef)
+                ->where('HCS_NODOCBPB', $no_btb)
+                ->get();
 
-        if ($temp4 == 0) {
-            DB::connection(Session::get('connection'))->table('TBHISTORY_COST')->insert([
-                "HCS_KODEIGR" => $kodeigr,
-                "HCS_LOKASI" => $kodeigr,
-                "HCS_TYPETRN" => $trnType,
-                "HCS_PRDCD" => $data->trbo_prdcd,
-                "HCS_TGLBPB" => date('d/m/Y'),
-                "HCS_NODOCBPB" => $btb_no,
-                "HCS_QTYBARU" => $data->trbo_qty + $data->trbo_qtybonus1,
-                "HCS_QTYLAMA" => $data->st_saldoakhir,
-                "HCS_AVGLAMA" => $NOLDACOSTX * $frac,
-                "HCS_AVGBARU" => $NACOSTX * $frac,
-                "HCS_LASTQTY" => $data->st_saldoakhir + $data->trbo_qty + $data->trbo_qtybonus1,
-                "HCS_CREATE_BY" => $userId,
-                "HCS_CREATE_DT" => date('d/m/Y')
-            ]);
-        }
+            $TEMP = count($record2);
+            if ($TEMP == 0) {
+                DB::connection(Session::get('connection'))->table('TBHISTORY_COST')->insert([
+                    "HCS_KODEIGR" => $kodeigr,
+                    "HCS_LOKASI" => $kodeigr,
+                    "HCS_TYPETRN" => $trnType,
+                    "HCS_PRDCD" => $data->trbo_prdcd,
+                    "HCS_TGLBPB" => $sysdatef,
+                    "HCS_NODOCBPB" => $no_btb,
+                    "HCS_QTYBARU" => $data->trbo_qty + $data->trbo_qtybonus1,
+                    "HCS_QTYLAMA" => $data->st_saldoakhir,
+                    "HCS_AVGLAMA" => $NOLDACOSTX * $frac,
+                    "HCS_AVGBARU" => $NACOSTX * $frac,
+                    "HCS_LASTQTY" => $data->st_saldoakhir + $data->trbo_qty + $data->trbo_qtybonus1,
+                    "HCS_CREATE_BY" => $userId,
+                    "HCS_CREATE_DT" => $sysdatef
+                ]);
+            }
+            $NLCOST = ($data->trbo_gross - $data->trbo_discrph + $data->trbo_dis4cr + $data->trbo_dis4jr + $data->trbo_dis4rr + $data->trbo_ppnbmrph + $data->trbo_ppnbtlrph) / ($data->trbo_qty + $data->trbo_qtybonus1);
 
-        $NLCOST = ($data->trbo_gross - $data->trbo_discrph + $data->trbo_disc4r + $data->trbo_dis4jr + $data->trbo_dis4rr + $data->trbo_ppnbmrph + $data->trbo_ppnbtlrph) / ($data->trbo_qty + $data->trbo_qtybonus1);
+            $NLCOST *= $sum;
 
-        $NLCOST *= $sum;
-
-        $x = 0;
-        if ($data->prd_prdcd == '1' || $data->prd_unit == 'KG') {
-            $x = 1;
-        } else if ($data->trbo_nopo == 'AA1') {
-            $x = $data->prd_frac;
-        } else {
-            $x = $data->tpod_isibeli;
-        }
-        DB::connection(Session::get('connection'))->table('TBHISTORY_COST')
-            ->where('HCS_PRDCD', $data->trbo_prdcd)
-            ->where('HCS_TGLBPB', date('d/m/Y'))
-            ->where('HCS_NODOCBPB', $btb_no)
-            ->update([
-                'HCS_LASTCOSTBARU' => $NLCOST * $x,
-                'HCS_LASTCOSTLAMA' => $data->prd_lastcost,
-            ]);
-
-        if ($NLCOST != 0) {
-            DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
-                ->where('ST_PRDCD', $data->trbo_prdcd)
-                ->where('ST_KODEIGR', $kodeigr)
+            $x = 0;
+            if ($data->prd_prdcd == '1' || strtoupper($data->prd_unit) == 'KG') {
+                $x = 1;
+            } else if ($data->trbo_nopo == 'AA1') {
+                $x = $data->prd_frac;
+            } else {
+                $x = $data->tpod_isibeli;
+            }
+            DB::connection(Session::get('connection'))->table('TBHISTORY_COST')
+                ->where('HCS_PRDCD', $data->trbo_prdcd)
+                ->where('HCS_TGLBPB', $sysdatef)
+                ->where('HCS_NODOCBPB', $no_btb)
                 ->update([
-                    'ST_LASTCOST' => $NLCOST,
+                    'HCS_LASTCOSTBARU' => $NLCOST * $x,
                     'HCS_LASTCOSTLAMA' => $data->prd_lastcost,
                 ]);
 
-            $record2 = DB::connection(Session::get('connection'))->select("SELECT PRD_PRDCD, PRD_UNIT, PRD_FRAC
-            FROM TBMASTER_PRODMAST,
-            WHERE   SUBSTR (PRD_PRDCD, 1, 6) = SUBSTR ($data->trbo_prdcd, 1, 6)
-            AND     PRD_KODEIGR  = '$kodeigr'");
+            if ($NLCOST != 0) {
+                DB::connection(Session::get('connection'))->table('TBMASTER_STOCK')
+                    ->where('ST_PRDCD', $data->trbo_prdcd)
+                    ->where('ST_KODEIGR', $kodeigr)
+                    ->update([
+                        'ST_LASTCOST' => $NLCOST
+                    ]);
 
-            foreach ($record2 as $data2) {
-                if (substr($data2->prd_prdcd, -1) == 1 || $data2->prd_unit == 'KG') {
-                    DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
-                        ->where('PRD_PRDCD', $data2->prd_prdcd)
-                        ->where('PRD_KODEIGR', $kodeigr)
-                        ->update([
-                            'PRD_LASTCOST' => $NLCOST,
-                        ]);
+                $record2 = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
+                    ->where('PRD_PRDCD', $data->trbo_prdcd)
+                    ->where('PRD_KODEIGR', $kodeigr)
+                    ->get(['PRD_PRDCD', 'PRD_UNIT', 'PRD_FRAC']);
 
-                    if ($updplu == true) {
-                        DB::connection(Session::get('connection'))->table('TBTR_UPDATE_PLU_MD')->insert([
-                            "UPD_KODEIGR" => $kodeigr,
-                            "UPD_PRDCD" => $data2->prd_prdcd,
-                            "UPD_HARGA" => $NLCOST,
-                            "UPD_ATRIBUTE1" => 'BPB',
-                            "UPD_CREATE_BY" => $userId,
-                            "UPD_CREATE_DT" => date("d/m/Y"),
-                        ]);
-                    }
-                } else {
-                    DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
-                        ->where('PRD_PRDCD', $data2->prd_prdcd)
-                        ->where('PRD_KODEIGR', $kodeigr)
-                        ->update([
-                            'PRD_LASTCOST' => $NLCOST * $data2->prd_frac
-                        ]);
-                    if ($updplu == true) {
-                        DB::connection(Session::get('connection'))->table('TBTR_UPDATE_PLU_MD')->insert([
-                            "UPD_KODEIGR" => $kodeigr,
-                            "UPD_PRDCD" => $data2->prd_prdcd,
-                            "UPD_HARGA" => $NLCOST * $data2->prd_frac,
-                            "UPD_ATRIBUTE1" => 'BPB',
-                            "UPD_CREATE_BY" => $userId,
-                            "UPD_CREATE_DT" => date("d/m/Y"),
-                        ]);
+                foreach ($record2 as $data2) {
+                    if (substr($data2->prd_prdcd, -1) == 1 || $data2->prd_unit == 'KG') {
+                        DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
+                            ->where('PRD_PRDCD', $data2->prd_prdcd)
+                            ->where('PRD_KODEIGR', $kodeigr)
+                            ->update([
+                                'PRD_LASTCOST' => $NLCOST,
+                            ]);
+
+                        if ($UPDPLU == true) {
+                            DB::connection(Session::get('connection'))->table('TBTR_UPDATE_PLU_MD')->insert([
+                                "UPD_KODEIGR" => $kodeigr,
+                                "UPD_PRDCD" => $data2->prd_prdcd,
+                                "UPD_HARGA" => $NLCOST,
+                                "UPD_ATRIBUTE1" => 'BPB',
+                                "UPD_CREATE_BY" => $userId,
+                                "UPD_CREATE_DT" => $sysdatef
+                            ]);
+                        }
+                    } else {
+                        DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
+                            ->where('PRD_PRDCD', $data2->prd_prdcd)
+                            ->where('PRD_KODEIGR', $kodeigr)
+                            ->update([
+                                'PRD_LASTCOST' => $NLCOST * $data2->prd_frac
+                            ]);
+                        if ($UPDPLU == true) {
+                            DB::connection(Session::get('connection'))->table('TBTR_UPDATE_PLU_MD')->insert([
+                                "UPD_KODEIGR" => $kodeigr,
+                                "UPD_PRDCD" => $data2->prd_prdcd,
+                                "UPD_HARGA" => $NLCOST * $data2->prd_frac,
+                                "UPD_ATRIBUTE1" => 'BPB',
+                                "UPD_CREATE_BY" => $userId,
+                                "UPD_CREATE_DT" => $sysdatef
+                            ]);
+                        }
                     }
                 }
             }
+
+            $TEMP = 0;
+            $SUPCO = $data->sup_kodesupplier;
+            $NOPO = $data->trbo_nopo;
+            $NOFAKTUR = $data->trbo_nofaktur;
+            $PKP = $data->sup_pkp;
+            $TGLPO = $data->trbo_tglpo;
+            $TGLFAKTUR = $data->trbo_tglfaktur;
+            DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
+                ->where('TRBO_NODOC', $data->trbo_nodoc)
+                ->where('TRBO_PRDCD', $data->trbo_prdcd)
+                ->update(['TRBO_NONOTA' => $no_btb, 'TRBO_TGLNOTA' => $sysdatef]);
         }
 
-        $temp5 = 0;
-        $SUPCO = $data->sup_kodesupplier;
-        $NOPO = $data->trbo_nopo;
-        $NOFAKTUR = $data->trbo_nofaktur;
-        $PKP = $data->sup_pkp;
-        $TGLPO = $data->trbo_tglpo;
-        $TGLFAKTUR = $data->trbo_tglfaktu;
+        DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_H')->insert([
+            "MSTH_KODEIGR" => $kodeigr,
+            "MSTH_TYPETRN" => $trnType,
+            "MSTH_NODOC" => $no_btb,
+            "MSTH_TGLDOC" => $sysdatef,
+            "MSTH_FLAGDOC" => '1',
+            "MSTH_KODESUPPLIER" => $SUPCO,
+            "MSTH_NOPO" => $NOPO,
+            "MSTH_TGLPO" => $TGLPO,
+            "MSTH_NOFAKTUR" => $NOFAKTUR,
+            "MSTH_TGLFAKTUR" => $TGLFAKTUR,
+            "MSTH_PKP" => $PKP,
+            "MSTH_CTERM" => $SUPTOP,
+            "MSTH_CREATE_BY" => $userId,
+            "MSTH_CREATE_DT" => $sysdatef
+        ]);
 
-        DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
-                                    ->where('TRBO_NODOC', $data->trbo_nodoc)
-                                    ->where('TRBO_PRDCD', $data->trbo_prdcd)
-                                    ->update(['TRBO_NONOTA' => $btb_no, 'TRBO_TGLNOTA' => date('d/m/Y')]);
-    END LOOP;
+        if ($SUPCO != null) {
+            $hutang = DB::connection(Session::get('connection'))->table('TBTR_HUTANG')
+                ->where('HTG_TYPE', 'J')
+                ->where('HTG_NODOKUMEN', $no_btb)
+                ->where('HTG_RECORDID', '!=', '1')
+                ->get();
+            $TEMP = count($hutang);
+            $record2 = DB::connection(Session::get('connection'))->select(
+                "SELECT MSTD_KODESUPPLIER, MSTD_CTERM, MSTD_NOFAKTUR, MSTD_NOPO, MSTD_TGLPO, MSTD_TGLFP, PRD_FLAGBKP1, PRD_FLAGBKP2,
+                        SUM (NVL (MSTD_GROSS, 0)
+                            - NVL (MSTD_DISCRPH, 0)
+                            + NVL (MSTD_PPNBMRPH, 0)
+                            + NVL (MSTD_PPNBTLRPH, 0)
+                            ) AMOUNT,
+                        SUM (NVL (MSTD_GROSS, 0)
+                            - NVL (MSTD_DISCRPH, 0)
+                            + NVL (MSTD_PPNBMRPH, 0)
+                            + NVL (MSTD_PPNBTLRPH, 0)
+                            + NVL (MSTD_PPNRPH, 0)
+                            ) BALANCE,
+                        SUM(MSTD_PPNRPH) PPN, 
+                        SUM(MSTD_PPNBMRPH) PPNBM, 
+                        SUM(MSTD_PPNBTLRPH) PPNBTL, 
+                        SUM(MSTD_RPHDISC1) DISC1, 
+                        SUM(MSTD_RPHDISC2) DISC2, 
+                        SUM(MSTD_RPHDISC2II) DISC2II, 
+                        SUM(MSTD_RPHDISC2III) DISC2III, 
+                        SUM(MSTD_RPHDISC3) DISC3, 
+                        SUM(MSTD_RPHDISC4) DISC4, 
+                        SUM(MSTD_DIS4CR) DISC4CR, 
+                        SUM(MSTD_DIS4RR) DISC4RR, 
+                        SUM(MSTD_DIS4JR) DISC4JR, 
+                        MSTH_CTERM
+                        FROM    TBTR_MSTRAN_D, TBMASTER_PRODMAST, TBTR_MSTRAN_H
+                        WHERE   MSTD_NODOC      = '$no_btb'
+                        AND     MSTD_KODEIGR    = '$kodeigr'
+                        AND     MSTH_KODEIGR    = '$kodeigr'
+                        AND     MSTH_NODOC      = '$no_btb' /*nodoc disini */
+                        AND     PRD_PRDCD       = MSTD_PRDCD
+                        AND     PRD_KODEIGR     = MSTD_KODEIGR
+                        GROUP BY 
+                            MSTD_KODESUPPLIER,
+                            MSTD_CTERM,
+                            MSTD_NOFAKTUR,
+                            MSTD_NOPO,
+                            MSTD_TGLPO,
+                            MSTD_TGLFP,
+                            PRD_FLAGBKP1,
+                            PRD_FLAGBKP2,
+                            MSTH_CTERM"
+            );
 
+            foreach ($record2 as $data2) {
+                if ($TEMP == 0) {
+                    $TGL = $sysdatef->addDays($data2->msth_cterm);
+                    DB::connection(Session::get('connection'))->table('TBTR_HUTANG')->insert([
+                        "HTG_KODEIGR" => $kodeigr,
+                        "HTG_RECORDID" => null,
+                        "HTG_TYPE" => 'J',
+                        "HTG_KODESUPPLIER" => $data2->mstd_kodesupplier,
+                        "HTG_NODOKUMEN" => $no_btb,
+                        "HTG_NODOKUMEN2" => $data2->mstd_nofaktur,
+                        "HTG_TGLFAKTURPAJAK" => $sysdatef,
+                        "HTG_TGLJATUHTEMPO" => $TGL,
+                        "HTG_TOP" => $data2->msth_cterm,
+                        "HTG_NOREFERENSI" => $data2->mstd_nopo,
+                        "HTG_TGLREFERENSI" => $data2->mstd_tglpo,
+                        "HTG_NILAIHUTANG" => $data2->amount,
+                        "HTG_FLAGBKP1" => $data2->prd_flagbkp1,
+                        "HTG_FLAGBKP2" => $data2->prd_flagbkp2,
+                        "HTG_SALDO" => $data2->balance,
+                        "HTG_RPHDISC1" => $data2->disc1,
+                        "HTG_RPHDISC2" => $data2->disc2,
+                        "HTG_RPHDISC2II" => $data2->disc2ii,
+                        "HTG_RPHDISC2III" => $data2->disc2iii,
+                        "HTG_RPHDISC3" => $data2->disc3,
+                        "HTG_RPHDISC4" => $data2->disc4,
+                        "HTG_DIS4CR" => $data2->disc4cr,
+                        "HTG_DIS4RR" => $data2->disc4rr,
+                        "HTG_DIS4JR" => $data2->disc4jr,
+                        "HTG_PPN" => $data2->ppn,
+                        "HTG_CREATEBY" => $userId,
+                        "HTG_CREATEDT" => $sysdatef
+                    ]);
+                } else {
+                    $P_SUKSES = 99;
+                }
+            }
+            $P_SUKSES = 1;
+        }
+        if ($P_SUKSES == 1 || $trnType == 'L') {
+            return ['kode' => 1, 'msg' => 'Update Data 1 Sukses', 'nota' => $no_btb];
+        } else {
+            return ['kode' => $P_ERROR, 'msg' => 'Error ' . $P_SUKSES, 'nota' => $no_btb];
+        }
         // $exec = oci_parse($conn, "BEGIN sp_penerimaan_updatedata(:kodeigr, :userid, :tipe, :dummyvar, :result); END;");
         // oci_bind_by_name($exec, ':kodeigr', $kodeigr);
         // oci_bind_by_name($exec, ':userid', $userId);
@@ -704,24 +1070,272 @@ class printBPBController extends Controller
         // oci_bind_by_name($exec, ':dummyvar', $dummyvar);
         // oci_bind_by_name($exec, ':result', $result, 1000);
         // oci_execute($exec);
-
-        // return ['kode' => 1, 'message' => "Success"];
     }
 
-    public function update_data2($kodeigr, $conn, $type)
+    public function update_data2($kodeigr, $conn, $trnType)
     {
-        $exec = oci_parse($conn, "BEGIN sp_penerimaan_updatedata2(:kodeigr, :tipe, :result); END;");
-        oci_bind_by_name($exec, ':kodeigr', $kodeigr);
-        oci_bind_by_name($exec, ':tipe', $type);
-        oci_bind_by_name($exec, ':result', $result, 1000);
-        oci_execute($exec);
+        $cprdcd = '';
+        $nqtyb  = 0;
+        $nqtypo = 0;
+        $nqtys  = 0;
+        $qty7a  = 0;
+        $qty7b  = 0;
+        $nqtyo  = 0;
+        $naaa   = 0;
+        $nbbb   = 0;
+        $cklist = false;
+        $pclb   = 0;
+        $pclbk  = 0;
+        $pcls   = 0;
+        $pclsk  = 0;
+        $tes    = 0;
+        $sysdatef = Carbon::now();
+        $x = 0;
 
-        return ['kode' => 1, 'message' => "Success"];
+        $cprdcd = NULL;
+        if ($trnType == 'B') {
+            $record = DB::connection(Session::get('connection'))->select("SELECT *
+                    FROM    tbtr_listpacking,
+                            tbtr_backoffice,
+                            tbtr_pbcabang_gudangpusat,
+                            tbmaster_stock,
+                            tbmaster_hargabeli,
+                            tbmaster_prodmast
+                    WHERE   pcl_kodeigr     = '$kodeigr'
+                    AND     pcl_create_dt   = '$sysdatef'
+                    AND     pcl_recordid    IS NULL
+                    AND     trbo_kodeigr    = pcl_kodeigr
+                    AND     trbo_typetrn    = 'B'
+                    AND     trbo_nodoc      = pcl_noreferensi1
+                    AND     trbo_prdcd      = pcl_prdcd
+                    AND     pbc_kodecabang  = pcl_kodecabang
+                    AND     pbc_nopbcabang  = pcl_noreferensi
+                    AND     pbc_prdcd       = pcl_prdcd
+                    AND     st_prdcd        = pcl_prdcd
+                    AND     st_lokasi       = '01'
+                    AND     hgb_prdcd       = pcl_prdcd
+                    AND     prd_prdcd       = pcl_prdcd
+                    ORDER BY 
+                            pcl_create_dt, pcl_prdcd, 
+                            pcl_kode, pcl_nodokumen, 
+                            pcl_kodecabang
+                    ");
+
+            foreach ($record as $rec) {
+                if ($rec->pbc_recordid == 3 && ($rec->pbc_qtypb - $rec->pbc_qtybbp) == 0) {
+                    return false;
+                } else {
+                    if ($rec->pcl_kodecabang == '05') {
+                        return false;
+                    }
+                    $cklist = true;
+                    $nqtyo = (($rec->pcl_qty_o * $rec->prd_frac) + $rec->pcl_qty_ok);
+                    if ($cprdcd == '1234567' || $cprdcd != $rec->pcl_prdcd) {
+                        $nqtyb  = $rec->trbo_qty;
+                        $nqtypo = $rec->trbo_qty;
+                        $nqtys  = $rec->st_saldoakhir;
+                        $nqtys  = $nqtys - $nqtyb;
+                        $cprdcd = $rec->pcl_prdcd;
+                    }
+
+                    if ($nqtyo <= $nqtyb) {
+                        $pcls   = 0;
+                        $pclb   = 0;
+                        $pclsk  = 0;
+                        $pclbk  = 0;
+                        $naaa   = 0;
+                        $nbbb   = 0;
+                        $naaa   = floor($nqtyo / $rec->prd_frac);
+                        $nbbb   = $nqtyo % $rec->prd_frac;
+
+                        if ($rec->pcl_kodecabang == $kodeigr) {
+                            DB::connection(Session::get('connection'))->table('tbtr_listpacking')
+                                ->where('pcl_nodokumen', $rec->pcl_nodokumen)
+                                ->where('pcl_prdcd', $rec->pcl_prdcd)
+                                ->where('pcl_kodecabang', $rec->pcl_kodecabang)
+                                ->update([
+                                    'pcl_qtyr_b'  => floor($nqtyb / $rec->prd_frac),
+                                    'pcl_qtyr_bk' => $nqtyb % $rec->prd_frac
+                                ]);
+                            $pclb = floor($nqtyb / $rec->prd_frac);
+                            $pclbk = $nqtyb % $rec->prd_frac;
+                        } else {
+                            DB::connection(Session::get('connection'))->table('tbtr_listpacking')
+                                ->where('pcl_nodokumen', $rec->pcl_nodokumen)
+                                ->where('pcl_prdcd', $rec->pcl_prdcd)
+                                ->where('pcl_kodecabang', $rec->pcl_kodecabang)
+                                ->update([
+                                    'pcl_qtyr_b'  => $naaa,
+                                    'pcl_qtyr_bk' => $nbbb
+                                ]);
+                            $pclb = $naaa;
+                            $pclbk = $nbbb;
+                        }
+                        DB::connection(Session::get('connection'))->table('tbtr_listpacking')
+                            ->where('pcl_nodokumen', $rec->pcl_nodokumen)
+                            ->where('pcl_prdcd', $rec->pcl_prdcd)
+                            ->where('pcl_kodecabang', $rec->pcl_kodecabang)
+                            ->update([
+                                'pcl_qtyr_s'  => 0,
+                                'pcl_qtyr_sk' => 0
+                            ]);
+                    } else {
+                        $pcls   = 0;
+                        $pclb   = 0;
+                        $pclsk  = 0;
+                        $pclbk  = 0;
+                        $naaa   = 0;
+                        $nbbb   = 0;
+                        $naaa   = floor($nqtyb / $rec->prd_frac);
+                        $nbbb   = $nqtyb % $rec->prd_frac;
+
+                        DB::connection(Session::get('connection'))->table('tbtr_listpacking')
+                            ->where('pcl_nodokumen', $rec->pcl_nodokumen)
+                            ->where('pcl_prdcd', $rec->pcl_prdcd)
+                            ->where('pcl_kodecabang', $rec->pcl_kodecabang)
+                            ->update([
+                                'pcl_qtyr_b'  => $naaa,
+                                'pcl_qtyr_bk' => $nbbb
+                            ]);
+
+                        $pclb = $naaa;
+                        $pclbk = $nbbb;
+
+                        if ($rec->pbc_kodecabang || $rec->pbc_nopbcabang || $rec->pbc_prdcd || $rec->pcl_kodecabang || $rec->pcl_noreferensi || $rec->pcl_prdcd) {
+                            if ($rec->pbc_recordid == 3) {
+                                if (($rec->pbc_qtybbp + $nqtyb) < $rec->pbc_qtypb) {
+                                    if (($nqtyo - $nqtyb) < $nqtys) {
+                                        DB::connection(Session::get('connection'))->table('tbtr_listpacking')
+                                            ->where('pcl_nodokumen', $rec->pcl_nodokumen)
+                                            ->where('pcl_prdcd', $rec->pcl_prdcd)
+                                            ->where('pcl_kodecabang', $rec->pcl_kodecabang)
+                                            ->update([
+                                                'pcl_qtyr_s'  => floor(($nqtyo - $nqtyb) / $rec->prd_frac),
+                                                'pcl_qtyr_sk' => ($nqtyo - $nqtyb) % $rec->prd_frac
+                                            ]);
+
+                                        $pcls = floor(($nqtyo - $nqtyb) / $rec->prd_frac);
+                                        $pclsk = floor($nqtyo - $nqtyb) % $rec->prd_frac;
+                                    } else {
+                                        if ($nqtys > 0) {
+                                            DB::connection(Session::get('connection'))->table('tbtr_listpacking')
+                                                ->where('pcl_nodokumen', $rec->pcl_nodokumen)
+                                                ->where('pcl_prdcd', $rec->pcl_prdcd)
+                                                ->where('pcl_kodecabang', $rec->pcl_kodecabang)
+                                                ->update([
+                                                    'pcl_qtyr_s'  => floor($nqtys / $rec->prd_frac),
+                                                    'pcl_qtyr_sk' => $nqtys % $rec->prd_frac
+                                                ]);
+
+                                            $pcls = floor($nqtys / $rec->prd_frac);
+                                            $pclsk = $nqtys % $rec->prd_frac;
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (($nqtyo - $nqtyb) < $nqtys) {
+                                    DB::connection(Session::get('connection'))->table('tbtr_listpacking')
+                                        ->where('pcl_nodokumen', $rec->pcl_nodokumen)
+                                        ->where('pcl_prdcd', $rec->pcl_prdcd)
+                                        ->where('pcl_kodecabang', $rec->pcl_kodecabang)
+                                        ->update([
+                                            'pcl_qtyr_s'  => floor(($nqtyo - $nqtyb) / $rec->prd_frac),
+                                            'pcl_qtyr_sk' => ($nqtyo - ($pclb * $rec->prd_frac) + $pclbk) - ($pcls * $rec->prd_frac)
+                                        ]);
+
+                                    $pcls = floor(($nqtyo - $nqtyb) / $rec->prd_frac);
+                                    $pclsk = ($nqtyo - ($nqtyb * $rec->prd_frac) + $pclbk) - ($pcls * $rec->prd_frac);
+                                } else {
+                                    if ($nqtys > 0) {
+                                        DB::connection(Session::get('connection'))->table('tbtr_listpacking')
+                                            ->where('pcl_nodokumen', $rec->pcl_nodokumen)
+                                            ->where('pcl_prdcd', $rec->pcl_prdcd)
+                                            ->where('pcl_kodecabang', $rec->pcl_kodecabang)
+                                            ->update([
+                                                'pcl_qtyr_s'  => floor($nqtys / $rec->prd_frac),
+                                                'pcl_qtyr_sk' => ($nqtys % $rec->prd_frac)
+                                            ]);
+
+                                        $pcls = floor($nqtys / $rec->prd_frac);
+                                        $pclsk = $nqtys % $rec->prd_frac;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (strtoupper($rec->prd_unit) == 'KG') {
+                        $x = 1;
+                    } else {
+                        $x = $rec->prd_frac;
+                    }
+                    $qty7a = floor(((($pclb + $pcls) * $rec->prd_frac) + $pclbk + $pclsk) / $rec->prd_frac);
+                    $qty7b = ((($pclb + $pcls) * $rec->prd_frac) + $pclbk + $pclsk) % $rec->prd_frac;
+                    $tes = ($qty7a * ($rec->st_avgcost * $x)) + ($qty7b / $rec->prd_frac * ($rec->st_avgcost * $x)) * 0.1;
+
+                    DB::connection(Session::get('connection'))->table('tbtr_listpacking')
+                        ->where('pcl_nodokumen', $rec->pcl_nodokumen)
+                        ->where('pcl_prdcd', $rec->pcl_prdcd)
+                        ->where('pcl_kodecabang', $rec->pcl_kodecabang)
+                        ->update([
+                            'pcl_nilai'  => ($qty7a * ($rec->st_avgcost * $x)) + $qty7b / $rec->prd_frac * ($rec->st_avgcost * $x),
+                            'pcl_ppnrph' => (($qty7a * ($rec->st_avgcost * $x)) + $qty7b / $rec->prd_frac * ($rec->st_avgcost * $x)) * 0.1,
+                            'pcl_ppnbmrph' => $rec->hgb_ppnbm * ($qty7a) + $qty7b,
+                            'pcl_ppnbtlrph' => $rec->hgb_ppnbotol * ($qty7a + $qty7b)
+                        ]);
+
+                    $nqtyb = $nqtyb - (($pclb * $rec->prd_frac) + $pclbk);
+                    $nqtys = $nqtys - (($pcls * $rec->prd_frac) + $pclsk);
+
+                    if ($nqtyb < 0) {
+                        $nqtyb = 0;
+                    }
+
+                    if ($nqtys < 0) {
+                        $nqtys = 0;
+                    }
+
+                    if ((($pclb + $pcls) * $rec->prd_frac) + $pclbk + $pclsk != 0) {
+                        DB::connection(Session::get('connection'))->table('tbtr_listpacking')
+                            ->where('pcl_nodokumen', $rec->pcl_nodokumen)
+                            ->where('pcl_prdcd', $rec->pcl_prdcd)
+                            ->where('pcl_kodecabang', $rec->pcl_kodecabang)
+                            ->update([
+                                'pcl_recordid' => '2'
+                            ]);
+                    } else {
+                        DB::connection(Session::get('connection'))->table('tbtr_listpacking')
+                            ->where('pcl_nodokumen', $rec->pcl_nodokumen)
+                            ->where('pcl_prdcd', $rec->pcl_prdcd)
+                            ->where('pcl_kodecabang', $rec->pcl_kodecabang)
+                            ->update([
+                                'pcl_recordid'  => '9'
+                            ]);
+                    }
+                    if (($rec->pbc_kodecabang || $rec->pbc_nopbcabang || $rec->pbc_prdcd) == ($rec->pcl_kodecabang || $rec->pcl_noreferensi || $rec->pcl_prdcd)) {
+                        if ($rec->pbc_recordid != '3') {
+                            DB::connection(Session::get('connection'))->table('tbtr_pbcabang_gudangpusat')
+                                ->where('pbc_nopbgudangpusat', $rec->pbc_nopbgudangpusat)
+                                ->where('pbc_nopbcabang', $rec->pbc_nopbcabang)
+                                ->update([
+                                    'pbc_recordid'  => '2'
+                                ]);
+                        }
+                    }
+                }
+            }
+        }
+        // $exec = oci_parse($conn, "BEGIN sp_penerimaan_updatedata2(:kodeigr, :tipe, :result); END;");
+        // oci_bind_by_name($exec, ':kodeigr', $kodeigr);
+        // oci_bind_by_name($exec, ':tipe', $type);
+        // oci_bind_by_name($exec, ':result', $result, 1000);
+        // oci_execute($exec);
+
+        return ['kode' => 1, 'message' => "Update Data 2 Sukses"];
     }
 
     public function print_btb($temp, $type, $v_print, $size)
     {
-
         if ($type == 1) {
             if ($size == 2) {
                 return 'IGR_BO_LISTBTB_FULL';
@@ -739,9 +1353,33 @@ class printBPBController extends Controller
 
     public function print_lokasi($temp_lokasi, $type, $v_print)
     {
-
-        $datas = "1";
-
+        $temp = $temp_lokasi[0][0];
+        $datas = DB::connection(Session::get('connection'))->select("SELECT trbo_prdcd,
+                                       SUBSTR (prd_deskripsipanjang, 1, 50) desc2,
+                                       prd_unit || '/' || prd_frac kemasan,
+                                       lks_koderak,
+                                       lks_kodesubrak,
+                                       lks_tiperak,
+                                       lks_shelvingrak,
+                                       FLOOR (trbo_qty / prd_frac) qty,
+                                       lks_koderak || lks_kodesubrak || lks_tiperak || lks_shelvingrak
+                                          keterangan,
+                                       MOD (trbo_qty, prd_frac) qtyk,
+                                       prs_namaperusahaan,
+                                       prs_namacabang,
+                                       prs_namawilayah
+                                  FROM tbtr_backoffice,
+                                       tbmaster_lokasi,
+                                       tbmaster_prodmast,
+                                       tbmaster_perusahaan
+                                 WHERE     prs_kodeigr = trbo_kodeigr
+                                       AND trbo_kodeigr = '22'
+                                       AND trbo_nodoc in '$temp'
+                                       AND lks_prdcd = trbo_prdcd
+                                       AND lks_kodeigr = trbo_kodeigr
+                                       AND prd_prdcd = trbo_prdcd
+                                       AND prd_kodeigr = trbo_kodeigr");
+        // perlu di panggil ulang dari viereport soalnya datas engga kebaca kalo cuma = '1'
         $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctklokasi', ['datas' => $datas]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
@@ -767,7 +1405,6 @@ class printBPBController extends Controller
         }
 
         $document = substr($document, 0, -1);
-
         if ($report == 'IGR_BO_LISTBTB_FULL') {
             $datas = DB::connection(Session::get('connection'))->select("select trbo_nodoc, TO_CHAR(trbo_tgldoc,'DD/MM/YY') trbo_tgldoc, trbo_nopo, TO_CHAR(trbo_tglpo,'DD/MM/YY') trbo_tglpo, trbo_nofaktur, TO_CHAR(trbo_tglfaktur,'DD/MM/YY') trbo_tglfaktur,
                                         floor(trbo_qty/prd_frac) qty, mod(trbo_qty,prd_frac) qtyk, trbo_qtybonus1, trbo_qtybonus2, trbo_typetrn, trbo_qty, nvl(trbo_flagdoc,'0') flagdoc,
@@ -921,7 +1558,8 @@ class printBPBController extends Controller
                                        tbmaster_perusahaan
                                  WHERE     prs_kodeigr = trbo_kodeigr
                                        AND trbo_kodeigr = '22'
-                                       AND TRBO_NOREFF IN ('01400388')
+                                       AND trbo_nodoc in ($document)
+                                       --AND TRBO_NOREFF IN ('01400388')
                                        AND lks_prdcd = trbo_prdcd
                                        AND lks_kodeigr = trbo_kodeigr
                                        --and substr(lks_koderak,1,1) = 'a'

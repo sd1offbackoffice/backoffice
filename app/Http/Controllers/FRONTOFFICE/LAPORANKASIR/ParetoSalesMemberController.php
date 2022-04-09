@@ -82,7 +82,7 @@ class ParetoSalesMemberController extends Controller
                                   AND TRUNC(trjd_transactiondate) BETWEEN to_date('$tgl_start','dd/mm/yyyy') AND to_date('$tgl_end','dd/mm/yyyy')
                                   AND trjd_recordid IS NULL
                                   AND trjd_cus_kodemember BETWEEN '$member_start' AND '$member_end'
-                                  AND cus_kodeoutlet BETWEEN '$outlet_start' AND '$outlet_end'
+                                  AND nvl(cus_kodeoutlet,'0') BETWEEN '$outlet_start' AND '$outlet_end'
                             )
                             GROUP BY cusnoA
                         ),
@@ -94,7 +94,7 @@ class ParetoSalesMemberController extends Controller
                                   AND TRUNC(trjd_transactiondate) BETWEEN to_date('$tgl_start','dd/mm/yyyy') AND to_date('$tgl_end','dd/mm/yyyy')
                                   AND trjd_recordid IS NULL
                                   AND trjd_cus_kodemember BETWEEN '$member_start' AND '$member_end'
-                                  AND cus_kodeoutlet BETWEEN '$outlet_start' AND '$outlet_end'
+                                  AND nvl(cus_kodeoutlet,'0') BETWEEN '$outlet_start' AND '$outlet_end'
                             )
                             GROUP BY cusnoA
                         ),
@@ -106,7 +106,8 @@ class ParetoSalesMemberController extends Controller
                                 FROM
                                 (    SELECT trjd_kodeigr kodeigr, TRUNC(trjd_transactiondate) trjd_transactiondate, NVL(trjd_cus_kodemember,'0') cusnoA, trjd_transactiontype,
                                            cus_kodeoutlet, cus_namamember,
-                                           CASE WHEN trjd_divisioncode = '5' AND SUBSTR(trjd_division,1,2) IN ('39','40','50') THEN
+                                           --CASE WHEN trjd_divisioncode = '5' AND SUBSTR(trjd_division,1,2) IN ('39','40','50') THEN (Diganti disesuaikan dengan oracle yg di revisi michele)
+                                           CASE WHEN trjd_divisioncode = '5' AND SUBSTR(trjd_division,1,2) IN ('39') THEN
                                                   trjd_nominalAmt
                                            ELSE
                                                   CASE WHEN tko_kodeSBU IN ('O','I') THEN
@@ -121,7 +122,7 @@ class ParetoSalesMemberController extends Controller
                                                END
                                             END nNet,
                                             ------
-                                            CASE WHEN trjd_divisioncode = '5' AND SUBSTR(trjd_division,1,2) IN ('39','40','50') THEN
+                                            CASE WHEN trjd_divisioncode = '5' AND SUBSTR(trjd_division,1,2) IN ('39') THEN
                                                 trjd_nominalAmt -
                                                 (CASE WHEN PRD_MarkUpStandard IS NULL THEN
                                                     (( 5 * trjd_nominalAmt) / 100)
@@ -139,7 +140,7 @@ class ParetoSalesMemberController extends Controller
                                       AND TRUNC(trjd_transactiondate) BETWEEN to_date('$tgl_start','dd/mm/yyyy') AND to_date('$tgl_end','dd/mm/yyyy')
                                       AND trjd_recordid IS NULL
                                       AND trjd_cus_kodemember BETWEEN '$member_start' AND '$member_end'
-                                      AND cus_kodeoutlet BETWEEN '$outlet_start' AND '$outlet_end'
+                                      AND nvl(cus_kodeoutlet,'0') BETWEEN '$outlet_start' AND '$outlet_end'
                                 )
                                 GROUP BY kodeigr, cusnoA, cus_namamember, trjd_transactiondate, cus_kodeoutlet
                             )
@@ -149,7 +150,7 @@ class ParetoSalesMemberController extends Controller
                           AND kodeigr = prs_kodeigr
                           AND cusno = no_cusno
                           AND cusno = pr_cusno
-                          AND cus_kodeoutlet = out_kodeoutlet
+                          AND cus_kodeoutlet = out_kodeoutlet (+)
                                     $p_where_pil
                         $p_sort
                     )

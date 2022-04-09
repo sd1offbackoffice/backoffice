@@ -9,7 +9,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Excel;
 use PDF;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Yajra\DataTables\DataTables;
 use File;
 
@@ -508,23 +512,75 @@ ORDER BY lpp_kodedivisi,
          lpp_prdcd");
             set_time_limit(0);
             $title = '** POSISI & MUTASI PERSEDIAAN BARANG BAIK **';
-//
+
 //            $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid,compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 //            $pdf->setPaper('A4', 'landscape');
 //            $pdf->output();
-//            $pdf->setOption('enable-smart-shrinking', true);
 //            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-//
+
 //            $canvas = $dompdf ->get_canvas();
 //            $canvas->page_text(465, 77, "{PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
-//
+//            $dompdf->render();
+
 //            return $pdf->download('laporan2.pdf');
 
+//            dom
 //            $pdf = PDF::loadView('BACKOFFICE.LPP.' . $repid,compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
-//            return $pdf->download('test.pdf');
+//            return $pdf->stream('test.pdf');
 
+            //excel
+            $filename = 'aa.xlsx';
+//            $spreadsheet = new Spreadsheet();
+//            $spreadsheet->getActiveSheet()->getProtection()->setSheet(true);
+//            $sheet = $spreadsheet->getActiveSheet();
+//
+
+
+            //Body
+            $htmlString = view('BACKOFFICE.LPP.' . $repid . '_xlxs', compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']))->render();
+            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
+            $spreadsheet = $reader->loadFromString($htmlString);
+            $spreadsheet->getActiveSheet()->getProtection()->setSheet(true);
+            $sheet = $spreadsheet->getActiveSheet();
+
+            //Header
+            $maxColumn = 'U';
+            $column = [];
+            foreach (range('A', $maxColumn) as $columnID) {
+                $column[] = $columnID;
+            }
+            foreach (range('A', $maxColumn) as $columnID) {
+                $sheet->getColumnDimension($columnID)->setAutoSize(true);
+                $sheet->getColumnDimension($columnID)->setAutoSize(false);
+            }
+            $sheet->insertNewRowBefore(1);
+            $sheet->insertNewRowBefore(1);
+            $sheet->insertNewRowBefore(1);
+            $sheet->insertNewRowBefore(1);
+            $sheet->insertNewRowBefore(1);
+            $sheet->setCellValue('A1', $perusahaan->prs_namaperusahaan);
+            $sheet->setCellValue('A2', $perusahaan->prs_namacabang);
+            $sheet->setCellValue('B1', $title);
+            $sheet->getStyle('B1')->getAlignment()->setHorizontal('center')->setVertical('center');
+            $sheet->mergeCells('B1:'.$column[sizeof($column)-2].'2');
+            $sheet->setCellValue($maxColumn.'1', 'Tgl. Cetak : ' . date("d/m/Y"));
+            $sheet->setCellValue($maxColumn.'2', 'Jam Cetak : ' . date('H:i:s'));
+            $sheet->setCellValue($maxColumn.'3', 'User ID : ' . Session::get('usid'));
+            $sheet->setCellValue($maxColumn.'4', 'RINCIAN PER DIVISI (UNIT/RUPIAH)');
+            $sheet->getStyle('A1:'.$maxColumn.'4')->getFont()->setBold(true);
+            $sheet->getStyle('A1');
+
+
+            $writer = new Xlsx($spreadsheet);
+            $writer->save(storage_path($filename));
+            return response()->download(storage_path($filename))->deleteFileAfterSend(true);
+
+//html
+//            return view('BACKOFFICE.LPP.' . $repid.'_xlxs', compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
             return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 
+
+//csv
 //            $filename = 'LAPORAN EVALUASI SALES MEMBER.csv';
 
 //            $columnHeader = [

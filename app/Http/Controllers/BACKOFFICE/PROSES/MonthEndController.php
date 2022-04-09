@@ -155,7 +155,7 @@ class MonthEndController extends Controller
             ->where('submenu', '=', '1_Cek Proses Awal')
             ->update(
                 [
-                    'start_time' => Carbon::now(),
+                    'start_time' => DB::connection(Session::get('connection'))->raw('sysdate'),
                     'status' => 'LOADING',
                 ]
             );
@@ -192,7 +192,7 @@ class MonthEndController extends Controller
             ->where('submenu', '=', '1_Cek Proses Awal')
             ->update(
                 [
-                    'end_time' => Carbon::now(),
+                    'end_time' => DB::connection(Session::get('connection'))->raw('sysdate'),
                     'status' => 'DONE',
                 ]
             );
@@ -367,7 +367,7 @@ class MonthEndController extends Controller
             ->where('submenu', '=', '6_Delete Data BackOffice')
             ->update(
                 [
-                    'start_time' => Carbon::now(),
+                    'start_time' => DB::connection(Session::get('connection'))->raw('sysdate'),
                     'status' => 'LOADING',
                 ]
             );
@@ -382,7 +382,7 @@ class MonthEndController extends Controller
                 ->where('submenu', '=', '6_Delete Data BackOffice')
                 ->update(
                     [
-                        'end_time' => Carbon::now(),
+                        'end_time' => DB::connection(Session::get('connection'))->raw('sysdate'),
                         'status' => 'DONE',
                     ]
                 );
@@ -405,7 +405,7 @@ class MonthEndController extends Controller
                 ->where('submenu', '=', '6_Delete Data BackOffice')
                 ->update(
                     [
-                        'end_time' => Carbon::now(),
+                        'end_time' => DB::connection(Session::get('connection'))->raw('sysdate'),
                         'status' => 'ERROR',
                         'message' => $message
                     ]
@@ -630,7 +630,7 @@ class MonthEndController extends Controller
             ->where('submenu', '=', $submenu)
             ->update(
                 [
-                    'start_time' => Carbon::now(),
+                    'start_time' => DB::connection(Session::get('connection'))->raw('sysdate'),
                     'status' => 'LOADING',
                 ]
             );
@@ -664,7 +664,7 @@ class MonthEndController extends Controller
             ->where('submenu', '=', $submenu)
             ->update(
                 [
-                    'end_time' => Carbon::now(),
+                    'end_time' => DB::connection(Session::get('connection'))->raw('sysdate'),
                     'status' => 'DONE',
                 ]
             );

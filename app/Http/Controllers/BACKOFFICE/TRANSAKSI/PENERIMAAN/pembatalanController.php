@@ -268,9 +268,8 @@ class pembatalanController extends Controller
                                 'HCS_AVGBARU' => (($nnilai2 / $nqty) * ($data->prd_unit == 'KG') ? 1 : $data->prd_frac),
                                 'HCS_LASTCOSTLAMA' => $data->prd_lastcost,
                                 'HCS_LASTCOSTBARU' => ($nfmlclm * ($data->prd_unit == 'KG') ? 1 : $data->prd_frac),
-                                'HCS_LASTQTY' => ((!$data->st_saldoakhir) ? 0 : $data->st_saldoakhir - (!$data->mstd_qty) ? 0 : $data->mstd_qty + (!$data->mstd_qtybonus1) ? 0 : $data->mstd_qtybonus1),
+                                'HCS_LASTQTY' => (!$data->st_saldoakhir ? 0 : ($data->st_saldoakhir - (!$data->mstd_qty) ? 0 : $data->mstd_qty + (!$data->mstd_qtybonus1))) ? 0 : $data->mstd_qtybonus1,
                                 'HCS_CREATE_BY' => $userId, 'HCS_CREATE_DT' => $dateTime]);
-
 //                    } elseif ($data->mstd_typetrn == 'L') {
 //
 //

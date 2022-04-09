@@ -77,6 +77,7 @@ function formatDate(value) {
 // Untuk merubah format tanggal menjadi sesuai keinginan
 // Created By : Leo (01/04/2020) | Modify By :
 function formatDateCustom(value,format) {
+
     return $.datepicker.formatDate(format, new Date(value));
 }
 

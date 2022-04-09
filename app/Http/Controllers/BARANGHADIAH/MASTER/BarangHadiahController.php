@@ -86,52 +86,73 @@ class BarangHadiahController extends Controller
         $bprp_frackonversi = $request->prd_frac;
         $bprp_unit = $request->prd_unit;
 
-        $data_promosi = DB::connection(Session::get('connection'))->table('TBMASTER_BRGPROMOSI')
-        ->selectRaw("bprp_recordid,bprp_prdcd,bprp_ketpendek,bprp_frackonversi,bprp_unit")
-        ->where('bprp_prdcd',$bprp_prdcd)
-        ->orderBy('bprp_prdcd')
+        $data_prodmast = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
+        ->select('PRD_PRDCD')
+        ->where('PRD_PRDCD',$bprp_prdcd)
         ->get();
 
-        $check = count($data_promosi);
-
-        // dd($check);
-
-        if($check == 0)
+        $check_data = count($data_prodmast);
+        
+        // kalo data yang diinput exist di master produk maka bisa lanjut
+        if($check_data == 1)
         {
-            if($bprp_prdcd != NULL && $bprp_ketpendek != NULL || $bprp_frackonversi != NULL || $bprp_unit != NULL )
-            {
-                $insert_barang_dagangan = DB::connection(Session::get('connection'))->table('TBMASTER_BRGPROMOSI')
-                ->insert([
-                    'bprp_prdcd' => $bprp_prdcd,
-                    'bprp_ketpendek' => $bprp_ketpendek,
-                    'bprp_frackonversi' => $bprp_frackonversi,
-                    'bprp_unit' => $bprp_unit
-                ]);
 
-                if($insert_barang_dagangan)
+            $data_promosi = DB::connection(Session::get('connection'))->table('TBMASTER_BRGPROMOSI')
+            ->selectRaw("bprp_recordid,bprp_prdcd,bprp_ketpendek,bprp_frackonversi,bprp_unit")
+            ->where('bprp_prdcd',$bprp_prdcd)
+            ->orderBy('bprp_prdcd')
+            ->get();
+    
+            $check = count($data_promosi);
+    
+            if($check == 0)
+            {
+                if($bprp_prdcd != NULL && $bprp_ketpendek != NULL || $bprp_frackonversi != NULL || $bprp_unit != NULL )
+                {
+                    $insert_barang_dagangan = DB::connection(Session::get('connection'))->table('TBMASTER_BRGPROMOSI')
+                    ->insert([
+                        'bprp_prdcd' => $bprp_prdcd,
+                        'bprp_ketpendek' => $bprp_ketpendek,
+                        'bprp_frackonversi' => $bprp_frackonversi,
+                        'bprp_unit' => $bprp_unit
+                    ]);
+    
+                    if($insert_barang_dagangan)
+                    {
+                        return response()->json([
+                            'title' => 'success',
+                            'message' => 'Data success converted to barang hadiah  !'
+                        ], 200);
+                    }
+                }
+                else 
                 {
                     return response()->json([
-                        'title' => 'success',
-                        'message' => 'Data success converted to barang hadiah  !'
-                    ], 200);
+                        'title' => 'An error occurred !',
+                        'message' => 'Data cannot be NULL  !',
+                        'status' => 'error'
+                    ], 500);
                 }
             }
-            else 
+            else
             {
                 return response()->json([
                     'title' => 'An error occurred !',
-                    'message' => 'Data cannot be NULL  !',
+                    'message' => 'Data already exist in Table Master Barang Hadiah !',
                     'status' => 'error'
                 ], 500);
             }
         }
+        // kalo data nya tidak exist di master produk
         else
         {
             return response()->json([
                 'title' => 'An error occurred !',
-                'message' => 'Data already exist in Table Master Barang Hadiah !',
+                'message' => 'Kode PLU doesnt exist in master produk !',
                 'status' => 'error'
             ], 500);
         }
+
+
     }
 }

@@ -469,7 +469,7 @@
         currentIndex = 0;
         special = false;
         rowCount = 0;
-        deletable = false;
+        deletable = true;
         deleted = [];
 
         edit = true;
@@ -787,11 +787,11 @@
                                             title: 'PLU '+response.data.prd_prdcd+' tidak mempunyai dimensi!',
                                             icon: 'error'
                                         }).then(function(){
-                                            $('#row_form_'+row).find('.kke_estimasi').select();
+                                            // $('#row_form_'+row).find('.kke_estimasi').select();
                                         });
                                     }
                                     else{
-                                        $('#row_form_'+row).find('.kke_estimasi').select();
+                                        // $('#row_form_'+row).find('.kke_estimasi').select();
                                     }
                                     $('#btn-save').prop('disabled',false);
 

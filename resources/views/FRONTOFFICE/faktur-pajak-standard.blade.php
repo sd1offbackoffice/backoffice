@@ -116,30 +116,18 @@
             $('#periode').datepicker({
                 changeMonth: true,
                 changeYear: true,
+                showButtonPanel: true,
                 dateFormat : "mm/yy",
+                onClose: function (dateText, inst) {
+                    var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
+                    var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
+                    $(this).val($.datepicker.formatDate('mm/yy', new Date(year, month, 1)));
+                }
             });
 
-            // $("#periode").datepicker( {
-            //     dateFormat: 'mm/yy',
-            //     changeMonth: true,
-            //     changeYear: true,
-            //     showButtonPanel: true,
-            //
-            //     onClose: function(dateText, inst) {
-            //         var month = $("#ui-datepicker-div .ui-datepicker-month :selected").val();
-            //         var year = $("#ui-datepicker-div .ui-datepicker-year :selected").val();
-            //         $(this).val($.datepicker.formatDate('mm/yy', new Date(year, month, 1)));
-            //     }
-            // });
-            //
-            // $("#periode").focus(function () {
-            //     $(".ui-datepicker-calendar").hide();
-            //     $("#ui-datepicker-div").position({
-            //         my: "center top",
-            //         at: "center bottom",
-            //         of: $(this)
-            //     });
-            // });
+            $('#periode').focus(function () {
+                $(".ui-datepicker-calendar").hide();
+            });
         });
 
         $('#periode').on('change',function(){
@@ -168,6 +156,7 @@
             if(checkDate()){
                 swal({
                     title: 'Yakin ingin create CSV untuk periode '+$('#periode').val()+' ?',
+                    text: 'Proses mungkin membutuhkan waktu beberapa saat',
                     icon: 'warning',
                     buttons: true,
                     dangerMode: true

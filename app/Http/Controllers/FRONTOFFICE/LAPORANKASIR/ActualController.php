@@ -10,6 +10,9 @@ use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
+use PhpOffice\PhpSpreadsheet\Reader\Html;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Yajra\DataTables\DataTables;
 use ZipArchive;
 use File;
@@ -260,53 +263,79 @@ class ActualController extends Controller
         }
     }
 
-    public function cashback($tanggal){
-        try{
-            $c = loginController::getConnectionProcedure();
-//            $sql = "BEGIN sp_job_lpt_cashback(to_date('" . $tanggal . "','dd/mm/yyyy'),to_date('" . $tanggal . "','dd/mm/yyyy'),'".Session::get('usid')."'); END;";
-            $sql = "BEGIN sp_job_lpt_cashback(); END;";
-            $s = oci_parse($c, $sql);
-            oci_execute($s);
+    public function cashback(){
+        return response()->json([
+            'message' => 'Procedure sp_job_lpt_cashback berhasil dijalankan!'
+        ], 200);
+        set_time_limit(0);
+        $isRunning = $this->cekProcedure("'sp_job_lpt_cashback'");
 
-            return null;
-        }
-        catch(\Exception $e){
-            return $e->getMessage();
+        if ($isRunning > 0) {
+            return response()->json([
+                'message' => 'Procedure sp_job_lpt_cashback sedang berjalan!'
+            ], 500);
+            $result =  new \stdClass();
+            $result->message = 'Procedure sp_job_lpt_cashback sedang berjalan!';
+            $result->status = 'info';
+            return $result;
+        } else {
+            try {
+                $c = loginController::getConnectionProcedure();
+//                $sql = "BEGIN sp_job_lpt_cashback(to_date('" . $tanggal . "','dd/mm/yyyy'),to_date('" . $tanggal . "','dd/mm/yyyy'),'" . Session::get('usid') . "'); END;";
+            $sql = "BEGIN sp_job_lpt_cashback(); END;";
+                $s = oci_parse($c, $sql);
+                oci_execute($s);
+
+                return response()->json([
+                    'message' => 'Procedure sp_job_lpt_cashback berhasil dijalankan!'
+                ], 200);
+                return null;
+            } catch (\Exception $e) {
+                return response()->json([
+                    'message' => $e->getMessage()
+                ], 500);
+
+                return $e->getMessage();
+            }
         }
     }
 
     public function cetakSales(Request $request){
-        DB::connection(Session::get('connection'))->table('cetak_sums')->truncate();
+        set_time_limit(0);
 
-        $result = $this->cashback($request->tanggal);
-        if($result){
-            return response()->json([
-                'message' => 'Terjadi kesalahan!',
-                'error' => $result
-            ], 500);
-        }
+        try{
+            DB::connection(Session::get('connection'))->table('cetak_sums')->truncate();
 
-        $data = DB::connection(Session::get('connection'))->table('tbtr_sumsales')
-            ->where('sls_kodeigr','=',Session::get('kdigr'))
-            ->whereRaw("sls_periode = to_date('".$request->tanggal."','dd/mm/yyyy')")
-            ->first();
+//        $result = $this->cashback();
+//
+//        if($result){
+//            return response()->json([
+//                'message' => $result->message,
+//                'error' => $result->status
+//            ], 500);
+//        }
 
-        if($data){
-            $result = $this->prosesSales($request->tanggal);
-            if(!is_null($result)){
-                return response()->json([
-                    'message' => 'Terjadi kesalahan!',
-                    'error' => $result
-                ], 500);
+            $data = DB::connection(Session::get('connection'))->table('tbtr_sumsales')
+                ->where('sls_kodeigr','=',Session::get('kdigr'))
+                ->whereRaw("sls_periode = to_date('".$request->tanggal."','dd/mm/yyyy')")
+                ->first();
+
+            if($data){
+                $result = $this->prosesSales($request->tanggal);
+                if(!is_null($result)){
+                    return response()->json([
+                        'message' => 'Terjadi kesalahan!',
+                        'error' => $result
+                    ], 500);
+                }
             }
-        }
 
-        $tanggal = $request->tanggal;
+            $tanggal = $request->tanggal;
 
-        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
-            ->first();
+            $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
+                ->first();
 
-        $data = DB::connection(Session::get('connection'))->select("SELECT js_cashierstation,
+            $data = DB::connection(Session::get('connection'))->select("SELECT js_cashierstation,
          js_cashierid,
             js_cashierstation
          || '.'
@@ -421,22 +450,22 @@ class ActualController extends Controller
          AND vir_cashierstation(+) = js_cashierstation
          ORDER BY js_cashierstation, js_cashierid");
 
-        $ppn_perushaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
-            ->selectRaw('COALESCE(prs_nilaippn,10) prs_ppn')->first()->prs_ppn;
-        foreach($data as $d){
-            $temp = DB::connection(Session::get('connection'))->table('tbtr_jualheader')
-                ->select('jh_transactionno')
-                ->where('jh_cashierid','=',$d->js_cashierid)
-                ->where('jh_cashierstation','=',$d->js_cashierstation)
-                ->where('jh_kodeigr','=',Session::get('kdigr'))
-                ->whereRaw("trunc(jh_transactiondate) = TO_DATE('".$tanggal."','dd/mm/yyyy')")
-                ->orderBy('jh_transactionno','desc')
-                ->first();
+            $ppn_perushaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
+                ->selectRaw('COALESCE(prs_nilaippn,10) prs_ppn')->first()->prs_ppn;
+            foreach($data as $d){
+                $temp = DB::connection(Session::get('connection'))->table('tbtr_jualheader')
+                    ->select('jh_transactionno')
+                    ->where('jh_cashierid','=',$d->js_cashierid)
+                    ->where('jh_cashierstation','=',$d->js_cashierstation)
+                    ->where('jh_kodeigr','=',Session::get('kdigr'))
+                    ->whereRaw("trunc(jh_transactiondate) = TO_DATE('".$tanggal."','dd/mm/yyyy')")
+                    ->orderBy('jh_transactionno','desc')
+                    ->first();
 
-            $d->struk = $temp ? $temp->jh_transactionno : '00000';
+                $d->struk = $temp ? $temp->jh_transactionno : '00000';
 
-            if(substr($d->js_cashierid,0,2) == 'OM' || $d->js_cashierid == 'BKL'){
-                $fee = DB::connection(Session::get('connection'))->select("SELECT NVL((SUM(FEE) * (1+($ppn_perushaan/100) )),0) FEE FROM (
+                if(substr($d->js_cashierid,0,2) == 'OM' || $d->js_cashierid == 'BKL'){
+                    $fee = DB::connection(Session::get('connection'))->select("SELECT NVL((SUM(FEE) * (1+($ppn_perushaan/100) )),0) FEE FROM (
 		SELECT TRJD_CASHIERSTATION , TRJD_CREATE_BY, (CASE WHEN TRJD_TRANSACTIONTYPE = 'S' THEN 1 ELSE -1 END * TRJD_ADMFEE) FEE
 		FROM TBTR_JUALDETAIL, TBMASTER_TOKOIGR
 		WHERE TRJD_KODEIGR = '".Session::get('kdigr')."' AND TRUNC(TRJD_TRANSACTIONDATE) = TO_DATE('".$tanggal."','dd/mm/yyyy')
@@ -445,75 +474,54 @@ class ActualController extends Controller
 		AND TKO_KODEIGR = '".Session::get('kdigr')."' AND TKO_KODECUSTOMER = TRJD_CUS_KODEMEMBER
 		AND ( TKO_KODESBU IN ( 'O', 'I' ) OR NVL(TKO_TIPEOMI,'AA') IN ('HG' , 'HE')) )");
 
-                $d->distfee = $fee[0]->fee;
-            }
-            else $d->distfee = 0;
+                    $d->distfee = $fee[0]->fee;
+                }
+                else $d->distfee = 0;
 
-            $cb = DB::connection(Session::get('connection'))->select("SELECT NVL(SUM(CASHBACK),0) CB FROM M_PROMOSI_H
+                $cb = DB::connection(Session::get('connection'))->select("SELECT NVL(SUM(CASHBACK),0) CB FROM M_PROMOSI_H
 	WHERE KD_IGR = '".Session::get('kdigr')."' AND TRUNC(TGL_TRANS) = TO_DATE('".$tanggal."','dd/mm/yyyy')
 	AND KODE_STATION = '".$d->js_cashierstation."' AND CREATE_BY = '".$d->js_cashierid."'
 	AND TIPE = 'S'");
 
-            $nk = DB::connection(Session::get('connection'))->select("SELECT NVL(SUM(NKH_TOTALNK),0) NK FROM M_NK_H
+                $nk = DB::connection(Session::get('connection'))->select("SELECT NVL(SUM(NKH_TOTALNK),0) NK FROM M_NK_H
 	WHERE NKH_KDIGR = '".Session::get('kdigr')."' AND TRUNC(NKH_TGLTRANS) = TO_DATE('".$tanggal."','dd/mm/yyyy')
 	AND NKH_STATION = '".$d->js_cashierstation."' AND NKH_CASHIERID = '".$d->js_cashierid."'");
 
-            $d->cb = $cb[0]->cb + $nk[0]->nk;
+                $d->cb = $cb[0]->cb + $nk[0]->nk;
 
-            $d->rcb = DB::connection(Session::get('connection'))->select("SELECT (NVL(SUM(CASHBACK),0) * -1) CB FROM M_PROMOSI_H
+                $d->rcb = DB::connection(Session::get('connection'))->select("SELECT (NVL(SUM(CASHBACK),0) * -1) CB FROM M_PROMOSI_H
 	WHERE KD_IGR = '".Session::get('kdigr')."' AND TRUNC(TGL_TRANS) = TO_DATE('".$tanggal."','dd/mm/yyyy')
 	AND KODE_STATION = '".$d->js_cashierstation."' AND CREATE_BY = '".$d->js_cashierid."'
 	AND TIPE = 'R'")[0]->cb;
 
-            $vcr = DB::connection(Session::get('connection'))->select("SELECT NVL(SUM(DPS_JUMLAHDEPOSIT),0) NILAI
+                $vcr = DB::connection(Session::get('connection'))->select("SELECT NVL(SUM(DPS_JUMLAHDEPOSIT),0) NILAI
               FROM TBTR_DEPOSITSIMPATINDO
               WHERE DPS_KODEIGR = '".Session::get('kdigr')."' AND DPS_STATIONKASIR = '".$d->js_cashierstation."' || '".$d->js_cashierid."'
               AND DPS_TGLTRANSAKSI = TO_CHAR(TO_DATE('".$tanggal."','dd/mm/yyyy'), 'YYYYMMDD')")[0]->nilai;
 
-            $topup = DB::connection(Session::get('connection'))->select("SELECT NVL(SUM(DPP_JUMLAHDEPOSIT),0) NILAI
+                $topup = DB::connection(Session::get('connection'))->select("SELECT NVL(SUM(DPP_JUMLAHDEPOSIT),0) NILAI
               FROM TBTR_DEPOSIT_MITRAIGR
               WHERE DPP_KODEIGR = '".Session::get('kdigr')."' AND DPP_STATIONKASIR = '".$d->js_cashierstation."' || '".$d->js_cashierid."'
               AND DPP_TGLTRANSAKSI = TO_CHAR(TO_DATE('".$tanggal."','dd/mm/yyyy'), 'YYYYMMDD')")[0]->nilai;
 
-            $d->fisik += $vcr + $topup;
+                $d->fisik += $vcr + $topup;
 
-            $d->var -= ($vcr + $topup);
+                $d->var -= ($vcr + $topup);
 
-            $d->titip = $vcr + $topup;
-        }
+                $d->titip = $vcr + $topup;
+            }
 
-        $sums = DB::connection(Session::get('connection'))->table('cetak_sums')->get();
+            $sums = DB::connection(Session::get('connection'))->table('cetak_sums')->get();
 
 //        dd($data);
 
-        $dompdf = new PDF();
-
-        $title = 'Laporan Sales Harian Kasir / Actual - '.$tanggal;
-
-        if(count($data) == 0){
-
-            $pdf = PDF::loadview('pdf-no-data', compact(['title']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+            return view('FRONTOFFICE.LAPORANKASIR.ACTUAL.sales-pdf',compact(['perusahaan','data','sums','tanggal']));
         }
-        else{
-            $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.ACTUAL.sales-pdf',compact(['perusahaan','data','sums','tanggal']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf ->get_canvas();
-            $canvas->page_text(755, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        catch (\Exception $e){
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
         }
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($title.'.pdf');
     }
 
     public function cetakIsaku(Request $request){
@@ -671,13 +679,13 @@ class ActualController extends Controller
     public function cetakCbNk(Request $request){
         $tanggal = $request->tanggal;
 
-        $result = $this->cashback($tanggal);
-        if($result){
-            return response()->json([
-                'message' => 'Terjadi kesalahan!',
-                'error' => $result
-            ], 500);
-        }
+//        $result = $this->cashback();
+//        if($result){
+//            return response()->json([
+//                'message' => 'Terjadi kesalahan!',
+//                'error' => $result
+//            ], 500);
+//        }
 
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
@@ -1064,7 +1072,7 @@ ORDER BY trpt_cus_kodemember");
         return $dompdf->stream($title.'.pdf');
     }
 
-    public function cetakShopeepay(Request $request){
+    public function cetakShopeepayOld(Request $request){
         $tanggal = $request->tanggal;
 
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
@@ -1139,5 +1147,155 @@ ORDER BY    vir_cashierstation
 //        dd($data);
 
         return view('FRONTOFFICE.LAPORANKASIR.ACTUAL.shopeepay-pdf',compact(['perusahaan','data','tanggal']));
+    }
+
+    public function cetakShopeepay(Request $request){
+        $tanggal = $request->tanggal;
+
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
+            ->first();
+
+        $data = DB::connection(Session::get('connection'))
+            ->select("  SELECT    vir_cashierstation
+         || '.'
+         || vir_cashierid
+         || '.'
+         || SUBSTR (username, 1, 5)
+            kassa,
+         SUM (fee_in) fee_in,
+         SUM (nilai_in) nilai_in,
+         SUM (fee_out) fee_out,
+         SUM (nilai_out) nilai_out,
+         SUM (nilai_buy) nilai_buy
+    FROM (  SELECT vir_cashierstation,
+                   vir_cashierid,
+                   SUM (fee_in) fee_in,
+                   SUM (nilai_in) nilai_in,
+                   SUM (fee_out) fee_out,
+                   SUM (nilai_out) nilai_out,
+                   SUM (nilai_buy) nilai_buy
+              FROM (SELECT vir_cashierstation,
+                           vir_cashierid,
+                           CASE
+                              WHEN vir_transactiontype = 'CI' THEN vir_fee
+                              ELSE 0
+                           END
+                              fee_in,
+                           CASE
+                              WHEN vir_transactiontype = 'CI' THEN vir_amount
+                              ELSE 0
+                           END
+                              nilai_in,
+                           CASE
+                              WHEN vir_transactiontype = 'CO' THEN vir_fee
+                              ELSE 0
+                           END
+                              fee_out,
+                           CASE
+                              WHEN vir_transactiontype = 'CO' THEN vir_amount
+                              ELSE 0
+                           END
+                              nilai_out,
+                           CASE
+                              WHEN vir_transactiontype = 'S' THEN vir_amount
+                              ELSE 0
+                           END
+                              nilai_buy
+                      FROM tbtr_virtual
+                     WHERE     TRUNC (vir_transactiondate) = to_date('".$tanggal."','dd/mm/yyyy')
+                           AND vir_kodeigr = '".Session::get('kdigr')."'
+                           AND vir_method = 'SHOPEEPAY'
+                           AND vir_transactiontype IN ('CI', 'CO', 'S')) aa
+          GROUP BY vir_cashierstation, vir_cashierid) bb,
+         tbmaster_user
+   WHERE     kodeigr(+) = '".Session::get('kdigr')."'
+         AND userid(+) = vir_cashierid
+GROUP BY    vir_cashierstation
+         || '.'
+         || vir_cashierid
+         || '.'
+         || SUBSTR (username, 1, 5)
+ORDER BY    vir_cashierstation
+         || '.'
+         || vir_cashierid
+         || '.'
+         || SUBSTR (username, 1, 5)");
+
+//        dd($data);
+
+//        return view('FRONTOFFICE.LAPORANKASIR.ACTUAL.shopeepay-pdf',compact(['perusahaan','data','tanggal']));
+
+        $filename = 'aa.xlsx';
+//        $spreadsheet = new Spreadsheet();
+//        $spreadsheet->getActiveSheet()->getProtection()->setSheet(true);
+//        $sheet = $spreadsheet->getActiveSheet();
+//
+//            //Header
+//        $sheet->setCellValue('A1', $perusahaan->prs_namaperusahaan);
+//        $sheet->setCellValue('A2', $perusahaan->prs_namacabang);
+//        $sheet->setCellValue('B1', 'Laporan Transaksi dengan ShopeePay');
+//        $sheet->getStyle('B1')->getAlignment()->setHorizontal('center')->setVertical('middle');
+//        $sheet->mergeCells('B1:J2');
+//        $sheet->setCellValue('K1', 'Tgl. Cetak : ' . date("d/m/Y"));
+//        $sheet->setCellValue('K2', 'Jam Cetak : ' . date('H:i:s'));
+//        $sheet->setCellValue('K3', 'User ID : ' . Session::get('usid'));
+//        $sheet->setCellValue('K4', 'RINCIAN PER DIVISI (UNIT/RUPIAH)');
+//        $sheet->getColumnDimension('A')->setAutoSize(true);
+//        $sheet->getColumnDimension('K')->setAutoSize(true);
+
+        //Body
+        $htmlString = view('FRONTOFFICE.LAPORANKASIR.ACTUAL.shopeepay-table',compact(['perusahaan','data','tanggal']))->render();
+        $reader = new Html();
+        $spreadsheet = $reader->loadFromString($htmlString);
+        $spreadsheet->getActiveSheet()->getProtection()->setSheet(true);
+        $sheet = $spreadsheet->getActiveSheet();
+
+//        foreach(range('A','G') as $columnID) {
+//            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+//        }
+
+        foreach (range('A', $spreadsheet->getActiveSheet()->getHighestDataColumn()) as $col) {
+            $spreadsheet
+                ->getActiveSheet()
+                ->getColumnDimension($col)
+                ->setAutoSize(true);
+        }
+
+//        foreach (range('A', $spreadsheet->getActiveSheet()->getHighestDataColumn()) as $col) {
+//            $spreadsheet->getActiveSheet()
+//                ->getColumnDimension($col)
+//                ->setAutoSize(true);
+//        }
+//
+//        $spreadsheet->getActiveSheet()->calculateColumnWidths();
+//
+//// Set setAutoSize(false) so that the widths are not recalculated
+//        foreach(range('A', 'E') as $columnID) {
+//            $spreadsheet->getActiveSheet()->getColumnDimension($columnID)->setAutoSize(false);
+//        }
+
+// Merge cells
+//        $spreadsheet->getActiveSheet()->mergeCells("A1:B1");
+//        $spreadsheet->getActiveSheet()->mergeCells("A2:B2");
+//        $spreadsheet->getActiveSheet()->mergeCells("A3:B3");
+//
+//        $spreadsheet->getActiveSheet()->mergeCells("C1:E1");
+//        $spreadsheet->getActiveSheet()->mergeCells("C2:E2");
+//        $spreadsheet->getActiveSheet()->mergeCells("C3:E3");
+//
+//        $spreadsheet->getActiveSheet()->mergeCells("F1:G1");
+//        $spreadsheet->getActiveSheet()->mergeCells("F2:G2");
+//        $spreadsheet->getActiveSheet()->mergeCells("F3:G3");
+
+//        $sheet->getColumnDimension('A')->setAutoSize(true);
+//        $sheet->getColumnDimension('B')->setAutoSize(true);
+
+//        for ($i = 0; $i < sizeof($data); $i++) {
+//            $sheet->setCellValue('A'.(6+$i), 'Tgl. Cetak : ' . date("d/m/Y"));
+//        }
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save(storage_path($filename));
+        return response()->download(storage_path($filename))->deleteFileAfterSend(true);
     }
 }

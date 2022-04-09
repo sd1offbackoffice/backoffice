@@ -11,6 +11,7 @@
                             <div class="col-sm-12">
                                 <form class="form">
                                     <div class="form-group row mb-1">
+
                                         <label class="col-sm-2 col-form-label text-sm-right">Nomor
                                             NPB</label>
                                         <div class="col-sm-2 buttonInside">
@@ -40,6 +41,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group row mb-0">
+
                                         <label class="col-sm-2 col-form-label text-sm-right">Faktur
                                             Pajak : No</label>
                                         <div class="col-sm-3 buttonInside">
@@ -314,9 +316,15 @@
         var ppn = 0;
         var potongan = 0;
         var total = 0;
+
+
+       
+
         $(document).ready(function () {
             $('#table').DataTable();
+
         });
+
 
         $('#txtNoDoc').keypress(function (e) {
             if (e.keyCode == 13) {
@@ -324,6 +332,8 @@
                 getDataNPB(no_npb);
             }
         });
+
+
 
         $('#table_lov_nonpb').DataTable({
             "ajax": '{{ url('/bo/transaksi/pengeluaran/inquery/get-data-lov-npb') }}',

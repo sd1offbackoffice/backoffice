@@ -15,26 +15,10 @@
 @endsection
 
 @section('content')
-    {{-- <table class=" table-responsive" style="border-collapse: collapse">
-        <thead style="border-top: 2px solid black;border-bottom: 2px solid black;">
-            <tr style="text-align: center; vertical-align: center">
-                <th style="width: 70px; border-right: 1px solid black; border-bottom: 1px solid black">No.</th>
-                <th colspan="4" style="width: 380px; border-right: 1px solid black; border-bottom: 1px solid black; text-align: left">Periode Promosi</th>
-                <th colspan="2" style="width: 70px; border-right: 1px solid black; border-bottom: 1px solid black">PLU</th>
-                <th colspan="10" style="width: 300px; border-right: 1px solid black;border-bottom: 1px solid black; text-align: left">Nama Barang</th>
-                <th style="border-right: 1px solid black;border-bottom: 1px solid black">Frac / Unit</th>
-            </tr>
-            <tr>
-                <th style="width: 50px; border-right: 1px solid black;">DPP</th>
-                <th style="width: 100px; border-right: 1px solid black;">PPN</th>
-                <th style="width: 50px; border-right: 1px solid black;">DPP</th>
-                <th style="width: 100px">PPN</th>
-            </tr>
-        </thead>
-    </table> --}}
-    <table>
+
+    <table class="table-responsive">
         <thead style="border-top: 1px solid black; border-bottom: 1px solid black; text-align: left">
-            <tr>              
+            <tr>
                 <th>No.</th>
                 <th>Periode Promosi</th>
                 <th></th>
@@ -52,19 +36,22 @@
                 <th></th>
                 <th></th>
                 <th></th>
-                <th>Frac / Unit</th>                                
+                <th>Frac / Unit</th>
+                <th></th>
+                
             </tr>
             <tr>
                 <th></th>
-                <th colspan="2">Saldo Awal</th>
-                <th colspan="2">Dr. Supplier</th>
-                <th colspan="2">Dr. Cabang</th>
+                <th colspan="2" style="width: 5%">Saldo Awal</th>
+                <th colspan="2" style="width: 7%">Dr. Supplier</th>
+                <th colspan="2" style="width: 7%">Dr. Cabang</th>
                 <th colspan="2">Hdh. Customer</th>
                 <th colspan="2">Ke Cabang</th>
-                <th colspan="2">Dr. Kasir</th>
+                <th colspan="2" style="width: 5%">Dr. Kasir</th>
                 <th colspan="2">Penyesuaian</th>
-                <th colspan="2">Saldo Akhir</th>
-                <th>Nama Event Prom</th>
+                <th colspan="2" style="width: 7%">Saldo Akhir</th>
+                <th style="width: 10.5%">Nama Event Prom</th>
+                <th></th>
                 {{-- <th colspan="3">Saldo Awal</th>
                 <th colspan="2">Dr. Supplier</th>
                 <th colspan="2">Dr. Cabang</th>
@@ -97,12 +84,13 @@
         </thead>
 
         <tbody>
-            
+            @php
+                $index = 1;
+            @endphp
+
             @foreach ($data as $d)
             @if ($dataType == 'early')
                 @php
-                    $index = 1;
-
                     if (substr($d->bom, 4, 2) == '01') {
                         $cp_qtyawal = $d->qtyawal01;
                         $cp_qtykawal = $d->qtykawal01;
@@ -221,7 +209,7 @@
                         $cp_qtyakhir  = $d->qtyakhir07;
                         $cp_qtykakhir = $d->qtykakhir07;
                     }
-                    
+
                     if (substr($d->bom, 4, 2) == '08') {
                         $cp_qtyawal = $d->qtyawal08;
                         $cp_qtykawal = $d->qtykawal08;
@@ -306,11 +294,9 @@
                         $cp_qtyakhir  = $d->qtyakhir12;
                         $cp_qtykakhir = $d->qtykakhir12;
                     }
-                @endphp                
+                @endphp
             @else
                 @php
-                    $index = 1;
-
                     if ($d->bprp_frackonversi == 0) {
                         $frac = 1;
                     } else {
@@ -333,7 +319,7 @@
                     $cp_qtykakhir = mod($d->qtyakhir, $frac);
                 @endphp
             @endif
-                
+
                 @php
                     if (isset($cp_qtyawal) == null) {
                         $cp_qtyawal = 0;
@@ -377,25 +363,24 @@
                     if (isset($cp_qtykakhir) == null) {
                         $cp_qtykakhir = 0;
                     }
+
+                    
                 @endphp
                 <tr>
-                    {{-- <th colspan="3">Saldo Awal</th>
-                    <th colspan="2">Dr. Supplier</th>
-                    <th colspan="2">Dr. Cabang</th>
-                    <th colspan="2">Hdh. Customer</th>
-                    <th colspan="2">Ke Cabang</th>
-                    <th colspan="2">Dr. Kasir</th>
-                    <th colspan="2">Penyesuaian</th>
-                    <th colspan="2">Saldo Akhir</th>
-                    <th>Nama Event Prom</th> --}}
-
                     <td>{{ $index }}</td>
                     <td colspan="3">{{ date_format(new Datetime($d->gfh_tglawal), "d-m-Y") }}</td>
-                    <td colspan="3">s/d {{ date_format(new Datetime($d->gfh_tglakhir), "d-m-Y") }}</td>
+                    <td colspan="3" style="width: 8%">s/d {{ date_format(new Datetime($d->gfh_tglakhir), "d-m-Y") }}</td>
                     <td></td>
                     {{-- <td></td> --}}
                     <td>{{ $d->prdcd }}</td>
-                    <td>{{ $d->bprp_ketpanjang }}</td>
+                    <td style="width: 25%">{{ $d->bprp_ketpanjang }}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td>{{ $d->kemasan }}</td>
                 </tr>
                 <tr>
@@ -410,11 +395,14 @@
                     <td>{{ $cp_qtyksales }}</td>
                     <td>{{ $cp_qtykecab }}</td>
                     <td>{{ $cp_qtykkecab }}</td>
+                    <td>{{ $d->qtyksr }}</td>
+                    <td>{{ $d->qtykksr }}</td>
                     <td>{{ $cp_qtympp }}</td>
                     <td>{{ $cp_qtykmpp }}</td>
                     <td>{{ $cp_qtyakhir }}</td>
                     <td>{{ $cp_qtykakhir }}</td>
                     <td>{{ $d->gfh_kodepromosi }}</td>
+                    <td>-</td>
                     <td>{{ $d->gfh_namapromosi }}</td>
                 </tr>
                 @php

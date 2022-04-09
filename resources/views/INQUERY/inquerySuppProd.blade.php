@@ -3,10 +3,10 @@
 @section('content')
 
     <div class="container mt-3">
-        <div class="row">
-            <div class="col-sm-11">
+        <div class="row justify-content-center mb-3">
+            <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">INQUIRY PRODUK PER SUPPLIER</legend>
+                    <legend  class="w-auto ml-5">INQUIRY SUPPLIER PER PRODUK</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="row">
                             <div class="col-sm-12">
@@ -18,7 +18,7 @@
                                                     <label for="i_kodeplu" class="col-sm-2 col-form-label">PLU</label>
                                                     <div class="col-sm-2 buttonInside">
                                                         <input type="text" class="form-control" id="i_kodeplu">
-                                                        <button type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#modal_plu">
+                                                        <button type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#modal_plu" onclick="showLOV()">
                                                             <img src="{{asset('image/icon/help.png')}}" width="30px">
                                                         </button>
                                                     </div>
@@ -50,12 +50,12 @@
                                     <legend  class="w-auto ml-4">Detail</legend>
                                     <div class="table-wrapper-scroll-y my-custom-scrollbar">
                                         <table id="table_detail" class="table table-sm">
-                                            <thead class="theadDataTables">
+                                            <thead class="headerTable">
                                             <tr class="d-flex">
                                                 <th class="col-sm-1">Supplier</th>
                                                 <th class="col-sm-4">Nama Supplier</th>
-                                                <th class="col-sm-1 pl-0 pr-0 ">Kuantum</th>
-                                                <th class="col-sm-2 text-right">BTB</th>
+                                                <th class="col-sm-1 text-right">Kuantum</th>
+                                                <th class="col-sm-2 pl-5 pr-0 text-left">BPB</th>
                                                 <th class="col-sm-2 text-right">Tanggal</th>
                                                 <th class="col-sm-1 text-right">Term</th>
                                                 <th class="col-sm-1 text-right">H.P.P</th>
@@ -98,31 +98,31 @@
 
                 <!-- Modal content-->
                 <div class="modal-content">
-{{--                    <div class="modal-header">--}}
-{{--                    <div class="form-row col-sm">--}}
-{{--                    <input id="helpSearch" class="form-control helpSearch" type="text" placeholder="Inputkan Nama / Kode Supplier" aria-label="Search">--}}
-{{--                    <div class="invalid-feedback">Inputkan minimal 3 karakter</div>--}}
-{{--                    </div>--}}
-{{--                    </div>--}}
+                    <div class="modal-header">
+                        <div class="form-row col-sm">
+                            <input id="helpSearch" class="form-control helpSearch" type="text" placeholder="..." aria-label="Search">
+                                <div class="invalid-feedback">Inputkan minimal 3 karakter</div>
+                        </div>
+                    </div>
                     <div class="modal-body">
                         <div class="container">
                             <div class="row">
                                 <div class="col">
-                                    {{--<div class="tableFixedHeader">--}}
+                                    <div class="tableFixedHeader">
                                         <table class="table table-sm" id="table_lov">
-                                            <thead>
+                                            <thead class="headerModalSupp">
                                             <tr>
                                                 <td>Kode PLU</td>
-                                                <td>Deskripsi</td>
+                                                <td class="text-left">Deskripsi</td>
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            @foreach($plu as $p)
-                                                <tr onclick="helpSelect('{{ $p->prd_prdcd }}')" class="row_lov">
-                                                    <td>{{ $p->prd_prdcd }}</td>
-                                                    <td>{{ $p->prd_deskripsipanjang }}</td>
-                                                </tr>
-                                            @endforeach
+{{--                                            @foreach($plu as $p)--}}
+{{--                                                <tr onclick="helpSelect('{{ $p->prd_prdcd }}')" class="row_lov">--}}
+{{--                                                    <td>{{ $p->prd_prdcd }}</td>--}}
+{{--                                                    <td>{{ $p->prd_deskripsipanjang }}</td>--}}
+{{--                                                </tr>--}}
+{{--                                            @endforeach--}}
                                             </tbody>
                                         </table>
                                     </div>
@@ -156,16 +156,32 @@
             -webkit-appearance: none;
             margin: 0;
         }
+        .headerTable{
+            background: #0079C2;
+            color: white;
+            position: sticky; top: 0;
+            z-index: 10;
+        }
+
+        tr:nth-child(even) {background-color: #f2f2f2;}
+
+        .headerModalSupp{
+            background: #0079C2;
+            color: white;
+            font-weight: bold;
+            position: sticky; top: 0;
+        }
 
         .row_detail:hover {
             cursor: pointer;
-            background-color: grey;
+            background-color: cornflowerblue;
+            color: white;
         }
 
-        .row_lov:hover{
-            cursor: pointer;
-            background-color: #acacac;
-        }
+        /*.row_lov:hover{*/
+        /*    cursor: pointer;*/
+        /*    background-color: #acacac;*/
+        /*}*/
 
         .my-custom-scrollbar {
             position: relative;
@@ -212,7 +228,13 @@
                     $('#modal-loader').modal('hide');
                     console.log(result);
                     $('#table_detail .row_detail').remove();
-                    if (result) {
+
+                    if(result.data.length == 0){
+                        swal({
+                            title: 'Data tidak ada',
+                            icon: 'error'
+                        })
+                    } else {
                         console.log(result.data[0]);
                         var html = "";
                         var i;
@@ -220,8 +242,8 @@
                             html = '<tr class="row_detail d-flex">' +
                                 '<td class="col-1">' + result.data[i].kodesup + '</td>' +
                                 '<td class="col-4">' + result.data[i].namasup + '</td>' +
-                                '<td class="col-1 pl-0 pr-0 text-right">' + convertToRupiah2(result.data[i].qty) + '</td>' +
-                                '<td class="col-2 text-right">' + result.data[i].nobpb + '</td>' +
+                                '<td class="col-1 text-right">' + convertToRupiah2(result.data[i].qty) + '</td>' +
+                                '<td class="col-2 pl-5 pr-0 text-left">' + result.data[i].nobpb + '</td>' +
                                 '<td class="col-2 text-right">' + formatDate(result.data[i].tglbpb) + '</td>' +
                                 '<td class="col-1 text-right">' + result.data[i].term + '</td>' +
                                 '<td class="col-1 text-right">' + convertToRupiah(result.data[i].hpp) + '</td>' +
@@ -236,6 +258,53 @@
                 }
             })
         }
+
+        function showLOV() {
+            $('#helpSearch').val('')
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/showLOV',
+                type: 'post',
+                data: {},
+                success: function (result) {
+                    $('.modalRow').remove();
+                    for (i = 0; i< result.length; i++){
+                        var temp = `<tr class="modalRow" onclick="helpSelect( '`+ result[i].prd_prdcd +`' )">
+                                <td>`+ result[i].prd_prdcd +`</td>
+                                <td>`+ result[i].prd_deskripsipanjang +`</td>
+                                <tr>`;
+                        $('#table_lov').append(temp);
+                    }
+                    $('#modal_plu').modal('show');
+                }, error: function () {
+                    alert('error');
+                }
+            });
+        }
+
+        $('#helpSearch').keypress(function (e) {
+            if (e.which === 13) {
+                let search = $('#helpSearch').val();
+                ajaxSetup();
+                $.ajax({
+                    url: '{{ url()->current() }}/showLOV',
+                    type: 'post',
+                    data: {search:search},
+                    success: function (result) {
+                        $('.modalRow').remove();
+                        for (var i = 0; i < result.length; i++){
+                            var temp = `<tr class="modalRow" onclick="helpSelect( '`+ result[i].prd_prdcd +`' )">
+                                <td>`+ result[i].prd_prdcd +`</td>
+                                <td>`+ result[i].prd_deskripsipanjang +`</td>
+                                <tr>`;
+                            $('#table_lov').append(temp);
+                        }
+                    }, error: function () {
+                        alert('error');
+                    }
+                });
+            }
+        })
 
         // function null_check(value){
         //     if(value == null)

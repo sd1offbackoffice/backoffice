@@ -74,7 +74,7 @@
             <td class="top-bottom right">{{ number_format($kunjungan, 0, '.', ',') }}</td>
             <td class="top-bottom right">{{ number_format($slip, 0, '.', ',') }}</td>
             <td class="top-bottom right">{{ number_format($produk, 0, '.', ',') }}</td>
-            <td class="top-bottom right">{{ number_format($rupiah, 0, '.', ',') }}</td>
+            <td class="top-bottom right">{{ number_format(ceil($rupiah), 0, '.', ',') }}</td>
             <td class="top-bottom right">{{ number_format($margin, 2, '.', ',') }}</td>
             <td class="top-bottom right">{{ number_format($margin / $rupiah * 100, 2, '.', ',') }}</td>
         </tr>
