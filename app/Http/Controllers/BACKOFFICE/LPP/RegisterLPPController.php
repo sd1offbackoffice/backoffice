@@ -17,6 +17,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Yajra\DataTables\DataTables;
 use File;
 
+
 class RegisterLPPController extends Controller
 {
     public function index()
@@ -528,51 +529,26 @@ ORDER BY lpp_kodedivisi,
 //            $pdf = PDF::loadView('BACKOFFICE.LPP.' . $repid,compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 //            return $pdf->stream('test.pdf');
 
+
+//            $view = \View::make('BACKOFFICE.LPP.' . $repid,compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
+//            $html = $view->render();
+//
+//            $pdf = new TCPDF();
+//            $pdf::SetTitle('Hello World');
+//            $pdf::AddPage();
+//            $pdf::writeHTML($html, true, false, true, false, '');
+//            $pdf::Output('hello_world.pdf');
+//return 'oke';
+
+
+
             //excel
             $filename = 'aa.xlsx';
-//            $spreadsheet = new Spreadsheet();
-//            $spreadsheet->getActiveSheet()->getProtection()->setSheet(true);
-//            $sheet = $spreadsheet->getActiveSheet();
-//
-
-
-            //Body
-            $htmlString = view('BACKOFFICE.LPP.' . $repid . '_xlxs', compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']))->render();
-            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
-            $spreadsheet = $reader->loadFromString($htmlString);
-            $spreadsheet->getActiveSheet()->getProtection()->setSheet(true);
-            $sheet = $spreadsheet->getActiveSheet();
-
-            //Header
+            $view = view('BACKOFFICE.LPP.' . $repid . '_xlxs', compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']))->render();
             $maxColumn = 'U';
-            $column = [];
-            foreach (range('A', $maxColumn) as $columnID) {
-                $column[] = $columnID;
-            }
-            foreach (range('A', $maxColumn) as $columnID) {
-                $sheet->getColumnDimension($columnID)->setAutoSize(true);
-                $sheet->getColumnDimension($columnID)->setAutoSize(false);
-            }
-            $sheet->insertNewRowBefore(1);
-            $sheet->insertNewRowBefore(1);
-            $sheet->insertNewRowBefore(1);
-            $sheet->insertNewRowBefore(1);
-            $sheet->insertNewRowBefore(1);
-            $sheet->setCellValue('A1', $perusahaan->prs_namaperusahaan);
-            $sheet->setCellValue('A2', $perusahaan->prs_namacabang);
-            $sheet->setCellValue('B1', $title);
-            $sheet->getStyle('B1')->getAlignment()->setHorizontal('center')->setVertical('center');
-            $sheet->mergeCells('B1:'.$column[sizeof($column)-2].'2');
-            $sheet->setCellValue($maxColumn.'1', 'Tgl. Cetak : ' . date("d/m/Y"));
-            $sheet->setCellValue($maxColumn.'2', 'Jam Cetak : ' . date('H:i:s'));
-            $sheet->setCellValue($maxColumn.'3', 'User ID : ' . Session::get('usid'));
-            $sheet->setCellValue($maxColumn.'4', 'RINCIAN PER DIVISI (UNIT/RUPIAH)');
-            $sheet->getStyle('A1:'.$maxColumn.'4')->getFont()->setBold(true);
-            $sheet->getStyle('A1');
+            $subtitle = 'RINCIAN PER DIVISI (UNIT/RUPIAH)';
+            $this->createExcel($view,$filename,$maxColumn,$title,$subtitle);
 
-
-            $writer = new Xlsx($spreadsheet);
-            $writer->save(storage_path($filename));
             return response()->download(storage_path($filename))->deleteFileAfterSend(true);
 
 //html
@@ -2012,4 +1988,40 @@ order by prd_kodedivisi,
             }
         }
     }
+
+    function createExcel($view,$filename,$maxColumn,$title,$subtitle){
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
+            ->select('prs_namaperusahaan', 'prs_namacabang', 'prs_namawilayah')
+            ->first();
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
+        $spreadsheet = $reader->loadFromString($view);
+        $spreadsheet->getActiveSheet()->getProtection()->setSheet(true);
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $column = [];
+        foreach (range('A', $maxColumn) as $columnID) {
+            $column[] = $columnID;
+        }
+        foreach (range('A', $maxColumn) as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+            $sheet->getColumnDimension($columnID)->setAutoSize(false);
+        }
+        $sheet->insertNewRowBefore(1);
+        $sheet->insertNewRowBefore(1);
+        $sheet->insertNewRowBefore(1);
+        $sheet->insertNewRowBefore(1);
+        $sheet->insertNewRowBefore(1);
+        $sheet->setCellValue('A1', $perusahaan->prs_namaperusahaan);
+        $sheet->setCellValue('A2', $perusahaan->prs_namacabang);
+        $sheet->setCellValue('B1', $title);
+        $sheet->getStyle('B1')->getAlignment()->setHorizontal('center')->setVertical('center');
+        $sheet->mergeCells('B1:'.$column[sizeof($column)-2].'2');
+        $sheet->setCellValue($maxColumn.'1', 'Tgl. Cetak : ' . date("d/m/Y"));
+        $sheet->setCellValue($maxColumn.'2', 'Jam Cetak : ' . date('H:i:s'));
+        $sheet->setCellValue($maxColumn.'3', 'User ID : ' . Session::get('usid'));
+        $sheet->setCellValue($maxColumn.'4', $subtitle);
+        $sheet->getStyle('A1:'.$maxColumn.'4')->getFont()->setBold(true);
+        $sheet->getStyle('A1');
+        $writer = new Xlsx($spreadsheet);
+        $writer->save(storage_path($filename));    }
 }

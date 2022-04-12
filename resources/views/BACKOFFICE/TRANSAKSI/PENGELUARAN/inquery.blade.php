@@ -1,6 +1,8 @@
 @extends('navbar')
 @section('title','INQUERY NPB')
 @section('content')
+
+
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-sm-12">
@@ -317,9 +319,6 @@
         var potongan = 0;
         var total = 0;
 
-
-       
-
         $(document).ready(function () {
             $('#table').DataTable();
 
@@ -332,8 +331,6 @@
                 getDataNPB(no_npb);
             }
         });
-
-
 
         $('#table_lov_nonpb').DataTable({
             "ajax": '{{ url('/bo/transaksi/pengeluaran/inquery/get-data-lov-npb') }}',

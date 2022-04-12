@@ -724,7 +724,7 @@
                                     $('#row_detail_'+row).find('.kke_unit').val(response.data.unit);
                                     $('#row_detail_'+row).find('.kke_frac').val(convertToRupiah2(response.data.frac));
                                     $('#row_form_'+row).find('.kke_hargabeli').val(convertToRupiah(response.data.hargabeli));
-                                    $('#row_form_'+row).find('.kke_discount').val(convertToRupiah(response.data.diskon));
+                                    $('#row_form_'+row).find('.kke_discount').val(convertToRupiah2(Math.round(response.data.diskon)));
                                     $('#row_form_'+row).find('.kke_sales01').val(convertToRupiah2(response.data.sales1));
                                     $('#row_form_'+row).find('.kke_sales02').val(convertToRupiah2(response.data.sales2));
                                     $('#row_form_'+row).find('.kke_sales03').val(convertToRupiah2(response.data.sales3));

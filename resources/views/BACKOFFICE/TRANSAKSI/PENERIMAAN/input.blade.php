@@ -2,7 +2,7 @@
 @section('title','PENERIMAAN | INPUT')
 @section('content')
 
-<div class="container-xl">
+<div class="container-fluid">
     <button onclick="topFunction()" id="myBtn" title="Go to top">&#9650;</button>
     <h4><span class="badge badge-dark" id="statusJenisPenerimaan"></span></h4>
     <div class="row">
@@ -177,7 +177,7 @@
         <span></span>
         <h4><span class="badge badge-dark">Input Transaksi Pembelian/ Penerimaan Barang</span></h4>
         <span></span>
-        <div class="container">
+        <div class="container-fluid">
             <div class="row align-items-center">
                 <div class="col-1">
                     <label for="i_plu" class="col-form-label">PLU</label>
@@ -726,20 +726,6 @@
         margin-bottom: 12px;
     }
 </style>
-<link rel="stylesheet" href="jquery.stickytable.min.css">
-<script src="//code.jquery.com/jquery.min.js"></script>
-<script src="jquery.stickytable.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-<link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
-<link rel="stylesheet" href="/resources/demos/style.css">
-<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
-<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="sweetalert2.all.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 <script>
     let jenisPenerimaan = 0;
     let inPluTable = $('#inPluTable');
@@ -855,23 +841,26 @@
     }
 
     function startAlert() {
-        Swal.fire({
+        swal({
             title: 'Jenis Penerimaan?',
-            icon: 'question',
-            showDenyButton: 'true',
-            showCancelButton: 'true',
-            confirmButtonText: 'Lain-Lain',
-            denyButtonText: 'Lainnya',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                typeTrn = 'B';
-                console.log(typeTrn)
-            } else if (result.isDenied) {
-                typeTrn = 'L';
-                console.log(typeTrn)
-            } else {
-                typeTrn = 'N';
-                console.log(typeTrn)
+            icon: 'info',
+            buttons: {
+                confirm: "Penerimaan",
+                roll: {
+                    text: "Lain-lain",
+                    value: "lain",
+                },
+            }
+        }).then((confirm) => {
+            switch (confirm) {
+                case true:
+                    typeTrn = 'B';
+                    break;
+                case "lain":
+                    typeTrn = 'L';
+                    break;
+                default:
+                    typeTrn = 'N';
             }
             btb_number.focus();
         })
@@ -886,15 +875,12 @@
                 } else if (!(btb_number.val() == '' || btb_number.val() == null)) {
                     openTab();
                 } else {
-                    Swal.fire({
-                        title: 'Transaksi Baru',
-                        text: 'Buat Nomor Pesanan Baru?',
-                        icon: 'question',
-                        showDenyButton: 'true',
-                        confirmButtonText: 'Ya',
-                        denyButtonText: 'Tidak'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
+                    swal({
+                        title: 'Buat Nomor Penerimaan Baru?',
+                        icon: 'info',
+                        buttons: true,
+                    }).then((confirm) => {
+                        if (confirm) {
                             ajaxSetup();
                             $.ajax({
                                 url: '{{ url()->current() }}/getnewnobtb',
@@ -903,13 +889,14 @@
                                     typeTrn: typeTrn
                                 },
                                 beforeSend: function() {
-                                    Swal.showLoading();
+                                    $('#modal-loader').modal('show');
                                     clearLeftFirstField();
                                     clearRightFirstField();
                                     clearSecondField();
                                     flagRecordId = 'N';
                                 },
                                 success: function(result) {
+                                    console.log(result);
                                     let element = document.querySelector('#btb_date');
                                     if (result.length > 0) {
                                         btb_number.val(result);
@@ -925,7 +912,7 @@
                                         // });
                                         tempDataBTB = [];
                                         clearSecondField();
-                                        Swal.close();
+                                        $('#modal-loader').modal('hide');
                                     }
                                 },
                                 error: function(err) {
@@ -957,12 +944,10 @@
             modalThName3.show();
             modalThName4.hide();
         } catch (e) {
-            Swal.fire({
+            swal({
                 icon: 'info',
                 title: 'Data Sama',
                 text: 'Data Tidak Ditemukan!',
-                showCancelButton: false,
-                showConfirmButton: false,
                 timer: 2000
             });
         }
@@ -1056,37 +1041,48 @@
 
     function editDeletePlu(data) {
         if (flagRecordId == 'Y') {
-            Swal.fire({
+            swal({
                 icon: 'warning',
                 title: 'Data terdaftar',
                 text: 'Nomor Transaksi Ini sudah Dibuatkan Nota',
-                showCancelButton: false,
-                showConfirmButton: false,
                 timer: 2000
             });
             return false;
         }
-        Swal.fire({
-            text: "Koreksi atau Hapus Plu " + data + " ?",
-            icon: 'question',
-            showDenyButton: 'true',
-            showCancelButton: 'true',
-            confirmButtonText: 'Koreksi',
-            denyButtonText: 'Hapus',
-            cancelButtonText: 'Batal',
+        swal("Koreksi atau Hapus Plu " + plu + " ?", {
+            icon: "warning",
+            buttons: {
+                cancel: {
+                    text: "Close",
+                    value: 'close',
+                    visible: true,
+                    className: ""
+                },
+                confirm: {
+                    text: "Koreksi",
+                    value: 'koreksi',
+                    visible: true
+                },
+                delete: {
+                    text: "Hapus",
+                    value: 'delete',
+                    visible: true,
+                    className: ""
+                },
+            },
         }).then((result) => {
-            if (result.isConfirmed) {
+            if (result == 'koreksi') {
                 koreksiPlu(data);
-            } else if (result.isDenied) {
-                Swal.fire({
-                    title: 'Hapus No Transaksi ini?',
-                    icon: 'question',
-                    showDenyButton: 'true',
-                    confirmButtonText: 'Ya',
-                    denyButtonText: 'Tidak'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        deletePlu(data);
+            } else if (value === 'delete') {
+                swal({
+                    title: "Hapus No Transaksi ini ?",
+                    icon: "warning",
+                    buttons: true,
+                    dangerMode: true,
+                    buttons: ['Tidak', 'Ya']
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        deletePlu(data)
                     }
                 });
             }
@@ -1228,22 +1224,18 @@
 
     function changeHargaBeli(hrgBeli, qty, qtyk) {
         if (!po_number.val() && !supplier_code.val()) {
-            Swal.fire({
+            swal({
                 icon: 'warning',
                 text: 'Nilai Harga Beli Untuk Penerimaan Lain Lain Harus 0 !',
-                showCancelButton: false,
-                showConfirmButton: false,
                 timer: 2000
             });
             i_hrgbeli.val('0');
             i_hrgbeli.focus();
             return false;
         } else if (hrgBeli <= 0) {
-            Swal.fire({
+            swal({
                 icon: 'warning',
                 text: 'Nilai Harga Beli Tidak Boleh <= 0 !',
-                showCancelButton: false,
-                showConfirmButton: false,
                 timer: 2000
             });
             i_hrgbeli.val('0');
@@ -1265,18 +1257,16 @@
                 tempDataPLU: tempDataPLU
             },
             beforeSend: () => {
-                Swal.showLoading();
+                $('#modal-loader').modal('show');
             },
             success: (result) => {
-                Swal.close();
+                $('#modal-loader').modal('hide');
                 console.log(result);
 
                 if (result.kode == 0) {
-                    Swal.fire({
+                    swal({
                         icon: 'warning',
                         text: result.msg,
-                        showCancelButton: false,
-                        showConfirmButton: false,
                         timer: 2000
                     });
                 } else {
@@ -1288,7 +1278,7 @@
 
             },
             error: (err) => {
-                Swal.close();
+                $('#modal-loader').modal('hide');
                 console.log(err.responseJSON.message.substr(0, 100));
                 alertError(err.statusText, err.responseJSON.message);
             }
@@ -1298,11 +1288,9 @@
     function changeQty(qty, qtyk, hrgbeli, next) {
 
         if (!btb_number.val() && !supplier_code.val() && qty != 0) {
-            Swal.fire({
+            swal({
                 text: 'Untuk BPB Lain Lain, Kolom Qty tidak boleh 0',
                 icon: 'info',
-                showCancelButton: false,
-                showConfirmButton: false,
                 timer: 2000
             })
             i_qty.val(0);
@@ -1321,28 +1309,26 @@
                     tempDataPLU: tempDataPLU
                 },
                 beforeSend: () => {
-                    Swal.showLoading();
+                    $('#modal-loader').modal('show');
                 },
                 success: (result) => {
-                    Swal.close();
+                    $('#modal-loader').modal('hide');
                     next();
                     if (result.kode == 1) {
                         tempDataPLU = result.data;
                         setValue(result.data);
 
                     } else {
-                        Swal.fire({
+                        swal({
                             icon: 'warning',
                             title: '',
                             text: result.msg,
-                            showCancelButton: false,
-                            showConfirmButton: false,
                             timer: 2000
                         });
                     }
                 },
                 error: (err) => {
-                    Swal.close();
+                    $('#modal-loader').modal('hide');
                     console.log(err.responseJSON.message.substr(0, 100));
                     alertError(err.statusText, err.responseJSON.message);
                 }
@@ -1353,12 +1339,10 @@
 
     function changeBonus1(bonus1) {
         if ((bonus1 == 0 || !bonus1) && !po_number.val() && !supplier_code.val()) {
-            Swal.fire({
+            swal({
                 text: 'Pada Transaksi Bonus, Qty Bonus Harus Diisi !!',
                 icon: 'warning',
                 timer: 2000,
-                showCancelButton: false,
-                showConfirmButton: false
             });
             i_bonus1.focus();
             return false;
@@ -1376,17 +1360,15 @@
                 tempDataPLU: tempDataPLU
             },
             beforeSend: () => {
-                Swal.showLoading();
+                $('#modal-loader').modal('show');
             },
             success: (result) => {
-                Swal.close();
+                $('#modal-loader').modal('hide');
 
                 if (result.kode == 0) {
-                    Swal.fire({
+                    swal({
                         icon: 'warning',
                         text: result.msg,
-                        showCancelButton: false,
-                        showConfirmButton: false,
                         timer: 2000
                     });
                 } else {
@@ -1398,7 +1380,7 @@
 
             },
             error: (err) => {
-                Swal.close();
+                $('#modal-loader').modal('hide');
                 console.log(err.responseJSON.message.substr(0, 100));
                 alertError(err.statusText, err.responseJSON.message);
             }
@@ -1434,18 +1416,16 @@
                 tempDataPLU: tempDataPLU
             },
             beforeSend: () => {
-                Swal.showLoading();
+                $('#modal-loader').modal('show');
             },
             success: (result) => {
-                Swal.close();
+                $('#modal-loader').modal('hide');
                 next();
 
                 if (result.kode == 0) {
-                    Swal.fire({
+                    swal({
                         icon: 'warning',
                         text: result.msg,
-                        showCancelButton: false,
-                        showConfirmButton: false,
                         timer: 2000
                     });
                 } else {
@@ -1454,7 +1434,7 @@
                 }
             },
             error: (err) => {
-                Swal.close();
+                $('#modal-loader').modal('hide');
                 console.log(err.responseJSON.message.substr(0, 100));
                 alertError(err.statusText, err.responseJSON.message);
             }
@@ -1472,21 +1452,19 @@
                 typeTrn: typeTrn
             },
             beforeSend: function() {
-                Swal.showLoading();
+                $('#modal-loader').modal('show');
                 tempDataBTB = [];
                 flagRecordId = 'N';
             },
             success: function(result) {
                 if (result.kode == 0) {
-                    Swal.fire({
+                    swal({
                         icon: 'warning',
                         text: result.msg,
-                        showCancelButton: false,
-                        showConfirmButton: false,
                         timer: 2000
                     });
                 } else {
-                    Swal.close();
+                    $('#modal-loader').modal('hide');
                     tempDataBTB = result.data;
                     console.log(result.data);
                     openTab();
@@ -1516,7 +1494,7 @@
                 }
             },
             error: function(err) {
-                Swal.close();
+                $('#modal-loader').modal('hide');
                 console.log(err.responseJSON.message.substr(0, 100));
                 alertError(err.statusText, err.responseJSON.message)
             }
@@ -1529,7 +1507,7 @@
             openTab();
         } else if ((e.altKey && e.key == 'h') || (e.altKey && e.key == 'H')) {
             if ($('#display_data tr').length == 0 || tempDataSave == '' || tempDataSave == null) {
-                Swal.fire({
+                swal({
                     icon: 'info',
                     title: 'Data Kosong',
                     text: 'Data Tidak Ditemukan!',
@@ -1552,10 +1530,10 @@
 
     i_keterangan.keypress(function(e) {
         if (e.key == 'Enter') {
-            Swal.showLoading();
+            $('#modal-loader').modal('show');
             let keterangan = $(this).val().toUpperCase();
             tempDataPLU.i_keterangan = keterangan;
-            Swal.close();
+            $('#modal-loader').modal('hide');
         }
     })
 
@@ -1770,7 +1748,7 @@
             modalThName4.show();
         } catch (e) {
             console.log(e)
-            Swal.fire({
+            swal({
                 icon: 'info',
                 title: 'Data Kosong',
                 text: 'Data Tidak Ditemukan!',
@@ -1822,26 +1800,22 @@
                 noPo: noPo
             },
             beforeSend: function() {
-                Swal.showLoading();
+                $('#modal-loader').modal('show');
                 modalHelp.modal('hide');
             },
             success: function(result) {
-                Swal.close();
+                $('#modal-loader').modal('hide');
                 if (result.kode == 0) {
-                    Swal.fire({
+                    swal({
                         icon: 'warning',
                         text: result.msg,
-                        showCancelButton: false,
-                        showConfirmButton: false,
                         timer: 2000
                     });
                     po_number.focus()
                 } else if (result.kode == 2) {
-                    Swal.fire({
+                    swal({
                         icon: 'warning',
                         text: result.msg,
-                        showCancelButton: false,
-                        showConfirmButton: false,
                         timer: 2000
                     });
                 } else {
@@ -1860,7 +1834,7 @@
                 }
             },
             error: function(err) {
-                Swal.close();
+                $('#modal-loader').modal('hide');
                 console.log(err.responseJSON.message.substr(0, 100));
                 alertError(err.statusText, err.responseJSON.message);
             }
@@ -1917,11 +1891,9 @@
 
     function chooseSupplier(kode, nama, val_pkp, top) {
         if (typeTrn == 'L') {
-            Swal.fire({
+            swal({
                 icon: 'warning',
                 text: 'Kode Supplier Tidak Boleh Diisi!',
-                showCancelButton: false,
-                showConfirmButton: false,
                 timer: 2000
             });
             supplier_code.val('');
@@ -1961,12 +1933,12 @@
                         typeLov: typeLov
                     },
                     beforeSend: () => {
-                        Swal.showLoading();
+                        $('#modal-loader').modal('show');
                         tbodyModalHelpPLU.empty();
                         theadDataTables.empty();
                     },
                     success: function(result) {
-                        Swal.close();
+                        $('#modal-loader').modal('hide');
                         console.log(result)
                         for (var i = 0; i < result.length; i++) {
                             let value = result[i];
@@ -1981,7 +1953,7 @@
                         i_qty.val(0);
                     },
                     error: function(err) {
-                        Swal.close();
+                        $('#modal-loader').modal('hide');
                         console.log(err.responseJSON.message.substr(0, 100));
                         alertError(err.statusText, err.responseJSON.message);
                     }
@@ -2011,11 +1983,9 @@
             if (typeTrn == 'B') {
                 if (btb_number == '') {
                     if (supplier == '') {
-                        Swal.fire({
+                        swal({
                             icon: 'info',
                             title: "Mohon isi Supplier",
-                            showCancelButton: false,
-                            showConfirmButton: false,
                             timer: 2000
                         });
 
@@ -2046,12 +2016,12 @@
                     typeLov: typeLov
                 },
                 beforeSend: () => {
-                    Swal.showLoading();
+                    $('#modal-loader').modal('show');
                     tbodyModalHelpPLU.empty();
                     theadDataTables.empty();
                 },
                 success: function(result) {
-                    Swal.close();
+                    $('#modal-loader').modal('hide');
                     console.log(result)
                     for (var i = 0; i < result.length; i++) {
                         let value = result[i];
@@ -2077,7 +2047,7 @@
                     }
                 },
                 error: function(err) {
-                    Swal.close();
+                    $('#modal-loader').modal('hide');
                     console.log(err.responseJSON.message.substr(0, 100));
                     alertError(err.statusText, err.responseJSON.message);
                 }
@@ -2106,7 +2076,7 @@
                 tempData: tempData
             },
             beforeSend: function() {
-                Swal.showLoading();
+                $('#modal-loader').modal('show');
                 i_rphdisc1.attr('disabled', false)
                 i_rphdisc2.attr('disabled', false)
                 i_rphdisc2a.attr('disabled', false)
@@ -2115,7 +2085,7 @@
                 i_rphdisc4.attr('disabled', false)
             },
             success: function(result) {
-                Swal.close()
+                $('#modal-loader').modal('hide');
                 closePLUBtn.click();
                 $('.modal-backdrop').remove()
                 i_keterangan.focus();
@@ -2129,18 +2099,16 @@
                         i_bonus1.focus();
                     }
                 } else if (result.kode == '2') {
-                    Swal.fire({
+                    swal({
                         icon: 'warning',
                         text: result.msg,
-                        showCancelButton: false,
-                        showConfirmButton: false,
                         timer: 2000
                     });
                 }
 
             },
             error: function(err) {
-                Swal.close();
+                $('#modal-loader').modal('hide');
                 console.log(err.responseJSON.message.substr(0, 100));
                 alertError(err.statusText, err.responseJSON.message);
             }
@@ -2245,24 +2213,20 @@
 
     function rekamData(flag) {
         if (!i_plu.val()) {
-            Swal.fire({
+            swal({
                 text: 'Mohon isi PLU!',
                 icon: 'warning',
                 timer: 2000,
-                showCancelButton: false,
-                showConfirmButton: false,
             });
             i_plu.focus();
             return false;
         }
         if (jenisPenerimaan == 1) {
             if (!i_bonus1.val()) {
-                Swal.fire({
+                swal({
                     text: 'Mohon isi Bonus 1!',
                     icon: 'warning',
                     timer: 2000,
-                    showCancelButton: false,
-                    showConfirmButton: false,
                 });
                 i_bonus1.focus();
                 return false;
@@ -2283,19 +2247,18 @@
                     tempDataSave: tempDataSave
                 },
                 beforeSend: () => {
-                    Swal.showLoading();
+                    $('#modal-loader').modal('show');
                 },
                 success: (result) => {
-                    Swal.close();
+                    $('#modal-loader').modal('hide');
                     console.log(result);
                     console.log(tempDataSave);
                     if (result.kode == 0) {
-                        Swal.fire({
+                        swal({
                             icon: 'warning',
-                            text: result.msg,
-                            showCancelButton: false
-                        }).then((result) => {
-                            if (result.isConfirmed) {
+                            text: result.msg
+                        }).then((confirm) => {
+                            if (confirm) {
                                 window.location.reload();
                             }
                         });
@@ -2329,7 +2292,7 @@
 
                 },
                 error: (err) => {
-                    Swal.close();
+                    $('#modal-loader').modal('hide');
                     console.log(err.responseJSON.message.substr(0, 100));
                     alertError(err.statusText, err.responseJSON.message);
                 }
@@ -2339,12 +2302,10 @@
 
     function transferPO() {
         if (tempDataSave == '' || tempDataSave == null) {
-            Swal.fire({
+            swal({
                 icon: 'info',
                 title: 'Data Kosong',
                 text: 'Data Tidak Ditemukan!',
-                showCancelButton: false,
-                showConfirmButton: false,
                 timer: 2000
             });
         } else {
@@ -2359,11 +2320,11 @@
                     tempDataSave: tempDataSave
                 },
                 beforeSend: () => {
-                    Swal.showLoading();
+                    $('#modal-loader').modal('show');
                     clearRightFirstField();
                 },
                 success: (result) => {
-                    Swal.close();
+                    $('#modal-loader').modal('hide');
                     if (!($('#display_data tr').length > 0)) {
                         generateDataTable(result.data);
                     }
@@ -2381,7 +2342,7 @@
 
                 },
                 error: (err) => {
-                    Swal.close();
+                    $('#modal-loader').modal('hide');
                     console.log(err.responseJSON.message);
                     alertError(err.statusText, err.responseJSON.message);
                 }
@@ -2402,12 +2363,10 @@
 
     function saveData() {
         if (tempDataSave == '' || tempDataSave == null) {
-            Swal.fire({
+            swal({
                 icon: 'info',
                 title: 'Data Sama',
                 text: 'Tidak ada Perubahan data!',
-                showCancelButton: false,
-                showConfirmButton: false,
                 timer: 2000
             });
         } else {
@@ -2427,35 +2386,26 @@
                     typeTrn: typeTrn
                 },
                 beforeSend: () => {
-                    Swal.showLoading();
+                    $('#modal-loader').modal('show');
                 },
                 success: (result) => {
-                    Swal.close();
+                    $('#modal-loader').modal('hide');
                     if (result.kode == 1) {
-                        Swal.fire({
-                            icon: 'success',
-                            text: result.msg,
-                            showCancelButton: false,
-                            showDenyButton: false,
-                            confirmButtonText: 'Oke'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                window.location.reload();
-                            }
-                        });
+                        swal('', result.msg, 'success');
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 2000)
                     } else {
-                        Swal.fire({
+                        swal({
                             icon: 'warning',
                             text: result.msg,
-                            showCancelButton: false,
-                            showConfirmButton: false,
                             timer: 2000
                         });
                     }
 
                 },
                 error: (err) => {
-                    Swal.close();
+                    $('#modal-loader').modal('hide');
                     alertError(err.statusText, err.responseJSON.message);
                     console.log(err.responseJSON.message.substr(0, 100));
                 }
@@ -2501,7 +2451,7 @@
         if (e.which === 13) {
             if (typeTrn == 'L') {
                 if (supplier_code.val().length > 0) {
-                    Swal.fire(
+                    swal(
                         '',
                         'Kode Supplier Tidak Boleh Diisi!',
                         'warning'
@@ -2524,10 +2474,10 @@
                         kodeSupplier
                     },
                     beforeSend: () => {
-                        Swal.showLoading();
+                        $('#modal-loader').modal('show');
                     },
                     success: function(result) {
-                        Swal.close();
+                        $('#modal-loader').modal('hide');
 
                         if (result.kode == 1) {
                             supplier_name.val(result.data.supplier);
@@ -2541,7 +2491,7 @@
                             supplier_name.val('');
                             top_amt.val('');
                             pkp_amt.val('');
-                            Swal.fire(
+                            swal(
                                 '',
                                 result.message,
                                 'warning'
@@ -2550,7 +2500,7 @@
                         }
                     },
                     error: function(err) {
-                        Swal.close();
+                        $('#modal-loader').modal('hide');
                         console.log(err.responseJSON.message.substr(0, 100));
                         alertError(err.statusText, err.responseJSON.message);
                     }

@@ -240,6 +240,11 @@ Route::get('/bo/transaksi/penerimaan/cetakbpb/viewreport/', 'BACKOFFICE\TRANSAKS
 //New Mode
 
 Route::middleware(['CheckLogin'])->group(function () {
+    Route::prefix('/signature')->group(function () {
+            Route::get('/', 'SignatureController@index');
+            Route::post('/save', 'SignatureController@save');
+            Route::get('/get', 'SignatureController@getAllData');
+    });
     Route::prefix('/inquery')->group(function () {
         /*  Michele */
         Route::prefix('/prod-supp')->group(function () {
@@ -461,8 +466,8 @@ Route::middleware(['CheckLogin'])->group(function () {
         /*Leo*/
         /*MASTER HARGA BELI*/
         Route::prefix('/hargabeli')->group(function () {
-            Route::get('/', 'MASTER\HargaBeliController@index');
-            Route::get('/get-prodmPengiriast', 'MASTER\HargaBeliController@getProdmast');
+            Route::get('/', 'MASTER\iController@index');
+            Route::get('/get-prodmast', 'HargaBelMASTER\HargaBeliController@getProdmast');
             Route::get('/lov-search', 'MASTER\HargaBeliController@lovSearch');
             Route::get('/lov-select', 'MASTER\HargaBeliController@lovSelect');
         });
@@ -481,7 +486,10 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::post('/cetak', 'BACKOFFICE\InformasiHistoryProductController@cetak');
             Route::get('/get-data-detail-sales', 'BACKOFFICE\InformasiHistoryProductController@getDetailSales');
             Route::get('/get-data-penerimaan', 'BACKOFFICE\InformasiHistoryProductController@getPenerimaan');
-            Route::get('/get-data-pb', 'BACKOFFICE\InformasiHistoryProductController@getPenerimaan');
+            Route::get('/get-data-pb', 'BACKOFFICE\InformasiHistoryProductController@getPB');
+            Route::get('/get-data-so', 'BACKOFFICE\InformasiHistoryProductController@getSO');
+            Route::get('/get-data-harga-beli', 'BACKOFFICE\InformasiHistoryProductController@getHargaBeli');
+            Route::get('/get-data-stock-carton', 'BACKOFFICE\InformasiHistoryProductController@getStockCarton');
         });
 
         /*Leo*/
@@ -559,7 +567,10 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::post('/showTrn', 'BACKOFFICE\PBPerishableController@showTrn');
                 Route::post('/showPlu', 'BACKOFFICE\PBPerishableController@showPlu');
                 Route::post('/nmrBaruPb', 'BACKOFFICE\PBPerishableController@nmrBaruPb');
+                Route::post('/qtyPb', 'BACKOFFICE\PBPerishableController@qtyPb');
                 Route::post('/saveDoc', 'BACKOFFICE\PBPerishableController@saveDoc');
+                Route::post('/saveDoc2', 'BACKOFFICE\PBPerishableController@saveDoc2');
+                Route::post('/saveDoc3', 'BACKOFFICE\PBPerishableController@saveDoc3');
                 Route::post('/deleteDoc', 'BACKOFFICE\PBPerishableController@deleteDoc');
                 Route::post('/prosesDoc', 'BACKOFFICE\PBPerishableController@prosesDoc');
             });

@@ -455,10 +455,11 @@
                 $('#modal-loader').modal({backdrop: 'static', keyboard: false});
             },
             success: function (result) {
-
+      
                 $('#modal-loader').modal('hide');
-                $('#kodemcg').val(result.datas.sup_kodesuppliermcg);
-                $('#namasupplier').val(result.datas.sup_namasupplier);
+                $('#kodemcg').val(datas.sup_kodesuppliermcg);
+                $('#namasupplier').val(datas.sup_namasupplier);
+       
             }, error: function (e) {
                 alert('error');
             }

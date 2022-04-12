@@ -478,33 +478,7 @@ ORDER BY MSTH_NODOC");
 
 //        dd($data);
 
-        $dompdf = new PDF();
-
-        $page_title = $name.' '.$tgl1.' - '.$tgl2;
-
-        if(count($data) == 0){
-            $pdf = PDF::loadview('pdf-no-data', ['title' => $page_title]);
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-        }
-        else{
-            $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regdbr-pdf',compact(['perusahaan','data','tgl1','tgl2','title','header', 'name']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf ->get_canvas();
-            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-        }
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($page_title.'.pdf');
+        return view('BACKOFFICE.CETAKREGISTER.regdbr-pdf',compact(['perusahaan','data','tgl1','tgl2','title','header', 'name']));
     }
 
     public function regnpp($ukuran, $tgl1, $tgl2){
@@ -564,33 +538,7 @@ ORDER BY MSTH_NODOC");
 
 //        dd($data);
 
-        $dompdf = new PDF();
-
-        $title = 'Register Memo Penyesuaian Persediaa '.$tgl1.' - '.$tgl2;
-
-        if(count($data) == 0){
-            $pdf = PDF::loadview('pdf-no-data', compact(['title']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-        }
-        else{
-            $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regnpp-pdf',compact(['perusahaan','data','tgl1','tgl2','ukuran']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf ->get_canvas();
-            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-        }
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($title.'.pdf');
+        return view('BACKOFFICE.CETAKREGISTER.regnpp-pdf',compact(['perusahaan','data','tgl1','tgl2','ukuran']));
     }
 
     public function regbamusnah($tgl1, $tgl2){
@@ -622,33 +570,7 @@ ORDER BY MSTH_NODOC");
 
 //        dd($data);
 
-        $dompdf = new PDF();
-
-        $title = 'Register Berita Acara Pemunsahan Barang '.$tgl1.' - '.$tgl2;
-
-        if(count($data) == 0){
-            $pdf = PDF::loadview('pdf-no-data', compact(['title']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-        }
-        else{
-            $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regbamusnah-pdf',compact(['perusahaan','data','tgl1','tgl2']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf ->get_canvas();
-            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-        }
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($title.'.pdf');
+        return view('BACKOFFICE.CETAKREGISTER.regbamusnah-pdf',compact(['perusahaan','data','tgl1','tgl2']));
     }
 
     public function regnbh($tgl1, $tgl2){
@@ -686,21 +608,7 @@ ORDER BY MSTH_NODOC");
 
 //        dd($data);
 
-        $dompdf = new PDF();
-
-        $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regnbh-pdf',compact(['perusahaan','data','tgl1','tgl2','title','filename']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($filename.$tgl1.' - '.$tgl2.'.pdf');
+        return view('BACKOFFICE.CETAKREGISTER.regnbh-pdf',compact(['perusahaan','data','tgl1','tgl2','title','filename']));
     }
 
     public function regbtlnbh($tgl1, $tgl2){
@@ -738,21 +646,7 @@ ORDER BY MSTH_NODOC");
 
 //        dd($data);
 
-        $dompdf = new PDF();
-
-        $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regnbh-pdf',compact(['perusahaan','data','tgl1','tgl2','title','filename']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($filename.$tgl1.' - '.$tgl2.'.pdf');
+        return view('BACKOFFICE.CETAKREGISTER.regnbh-pdf',compact(['perusahaan','data','tgl1','tgl2','title','filename']));
     }
 
     public function regbtlbapb($tgl1, $tgl2){
@@ -784,21 +678,7 @@ ORDER BY MSTH_NODOC");
 
 //        dd($data);
 
-        $dompdf = new PDF();
-
-        $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regbtlbapb-pdf',compact(['perusahaan','data','tgl1','tgl2']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream('Register Pembatalan BAPB'.$tgl1.' - '.$tgl2.'.pdf');
+        return view('BACKOFFICE.CETAKREGISTER.regbtlbapb-pdf',compact(['perusahaan','data','tgl1','tgl2']));
     }
 
     public function regbtltrm($jenis, $tgl1, $tgl2){
@@ -944,21 +824,7 @@ ORDER BY MSTH_NODOC");
         $total->botol = $pkp->botol + $npkp->botol;
         $total->total = $pkp->total + $npkp->total;
 
-        $dompdf = new PDF();
-
-        $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regbtltrm-pdf',compact(['perusahaan','data','tgl1','tgl2','pkp','npkp','pembelian','lain','total']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream('Register Bukti Pembatalan Penerimaan Barang'.$tgl1.' - '.$tgl2.'.pdf');
+        return view('BACKOFFICE.CETAKREGISTER.regbtltrm-pdf',compact(['perusahaan','data','tgl1','tgl2','pkp','npkp','pembelian','lain','total']));
     }
 
     public function regbtlnpb($tgl1, $tgl2){
@@ -1043,21 +909,7 @@ ORDER BY MSTH_NODOC");
 
         $pembelian = $total;
 
-        $dompdf = new PDF();
-
-        $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regbtlnpb-pdf',compact(['perusahaan','data','tgl1','tgl2','pkp','npkp','pembelian','lain','total']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream('Register Pembatalan Pengeluaran Barang'.$tgl1.' - '.$tgl2.'.pdf');
+        return view('BACKOFFICE.CETAKREGISTER.regbtlnpb-pdf',compact(['perusahaan','data','tgl1','tgl2','pkp','npkp','pembelian','lain','total']));
     }
 
     public function regbtlmpp($ukuran, $tgl1, $tgl2){
@@ -1109,21 +961,7 @@ ORDER BY MSTH_NODOC");
 
 //        dd($data);
 
-        $dompdf = new PDF();
-
-        $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regbtlmpp-pdf',compact(['perusahaan','data','tgl1','tgl2','ukuran']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream('Register Memo Penyesuaian Persediaa '.$tgl1.' - '.$tgl2.'.pdf');
+        return view('BACKOFFICE.CETAKREGISTER.regbtlmpp-pdf',compact(['perusahaan','data','tgl1','tgl2','ukuran']));
     }
 
     public function regtrfcab($cabang, $tgl1, $tgl2){
@@ -1175,21 +1013,7 @@ ORDER BY MSTH_NODOC");
 
 //        dd($data);
 
-        $dompdf = new PDF();
-
-        $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regtrfcab-pdf',compact(['perusahaan','data','tgl1','tgl2','title']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($title.' '.$tgl1.' - '.$tgl2.'.pdf');
+        return view('BACKOFFICE.CETAKREGISTER.regtrfcab-pdf',compact(['perusahaan','data','tgl1','tgl2','title']));
     }
 
     public function regtrfcabbtl($cabang, $tgl1, $tgl2){
@@ -1238,21 +1062,7 @@ ORDER BY MSTH_NODOC");
 
 //        dd($data);
 
-        $dompdf = new PDF();
-
-        $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regtrfcab-pdf',compact(['perusahaan','data','tgl1','tgl2','title']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($title.' '.$tgl1.' - '.$tgl2.'.pdf');
+        return view('BACKOFFICE.CETAKREGISTER.regtrfcab-pdf',compact(['perusahaan','data','tgl1','tgl2','title']));
     }
 
     public function regbtlsj($cabang, $tgl1, $tgl2){
@@ -1294,21 +1104,7 @@ ORDER BY MSTH_NODOC");
 
 //        dd($data);
 
-        $dompdf = new PDF();
-
-        $pdf = PDF::loadview('BACKOFFICE.CETAKREGISTER.regbtlsj-pdf',compact(['perusahaan','data','tgl1','tgl2']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream('Register Pembatalan Surat Jalan '.$tgl1.' - '.$tgl2.'.pdf');
+        return view('BACKOFFICE.CETAKREGISTER.regbtlsj-pdf',compact(['perusahaan','data','tgl1','tgl2']));
     }
 
     function formatDate($date){

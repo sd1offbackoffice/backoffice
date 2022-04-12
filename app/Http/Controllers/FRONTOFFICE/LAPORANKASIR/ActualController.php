@@ -1223,7 +1223,7 @@ ORDER BY    vir_cashierstation
 
 //        dd($data);
 
-//        return view('FRONTOFFICE.LAPORANKASIR.ACTUAL.shopeepay-pdf',compact(['perusahaan','data','tanggal']));
+        return view('FRONTOFFICE.LAPORANKASIR.ACTUAL.shopeepay-pdf',compact(['perusahaan','data','tanggal']));
 
         $filename = 'aa.xlsx';
 //        $spreadsheet = new Spreadsheet();

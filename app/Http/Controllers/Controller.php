@@ -27,6 +27,7 @@ class Controller extends BaseController
                                                         where type = 'USER'
                                                      )")[0]->count;
     }
+
 }
 
 

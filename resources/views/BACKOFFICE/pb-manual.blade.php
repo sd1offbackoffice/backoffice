@@ -546,10 +546,10 @@
                                 "    </td>\n" +
                                 "    <td class='p-0'>\n" +
                                 "        <input disabled class='form-control form-control-sm text-right input-harga-satuan'\n" +
-                                "               value='" + convertToRupiah2(response["pbd"][i].pbd_hrgsatuan) + "'>\n" +
+                                "               value='" + convertToRupiah(response["pbd"][i].pbd_hrgsatuan) + "'>\n" +
                                 "    </td>\n" +
                                 "    <td class='p-0'>\n" +
-                                "        <input disabled class='form-control form-control-sm text-right' value='" + convertToRupiah2(response["pbd"][i].pbd_rphdisc1) + "'>\n" +
+                                "        <input disabled class='form-control form-control-sm text-right' value='" + convertToRupiah(response["pbd"][i].pbd_rphdisc1) + "'>\n" +
                                 "    </td>\n" +
                                 "    <td class='p-0'>\n" +
                                 "        <input disabled class='form-control form-control-sm text-right persendisc1' value='" + (response["pbd"][i].pbd_persendisc1) + "'>\n" +
@@ -582,7 +582,7 @@
                                 "    </td>\n" +
                                 "    <td class='p-0'>\n" +
                                 "        <input disabled class='form-control form-control-sm text-right total'\n" +
-                                "               value='" + convertToRupiah2(response["pbd"][i].total) + "'>\n" +
+                                "               value='" + convertToRupiah(response["pbd"][i].total) + "'>\n" +
                                 "    </td>\n" +
                                 "</tr>"
                             );
@@ -604,10 +604,10 @@
             $('#deskripsi').val(deskripsi);
             $('#kode-supplier').val(kdsupplier);
             $('#supplier').val(nmsupplier);
-            $('#hgjual').val(convertToRupiah2(hargajual));
-            $('#pkm').val(convertToRupiah2(pkm));
-            $('#stock').val(convertToRupiah2(stock));
-            $('#minor').val(convertToRupiah2(minor));
+            $('#hgjual').val(convertToRupiah(hargajual));
+            $('#pkm').val(convertToRupiah(pkm));
+            $('#stock').val(convertToRupiah(stock));
+            $('#minor').val(convertToRupiah(minor));
 
             // $(".baris").children('td').each(function () {
             //     $(this).find("input").removeAttr('style');
@@ -767,6 +767,7 @@
                                 $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                             },
                             success: function (response) {
+                                console.log(response);
                                 if (response['message'] != "") {
                                     swal({
                                         title: response['message'],
@@ -811,16 +812,16 @@
                                         "    </td>\n" +
                                         "    <td class='p-0'>\n" +
                                         "        <input disabled class='form-control form-control-sm text-right input-harga-satuan'\n" +
-                                        "               value='" + convertToRupiah2(response["plu"].pbd_hrgsatuan) + "'>\n" +
+                                        "               value='" + convertToRupiah(response["plu"].pbd_hrgsatuan) + "'>\n" +
                                         "    </td>\n" +
                                         "    <td class='p-0'>\n" +
-                                        "        <input disabled class='form-control form-control-sm text-right' value='" + convertToRupiah2(response["plu"].pbd_rphdisc1) + "'>\n" +
+                                        "        <input disabled class='form-control form-control-sm text-right' value='" + convertToRupiah(response["plu"].pbd_rphdisc1) + "'>\n" +
                                         "    </td>\n" +
                                         "    <td class='p-0'>\n" +
                                         "        <input disabled class='form-control form-control-sm text-right persendisc1' value='" + (response["plu"].pbd_persendisc1) + "'>\n" +
                                         "    </td>\n" +
                                         "    <td class='p-0'>\n" +
-                                        "        <input disabled class='form-control form-control-sm text-right' value='" + convertToRupiah2(response["plu"].pbd_rphdisc2) + "'>\n" +
+                                        "        <input disabled class='form-control form-control-sm text-right' value='" + convertToRupiah(response["plu"].pbd_rphdisc2) + "'>\n" +
                                         "    </td>\n" +
                                         "    <td class='p-0'>\n" +
                                         "        <input disabled class='form-control form-control-sm text-right persendisc2' value='" + (response["plu"].pbd_persendisc2) + "'>\n" +
@@ -847,7 +848,7 @@
                                         "    </td>\n" +
                                         "    <td class='p-0'>\n" +
                                         "        <input disabled class='form-control form-control-sm text-right total'\n" +
-                                        "               value='" + convertToRupiah2(response["plu"].total) + "'>\n" +
+                                        "               value='" + convertToRupiah(response["plu"].total) + "'>\n" +
                                         "    </td>\n" +
                                         "</tr>"
                                     );
@@ -1014,18 +1015,18 @@
             qtyctn = (qtyctn != '' ? qtyctn : 0);
             qtypcs = (qtypcs != '' ? qtypcs : 0);
 
-            qtypb = (qtyctn * frac) + qtypcs;
-            qtyctn = Math.round(qtypb / frac);
+            qtypb = parseFloat(qtyctn * frac) + qtypcs;
+            qtyctn = qtypb / frac;
             qtypcs = qtypb % frac;
-            gross = (qtyctn * hargasatuan) + ((hargasatuan / frac) * (qtypcs != '' ? qtypcs : 0));
+            gross = parseFloat(qtyctn * hargasatuan) + ( parseFloat(hargasatuan / frac) * (qtypcs != '' ? qtypcs : 0));
 
             if (persendisc1 > 0) {
-                gross = gross - ((gross * persendisc1) / 100);
+                gross = gross - (parseFloat(gross * persendisc1) / 100);
             }
 
             ppn = 0;
             if (bkp == 'Y') {
-                ppn = (gross * persenppn) / 100;
+                ppn = parseFloat(gross * persenppn) / 100;
             }
 
             div.find('.input-ctn').val(qtyctn);
@@ -1048,11 +1049,11 @@
             persenppn = parseFloat(detail[row].pbd_persenppn);
             qtypb = parseFloat(detail[row].pbd_qtypb);
 
-            HrgBeli = (qtyctn * hargasatuan) + (qtypcs * (hargasatuan / frac));
-            gross = HrgBeli - (HrgBeli * persendisc1 / 100);
+            HrgBeli = parseFloat(qtyctn * hargasatuan) + parseFloat(qtypcs * parseFloat(hargasatuan / frac));
+            gross = HrgBeli - parseFloat(HrgBeli * persendisc1 / 100);
             HrgBeli = gross;
-            gross = HrgBeli - (HrgBeli * persendisc2 / 100);
-            ppn = (gross * persenppn) / 100;
+            gross = HrgBeli - parseFloat(HrgBeli * persendisc2 / 100);
+            ppn = parseFloat(gross * persenppn) / 100;
             ppnbm = ppnbm * qtypb;
             ppnbotol = ppnbotol * qtypb;
             total = gross + ppn + ppnbm + ppnbotol;
@@ -1156,11 +1157,11 @@
 
                                 qtyctn = qtypb / frac;
                                 qtypcs = qtypb % frac;
-                                HrgBeli = (qtyctn * hargasatuan) + (qtypcs * (hargasatuan / frac));
-                                gross = HrgBeli - (HrgBeli * persendisc1 / 100);
+                                HrgBeli = parseFloat(qtyctn * hargasatuan) + parseFloat(qtypcs * (hargasatuan / frac));
+                                gross = HrgBeli - parseFloat(HrgBeli * persendisc1 / 100);
                                 HrgBeli = gross;
-                                gross = HrgBeli - (HrgBeli * persendisc2 / 100);
-                                ppn = (gross * persenppn) / 100;
+                                gross = HrgBeli - parseFloat(HrgBeli * persendisc2 / 100);
+                                ppn = parseFloat(gross * persenppn) / 100;
                                 ppnbm = ppnbm * qtypb;
                                 ppnbotol = ppnbotol * qtypb;
                                 total = gross + ppn + ppnbm + ppnbotol;

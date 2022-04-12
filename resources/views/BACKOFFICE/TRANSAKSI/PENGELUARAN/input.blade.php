@@ -44,7 +44,7 @@
                                         <label class="col-sm-1 col-form-label text-sm-right" style="font-size: 12px">TANGGAL</label>
                                         <div class="col-sm-2">
                                             <input type="text" id="dtTglDoc"
-                                                   class="text-center form-control">
+                                                   class="form-control">
                                         </div>
                                     </div>
                                     <div class="form-group row mb-0">
@@ -556,10 +556,11 @@
         $(document).on('click', '#btnHapusDokumen', function () {
             var nodoc = $('#txtNoDoc').val();
             swal({
-                title: "Hapus No Doc" + nodoc + " ?",
-                text: "Tekan Tombol Ya untuk Melanjutkan!",
-                icon: "question",
+                title: 'Hapus No Doc ' + nodoc + ' ?',
+                text: 'Tekan Tombol OK untuk Melanjutkan!',
+                icon: 'warning',
                 buttons: true,
+                dangerMode: true
             }).then((yes) => {
                 if (yes) {
                     ajaxSetup();
@@ -569,15 +570,16 @@
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
+                        data: {nodoc: $('#txtNoDoc').val()},
                         beforeSend: function () {
                             $('#modal-loader').modal('show');
                         },
                         success: function (response) {
                             $('#modal-loader').modal('hide');
                             swal({
-                                title: response.status,
+                                title: response.title,
                                 text: response.message,
-                                icon: 'error'
+                                icon: response.status
                             }).then(() => {
                                 window.location.reload();
                             });
@@ -586,10 +588,11 @@
                             $('#modal-loader').modal('hide');
                             // handle error
                             swal({
-                                title: error.responseJSON.exception,
+                                title: 'Terjadi kesalahan!',
                                 text: error.responseJSON.message,
                                 icon: 'error'
                             }).then(() => {
+                                window.location.reload();
                             });
                         }
                     });
@@ -598,6 +601,10 @@
                 }
             });
         });
+
+
+
+
 
         function getDataPLU(plu, rowheader) {
             if (kdsup == '' || kdsup == null) {
@@ -1188,7 +1195,7 @@
                                             },
                                             success: function (response) {
                                                 // console.log(response);
-                                            }, 
+                                            },
                                             error: function (error) {
                                                 console.log(error);
 
@@ -1272,7 +1279,7 @@
                                 });
                             }
                             if (model == '*TAMBAH*' || model == '*KOREKSI*') {
-                                proses(plu, (ctn * frac) + pcs, rh);
+                                proses(plu, ((ctn * frac) + pcs), rh);
                             }
 
                         },
@@ -1605,39 +1612,39 @@
                             data.keterangan = $(this).find(".keterangan").val();
                             datas.push(data);
                         });
+                        console.log(datas);
+                        // ajaxSetup();
+                        // $.ajax({
+                        //     type: "POST",
+                        //     url: "{{ url('/bo/transaksi/pengeluaran/input/save') }}",
+                        //     data: {
+                        //         datas: datas
+                        //     },
+                        //     beforeSend: function () {
+                        //         $('#modal-loader').modal('show');
+                        //     },
+                        //     success: function (response) {
+                        //         $('#modal-loader').modal('hide');
+                        //         swal({
+                        //             title: response.status,
+                        //             text: response.message,
+                        //             icon: response.status
+                        //         }).then(() => {
+                        //             window.location.reload();
+                        //         });
 
-                        ajaxSetup();
-                        $.ajax({
-                            type: "POST",
-                            url: "{{ url('/bo/transaksi/pengeluaran/input/save') }}",
-                            data: {
-                                datas: datas
-                            },
-                            beforeSend: function () {
-                                $('#modal-loader').modal('show');
-                            },
-                            success: function (response) {
-                                $('#modal-loader').modal('hide');
-                                swal({
-                                    title: response.status,
-                                    text: response.message,
-                                    icon: response.status
-                                }).then(() => {
-                                    window.location.reload();
-                                });
-
-                            },
-                            error: function (error) {
-                                $('#modal-loader').modal('hide');
-                                // handle error
-                                swal({
-                                    title: 'Gagal!',
-                                    text: 'Data gagal disimpan!',
-                                    icon: 'error'
-                                }).then(() => {
-                                });
-                            }
-                        });
+                        //     },
+                        //     error: function (error) {
+                        //         $('#modal-loader').modal('hide');
+                        //         // handle error
+                        //         swal({
+                        //             title: 'Gagal!',
+                        //             text: 'Data gagal disimpan!',
+                        //             icon: 'error'
+                        //         }).then(() => {
+                        //         });
+                        //     }
+                        // });
                     } else {
                         return false;
                     }

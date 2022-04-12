@@ -53,8 +53,7 @@ class PBPerishableController extends Controller
 
         $temp = DB::connection('simbdg')->select("SELECT count(1) FROM tbtr_pb_h 
         WHERE pbh_tgltransfer IS NOT NULL 
-        AND pbh_nopb =$nopb"
-        );
+        AND pbh_nopb =$nopb");
 
         if ($temp == 0){
             $flag = 0;
@@ -143,312 +142,254 @@ class PBPerishableController extends Controller
     }
 
     public function saveDoc(Request $request){
-        $kodeigr = Session::get('kdigr');
         $nopb  = $request->nopb;
+        $message ='';
+        $status = '';
+        $errflag = '';
+        // DECLARE
+        // temp       NUMBER;
+        // confirm    VARCHAR2 (20);
+        // P_SUKSES   BOOLEAN;
+        // P_ERRMSG   VARCHAR2 (1000);
+        // nopb_old   VARCHAR2 (20);
+
+        // step number;
+        // BEGIN
+
+        // --**cek qty
+
+        // select sum(pbp_qtypb) 
+        // into temp 
+        // from tbtr_pb_perishable
+        // where pbp_nopb = :no_pb;
+
+        $temp = DB::connection('simbdg')->select("SELECT SUM(pbp_qtypb) FROM tbtr_pb_perishable 
+        WHERE pbp_nopb =$nopb");
+        // IF temp <= 0
+        // THEN
+        // dc_alert.ok ('Tidak ada qty yang akan diPB', 'info');
+        // RETURN;
+        // END IF;
+        
+        if($temp <=0){
+            $message = 'Tidak ada qty yang akan diPB';
+            $status = 'info';
+            $errflag = '1';
+            return response()->json(['message' => $message, 'status' => $status, 'errflag' => $errflag]);
+        }
+
+
+        // --**cek kubikase
+
+        // step := 1;
+        $step = 1;
+        
+        // SELECT COUNT (1)
+        // INTO temp
+        // FROM (  SELECT pbp_nopb,
+        //                 pbp_tglpb,
+        //                 pbp_kodesupplier,
+        //                 pbp_kodesarana,
+        //                 SUM (pbp_kubikase) ttl_kubikase
+        //             FROM tbtr_pb_perishable
+        //         GROUP BY pbp_nopb,
+        //                 pbp_tglpb,
+        //                 pbp_kodesupplier,
+        //                 pbp_kodesarana),
+        //     tbmaster_supplier,
+        //     tbmaster_saranafreezer
+        // WHERE     pbp_kodesupplier = sup_kodesupplier
+        //     AND pbp_kodesarana = sfrz_kodesarana
+        //     AND pbp_nopb = :no_pb
+        //     AND ttl_kubikase > sfrz_volsarana*sfrz_jumlahsarana;
+        //     --ganti disini
+        $temp = DB::connection('simbdg')->select("SELECT COUNT (1)
+                FROM (  SELECT pbp_nopb,
+                                pbp_tglpb,
+                                pbp_kodesupplier,
+                                pbp_kodesarana,
+                                SUM (pbp_kubikase) ttl_kubikase
+                            FROM tbtr_pb_perishable
+                        GROUP BY pbp_nopb,
+                                pbp_tglpb,
+                                pbp_kodesupplier,
+                                pbp_kodesarana),
+                    tbmaster_supplier,
+                    tbmaster_saranafreezer
+                WHERE     pbp_kodesupplier = sup_kodesupplier
+                    AND pbp_kodesarana = sfrz_kodesarana
+                    AND pbp_nopb = $nopb
+                    AND ttl_kubikase > sfrz_volsarana*sfrz_jumlahsarana");
+
+        // IF temp > 0
+        // THEN
+        // dc_alert.ok ('Terdapat Total Kubikase Item yang melebihi volume sarana. Qty PB harus dilakukan pengurangan!!', 'info');
+        // RETURN;
+        // END IF;
+
+        if($temp > 0){
+            $message = 'Terdapat Total Kubikase Item yang melebihi volume sarana. Qty PB harus dilakukan pengurangan!!';
+            $status = 'info';
+            $errflag = '1';
+            return response()->json(['message' => $message, 'status' => $status, 'errflag' => $errflag]);
+        }
+        
+
+        // --**cek nomor pb
+
+        // step := 2;
+        $step = 2;
+
+        // SELECT COUNT (1)
+        // INTO temp
+        // FROM tbtr_pb_h
+        // WHERE pbh_nopb = :no_pb AND pbh_keteranganpb <> 'PB PERISHABLE';
+        $temp = DB::connection('simbdg')->table('tbtr_pb_h')
+        ->selectRaw('COUNT (1)')
+        ->where('pbh_nopb', '=', $nopb)
+        ->where('pbh_keteranganpb', '<>', 'PB PERISHABLE')
+        ->get();
+
+        if ($temp > 0){
+            $message = 'No.PB sudah terpakai, akan diganti dengan nomor baru';
+            $status = 'info';
+            $errflag = '1';
+            return response()->json(['message' => $message, 'status' => $status, 'errflag' => $errflag]);
+        }
+        else if($temp = 0){
+            $message = '';
+            $status = '';
+            $errflag = '';
+            return response()->json(['message' => $message, 'status' => $status, 'errflag' => $errflag]);
+        }
+
+    }
+        // IF temp > 0
+        // THEN
+        // dc_alert.confirm (
+        //     'No.PB sudah terpakai, akan diganti dengan nomor baru',
+        //     'info',
+        //     confirm);
+
+        // IF confirm = 'OK'
+        // THEN
+            
+    public function saveDoc2(Request $request){
+        $kodeigr = Session::get('kdigr');//     step := 3;
+        $nopb  = $request->nopb;
+
+        $step = 3;
+        //     nopb_old := :no_pb;
+        
+        //     :NO_PB :=
+        //         f_igr_get_nomor ( :parameter.KodeIgr,
+        //                         'PB',
+        //                         'Nomor Permintaan Barang',
+        //                         :parameter.KodeIgr || TO_CHAR (SYSDATE, 'yyMM'),
+        //                         3,
+        //                         TRUE);
+        $c = loginController::getConnectionProcedure();
+        
+        $s = oci_parse($c, "BEGIN :NO_PB := f_igr_get_nomor('$kodeigr','PB','Nomor Permintaan Barang',
+        " .$kodeigr. " || TO_CHAR (SYSDATE, 'yyMM') , 3, TRUE); END;");
+        oci_bind_by_name($s, ':NO_PB', $no_pb, 32);
+        oci_execute($s);
+        
+        //     UPDATE tbtr_pb_perishable
+        //         SET pbp_nopb = :no_pb
+        //     WHERE pbp_nopb = nopb_old;
+        DB::connection('simbdg')
+        ->update("UPDATE tbtr_pb_perishable
+                    SET pbp_nopb = $no_pb
+                    WHERE pbp_nopb = $nopb");
+
+        //     FORMS_DDL ('commit');
+        return response()->json(['message' => 'ganti nomor', 'status' => 'info', 'nopbnew' => $no_pb]);
+        //     --dc_alert.ok ('ganti nomor');
+        // ELSE
+        //     RETURN;
+        // END IF;
+        // END IF;
+    }
+
+
+        // --**proses
+    public function saveDoc3(Request $request){
+        // step := 4;
+        $kodeigr = Session::get('kdigr');//     step := 3;
+        $nopb  = $request->nopb;
+        $tglpb  = $request->tglpb;
         $data = $request->data;
         $date = date('Y-m-d', strtotime($request->date));
         $userid = Session::get('usid');
         $today  = date('Y-m-d H:i:s');
         $message ='';
         $status = '';
-    // DECLARE
-    // temp       NUMBER;
-    // confirm    VARCHAR2 (20);
-    // P_SUKSES   BOOLEAN;
-    // P_ERRMSG   VARCHAR2 (1000);
-    // nopb_old   VARCHAR2 (20);
+        $step = '';
 
-    // step number;
-    // BEGIN
-
-    // --**cek qty
-
-    // select sum(pbp_qtypb) 
-    // into temp 
-    // from tbtr_pb_perishable
-    // where pbp_nopb = :no_pb;
-
-    $temp = DB::connection('simbdg')->table('tbtr_pb_perishable')
-        ->selectRaw('SUM (pbp_qtypb)')
-        ->where('pbp_nopb', '=', $nopb)
-        ->get();
-
-    // IF temp <= 0
-    // THEN
-    // dc_alert.ok ('Tidak ada qty yang akan diPB', 'info');
-    // RETURN;
-    // END IF;
-    
-    if($temp <=0){
-        $message = 'Tidak ada qty yang akan diPB';
-        $status = 'info';
-        return response()->json(['message' => $message, 'status' => $status]);
-    }
-
-
-    // --**cek kubikase
-
-    // step := 1;
-    
-    // SELECT COUNT (1)
-    // INTO temp
-    // FROM (  SELECT pbp_nopb,
-    //                 pbp_tglpb,
-    //                 pbp_kodesupplier,
-    //                 pbp_kodesarana,
-    //                 SUM (pbp_kubikase) ttl_kubikase
-    //             FROM tbtr_pb_perishable
-    //         GROUP BY pbp_nopb,
-    //                 pbp_tglpb,
-    //                 pbp_kodesupplier,
-    //                 pbp_kodesarana),
-    //     tbmaster_supplier,
-    //     tbmaster_saranafreezer
-    // WHERE     pbp_kodesupplier = sup_kodesupplier
-    //     AND pbp_kodesarana = sfrz_kodesarana
-    //     AND pbp_nopb = :no_pb
-    //     AND ttl_kubikase > sfrz_volsarana*sfrz_jumlahsarana;
-    //     --ganti disini
-    $temp = DB::connection('simbdg')->select("SELECT COUNT (1)
-            FROM (  SELECT pbp_nopb,
-                            pbp_tglpb,
-                            pbp_kodesupplier,
-                            pbp_kodesarana,
-                            SUM (pbp_kubikase) ttl_kubikase
-                        FROM tbtr_pb_perishable
-                    GROUP BY pbp_nopb,
-                            pbp_tglpb,
-                            pbp_kodesupplier,
-                            pbp_kodesarana),
-                tbmaster_supplier,
-                tbmaster_saranafreezer
-            WHERE     pbp_kodesupplier = sup_kodesupplier
-                AND pbp_kodesarana = sfrz_kodesarana
-                AND pbp_nopb = :no_pb
-                AND ttl_kubikase > sfrz_volsarana*sfrz_jumlahsarana");
-
-    // IF temp > 0
-    // THEN
-    // dc_alert.ok ('Terdapat Total Kubikase Item yang melebihi volume sarana. Qty PB harus dilakukan pengurangan!!', 'info');
-    // RETURN;
-    // END IF;
-
-    if($temp > 0){
-        $message = 'Terdapat Total Kubikase Item yang melebihi volume sarana. Qty PB harus dilakukan pengurangan!!';
-        $status = 'info';
-        return response()->json(['message' => $message, 'status' => $status]);
-    }
-    
-
-    // --**cek nomor pb
-
-    // step := 2;
-
-    // SELECT COUNT (1)
-    // INTO temp
-    // FROM tbtr_pb_h
-    // WHERE pbh_nopb = :no_pb AND pbh_keteranganpb <> 'PB PERISHABLE';
-
-    // IF temp > 0
-    // THEN
-    // dc_alert.confirm (
-    //     'No.PB sudah terpakai, akan diganti dengan nomor baru',
-    //     'info',
-    //     confirm);
-
-    // IF confirm = 'OK'
-    // THEN
-        
-    //     step := 3;
-        
-    //     nopb_old := :no_pb;
-
-    //     :NO_PB :=
-    //         f_igr_get_nomor ( :parameter.KodeIgr,
-    //                         'PB',
-    //                         'Nomor Permintaan Barang',
-    //                         :parameter.KodeIgr || TO_CHAR (SYSDATE, 'yyMM'),
-    //                         3,
-    //                         TRUE);
-
-    //     UPDATE tbtr_pb_perishable
-    //         SET pbp_nopb = :no_pb
-    //     WHERE pbp_nopb = nopb_old;
-
-    //     FORMS_DDL ('commit');
-
-    //     --dc_alert.ok ('ganti nomor');
-    // ELSE
-    //     RETURN;
-    // END IF;
-    // END IF;
-
-
-
-    // --**proses
-
-    // step := 4;
-    
-    // IF :no_pb IS NULL
-    // THEN
-    // RETURN;
-    // END IF;
-
-    // dc_alert.confirm (
-    //     'Simpan PB?',
-    //     ' ',
-    //     confirm);
-
-    // IF confirm = 'CANCEL'
-    // THEN
-    //         return;
-    // END IF;
-
-    // Sp_Create_Pb_Perishable_frz (2,
-    //                             :tgl_pb,
-    //                             :parameter.kodeigr,
-    //                             :no_pb,
-    //                             :parameter.userid,
-    //                             P_SUKSES,
-    //                             P_ERRMSG);
-
-    // IF NOT p_sukses
-    // THEN
-    // dc_alert.ok (p_errmsg);
-    // RETURN;
-    // ELSE
-    // dc_alert.ok ('PB berhasil disimpan', 'Info');
-    // CLEAR_FORM (no_validate, full_rollback);  
-    // go_item('no_pb');
-    // END IF;
-
-    // exception when others
-    // then 
-    // dc_alert.ok('Err, ' || step);
-
-    // END;
-        //get new no trn
-        // $ip = str_replace('.', '0', SUBSTR(Session::get('ip'), -3));
-
+        // Sp_Create_Pb_Perishable_frz (2,
+        //                             :tgl_pb,
+        //                             :parameter.kodeigr,
+        //                             :no_pb,
+        //                             :parameter.userid,
+        //                             P_SUKSES,
+        //                             P_ERRMSG);
         $c = loginController::getConnectionProcedure();
+        $sql = "BEGIN Sp_Create_Pb_Perishable_frz2(2, to_date('" . $tglpb . "','dd/mm/yyyy'), $kodeigr, $nopb, $userid, :P_SUKSES, :P_ERRMSG); END;";
+        $s = oci_parse($c, $sql);
 
-        $s = oci_parse($c, "BEGIN :NO_PB := f_igr_get_nomor('$kodeigr','PB','Nomor Permintaan Barang',
-                            " .$kodeigr. " || TO_CHAR (SYSDATE, 'yyMM') , 3, FALSE); END;");
-        oci_bind_by_name($s, ':NO_PB', $no_pb, 32);
+        oci_bind_by_name($s, ':P_SUKSES', $p_sukses, 200);
+        oci_bind_by_name($s, ':P_ERRMSG', $err_txt, 200);
         oci_execute($s);
 
-        $getDoc = DB::connection('simbdg')->table('tbtr_pb_perishable')->where('pbp_nopb', $no_pb)->first();
+        // IF NOT p_sukses
+        // THEN
+        // dc_alert.ok (p_errmsg);
+        // RETURN;
+        // ELSE
+        // dc_alert.ok ('PB berhasil disimpan', 'Info');
+        // CLEAR_FORM (no_validate, full_rollback);  
+        // go_item('no_pb');
+        // END IF;
 
-        if($getDoc){
-            DB::connection('simbdg')->table('tbtr_pb_perishable')->where('pbp_nopb', $no_pb)->delete();
-
-            for ($i = 1; $i < sizeof($data); $i++){
-                $temp = $data[$i];
-
-                $prodmast = DB::connection('simbdg')->table('tbmaster_prodmast')
-                    ->where('pbp_kodeigr', $kodeigr)
-                    ->where('pbp_prdcd', $temp['plu'])
-                    ->first();
-
-                //update data
-                DB::connection('simbdg')->table('tbtr_pb_perishable')
-                    ->insert([
-                        'pbp_kodeigr' => $kodeigr, 
-                        'pbp_recordid' => '', 
-                        'pbp_nopb' => $getDoc->pbp_nopb,
-                        'pbp_tglpb' => $date,
-                        'pbp_kodesupplier' => $getDoc->pbp_kodesupplier,
-                        'pbp_kodesarana' => $getDoc->pbp_kodesarana,
-                        'pbp_volsarana' => $getDoc->pbp_volsarana,
-                        'pbp_prdcd' => $temp['plu'], 
-                        'pbp_pkm' => $getDoc->pbp_pkm,
-                        'pbp_avgsales' => $getDoc->pbp_avgsales,
-                        'pbp_stock' => $getDoc->pbp_stock,
-                        'pbp_mindisplay' => $getDoc->pbp_mindisplay,
-                        'pbp_minorder' => $getDoc->pbp_minorder,
-                        'pbp_qtypb' => $temp['qty'],
-                        'pbp_qtypbout' => $getDoc->pbp_qtypbout,
-                        'pbp_qtypoout' => $getDoc->pbp_qtypoout,
-                        'pbp_dimensi' => $getDoc->pbp_dimensi,
-                        'pbp_kubikase' => $getDoc->pbp_kubikase,
-                        'pbp_createby' => $getDoc->pbp_createby, 
-                        'pbp_createdt' => $getDoc->pbp_createdt, 
-                        'pbp_modifyby' => $userid, 
-                        'pbp_modifydt' => $today,
-                        'pbp_isictn' => ''
-                    ]);
-            }
-
-            return response()->json(['kode' => 1, 'msg' => $getDoc->pbp_nopb]);
-        } else {
-            for ($i = 1; $i < sizeof($data); $i++) {
-                $temp = $data[$i];
-
-                $prodmast = DB::connection('simbdg')->table('tbmaster_prodmast')
-                    ->where('prd_kodeigr', $kodeigr)
-                    ->where('prd_prdcd', $temp['plu'])
-                    ->first();
-
-                DB::connection('simbdg')->table('tbtr_pb_perishable')
-                    ->insert([
-                        'pbp_kodeigr' => $kodeigr, 
-                        'pbp_recordid' => '', 
-                        'pbp_nopb' => $no_pb,
-                        'pbp_tglpb' => $date,
-                        'pbp_kodesupplier' => $temp[''],
-                        'pbp_kodesarana' => $temp[''],
-                        'pbp_volsarana' => $temp[''],
-                        'pbp_prdcd' => $temp['plu'], 
-                        'pbp_pkm' => $temp[''],
-                        'pbp_avgsales' => '',
-                        'pbp_stock' => '',
-                        'pbp_mindisplay' => '',
-                        'pbp_minorder' => '',
-                        'pbp_qtypb' => $temp['qty'],
-                        'pbp_qtypbout' => '',
-                        'pbp_qtypoout' => '',
-                        'pbp_dimensi' => '',
-                        'pbp_kubikase' => '',
-                        'pbp_createby' => $userid, 
-                        'pbp_createdt' => $today, 
-                        'pbp_modifyby' => '', 
-                        'pbp_modifydt' => '',
-                        'pbp_isictn' => '',
-                    ]);
-            }
-            return response()->json(['kode' => 1, 'msg' => $no_pb]);
+        if($p_sukses == 'FALSE'){
+            $message = $err_txt;
+            $status = 'error';
+            
+        }else{
+            $message = 'PB berhasil disimpan';
+            $status = 'info';
         }
+        return compact(['status', 'message']);
+
+        // exception when others
+        // then 
+        // dc_alert.ok('Err, ' || step);
+
+        // END;
+            //get new no trn
+            // $ip = str_replace('.', '0', SUBSTR(Session::get('ip'), -3));
+
+            
     }
 
     public function qtyPb(Request $request){
         $pkm = $request->pkm;
         $nopb  = $request->nopb;
-        $noplu = $request->noplu;
+        $plu = $request->plu;
         $qtypb = $request->qtypb;
         $stock = $request->stock;
         $poout = $request->poout;
         $pbout = $request->pbout;
         $isictn = $request->isictn;
         $dimensi = $request->dimensi;
+        $kodesup = $request->kodesup;
+        $kodesar = $request->kodesar;
         $minorder = $request->minorder;
         $userid = Session::get('usid');
         $message = '';
 
         // get kode supp
-        $kodesup = DB::connection('simbdg')
-        ->table('tbtr_pb_perishable')
-        ->selectRaw('pbp_kodesupplier')
-        ->where('pbp_nopb', '=' , $nopb)
-        ->where('pbp_prdcd' , '=' , $noplu)
-        ->get();
-
-        //get kode sarana
-        $kodesar = DB::connection('simbdg')
-        ->table('tbtr_pb_perishable')
-        ->selectRaw('pbp_kodesarana')
-        ->where('pbp_nopb', '=' , $nopb)
-        ->where('pbp_prdcd' , '=' , $noplu)
-        ->get();
 
         // select pbp_qtypb into qtypb_db
         // from tbtr_pb_perishable
@@ -457,14 +398,11 @@ class PBPerishableController extends Controller
         //   AND pbp_kodesarana = :h_sarana
         //   AND pbp_prdcd = :d_prdcd;
 
-        $qtypb_db = DB::connection('simbdg')
-        ->table('tbtr_pb_perishable')
-        ->selectRaw('pbp_qtypb')
-        ->where('pbp_nopb', '=' , $nopb)
-        ->where('pbp_kodesupplier', '=' , $kodesup)
-        ->where('pbp_kodesarana', '=' , $kodesar)
-        ->where('pbp_prdcd' , '=' , $noplu)
-        ->get();
+        $qtypb_db = DB::connection('simbdg')->select("SELECT pbp_qtypb FROM tbtr_pb_perishable
+        WHERE pbp_nopb = $nopb 
+        AND pbp_prdcd = $plu
+        AND pbp_kodesupplier = '$kodesup'
+        AND pbp_kodesarana = $kodesar");
 
         //         IF :d_qtypb = qtypb_db
         // --         ( :d_kubikase / :d_dimensi) - :d_stockakhir - :d_poout 
@@ -481,7 +419,7 @@ class PBPerishableController extends Controller
             return;
         }
 
-        if (!$noplu){
+        if (!$plu){
             // 0 = null
             $qtypb = 0;
             return response()->json(['qtypb' => $qtypb]);
@@ -499,7 +437,7 @@ class PBPerishableController extends Controller
     //    END IF;
 
         if($qtypb == 0 && $stock == 0 && $poout ==0){
-            $message = ('PLU ' + $noplu + ' Sarana ' + $kodesar + ' Stock 0, PB harus >= 1');
+            $message = ('PLU ' + $plu + ' Sarana ' + $kodesar + ' Stock 0, PB harus >= 1');
 
             return response()->json(['message' => $message]);
         }
@@ -552,12 +490,12 @@ class PBPerishableController extends Controller
         DB::connection('simbdg')->update("UPDATE tbtr_pb_perishable
                                             SET pbp_qtypb = $qtypb,
                                                 pbp_kubikase = $kubikase,                
-                                                pbp_modify_by = $userid,
+                                                pbp_modify_by = '$userid',
                                                 pbp_modify_dt = SYSDATE
                                             WHERE     pbp_nopb = $nopb
-                                                AND pbp_kodesupplier = $kodesup
+                                                AND pbp_kodesupplier = '$kodesup'
                                                 AND pbp_kodesarana = $kodesar
-                                                AND pbp_prdcd = $noplu");
+                                                AND pbp_prdcd = $plu");
        
     
     
@@ -588,24 +526,25 @@ class PBPerishableController extends Controller
         $nopb  = $request->nopb;
         $userid = Session::get('usid');
         $tglpb = $request->tglpb;
+        $flag = 0;
         $message = '';
         $status = '';
 
-        $temp = DB::connection('simbdg')
-            ->table('tbtr_pb_perishable')
-            ->selectRaw('COUNT(1) as TEMP')
-            ->where('pbp_nopb', $nopb)
-            ->get();
+        $temp = DB::connection('simbdg')->select("SELECT COUNT(1)
+        FROM tbtr_pb_perishable
+        WHERE pbp_nopb = $nopb");
             
         if($temp > 0){
             $message = 'No PB sudah diproses, silahkan edit';
             $status = 'info';
-            return compact(['status', 'message']);
+            $flag = 1;
+            return response()->json(['status' => $status, 'message' => $message, 'flag' => $flag]);
         }
         else if($temp == 0) {
             $message = 'Tidak ada PLU yang bisa di PB untuk tgl ' + $tglpb;
             $status = 'error';
-            return compact(['status', 'message']);
+            $flag = 1;
+            return response()->json(['status' => $status, 'message' => $message, 'flag' => $flag]);
         }
 
         $c = loginController::getConnectionProcedure();
@@ -620,18 +559,18 @@ class PBPerishableController extends Controller
         if($p_sukses == 'FALSE'){
             $message = $err_txt;
             $status = 'error';
-            return compact(['status', 'message']);
+            $flag = 1;
+            return response()->json(['status' => $status, 'message' => $message, 'flag' => $flag]);
         }
 
 
-        $c1 = loginController::getConnectionProcedure();
         $sql1 = "BEGIN  :NO_PB := f_igr_get_nomor($kodeigr,'PB','Nomor Permintaan Barang', $kodeigr || TO_CHAR (SYSDATE, 'yyMM'),3,TRUE); END;";
-        $s1 = oci_parse($c1, $sql1);
+        $s1 = oci_parse($c, $sql1);
 
         oci_bind_by_name($s1, ':NO_PB', $no_pb, 200);
         oci_execute($s1);
         
-        return compact(['status', 'message', 'no_pb']);
+        return response()->json(['status' => $status, 'message' => $message, 'flag' => $flag, 'no_pb' => $no_pb]);
     }
 
     public function deleteDoc(Request $request){
@@ -650,11 +589,9 @@ class PBPerishableController extends Controller
         // from tbtr_pb_h
         // where pbh_nopb = :no_pb;
         
-        $temp = DB::connection('simbdg')
-            ->table('tbtr_pb_h')
-            ->selectRaw('COUNT (1)')
-            ->where('pbh_nopb', '=' , $nopb)
-            ->get();
+        $temp = DB::connection('simbdg')->select("SELECT count(1) FROM tbtr_pb_h 
+        WHERE pbh_tgltransfer IS NOT NULL 
+        AND pbh_nopb =$nopb");
             
         // if temp > 0
         // then 

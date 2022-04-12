@@ -282,10 +282,13 @@ class KKEIController extends Controller
                 $message = 'Berhasil menghapus data!';
             }
 
+            $reqid = DB::connection(Session::get('connection'))->selectOne("select TO_CHAR (USERENV ('SESSIONID')) reqid from dual")->reqid;
+
             if(!empty($request->kkei)){
                 for($i=0;$i<count($request->kkei);$i++){
                     $kkei = $request->kkei[$i];
                     $kkei['kke_kodeigr'] = $kodeigr;
+                    $kkei['kke_req_id'] = $reqid;
 
                     if($kkei['kke_tglkirim01'] != '' || $kkei['kke_tglkirim01'] != null)
                         $kkei['kke_tglkirim01'] = DB::connection(Session::get('connection'))->raw("to_date('".$kkei['kke_tglkirim01']."','dd/mm/yyyy')");
@@ -309,29 +312,28 @@ class KKEIController extends Controller
                         ->where('kke_periode',$kkei['kke_periode'])
                         ->where('kke_prdcd',$kkei['kke_prdcd'])
                         ->delete();
+
                     $insert = DB::connection(Session::get('connection'))->table('temp_kkei')
                         ->insert($kkei);
                 }
 
-                if($insert){
-                    $status = 'success';
-                    $message = 'Berhasil menyimpan data!';
-                }
-                else{
-                    $status = 'failed';
-                    $message = 'Gagal menyimpan data!';
-                }
-            }
+                $status = 'success';
+                $message = 'Berhasil menyimpan data!';
 
-            DB::connection(Session::get('connection'))->commit();
+                DB::connection(Session::get('connection'))->commit();
+
+                return compact(['status','message']);
+            }
         }
         catch (QueryException $e){
             $status = 'failed';
             $message = 'Gagal menyimpan data!';
+            $error = $e->getMessage();
+            dd($e->getMessage());
             DB::connection(Session::get('connection'))->rollBack();
         }
 
-        return compact(['status','message']);
+        return compact(['status','message','error']);
     }
 
     public function laporan(Request $request){

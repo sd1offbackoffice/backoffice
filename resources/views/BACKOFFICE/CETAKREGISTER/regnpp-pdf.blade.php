@@ -1,4 +1,4 @@
-@extends('pdf-template')
+@extends('html-template')
 
 @section('paper_height',$ukuran == 'besar' ? '842pt': '442pt')
 

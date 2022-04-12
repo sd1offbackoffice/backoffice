@@ -357,7 +357,8 @@ class InputController extends Controller
         oci_bind_by_name($exec, ':pkp', $result->sup_pkp);
         oci_bind_by_name($exec, ':errm', $errm, 200);
         oci_execute($exec);
-//        dd($errm);
+        // dd($exec);
+
 
         //    -->>> alert untuk PLu BKP yg belum keluar tax3 nya <<<--
         $cek = DB::connection(Session::get('connection'))->select("SELECT DISTINCT BTB_PRDCD PLU, BTB_NODOC NODOC
@@ -380,7 +381,13 @@ class InputController extends Controller
             $status = 'info';
         }
 
-        $cek2 = DB::connection(Session::get('connection'))->table('TEMP_URUT_RETUR ')->count();
+        $cek2 = DB::connection(Session::get('connection'))->table('TEMP_URUT_RETUR ')
+                ->where('KSUP', '=', $request->kdsup)
+                ->count();
+        // $test = DB::connection(Session::get('connection'))->table('TEMP_URUT_RETUR ')
+        //         ->where('KSUP', '=', $request->kdsup)
+        //         ->get();
+        // dd($test);
 
         if ($cek2 == 0) {
             $message = 'Tidak ada data history penerimaan untuk Supplier ' . $result->sup_kodesupplier;
@@ -606,7 +613,11 @@ class InputController extends Controller
         } catch (\Exception $e) {
             return $e;
         }
-        return compact(['message', 'status']);
+        return response()->json([
+            'status' => $status,
+            'message' => $message
+        ]);
+        // return compact(['message', 'status']);
     }
 
     public function proses(Request $request)
@@ -653,25 +664,27 @@ class InputController extends Controller
                 $maxtrn = $minmax->max;
             }
             $ke = $mintrn;
-//        DB::connection(Session::get('connection'))->table('temp_urut_retur')->where(['NODOC_BPB' => $no_bpb])
-//            ->update(['nodoc_bo' => $nodoc]);
+            DB::connection(Session::get('connection'))->table('temp_urut_retur')->where(['NODOC_BPB' => $no_bpb])
+                ->update(['nodoc_bo' => $nodoc]);
 
             for ($i = $mintrn; $i < $maxtrn; $i++) {
-                $trbo = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
-                    ->where('trbo_prdcd', '=', $plu)
-                    ->where('trbo_typetrn', '=', 'K')
-                    ->first();
+                // $trbo = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
+                //     ->where('trbo_prdcd', '=', $plu)
+                //     ->where('trbo_typetrn', '=', 'K')
+                //     ->first();
+                //     // dd($trbo);
 
-                $trbo_discrph = 0;
-                if ($trbo) {
-                    $trbo_discrph = $trbo->trbo_discrph;
-                }
+                // $trbo_discrph = 0;
+                // if ($trbo) {
+                //     $trbo_discrph = $trbo->trbo_discrph;
+                // }
 
                 $res = DB::connection(Session::get('connection'))->table('temp_urut_retur')
                     ->selectRaw("QTYPB, QTYHISTRETUR, NVL (NODOC_BPB, 'zz') NO_BPB, TGLINV, HRGSATUAN, NODOC_BO")
                     ->where('PRDCD', '=', $plu)
                     ->where('trn', '=', $ke)
                     ->first();
+                    // dd($res);
                 $qty_pb = $res->qtypb;
                 $qty_histretur = $res->qtyhistretur;
                 $no_bpb = $res->no_bpb;
@@ -680,51 +693,73 @@ class InputController extends Controller
                 $no_doc = $res->nodoc_bo;
                 if ($qty_pb > $qty_histretur || $ke == $maxtrn) {
 
-                    DB::Connection('simsmg')->raw('update temp_urut_retur set qtyretur = case when qty > (qty_pb - qty_histretur) and ke <> maxtrn then(qty_pb - qty_histretur) else qty end where prdcd = ' . $plu . ' and trn = ' . $ke . ' and nodoc_bpb = ' . $no_bpb);
+                    DB::connection(Session::get('connection'))->raw('update temp_urut_retur set qtyretur = case when qty > (qty_pb - qty_histretur) and ke <> maxtrn then(qty_pb - qty_histretur) else qty end where prdcd = ' . $plu . ' and trn = ' . $ke . ' and nodoc_bpb = ' . $no_bpb);
 
                     $trbo_prdcd = $plu;
-                    $res = DB::Connection('simsmg')->select("select prd_deskripsipanjang, prd_deskripsipendek, frac, prd_flagbkp1,
-                   prd_avgcost, st_avgcost, nvl(st_saldoakhir, 0) st_saldoakhir, hrgsatuan, qtypb
-              from tbmaster_prodmast, tbmaster_stock, temp_urut_retur
-              where prd_prdcd = st_prdcd(+)
-                and '02' =  st_lokasi(+)
-                and prd_prdcd = " . $plu . "
-                and prd_prdcd = prdcd
-                and nvl(nodoc_bpb, 'zz') = " . $no_bpb);
+                    $res2 = DB::connection(Session::get('connection'))->select("select prd_deskripsipanjang, prd_deskripsipendek, frac, prd_flagbkp1,
+                                prd_avgcost, st_avgcost, nvl(st_saldoakhir, 0) st_saldoakhir, hrgsatuan, qtypb
+                            from tbmaster_prodmast, tbmaster_stock, temp_urut_retur
+                            where prd_prdcd = st_prdcd(+)
+                                and '02' =  st_lokasi(+)
+                                and prd_prdcd = " . $plu . "
+                                and prd_prdcd = prdcd
+                                and nvl(nodoc_bpb, 'zz') = " . $no_bpb);
+                    // dd($res2);
+            //         DB::Connection('simsmg')->raw('update temp_urut_retur set qtyretur = case when qty > (qty_pb - qty_histretur) and ke <> maxtrn then(qty_pb - qty_histretur) else qty end where prdcd = ' . $plu . ' and trn = ' . $ke . ' and nodoc_bpb = ' . $no_bpb);
 
-                    $res = $res[0];
-                    $deskripsi = $res->prd_deskripsipanjang;
-                    $desk = $res->prd_deskripsipendek;
-                    $frac = $res->frac;
-                    $bkp = $res->prd_flagbkp1;
-                    $acostprd = $res->prd_avgcost;
-                    $acostst = $res->st_avgcost;
-                    $trbo_posqty = $res->st_saldoakhir;
-                    $trbo_hrgsatuan = $res->hrgsatuan;
-                    $max_qty = $res->qtypb;
+            //         $trbo_prdcd = $plu;
+            //         $res2 = DB::Connection('simsmg')->select("select prd_deskripsipanjang, prd_deskripsipendek, frac, prd_flagbkp1,
+            //        prd_avgcost, st_avgcost, nvl(st_saldoakhir, 0) st_saldoakhir, hrgsatuan, qtypb
+            //   from tbmaster_prodmast, tbmaster_stock, temp_urut_retur
+            //   where prd_prdcd = st_prdcd(+)
+            //     and '02' =  st_lokasi(+)
+            //     and prd_prdcd = " . $plu . "
+            //     and prd_prdcd = prdcd
+            //     and nvl(nodoc_bpb, 'zz') = " . $no_bpb);
+
+                    $res2 = $res2[0];
+                    $deskripsi = $res2->prd_deskripsipanjang;
+                    $desk = $res2->prd_deskripsipendek;
+                    $frac = $res2->frac;
+                    $bkp = $res2->prd_flagbkp1;
+                    $acostprd = $res2->prd_avgcost;
+                    $acostst = $res2->st_avgcost;
+                    $trbo_posqty = $res2->st_saldoakhir;
+                    $trbo_hrgsatuan = $res2->hrgsatuan;
+                    $max_qty = $res2->qtypb;
 
 //                --++get unit from mstran btb
-                    $temp = DB::connection(Session::get('connection'))->table('tbtr_mstran_btb')
+                    $temp2 = DB::connection(Session::get('connection'))->table('tbtr_mstran_btb')
                         ->where('btb_prdcd', '=', $plu)
                         ->where('btb_nodoc', '=', $no_bpb)
                         ->count(1);
+                        // dd($temp2);
 
-                    if ($temp > 0) {
+                    if ($temp2 > 0) {
                         $unit = DB::connection(Session::get('connection'))->table('tbtr_mstran_btb')
                             ->select('btb_unit')
                             ->where('btb_prdcd', '=', $plu)
                             ->where('btb_nodoc', '=', $no_bpb)
                             ->first();
+                            // dd($unit);
                         $unit = $unit->btb_unit;
                     }
                     $satuan = $unit . '/' . $frac;
 
-                    $trbo_qty = DB::connection(Session::get('connection'))->table('temp_urut_retur')
-                        ->select('qtyretur')
-                        ->where('prdcd', '=', $plu)
-                        ->where('trn', '=', $ke)
-                        ->first();
-                    $trbo_qty = $trbo_qty->qtyretur;
+                    // $trbo_qty = DB::connection(Session::get('connection'))->table('TEMP_URUT_RETUR')
+                    // ->selectRaw('SUM (qtypb - qtyhistretur) AS qtyretur')
+                    // ->where('prdcd', '=', $plu)
+                    // ->first();
+                    // $trbo_qty = DB::connection(Session::get('connection'))->table('temp_urut_retur')
+                    //     ->select('qtyretur')
+                    //     ->where('prdcd', '=', $plu)
+                    //     ->where('trn', '=', $ke)
+                    //     ->first();
+                    
+                    $trbo_qty = $qty;
+                    // $trbo_qty = $trbo_qty->qtyretur;
+                    // dd($trbo_qty);
+
                     if ($unit == 'KG') {
                         $frac = 1;
                     }
@@ -745,19 +780,19 @@ class InputController extends Controller
                         $ppn = 0;
                     }
 
-                    $temp = DB::connection(Session::get('connection'))->table('temp_urut_retur')
+                    $temp3 = DB::connection(Session::get('connection'))->table('temp_urut_retur')
                         ->selectRaw('istype, invno, tglinv, qtypb, hrgsatuan, nodoc_bpb, nodoc_bo')
                         ->where('prdcd', '=', $plu)
                         ->where('trn', '=', $ke)
                         ->first();
 
-                    $trbo_istype = $temp->istype;
-                    $trbo_invno = $temp->invno;
-                    $trbo_tglinv = $temp->tglinv;
-                    $max_qty = $temp->qtypb;
-                    $trbo_hrgsatuan = $temp->hrgsatuan;
-                    $trbo_noreff = $temp->nodoc_bpb;
-                    $trbo_nodo = $temp->nodoc_bo;
+                    $trbo_istype = $temp3->istype;
+                    $trbo_invno = $temp3->invno;
+                    $trbo_tglinv = $temp3->tglinv;
+                    $max_qty = $temp3->qtypb;
+                    $trbo_hrgsatuan = $temp3->hrgsatuan;
+                    $trbo_noreff = $temp3->nodoc_bpb;
+                    $trbo_nodo = $temp3->nodoc_bo;
 
                     if ($trbo_invno == '' && $trbo_noreff != '') {
                         $message = 'no.faktur pajak untuk btb ' . $trbo_noreff . ' tidak ditemukan';
@@ -789,7 +824,12 @@ class InputController extends Controller
 
 //            VALIDATE_ITEM
 
+                $trbo_qty = ($qtyctn * $frac) + $qtypcs;
+                $qtyctn = intval($trbo_qty / $frac);
+                $qtypcs = $trbo_qty % $frac;
+// 
                 $trbo_gross = ($qtyctn * $trbo_hrgsatuan) + (($trbo_hrgsatuan / $frac) * $qtypcs);
+                // dd($qtypcs);
 
                 $trbo_discper = ($trbo_discrph / $trbo_gross) * 100;
 
@@ -806,15 +846,24 @@ class InputController extends Controller
                 if ($qty_pb > $qty_histretur) {
                     $data = (object)'';
 
-                    $data->trbo_prdcd = $trbo->trbo_prdcd;
+                    $data->trbo_prdcd = $plu;
+                    // $data->trbo_prdcd = $trbo->trbo_prdcd;
                     $data->desk = $desk;
                     $data->deskripsi = $deskripsi;
                     $data->satuan = $satuan;
                     $data->bkp = $bkp;
                     $data->trbo_posqty = $trbo_posqty;
                     $data->trbo_hrgsatuan = $trbo_hrgsatuan;
-                    $data->qtyctn = $qtyctn;
-                    $data->qtypcs = $qtypcs;
+
+                    $data->qtyctn = $qtyctn; 
+                    if ($qtypcs - $frac != 0) {                                      
+                        $data->qtypcs = $qtypcs;
+                    } else {                                       
+                        $data->qtypcs = 0;
+                    }
+
+                                   
+                    // $data->qtypcs = $qtypcs;
                     $data->trbo_gross = $trbo_gross;
                     $data->discper = $trbo_discper;
                     $data->trbo_discrph = $trbo_discrph;
@@ -823,7 +872,7 @@ class InputController extends Controller
                     $data->trbo_inv = $trbo_invno;
                     $data->trbo_tgl = $trbo_tglinv;
                     $data->trbo_noreff = $trbo_noreff;
-                    $data->trbo_keterangan = $trbo->trbo_keterangan;
+                    // $data->trbo_keterangan = $trbo->trbo_keterangan;
                     array_push($datas, $data);
                 }
                 if ($qty <= 0) {
@@ -850,11 +899,15 @@ class InputController extends Controller
         $nodoc = $request->nodoc;
         DB::connection(Session::get('connection'))
             ->table('TBTR_BACKOFFICE')
-            ->where('TRBO_NODOC', '=', $nodoc)
+            ->where('TRBO_NODOC', $nodoc)
             ->where('TRBO_TYPETRN', '=', 'K')
             ->delete();
 
-        return response()->json(['kode' => 1, 'msg' => "Dokumen Berhasil dihapus"]);
+        return response()->json([
+            'kode' => 1,
+            'title' => "Dokumen Berhasil dihapus",
+            'status' => 'success'
+        ]);
 
     }
 
@@ -867,6 +920,8 @@ class InputController extends Controller
         $trbo_flagdoc = 0;
         $trbo_create_by = Session::get('usid');
         $trbo_create_dt = Carbon::now()->format('Y-m-d');
+        $datas = $request->datas;
+        dd($datas);
         DB::connection(Session::get('connection'))->beginTransaction();
         foreach ($request->datas as $data)
             $temp = DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')

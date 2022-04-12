@@ -1169,7 +1169,6 @@
                        },
                        success: function (response) {
                            $('#modal-loader').modal('hide');
-
                            swal({
                                title: response.title,
                                text: response.message,

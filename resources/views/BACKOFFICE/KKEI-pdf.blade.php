@@ -35,9 +35,9 @@
             <td colspan="5"></td>
             <td>Berat</td>
             <td colspan="4">Dimensi Produk</td>
-            <td>Berat</td>
+            <td class="right">Berat</td>
             <td colspan="4">Dimensi Ctn Luar</td>
-            <td>Harga</td>
+            <td class="right">Harga</td>
             <td></td>
             <td colspan="3">Terakhir</td>
             <td colspan="2">Avg Sales</td>
@@ -54,19 +54,19 @@
             <td>PL</td>
             <td>Nama Barang</td>
             <td>Satuan</td>
-            <td>Isi</td>
-            <td>(Kg)</td>
-            <td>P</td>
-            <td>L</td>
-            <td>T</td>
-            <td>Kubikasi</td>
-            <td>(Kg)</td>
-            <td>P</td>
-            <td>L</td>
-            <td>T</td>
-            <td>Kubikasi</td>
-            <td>Beli</td>
-            <td>Discount</td>
+            <td class="right">Isi</td>
+            <td class="right">(Kg)</td>
+            <td class="right">P</td>
+            <td class="right">L</td>
+            <td class="right">T</td>
+            <td class="right">Kubikasi</td>
+            <td class="right">(Kg)</td>
+            <td class="right">P</td>
+            <td class="right">L</td>
+            <td class="right">T</td>
+            <td class="right">Kubikasi</td>
+            <td class="right">Beli</td>
+            <td class="right">Discount</td>
             <td>1</td>
             <td>2</td>
             <td>3</td>
@@ -144,11 +144,11 @@
                 <td>{{ number_format($k->kke_saldoakhir) }}</td>
                 <td>{{ number_format($k->kke_outpototal) }}</td>
                 <td>{{ number_format($k->kke_outpoqty) }}</td>
-                <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d',substr($k->kke_tglkirim01,0,10))->format('d/m/Y') }}</td>
-                <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d',substr($k->kke_tglkirim02,0,10))->format('d/m/Y') }}</td>
-                <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d',substr($k->kke_tglkirim03,0,10))->format('d/m/Y') }}</td>
-                <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d',substr($k->kke_tglkirim04,0,10))->format('d/m/Y') }}</td>
-                <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d',substr($k->kke_tglkirim05,0,10))->format('d/m/Y') }}</td>
+                <td>{{ $k->kke_tglkirim01 ? \Carbon\Carbon::createFromFormat('Y-m-d',substr($k->kke_tglkirim01,0,10))->format('d/m/Y') : '' }}</td>
+                <td>{{ $k->kke_tglkirim02 ? \Carbon\Carbon::createFromFormat('Y-m-d',substr($k->kke_tglkirim02,0,10))->format('d/m/Y') : '' }}</td>
+                <td>{{ $k->kke_tglkirim03 ? \Carbon\Carbon::createFromFormat('Y-m-d',substr($k->kke_tglkirim03,0,10))->format('d/m/Y') : '' }}</td>
+                <td>{{ $k->kke_tglkirim04 ? \Carbon\Carbon::createFromFormat('Y-m-d',substr($k->kke_tglkirim04,0,10))->format('d/m/Y') : '' }}</td>
+                <td>{{ $k->kke_tglkirim05 ? \Carbon\Carbon::createFromFormat('Y-m-d',substr($k->kke_tglkirim05,0,10))->format('d/m/Y') : '' }}</td>
             </tr>
         @endforeach
             <tr style="text-align: right; border-top: 1px solid black; border-bottom: 1px solid black">

@@ -504,7 +504,7 @@ class ReorderPBGOController extends Controller
             ->get();
 
         if($oke == true){
-            DB::connection(Session::get('connection'))->commit();
+//            DB::connection(Session::get('connection'))->commit();
             $status = 'success';
             $title = 'Berhasil melakukan reorder GO!';
             $message = 'No. Dokumen ini adalah : '.$NOPB;

@@ -322,9 +322,9 @@
             "autoWidth": false,
             "responsive": true,
             "createdRow": function (row, data, dataIndex) {
-                console.log(row,'ini row');
-                console.log(data,'ini data');
-                console.log(dataIndex,'ini dataIndex');
+                // row -> <tr>
+                // data -> isi semua data dalam array
+                // dataIndex -> lopping nilai index setiap data
                 $(row).addClass('row-data-table-m').css({'cursor': 'pointer'});
                 arrDataTableM.push(data);
             },
@@ -350,10 +350,26 @@
     function showDetail(index){
         data = arrDataTableM[index];
 
-        $('#md_prdcd').val(data.pkmp_prdcd);
-        $('#md_deskripsi').val(data.pkmp_mplus);
-        $('#md_mpkm').val(data.pkmp_mplusi);
-        $('#md_pkmt').val(data.pkmp_mpluso);
+        // $('#md_prdcd').val(data.pkmp_prdcd);
+        // $('#md_deskripsi').val(data.pkmp_mplus);
+        // $('#md_mpkm').val(data.pkmp_mplusi);
+        // $('#md_pkmt').val(data.pkmp_mpluso);
+
+        ajaxSetup();
+        $.ajax({
+            url : "{{ url('bo/pkm/faktor-pkm-toko/get-data-detail')}}",
+            type : 'get',
+            data : {
+                pkmp_prdcd : $('#md_prdcd').val(data.pkmp_prdcd)
+            },
+            success: function(response)
+            {
+                $('#md_prdcd').val(data.pkmp_prdcd);
+                $('#md_deskripsi').val(data.pkmp_mplus);
+                $('#md_mpkm').val(data.pkmp_mplusi);
+                $('#md_pkmt').val(data.pkmp_mpluso);
+            }
+        });
       
     }
 </script>

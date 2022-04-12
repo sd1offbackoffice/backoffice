@@ -183,6 +183,7 @@
                 $('.rowTbodyTableBTB').remove();
             },
             success: function(result) {
+                console.log(result);
                 $('#modal-loader').modal('hide');
                 if (type == 2) {
                     $('#changeTheadName').text('No Dokumen');
@@ -233,6 +234,7 @@
 
         $("input:checkbox[name=type]:checked").each(function() {
             document.push($(this).val());
+            console.log($(this).val());
         });
 
         $.ajax({

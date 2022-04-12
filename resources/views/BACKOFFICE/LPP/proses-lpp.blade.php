@@ -117,8 +117,13 @@
                             $('#periode1').attr('disabled', false);
                             $('#periode2').attr('disabled', false);
                             $('#btn-cek').attr('disabled', false);
-                            clearInterval(intv);
-                            swal(response.status, response.message, response.status);
+                            swal({
+                                title: response.status,
+                                text: response.message,
+                                icon: response.status
+                            }).then(() => {
+                                window.location.reload();
+                            });
                         }
                     }, error: function (error) {
                         // swal(response.status, response.message, response.status);
