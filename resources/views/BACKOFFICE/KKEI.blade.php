@@ -722,8 +722,8 @@
 
                                     $('#row_detail_'+row).find('.kke_prdcd').val(response.data.prd_prdcd);
                                     $('#row_detail_'+row).find('.kke_unit').val(response.data.unit);
-                                    $('#row_detail_'+row).find('.kke_frac').val(convertToRupiah2(response.data.frac));
-                                    $('#row_form_'+row).find('.kke_hargabeli').val(convertToRupiah(response.data.hargabeli));
+                                    $('#row_detail_'+row).find('.kke_frac').val(convertToRupiah(response.data.frac));
+                                    $('#row_form_'+row).find('.kke_hargabeli').val(convertToRupiah2(Math.round(response.data.hargabeli)));
                                     $('#row_form_'+row).find('.kke_discount').val(convertToRupiah2(Math.round(response.data.diskon)));
                                     $('#row_form_'+row).find('.kke_sales01').val(convertToRupiah2(response.data.sales1));
                                     $('#row_form_'+row).find('.kke_sales02').val(convertToRupiah2(response.data.sales2));
@@ -872,9 +872,9 @@
                                 '<input disabled type="text" class="form-control kke_frac" value='+response.data[i].kke_frac+'>' +
                                 '</td>' +
                                 '<td class="">' +
-                                '<input disabled type="text" class="form-control kke_hargabeli" value=' + convertToRupiah(response.data[i].kke_hargabeli) + '></td>' +
+                                '<input disabled type="text" class="form-control kke_hargabeli" value=' + convertToRupiah2(Math.round(response.data[i].kke_hargabeli)) + '></td>' +
                                 '<td class="">' +
-                                '<input disabled type="text" class="form-control kke_discount" value=' + convertToRupiah(Math.round(response.data[i].kke_discount)) + '></td>' +
+                                '<input disabled type="text" class="form-control kke_discount" value=' + convertToRupiah2(Math.round(response.data[i].kke_discount)) + '></td>' +
                                 '<td class="">' +
                                 '<input disabled type="text" class="form-control kke_sales01" value=' + convertToRupiah2(response.data[i].kke_sales01) + '></td>' +
                                 '<td class="">' +
@@ -977,9 +977,9 @@
 
                             trForm = '<tr id="row_form_' + i + '" class="d-flex baris number">' +
                                 '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control kke_hargabeli" value=' + convertToRupiah(response.data[i].kke_hargabeli) + '></td>' +
+                                '<input disabled type="text" class="form-control kke_hargabeli" value=' + convertToRupiah2(Math.round(response.data[i].kke_hargabeli)) + '></td>' +
                                 '<td class="col-sm-2">' +
-                                '<input disabled type="text" class="form-control kke_discount" value=' + convertToRupiah(Math.round(response.data[i].kke_discount)) + '></td>' +
+                                '<input disabled type="text" class="form-control kke_discount" value=' + convertToRupiah2(Math.round(response.data[i].kke_discount)) + '></td>' +
                                 '<td class="col-sm-2">' +
                                 '<input disabled type="text" class="form-control kke_sales01" value=' + convertToRupiah2(response.data[i].kke_sales01) + '></td>' +
                                 '<td class="col-sm-2">' +

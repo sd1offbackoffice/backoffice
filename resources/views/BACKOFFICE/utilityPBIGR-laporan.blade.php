@@ -94,6 +94,7 @@
         <tfoot>
         </tfoot>
     </table>
+    <p><strong>*n merupakan koefisien yang besarannya tergantung dari tingkat service level Supplier untuk PLU tsb</strong></p>
 @endsection
 
 

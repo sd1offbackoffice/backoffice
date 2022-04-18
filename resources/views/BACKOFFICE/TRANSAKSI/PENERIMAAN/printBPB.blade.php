@@ -83,6 +83,34 @@
     </div>
 </div>
 
+<div class="modal fade" id="m_signature" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Sign Here : </h5>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <div id="sig"></div>
+                            <br />
+                            <button id="clear" class="btn btn-danger">Clear</button>
+                            <button id="save" class="btn btn-success">Save</button>
+                            <textarea id="signature64" name="signed" style="display: none"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <label for="">Save -> Enter</label>
+                <label for="">/</label>
+                <label for="">Clear -> Space</label>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     .table-wrapper {
         overflow-y: scroll;
@@ -107,6 +135,16 @@
     th {
         padding: 10px;
         text-align: center;
+    }
+
+    .kbw-signature {
+        width: 400px;
+        height: 350px;
+    }
+
+    #sig canvas {
+        width: 100% !important;
+        height: auto;
     }
 </style>
 
@@ -219,6 +257,21 @@
         location.reload();
     }
 
+    function showModal() {
+        $('#m_signature').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+
+    $(document).keypress(function(e) {
+        if (e.keyCode == 32) {
+            $('#clear').click();
+        } else if (e.keyCode == 13) {
+            $('#save').click();
+        }
+    });
+
     function cetakData() {
         let startDate = $('#startDate').val();
         let endDate = $('#endDate').val();
@@ -226,7 +279,8 @@
         let size = $('#size').val();
         let checked = ($("#re-print").prop('checked')) ? '1' : '0';
         let document = [];
-
+        var currUrl = '{{ url()->current() }}';
+        currUrl = currUrl.replace("index", "");
         if (!startDate || !endDate) {
             swal('Tanggal harus diisi !!', '', 'warning');
             return false;
@@ -254,16 +308,65 @@
             },
             success: function(result) {
                 $('#modal-loader').modal('hide');
+                console.log(result);
                 if (result.kode == 1) {
                     documentTemp = document;
                     if (result.list == 1) {
-                        window.open(currUrl + 'viewreport/' + checked + '/' + result.data + '/' + documentTemp);
+                        window.open(currUrl + 'viewreport/' + checked + '/' + result.data + '/' + documentTemp + '/' + result.list);
                     } else {
-                        if (result.lokasi == 1) {
-                            window.open(currUrl + 'viewreport/' + checked + '/' + 'lokasi' + '/' + documentTemp);
-                        }
                         if (result.nota != null || result.nota != '') {
-                            window.open(currUrl + 'viewreport/' + checked + '/' + result.data + '/' + result.nota);
+                            showModal();
+                            var sig = $('#sig').signature({
+                                syncField: '#signature64',
+                                syncFormat: 'PNG'
+                            });
+                            $('#save').click(function(e) {
+                                var dataURL = $('#sig').signature('toDataURL', 'image/jpeg', 0.8);
+                                ajaxSetup();
+                                $.ajax({
+                                    type: "POST",
+                                    url: currUrl + 'save',
+                                    data: {
+                                        sign: dataURL,
+                                        signed: $('#signature64').val()
+                                    },
+                                    beforeSend: function() {
+                                        $('#modal-loader').modal('show');
+                                    },
+                                    success: function(response) {
+                                        console.log(response);
+                                        swal({
+                                            title: response.message,
+                                            icon: 'success'
+                                        }).then(function(ok) {
+                                            $('#clear').click();
+                                            $('#modal-loader').modal('hide');
+                                            $('#m_signature').modal('hide');
+                                            data_nota = result.data;
+                                            split_nota = data_nota.split(",");
+                                            window.open(currUrl + 'viewreport/' + checked + '/' + split_nota[0] + '/' + result.nota + '/' + response.data);
+                                            window.open(currUrl + 'viewreport/' + checked + '/' + split_nota[1] + '/' + result.nota + '/' + response.data);
+                                            if (result.lokasi == 1 && checked == 0) {
+                                                window.open(currUrl + 'viewreport/' + checked + '/' + 'lokasi' + '/' + documentTemp + '/' + result.lokasi);
+                                            }
+                                        });
+                                    },
+                                    error: function(error) {
+                                        $('#modal-loader').modal('hide');
+                                        swal({
+                                            title: error.message,
+                                            icon: 'error',
+                                        }).then(() => {
+                                            $('#modal-loader').modal('hide');
+                                        });
+                                    },
+                                })
+                            });
+                            $('#clear').click(function(e) {
+                                e.preventDefault();
+                                sig.signature('clear');
+                                $("#signature64").val('');
+                            });
                         }
                     }
                 }

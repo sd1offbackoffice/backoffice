@@ -95,10 +95,22 @@
         @php
             $i = 0;
             $supplier = 'xxx';
+            $kubik1 = 0;
+            $kubik2 = 0;
+            $kubik3 = 0;
+            $kubik4 = 0;
+            $kubik5 = 0;
         @endphp
 
         @foreach($data as $k)
-            @php $i++; @endphp
+            @php
+                $i++;
+                $kubik1 += $k->kke_kubik1;
+                $kubik2 += $k->kke_kubik2;
+                $kubik3 += $k->kke_kubik3;
+                $kubik4 += $k->kke_kubik4;
+                $kubik5 += $k->kke_kubik5;
+            @endphp
             @php
                 if($supplier != $k->kke_kdsup){
                     $supplier = $k->kke_kdsup;
@@ -112,7 +124,7 @@
             <tr style="text-align: right">
                 <td class="center">{{ $i }}</td>
                 <td class="center">{{ $k->kke_prdcd }}</td>
-                <td style="text-align: left">{{ substr($k->kke_deskripsi,0,21) }}</td>
+                <td style="text-align: left">{{ substr($k->prd_deskripsipendek,0,21) }}</td>
                 <td class="center">{{ $k->kke_unit }}</td>
                 <td>{{ $k->kke_frac }}</td>
                 <td>{{ number_format((float)$k->kke_beratproduk, 2, '.', '') }}</td>
@@ -120,10 +132,10 @@
                 <td>{{ $k->kke_lebarprod }}</td>
                 <td>{{ $k->kke_tinggiprod }}</td>
                 <td>{{ number_format((float)$k->kke_kubikasiprod, 2, '.', '') }}</td>
-                <td>{{ $k->kke_beratkmsn }}</td>
-                <td>{{ $k->kke_panjangkmsn }}</td>
-                <td>{{ $k->kke_lebarkmsn }}</td>
-                <td>{{ $k->kke_tinggikmsn }}</td>
+                <td>{{ number_format($k->kke_beratkmsn, 2) }}</td>
+                <td>{{ number_format($k->kke_panjangkmsn) }}</td>
+                <td>{{ number_format($k->kke_lebarkmsn) }}</td>
+                <td>{{ number_format($k->kke_tinggikmsn) }}</td>
                 <td>{{ number_format((float)$k->kke_kubikasikmsn, 2, '.', '') }}</td>
                 <td>{{ number_format($k->kke_hargabeli) }}</td>
                 <td>{{ number_format($k->kke_discount) }}</td>
@@ -150,15 +162,17 @@
                 <td>{{ $k->kke_tglkirim04 ? \Carbon\Carbon::createFromFormat('Y-m-d',substr($k->kke_tglkirim04,0,10))->format('d/m/Y') : '' }}</td>
                 <td>{{ $k->kke_tglkirim05 ? \Carbon\Carbon::createFromFormat('Y-m-d',substr($k->kke_tglkirim05,0,10))->format('d/m/Y') : '' }}</td>
             </tr>
+
+
         @endforeach
             <tr style="text-align: right; border-top: 1px solid black; border-bottom: 1px solid black">
                 <td colspan="23" class="left"><strong>Kebutuhan Kontainer :</strong><br>20 Feet</td>
                 <td>Total</td>
-                <td>{{ $data[0]->kke_kubik1 }}</td>
-                <td>{{ $data[0]->kke_kubik2 }}</td>
-                <td>{{ $data[0]->kke_kubik3 }}</td>
-                <td>{{ $data[0]->kke_kubik4 }}</td>
-                <td>{{ $data[0]->kke_kubik5 }}</td>
+                <td>{{ $kubik1 }}</td>
+                <td>{{ $kubik2 }}</td>
+                <td>{{ $kubik3 }}</td>
+                <td>{{ $kubik4 }}</td>
+                <td>{{ $kubik5 }}</td>
                 <td colspan="10"></td>
             </tr>
         </tbody>

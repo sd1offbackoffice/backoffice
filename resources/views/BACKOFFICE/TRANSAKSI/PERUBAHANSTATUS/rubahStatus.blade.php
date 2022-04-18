@@ -533,6 +533,7 @@
                 kode = $('#i_nosortir').val();
                 fromRsn = true;
             }
+            console.log(kode);
             ajaxSetup();
             $.ajax({
                 url: '{{ url()->current() }}/choosesrt',
@@ -647,17 +648,18 @@
                             // else{
                             //     tempRT = result[i].prd_perlakuanbarang;
                             // }
-                            if(result[i].hgb_statusbarang = "PT"){
+
+                            if(result[i].hgb_statusbarang == "PT"){
                                 tempRT = "R"
-                            }else if(result[i].hgb_statusbarang = "RT"){
+                            }else if(result[i].hgb_statusbarang == "RT"){
                                 tempRT = "T"
-                            }else if(result[i].hgb_statusbarang = "TG"){
+                            }else if(result[i].hgb_statusbarang == "TG"){
                                 tempRT = "T"
-                            }else if(result[i].sup_flagpenangananproduk = "PT"){
+                            }else if(result[i].sup_flagpenangananproduk == "PT"){
                                 tempRT = "R"
-                            }else if(result[i].sup_flagpenangananproduk = "RT"){
+                            }else if(result[i].sup_flagpenangananproduk == "RT"){
                                 tempRT = "T"
-                            }else if(result[i].sup_flagpenangananproduk = "TG"){
+                            }else if(result[i].sup_flagpenangananproduk == "TG"){
                                 tempRT = "T"
                             }
                             if(result[i].srt_qtykarton != null){
@@ -672,14 +674,13 @@
                                             </td>
                                             <td><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipanjang +`"></td>
                                             <td><input disabled type="text" class="form-control satuan" value="`+ result[i].srt_unit +` / `+ result[i].srt_frac +`"></td>
-                                            <td><input type="text"  class="form-control pt text-right" value="`+ tempPT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
-                                            <td><input type="text"  class="form-control rttg text-right" value="`+ tempRT +`" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                            <td><input type="text"  class="form-control pt text-right" value="`+ result[i].dari +`" onkeypress="return isBTR(event)" maxlength="1"></td>
+                                            <td><input type="text"  class="form-control rttg text-right" value="`+ result[i].ke +`" onkeypress="return isBTR(event)" maxlength="1"></td>
                                             <td><input type="text" class="form-control ctn text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + tempktn +`"></td>
                                             <td><input type="text" class="form-control pcs text-right" id="`+ i +`" onkeypress="return isNumberKey(event)" onchange="calculateHarga(this.value, this.id)" value="` + temppcs +`"></td>
                                             <td><input disabled type="text" class="form-control price text-right" value="`+ convertToRupiah(result[i].srt_hrgsatuan) +`"></td>
                                             <td><input disabled type="text" class="form-control total text-right" value="` + convertToRupiah(parseFloat(result[i].srt_hrgsatuan * (temppcs/result[i].srt_frac))+ parseFloat(result[i].srt_hrgsatuan * tempktn)) +`"></td>
                                         </tr>`
-
                             $('#tbody').append(temp);
                         }
                     }

@@ -34,7 +34,8 @@ class SignatureController extends Controller
             $status = "error";
         }
 
-        return compact(['message', 'status']);
+        // return compact(['message', 'status']);
+        return response()->json(['message' => $message, 'status' => $status, 'data' => $file]);
 
     }
 

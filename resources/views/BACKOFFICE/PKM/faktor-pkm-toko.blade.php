@@ -115,7 +115,7 @@
                         </div>
                         <div class="col-sm-2 d-flex align-items-center justify-content-center">
                             {{-- <div> --}}
-                                <button type="button" class="btn btn-primary w-75">ADD</button>
+                                <button type="button" class="btn btn-primary w-75" >ADD</button>
                             {{-- </div>                             --}}
                         </div>
                     </div>
@@ -217,16 +217,16 @@
                             <br>
                             <div class="row">
                                 <div class="col-lg-3">
-                                    <input type="text" class="form-control" placeholder="MA_PRDCD">
+                                    <input type="text" class="form-control" id="ma_prdcd" placeholder="MA_PRDCD" maxlength="7">
                                 </div>
                                 <div class="col-lg-3">
-                                    <input type="text" class="form-control" placeholder="MA_PLUS_I">
+                                    <input type="text" class="form-control" id="ma_mplus_i" placeholder="MA_PLUS_I">
                                 </div>
                                 <div class="col-lg-3">
-                                    <input type="text" class="form-control" placeholder="MA_PLUS_O">
+                                    <input type="text" class="form-control" id="ma_mplus_o" placeholder="MA_PLUS_O">
                                 </div>
                                 <div class="col-lg-3">
-                                   <button class="btn btn-primary btn-md"> ADD </button>
+                                   <button class="btn btn-primary btn-md" onclick="insertPLU()"> ADD </button>
                                 </div>
                             </div>
                         </div>
@@ -281,7 +281,7 @@
 }
 </style>
 
-<script src={{asset('/js/sweetalert2.js')}}></script>
+{{-- <script src={{asset('/js/sweetalert2.js')}}></script> --}}
 <script>
     $(document).ready(function () {
         $('.m-form').hide();
@@ -350,27 +350,82 @@
     function showDetail(index){
         data = arrDataTableM[index];
 
+        // console.log(data.pkmp_prdcd);
+
         // $('#md_prdcd').val(data.pkmp_prdcd);
         // $('#md_deskripsi').val(data.pkmp_mplus);
         // $('#md_mpkm').val(data.pkmp_mplusi);
         // $('#md_pkmt').val(data.pkmp_mpluso);
 
-        ajaxSetup();
-        $.ajax({
-            url : "{{ url('bo/pkm/faktor-pkm-toko/get-data-detail')}}",
-            type : 'get',
-            data : {
-                pkmp_prdcd : $('#md_prdcd').val(data.pkmp_prdcd)
-            },
-            success: function(response)
-            {
-                $('#md_prdcd').val(data.pkmp_prdcd);
-                $('#md_deskripsi').val(data.pkmp_mplus);
-                $('#md_mpkm').val(data.pkmp_mplusi);
-                $('#md_pkmt').val(data.pkmp_mpluso);
-            }
-        });
+            ajaxSetup();
+            $.ajax({
+                url : '{{ route('get-data-detail')  }}',
+                type : 'get',
+                data : {
+                    pkmp_prdcd : data.pkmp_prdcd
+                },
+                success: function(response)
+                {
+                    console.log(response);
+                    $('#md_prdcd').val(response[0].prd_prdcd);
+                    $('#md_deskripsi').val(response[0].prd_deskripsipanjang);
+                    $('#md_mpkm').val(response[0].pkm_pkmt);
+                    $('#md_pkmt').val(response[0].pkm_mpkm);
+                }
+            });
       
+    }
+
+    function insertPLU()
+    {
+        if($('#ma_prdcd').val() == '' || $('#ma_mplus_i').val() == '' || $('#ma_mplus_o').val() == '')
+        {
+            swal('Inputan harus diisi semua !!', '', 'warning');
+        }
+        else if($('#ma_prdcd').val().length < 7)
+        {
+            swal('PLU harus terdiri dari 7 angka', '', 'warning');
+        }
+        else if($('#ma_mplus_i').val() + $('#ma_mplus_o').val() == '0' )
+        {
+            swal('Qty harus > 0', '', 'warning');
+        }
+        else
+        {
+            // convertPlu($('#'+id).val())
+            swal({
+                title: 'Apakah anda yakin ingin menambahkan PLU ini ? ',
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true
+            }).then(function(ok){
+                if(ok){
+                    ajaxSetup();
+                    $.ajax({
+                        url: '{{ url()->current().'/insert-plu' }}',
+                        type: 'post',
+                        data: {
+                            ma_prdcd : $('#ma_prdcd').val(),
+                            ma_mplus_i: $('#ma_mplus_i').val(),
+                            ma_mplus_o: $('#ma_mplus_o').val()
+                        },
+                        success: function (response) {
+                            swal({
+                                title: response.title,
+                                text: response.message,
+                                icon: 'success'
+                            });
+                        }, error: function (error) {
+                            swal({
+                                title: error.responseJSON.title,
+                                text: error.responseJSON.message,
+                                icon: 'error'
+                            });
+                        }
+                    })// ajax
+                }// if ok
+            })
+        }       
     }
 </script>
 @endsection

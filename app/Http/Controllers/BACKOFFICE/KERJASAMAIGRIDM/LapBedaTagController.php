@@ -94,7 +94,7 @@ ORDER BY NVL (trim (PRD_PRDCD), 'zzzzzzz'), IDM_PLUIDM");
      AND NVL (trim (IDM_TAG), '_') <> NVL (trim (PRD_KODETAG), '_')
      AND PRD_KODETAG IN ('G', 'R', 'A', 'N', 'O', 'X', 'T', 'M', 'H', 'B', 'I', 'P', 'J')
      $p_tag
-ORDER BY NVL (trim (PRD_PRDCD), 'zzzzzzz'), IDM_PLUIDM");
+ORDER BY IDM_PLUIDM,NVL (trim (PRD_PRDCD), 'zzzzzzz')");
 
 //        //PRINT
 //        $pdf = PDF::loadview('BACKOFFICE\KERJASAMAIGRIDM.LapBedaTag-pdf',

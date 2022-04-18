@@ -57,7 +57,7 @@
                                     <button id="btnProsesAdj" onclick="processAdjust()" class="col btn btn-primary form-control" disabled>PROSES ADJ</button>
                                 </div>
                                 <div class="col-sm-2">
-                                    <button id="btnListingAdj" onclick="listingAdjust()" class="col btn btn-primary form-control" disabled>LISTING ADJ</button>
+                                    <button id="btnListingAdj" onclick="listingAdjust()" class="col btn btn-primary form-control">LISTING ADJ</button>
                                 </div>
                             </div>
                         </div>
@@ -911,6 +911,7 @@
                         $(this).select();
                     });
                 }
+                else $('#tgl2').select();
             }
         });
 

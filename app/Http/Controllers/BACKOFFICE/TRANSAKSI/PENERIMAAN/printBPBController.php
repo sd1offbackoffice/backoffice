@@ -6,11 +6,11 @@ use App\AllModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
-use DateTime;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Exception;
+use Illuminate\Support\Facades\File;
 
 class printBPBController extends Controller
 {
@@ -18,6 +18,55 @@ class printBPBController extends Controller
     {
         return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.printBPB');
     }
+
+    // Signature
+    public function save(Request $request)
+    {
+        $message = "";
+        $status = "";
+        $id = uniqid();
+        try {
+
+            $path = "signature/";
+            if (!File::exists(storage_path($path))) {
+                File::makeDirectory(storage_path($path), 0755, true, true);
+            }
+            $img = $this->dataURLtoImage($request->signed);
+            $file = storage_path($path . $id . '.' . $img['image_type']);
+            file_put_contents($file, $img['image_base64']);
+
+            $message = "Signature Saved!";
+            $status = "success";
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            $status = "error";
+        }
+
+        // return compact(['message', 'status']);
+        return response()->json(['message' => $message, 'status' => $status, 'data' => $id]);
+    }
+
+    public function dataURLtoImage($value)
+    {
+        $image_parts = explode(";base64,", $value);
+        $image_type_aux = explode("image/", $image_parts[0]);
+        $image_type = $image_type_aux[1];
+        $image_base64 = base64_decode($image_parts[1]);
+        return compact(['image_base64', 'image_type']);
+    }
+
+    public function getAllData()
+    {
+        $path = storage_path('signature/');
+        $datas = File::files($path);
+
+        $data = [];
+        foreach ($datas as $d) {
+            $data[] = basename($d);
+        }
+        return compact(['data']);
+    }
+    // Signature
 
     public function viewData(Request $request)
     {
@@ -150,7 +199,7 @@ class printBPBController extends Controller
         $keys = array_keys($ADA_KEY);
 
         if ($ADA_KEY[$keys[0]] > 0) {
-            $P_SUKSES = 1;
+            $P_SUKSES = 'Y';
             return $ADA_KEY[$keys[0]];
         } else {
             $min_order =  oci_parse($conn, "SELECT PRD_MINORDER
@@ -367,7 +416,7 @@ class printBPBController extends Controller
                     "PKM_KODEIGR" => $kodeigr,
                     "PKM_KODEDIVISI" => $data->prd_kodedivisi,
                     "PKM_KODEDEPARTEMENT" => $data->prd_kodedepartement,
-                    "PKM_PERIODEPROSES" => $sysdatef->format('MMyyyy'),
+                    "PKM_PERIODEPROSES" => Carbon::now()->format('My'),
                     "PKM_KODEKATEGORIBARANG" => $data->prd_kodekategoribarang,
                     "PKM_PRDCD" => $data->prd_prdcd,
                     "PKM_KODESUPPLIER" => $KSUP,
@@ -386,7 +435,7 @@ class printBPBController extends Controller
                     ->where('PKM_KODEIGR', $kodeigr)
                     ->where('PKM_PRDCD', $sub_prdcd)
                     ->update([
-                        'PKM_PERIODEPROSES' => $sysdatef->format('MMyyyy'), 'PKM_KODESUPPLIER' => $KSUP,
+                        'PKM_PERIODEPROSES' => Carbon::now()->format('My'), 'PKM_KODESUPPLIER' => $KSUP,
                         'PKM_MINDISPLAY' => $MIND,
                         'PKM_MINORDER' => $MINORDER,
                         'PKM_LEADTIME' => $LEADTIME,
@@ -432,18 +481,18 @@ class printBPBController extends Controller
         $QTY_OK = 0;
         $ORDER1 = 0;
         $NLCOST = 0;
-        $TGL = Carbon::now();
-        $TGLPO = Carbon::now();
-        $TGLFAKTUR = Carbon::now();
+        $TGL = Carbon::now()->format('Y-m-d');
+        $TGLPO = Carbon::now()->format('Y-m-d');
+        $TGLFAKTUR = Carbon::now()->format('Y-m-d');
         $CKSJ = false;
         $TRUET = false;
         $SUPTOP = 0;
         $UPDPLU = false;
-        $P_SUKSES = 0;
-        $P_ERROR = 0;
+        $P_SUKSES = '';
+        $P_ERROR = '';
         $dummyvar = 0;
         $SUPCO = null;
-        $sysdatef = Carbon::now();
+        $sysdatef = Carbon::now()->format('Y-m-d');
         $btb_date = Carbon::now()->format('y');
         $no_btb = '';
         if ($trnType == 'B') {
@@ -1066,7 +1115,7 @@ class printBPBController extends Controller
             "MSTH_PKP" => $PKP,
             "MSTH_CTERM" => $SUPTOP,
             "MSTH_CREATE_BY" => $userId,
-            "MSTH_CREATE_DT" => $sysdatef
+            "MSTH_CREATE_DT" => Carbon::now()->format('Y-m-d')
         ]);
 
         if ($SUPCO != null) {
@@ -1122,7 +1171,7 @@ class printBPBController extends Controller
             );
             foreach ($record2 as $data2) {
                 if ($TEMP == 0) {
-                    $TGL = $sysdatef->addDays($data2->msth_cterm);
+                    $TGL = Carbon::now()->addDays($data2->msth_cterm);
                     DB::connection(Session::get('connection'))->table('TBTR_HUTANG')->insert([
                         "HTG_KODEIGR" => $kodeigr,
                         "HTG_RECORDID" => null,
@@ -1189,7 +1238,7 @@ class printBPBController extends Controller
         $pcls   = 0;
         $pclsk  = 0;
         $tes    = 0;
-        $sysdatef = Carbon::now();
+        $sysdatef = Carbon::now()->format('Y-m-d');
         $x = 0;
 
         $cprdcd = NULL;
@@ -1444,9 +1493,9 @@ class printBPBController extends Controller
             }
         } else {
             if ($size == 2) {
-                return "IGR_BO_CTBTBNOTA_FULL";
+                return "IGR_BO_CTBTBNOTA_FULL,IGR_BO_CTBTBNOTA_NONHARGA_FULL";
             } else {
-                return "IGR_BO_CTBTBNOTA";
+                return "IGR_BO_CTBTBNOTA,IGR_BO_CTBTBNOTA_NONHARGA";
             }
         }
     }
@@ -1479,7 +1528,7 @@ class printBPBController extends Controller
                                        AND lks_kodeigr = trbo_kodeigr
                                        AND prd_prdcd = trbo_prdcd
                                        AND prd_kodeigr = trbo_kodeigr");
-        // perlu di panggil ulang dari viereport soalnya datas engga kebaca kalo cuma = '1'
+        // perlu di panggil ulang dari viewreport soalnya datas engga kebaca kalo cuma = '1'
         $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctklokasi', ['datas' => $datas]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
@@ -1495,11 +1544,12 @@ class printBPBController extends Controller
         $report = $request->report;
         $noDoc  = $request->noDoc;
         $reprint = $request->reprint;
+        $ttd = $request->ttd;
+        $ttd = ($ttd != null) ? $ttd : ' ';
         $splitDoc = explode(',', $noDoc);
         $kodeigr = Session::get('kdigr');
         $document = '';
         $re_print = ($reprint == 1) ? '(REPRINT)' : ' ';
-
         foreach ($splitDoc as $data) {
             $document = $document . "'" . $data . "',";
         }
@@ -1534,7 +1584,7 @@ class printBPBController extends Controller
             $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
             return $pdf->stream('igr_bo_listbtb_full.pdf');
-        } elseif ($report == 'IGR_BO_LISTBTB') {
+        } else if ($report == 'IGR_BO_LISTBTB') {
             $datas = DB::connection(Session::get('connection'))->select("select trbo_nodoc, TO_CHAR(trbo_tgldoc,'DD/MM/YY') trbo_tgldoc, trbo_nopo, TO_CHAR(trbo_tglpo,'DD/MM/YY') trbo_tglpo, trbo_nofaktur, TO_CHAR(trbo_tglfaktur,'DD/MM/YY') trbo_tglfaktur,
                                         floor(trbo_qty/prd_frac) qty, mod(trbo_qty,prd_frac) qtyk, trbo_qtybonus1, trbo_qtybonus2, trbo_typetrn, trbo_qty, nvl(trbo_flagdoc,'0') flagdoc,
                                         trbo_hrgsatuan, trbo_persendisc1, trbo_persendisc2 , trbo_persendisc2ii , trbo_persendisc2iii , trbo_persendisc3, trbo_persendisc4, trbo_gross, trbo_ppnrph,trbo_ppnbmrph,trbo_ppnbtlrph,
@@ -1575,7 +1625,7 @@ class printBPBController extends Controller
             $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
             return $pdf->stream('igr_bo_listbtb.pdf');
-        } elseif ($report == 'IGR_BO_CTBTBNOTA') {
+        } else if ($report == 'IGR_BO_CTBTBNOTA') {
             $datas = DB::connection(Session::get('connection'))->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
                                         prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
                                         sup_kodesupplier||' '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_npwp, sup_alamatsupplier1 ||'   '||sup_alamatsupplier2 alamat_supplier,
@@ -1600,13 +1650,13 @@ class printBPBController extends Controller
                                         and trbo_prdcd(+) = mstd_prdcd
                                         and msth_nodoc in ($document)
                                         order by msth_nodoc");
-
-            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota', ['datas' => $datas, 're_print' => $re_print])->setPaper('a5', 'potrait');
+// dd($datas[0]->barcode);
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota', ['datas' => $datas, 're_print' => $re_print, 'ttd' => $ttd])->setPaper('a5', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
             return $pdf->stream('igr_bo_ctbtbnota.pdf');
-        } elseif ($report == 'IGR_BO_CTBTBNOTA_FULL') {
+        } else if ($report == 'IGR_BO_CTBTBNOTA_FULL') {
             $datas = DB::connection(Session::get('connection'))->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
                                         prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
                                         sup_kodesupplier||' '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_npwp, sup_alamatsupplier1 ||'   '||sup_alamatsupplier2 alamat_supplier,
@@ -1632,12 +1682,12 @@ class printBPBController extends Controller
                                         and msth_nodoc in ($document)
                                         order by msth_nodoc");
 
-            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota_full', ['datas' => $datas, 're_print' => $re_print])->setPaper('a4', 'potrait');
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota_full', ['datas' => $datas, 're_print' => $re_print, 'ttd' => $ttd])->setPaper('a4', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
             return $pdf->stream('igr_bo_ctbtbnota_full.pdf');
-        } elseif ($report == 'lokasi') {
+        } else if ($report == 'lokasi') {
             $datas = DB::connection(Session::get('connection'))->select("SELECT trbo_prdcd,
                                        SUBSTR (prd_deskripsipanjang, 1, 50) desc2,
                                        prd_unit || '/' || prd_frac kemasan,
@@ -1674,6 +1724,68 @@ class printBPBController extends Controller
             $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
             return $pdf->stream('igr_bo_ctklokasi.pdf');
+        } else if ($report == 'IGR_BO_CTBTBNOTA_NONHARGA') {
+            $datas = DB::connection(Session::get('connection'))->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
+            prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
+            sup_kodesupplier||' '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_npwp, sup_alamatsupplier1 ||'   '||sup_alamatsupplier2 alamat_supplier,
+            sup_telpsupplier, sup_contactperson contact_person, sup_kotasupplier3,
+            mstd_prdcd||' '||prd_deskripsipanjang plu, mstd_unit||'/'||mstd_frac kemasan, floor(mstd_qty/mstd_frac) qty, mod(mstd_qty,mstd_frac) qtyk, mstd_typetrn,
+            mstd_hrgsatuan, mstd_ppnrph, mstd_ppnbmrph, mstd_ppnbtlrph, nvl(mstd_gross,0)- nvl(mstd_discrph,0)+nvl(mstd_dis4cr,0)+ nvl(mstd_dis4rr,0)+nvl(mstd_dis4jr,0) jumlah,
+            nvl(mstd_rphdisc1,0) as disc1,
+            (nvl(mstd_rphdisc2,0) + nvl(mstd_rphdisc2ii,0) + nvl(mstd_rphdisc2iii,0) ) as disc2,
+            nvl(mstd_rphdisc3,0) as disc3, nvl(mstd_qtybonus1,0) as bonus1, nvl(mstd_qtybonus2,0) as bonus2, nvl(mstd_keterangan,' ') as keterangan, (nvl(mstd_dis4cr,0) + nvl(mstd_dis4rr,0) + nvl(mstd_dis4jr,0)) as disc4,
+            case when mstd_typetrn = 'B' then '( PEMBELIAN )' else '( LAIN - LAIN )' end judul, '0' || '$kodeigr' || mstd_nodoc barcode
+            from tbtr_mstran_h, tbmaster_perusahaan, tbmaster_supplier, tbtr_mstran_d, tbmaster_prodmast, tbtr_backoffice
+            where msth_kodeigr='$kodeigr'
+            and prs_kodeigr=msth_kodeigr
+            and sup_kodesupplier(+)=msth_kodesupplier
+            and sup_kodeigr(+)=msth_kodeigr
+            and mstd_nodoc=msth_nodoc
+            and mstd_kodeigr=msth_kodeigr
+            and prd_kodeigr=msth_kodeigr
+            and prd_prdcd = mstd_prdcd
+            AND trbo_nonota(+) = mstd_nodoc
+            AND trbo_kodeigr(+) = mstd_kodeigr
+            and trbo_prdcd(+) = mstd_prdcd
+            and msth_nodoc in ($document)
+            order by msth_nodoc");
+
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota_nonharga', ['datas' => $datas, 're_print' => $re_print, 'ttd' => $ttd])->setPaper('a4', 'potrait');
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            return $pdf->stream('igr_bo_ctbtbnota_nonharga.pdf');
+        } else if ($report == 'IGR_BO_CTBTBNOTA_NONHARGA_FULL') {
+            $datas = DB::connection(Session::get('connection'))->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
+            prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
+            sup_kodesupplier||' '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_npwp, sup_alamatsupplier1 ||'   '||sup_alamatsupplier2 alamat_supplier,
+            sup_telpsupplier, sup_contactperson contact_person, sup_kotasupplier3,
+            mstd_prdcd||' '||prd_deskripsipanjang plu, mstd_unit||'/'||mstd_frac kemasan, floor(mstd_qty/mstd_frac) qty, mod(mstd_qty,mstd_frac) qtyk, mstd_typetrn,
+            mstd_hrgsatuan, mstd_ppnrph, mstd_ppnbmrph, mstd_ppnbtlrph, nvl(mstd_gross,0)- nvl(mstd_discrph,0)+nvl(mstd_dis4cr,0)+ nvl(mstd_dis4rr,0)+nvl(mstd_dis4jr,0) jumlah,
+            nvl(mstd_rphdisc1,0) as disc1,
+            (nvl(mstd_rphdisc2,0) + nvl(mstd_rphdisc2ii,0) + nvl(mstd_rphdisc2iii,0) ) as disc2,
+            nvl(mstd_rphdisc3,0) as disc3, nvl(mstd_qtybonus1,0) as bonus1, nvl(mstd_qtybonus2,0) as bonus2, nvl(mstd_keterangan,' ') as keterangan, (nvl(mstd_dis4cr,0) + nvl(mstd_dis4rr,0) + nvl(mstd_dis4jr,0)) as disc4,
+            case when mstd_typetrn = 'B' then '( PEMBELIAN )' else '( LAIN - LAIN )' end judul, '0' || '$kodeigr' || mstd_nodoc barcode
+            from tbtr_mstran_h, tbmaster_perusahaan, tbmaster_supplier, tbtr_mstran_d, tbmaster_prodmast, tbtr_backoffice
+            where msth_kodeigr='$kodeigr'
+            and prs_kodeigr=msth_kodeigr
+            and sup_kodesupplier(+)=msth_kodesupplier
+            and sup_kodeigr(+)=msth_kodeigr
+            and mstd_nodoc=msth_nodoc
+            and mstd_kodeigr=msth_kodeigr
+            and prd_kodeigr=msth_kodeigr
+            and prd_prdcd = mstd_prdcd
+            AND trbo_nonota(+) = mstd_nodoc
+            AND trbo_kodeigr(+) = mstd_kodeigr
+            and trbo_prdcd(+) = mstd_prdcd
+            and msth_nodoc in ($document)
+            order by msth_nodoc");
+
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota_nonharga_full', ['datas' => $datas, 're_print' => $re_print, 'ttd' => $ttd])->setPaper('a4', 'potrait');
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            return $pdf->stream('igr_bo_ctbtbnota_nonharga_full.pdf');
         }
 
         dd($report);

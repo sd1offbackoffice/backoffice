@@ -124,7 +124,11 @@
                         </tbody>
                     </table>
                     <br>
-                    <code style="font-size: 14px;">{{$datas[$i]->barcode}}</code>
+                    @php
+                    $generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG();
+                    @endphp
+
+                    <img style="max-width: 250px;" src="data:image/png;base64,{{ base64_encode($generatorPNG->getBarcode($datas[$i]->barcode, $generatorPNG::TYPE_CODE_128)) }}">
                 </div>
             </div>
         </header>
@@ -157,22 +161,22 @@
                     <td style="width: 20px">{{$no = $no+1}}</td>
                     <td style="width: 260px">{{$datas[$j]->plu}}</td>
                     <td style="width: 50px; text-align: center">{{$datas[$j]->kemasan}}
-                    <br /><br /> {{number_format($datas[$j]->disc1 ,2,',','.')}}
+                        <br /><br /> {{number_format($datas[$j]->disc1 ,2,',','.')}}
                     </td>
                     <td style="width: 50px; text-align: center">{{$datas[$j]->qty}}
-                    <br /><br /> {{number_format($datas[$j]->disc2 ,2,',','.')}}
+                        <br /><br /> {{number_format($datas[$j]->disc2 ,2,',','.')}}
                     </td>
                     <td style="width: 50px; text-align: center">{{$datas[$j]->qtyk}}
-                    <br /><br />{{$datas[$j]->disc3}}
+                        <br /><br />{{$datas[$j]->disc3}}
                     </td>
                     <td style="width: 50px; text-align: center">{{number_format($datas[$j]->mstd_hrgsatuan ,2,',','.')}}
-                    <br /><br />{{$datas[$j]->bonus1}}
+                        <br /><br />{{$datas[$j]->bonus1}}
                     </td>
                     <td style="width: 50px; text-align: center">{{number_format($datas[$j]->mstd_ppnbmrph ,2,',','.')}}
-                    <br /><br />{{$datas[$j]->bonus2}}
+                        <br /><br />{{$datas[$j]->bonus2}}
                     </td>
                     <td style="width: 100px; text-align: center">{{number_format($datas[$j]->mstd_ppnbtlrph ,2,',','.')}}
-                    <br /><br />{{$datas[$j]->keterangan}}
+                        <br /><br />{{$datas[$j]->keterangan}}
                     </td>
                     <td style="width: 50px; text-align: center">{{number_format($datas[$j]->jumlah ,2,',','.')}}</td>
                     </tr>
@@ -216,15 +220,19 @@
         <table>
             <tbody>
                 <tr>
-                    <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px">
+                    <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
                         ADMINISTRASI
+                        <hr>
                     </td>
-                    <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px">
+                    <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
                         KEPALA
                         GUDANG
+                        <hr>
                     </td>
-                    <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px">
+                    <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
                         SUPPLIER
+                        <hr>
+                        <img style="max-width: 100px;" src="../storage/signature/{{$ttd . '.png'}}"></img>
                     </td>
                 </tr>
             </tbody>
@@ -372,7 +380,7 @@
                 </tr>
             </tbody>
         </table>
-        <table style="">
+        <table>
             <tbody>
                 <tr>
                     <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px">

@@ -41,17 +41,17 @@
     @php
     $no = 0;
     @endphp
-    @for($i = 0; $i < sizeof($datas); $i++) @if($i==0 || $datas[$i]->msth_nodoc != $datas[$i-1] ->msth_nodoc)
+    @for($i = 0; $i < sizeof($datas); $i++) @if($i==0 || $datas[$i]->msth_nodoc != $datas[$i-1]->msth_nodoc)
         @if($i != 0)
         <div class="page-break"></div>
         @endif
-        <div class="header">
+        <header>
             <div style="width: 48%">
-                <div>
-                    <p>{{$datas[0]->prs_namaperusahaan}}</p>
-                    <p>{{$datas[0]->prs_namacabang}}</p>
+                <div style="margin-top: -120px;">
+                    <p>{{$datas[$i]->prs_namaperusahaan}}</p>
+                    <p>{{$datas[$i]->prs_namacabang}}</p>
                 </div>
-                <div style="margin-top: -50px;margin-left: 50px">
+                <div style="margin-top: -120px;margin-left: 100px !important;">
                     <p style="text-align: center">BUKTI PENERIMAAN BARANG</p>
                     <p style="text-align: center">{{$datas[$i]->judul}}</p>
                 </div>
@@ -91,8 +91,8 @@
                     </tbody>
                 </table>
             </div>
-            <div style="width: 50%;margin-left: 50%; margin-top: -100px">
-                <div style="text-align: right;line-height: 0.1px !important; margin-right: 30px">
+            <div style="width: 50%;margin-left: 42.5%; margin-top: -120px">
+                <div style="text-align: right;line-height: 0.1px !important; margin-right: 30px; margin-top: -120px">
                     <p>{{ date("d-M-y  H:i:s") }}</p>
                 </div>
                 <div style="margin-top: -10px">
@@ -119,14 +119,17 @@
                                 <td>TELP</td>
                                 <td>: {{$datas[$i]->sup_telpsupplier}} / {{$datas[$i]->contact_person}}</td>
                             </tr>
-                            <tr>
-                                <td>{{$datas[$i]->barcode}}</td>
-                            </tr>
                         </tbody>
                     </table>
+                    <br>
+                    @php
+                    $generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG();
+                    @endphp
+
+                    <img style="max-width: 250px;" src="data:image/png;base64,{{ base64_encode($generatorPNG->getBarcode($datas[$i]->barcode, $generatorPNG::TYPE_CODE_128)) }}">
                 </div>
             </div>
-        </div>
+        </header>
         <table class="body" style="line-height: 10px;margin-top: 10px">
             <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
                 <tr style="text-align: center;">
@@ -154,24 +157,24 @@
 
                 @for($j = $i ; $j < sizeof($datas); $j++) <tr>
                     <td style="width: 20px">{{$no = $no+1}}</td>
-                    <td style="width: 265px">{{$datas[$j]->plu}}</td>
+                    <td style="width: 260px">{{$datas[$j]->plu}}</td>
                     <td style="width: 50px; text-align: center">{{$datas[$j]->kemasan}}
-                        <br /> {{number_format($datas[$j]->disc1 ,2,',','.')}}
+                        <br /><br /> {{number_format($datas[$j]->disc1 ,2,',','.')}}
                     </td>
                     <td style="width: 50px; text-align: center">{{$datas[$j]->qty}}
-                        <br /> {{number_format($datas[$j]->disc2 ,2,',','.')}}
+                        <br /><br /> {{number_format($datas[$j]->disc2 ,2,',','.')}}
                     </td>
                     <td style="width: 50px; text-align: center">{{$datas[$j]->qtyk}}
-                        <br />{{$datas[$j]->disc3}}
+                        <br /><br />{{$datas[$j]->disc3}}
                     </td>
                     <td style="width: 50px; text-align: center">{{number_format($datas[$j]->mstd_hrgsatuan ,2,',','.')}}
-                        <br />{{$datas[$j]->bonus1}}
+                        <br /><br />{{$datas[$j]->bonus1}}
                     </td>
                     <td style="width: 50px; text-align: center">{{number_format($datas[$j]->mstd_ppnbmrph ,2,',','.')}}
-                        <br />{{$datas[$j]->bonus2}}
+                        <br /><br />{{$datas[$j]->bonus2}}
                     </td>
                     <td style="width: 100px; text-align: center">{{number_format($datas[$j]->mstd_ppnbtlrph ,2,',','.')}}
-                        <br />{{$datas[$j]->keterangan}}
+                        <br /><br />{{$datas[$j]->keterangan}}
                     </td>
                     <td style="width: 50px; text-align: center">{{number_format($datas[$j]->jumlah ,2,',','.')}}</td>
                     </tr>
@@ -186,44 +189,48 @@
                         <td style="border-bottom: 1px black solid" colspan="9"></td>
                     </tr>
                     <tr>
-                        <td colspan="7"></td>
-                        <td> TOTAL HARGA BELI</td>
+                        <td colspan="6"></td>
+                        <td colspan="2"> TOTAL HARGA BELI</td>
                         <td style="text-align: right">{{number_format($tempTotalHrgBli ,2,',','.')}}</td>
                     </tr>
                     <tr>
-                        <td colspan="7"></td>
-                        <td> TOTAL POTONGAN 4</td>
+                        <td colspan="6"></td>
+                        <td colspan="2"> TOTAL POTONGAN 4</td>
                         <td style="text-align: right">{{number_format($tempPotongan4 ,2,',','.')}}</td>
                     </tr>
                     <tr>
-                        <td colspan="7"></td>
-                        <td> TOTAL PPN BOTOL</td>
+                        <td colspan="6"></td>
+                        <td colspan="2"> TOTAL PPN BOTOL</td>
                         <td style="text-align: right">{{number_format($tempPPNBtl ,2,',','.')}}</td>
                     </tr>
                     <tr>
-                        <td colspan="7"></td>
-                        <td> TOTAL PPN</td>
+                        <td colspan="6"></td>
+                        <td colspan="2"> TOTAL PPN</td>
                         <td style="border-bottom: 1px black solid; text-align: right">{{number_format($tempPPN ,2,',','.')}}</td>
                     </tr>
                     <tr>
-                        <td colspan="7"></td>
-                        <td> TOTAL SELURUHNYA</td>
+                        <td colspan="6"></td>
+                        <td colspan="2"> TOTAL SELURUHNYA</td>
                         <td style="text-align: right"> {{number_format(($tempTotalHrgBli + $tempPPNBtl + $tempPPN - $tempPotongan4) ,2,',','.')}}</td>
                     </tr>
             </tbody>
         </table>
-        <table style="">
+        <table>
             <tbody>
                 <tr>
-                    <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px">
+                    <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
                         ADMINISTRASI
+                        <hr>
                     </td>
-                    <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px">
+                    <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
                         KEPALA
                         GUDANG
+                        <hr>
                     </td>
-                    <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px">
+                    <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
                         SUPPLIER
+                        <hr>
+                        <img style="max-width: 100px;" src="../storage/signature/{{$ttd . '.png'}}"></img>
                     </td>
                 </tr>
             </tbody>
@@ -371,7 +378,7 @@
                 </tr>
             </tbody>
         </table>
-        <table style="">
+        <table>
             <tbody>
                 <tr>
                     <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px">
@@ -390,10 +397,7 @@
         <p>KETERANGAN : JANGKA WAKTU PENUKARAN FAKTUR PALING LAMBAT 3 BULAN SEJAK BARANG DITERIMA. <br>
             <span style="margin-left: 71px">APABILA LEWAT DARI WAKTU YANG DITENTUKAN TIDAK AKAN KAMI LAYANI</span>
         </p>
-
         @endif
-
-
 </body>
 
 </html>

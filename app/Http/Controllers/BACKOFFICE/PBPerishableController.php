@@ -51,11 +51,11 @@ class PBPerishableController extends Controller
         $flag = '';
 
 
-        $temp = DB::connection('simbdg')->select("SELECT count(1) FROM tbtr_pb_h 
-        WHERE pbh_tgltransfer IS NOT NULL 
+        $temp = DB::connection('simbdg')->select("SELECT count(1) as temp FROM tbtr_pb_h
+        WHERE pbh_tgltransfer IS NOT NULL
         AND pbh_nopb =$nopb");
 
-        if ($temp == 0){
+        if ($temp[0]->temp == 0){
             $flag = 0;
         }
         else {
@@ -101,12 +101,12 @@ class PBPerishableController extends Controller
             // ->get();
 
         // if($result[0]->totalkubikase > $result[0]->totalkapasitas){
-        //     $flag = 'X';            
+        //     $flag = 'X';
         // }
 
         return response()->json([ 'data' => $result, 'flag' => $flag]);
         // return response()->json([ 'data' => $result, 'flag' => $flag, 'temp' => $temp]);
-                                
+
         // return response()->json($result);
 
     }
@@ -125,13 +125,13 @@ class PBPerishableController extends Controller
 
         return response()->json($result);
     }
- 
+
     public function nmrBaruPb(){
 
         $kodeigr = Session::get('kdigr');
         // $ip = str_replace('.', '0', SUBSTR(Session::get('ip'), -3));
 
-        $c = loginController::getConnectionProcedure();
+        $c = loginController::getConnectionProcedureBDG();
 
         $s = oci_parse($c, "BEGIN :NO_PB := f_igr_get_nomor('$kodeigr','PB','Nomor Permintaan Barang',
                             " .$kodeigr. " || TO_CHAR (SYSDATE, 'yyMM') , 3, FALSE); END;");
@@ -158,20 +158,20 @@ class PBPerishableController extends Controller
 
         // --**cek qty
 
-        // select sum(pbp_qtypb) 
-        // into temp 
+        // select sum(pbp_qtypb)
+        // into temp
         // from tbtr_pb_perishable
         // where pbp_nopb = :no_pb;
 
-        $temp = DB::connection('simbdg')->select("SELECT SUM(pbp_qtypb) FROM tbtr_pb_perishable 
+        $temp = DB::connection('simbdg')->select("SELECT SUM(pbp_qtypb) as temp FROM tbtr_pb_perishable
         WHERE pbp_nopb =$nopb");
         // IF temp <= 0
         // THEN
         // dc_alert.ok ('Tidak ada qty yang akan diPB', 'info');
         // RETURN;
         // END IF;
-        
-        if($temp <=0){
+
+        if($temp[0]->temp <=0){
             $message = 'Tidak ada qty yang akan diPB';
             $status = 'info';
             $errflag = '1';
@@ -183,7 +183,7 @@ class PBPerishableController extends Controller
 
         // step := 1;
         $step = 1;
-        
+
         // SELECT COUNT (1)
         // INTO temp
         // FROM (  SELECT pbp_nopb,
@@ -203,7 +203,7 @@ class PBPerishableController extends Controller
         //     AND pbp_nopb = :no_pb
         //     AND ttl_kubikase > sfrz_volsarana*sfrz_jumlahsarana;
         //     --ganti disini
-        $temp = DB::connection('simbdg')->select("SELECT COUNT (1)
+        $temp = DB::connection('simbdg')->select("SELECT COUNT (1) as temp
                 FROM (  SELECT pbp_nopb,
                                 pbp_tglpb,
                                 pbp_kodesupplier,
@@ -227,13 +227,13 @@ class PBPerishableController extends Controller
         // RETURN;
         // END IF;
 
-        if($temp > 0){
+        if($temp[0]->temp > 0){
             $message = 'Terdapat Total Kubikase Item yang melebihi volume sarana. Qty PB harus dilakukan pengurangan!!';
             $status = 'info';
             $errflag = '1';
             return response()->json(['message' => $message, 'status' => $status, 'errflag' => $errflag]);
         }
-        
+
 
         // --**cek nomor pb
 
@@ -245,21 +245,21 @@ class PBPerishableController extends Controller
         // FROM tbtr_pb_h
         // WHERE pbh_nopb = :no_pb AND pbh_keteranganpb <> 'PB PERISHABLE';
         $temp = DB::connection('simbdg')->table('tbtr_pb_h')
-        ->selectRaw('COUNT (1)')
+        ->selectRaw('COUNT (1) as temp')
         ->where('pbh_nopb', '=', $nopb)
         ->where('pbh_keteranganpb', '<>', 'PB PERISHABLE')
         ->get();
 
-        if ($temp > 0){
+        if ($temp[0]->temp > 0){
             $message = 'No.PB sudah terpakai, akan diganti dengan nomor baru';
             $status = 'info';
-            $errflag = '1';
+            $errflag = 1;
             return response()->json(['message' => $message, 'status' => $status, 'errflag' => $errflag]);
         }
-        else if($temp = 0){
+        else if($temp[0]->temp == 0){
             $message = '';
             $status = '';
-            $errflag = '';
+            $errflag = 0;
             return response()->json(['message' => $message, 'status' => $status, 'errflag' => $errflag]);
         }
 
@@ -273,14 +273,14 @@ class PBPerishableController extends Controller
 
         // IF confirm = 'OK'
         // THEN
-            
+
     public function saveDoc2(Request $request){
         $kodeigr = Session::get('kdigr');//     step := 3;
         $nopb  = $request->nopb;
 
         $step = 3;
         //     nopb_old := :no_pb;
-        
+
         //     :NO_PB :=
         //         f_igr_get_nomor ( :parameter.KodeIgr,
         //                         'PB',
@@ -288,13 +288,13 @@ class PBPerishableController extends Controller
         //                         :parameter.KodeIgr || TO_CHAR (SYSDATE, 'yyMM'),
         //                         3,
         //                         TRUE);
-        $c = loginController::getConnectionProcedure();
-        
+        $c = loginController::getConnectionProcedureBDG();
+
         $s = oci_parse($c, "BEGIN :NO_PB := f_igr_get_nomor('$kodeigr','PB','Nomor Permintaan Barang',
         " .$kodeigr. " || TO_CHAR (SYSDATE, 'yyMM') , 3, TRUE); END;");
         oci_bind_by_name($s, ':NO_PB', $no_pb, 32);
         oci_execute($s);
-        
+
         //     UPDATE tbtr_pb_perishable
         //         SET pbp_nopb = :no_pb
         //     WHERE pbp_nopb = nopb_old;
@@ -334,8 +334,8 @@ class PBPerishableController extends Controller
         //                             :parameter.userid,
         //                             P_SUKSES,
         //                             P_ERRMSG);
-        $c = loginController::getConnectionProcedure();
-        $sql = "BEGIN Sp_Create_Pb_Perishable_frz2(2, to_date('" . $tglpb . "','dd/mm/yyyy'), $kodeigr, $nopb, $userid, :P_SUKSES, :P_ERRMSG); END;";
+        $c = loginController::getConnectionProcedureBDG();
+        $sql = "BEGIN Sp_Create_Pb_Perishable_frz2(2, to_date('" . $tglpb . "','dd/mm/yyyy'),'" . $kodeigr. "', '" . $nopb. "', '" . $userid. "', :P_SUKSES, :P_ERRMSG); END;";
         $s = oci_parse($c, $sql);
 
         oci_bind_by_name($s, ':P_SUKSES', $p_sukses, 200);
@@ -348,29 +348,29 @@ class PBPerishableController extends Controller
         // RETURN;
         // ELSE
         // dc_alert.ok ('PB berhasil disimpan', 'Info');
-        // CLEAR_FORM (no_validate, full_rollback);  
+        // CLEAR_FORM (no_validate, full_rollback);
         // go_item('no_pb');
         // END IF;
 
         if($p_sukses == 'FALSE'){
             $message = $err_txt;
             $status = 'error';
-            
+
         }else{
             $message = 'PB berhasil disimpan';
             $status = 'info';
         }
-        return compact(['status', 'message']);
+        return  response()->json(['status' => $status, 'message' => $message]);
 
         // exception when others
-        // then 
+        // then
         // dc_alert.ok('Err, ' || step);
 
         // END;
             //get new no trn
             // $ip = str_replace('.', '0', SUBSTR(Session::get('ip'), -3));
 
-            
+
     }
 
     public function qtyPb(Request $request){
@@ -399,13 +399,13 @@ class PBPerishableController extends Controller
         //   AND pbp_prdcd = :d_prdcd;
 
         $qtypb_db = DB::connection('simbdg')->select("SELECT pbp_qtypb FROM tbtr_pb_perishable
-        WHERE pbp_nopb = $nopb 
+        WHERE pbp_nopb = $nopb
         AND pbp_prdcd = $plu
         AND pbp_kodesupplier = '$kodesup'
         AND pbp_kodesarana = $kodesar");
 
         //         IF :d_qtypb = qtypb_db
-        // --         ( :d_kubikase / :d_dimensi) - :d_stockakhir - :d_poout 
+        // --         ( :d_kubikase / :d_dimensi) - :d_stockakhir - :d_poout
         //    THEN
         //       RETURN;
         //    END IF;
@@ -429,15 +429,15 @@ class PBPerishableController extends Controller
     //    THEN
     //       dc_alert.ok ('PLU ' || :d_prdcd || ' Sarana ' || :h_sarana || ' Stock 0, PB harus >= 1');
     //       --RAISE Form_Trigger_Failure;
-        
+
     //       :d_kubikase :=
     //       round((( :d_qtypb + :d_stockakhir + :d_poout )/:d_isictn) * :d_dimensi);
-        
+
     //       RETURN;
     //    END IF;
 
         if($qtypb == 0 && $stock == 0 && $poout ==0){
-            $message = ('PLU ' + $plu + ' Sarana ' + $kodesar + ' Stock 0, PB harus >= 1');
+            $message = 'PLU ' . $plu . ' Sarana ' . $kodesar . ' Stock 0, PB harus >= 1';
 
             return response()->json(['message' => $message]);
         }
@@ -486,19 +486,19 @@ class PBPerishableController extends Controller
         //         AND pbp_kodesupplier = :h_supp
         //         AND pbp_kodesarana = :h_sarana
         //         AND pbp_prdcd = :d_prdcd;
-        // FORMS_DDL ('commit');       
+        // FORMS_DDL ('commit');
         DB::connection('simbdg')->update("UPDATE tbtr_pb_perishable
                                             SET pbp_qtypb = $qtypb,
-                                                pbp_kubikase = $kubikase,                
+                                                pbp_kubikase = $kubikase,
                                                 pbp_modify_by = '$userid',
                                                 pbp_modify_dt = SYSDATE
                                             WHERE     pbp_nopb = $nopb
                                                 AND pbp_kodesupplier = '$kodesup'
                                                 AND pbp_kodesarana = $kodesar
                                                 AND pbp_prdcd = $plu");
-       
-    
-    
+
+
+
         //todo
         // SELECT SUM (pbp_kubikase)
         // INTO :h_kubikase
@@ -506,7 +506,7 @@ class PBPerishableController extends Controller
         // WHERE     pbp_nopb = :no_pb
         //         AND pbp_kodesupplier = :h_supp
         //         AND pbp_kodesarana = :h_sarana;
-    
+
         // IF :h_kubikase > :h_kapasitas
         //     --ganti disini
         // THEN
@@ -514,7 +514,7 @@ class PBPerishableController extends Controller
         // ELSE
         //     :h_flag := NULL;
         // END IF;
- 
+
         return response()->json(['message' => $message, 'kubikase' => $kubikase]);
 
 
@@ -524,38 +524,34 @@ class PBPerishableController extends Controller
     public function prosesDoc(Request $request){
         $kodeigr = Session::get('kdigr');
         $nopb  = $request->nopb;
+        $no_pb = '';
         $userid = Session::get('usid');
         $tglpb = $request->tglpb;
         $flag = 0;
         $message = '';
         $status = '';
 
-        $temp = DB::connection('simbdg')->select("SELECT COUNT(1)
+        $temp = DB::connection('simbdg')->select("SELECT COUNT(1) as temp
         FROM tbtr_pb_perishable
         WHERE pbp_nopb = $nopb");
-            
-        if($temp > 0){
+
+        if($temp[0]->temp > 0){
             $message = 'No PB sudah diproses, silahkan edit';
             $status = 'info';
             $flag = 1;
-            return response()->json(['status' => $status, 'message' => $message, 'flag' => $flag]);
-        }
-        else if($temp == 0) {
-            $message = 'Tidak ada PLU yang bisa di PB untuk tgl ' + $tglpb;
-            $status = 'error';
-            $flag = 1;
-            return response()->json(['status' => $status, 'message' => $message, 'flag' => $flag]);
+            return response()->json(['status' => $status, 'message' => $message, 'flag' => $flag, 'temp' => $temp[0]->temp]);
         }
 
-        $c = loginController::getConnectionProcedure();
-        $sql = "BEGIN Sp_Create_Pb_Perishable_frz2(1, to_date('" . $tglpb . "','dd/mm/yyyy'),$kodeigr,$nopb, $userid, :P_SUKSES, :P_ERRMSG); END;";
+
+        $c = loginController::getConnectionProcedureBDG();
+        $sql = "BEGIN Sp_Create_Pb_Perishable_frz2(1, to_date('" . $tglpb . "','dd/mm/yyyy'),'" . $kodeigr. "', '" . $nopb . "', '" . $userid . "', :P_SUKSES, :P_ERRMSG); END;";
         $s = oci_parse($c, $sql);
 
         oci_bind_by_name($s, ':P_SUKSES', $p_sukses, 200);
         oci_bind_by_name($s, ':P_ERRMSG', $err_txt, 200);
         oci_execute($s);
 
-        
+
         if($p_sukses == 'FALSE'){
             $message = $err_txt;
             $status = 'error';
@@ -563,13 +559,23 @@ class PBPerishableController extends Controller
             return response()->json(['status' => $status, 'message' => $message, 'flag' => $flag]);
         }
 
+        $temp = DB::connection('simbdg')->select("SELECT COUNT(1) as temp
+        FROM tbtr_pb_perishable
+        WHERE pbp_nopb = $nopb");
 
-        $sql1 = "BEGIN  :NO_PB := f_igr_get_nomor($kodeigr,'PB','Nomor Permintaan Barang', $kodeigr || TO_CHAR (SYSDATE, 'yyMM'),3,TRUE); END;";
+        if($temp[0]->temp == 0) {
+            $message = 'Tidak ada PLU yang bisa di PB untuk tgl ' . $tglpb;
+            $status = 'error';
+            $flag = 1;
+            return response()->json(['status' => $status, 'message' => $message, 'flag' => $flag, 'temp' => $temp[0]->temp]);
+        }
+
+        $sql1 = "BEGIN  :NO_PB := f_igr_get_nomor('" . $kodeigr. "','PB','Nomor Permintaan Barang', '" . $kodeigr. "' || TO_CHAR (SYSDATE, 'yyMM'),3,TRUE); END;";
         $s1 = oci_parse($c, $sql1);
 
         oci_bind_by_name($s1, ':NO_PB', $no_pb, 200);
         oci_execute($s1);
-        
+
         return response()->json(['status' => $status, 'message' => $message, 'flag' => $flag, 'no_pb' => $no_pb]);
     }
 
@@ -582,43 +588,43 @@ class PBPerishableController extends Controller
         if (!$nopb){
             $message = 'Tidak ada nomor PB';
             $status = 'error';
-            return compact(['status', 'message']);
+            return response()->json(['status' => $status, 'message' => $message]);
         }
 
         // select count(1) into temp
         // from tbtr_pb_h
         // where pbh_nopb = :no_pb;
-        
-        $temp = DB::connection('simbdg')->select("SELECT count(1) FROM tbtr_pb_h 
-        WHERE pbh_tgltransfer IS NOT NULL 
+
+        $temp = DB::connection('simbdg')->select("SELECT count(1) as temp FROM tbtr_pb_h
+        WHERE pbh_tgltransfer IS NOT NULL
         AND pbh_nopb =$nopb");
-            
+
         // if temp > 0
-        // then 
+        // then
         //  dc_alert.ok('Draft sudah menjadi PB');
         //  return;
         // end if;
-   
-        if ($temp > 0){
+
+        if ($temp[0]->temp > 0){
             $message = 'Draft sudah menjadi PB';
             $status = 'info';
-            return compact(['status', 'message']);
+            return response()->json(['status' => $status, 'message' => $message]);
         }
- 
-        // delete from tbtr_pb_perishable 
+
+        // delete from tbtr_pb_perishable
         // where pbp_nopb=:no_pb;
-        
+
         DB::connection('simbdg')
             ->table('tbtr_pb_perishable')
             ->where('pbp_nopb', $nopb)
             ->delete();
-        
+
         // forms_ddl('commit');
-        
+
         $message = 'Delete Success!';
         $status = 'info';
 
-        return compact(['status', 'message']);
+        return response()->json(['status' => $status, 'message' => $message]);
 
     }
 

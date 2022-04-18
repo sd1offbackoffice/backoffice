@@ -194,7 +194,6 @@
             }
             if($('#kodePLU').val().length != 7)
             {
-                console.log($('#kodePLU').val().length)
                 swal('Kode PLU harus terdiri dari 7 angka', '', 'warning')
             }
             else

@@ -1051,7 +1051,7 @@
 
             HrgBeli = parseFloat(qtyctn * hargasatuan) + parseFloat(qtypcs * parseFloat(hargasatuan / frac));
             gross = HrgBeli - parseFloat(HrgBeli * persendisc1 / 100);
-            HrgBeli = gross;
+            HrgBeli = Math.round(gross);
             gross = HrgBeli - parseFloat(HrgBeli * persendisc2 / 100);
             ppn = parseFloat(gross * persenppn) / 100;
             ppnbm = ppnbm * qtypb;
@@ -1159,7 +1159,7 @@
                                 qtypcs = qtypb % frac;
                                 HrgBeli = parseFloat(qtyctn * hargasatuan) + parseFloat(qtypcs * (hargasatuan / frac));
                                 gross = HrgBeli - parseFloat(HrgBeli * persendisc1 / 100);
-                                HrgBeli = gross;
+                                HrgBeli = Math.round(gross);
                                 gross = HrgBeli - parseFloat(HrgBeli * persendisc2 / 100);
                                 ppn = parseFloat(gross * persenppn) / 100;
                                 ppnbm = ppnbm * qtypb;

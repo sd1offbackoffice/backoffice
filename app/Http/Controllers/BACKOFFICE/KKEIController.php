@@ -341,46 +341,21 @@ class KKEIController extends Controller
             ->first();
 
         $data = DB::connection(Session::get('connection'))->table('temp_kkei')
+            ->join('tbmaster_prodmast',function($join){
+                $join->on('prd_kodeigr','=','kke_kodeigr');
+                $join->on('prd_prdcd','=','kke_prdcd');
+            })
             ->where('kke_periode',$request->periode)
             ->orderBy('kke_kdsup')
+            ->orderBy('kke_prdcd')
             ->get();
 
         $bulan = array(
             'Januari','Februri','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'
         );
 
-        $periode = substr($request->periode,0,2).' '.$bulan[(int) substr($request->periode,2,2)].' '.substr($request->periode,4,4);
+        $periode = $bulan[(int) substr($request->periode,2,2)-1].' '.substr($request->periode,4,4);
 
         return view('BACKOFFICE.KKEI-pdf',compact(['data','perusahaan','periode']));
-
-        $data = [
-            'data' => $data,
-            'perusahaan' => $perusahaan,
-            'periode' => $periode
-        ];
-
-        $now = Carbon::now('Asia/Jakarta');
-        $now = date_format($now,'d-m-Y H-i-s');
-
-        $dompdf = new PDF();
-
-        $pdf = PDF::loadview('BACKOFFICE.KKEI-pdf',$data);
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(1000, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        // (Optional) Setup the paper size and orientation
-//        $dompdf->setPaper('a4', 'landscape');
-
-        // Render the HTML as PDF
-
-        return $dompdf->download('laporan-kkei '.$now.'.pdf');
     }
 }

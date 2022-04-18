@@ -586,7 +586,11 @@ class loginController extends Controller
     public static function getConnectionProcedure()
     {
         $simulasi = strtoupper(substr(Session::get('connection'), 0, 3)) == 'SIM';
-
         return oci_connect(Session::get('connection'), $simulasi ? Session::get('connection') : Session::get('dbPass'), ($simulasi ? Session::get('dbHostSim') : Session::get('dbHostProd')) . ':' . Session::get('dbPort') . '/' . strtoupper(Session::get('connection')));
+    }
+
+    public static function getConnectionProcedureBDG()
+    {
+        return oci_connect('SIMBDG', 'SIMBDG' , '192.168.222.193:1521/SIMBDG' );
     }
 }

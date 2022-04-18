@@ -138,6 +138,7 @@ BEGIN
                          AND kf_tipe(+) = 'MPLUSO'
                          AND prd_prdcd = pbo_pluigr
                          AND prd_kodedivisi IN ('1', '2', '3')
+                         AND nvl(prd_flagomi, 'N') = 'Y'
                          AND SUBSTR (prd_prdcd, 1, 1) <> '9'
                          AND NVL (prd_flagbarangordertoko, 'N') <> 'Y'
                          AND EXISTS

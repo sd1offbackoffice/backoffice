@@ -107,12 +107,7 @@
                                             <tbody id="tbody2">
                                             @for($i = 0; $i< 10; $i++)
                                                 <tr class="d-flex baris2">
-                                                    {{-- <td style="width: 3%" class="text-center">
-                                                        <button class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
-                                                    </td> --}}
-
                                                     <td class="buttonInside" style="width: 10%"><input disabled type="text" class="form-control plu" id="plu" no="{{$i}}"></td>
-                                                    {{-- <td style="width: 10%"><input disabled type="text" class="form-control deskripsi" id="deskripsi"></td> --}}
                                                     <td style="width: 10%"><input disabled type="text" class="form-control pkm" id="pkm"></td>
                                                     <td style="width: 10%"><input disabled type="text" class="form-control avgsales"></td>
                                                     <td style="width: 10%"><input disabled type="text" class="form-control isictn"></td>
@@ -273,9 +268,11 @@
         var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
         var yyyy = today.getFullYear();
         today = dd + '/' + mm + '/' + yyyy;
+        $('#no-pb').focus();
+        $('#btn-proses').attr('disabled',true);
 
         $("#tgl-pb").datepicker({
-            "dateFormat" : "dd/mon/yyyy",
+            "dateFormat" : "dd/mm/yy",
         });
 
         $("#tgl-pb").val(today)
@@ -290,6 +287,13 @@
                 e.preventDefault();
                 let nopb = $('#no-pb').val();
                 nmrBaruPb(nopb);
+                
+            }
+        });
+        $(document).on('keypress', '#tgl-pb', function (e) {
+            if(e.which == 13) {
+                e.preventDefault();
+                $('#btn-proses').focus();
             }
         });
 
@@ -307,22 +311,20 @@
                             type: 'post',
                             data: {nopb: nopb},
                             // beforeSend: function () {
-                            //     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                            // },
-                            success: function (result){
+                                //     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                                // },
+                                success: function (result){
                                 clearField();
                                 $('#no-pb').val(result);
                                 $('#tgl-pb').val(formatDate('now'));
                                 $('#model').val('* TAMBAH *');
                                 $('#deskripsiPanjang').val("");
-                                $('#total-item').val("");
-                                $('#totalgross').val("");
-                                $('#ppn').val("");
-                                $('#total').val("");
                                 $('#modal-loader').modal('hide')
                                 $('#btn-hapus').attr('disabled', false);
                                 $('#btn-save').attr('disabled', false);
-                                $('#btn-addRow').attr('disabled', false);
+                                $('#btn-proses').attr('disabled', false);
+                                $('#tgl-pb').prop('disabled', false);
+                                $("#tgl-pb").focus();
                             }, error: function () {
                                 alert('error');
                                 //$('#modal-loader').modal('hide')
@@ -333,12 +335,9 @@
             } else {
                 console.log('sukses');
                 chooseSup(nopb);
-
             }
         }
 
-        
-        
 
         function getNmrPB() {
             $('#search-modal-1').val('')
@@ -428,7 +427,7 @@
                             kodesar = data.pbp_kodesarana;
                             $('.baris1').remove();
                             console.log(result.data.length);
-                            console.log(result.length);
+                            // console.log(result.length);
 
                             for(i=0; i<result.data.length; i++){
 
@@ -472,7 +471,10 @@
                             $('#no-pb').val(data.pbp_nopb);
                             $('#tgl-pb').val(formatDate(data.pbp_tglpb));
                             $('#model').val('* PB SUDAH DICETAK / TRANSFER *'); 
+                            $('.qtypb')[0].focus();
+                            $('#tgl-pb').prop('disabled', true);
                             $('#btn-save').attr('disabled', false);
+                            $('#btn-proses').attr('disabled', true);
                             $('#btn-hapus').attr('disabled', false);
                             
                         } 
@@ -538,8 +540,11 @@
                             $('#tgl-pb').val(formatDate(data.pbp_tglpb));
                             $('#model').val('* KOREKSI *'); 
                             $('#btn-save').attr('disabled', false);
+                            $('.qtypb')[0].focus();
+                            $('#tgl-pb').prop('disabled', true);
                             console.log('after loop');
                             $('#btn-hapus').attr('disabled', false);
+                            $('#btn-proses').attr('disabled', true);
                             // alert('Tidak ada PLU yang bisa di PB untuk tgl ' ||$tglpb);
                         }
                         chooseDoc(result.data[0].pbp_nopb,result.data[0].pbp_kodesupplier,result.data[0].pbp_kodesarana,0);
@@ -550,7 +555,10 @@
                 // alert("No DOC yg dipilih : " + val)
             })
             $('#modal-help-1').modal('hide');
+            $('.qtypb')[0].focus();
         }
+
+        let value = [];
 
         function chooseDoc(nopb, kodesup, kodesar,idsup) {
             // let tempgross = 0;
@@ -584,13 +592,13 @@
                         for(i=0; i<result.length; i++){
                             // if(result[i].temp > 0){
                                 //console.log(result[0])
+                                value[i] = result[i];
                                 var temp = $('#tbody2').find('tr').length;
                                 let index = parseInt(temp, 10)
                                 var html1 = "";
                                 var i;
                                 var kodesup = "";
                                 let tglpb = result[0].pbp_tglpb;
-                                $('.baris2').remove();
 
                                 if(result[i].pbp_avgsales === null){
                                     result[i].pbp_avgsales = 0;
@@ -605,7 +613,7 @@
                                 // kubikase = ((result[i].pbp_stock + result[i].pbp_poout + result[i].pbp_pbout + result[i].pbp_qtypb)/ result[i].pbp_isictn) * result[i].pbp_dimensi; 
                                 // result[i].pbp_kubikase = kubikase;      
 
-                                html2 = `<tr class="d-flex baris">                                               
+                                html2 = `<tr class="d-flex baris2">                                               
                                                 <td class="buttonInside" style="width: 10%">
                                                     <input disabled type="text" class="form-control plu" value="`+ result[i].pbp_prdcd +`">
                                                 </td>
@@ -617,7 +625,7 @@
                                                 <td style="width: 10%"><input disabled type="text" class="form-control pbout text-right" value="`+ result[i].pbp_qtypbout +`"></td>
                                                 <td style="width: 10%"><input disabled type="text" class="form-control mindisp text-right" value="`+ result[i].pbp_mindisplay +`"></td>
                                                 <td style="width: 10%"><input disabled type="text" class="form-control minord text-right" value="`+ result[i].pbp_minorder +`"></td>
-                                                <td style="width: 10%"><input type="text" class="form-control qtypb text-right" value="` + result[i].pbp_qtypb +`" id="`+ i +`" onclick="changeDesc('`+result[i].prd_deskripsipanjang+`')" onchange="qty(this.value,this.id, `+ idsup +`)"></td>
+                                                <td style="width: 10%"><input type="text" class="form-control qtypb text-right" value="` + result[i].pbp_qtypb +`" id="`+ i +`" onclick="changeDesc('`+result[i].pbp_prdcd+`')" onchange="qty(this.value,this.id, `+ idsup +`)"></td>
                                                 <td style="width: 10%"><input disabled type="text" class="form-control dimensi text-right" value="`+ result[i].pbp_dimensi +`"></td>
                                                 <td style="width: 10%"><input disabled type="text" class="form-control kubikase text-right" value="`+ result[i].pbp_kubikase +`"></td>
                                             </tr>`;
@@ -652,11 +660,16 @@
                 // alert("No DOC yg dipilih : " + val)
             })
             $('#modal-help-1').modal('hide');
+            $('.qtypb')[0].focus();
         }
 
-        function changeDesc(deskripsiPanjang){
-            descPjg = deskripsiPanjang;
-            $('#deskripsiPanjang').val(descPjg);
+        function changeDesc(prdcd){
+            for(i = 0 ; i < value.length ; i++){
+                if (value[i].pbp_prdcd == prdcd){
+                    $('#deskripsiPanjang').val(value[i].prd_deskripsipanjang);
+                    return;
+                }
+            }
         }
 
 
@@ -699,6 +712,7 @@
                 // },
                 success: function (result) { //result bukan dr controller, cuma penamaan
                     //$('#modal-loader').modal('hide');
+                    console.log(result);
                     if(result.message == ''){
                         $('.kubikase')[index].value = result.kubikase;
                     }
@@ -737,11 +751,15 @@
                 success: function (response) {
                     $('#modal-loader').modal('hide');
                     console.log('hi proses');
+                    console.log(response.temp);
+                    console.log(response.no_pb);
                     if (response.flag == 0){
                         chooseSup(response.no_pb);
+                        $('#btn-proses').attr('disabled', true);
                     }
                     else{
                         swal(response.status, response.message, response.status);
+                        $('#btn-proses').attr('disabled', false);
                     }
                 }
             })
@@ -786,8 +804,7 @@
                 data.push({'plu' : plu , 'pkm' : pkm, 'stock' : stock, 'poout' : poout, 'pbout' : pbout, 'qtypb' : qtypb, 'minorder' : minorder, 'mindisplay' : mindisplay, 'isictn' : isictn, 'dimensi' : dimensi, 'avgsales' : avgsales, 'kubikase' : kubikase})
                 
             }
-            
-            ajaxSetup();
+            ajaxSetup(); 
             $.ajax({
                 url: '{{ url()->current() }}/saveDoc',
                 type: 'post',
@@ -809,13 +826,13 @@
                                 });
                         return;
                     }
-                    swal({
-                    title: result.message,
-                    icon: result.status,
-                    dangerMode: true,
-                    buttons: true,
-                }).then(function(confirm){
-                    if(confirm){ 
+                //     swal({
+                //     title: result.message,
+                //     icon: result.status,
+                //     dangerMode: true,
+                //     buttons: true,
+                // }).then(function(confirm){
+                //     if(confirm){ 
                         ajaxSetup();
                         $.ajax({
                             url: '{{ url()->current() }}/saveDoc2',
@@ -883,14 +900,13 @@
                                 //$('#modal-loader').modal('hide')
                             }
                         })
-                    } else {
-                        console.log('Tidak Save Doc2');
-                    }
-                })
-                   // $('#modal-loader').modal('hide')
+                //     } else {
+                //         console.log('Tidak Save Doc2');
+                //     }
+                // })
+                // $('#modal-loader').modal('hide')
                     $('#btn-save').attr("disabled", true)
                     // 
-                    ();
                 }, error: function () {
                     alert('error');
                 }
@@ -982,32 +998,32 @@
         }
 
         function temptable1(index){
-            var tmptbl = `<tr class="d-flex baris">
+            var tmptbl = `<tr class="d-flex baris1">
                                                 <td style="width: 23%"><input type="text" class="form-control supplierid" id="supplierid" no="{{$i}}"></td>
                                                 <td style="width: 23%"><input disabled type="text" class="form-control kodesarana" id="kodesarana"></td>
                                                 <td style="width: 23%"><input disabled type="text" class="form-control volsarana text-right"></td>
                                                 <td style="width: 23%"><input disabled type="text" class="form-control totalkubik text-right"></td>
-                                                <td style="width: 8%"><input disabled type="text" class="form-control totalkubik text-right"></td>
+                                                <td style="width: 8%"><input disabled type="text" class="form-control flag text-right"></td>
                                             </tr>`;
 
             return tmptbl;
         }
 
         function temptable2(index){
-            var tmptbl = `<tr class="d-flex baris">
-                                            <td style="width: 10%"><input disabled type="text" class="form-control plu" id="plu" no="{{$i}}"></td>
-                                            <td style="width: 10%"><input disabled type="text" class="form-control pkm" id="pkm"></td>
-                                            <td style="width: 10%"><input disabled type="text" class="form-control avgsales"></td>
-                                            <td style="width: 10%"><input disabled type="text" class="form-control isictn"></td>
-                                            <td style="width: 10%"><input disabled type="text" class="form-control stock text-right"></td>
-                                            <td style="width: 10%"><input disabled type="text" class="form-control poout"></td>                                            
-                                            <td style="width: 10%"><input disabled type="text" class="form-control pbout text-right"></td>
-                                            <td style="width: 10%"><input disabled type="text" class="form-control mindisp text-right"></td>
-                                            <td style="width: 10%"><input disabled type="text" class="form-control minord text-right" ></td>
-                                            <td style="width: 10%"><input type="text" class="form-control qtypb text-right"id="{{$i}}" onchange="qty(this.value,this.id,1)"></td>
-                                            <td style="width: 10%"><input type="text" class="form-control dimensi text-right"></td>
-                                            <td style="width: 10%"><input type="text" class="form-control kubikase"></td>
-                                        </tr>`;
+            var tmptbl = `<tr class="d-flex baris2">
+                                                    <td class="buttonInside" style="width: 10%"><input disabled type="text" class="form-control plu" id="plu" no="{{$i}}"></td>
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control pkm" id="pkm"></td>
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control avgsales"></td>
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control isictn"></td>
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control stock text-right"></td>
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control poout"></td>                                            
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control pbout text-right"></td>
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control mindisp text-right"></td>
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control minord text-right" ></td>
+                                                    <td style="width: 10%"><input type="text" class="form-control qtypb text-right" id="{{$i}}"></td>
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control dimensi text-right"></td>
+                                                    <td style="width: 10%"><input disabled type="text" class="form-control kubikase"></td>
+                                                </tr>`;
 
             return tmptbl;
         }

@@ -164,7 +164,7 @@
         function cetak(url){
             if(url == 'sales' || url == 'cb-nk'){
                 swal({
-                    title: 'sp_job_lpt_cashback harus dijalankan terlebih dahulu!',
+                    title: 'SP_JOB_LPT_CASHBACK akan dijalankan terlebih dahulu!',
                     text: 'Proses mungkin membutuhkan waktu beberapa saat',
                     icon: 'info'
                 }).then((ok) => {

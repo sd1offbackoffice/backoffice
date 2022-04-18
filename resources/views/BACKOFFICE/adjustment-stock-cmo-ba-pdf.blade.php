@@ -67,4 +67,23 @@
         <tfoot>
         </tfoot>
     </table>
+    <table style="width: 100%; font-weight: bold" class="table-ttd page-break-avoid">
+        <tr>
+            <td width="20%"></td>
+            <td width="20%"></td>
+            <td width="20%"></td>
+            <td width="20%"></td>
+            <td width="20%"></td>
+        </tr>
+        <tr class="blank-row">
+            <td colspan="5">.</td>
+        </tr>
+        <tr>
+            <td width="20%"></td>
+            <td width="20%" style="border-top: 1px solid black" class="center">( Store Mgr. )</td>
+            <td width="20%"></td>
+            <td width="20%" style="border-top: 1px solid black" class="center">( Logistic Mgr. / Jr. Mgr. )</td>
+            <td width="20%"></td>
+        </tr>
+    </table>
 @endsection

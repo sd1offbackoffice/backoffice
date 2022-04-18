@@ -540,7 +540,7 @@
                 $(this).val(temp);
                 let currRowHeader = $(this).attr('rowheader');
                 getDataPLU(temp, currRowHeader);
-                console.log('currRowHeader: '+currRowHeader);
+                // console.log('currRowHeader: '+currRowHeader);
             }
         });
 
@@ -862,7 +862,7 @@
                         reset();
                     },
                     success: function (response) {
-                        console.log(response);
+                        // console.log(response);
                         $('#modal-loader').modal('hide');
                         $('#btnUsulanRetur').attr('disabled', false);
 
@@ -1267,7 +1267,7 @@
                                 pcs = qtyretur;
                                 $('.ctn-header-' + rh).val(ctn);
                                 $('.pcs-header-' + rh).val(pcs);
-                                console.log(qtyretur);
+                                // console.log(qtyretur);
                                 message = 'qty plu yang bisa diretur hanya ' + qtyretur;
                                 status = 'info';
                                 swal({
@@ -1312,12 +1312,15 @@
                     nodoc: nodoc,
                     pkp: pkp
                 },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
                 success: function (response) {
                     $('#modal-loader').modal('hide');
                     datas_detail = response.datas;
-                    console.log(response);
+                    // console.log(response);
                     if (datas_detail.length > 0) {
-                        console.log(response);
+                        // console.log(response);
                         $('.row-detail-' + rh).remove();
                         datas_detail.forEach(function (dd) {
                             $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + rowheader + '" deskripsi="' + dd.deskripsi + '">' +
@@ -1577,6 +1580,7 @@
             $('#body-table-detail tr').each(function () {
                 count++;
             });
+            // console.log(count);
             if (count > 0) {
                 swal({
                     title: "Simpan Data?",
@@ -1613,38 +1617,38 @@
                             datas.push(data);
                         });
                         console.log(datas);
-                        // ajaxSetup();
-                        // $.ajax({
-                        //     type: "POST",
-                        //     url: "{{ url('/bo/transaksi/pengeluaran/input/save') }}",
-                        //     data: {
-                        //         datas: datas
-                        //     },
-                        //     beforeSend: function () {
-                        //         $('#modal-loader').modal('show');
-                        //     },
-                        //     success: function (response) {
-                        //         $('#modal-loader').modal('hide');
-                        //         swal({
-                        //             title: response.status,
-                        //             text: response.message,
-                        //             icon: response.status
-                        //         }).then(() => {
-                        //             window.location.reload();
-                        //         });
+                        ajaxSetup();
+                        $.ajax({
+                            type: "POST",
+                            url: "{{ url('/bo/transaksi/pengeluaran/input/save') }}",
+                            data: {
+                                datas: datas
+                            },
+                            beforeSend: function () {
+                                $('#modal-loader').modal('show');
+                            },
+                            success: function (response) {
+                                $('#modal-loader').modal('hide');
+                                swal({
+                                    title: response.status,
+                                    text: response.message,
+                                    icon: response.status
+                                }).then(() => {
+                                    window.location.reload();
+                                });
 
-                        //     },
-                        //     error: function (error) {
-                        //         $('#modal-loader').modal('hide');
-                        //         // handle error
-                        //         swal({
-                        //             title: 'Gagal!',
-                        //             text: 'Data gagal disimpan!',
-                        //             icon: 'error'
-                        //         }).then(() => {
-                        //         });
-                        //     }
-                        // });
+                            },
+                            error: function (error) {
+                                $('#modal-loader').modal('hide');
+                                // handle error
+                                swal({
+                                    title: 'Gagal!',
+                                    text: 'Data gagal disimpan!',
+                                    icon: 'error'
+                                }).then(() => {
+                                });
+                            }
+                        });
                     } else {
                         return false;
                     }

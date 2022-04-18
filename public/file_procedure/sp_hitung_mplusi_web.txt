@@ -99,7 +99,7 @@ BEGIN
                                                   ksl_mean
                                              FROM tbmaster_kph)
                                     WHERE rn = 1)) kph
-                           WHERE     prc_group = 'I'
+                           WHERE     prc_group = 'I' AND nvl(prd_flagidm, 'N') = 'Y'
                                  AND NVL (prc_kodetag, '_') NOT IN ('F',
                                                                     'G',
                                                                     'N',

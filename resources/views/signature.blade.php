@@ -133,6 +133,7 @@
                     $('#modal-loader').modal('show');
                 },
                 success: function (response) {
+                    console.log(response);
                     $('#modal-loader').modal('hide');
                     $('#img-data').empty();
                     for(i=0;i<response.data.length;i++){

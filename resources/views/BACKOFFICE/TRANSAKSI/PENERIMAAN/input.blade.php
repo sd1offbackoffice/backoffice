@@ -2,12 +2,12 @@
 @section('title','PENERIMAAN | INPUT')
 @section('content')
 
-<div class="container-fluid">
+<div class="container" style="max-width: fit-content;">
     <button onclick="topFunction()" id="myBtn" title="Go to top">&#9650;</button>
     <h4><span class="badge badge-dark" id="statusJenisPenerimaan"></span></h4>
     <div class="row">
         <div class="col-md-8">
-            <div class="card" id="left_col">
+            <div class="card border-dark cardForm" id="left_col">
                 <div class="container">
                     <div class="row align-items-center">
                         <div class="col-2">
@@ -119,7 +119,7 @@
             </div>
         </div>
         <div class="col-sm-4">
-            <div class="card">
+            <div class="card border-dark cardForm">
                 <div class="container">
                     <div class="row align-items-center">
                         <div class="col-4" id="right_col">
@@ -173,7 +173,7 @@
             </div>
         </div>
     </div>
-    <div class="card" id="input_new_trn">
+    <div class="card border-dark cardForm" id="input_new_trn">
         <span></span>
         <h4><span class="badge badge-dark">Input Transaksi Pembelian/ Penerimaan Barang</span></h4>
         <span></span>
@@ -523,20 +523,21 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm">
-                    <button type="button" class="btn btn-primary btn-lg btn-block" onclick="checkFlag()"><b>Rekam Record</b></button>
+                    <button id="rekamRecBtn" type="button" class="btn btn-primary btn-lg btn-block" onclick="checkFlag()"><b>Rekam Record</b></button>
                 </div>
                 <div class="col-sm">
-                    <button type="button" class="btn btn-info btn-lg btn-block" onclick="transferPO()"><b>Transfer PO</b></button>
+                    <button id="trfPOBtn" type="button" class="btn btn-info btn-lg btn-block" onclick="transferPO()"><b>Transfer PO</b></button>
                 </div>
                 <div class="col-sm">
-                    <button type="button" class="btn btn-warning btn-lg btn-block" onclick="viewList()"><b>List/Hapus Record</b></button>
+                    <button id="viewListBtn" type="button" class="btn btn-warning btn-lg btn-block" onclick="viewList()"><b>List/Hapus Record</b></button>
                 </div>
                 <div class="col-sm">
-                    <button type="button" class="btn btn-success btn-lg btn-block" onclick="saveData()"><b>Simpan Data</b></button>
+                    <button id="saveRecBtn" type="button" class="btn btn-success btn-lg btn-block" onclick="saveData()"><b>Simpan Data</b></button>
                 </div>
             </div>
+            <br><br>
         </div>
-        <div class="container">
+        <div id="badgeContainer" class="container" hidden>
             <div class="row">
                 <div class="col-sm">
                     <h4><span class="badge badge-primary">ALT + R - Rekam Record</span></h4>
@@ -561,8 +562,8 @@
             </div>
         </div>
     </div>
-    <div class="card" hidden id="card_display_data">
-        <div class="container">
+    <div class="card border-dark cardForm" hidden id="card_display_data">
+        <div class="container-fluid">
             <div class="row align-items-center">
                 <div class="sticky-table sticky-headers sticky-ltr-cells">
                     <table id="pluDataTable" class="table table-striped table-striped">
@@ -620,7 +621,6 @@
 
 <!-- Modal Choose Jenis -->
 <button hidden id="chooseTypeBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
-    Launch demo modal
 </button>
 
 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true" data-backdrop="static" data-keyboard="false">
@@ -814,6 +814,10 @@
     let showPLUBtn = $('#showPLUBtn');
     let mybutton = document.getElementById("myBtn");
     let theadDataTables = $('#theadDataTables');
+    let rekamRecBtn = $('#rekamRecBtn');
+    let trfPOBtn = $('#trfPOBtn');
+    let viewListBtn = $('#viewListBtn');
+    let saveRecBtn = $('#saveRecBtn');
     $(document).ready(function() {
         typeTrn = 'B'
         chooseTypeBtn.click();
@@ -824,6 +828,8 @@
         if (flag == 1) {
             jenisPenerimaan = 1;
             po_number.attr('disabled', true);
+            trfPOBtn.attr('disabled', true);
+            viewListBtn.attr('disabled', true);
             $('#showPoBtn').attr('disabled', true);
             supplier_code.attr('disabled', true);
             $('#showSupplierBtn').attr('disabled', true);
@@ -833,9 +839,11 @@
             i_qtyk.attr('disabled', true);
             $('#statusJenisPenerimaan').text('Lain-lain');
             typeTrn = 'L';
+            btb_number.focus();
         } else {
             jenisPenerimaan = 0;
             $('#statusJenisPenerimaan').text('Pembelian');
+            btb_number.focus();
         }
 
     }
@@ -897,10 +905,8 @@
                                 },
                                 success: function(result) {
                                     console.log(result);
-                                    let element = document.querySelector('#btb_date');
                                     if (result.length > 0) {
                                         btb_number.val(result);
-                                        btb_date.focus();
                                         //cannot automate process, needs to manually press f4 to open datepicker bcs automation results to istrusted = 0
                                         // btb_date.keypress(function(e) {
                                         //     if (e.key === 'Enter') {
@@ -910,6 +916,9 @@
                                         //         console.log(key);
                                         //     }
                                         // });
+                                        setTimeout(function() {
+                                            btb_date.focus();
+                                        }, 500)
                                         tempDataBTB = [];
                                         clearSecondField();
                                         $('#modal-loader').modal('hide');
@@ -923,7 +932,7 @@
                         } else {
                             console.log('Cancelled')
                         }
-                    })
+                    });
                 }
             }
         });
@@ -2391,7 +2400,12 @@
                 success: (result) => {
                     $('#modal-loader').modal('hide');
                     if (result.kode == 1) {
-                        swal('', result.msg, 'success');
+                        swal({
+                            icon: 'success',
+                            title: 'Sukses',
+                            text: result.msg,
+                            timer: 2000
+                        });
                         setTimeout(function() {
                             window.location.reload();
                         }, 2000)
