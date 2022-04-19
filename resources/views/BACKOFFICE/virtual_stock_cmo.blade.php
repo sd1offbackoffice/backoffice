@@ -104,7 +104,7 @@
                                                     <input type="text" class="form-control" id="kodemcg" disabled>
                                                 </div>
                                                 <div class="col-sm-6">
-                                                    <input type="text" class="form-control" id="namasupplier" readonly>
+                                                    <input type="text" class="form-control" id="namasupplier" disabled>
                                                 </div> 
                                             </div>
                                         </div>
@@ -113,7 +113,7 @@
                                             <label class="col-sm-2 col-form-label">Tanggal</label>
                                             <div class="col-sm-10 row">
                                                 <div class="col-sm-4">
-                                                <input type="text" class="form-control daterange-periode" id="periode1">
+                                                <input type="text" class="form-control daterange-periode" id="periode1" disabled>
                                                 </div>
                                                 <div class="col-sm-1">
                                                     <label>s/d</label>
@@ -202,6 +202,13 @@
         </div>
     </div>
 
+    <style>
+
+        .disabled {
+            background: gray;
+        }
+
+    </style>
 
     
 <script>
@@ -218,19 +225,29 @@
             $('#periode1').val(output1);
             $('#periode2').val(output2);
 
+
+        // $('.date').datepicker({
+        //     "dateFormat" : "dd/mm/yy",
+        // });
+
+        // console.log(new Date($('#periode2').val()));
+        // console.log(new Date($('#periode1').val()));
+
         getSupplier('');
     });
     // end document
 
     $('.daterange-periode').daterangepicker({
         autoUpdateInput: false,
+        "singleDatePicker": true,
         locale: {
             cancelLabel: 'Clear'
-        }
+        },
+        
     });
 
     $('.daterange-periode').on('apply.daterangepicker', function (ev, picker) {
-        $('#periode1').val(picker.startDate.format('DD/MM/YYYY'));
+        // $('#periode1').val(picker.startDate.format('DD/MM/YYYY'));
         $('#periode2').val(picker.endDate.format('DD/MM/YYYY'));
     });
 
@@ -241,7 +258,7 @@
     $('#btn-proses').on('click', function () {
         periode1 = $('#periode1').val();
         periode2 = $('#periode2').val();
-        if (periode1 == "" || periode2 == "") {
+        if (periode1 == "" || periode2 == "" || periode2 < periode1) {
             swal('Mohon isi periode dengan benar !!', '', 'warning');
         } else {
             ajaxSetup();
@@ -467,25 +484,50 @@
     }
 
     function printPDF() {
-        if ($('#div1').val() == '' || $('#div2').val() == '' 
-        || $('#dept1').val() == '' || $('#dept2').val() == ''
-        || $('#kat1').val() == '' || $('#kat2').val() == ''
-        || $('#kodesupp').val() == '' || $('#kodemcg').val() == '' || $('#namasupplier').val() == ''
-        || $('#periode1').val() == '' || $('#periode2').val() == '') {
-            swal('Error', "Input semua kolom untuk cetak PDF !", 'error');
-        }else {
+        var startDate = $('#periode1').val();
+        var endDate = $('#periode2').val();
+
+        console.log(Date.parse(startDate) > Date.parse(endDate));
+        // console.log(Date.parse(endDate));
+        // console.log(Date.parse(startDate));
+        console.log(startDate);
+        console.log(endDate);
+        console.log(startDate > endDate);
+        // if ($('#periode1').val() == '' || $('#periode2').val() == '') 
+        // {
+        //     swal('Error', "Pilih tanggal untuk cetak PDF !", 'error');
+        // }
+        if(startDate > endDate)
+        {
+            swal('Error', "End date tidak boleh lebih besar dari Start Date", 'error');
+        }
+        else 
+        {
             window.open(`{{ url()->current() }}/printPDF?tipevcmo=${$("input[type='radio'][name='optradio']:checked").val()}&div1=${$('#div1').val()}&div2=${$('#div2').val()}&dept1=${$('#dept1').val()}&dept2=${$('#dept2').val()}&kat1=${$('#kat1').val()}&kat2=${$('#kat2').val()}&kodesupplier=${$('#kodesupplier').val()}&kodemcg=${$('#kodemcg').val()}&namasupplier=${$('#namasupplier').val()}&periode1=${$('#periode1').val()}&periode2=${$('#periode2').val()}`, '_blank');
         }
     }
 
     function printCSV() {
-        if ($('#div1').val() == '' || $('#div2').val() == '' 
-        || $('#dept1').val() == '' || $('#dept2').val() == ''
-        || $('#kat1').val() == '' || $('#kat2').val() == ''
-        || $('#kodesupp').val() == '' || $('#kodemcg').val() == '' || $('#namasupplier').val() == ''
-        || $('#periode1').val() == '' || $('#periode2').val() == '') {
-            swal('Error', "Input semua kolom untuk cetak CSV !", 'error');
-        }else {
+        var startDate = new Date($('#periode1').val());
+        var endDate = new Date($('#periode2').val());
+        // console.log(Date.parse(endDate) < Date.parse(startDate));
+        // if ($('#div1').val() == '' || $('#div2').val() == '' 
+        // || $('#dept1').val() == '' || $('#dept2').val() == ''
+        // || $('#kat1').val() == '' || $('#kat2').val() == ''
+        // || $('#kodesupp').val() == '' || $('#kodemcg').val() == '' || $('#namasupplier').val() == ''
+        // || $('#periode1').val() == '' || $('#periode2').val() == '') {
+        //     swal('Error', "Input semua kolom untuk cetak CSV !", 'error');
+        // }
+        if ($('#periode1').val() == '' || $('#periode2').val() == '') 
+        {
+            swal('Error', "Pilih tanggal untuk cetak CSV !", 'error');
+        }
+        else if(Date.parse(endDate) < Date.parse(startDate))
+        {
+            swal('Error', "End date tidak boleh lebih besar dari Start Date", 'error');
+        }
+        else 
+        {
             window.open(`{{ url()->current() }}/printCSV?tipevcmo=${$("input[type='radio'][name='optradio']:checked").val()}&div1=${$('#div1').val()}&div2=${$('#div2').val()}&dept1=${$('#dept1').val()}&dept2=${$('#dept2').val()}&kat1=${$('#kat1').val()}&kat2=${$('#kat2').val()}&kodesupplier=${$('#kodesupplier').val()}&kodemcg=${$('#kodemcg').val()}&namasupplier=${$('#namasupplier').val()}&periode1=${$('#periode1').val()}&periode2=${$('#periode2').val()}`, '_blank');
         }
     }

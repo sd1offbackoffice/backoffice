@@ -174,7 +174,7 @@ class CetakController extends Controller
                 if(!$reprint){
                     foreach($nodoc as $knodoc){
                         $c = loginController::getConnectionProcedure();
-                        $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMORSTADOC('".Session::get('kdigr')."','SJK','Nomor Surat Jalan','3' || TO_CHAR(SYSDATE, 'yy'),5,TRUE); END;");
+                        $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('".Session::get('kdigr')."','SJK','Nomor Surat Jalan','3' || TO_CHAR(SYSDATE, 'yy'),5,TRUE); END;");
                         oci_bind_by_name($s, ':ret', $vnodoc, 32);
                         oci_execute($s);
 

@@ -767,7 +767,6 @@
                                 $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                             },
                             success: function (response) {
-                                console.log(response);
                                 if (response['message'] != "") {
                                     swal({
                                         title: response['message'],
@@ -911,13 +910,6 @@
                 },
                 success: function (response) {
 
-                    console.log(detail[row].pbd_prdcd);
-                    console.log(detail[row].pbd_kodesupplier);
-                    console.log($('#tglpb').val());
-                    console.log(detail[row].prd_frac);
-                    console.log(qtypb);
-
-
                     if (response['prd'].v_oke == 'TRUE') {
                         div.find('.bonus1').val(response['prd'].bonus1);
                         div.find('.bonus2').val(response['prd'].bonus2);
@@ -930,17 +922,16 @@
                         detail[row].pbd_ppn = response['prd'].ppn;
                         detail[row].pbd_ppnbm = response['prd'].ppnbm;
                         detail[row].pbd_ppnbotol = response['prd'].ppnbtl;
-                        console.log(response['prd']);
                         grandtotal(row);
                         if (next == null) {
                             tambah_row();
                             $('#row-' + parseFloat(row + 1)).find('.input-plu').click().focus();
                         }
-                        swal({
-                            title: response['message'],
-                            icon: response['status']
-                        }).then((createData) => {
-                        });
+                        // swal({
+                        //     title: response['message'],
+                        //     icon: response['status']
+                        // }).then((createData) => {
+                        // });
                     } else {
                         swal({
                             title: response['message'],
@@ -967,7 +958,6 @@
                 var target = e.srcElement || e.target;
                 var next = div[0].nextElementSibling;
 
-
                 hitung(row);
                 if (((parseFloat(div.find('.input-ctn').val()) * parseFloat(detail[row].prd_frac)) + parseFloat(div.find('.input-pcs').val())) < parseFloat(detail[row].minor)) {
                     swal({
@@ -977,7 +967,6 @@
                         div.find('.input-ctn').val(parseFloat(detail[row].minor) / parseFloat(detail[row].prd_frac));
                         div.find('.input-pcs').val(parseFloat(detail[row].minor) % parseFloat(detail[row].prd_frac));
                         hitung(row);
-
                         div.find('.input-pcs').focus();
                     });
                 } else if (((parseFloat(div.find('.input-ctn').val()) * parseFloat(detail[row].prd_frac)) + parseFloat(div.find('.input-pcs').val())) <= 0) {
@@ -1154,7 +1143,7 @@
                                 qtypb = parseFloat(detail[id].pbd_qtypb);
                                 persendisc1 = parseFloat(detail[id].pbd_persendisc1);
                                 persendisc2 = parseFloat(detail[id].pbd_persendisc2);
-
+                                persenppn = parseFloat( detail[id].pbd_persenppn);
                                 qtyctn = qtypb / frac;
                                 qtypcs = qtypb % frac;
                                 HrgBeli = parseFloat(qtyctn * hargasatuan) + parseFloat(qtypcs * (hargasatuan / frac));

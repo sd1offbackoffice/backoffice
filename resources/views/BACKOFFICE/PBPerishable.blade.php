@@ -24,7 +24,7 @@
                                                     <div class="form-group row mb-0">
                                                         <label for="no-pb" class="col-sm-3 col-form-label">NOMOR PB</label>
                                                         <div class="col-sm-4 buttonInside">
-                                                            <input type="text" class="form-control" id="no-pb">
+                                                            <input type="number" class="form-control" id="no-pb">
                                                             <button id="btn-no-pb" type="button" class="btn btn-lov p-0" onclick="getNmrPB()">
                                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                             </button>
@@ -116,7 +116,7 @@
                                                     <td style="width: 10%"><input disabled type="text" class="form-control pbout text-right"></td>
                                                     <td style="width: 10%"><input disabled type="text" class="form-control mindisp text-right"></td>
                                                     <td style="width: 10%"><input disabled type="text" class="form-control minord text-right" ></td>
-                                                    <td style="width: 10%"><input type="text" class="form-control qtypb text-right"{{-- id="{{$i}}" onchange="qty(this.value,this.id,1)"--}}></td>
+                                                    <td style="width: 10%"><input type="number" class="form-control qtypb text-right"{{-- id="{{$i}}" onchange="qty(this.value,this.id,1)"--}}></td>
                                                     <td style="width: 10%"><input disabled type="text" class="form-control dimensi text-right"></td>
                                                     <td style="width: 10%"><input disabled type="text" class="form-control kubikase"></td>
                                                 </tr>
@@ -290,6 +290,14 @@
                 
             }
         });
+
+        $(document).on('keypress', '.qtypb', function (e) {
+            if(e.which == 9) {
+                e.preventDefault();
+                qty(this.value,this.id, idsup);
+            }
+        });
+
         $(document).on('keypress', '#tgl-pb', function (e) {
             if(e.which == 13) {
                 e.preventDefault();
@@ -426,6 +434,7 @@
                             kodesup = data.pbp_kodesupplier;
                             kodesar = data.pbp_kodesarana;
                             $('.baris1').remove();
+                            $('#model').val("");
                             console.log(result.data.length);
                             // console.log(result.length);
 
@@ -433,13 +442,26 @@
 
                                 
                                 data = result.data[i];
-                                if(data.pbp_kubikase > data.totalkapasitas){
+                                var kubikase2 = parseInt(data.pbp_kubikase);
+                                var ttlkapasitas = parseInt(data.totalkapasitas);
+                                
+                                if(kubikase2 > ttlkapasitas){
+                                    console.log('yes');
+                                }else{
+                                    console.log('no');
+                                }
+                                data = result.data[i];
+                                
+                                console.log(thousands_separators(1000));
+
+
+                                if(kubikase2 > ttlkapasitas){
                                     html1 = `<tr class="d-flex baris1">
                                         <td style="width: 23%"><input type="text" class="form-control supplierid" id = `+ i +` onclick="chooseDoc('`+data.pbp_nopb +`','`+data.pbp_kodesupplier+`','`+data.pbp_kodesarana+`',this.id)" value="`+ data.pbp_kodesupplier +`"></td>
-                                        <td style="width: 23%"><input disabled type="text" class="form-control kodesarana" value="`+ data.pbp_kodesarana +`"></td>
-                                        <td style="width: 23%"><input disabled type="text" class="form-control volumesar text-right" value="`+ data.sfrz_volsarana +`"></td>
-                                        <td style="width: 23%"><input disabled type="text" class="form-control totalkubik text-right" value="`+ data.pbp_kubikase +`"></td>
-                                        <td style="width: 8%"><input disabled type="text" class="form-control flag" value="X"></td>
+                                        <td style="width: 23%"><input disabled type="text" id = `+ i +` class="form-control kodesarana" value="`+ data.pbp_kodesarana +`"></td>
+                                        <td style="width: 23%"><input disabled type="text" id = `+ i +` class="form-control volsarana text-right" value="`+ thousands_separators(data.totalkapasitas) +`"></td>
+                                        <td style="width: 23%"><input disabled type="text" id = `+ i +` class="form-control totalkubik text-right" value="`+ thousands_separators(data.pbp_kubikase) +`"></td>
+                                        <td style="width: 8%"><input disabled type="text" id = `+ i +` class="form-control flag" value="X"></td>
                                         </tr>`;
 
                                     
@@ -448,12 +470,14 @@
                                     // $('#namasupplier').val(data.sup_namasupplier);   
                                 }
                                 else{
+                                    
+
                                     html1 = `<tr class="d-flex baris1">
                                         <td style="width: 23%"><input type="text" class="form-control supplierid" id = `+ i +` onclick="chooseDoc('`+data.pbp_nopb +`','`+data.pbp_kodesupplier+`','`+data.pbp_kodesarana+`',this.id)" value="`+ data.pbp_kodesupplier +`"></td>
-                                        <td style="width: 23%"><input disabled type="text" class="form-control kodesarana" value="`+ data.pbp_kodesarana +`"></td>
-                                        <td style="width: 23%"><input disabled type="text" class="form-control volumesar text-right" value="`+ data.sfrz_volsarana +`"></td>
-                                        <td style="width: 23%"><input disabled type="text" class="form-control totalkubik text-right" value="`+ data.pbp_kubikase +`"></td>
-                                        <td style="width: 8%"><input disabled type="text" class="form-control flag" value=""></td>
+                                        <td style="width: 23%"><input disabled type="text" id = `+ i +` class="form-control kodesarana" value="`+ data.pbp_kodesarana +`"></td>
+                                        <td style="width: 23%"><input disabled type="text" id = `+ i +` class="form-control volsarana text-right" value="`+ thousands_separators(data.totalkapasitas) +`"></td>
+                                        <td style="width: 23%"><input disabled type="text" id = `+ i +` class="form-control totalkubik text-right" value="`+ thousands_separators(data.pbp_kubikase) +`"></td>
+                                        <td style="width: 8%"><input disabled type="text" id = `+ i +` class="form-control flag" value=""></td>
                                         </tr>`;
 
                                     
@@ -498,16 +522,24 @@
                                 // qtypcs = result[i].trbo_qty % result[i].prd_frac;
                                 // ppn = result[i].trbo_ppnrph * 0;
                                 console.log('in loop');
+                                var kubikase2 = parseInt(data.pbp_kubikase);
+                                var ttlkapasitas = parseInt(data.totalkapasitas);
+                                
+                                if(kubikase2 > ttlkapasitas){
+                                    console.log('yes');
+                                }else{
+                                    console.log('no');
+                                }
                                 data = result.data[i];
                                 
 
-                                if(data.pbp_kubikase > data.totalkapasitas){
+                                if(kubikase2 > ttlkapasitas){
                                     html1 = `<tr class="d-flex baris1">
                                         <td style="width: 23%"><input type="text" class="form-control supplierid" id = `+ i +` onclick="chooseDoc('`+data.pbp_nopb +`','`+data.pbp_kodesupplier+`','`+data.pbp_kodesarana+`',this.id)" value="`+ data.pbp_kodesupplier +`"></td>
-                                        <td style="width: 23%"><input disabled type="text" class="form-control kodesarana" value="`+ data.pbp_kodesarana +`"></td>
-                                        <td style="width: 23%"><input disabled type="text" class="form-control volumesar text-right" value="`+ data.sfrz_volsarana +`"></td>
-                                        <td style="width: 23%"><input disabled type="text" class="form-control totalkubik text-right" value="`+ data.pbp_kubikase +`"></td>
-                                        <td style="width: 8%"><input disabled type="text" class="form-control flag" value="X"></td>
+                                        <td style="width: 23%"><input disabled type="text" id = `+ i +` class="form-control kodesarana" value="`+ data.pbp_kodesarana +`"></td>
+                                        <td style="width: 23%"><input disabled type="text" id = `+ i +` class="form-control volsarana text-right" value="`+ thousands_separators(data.totalkapasitas) +`"></td>
+                                        <td style="width: 23%"><input disabled type="text" id = `+ i +` class="form-control totalkubik text-right" value="`+ thousands_separators(data.pbp_kubikase) +`"></td>
+                                        <td style="width: 8%"><input disabled type="text" id = `+ i +` class="form-control flag" value="X"></td>
                                         </tr>`;
 
                                     
@@ -519,9 +551,9 @@
                                     html1 = `<tr class="d-flex baris1">
                                         <td style="width: 23%"><input type="text" class="form-control supplierid" id = `+ i +` onclick="chooseDoc('`+data.pbp_nopb +`','`+data.pbp_kodesupplier+`','`+data.pbp_kodesarana+`',this.id)" value="`+ data.pbp_kodesupplier +`"></td>
                                         <td style="width: 23%"><input disabled type="text" class="form-control kodesarana" value="`+ data.pbp_kodesarana +`"></td>
-                                        <td style="width: 23%"><input disabled type="text" class="form-control volumesar text-right" value="`+ data.sfrz_volsarana +`"></td>
-                                        <td style="width: 23%"><input disabled type="text" class="form-control totalkubik text-right" value="`+ data.pbp_kubikase +`"></td>
-                                        <td style="width: 8%"><input disabled type="text" class="form-control flag" value=""></td>
+                                        <td style="width: 23%"><input disabled type="text" id = `+ i +` class="form-control volsarana text-right" value="`+ thousands_separators(data.totalkapasitas) +`"></td>
+                                        <td style="width: 23%"><input disabled type="text" id = `+ i +` class="form-control totalkubik text-right" value="`+ thousands_separators(data.pbp_kubikase) +`"></td>
+                                        <td style="width: 8%"><input disabled type="text" id = `+ i +` class="form-control flag" value=""></td>
                                         </tr>`;
 
                                     
@@ -538,7 +570,10 @@
                             
                             $('#no-pb').val(data.pbp_nopb);
                             $('#tgl-pb').val(formatDate(data.pbp_tglpb));
-                            $('#model').val('* KOREKSI *'); 
+                            var item = $("#model");
+                            if (!item.val('* TAMBAH *') || item.val("")) {
+                                $('#model').val('* KOREKSI *');
+                            }
                             $('#btn-save').attr('disabled', false);
                             $('.qtypb')[0].focus();
                             $('#tgl-pb').prop('disabled', true);
@@ -626,8 +661,8 @@
                                                 <td style="width: 10%"><input disabled type="text" class="form-control mindisp text-right" value="`+ result[i].pbp_mindisplay +`"></td>
                                                 <td style="width: 10%"><input disabled type="text" class="form-control minord text-right" value="`+ result[i].pbp_minorder +`"></td>
                                                 <td style="width: 10%"><input type="text" class="form-control qtypb text-right" value="` + result[i].pbp_qtypb +`" id="`+ i +`" onclick="changeDesc('`+result[i].pbp_prdcd+`')" onchange="qty(this.value,this.id, `+ idsup +`)"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control dimensi text-right" value="`+ result[i].pbp_dimensi +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control kubikase text-right" value="`+ result[i].pbp_kubikase +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control dimensi text-right" value="`+ thousands_separators(result[i].pbp_dimensi)  +`"></td>
+                                                <td style="width: 10%"><input disabled type="text" class="form-control kubikase text-right" value="`+ thousands_separators(result[i].pbp_kubikase) +`"></td>
                                             </tr>`;
                                 
                                 
@@ -687,6 +722,7 @@
             let nopb = $('#no-pb').val();
             let kodesup = $('.supplierid')[idsup].value;
             let kodesar = $('.kodesarana')[idsup].value;
+            let volsar = $('.volsarana')[idsup].value;
             let plu     = $('.plu')[index].value;
             let pkm     = $('.pkm')[index].value;
             let stock = $('.stock')[index].value;
@@ -715,6 +751,10 @@
                     console.log(result);
                     if(result.message == ''){
                         $('.kubikase')[index].value = result.kubikase;
+                        $('.totalkubik')[idsup].value = result.totalkubik;
+                        if( result.totalkubik > volsar){
+                            $('.flag')[idsup].value = "X";
+                        }
                     }
                     else{
                         swal({
@@ -883,6 +923,8 @@
                                                         text: result.message,
                                                         icon: result.status,
                                                     });
+                                                    clearField();
+                                                    $('#btn-save').attr("disabled", true)
 
                                                 }, error: function () {
                                                     alert('error');
@@ -905,12 +947,12 @@
                 //     }
                 // })
                 // $('#modal-loader').modal('hide')
-                    $('#btn-save').attr("disabled", true)
                     // 
                 }, error: function () {
                     alert('error');
                 }
             })
+            
         })
 
         // function focusToRow(index) {
@@ -925,6 +967,15 @@
         //     });
         //     $('.qtypb')[index].focus()
         // }
+
+    function thousands_separators(num){
+        var num_parts = num.toString().split(".");
+        num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return num_parts.join(".");
+
+    }
+
+
 
         function deleteDoc(event) {
             event.preventDefault();
@@ -981,6 +1032,8 @@
             $('#tgl-pb').val(today);
             $('#model').val("");
             $('#deskripsiPanjang').val("");
+            $('#namasupplier').val("");
+            $('#tgl-pb').prop('disabled', false);
  
             console.log('remove table 2');
             $('.baris2').remove();

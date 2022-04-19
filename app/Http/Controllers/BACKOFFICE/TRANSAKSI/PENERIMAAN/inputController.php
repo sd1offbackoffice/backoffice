@@ -575,7 +575,7 @@ class inputController extends Controller
             $data = $this->query1($supplier, $prdcd, $kodeigr);
 
             if (!$data) {
-                return (['2', "PLU " . $prdcd . " tidak sesuai kateory-nya", ""]);
+                return (['2', "PLU " . $prdcd . " tidak sesuai kategori-nya", ""]);
             }
 
             $data = $data[0];
@@ -600,7 +600,7 @@ class inputController extends Controller
             }
 
             if (!$data->kttk && !$data->kcab) {
-                return (['2', "PLU " . $prdcd . " tidak sesuai kateory-nya", ""]);
+                return (['2', "PLU " . $prdcd . " tidak sesuai kategori-nya", ""]);
             }
 
             if ($data->i_tag) {
@@ -770,6 +770,7 @@ class inputController extends Controller
         $data->i_bkp = $data->prd_flagbkp1 . '/' . $data->prd_flagbkp2;
         $data->i_ppn = ($data->sup_pkp = 'Y' && $data->prd_flagbkp1 = 'Y') ? 0.1 * $ndpp : 0;
         $data->i_bm = $data->tpod_ppnbm;
+        $data->i_ppn_persen = $data->tpod_persenppn;
         $data->i_botol = $data->tpod_ppnbotol;
         $data->trbo_qty = $data->qty_po;
         $flag_update = 1;
@@ -794,6 +795,7 @@ class inputController extends Controller
                                              tpod_kodedepartemen,
                                              tpod_kategoribarang,
                                              tpod_prdcd,
+                                             tpod_persenppn,
                                              NVL(tpod_qtypo, 0) qty_po,
                                              tpod_hrgsatuan,
                                              prd_frac tpod_satuanbeli,
@@ -851,7 +853,6 @@ class inputController extends Controller
                                          AND sup_kodesupplier = ( SELECT * FROM (SELECT hgb_kodesupplier FROM TBMASTER_HARGABELI WHERE hgb_kodeigr = '$kodeigr' AND hgb_prdcd = '$prdcd' ORDER BY hgb_tipe) a WHERE ROWNUM = 1)
                                          AND sup_kodeigr = '$kodeigr'
                                     ORDER BY tpod_prdcd");
-
         return $data;
     }
 
@@ -1860,6 +1861,7 @@ class inputController extends Controller
     public function getPOData($kodeigr, $supplier, $noPo)
     {
         $query4 = $this->query4($kodeigr, $supplier, $noPo);
+        $query5 = $this->query5($kodeigr, $supplier, $noPo);
 
         if (!$query4) {
             return (['kode' => 2, 'msg' => "Data tidak ada !!", 'data' => '']);
@@ -1867,13 +1869,46 @@ class inputController extends Controller
 
         $this->tempDataSave = [];
 
+        // IF :parameter.rte = 'Y'
+        // foreach ($query5 as $data) {
+        //     DB::connection(Session::get('connection'))->table("tbtr_po_d")->where('docno', $noPo)->where('kirim', $supplier)->where('prdcd', $data->prd_plumcg)->where('toko', $kodeigr)->update(['no_bpb' => $noPo, 'tgl_bpb' => Carbon::now()->format('d-m-Y')]);
+        //     $temp = new \stdClass();
+        //     $temp->trbo_nopo = $data->docno;
+        //     $temp->trbo_prdcd = $data->prd_prdcd;
+        //     $temp->trbo_kodeigr = $kodeigr;
+        //     $temp->trbo_unit = $data->prd_unit;
+        //     $temp->trbo_frac = $data->prd_frac;
+        //     $temp->trbo_bkp = $data->prd_flagbkp1;
+        //     $temp->trbo_keterangan = $data->tpod_keterangan;
+        //     $temp->qty = floor($data->qty_po / $data->prd_frac);
+        //     $temp->qtyk = (int) fmod($data->qty_po, $data->prd_frac);
+        //     $temp->trbo_lcost = $data->prd_lastcost;
+        //     $temp->trbo_averagecost = ($data->prd_unit == 'KG') ? $data->st_avgcost * 1 : $data->st_avgcost * $data->prd_isibeli;
+        //     $temp->trbo_oldcost = $data->prd_lastcost;
+        //     $temp->barang = $data->prd_deskripsipanjang;
+        //     $temp->trbo_kodetag = $data->prd_kodetag;
+        //     $temp->nprice = ($data->prd_unit != 'KG') ? $data->price * $data->prd_frac : $data->price;
+        //     $temp->trbo_gross = (floor($data->qty_po / $data->prd_frac) * $temp->nprice) + (((int) fmod($data->qty_po, $data->prd_frac)) * ($temp->nprice / $data->prd_frac));
+        //     $temp->ndpp = $data->gross;
+        //     $temp->trbo_hrgsatuan =  $temp->nprice;
+        //     $temp->trbo_bkp = $data->prd_flagbkp1;
+        //     $temp->trbo_fobkp = $data->prd_flagbkp2;
+        //     $temp->trbo_persenppn = $data->tpod_persenppn;
+        //     $temp->trbo_ppnrph = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? ($data->prd_ppn / 100) * $temp->ndpp : 0;
+        //     $temp->trbo_qty = $data->qty_po;
+        //     $temp->flag_update = 1;
+        //     $temp->total_rph = $temp->trbo_gross - $temp->trbo_discrph + $temp->trbo_ppnrph + $temp->trbo_ppnbmrph + $temp->trbo_ppnbtlrph;
+        //     $temp->total_disc = $temp->trbo_rphdisc1 + $temp->trbo_rphdisc2 + $temp->trbo_rphdisc2ii + $temp->trbo_rphdisc2iii + $temp->trbo_rphdisc3 + $temp->trbo_rphdisc4;
+        //     $this->param_seqno = $this->param_seqno + 1;
+        //     $temp->trbo_seqno = $this->param_seqno;
+        //     $temp->item = 1;
+        //     array_push($this->tempDataSave, $temp);
+        // }
+
         foreach ($query4 as $data) {
             DB::connection(Session::get('connection'))->table("tbtr_po_d")->where('tpod_nopo', $noPo)->where('tpod_prdcd', $data->tpod_prdcd)->where('tpod_kodeigr', $kodeigr)
                 ->update(['tpod_qtypb' => $data->qty_po, 'tpod_recordid' => '2']);
-
-            //            *** Save to tempdatasave
             $temp = new \stdClass();
-
             $temp->trbo_nopo = $data->tpod_nopo;
             $temp->trbo_prdcd = $data->tpod_prdcd;
             $temp->trbo_kodeigr = $kodeigr;
@@ -1921,7 +1956,8 @@ class inputController extends Controller
             $temp->trbo_hrgsatuan =  $temp->nprice;
             $temp->trbo_bkp = $data->prd_flagbkp1;
             $temp->trbo_fobkp = $data->prd_flagbkp2;
-            $temp->trbo_ppnrph = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.1 * $temp->ndpp : 0;
+            $temp->trbo_persenppn = $data->tpod_persenppn;
+            $temp->trbo_ppnrph = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? ($data->tpod_persenppn / 100) * $temp->ndpp : 0;
             $temp->trbo_ppnbmrph = $data->tpod_ppnbm;
             $temp->trbo_ppnbtlrph = $data->tpod_ppnbotol;
             $temp->trbo_qty = $data->qty_po;
@@ -1931,10 +1967,54 @@ class inputController extends Controller
             $this->param_seqno = $this->param_seqno + 1;
             $temp->trbo_seqno = $this->param_seqno;
             $temp->item = 1;
-
             array_push($this->tempDataSave, $temp);
         }
         return (['kode' => '0', 'msg' => "Procedure success", 'data' => '']);
+    }
+    public function query5($kodeigr, $supplier, $noPo)
+    {
+        $data   = DB::connection(Session::get('connection'))->select("SELECT SUBSTR (toko, 3, 2) toko,
+                                    docno,
+                                    tanggal1,
+                                    prd_kodedivisi,
+                                    prd_kodedepartement,
+                                    prd_kodekategoribarang,
+                                    prd_prdcd,
+                                    sj_qty qty_po,
+                                    price,
+                                    prd_frac,
+                                    NVL (gross, 0) gross,
+                                    prd_deskripsipanjang,
+                                    prd_flagbkp1,
+                                    prd_flagbkp2,
+                                    prd_unit,
+                                    prd_lastcost,
+                                    prd_kodetag,
+                                    prd_plumcg,
+                                    st_avgcost,
+                                    st_lastcost,
+                                    sup_pkp,
+                                    prd_isibeli,
+                                    prd_ppn
+                            FROM TBHISTORY_NPD_RTE aa,
+                                 tbmaster_prodmast bb,
+                                 tbmaster_stock,
+                                 tbmaster_supplier
+                            WHERE docno = '$noPo'
+                            AND kirim = '$supplier'
+                            AND SUBSTR (toko, 3, 2) = '$kodeigr'
+                            AND no_bpb IS NULL
+                            AND bb.prd_plumcg = aa.prdcd
+                            AND bb.prd_kodeigr = SUBSTR (aa.toko, 3, 2)
+                            AND substr(bb.prd_prdcd, 7, 1) = '0'
+                            AND st_prdcd(+) = bb.prd_prdcd
+                            AND st_kodeigr(+) = bb.prd_kodeigr
+                            AND st_lokasi(+) = '01'
+                            AND sup_kodesupplier(+) = '$supplier'
+                            AND sup_kodeigr(+) = '$kodeigr'
+                      ORDER BY prd_prdcd");
+
+        return $data;
     }
 
     public function query4($kodeigr, $supplier, $noPo)
@@ -1947,6 +2027,7 @@ class inputController extends Controller
                                              tpod_kodedepartemen,
                                              tpod_kategoribarang,
                                              tpod_prdcd,
+                                             tpod_persenppn,
                                              NVL(tpod_qtypo, 0) qty_po,
                                              tpod_hrgsatuan,
                                              tpod_satuanbeli,
@@ -2088,6 +2169,7 @@ class inputController extends Controller
                     "TRBO_FLAGDOC" => 0,
                     "TRBO_CREATE_BY" => $user,
                     "TRBO_CREATE_DT" => $date,
+                    "TRBO_PERSENPPN" => $data->trbo_persenppn
                 ]);
             }
 

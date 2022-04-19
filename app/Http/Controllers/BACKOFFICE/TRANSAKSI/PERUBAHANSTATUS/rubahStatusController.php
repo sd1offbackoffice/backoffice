@@ -912,15 +912,13 @@ class rubahStatusController extends Controller
 //            $crDate2 = $checker->mstd_create_dt;
 //            dd($crDate);
                 if($case == 1){
-
-
                     DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')
                         ->insert(['MSTD_KODEIGR' => $kodeigr, 'MSTD_RECORDID' => null, 'MSTD_TYPETRN' => 'Z', 'MSTD_NODOC' => $mstd_nodoc, 'MSTD_TGLDOC' => $crDate,
                             'MSTD_DOCNO2' => null, 'MSTD_DATE2' => null, 'MSTD_NOPO' => $noDoc, 'MSTD_TGLPO' => $crDate, 'MSTD_NOFAKTUR' => $noSort, 'MSTD_TGLFAKTUR' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$tglSort."','dd/mm/yyyy')"),
                             'MSTD_NOREF3' => null, 'MSTD_TGREF3' => null, 'MSTD_ISTYPE' => null, 'MSTD_INVNO' => null, 'MSTD_DATE3' => null, 'MSTD_NOTT' => null,
                             'MSTD_TGLTT' => null, 'MSTD_KODESUPPLIER' => $sortData->srt_kodesupplier, 'MSTD_PKP' => $sortData->srt_pkp, 'MSTD_CTERM' => null, 'MSTD_SEQNO' => $i, 'MSTD_PRDCD' => $temp['mstd_prdcd'],
                             'MSTD_KODEDIVISI' => $sortData->srt_kodedivisi, 'MSTD_KODEDEPARTEMENT' => $sortData->srt_kodedepartement, 'MSTD_KODEKATEGORIBRG' => $sortData->srt_kodekategoribarang, 'MSTD_BKP' => $sortData->srt_bkp, 'MSTD_FOBKP' => null,
-                            'MSTD_UNIT' => $sortData->srt_unit, 'MSTD_FRAC' => $sortData->srt_frac, 'MSTD_LOC' => $kodeigr, 'MSTD_LOC2' => null, 'MSTD_QTY' => ($temp['mstd_qty'] * $sortData->srt_frac), 'MSTD_QTYBONUS1' => null,
+                            'MSTD_UNIT' => $sortData->srt_unit, 'MSTD_FRAC' => $sortData->srt_frac, 'MSTD_LOC' => $kodeigr, 'MSTD_LOC2' => null, 'MSTD_QTY' => ($temp['mstd_qty']), 'MSTD_QTYBONUS1' => null,
                             'MSTD_QTYBONUS2' => null, 'MSTD_HRGSATUAN' => $sortData->srt_hrgsatuan, 'MSTD_PERSENDISC1' => null, 'MSTD_RPHDISC1' => null, 'MSTD_FLAGDISC1' => $temp['flagdisc1'],
                             'MSTD_PERSENDISC2' => null, 'MSTD_RPHDISC2' => null, 'MSTD_FLAGDISC2' => $temp['flagdisc2'], 'MSTD_PERSENDISC2II' => null, 'MSTD_RPHDISC2II' => null,
                             'MSTD_PERSENDISC2III' => null, 'MSTD_RPHDISC2III' => null, 'MSTD_PERSENDISC3' => null, 'MSTD_RPHDISC3' => null, 'MSTD_FLAGDISC3' => 'P',
@@ -938,7 +936,7 @@ class rubahStatusController extends Controller
                             'MSTD_NOREF3' => null, 'MSTD_TGREF3' => null, 'MSTD_ISTYPE' => null, 'MSTD_INVNO' => null, 'MSTD_DATE3' => null, 'MSTD_NOTT' => null,
                             'MSTD_TGLTT' => null, 'MSTD_KODESUPPLIER' => $sortData->srt_kodesupplier, 'MSTD_PKP' => $sortData->srt_pkp, 'MSTD_CTERM' => null, 'MSTD_SEQNO' => $i, 'MSTD_PRDCD' => $temp['mstd_prdcd'],
                             'MSTD_KODEDIVISI' => $sortData->srt_kodedivisi, 'MSTD_KODEDEPARTEMENT' => $sortData->srt_kodedepartement, 'MSTD_KODEKATEGORIBRG' => $sortData->srt_kodekategoribarang, 'MSTD_BKP' => $sortData->srt_bkp, 'MSTD_FOBKP' => null,
-                            'MSTD_UNIT' => $sortData->srt_unit, 'MSTD_FRAC' => $sortData->srt_frac, 'MSTD_LOC' => $kodeigr, 'MSTD_LOC2' => null, 'MSTD_QTY' => ($temp['mstd_qty'] * $sortData->srt_frac), 'MSTD_QTYBONUS1' => null,
+                            'MSTD_UNIT' => $sortData->srt_unit, 'MSTD_FRAC' => $sortData->srt_frac, 'MSTD_LOC' => $kodeigr, 'MSTD_LOC2' => null, 'MSTD_QTY' => ($temp['mstd_qty']), 'MSTD_QTYBONUS1' => null,
                             'MSTD_QTYBONUS2' => null, 'MSTD_HRGSATUAN' => $sortData->srt_hrgsatuan, 'MSTD_PERSENDISC1' => null, 'MSTD_RPHDISC1' => null, 'MSTD_FLAGDISC1' => $temp['flagdisc1'],
                             'MSTD_PERSENDISC2' => null, 'MSTD_RPHDISC2' => null, 'MSTD_FLAGDISC2' => $temp['flagdisc2'], 'MSTD_PERSENDISC2II' => null, 'MSTD_RPHDISC2II' => null,
                             'MSTD_PERSENDISC2III' => null, 'MSTD_RPHDISC2III' => null, 'MSTD_PERSENDISC3' => null, 'MSTD_RPHDISC3' => null, 'MSTD_FLAGDISC3' => 'P',

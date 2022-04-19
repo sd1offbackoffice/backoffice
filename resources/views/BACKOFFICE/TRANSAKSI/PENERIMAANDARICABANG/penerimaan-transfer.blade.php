@@ -432,7 +432,7 @@
                         text: 'Mohon pastikan file zip berasal dari program Transfer SJ - IAS!',
                         icon: 'error'
                     }).then(function(){
-                        // location.reload();
+                        location.reload();
                     });
                     $('#filename').val('...');
                 }

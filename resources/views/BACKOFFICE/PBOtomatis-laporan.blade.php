@@ -19,14 +19,14 @@
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th style="width: 30px">PLU</th>
-            <th style="width: 280px !important; text-align: left">DESKRIPSI</th>
-            <th style="width: 30px">SATUAN</th>
-            <th style="width: 30px">TAGDIV</th>
-            <th style="width: 30px">DEPT</th>
-            <th style="width: 30px">KAT</th>
-            <th style="width: 30px">PKMT</th>
-            <th style="width: 180px; text-align: left">KETERANGAN</th>
+            <th class="left">PLU</th>
+            <th class="left">DESKRIPSI</th>
+            <th class="right">SATUAN</th>
+            <th class="right">TAGDIV</th>
+            <th class="right">DEPT</th>
+            <th class="right">KAT</th>
+            <th class="right padding-right">PKMT</th>
+            <th class="left" >KETERANGAN</th>
         </tr>
         </thead>
         <tbody>
@@ -41,50 +41,48 @@
         @for($i=0; $i<sizeof($data); $i++)
             @if($i == 0)
                 <tr>
-                    <td colspan="8" style="font-weight: bold !important; margin-top: 10px !important;">{{date('d-m-y', strtotime($data[$i]->tglpb))}}  - {{$data[$i]->nopb}}</td>
-                    <td colspan="8" style="font-weight: bold !important; margin-top: 10px !important;">Tanggal : {{substr($datas[$i]->tglpb,0,10)}}  Dokumen : {{$datas[$i]->nopb}}</td>
+                    <td colspan="8" style="font-weight: bold !important; margin-top: 10px !important;" class="left">Tanggal : {{date('d-m-y', strtotime($data[$i]->tglpb))}}  Dokumen : {{$data[$i]->nopb}}</td>
                 </tr>
                 <tr>
-                    <td colspan="8" style="font-weight: bold !important;">{{$data[$i]->supco}} - {{$data[$i]->supname}}</td>
+                    <td  style="font-weight: bold !important;" class="left">{{$data[$i]->supco}} - {{$data[$i]->supname}}</td>
                 </tr>
             @else
                 @if(substr($data[$i]->tglpb,0,10) != substr($data[$i-1]->tglpb,0,10))
                     <tr>
-                        <td colspan="8" style="font-weight: bold !important; margin-top: 10px !important;">{{date('d-m-y', strtotime($data[$i]->tglpb))}}  - {{$data[$i]->nopb}}</td>
+                        <td colspan="8" style="font-weight: bold !important; margin-top: 10px !important;" class="left">Tanggal : {{date('d-m-y', strtotime($data[$i]->tglpb))}}  Dokumen : {{$data[$i]->nopb}}</td>
                     </tr>
                     <tr>
-                        <td colspan="8" style="font-weight: bold !important;">{{$data[$i]->supco}} - {{$data[$i]->supname}}</td>
+                        <td  style="font-weight: bold !important;" class="left">{{$data[$i]->supco}} - {{$data[$i]->supname}}</td>
                     </tr>
                 @endif
                 @if($data[$i]->supco != $data[$i-1]->supco)
                     <tr>
-                        <td colspan="8" style="font-weight: bold !important; margin-top: 20px !important;">{{$data[$i]->supco}} - {{$data[$i]->supname}}</td>
+                        <td  style="font-weight: bold !important;" class="left">{{$data[$i]->supco}} - {{$data[$i]->supname}}</td>
                     </tr>
                 @endif
             @endif
             <tr>
-                <td>{{$data[$i]->prdcd}}</td>
-                <td>{{$data[$i]->deskripsi}}</td>
-                <td style="width: 280px !important;">{{$data[$i]->deskripsi}}</td>
-                <td style="text-align: center">{{$data[$i]->satuan}}</td>
-                <td style="text-align: right">{{$data[$i]->div}}</td>
-                <td style="text-align: right">{{$data[$i]->dep}}</td>
-                <td style="text-align: right">{{$data[$i]->kat}}</td>
-                <td style="text-align: right">{{$data[$i]->pkmt}}</td>
-                <td>{{$data[$i]->tlk_keterangantolakan}}</td>
+                <td class="left">{{$data[$i]->prdcd}}</td>
+                <td class="left">{{$data[$i]->deskripsi}}</td>
+                <td class="right">{{$data[$i]->satuan}}</td>
+                <td class="right">{{$data[$i]->div}}</td>
+                <td class="right">{{$data[$i]->dep}}</td>
+                <td class="right">{{$data[$i]->kat}}</td>
+                <td class="right padding-right">{{$data[$i]->pkmt}}</td>
+                <td class="left">{{$data[$i]->tlk_keterangantolakan}}</td>
             </tr>
         @endfor
         </tbody>
         <tfoot>
-        <tr>
-            <td class="left" colspan="4">Total :</td>
-            <td class="right">{{$kunjungan}}</td>
-            <td class="right">{{$slip}}</td>
-            <td class="right">{{number_format($produk ,2,'.',',')}}</td>
-            <td class="right">{{number_format($rupiah ,2,'.',',')}}</td>
-            <td class="right">{{number_format($margin ,2,'.',',')}}</td>
-            <td class="right">{{number_format((($margin/(($rupiah > 0) ? $rupiah : 1))*100),2) }}</td>
-        </tr>
+{{--        <tr>--}}
+{{--            <td class="left" colspan="4">Total :</td>--}}
+{{--            <td class="right">{{$kunjungan}}</td>--}}
+{{--            <td class="right">{{$slip}}</td>--}}
+{{--            <td class="right">{{number_format($produk ,2,'.',',')}}</td>--}}
+{{--            <td class="right">{{number_format($rupiah ,2,'.',',')}}</td>--}}
+{{--            <td class="right">{{number_format($margin ,2,'.',',')}}</td>--}}
+{{--            <td class="right">{{number_format((($margin/(($rupiah > 0) ? $rupiah : 1))*100),2) }}</td>--}}
+{{--        </tr>--}}
         </tfoot>
     </table>
 @endsection

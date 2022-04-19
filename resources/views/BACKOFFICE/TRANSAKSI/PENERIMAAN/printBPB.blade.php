@@ -221,6 +221,7 @@
                 $('.rowTbodyTableBTB').remove();
             },
             success: function(result) {
+                $("#selectAll").prop("checked", false);
                 console.log(result);
                 $('#modal-loader').modal('hide');
                 if (type == 2) {
@@ -369,6 +370,8 @@
                             });
                         }
                     }
+                } else {
+                    swal('Data tidak terbaca', 'Mohon muat ulang dan coba lagi/ uncheck check all sebelum view data', 'error');
                 }
             },
             error: function(err) {

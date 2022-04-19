@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
+use XBase\TableReader;
 use Yajra\DataTables\DataTables;
 use ZipArchive;
 use File;
@@ -856,7 +857,7 @@ class PenerimaanTransferController extends Controller
         }
 
         $data = DB::connection(Session::get('connection'))->table('temp_to')
-            ->selectRaw('to_nomr as docno, to_tagl as tgl, to_item as jml')
+            ->selectRaw("to_nomr as docno, to_char(to_tagl,'dd/mm/yyyy') as tgl, to_item as jml")
             ->orderBy('to_nomr','asc')
             ->get();
 
@@ -865,97 +866,186 @@ class PenerimaanTransferController extends Controller
 
     public function uploadTO(Request $request)
     {
-        if (file_exists($request->file('file'))) {
-            $filename = $request->file('file');
+        try{
+            DB::connection(Session::get('connection'))->beginTransaction();
 
-            $zip = new ZipArchive;
+            if (file_exists($request->file('file'))) {
+                $filename = $request->file('file');
 
-            $list = [];
+                $zip = new ZipArchive;
 
-            if ($zip->open($filename) === TRUE) {
-                for ($i = 0; $i < $zip->numFiles; $i++) {
-                    $entry = $zip->getNameIndex($i);
-                    $list[] = $entry;
+                $list = [];
+
+                if ($zip->open($filename) === TRUE) {
+                    for ($i = 0; $i < $zip->numFiles; $i++) {
+                        $entry = $zip->getNameIndex($i);
+                        $list[] = $entry;
+                    }
+
+                    $zip->extractTo(public_path('TRFSJ'));
+                    $zip->close();
+                } else {
+                    $status = 'error';
+                    $alert = 'Terjadi kesalahan!';
+                    $message = 'Mohon pastikan file zip berasal dari program Transfer SJ - IAS!';
+
+                    return compact(['status', 'alert', 'message']);
                 }
 
-                $zip->extractTo(public_path('TRFSJ'));
-                $zip->close();
-            } else {
-                $status = 'error';
-                $alert = 'Terjadi kesalahan!';
-                $message = 'Mohon pastikan file zip berasal dari program Transfer SJ - IAS!';
+                $temp = File::files(public_path('TRFSJ'));
 
-                return compact(['status', 'alert', 'message']);
-            }
+                $files = [];
 
-            $temp = File::files(public_path('TRFSJ'));
-
-            $files = [];
-
-            foreach ($temp as $t) {
-                if (in_array($t->getFilename(), $list)) {
-                    $files[] = $t;
+                foreach ($temp as $t) {
+                    if (in_array($t->getFilename(), $list)) {
+                        $files[] = $t;
+                    }
                 }
-            }
 
 //            File::delete($list);
 
-            foreach($list as $l){
-                $nodoc[] = substr($l,0,-4);
-            }
-
-            $result = [];
-
-            DB::connection(Session::get('connection'))->table('tbtr_to')
-                ->whereIn('docno',$nodoc)
-                ->delete();
-
-            foreach ($files as $file) {
-                $header = NULL;
-                $data = array();
-                if (($handle = fopen($file, 'r')) !== FALSE) {
-                    while (($row = fgetcsv($handle, 1000, '|')) !== FALSE) {
-                        if (!$header) {
-                            $header = $row;
-                            for ($i = 0; $i < count($row); $i++) {
-                                $header[$i] = preg_replace("/[^\w\d]/", "", strtoupper($header[$i]));
-                            }
-                        } else {
-                            if (count($header) != count($row)) {
-                                $status = 'error';
-                                $title = 'File CSV yang diupload tidak sesuai format!';
-                                $data = null;
-                                return compact(['status', 'title', 'data']);
-                            } else {
-                                $data[] = array_combine($header, $row);
-                            }
-                        }
-                    }
-                    fclose($handle);
+                foreach($list as $l){
+                    $nodoc[] = substr($l,0,-4);
                 }
 
-                DB::connection(Session::get('connection'))->table('tbtr_to')
-                    ->insert($data);
+                $result = [];
 
-                DB::connection(Session::get('connection'))->table('temp_to')
-                    ->insert([
-                        'to_flag' => 0,
-                        'to_nomr' => $data[0]['DOCNO'],
-                        'to_tagl' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$data[0]['DATEO']."','YYYY-MM-DD HH24:MI:SS')"),
-                        'to_item' => count($data)
-                    ]);
+                DB::connection(Session::get('connection'))->table('tbtr_to')
+                    ->whereIn('docno',$nodoc)
+                    ->delete();
+
+                foreach ($files as $file) {
+                    $header = NULL;
+                    $data = array();
+                    if (($handle = fopen($file, 'r')) !== FALSE) {
+                        $dataFileDBF = new TableReader($file);
+
+//            dd($dataFileR->getRecordCount());
+
+                        $insert = [];
+
+                        while($recs = $dataFileDBF->nextRecord()){
+//                        dd($recs->get('recid'));
+                            $temp = [];
+                            $temp['recid'] = $recs->get('recid');
+                            $temp['rtype'] = $recs->get('rtype');
+                            $temp['docno'] = $recs->get('docno');
+                            $temp['dateo'] = $recs->get('dateo');
+                            $temp['noref1'] = $recs->get('noref1');
+                            $temp['tgref1'] = $recs->get('tgref1');
+                            $temp['noref2'] = $recs->get('noref2');
+                            $temp['tgref2'] = $recs->get('tgref2');
+                            $temp['docno2'] = $recs->get('docno2');
+                            $temp['date2'] = $recs->get('date2');
+                            $temp['istype'] = $recs->get('istype');
+                            $temp['invno'] = $recs->get('invno');
+                            $temp['date3'] = $recs->get('date3');
+                            $temp['nott'] = $recs->get('nott');
+                            $temp['date4'] = $recs->get('date4');
+                            $temp['supco'] = $recs->get('supco');
+                            $temp['pkp'] = $recs->get('pkp');
+                            $temp['cterm'] = $recs->get('cterm');
+                            $temp['seqno'] = $recs->get('seqno');
+                            $temp['prdcd'] = $recs->get('prdcd');
+                            $temp['desc2'] = $recs->get('desc2');
+                            $temp['div'] = $recs->get('div');
+                            $temp['dept'] = $recs->get('dept');
+                            $temp['katb'] = $recs->get('katb');
+                            $temp['bkp'] = $recs->get('bkp');
+                            $temp['fobkp'] = $recs->get('fobkp');
+                            $temp['unit'] = $recs->get('unit');
+                            $temp['frac'] = $recs->get('frac');
+                            $temp['loc'] = $recs->get('loc');
+                            $temp['loc2'] = $recs->get('loc2');
+                            $temp['qty'] = $recs->get('qty');
+                            $temp['qtyk'] = $recs->get('qtyk');
+                            $temp['qbns1'] = $recs->get('qbns1');
+                            $temp['qbns2'] = $recs->get('qbns2');
+                            $temp['price'] = $recs->get('price');
+                            $temp['discp1'] = $recs->get('discp1');
+                            $temp['discr1'] = $recs->get('discr1');
+                            $temp['fdisc1'] = $recs->get('fdisc1');
+                            $temp['discp2'] = $recs->get('discp2');
+                            $temp['discr2'] = $recs->get('discr2');
+                            $temp['fdisc2'] = $recs->get('fdisc2');
+                            $temp['gross'] = $recs->get('gross');
+                            $temp['discrp'] = $recs->get('discrp');
+                            $temp['ppnrp'] = $recs->get('ppnrp');
+                            $temp['bmrp'] = $recs->get('bmrp');
+                            $temp['btlrp'] = $recs->get('btlrp');
+                            $temp['acost'] = $recs->get('acost');
+                            $temp['keter'] = $recs->get('keter');
+                            $temp['doc'] = $recs->get('doc');
+                            $temp['doc2'] = $recs->get('doc2');
+                            $temp['fk'] = $recs->get('fk');
+                            $temp['tglfp'] = $recs->get('tglfp');
+                            $temp['mtag'] = $recs->get('mtag');
+                            $temp['gdg'] = $recs->get('gdg');
+                            $temp['tglupd'] = $recs->get('tglupd');
+                            $temp['jamupd'] = $recs->get('jamupd');
+                            $temp['usero'] = $recs->get('usero');
+
+                            $insert[] = $temp;
+                        }
+
+//                    dd($insert);
+
+
+//                    while (($row = fgetcsv($handle, 1000, '|')) !== FALSE) {
+//                        if (!$header) {
+//                            $header = $row;
+//                            for ($i = 0; $i < count($row); $i++) {
+//                                $header[$i] = preg_replace("/[^\w\d]/", "", strtoupper($header[$i]));
+//                            }
+//                        } else {
+//                            if (count($header) != count($row)) {
+//                                $status = 'error';
+//                                $title = 'File CSV yang diupload tidak sesuai format!';
+//                                $data = null;
+//                                return compact(['status', 'title', 'data']);
+//                            } else {
+//                                $data[] = array_combine($header, $row);
+//                            }
+//                        }
+//                    }
+
+                        fclose($handle);
+                    }
+
+                    DB::connection(Session::get('connection'))->table('tbtr_to')
+                        ->insert($insert);
+
+                    DB::connection(Session::get('connection'))->table('temp_to')
+                        ->insert([
+                            'to_flag' => 0,
+                            'to_nomr' => $insert[0]['docno'],
+                            'to_tagl' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$insert[0]['dateo']."','yyyymmdd')"),
+                            'to_item' => count($insert)
+                        ]);
 
 //                $result[] = [
 //                    'docno' => $data[0]['DOCNO'],
 //                    'tgl' => date('d/m/Y',strtotime($data[0]['DATEO'])),
 //                    'jml' => count($data)
 //                ];
+                }
+
+                File::delete($files);
+
+                DB::connection(Session::get('connection'))->commit();
+
+                $status = 'success';
+                return compact(['status']);
             }
+        }
+        catch(\Exception $e){
+            DB::connection(Session::get('connection'))->rollBack();
 
-            File::delete($files);
+            $status = 'error';
+            $alert = 'Terjadi kesalahan!';
+            $message = $e->getMessage();
 
-            $status = 'success';
-            return compact(['status']);
+            return compact(['status', 'alert', 'message']);
         }
     }
 

@@ -19,7 +19,7 @@ class PBPerishableController extends Controller
     {
         $search = $request->search;
 
-        $result = DB::connection('simbdg')->table('tbtr_pb_perishable')
+        $result = DB::connection(Session::get('connection'))->table('tbtr_pb_perishable')
             ->selectRaw("pbp_nopb, pbp_tglpb, pbp_recordid")
             ->whereRaw("nvl(pbp_recordid,'_') <> '1'")
             ->where('pbp_nopb', 'LIKE', '%' . $search . '%')
@@ -35,7 +35,7 @@ class PBPerishableController extends Controller
     {
         $search = strtoupper($request->search);
 
-        $result = DB::connection('simbdg')->table('tbmaster_prodmast')
+        $result = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd', 'prd_deskripsipanjang')
             ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
             ->whereRaw("nvl(prd_recordid,'9')<>'1'")
@@ -51,7 +51,7 @@ class PBPerishableController extends Controller
         $flag = '';
 
 
-        $temp = DB::connection('simbdg')->select("SELECT count(1) as temp FROM tbtr_pb_h
+        $temp = DB::connection(Session::get('connection'))->select("SELECT count(1) as temp FROM tbtr_pb_h
         WHERE pbh_tgltransfer IS NOT NULL
         AND pbh_nopb =$nopb");
 
@@ -62,7 +62,7 @@ class PBPerishableController extends Controller
             $flag = 1;
         }
 
-        $result = DB::connection('simbdg')->select("SELECT pbp_nopb,
+        $result = DB::connection(Session::get('connection'))->select("SELECT pbp_nopb,
                             pbp_tglpb,
                             pbp_kodesupplier,
                             pbp_kodesarana,
@@ -116,7 +116,7 @@ class PBPerishableController extends Controller
         $kodesup = $request->kodesup;
         $kodesar = $request->kodesar;
 
-        $result = DB::connection('simbdg')->select("SELECT pbp_nopb, pbp_tglpb, pbp_kodesupplier, sup_namasupplier,pbp_prdcd,pbp_pkm,pbp_avgsales,pbp_stock,pbp_mindisplay,pbp_minorder,pbp_qtypb,pbp_qtypbout,pbp_qtypoout,pbp_dimensi,pbp_kubikase, pbp_isictn, prd_deskripsipanjang
+        $result = DB::connection(Session::get('connection'))->select("SELECT pbp_nopb, pbp_tglpb, pbp_kodesupplier, sup_namasupplier,pbp_prdcd,pbp_pkm,pbp_avgsales,pbp_stock,pbp_mindisplay,pbp_minorder,pbp_qtypb,pbp_qtypbout,pbp_qtypoout,pbp_dimensi,pbp_kubikase, pbp_isictn, prd_deskripsipanjang
         FROM tbtr_pb_perishable, tbmaster_prodmast, tbmaster_supplier
         WHERE pbp_prdcd = prd_prdcd
         AND pbp_kodesupplier = sup_kodesupplier
@@ -131,7 +131,7 @@ class PBPerishableController extends Controller
         $kodeigr = Session::get('kdigr');
         // $ip = str_replace('.', '0', SUBSTR(Session::get('ip'), -3));
 
-        $c = loginController::getConnectionProcedureBDG();
+        $c = loginController::getConnectionProcedure();
 
         $s = oci_parse($c, "BEGIN :NO_PB := f_igr_get_nomor('$kodeigr','PB','Nomor Permintaan Barang',
                             " .$kodeigr. " || TO_CHAR (SYSDATE, 'yyMM') , 3, FALSE); END;");
@@ -163,7 +163,7 @@ class PBPerishableController extends Controller
         // from tbtr_pb_perishable
         // where pbp_nopb = :no_pb;
 
-        $temp = DB::connection('simbdg')->select("SELECT SUM(pbp_qtypb) as temp FROM tbtr_pb_perishable
+        $temp = DB::connection(Session::get('connection'))->select("SELECT SUM(pbp_qtypb) as temp FROM tbtr_pb_perishable
         WHERE pbp_nopb =$nopb");
         // IF temp <= 0
         // THEN
@@ -203,7 +203,7 @@ class PBPerishableController extends Controller
         //     AND pbp_nopb = :no_pb
         //     AND ttl_kubikase > sfrz_volsarana*sfrz_jumlahsarana;
         //     --ganti disini
-        $temp = DB::connection('simbdg')->select("SELECT COUNT (1) as temp
+        $temp = DB::connection(Session::get('connection'))->select("SELECT COUNT (1) as temp
                 FROM (  SELECT pbp_nopb,
                                 pbp_tglpb,
                                 pbp_kodesupplier,
@@ -244,7 +244,7 @@ class PBPerishableController extends Controller
         // INTO temp
         // FROM tbtr_pb_h
         // WHERE pbh_nopb = :no_pb AND pbh_keteranganpb <> 'PB PERISHABLE';
-        $temp = DB::connection('simbdg')->table('tbtr_pb_h')
+        $temp = DB::connection(Session::get('connection'))->table('tbtr_pb_h')
         ->selectRaw('COUNT (1) as temp')
         ->where('pbh_nopb', '=', $nopb)
         ->where('pbh_keteranganpb', '<>', 'PB PERISHABLE')
@@ -288,7 +288,7 @@ class PBPerishableController extends Controller
         //                         :parameter.KodeIgr || TO_CHAR (SYSDATE, 'yyMM'),
         //                         3,
         //                         TRUE);
-        $c = loginController::getConnectionProcedureBDG();
+        $c = loginController::getConnectionProcedure();
 
         $s = oci_parse($c, "BEGIN :NO_PB := f_igr_get_nomor('$kodeigr','PB','Nomor Permintaan Barang',
         " .$kodeigr. " || TO_CHAR (SYSDATE, 'yyMM') , 3, TRUE); END;");
@@ -298,7 +298,7 @@ class PBPerishableController extends Controller
         //     UPDATE tbtr_pb_perishable
         //         SET pbp_nopb = :no_pb
         //     WHERE pbp_nopb = nopb_old;
-        DB::connection('simbdg')
+        DB::connection(Session::get('connection'))
         ->update("UPDATE tbtr_pb_perishable
                     SET pbp_nopb = $no_pb
                     WHERE pbp_nopb = $nopb");
@@ -334,7 +334,7 @@ class PBPerishableController extends Controller
         //                             :parameter.userid,
         //                             P_SUKSES,
         //                             P_ERRMSG);
-        $c = loginController::getConnectionProcedureBDG();
+        $c = loginController::getConnectionProcedure();
         $sql = "BEGIN Sp_Create_Pb_Perishable_frz2(2, to_date('" . $tglpb . "','dd/mm/yyyy'),'" . $kodeigr. "', '" . $nopb. "', '" . $userid. "', :P_SUKSES, :P_ERRMSG); END;";
         $s = oci_parse($c, $sql);
 
@@ -398,7 +398,7 @@ class PBPerishableController extends Controller
         //   AND pbp_kodesarana = :h_sarana
         //   AND pbp_prdcd = :d_prdcd;
 
-        $qtypb_db = DB::connection('simbdg')->select("SELECT pbp_qtypb FROM tbtr_pb_perishable
+        $qtypb_db = DB::connection(Session::get('connection'))->select("SELECT pbp_qtypb FROM tbtr_pb_perishable
         WHERE pbp_nopb = $nopb
         AND pbp_prdcd = $plu
         AND pbp_kodesupplier = '$kodesup'
@@ -487,7 +487,7 @@ class PBPerishableController extends Controller
         //         AND pbp_kodesarana = :h_sarana
         //         AND pbp_prdcd = :d_prdcd;
         // FORMS_DDL ('commit');
-        DB::connection('simbdg')->update("UPDATE tbtr_pb_perishable
+        DB::connection(Session::get('connection'))->update("UPDATE tbtr_pb_perishable
                                             SET pbp_qtypb = $qtypb,
                                                 pbp_kubikase = $kubikase,
                                                 pbp_modify_by = '$userid',
@@ -500,12 +500,21 @@ class PBPerishableController extends Controller
 
 
         //todo
+
+        $totalkubik = DB::connection(Session::get('connection'))->select("SELECT SUM (pbp_kubikase) AS ttlkubik
+        FROM tbtr_pb_perishable
+        WHERE     pbp_nopb = $nopb
+                AND pbp_kodesupplier = '$kodesup'
+                AND pbp_kodesarana = $kodesar");
+
         // SELECT SUM (pbp_kubikase)
         // INTO :h_kubikase
         // FROM tbtr_pb_perishable
         // WHERE     pbp_nopb = :no_pb
         //         AND pbp_kodesupplier = :h_supp
         //         AND pbp_kodesarana = :h_sarana;
+
+        
 
         // IF :h_kubikase > :h_kapasitas
         //     --ganti disini
@@ -515,7 +524,7 @@ class PBPerishableController extends Controller
         //     :h_flag := NULL;
         // END IF;
 
-        return response()->json(['message' => $message, 'kubikase' => $kubikase]);
+        return response()->json(['message' => $message, 'kubikase' => $kubikase, 'totalkubik' => $totalkubik]);
 
 
     }
@@ -531,7 +540,7 @@ class PBPerishableController extends Controller
         $message = '';
         $status = '';
 
-        $temp = DB::connection('simbdg')->select("SELECT COUNT(1) as temp
+        $temp = DB::connection(Session::get('connection'))->select("SELECT COUNT(1) as temp
         FROM tbtr_pb_perishable
         WHERE pbp_nopb = $nopb");
 
@@ -543,7 +552,7 @@ class PBPerishableController extends Controller
         }
 
 
-        $c = loginController::getConnectionProcedureBDG();
+        $c = loginController::getConnectionProcedure();
         $sql = "BEGIN Sp_Create_Pb_Perishable_frz2(1, to_date('" . $tglpb . "','dd/mm/yyyy'),'" . $kodeigr. "', '" . $nopb . "', '" . $userid . "', :P_SUKSES, :P_ERRMSG); END;";
         $s = oci_parse($c, $sql);
 
@@ -559,7 +568,7 @@ class PBPerishableController extends Controller
             return response()->json(['status' => $status, 'message' => $message, 'flag' => $flag]);
         }
 
-        $temp = DB::connection('simbdg')->select("SELECT COUNT(1) as temp
+        $temp = DB::connection(Session::get('connection'))->select("SELECT COUNT(1) as temp
         FROM tbtr_pb_perishable
         WHERE pbp_nopb = $nopb");
 
@@ -595,7 +604,7 @@ class PBPerishableController extends Controller
         // from tbtr_pb_h
         // where pbh_nopb = :no_pb;
 
-        $temp = DB::connection('simbdg')->select("SELECT count(1) as temp FROM tbtr_pb_h
+        $temp = DB::connection(Session::get('connection'))->select("SELECT count(1) as temp FROM tbtr_pb_h
         WHERE pbh_tgltransfer IS NOT NULL
         AND pbh_nopb =$nopb");
 
@@ -614,7 +623,7 @@ class PBPerishableController extends Controller
         // delete from tbtr_pb_perishable
         // where pbp_nopb=:no_pb;
 
-        DB::connection('simbdg')
+        DB::connection(Session::get('connection'))
             ->table('tbtr_pb_perishable')
             ->where('pbp_nopb', $nopb)
             ->delete();

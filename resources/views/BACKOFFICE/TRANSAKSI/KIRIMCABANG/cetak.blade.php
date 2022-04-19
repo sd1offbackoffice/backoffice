@@ -219,6 +219,8 @@
 
                         window.open(`{{ url()->current() }}/laporan?nodoc=${nodoc}&reprint=${reprint}&jenis=${$('#jenis').val()}`,'_blank');
 
+                        $('#cb_checkall').prop('checked',false);
+
                         setTimeout(function(){
                             getData();
                         }, 2000 * selected.length);

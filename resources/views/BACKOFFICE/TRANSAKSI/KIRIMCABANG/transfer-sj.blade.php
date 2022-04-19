@@ -36,12 +36,12 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="row form-group mt-3 mb-0">
-                                    <div class="custom-control custom-checkbox col-sm-2 ml-3">
-                                        <input type="checkbox" class="custom-control-input" id="cb_checkall" onchange="checkAll(event)">
-                                        <label for="cb_checkall" class="custom-control-label">Check All</label>
-                                    </div>
-                                </div>
+{{--                                <div class="row form-group mt-3 mb-0">--}}
+{{--                                    <div class="custom-control custom-checkbox col-sm-2 ml-3">--}}
+{{--                                        <input type="checkbox" class="custom-control-input" id="cb_checkall" onchange="checkAll(event)">--}}
+{{--                                        <label for="cb_checkall" class="custom-control-label">Check All</label>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
                             </div>
                         </fieldset>
                         {{--<div class="row form-group mt-2">--}}
@@ -52,14 +52,14 @@
                                 {{--</select>--}}
                             {{--</div>--}}
                         {{--</div>--}}
-                        <div class="row form-group mt-2">
-                            <div class="col-sm-6">
-                                <button class="col btn btn-primary" onclick="transfer()">Transfer Surat Jalan</button>
-                            </div>
-                            <div class="col-sm-6">
-                                <button class="col btn btn-danger">Batal</button>
-                            </div>
-                        </div>
+{{--                        <div class="row form-group mt-2">--}}
+{{--                            <div class="col-sm-6">--}}
+{{--                                <button class="col btn btn-primary" onclick="transfer()">Transfer Surat Jalan</button>--}}
+{{--                            </div>--}}
+{{--                            <div class="col-sm-6">--}}
+{{--                                <button class="col btn btn-danger">Batal</button>--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
                     </div>
                 </fieldset>
             </div>
@@ -108,11 +108,16 @@
     <script>
         var listNomor = [];
         var selected = [];
-        var reprint;
+        var reprint, last = false;
+
         $(document).ready(function(){
             $('.tanggal').datepicker({
                 "dateFormat" : "dd/mm/yy",
             });
+
+            $('.tanggal').datepicker('setDate', new Date());
+
+            getData();
 
             // $('.tanggal').datepicker('setDate', new Date());
 
@@ -148,13 +153,10 @@
                            for(i=0;i<response.length;i++){
                                listNomor.push(response[i].no);
 
-                               tr = `<tr><td>${response[i].msth_loc2} - ${response[i].cab_namacabang}</td>` +
-                                   `<td>${response[i].no}</td>` +
+                               tr = `<tr><td>${response[i].cabang}</td>` +
+                                   `<td>${response[i].nodoc}</td>` +
                                    `<td>` +
-                                   `<div class="custom-control custom-checkbox text-center">` +
-                                   `<input type="checkbox" class="custom-control-input cb-no" id="cb_${i}" onchange="selectDaftar(event)">` +
-                                   `<label for="cb_${i}" class="custom-control-label"></label>` +
-                                   `</div>` +
+                                   `<button class="btn btn-primary" onclick="transfer('${response[i].cabang}','${response[i].nodoc}')">TRANSFER</button>` +
                                    `</td></tr>`;
                                $('#table_daftar tbody').append(tr);
                            }
@@ -167,14 +169,13 @@
             }
         }
 
-        function selectDaftar(e){
-            nomor = listNomor[$(e.target).attr('id').substr(-1)];
+        function selectDaftar(e,nodoc){
             if($(e.target).is(':checked')){
-                selected.push(nomor);
+                selected.push(nodoc);
             }
             else{
                 selected = $.grep(selected, function(value) {
-                    return value != nomor;
+                    return value != nodoc;
                 });
             }
         }
@@ -190,20 +191,14 @@
             }
         }
 
-        function transfer(){
-            if(selected.length == 0){
-                swal({
-                    title: 'Tidak ada data yang dipilih!',
-                    icon: 'error'
-                });
-            }
-            else{
-                swal({
-                    title: 'Yakin ingin transfer data?',
-                    icon: 'warning',
-                    buttons: true,
-                    dangerMode: true
-                }).then((ok) => {
+        function transfer(cabang,nodoc){
+            swal({
+                title: 'Yakin ingin transfer Surat Jalan untuk cabang '+cabang+' ?',
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true,
+            }).then((ok) => {
+                if(ok){
                     $.ajax({
                         url: '{{ url('/bo/transaksi/kirimcabang/transfer-sj/transfer') }}',
                         type: 'POST',
@@ -211,7 +206,7 @@
                             'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         },
                         data: {
-                            nodoc: selected,
+                            nodoc: nodoc,
                         },
                         beforeSend: function () {
                             $('#modal-loader').modal('show');
@@ -220,11 +215,11 @@
                             $('#modal-loader').modal('hide');
 
                             if(response == 'success'){
-                                window.location.replace('{{ url('/bo/transaksi/kirimcabang/transfer-sj/download') }}');
                                 swal({
                                     title: 'Silahkan file dikirim ke cabang yang bersangkutan!',
                                     icon: 'success'
                                 }).then(() => {
+                                    window.open(`{{ url()->current() }}/download`, '_blank');
                                     $('#tanggal').val('');
                                     $('#table_daftar tbody tr').remove();
                                 });
@@ -246,8 +241,60 @@
                             });
                         }
                     });
-                });
-            }
+                }
+            })
+        }
+
+
+        function transferByBranch(index){
+            $.ajax({
+                url: '{{ url('/bo/transaksi/kirimcabang/transfer-sj/transfer') }}',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                data: {
+                    nodoc: selected[index],
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+
+                    if(index < selected.length){
+                        window.open('{{ url()->current() }}/download','_blank');
+                        transferByBranch(++index);
+                    }
+                    else{
+                        if(response == 'success'){
+                            window.location.replace('{{ url('/bo/transaksi/kirimcabang/transfer-sj/download') }}');
+                            swal({
+                                title: 'Silahkan file dikirim ke cabang yang bersangkutan!',
+                                icon: 'success'
+                            }).then(() => {
+                                $('#tanggal').val('');
+                                $('#table_daftar tbody tr').remove();
+                            });
+                        }
+                        else{
+                            swal({
+                                title: 'Terjadi kesalahan!',
+                                text: 'Mohon coba kembali!',
+                                icon: 'error',
+                            })
+                        }
+                    }
+                },
+                error: function (error) {
+                    $('#modal-loader').modal('hide');
+                    swal({
+                        title: 'Terjadi kesalahan!',
+                        text: error.responseJSON.message,
+                        icon: 'error',
+                    });
+                }
+            });
         }
 
 

@@ -435,7 +435,8 @@
         var tabel;
         var tgltrn;
         var datalks = [];
-        var parameterPPN = {{ Session::get('ppn') }};
+        {{--var parameterPPN = {{ Session::get('ppn') }} / 100; ikut IAS lama parameter.PPN ga disii (18/04/2022) --}}
+        var parameterPPN = 0;
         var arrCabang = [];
 
         $(document).ready(function(){

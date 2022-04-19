@@ -668,6 +668,7 @@
                     $('#modal-loader').modal('hide');
                     datas_detail = response.datas;
                     console.log(response);
+                    console.log($(this).val(););
                     if (datas_detail.length > 0) {
                         console.log(response);
                         $('.row-detail-' + rh).remove();

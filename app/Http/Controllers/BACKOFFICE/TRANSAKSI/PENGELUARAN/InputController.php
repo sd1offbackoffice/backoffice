@@ -219,7 +219,7 @@ class InputController extends Controller
                 'TRBO_INVNO',
                 'TRBO_TGLINV',
                 'TRBO_NOREFF',
-                'TRBO_KETERANGAN'
+                'TRBO_KETERANGAN',
             )
             ->where(
                 [
@@ -254,10 +254,11 @@ class InputController extends Controller
                     'TRBO_KETERANGAN'
                 ]
             )
-            ->orderBy('trbo_prdcd')
+            ->orderBy('TRBO_NOREFF', 'desc')
             ->distinct()
             ->get();
             // dd($dh);
+
 
         $datas_header = [];
         foreach ($dh as $d) {
@@ -268,7 +269,7 @@ class InputController extends Controller
             $data->h_satuan = $d->satuan;
             $data->h_bkp = $d->prd_flagbkp1;
             $data->h_stock = $d->trbo_posqty;
-            $data->h_ctn = round($d->qty / $d->prd_frac);
+            $data->h_ctn = floor($d->qty / $d->prd_frac);
             $data->h_pcs = $d->qty % $d->prd_frac;
             $data->h_frac = $d->prd_frac;
             $data->h_ket = $d->trbo_keterangan;
@@ -287,7 +288,7 @@ class InputController extends Controller
             $data->bkp = $d->prd_flagbkp1;
             $data->stok = $d->trbo_posqty;
             $data->hrgsatuan = $d->trbo_hrgsatuan;
-            $data->ctn = round($d->qty / $d->prd_frac);
+            $data->ctn = floor($d->qty / $d->prd_frac);
             $data->pcs = $d->qty % $d->prd_frac;
             $data->gross = $d->trbo_gross;
             $data->discper = ($d->trbo_discrph / $d->trbo_gross) * 100;
@@ -700,7 +701,7 @@ class InputController extends Controller
 
                     $trbo_prdcd = $plu;
                     $res2 = DB::connection(Session::get('connection'))->select("select prd_deskripsipanjang, prd_deskripsipendek, frac, prd_flagbkp1,
-                                prd_avgcost, st_avgcost, nvl(st_saldoakhir, 0) st_saldoakhir, hrgsatuan, qtypb
+                                prd_avgcost, st_avgcost, nvl(st_saldoakhir, 0) st_saldoakhir, hrgsatuan, qtypb, prd_ppn
                             from tbmaster_prodmast, tbmaster_stock, temp_urut_retur
                             where prd_prdcd = st_prdcd(+)
                                 and '02' =  st_lokasi(+)
@@ -779,7 +780,7 @@ class InputController extends Controller
 
 //            ---** hitung ppn ** ---
                     if ($pkp == 'Y' && $bkp == 'Y') {
-                        $ppn = 10;
+                        $ppn = $res2->prd_ppn;
                     } else {
                         $ppn = 0;
                     }
@@ -935,7 +936,7 @@ class InputController extends Controller
         $trbo_create_by = Session::get('usid');
         $trbo_create_dt = Carbon::now()->format('Y-m-d');
         $datas = $request->datas;
-        dd($datas);
+        // dd($datas);
         // dd($datas[1]['qty']);
         DB::connection(Session::get('connection'))->beginTransaction();
         foreach ($datas as $data) {
@@ -943,7 +944,8 @@ class InputController extends Controller
                 ->where([
                     'trbo_kodeigr' => $trbo_kodeigr,
                     'trbo_nodoc' => $data['nodoc'],
-                    'trbo_prdcd' => $data['plu']
+                    'trbo_prdcd' => $data['plu'],
+                    'trbo_noreff' => $data['noreff']
                 ])
                 ->count(1);
             $avg_cost = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
@@ -982,6 +984,7 @@ class InputController extends Controller
             } else {
                 DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')->insert([
                     'trbo_kodeigr' => $trbo_kodeigr,
+                    'trbo_seqno' => $data['seqno'],
                     'trbo_nodoc' => $data['nodoc'],
                     'trbo_prdcd' => $data['plu'],
                     'trbo_typetrn' => $trbo_typetrn,
@@ -991,7 +994,7 @@ class InputController extends Controller
                     'trbo_invno' => $data['invno'],
                     'trbo_tglinv' => $data['tglinv'],
                     'trbo_kodesupplier' => $data['kdsup'],
-                    'trbo_qty' => $data['qty'],
+                    'trbo_qty' => ($data['ctn'] * $data['frac']) + $data['qty'],
                     'trbo_hrgsatuan' => $data['hargasatuan'],
                     'trbo_persendisc1' => $data['persendisc'],
                     'trbo_gross' => $data['gross'],
@@ -1002,6 +1005,7 @@ class InputController extends Controller
                     'trbo_flagdoc' => $trbo_flagdoc,
                     'trbo_create_by' => $trbo_create_by,
                     'trbo_create_dt' => $trbo_create_dt
+
                 ]);
             }
         }

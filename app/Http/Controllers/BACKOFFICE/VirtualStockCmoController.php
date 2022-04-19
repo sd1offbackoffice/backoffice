@@ -127,7 +127,28 @@ class VirtualStockCmoController extends Controller
         $namasupplier = $request->namasupplier;
         $periode1 = $request->periode1;
         $periode2 = $request->periode2;
+
+        $and_div = '';
+        $and_dept = '';
+        $and_kat = '';
+        $and_ksupp = '';
+        $and_ksuppmcg = '';
+        $and_namasupp = '';
         
+        if (isset($div1) && isset($div2)) {
+            $and_div = " and prd_kodedivisi between '" . $div1 . "' and '" . $div2 . "'";
+        }
+        if (isset($dept1) && isset($dept2)) {
+            $and_dept = " and prd_kodedepartement between '" . $dept1 . "' and '" . $dept2 . "'";
+        }
+        if (isset($kat1) && isset($kat1)) {
+            $and_kat = " and prd_kodekategoribarang between '" . $kat1 . "' and '" . $kat2 . "'";
+        }
+        if (isset($kodesupplier) && isset($kodemcg) && isset($namasupplier)) {
+            $and_ksupp = " and sup_kodesupplier like '" . $kodesupplier . "' ";
+            $and_ksuppmcg = " and sup_kodesuppliermcg like '" . $kodemcg . "' ";
+            $and_namasupp = " and sup_namasupplier like '" . $namasupplier . "' ";
+        }
     
         if($tipevcmo == 'r1')
         {
@@ -161,7 +182,13 @@ class VirtualStockCmoController extends Controller
                                 AND prc_group = 'I'
                                 AND prd_prdcd = pluigr
                                 AND sup_kodesupplier(+) = supp
-                                ORDER BY pluigr");
+                                " . $and_div . "
+                                " . $and_dept . "
+                                " . $and_kat . "
+                                " . $and_ksupp . "
+                                " . $and_ksuppmcg . "
+                                " . $and_namasupp . "
+                                ORDER BY pluigr, prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang");
 
             $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
 
@@ -191,7 +218,13 @@ class VirtualStockCmoController extends Controller
                     AND sup_kodesupplier(+) = bpb_supp
                     AND idm.tko_kodeomi(+) = idm_toko
                     AND dspb.tko_kodeomi(+) = dspb_toko
-                    ORDER BY pluigr, row_id ");
+                    " . $and_div . "
+                    " . $and_dept . "
+                    " . $and_kat . "
+                    " . $and_ksupp . "
+                    " . $and_ksuppmcg . "
+                    " . $and_namasupp . "
+                    ORDER BY pluigr, row_id, prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang ");
             
    
             $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
@@ -216,6 +249,28 @@ class VirtualStockCmoController extends Controller
         $namasupplier = $request->namasupplier;
         $periode1 = $request->periode1;
         $periode2 = $request->periode2;
+
+        $and_div = '';
+        $and_dept = '';
+        $and_kat = '';
+        $and_ksupp = '';
+        $and_ksuppmcg = '';
+        $and_namasupp = '';
+
+        if (isset($div1) && isset($div2)) {
+            $and_div = " and prd_kodedivisi between '" . $div1 . "' and '" . $div2 . "'";
+        }
+        if (isset($dept1) && isset($dept2)) {
+            $and_dept = " and prd_kodedepartement between '" . $dept1 . "' and '" . $dept2 . "'";
+        }
+        if (isset($kat1) && isset($kat1)) {
+            $and_kat = " and prd_kodekategoribarang between '" . $kat1 . "' and '" . $kat2 . "'";
+        }
+        if (isset($kodesupplier) && isset($kodemcg) && isset($namasupplier)) {
+            $and_ksupp = " and sup_kodesupplier like '" . $kodesupplier . "' ";
+            $and_ksuppmcg = " and sup_kodesuppliermcg like '" . $kodemcg . "' ";
+            $and_namasupp = " and sup_namasupplier like '" . $namasupplier . "' ";
+        }
         
     
         if($tipevcmo == 'r1')
@@ -250,7 +305,13 @@ class VirtualStockCmoController extends Controller
                                 AND prc_group = 'I'
                                 AND prd_prdcd = pluigr
                                 AND sup_kodesupplier(+) = supp
-                                ORDER BY pluigr");
+                                " . $and_div . "
+                                " . $and_dept . "
+                                " . $and_kat . "
+                                " . $and_ksupp . "
+                                " . $and_ksuppmcg . "
+                                " . $and_namasupp . "
+                                ORDER BY pluigr, prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang");
 
             $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
 
@@ -331,6 +392,12 @@ class VirtualStockCmoController extends Controller
                     AND sup_kodesupplier(+) = bpb_supp
                     AND idm.tko_kodeomi(+) = idm_toko
                     AND dspb.tko_kodeomi(+) = dspb_toko
+                    " . $and_div . "
+                    " . $and_dept . "
+                    " . $and_kat . "
+                    " . $and_ksupp . "
+                    " . $and_ksuppmcg . "
+                    " . $and_namasupp . "
                     ORDER BY pluigr, row_id ");
             
    

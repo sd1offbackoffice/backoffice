@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\KIRIMCABANG;
 
+use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -9,6 +10,13 @@ use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Mockery\Exception;
 use PDF;
+use XBase\Enum\FieldType;
+use XBase\Enum\TableType;
+use XBase\Header\Column;
+use XBase\Header\HeaderFactory;
+use XBase\TableCreator;
+use XBase\TableEditor;
+use XBase\TableReader;
 use Yajra\DataTables\DataTables;
 use ZipArchive;
 use File;
@@ -20,7 +28,7 @@ class TransferSJController extends Controller
     }
 
     public function getData(Request $request){
-        $data = DB::connection(Session::get('connection'))->select("select distinct msth_loc2, cab_namacabang, msth_nodoc no
+        $data = DB::connection(Session::get('connection'))->select("select distinct msth_loc2, cab_namacabang, msth_nodoc
                     from tbtr_mstran_h, tbtr_mstran_d, tbmaster_cabang
                     where nvl(msth_recordid,0) <> '1'
                     and msth_kodeigr = '".Session::get('kdigr')."'
@@ -33,12 +41,44 @@ class TransferSJController extends Controller
                     and nvl(msth_flagdoc,' ') <> '*'
                     order by msth_loc2");
 
-        return $data;
+        if(count($data) == 0)
+            return $data;
+
+        $temp = null;
+        $datas = [];
+        $x = [];
+        foreach($data as $d){
+            if($temp != $d->msth_loc2){
+                $temp = $d->msth_loc2;
+                if(count($x) > 0){
+                    $datas[] = $x;
+                    $x = [];
+                }
+            }
+            $x[] = $d;
+        }
+        $datas[] = $x;
+
+        $result = [];
+        foreach($datas as $data){
+            $temp = new \stdClass();
+            $temp->cabang = $data[0]->msth_loc2.' - '.$data[0]->cab_namacabang;
+            $temp->nodoc = '';
+            foreach($data as $d){
+                $temp->nodoc .= $d->msth_nodoc.', ';
+            }
+            $temp->nodoc = substr($temp->nodoc,0,strlen($temp->nodoc)-2);
+            $result[] = $temp;
+        }
+
+        return $result;
     }
 
     public function transfer(Request $request){
+        $arr = explode(', ',$request->nodoc);
+
         $nodoc = '(';
-        foreach($request->nodoc as $n){
+        foreach($arr as $n){
             $nodoc .= "'".$n."',";
         }
         $nodoc = substr($nodoc,0,-1).')';
@@ -88,64 +128,127 @@ class TransferSJController extends Controller
     }
 
     public function download(){
-        $data = DB::connection(Session::get('connection'))->select("select * from temp_sj");
-
-        DB::connection(Session::get('connection'))->statement("truncate table temp_sj");
-
+        $data = DB::connection(Session::get('connection'))
+            ->table('temp_sj')
+            ->orderBy('docno')
+            ->get();
 //        dd($data);
+        $data = json_decode(json_encode($data),true);
+//
+        DB::connection(Session::get('connection'))->statement("truncate table temp_sj");
 
         $temp = '';
         $datas = [];
         $x = [];
         foreach($data as $d){
-            if($temp != $d->docno){
-                $temp = $d->docno;
-                if(count($x) > 0)
+            if($temp != $d['docno']){
+                $temp = $d['docno'];
+                if(count($x) > 0){
                     $datas[] = $x;
-                $x = [];
+                    $x = [];
+                }
             }
             $x[] = $d;
         }
         $datas[] = $x;
 
-        $column = DB::connection(Session::get('connection'))->select("select column_name FROM USER_TAB_COLUMNS WHERE table_name = 'TEMP_SJ'
-                                    ORDER BY column_id");
+//        dd($datas);
 
-        $columnHeader = [];
-        foreach($column as $c){
-            $columnHeader[] = $c->column_name;
-        }
+        $column = DB::connection(Session::get('connection'))
+            ->select("select column_name, data_type FROM USER_TAB_COLUMNS WHERE table_name = 'TEMP_SJ' order by column_id");
+
+//        dd($column);
 
         foreach($datas as $data){
-            $rows = collect($data)->map(function ($x) {
-                return (array)$x;
-            })->toArray();
-
-           $filename = $data[0]->docno.'.csv';
-
-            $headers = [
-                "Content-type" => "text/csv",
-                "Pragma" => "no-cache",
-                "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
-                "Expires" => "0"
-            ];
-            $file = fopen('TRFSJ/'.$filename, 'w');
-            fputcsv($file, $columnHeader, '|');
-            foreach ($rows as $row) {
-                fputcsv($file, $row, '|');
+            $filepath = self::cleanupFiles(storage_path('TRFSJ/'.$data[0]['docno'].'.dbf'));
+//        chmod($filepath, 755);
+            if(file_exists($filepath)){
+                unlink($filepath);
             }
-            fclose($file);
+            $header = HeaderFactory::create(TableType::DBASE_7_NOMEMO);
+
+            $tableCreator = new TableCreator($filepath, $header);
+
+            foreach($column as $c){
+                if($c->data_type == 'VARCHAR2'){
+                    $tableCreator
+                        ->addColumn(new Column([
+                            'name'   => $c->column_name,
+                            'type'   => FieldType::CHAR,
+                            'length' => 254
+
+                        ]));
+                }
+                else if($c->data_type == 'DATE'){
+                    $tableCreator
+                        ->addColumn(new Column([
+                            'name'   => $c->column_name,
+                            'type'   => FieldType::CHAR,
+                            'length' => 254
+                        ]));
+                }
+                else{
+                    $tableCreator
+                        ->addColumn(new Column([
+                            'name'   => $c->column_name,
+                            'type'   => FieldType::NUMERIC,
+                            'length' => 20,
+                            'decimalCount' => 2,
+                        ]));
+                }
+            }
+
+            $tableCreator->save();
+
+            $table = new TableEditor($filepath);
+            foreach($data as $d){
+                $record = $table->appendRecord();
+                foreach ($column as $c){
+                    $record->set($c->column_name,$d[strtolower($c->column_name)]);
+                }
+//            dd($record);
+                $table->writeRecord($record);
+            }
+            $table->save()->close();
         }
+
+//        return response()->download($filepath)->deleteFileAfterSend(false);
+
+//        $columnHeader = [];
+//        foreach($column as $c){
+//            $columnHeader[] = $c->column_name;
+//        }
+
+//        foreach($datas as $data){
+//            $rows = collect($data)->map(function ($x) {
+//                return (array)$x;
+//            })->toArray();
+//
+//           $filename = $data[0]->docno.'.csv';
+//
+//            $headers = [
+//                "Content-type" => "text/csv",
+//                "Pragma" => "no-cache",
+//                "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+//                "Expires" => "0"
+//            ];
+//            $file = fopen('TRFSJ/'.$filename, 'w');
+//            fputcsv($file, $columnHeader, '|');
+//            foreach ($rows as $row) {
+//                fputcsv($file, $row, '|');
+//            }
+//            fclose($file);
+//        }
 
         $zip = new ZipArchive;
 
-        $tgl = date('m-d',strtotime($datas[0][0]->dateo));
+        $tgl = date('m-d',strtotime($datas[0][0]['dateo']));
 
-        $filename = 'TO'.$datas[0][0]->loc2.$tgl.'.zip';
+        $filename = 'TO'.$datas[0][0]['loc2'].$tgl.'.zip';
 
         if ($zip->open(public_path($filename), ZipArchive::CREATE) === TRUE)
         {
-            $files = File::files(public_path('TRFSJ'));
+            $files = File::files(storage_path('TRFSJ'));
 
             foreach ($files as $key => $value) {
                 $relativeNameInZipFile = basename($value);
@@ -158,5 +261,31 @@ class TransferSJController extends Controller
         File::delete($files);
 
         return response()->download(public_path($filename))->deleteFileAfterSend(true);
+    }
+
+    public function open(){
+        $dataFileDBF = new TableReader(storage_path('test.dbf'));
+
+        dd($dataFileDBF->getRecordCount());
+        while($recs = $dataFileDBF->nextRecord()){
+            dd($recs);
+        }
+    }
+
+    public function cleanupFiles($filepath){
+        if (file_exists($filepath)) {
+            unlink($filepath);
+        }
+
+        $memoExts = ['dbt', 'fpt'];
+        $fileInfo = pathinfo($filepath);
+        foreach ($memoExts as $memoExt) {
+            $memoFilepath = $fileInfo['dirname'].DIRECTORY_SEPARATOR.$fileInfo['filename'].$memoExt;
+            if (file_exists($memoFilepath)) {
+                unlink($memoFilepath);
+            }
+        }
+
+        return $filepath;
     }
 }

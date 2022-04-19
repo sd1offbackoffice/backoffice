@@ -34,11 +34,31 @@
        </thead>
        <tbody style="border-top: 1px solid black;border-bottom: 1px solid black;border-left: 1px solid black;">
            <tr style="text-align: center; vertical-align: center">
-               <td style="border: 1px solid black">{{ $div1 }} s/d {{ $div2 }}</td>
-               <td style="border: 1px solid black">{{ $dept1 }} s/d {{ $dept2 }}</td>
-               <td style="border: 1px solid black">{{ $kat1 }} s/d {{ $kat2 }}</td>
-               <td style="border: 1px solid black"> {{ $kodesupplier }}</td>
-               <td style="border: 1px solid black">{{ $namasupplier }}</td>
+                @if($div1 == NULL && $div2 == NULL)
+                    <td style="border: 1px solid black">ALL</td>
+                @else
+                    <td style="border: 1px solid black">{{ $div1 }} s/d {{ $div2 }}</td>
+                @endif
+                @if($dept1 == NULL && $dept2 == NULL)
+                    <td style="border: 1px solid black">ALL</td>
+                @else
+                    <td style="border: 1px solid black">{{ $dept1 }} s/d {{ $dept2 }}</td>
+                @endif
+                @if($kat1 == NULL && $kat2 == NULL)
+                    <td style="border: 1px solid black">ALL</td>
+                @else
+                    <td style="border: 1px solid black">{{ $kat1 }} s/d {{ $kat2 }}</td>
+                @endif
+                @if($kodesupplier == NULL)
+                    <td style="border: 1px solid black"> ALL</td>
+                @else
+                    <td style="border: 1px solid black"> {{ $kodesupplier }}</td>
+                @endif
+                @if($namasupplier == NULL)
+                    <td style="border: 1px solid black"> ALL</td>
+                @else
+                    <td style="border: 1px solid black"> {{ $namasupplier }}</td>
+                @endif
                <td style="border: 1px solid black">{{ $periode1 }} s/d {{ $periode2 }}</td>
            </tr>
        </tbody>
@@ -107,12 +127,38 @@
        </thead>
        <tbody style="border-top: 1px solid black;border-bottom: 1px solid black;border-left: 1px solid black;">
            <tr style="text-align: center; vertical-align: center">
-               <td style="border: 1px solid black">{{ $div1 }} s/d {{ $div2 }}</td>
+               {{-- <td style="border: 1px solid black">{{ $div1 }} s/d {{ $div2 }}</td>
                <td style="border: 1px solid black">{{ $dept1 }} s/d {{ $dept2 }}</td>
                <td style="border: 1px solid black">{{ $kat1 }} s/d {{ $kat2 }}</td>
                <td style="border: 1px solid black"> {{ $kodesupplier }}</td>
                <td style="border: 1px solid black">{{ $namasupplier }}</td>
-               <td style="border: 1px solid black">{{ $periode1 }} s/d {{ $periode2 }}</td>
+               <td style="border: 1px solid black">{{ $periode1 }} s/d {{ $periode2 }}</td> --}}
+               @if($div1 == NULL && $div2 == NULL)
+                    <td style="border: 1px solid black">ALL</td>
+                @else
+                    <td style="border: 1px solid black">{{ $div1 }} s/d {{ $div2 }}</td>
+                @endif
+                @if($dept1 == NULL && $dept2 == NULL)
+                    <td style="border: 1px solid black">ALL</td>
+                @else
+                    <td style="border: 1px solid black">{{ $dept1 }} s/d {{ $dept2 }}</td>
+                @endif
+                @if($kat1 == NULL && $kat2 == NULL)
+                    <td style="border: 1px solid black">ALL</td>
+                @else
+                    <td style="border: 1px solid black">{{ $kat1 }} s/d {{ $kat2 }}</td>
+                @endif
+                @if($kodesupplier == NULL)
+                    <td style="border: 1px solid black"> ALL</td>
+                @else
+                    <td style="border: 1px solid black"> {{ $kodesupplier }}</td>
+                @endif
+                @if($namasupplier == NULL)
+                    <td style="border: 1px solid black"> ALL</td>
+                @else
+                    <td style="border: 1px solid black"> {{ $namasupplier }}</td>
+                @endif
+                <td style="border: 1px solid black">{{ $periode1 }} s/d {{ $periode2 }}</td>
            </tr>
        </tbody>
     </table>

@@ -879,6 +879,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::get('/get-data', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\TransferSJController@getData');
                     Route::post('/transfer', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\TransferSJController@transfer');
                     Route::get('/download', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\TransferSJController@download');
+                    Route::get('/open', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\TransferSJController@open');
                 });
             });
 

@@ -142,56 +142,97 @@ class PBOtomatisController extends Controller
         $sup1       = $request->sup1;
         $sup2       = $request->sup2;
 
-        if ($sup1   == 'null') { $sup1    = ' '; }
-        $sup1 = $sup1 ?? '00000';
+        if ($sup1   == 'null') { $sup1    = '00000'; }
+//        $sup1 = $sup1 ?? '00000';
         $sup2 = $sup2 ?? 'zzzzz';
 
+//        dd([$kodeigr, $tgl1, $tgl2, $sup1, $sup2]);
 
-        $datas  = DB::connection(Session::get('connection'))->table('TBMASTER_PERUSAHAAN')
-            ->selectRaw("PRS_KODEIGR, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, TRUNC (TLK_TGLPB) TGLPB, TLK_NOPB NOPB,
-                                   PRD_KODEDIVISI DIV, DIV_NAMADIVISI DIVNAME, PRD_KODEDEPARTEMENT DEP,
-                                   DEP_NAMADEPARTEMENT DEPNAME, PRD_KODEKATEGORIBARANG KAT, KAT_NAMAKATEGORI KATNAME,
-                                   TLK_PRDCD PRDCD, PRD_DESKRIPSIPANJANG DESKRIPSI, PRD_UNIT || '/' || PRD_FRAC SATUAN,
-                                   PRD_KODETAG TAG, TLK_KODESUPPLIER SUPCO, SUP_NAMASUPPLIER SUPNAME, PKM_PKMT PKMT,
-                                   TLK_KETERANGANTOLAKAN")
-            ->join('tbtr_tolakanpb',  'tlk_kodeigr','=', 'prs_kodeigr')
-            ->join('TBMASTER_PRODMAST', function($join){
-                $join->on('prd_prdcd', '=', 'tlk_prdcd')
-                    ->on( 'prd_kodeigr', '=', 'tlk_kodeigr');
-            })
-            ->join('TBMASTER_DIVISI', function ($join){
-                $join->on('prd_kodedivisi', '=', 'div_kodedivisi');
 
-            })
-            ->join('TBMASTER_DEPARTEMENT', function ($join){
-                $join->on('prd_kodedepartement', '=', 'dep_kodedepartement')
-                    ->on('prd_kodedivisi', '=', 'dep_kodedivisi')
-                    ->on('prd_kodedepartement', '=', 'dep_kodedepartement');
-            })
-            ->join('TBMASTER_KATEGORI', function ($join){
-                $join ->on('prd_kodedepartement', '=', 'kat_kodedepartement')
-                    ->on('prd_kodekategoribarang', '=', 'kat_kodekategori');
-            })
-            ->join('TBMASTER_SUPPLIER', function ($join){
-                $join->on('tlk_kodeigr', '=', 'sup_kodeigr')
-                    ->on('tlk_kodesupplier', '=', 'sup_kodesupplier');
-            })
-            ->join('TBMASTER_KKPKM', function ($join){
-                $join->on('prd_kodeigr', '=', 'pkm_kodeigr')
-                    ->on('prd_kodedivisi', '=', 'pkm_kodedivisi')
-                    ->on('prd_kodedepartement', '=', 'pkm_kodedepartement')
-                    ->on('prd_kodekategoribarang', '=', 'pkm_kodekategoribarang')
-                    ->on('prd_prdcd', '=', 'pkm_prdcd');
-            })
-            ->where('prs_kodeigr', $kodeigr)
-            ->whereRaw("trunc (tlk_tglpb) between '$tgl1' and '$tgl2'")
-            ->whereBetween('tlk_kodesupplier', [$sup1, $sup2])
-            ->whereBetween('prd_prdcd', ['0000000', 'ZZZZZZZ'])
-           // AND PRD_PRDCD BETWEEN NVL (:P_PLU1, '0000000') AND NVL (:P_PLU2, 'ZZZZZZZ') (Query aslinya baca plu lemparan parameter)
-            ->where('tlk_keterangantolakan', 'not like', 'STATUS%')
-            ->where('tlk_keterangantolakan', 'not like', '%PKM')
-            ->orderBy('prd_prdcd')
-            ->get()->toArray();
+//        $datas  = DB::connection(Session::get('connection'))->table('TBMASTER_PERUSAHAAN')
+//            ->selectRaw("PRS_KODEIGR, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, TRUNC (TLK_TGLPB) TGLPB, TLK_NOPB NOPB,
+//                                   PRD_KODEDIVISI DIV, DIV_NAMADIVISI DIVNAME, PRD_KODEDEPARTEMENT DEP,
+//                                   DEP_NAMADEPARTEMENT DEPNAME, PRD_KODEKATEGORIBARANG KAT, KAT_NAMAKATEGORI KATNAME,
+//                                   TLK_PRDCD PRDCD, PRD_DESKRIPSIPANJANG DESKRIPSI, PRD_UNIT || '/' || PRD_FRAC SATUAN,
+//                                   PRD_KODETAG TAG, TLK_KODESUPPLIER SUPCO, SUP_NAMASUPPLIER SUPNAME, PKM_PKMT PKMT,
+//                                   TLK_KETERANGANTOLAKAN")
+//            ->join('tbtr_tolakanpb',  'tlk_kodeigr','=', 'prs_kodeigr')
+//            ->join('TBMASTER_PRODMAST', function($join){
+//                $join->on('prd_prdcd', '=', 'tlk_prdcd')
+//                    ->on( 'prd_kodeigr', '=', 'tlk_kodeigr');
+//            })
+//            ->join('TBMASTER_DIVISI', function ($join){
+//                $join->on('prd_kodedivisi', '=', 'div_kodedivisi');
+//
+//            })
+//            ->join('TBMASTER_DEPARTEMENT', function ($join){
+//                $join->on('prd_kodedepartement', '=', 'dep_kodedepartement')
+//                    ->on('prd_kodedivisi', '=', 'dep_kodedivisi')
+//                    ->on('prd_kodedepartement', '=', 'dep_kodedepartement');
+//            })
+//            ->join('TBMASTER_KATEGORI', function ($join){
+//                $join ->on('prd_kodedepartement', '=', 'kat_kodedepartement')
+//                    ->on('prd_kodekategoribarang', '=', 'kat_kodekategori');
+//            })
+//            ->join('TBMASTER_SUPPLIER', function ($join){
+//                $join->on('tlk_kodeigr', '=', 'sup_kodeigr')
+//                    ->on('tlk_kodesupplier', '=', 'sup_kodesupplier');
+//            })
+//            ->join('TBMASTER_KKPKM', function ($join){
+//                $join->on('prd_kodeigr', '=', 'pkm_kodeigr')
+//                    ->on('prd_kodedivisi', '=', 'pkm_kodedivisi')
+//                    ->on('prd_kodedepartement', '=', 'pkm_kodedepartement')
+//                    ->on('prd_kodekategoribarang', '=', 'pkm_kodekategoribarang')
+//                    ->on('prd_prdcd', '=', 'pkm_prdcd');
+//            })
+//            ->where('prs_kodeigr', $kodeigr)
+//            ->whereRaw("trunc (tlk_tglpb) between '$tgl1' and '$tgl2'")
+//            ->whereBetween('tlk_kodesupplier', [$sup1, $sup2])
+//            ->whereBetween('prd_prdcd', ['0000000', 'ZZZZZZZ'])
+//           // AND PRD_PRDCD BETWEEN NVL (:P_PLU1, '0000000') AND NVL (:P_PLU2, 'ZZZZZZZ') (Query aslinya baca plu lemparan parameter)
+//            ->where('tlk_keterangantolakan', 'not like', 'STATUS%')
+//            ->where('tlk_keterangantolakan', 'not like', '%PKM')
+//            ->orderBy('prd_prdcd')
+//            ->get()->toArray();
+
+        $datas  = DB::connection(Session::get('connection'))->select("SELECT PRS_KODEIGR, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, TRUNC (TLK_TGLPB) TGLPB, TLK_NOPB NOPB,
+       PRD_KODEDIVISI DIV, DIV_NAMADIVISI DIVNAME, PRD_KODEDEPARTEMENT DEP,
+       DEP_NAMADEPARTEMENT DEPNAME, PRD_KODEKATEGORIBARANG KAT, KAT_NAMAKATEGORI KATNAME,
+       TLK_PRDCD PRDCD, PRD_DESKRIPSIPANJANG DESKRIPSI, PRD_UNIT || '/' || PRD_FRAC SATUAN,
+       PRD_KODETAG TAG, TLK_KODESUPPLIER SUPCO, SUP_NAMASUPPLIER SUPNAME, PKM_PKMT PKMT,
+       TLK_KETERANGANTOLAKAN
+  FROM TBMASTER_PERUSAHAAN,
+       TBTR_TOLAKANPB,
+       TBMASTER_PRODMAST,
+       TBMASTER_DIVISI,
+       TBMASTER_DEPARTEMENT,
+       TBMASTER_KATEGORI,
+       TBMASTER_SUPPLIER,
+       TBMASTER_KKPKM
+ WHERE PRS_KODEIGR = '$kodeigr'
+   AND PRS_KODEIGR = TLK_KODEIGR
+   AND TLK_KODEIGR = PRD_KODEIGR
+   AND TLK_PRDCD = PRD_PRDCD
+   AND PRD_KODEDIVISI = DIV_KODEDIVISI
+   AND PRD_KODEDIVISI = DEP_KODEDIVISI
+   AND PRD_KODEDEPARTEMENT = DEP_KODEDEPARTEMENT
+   AND PRD_KODEDEPARTEMENT = KAT_KODEDEPARTEMENT
+   AND PRD_KODEKATEGORIBARANG = KAT_KODEKATEGORI
+   AND TLK_KODEIGR = SUP_KODEIGR(+)
+   AND TLK_KODESUPPLIER = SUP_KODESUPPLIER(+)
+   AND PRD_KODEIGR = PKM_KODEIGR(+)
+   AND PRD_KODEDIVISI = PKM_KODEDIVISI(+)
+   AND PRD_KODEDEPARTEMENT = PKM_KODEDEPARTEMENT(+)
+   AND PRD_KODEKATEGORIBARANG = PKM_KODEKATEGORIBARANG(+)
+   AND PRD_PRDCD = PKM_PRDCD(+)
+   --AND TRUNC (TLK_TGLPB) BETWEEN '$tgl1' AND '$tgl2'
+   AND to_char (TLK_TGLPB, 'dd-mm-yyyy') BETWEEN '$tgl1' AND '$tgl2'
+   AND TLK_KODESUPPLIER BETWEEN NVL ('$sup1', '00000') AND NVL ('$sup2', 'ZZZZZ')
+   AND PRD_PRDCD BETWEEN  '0000000' AND 'ZZZZZZZ'
+   AND TLK_KETERANGANTOLAKAN NOT LIKE '%PKM' AND TLK_KETERANGANTOLAKAN NOT LIKE 'STATUS%'
+ORDER BY PRD_PRDCD");
+
+//        dd($datas);
 
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
 

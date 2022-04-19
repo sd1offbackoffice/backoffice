@@ -2,7 +2,7 @@
 @section('title','PENERIMAAN | INPUT')
 @section('content')
 
-<div class="container" style="max-width: fit-content;">
+<div class="container" style="max-width: max-content;">
     <button onclick="topFunction()" id="myBtn" title="Go to top">&#9650;</button>
     <h4><span class="badge badge-dark" id="statusJenisPenerimaan"></span></h4>
     <div class="row">
@@ -101,6 +101,8 @@
                         <div class="col-4">
                             <input autocomplete="off" type="date" id="fracture_date" class="form-control" aria-describedby="factureDateAmt">
                         </div>
+                    </div>
+                    <div class="row align-items-center">
                         <div class="col-2">
                             <label for="top_amt" class="col-form-label">TOP</label>
                         </div>
@@ -461,11 +463,12 @@
                 </div>
             </div>
             <div class="row align-items-center">
+                <div class="col-6"></div>
                 <div class="col-1">
-                    <label for="i_keterangan" class="col-form-label">Keterangan</label>
+                    <label for="i_ppn_persen" class="col-form-label">%PPN</label>
                 </div>
-                <div class="col-7">
-                    <input autocomplete="off" type="text" id="i_keterangan" class="form-control" placeholder="TEKAN ENTER UNTUK REKAM">
+                <div class="col-1">
+                    <input autocomplete="off" type="text" id="i_ppn_persen" class="form-control" disabled>
                 </div>
                 <div class="col-1">
                     <label for="i_ppn" class="col-form-label">PPN</label>
@@ -476,7 +479,12 @@
             </div>
             <span></span>
             <div class="row align-items-center">
-                <div class="col-8"></div>
+                <div class="col-1">
+                    <label for="i_keterangan" class="col-form-label">Keterangan</label>
+                </div>
+                <div class="col-7">
+                    <input autocomplete="off" type="text" id="i_keterangan" class="form-control" placeholder="TEKAN ENTER UNTUK REKAM">
+                </div>
                 <div class="col-1">
                     <label class="col-form-label">Botol</label>
                 </div>
@@ -493,10 +501,8 @@
                     <input autocomplete="off" type="text" id="i_bm" class="form-control" aria-describedby="bmTotalAmt" disabled>
                 </div>
             </div>
-        </div>
-        <div class="container">
             <div class="row align-items-center">
-                <div class="col-2">
+                <div class="col-1">
                     <label for="sum_item" class="col-form-label">Jumlah Item</label>
                 </div>
                 <div class="col-1">
@@ -509,7 +515,6 @@
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="po_total_amt" class="form-control" aria-describedby="poTotalAmt" disabled>
                 </div>
-                <div class="col-1"></div>
                 <div class="col-1">
                     <label for="grand_total" class="col-form-label">Total</label>
                 </div>
@@ -590,7 +595,7 @@
                                 <th scope="col" class="text-center" style="min-width: 100px">Disc 2III</th>
                                 <th scope="col" class="text-center" style="min-width: 100px">%Disc 3</th>
                                 <th scope="col" class="text-center" style="min-width: 100px">Disc 3</th>
-                                <th scope="col" class="text-center" style="min-width: 100px">$Disc 4</th>
+                                <th scope="col" class="text-center" style="min-width: 100px">%Disc 4</th>
                                 <th scope="col" class="text-center" style="min-width: 100px">Disc 4</th>
                                 <th scope="col" class="text-center" style="min-width: 150px">Gross</th>
                                 <th scope="col" class="text-center" style="min-width: 70px">PPN</th>
@@ -818,6 +823,7 @@
     let trfPOBtn = $('#trfPOBtn');
     let viewListBtn = $('#viewListBtn');
     let saveRecBtn = $('#saveRecBtn');
+    let i_ppn_persen = $('#i_ppn_persen');
     $(document).ready(function() {
         typeTrn = 'B'
         chooseTypeBtn.click();
@@ -1229,6 +1235,7 @@
         i_ppn.val(ppn_data.text());
         i_acost.val(avg_data.text());
         i_lcost.val(lcst_data.text());
+        i_ppn_persen.val(i_ppn_persen.text());
     }
 
     function changeHargaBeli(hrgBeli, qty, qtyk) {
@@ -1606,7 +1613,7 @@
         i_botol.val(convertToRupiah(data.i_botol));
         i_bm.val(convertToRupiah(data.i_bm));
         i_total.val(convertToRupiah(data.i_total));
-
+        i_ppn_persen.val(data.i_ppn_persen);
         console.log(data)
         if (jenisPenerimaan == 1) {
             if (!i_keterangan.val()) {
@@ -1715,6 +1722,7 @@
         i_ppn.val(convertToRupiah(data.i_ppnrph));
         i_botol.val(convertToRupiah(data.trbo_ppnbtlrph));
         i_bm.val(convertToRupiah(data.trbo_ppnbmrph));
+        i_ppn_persen.val(data.i_ppn_persen);
         // sum_item.val(data.sum_item);
         // i_totalpo.val(data.i_totalpo);
         i_total.val(convertToRupiah(data.i_total));
@@ -2101,6 +2109,7 @@
                 console.log(result);
                 if (result.kode == '0') {
                     let data = result.data;
+                    console.log(data);
                     tempDataPLU = data;
                     setValue(data);
                     i_hrgbeli.focus();
@@ -2333,6 +2342,7 @@
                     clearRightFirstField();
                 },
                 success: (result) => {
+                    console.log(result.data);
                     $('#modal-loader').modal('hide');
                     if (!($('#display_data tr').length > 0)) {
                         generateDataTable(result.data);
