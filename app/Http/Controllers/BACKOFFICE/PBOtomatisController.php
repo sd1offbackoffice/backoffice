@@ -137,8 +137,9 @@ class PBOtomatisController extends Controller
 //    public function cetakReport($kodeigr, $tgl1, $tgl2, $sup1, $sup2){
     public function cetakReport(Request $request){
         $kodeigr    = $request->kodeigr;
-        $tgl1       = $request->date1;
-        $tgl2       = $request->date2;
+        $tgl1       = date('d-m-Y', strtotime($request->date1));
+        $tgl2       = date('d-m-Y', strtotime($request->date2));
+//        $tgl2       = $request->date2;
         $sup1       = $request->sup1;
         $sup2       = $request->sup2;
 

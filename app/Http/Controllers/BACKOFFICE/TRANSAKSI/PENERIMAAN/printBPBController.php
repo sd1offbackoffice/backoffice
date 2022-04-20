@@ -1650,7 +1650,6 @@ class printBPBController extends Controller
                                         and trbo_prdcd(+) = mstd_prdcd
                                         and msth_nodoc in ($document)
                                         order by msth_nodoc");
-// dd($datas[0]->barcode);
             $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota', ['datas' => $datas, 're_print' => $re_print, 'ttd' => $ttd])->setPaper('a5', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);

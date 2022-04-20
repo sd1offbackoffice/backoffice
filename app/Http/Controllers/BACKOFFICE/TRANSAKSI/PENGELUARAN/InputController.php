@@ -936,10 +936,28 @@ class InputController extends Controller
         $trbo_create_by = Session::get('usid');
         $trbo_create_dt = Carbon::now()->format('Y-m-d');
         $datas = $request->datas;
-        // dd($datas);
-        // dd($datas[1]['qty']);
+        $arrDeletedPlu = $request->arrDeletedPlu;
+        // dd($arrDeletedPlu);
+        
         DB::connection(Session::get('connection'))->beginTransaction();
         foreach ($datas as $data) {
+            // $check = DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
+            //         ->where([
+            //             'trbo_kodeigr' => $trbo_kodeigr,
+            //             'trbo_nodoc' => $data['nodoc'],
+            //             'trbo_prdcd' => $data['plu'],
+            //         ])
+            //         ->count(1);
+            // if ($check > 0) {
+            //     DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
+            //         ->where([
+            //             'trbo_kodeigr' => $trbo_kodeigr,
+            //             'trbo_nodoc' => $data['nodoc'],
+            //             'trbo_prdcd' => $data['plu'],
+            //         ])
+            //         ->delete();
+            // }
+
             $temp = DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
                 ->where([
                     'trbo_kodeigr' => $trbo_kodeigr,
@@ -969,7 +987,7 @@ class InputController extends Controller
                         'trbo_invno' => $data['invno'],
                         'trbo_tglinv' => $data['tglinv'],
                         'trbo_kodesupplier' => $data['kdsup'],
-                        'trbo_qty' => $data['qty'],
+                        'trbo_qty' => ($data['ctn'] * $data['frac']) + $data['qty'],
                         'trbo_hrgsatuan' => $data['hargasatuan'],
                         'trbo_persendisc1' => $data['persendisc'],
                         'trbo_gross' => $data['gross'],
@@ -1358,4 +1376,9 @@ class InputController extends Controller
         }
     }
 
+    public function deleteFirst(Request $request) {
+        $nodoc = $request->nodoc;
+        $tgldoc = $request->tgldoc;
+        $kdsup = $request->kdsup;
+    }
 }

@@ -171,15 +171,32 @@
                     <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
                         Pengirim,
                         <hr>
+                        <br><br>
                         <img style="max-width: 100px;" src="../storage/signature/{{$ttd . '.png'}}"></img>
+                        <br>
+                        NAMA
+                        <hr>
+                        Supplier/Expedisi
                     </td>
                     <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
                         Disetujui,
                         <hr>
+                        <br><br>
+                        <img style="max-width: 100px;" src="../storage/signature/{{$ttd . '.png'}}"></img>
+                        <br>
+                        NAMA
+                        <hr>
+                        Logistic Adm.Sr.Clerk
                     </td>
                     <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
                         Dicetak,
                         <hr>
+                        <br><br>
+                        <img style="max-width: 100px;" src="../storage/signature/{{$ttd . '.png'}}"></img>
+                        <br>
+                        NAMA
+                        <hr>
+                        Logistic Adm.Clerk
                     </td>
                 </tr>
             </tbody>

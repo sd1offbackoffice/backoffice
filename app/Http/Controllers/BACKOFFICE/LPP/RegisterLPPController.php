@@ -493,6 +493,7 @@ WHERE SUBSTR (hbv_prdcd_brj, 1, 6) = SUBSTR (trjd_prdcd, 1, 6) AND st_prdcd = hb
         AND kat_kodekategori(+) = lpp_kategoribrg
         " . $and_kat . "
         AND prs_kodeigr = lpp_kodeigr
+        and rownum<1000
                 " . $and_plu . " )
 GROUP BY lpp_kodedivisi,
          div_namadivisi,
@@ -512,44 +513,45 @@ ORDER BY lpp_kodedivisi,
          lpp_kategoribrg,
          lpp_prdcd");
             set_time_limit(0);
+
             $title = '** POSISI & MUTASI PERSEDIAAN BARANG BAIK **';
+            $chunks = $data->chunk(500);
+            $i=0;
+            foreach ($chunks as $chunk)
+            {
+                $filename = 'chunk_'.$i;
+                $i++;
 
-//            $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid,compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
-//            $pdf->setPaper('A4', 'landscape');
-//            $pdf->output();
-//            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+                $dompdf = new PDF();
 
-//            $canvas = $dompdf ->get_canvas();
-//            $canvas->page_text(465, 77, "{PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
-//            $dompdf->render();
+                $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid.'_pdf', compact(['title', 'perusahaan', 'chunk', 'tgl1', 'tgl2']));
 
-//            return $pdf->download('laporan2.pdf');
+                error_reporting(E_ALL ^ E_DEPRECATED);
 
-//            dom
-//            $pdf = PDF::loadView('BACKOFFICE.LPP.' . $repid,compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
-//            return $pdf->stream('test.pdf');
+                $pdf->output();
+                $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+                $canvas = $dompdf->get_canvas();
+                $canvas->page_text(509, 77.75, "Page {PAGE_NUM} dari {PAGE_COUNT}", null, 8, array(0, 0, 0));
+
+                $dompdf = $pdf;
+                $pdf->save(storage_path($filename));
+            }
 
 
-//            $view = \View::make('BACKOFFICE.LPP.' . $repid,compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
-//            $html = $view->render();
-//
-//            $pdf = new TCPDF();
-//            $pdf::SetTitle('Hello World');
-//            $pdf::AddPage();
-//            $pdf::writeHTML($html, true, false, true, false, '');
-//            $pdf::Output('hello_world.pdf');
-//return 'oke';
+
+
 
 
 
             //excel
-            $filename = 'aa.xlsx';
-            $view = view('BACKOFFICE.LPP.' . $repid . '_xlxs', compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']))->render();
-            $maxColumn = 'U';
-            $subtitle = 'RINCIAN PER DIVISI (UNIT/RUPIAH)';
-            $this->createExcel($view,$filename,$maxColumn,$title,$subtitle);
-
-            return response()->download(storage_path($filename))->deleteFileAfterSend(true);
+//            $filename = 'aa.xlsx';
+//            $view = view('BACKOFFICE.LPP.' . $repid . '_xlxs', compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']))->render();
+//            $maxColumn = 'U';
+//            $subtitle = 'RINCIAN PER DIVISI (UNIT/RUPIAH)';
+//            $this->createExcel($view,$filename,$maxColumn,$title,$subtitle);
+//
+//            return response()->download(storage_path($filename))->deleteFileAfterSend(true);
 
 //html
 //            return view('BACKOFFICE.LPP.' . $repid.'_xlxs', compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));

@@ -524,7 +524,7 @@ class PBPerishableController extends Controller
         //     :h_flag := NULL;
         // END IF;
 
-        return response()->json(['message' => $message, 'kubikase' => $kubikase, 'totalkubik' => $totalkubik]);
+        return response()->json(['message' => $message, 'kubikase' => $kubikase, 'totalkubik' => $totalkubik[0]->ttlkubik]);
 
 
     }

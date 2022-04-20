@@ -124,4 +124,10 @@
         </tr>
         </tfoot>
     </table>
+
+    <script>
+        window.onload = function () {
+            // window.history.replaceState(null, null, '?');
+        }
+    </script>
 @endsection

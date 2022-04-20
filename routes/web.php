@@ -746,7 +746,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::post('/cek-OTP', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InputController@cekOTP');
 
                     // Cesar
-                    Route::post('/save-new-data-trn', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InputController@saveNewData');
+                    Route::post('/delete-first', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InputController@deleteFirst');
                 });
                 Route::prefix('/inquery')->group(function () {
                     Route::get('/', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InqueryController@index');

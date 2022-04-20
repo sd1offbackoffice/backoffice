@@ -148,22 +148,6 @@ class CetakController extends Controller
                 DB::connection(Session::get('connection'))->commit();
 
                 return view('BACKOFFICE.TRANSAKSI.KIRIMCABANG.laporan-list',compact(['perusahaan','data','reprint']));
-
-                $dompdf = new PDF();
-
-                $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.KIRIMCABANG.laporan-list',compact(['perusahaan','data','reprint']));
-
-                error_reporting(E_ALL ^ E_DEPRECATED);
-
-                $pdf->output();
-                $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-                $canvas = $dompdf ->get_canvas();
-                $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-                $dompdf = $pdf;
-
-                return $dompdf->stream('Edit List Surat Jalan.pdf');
             }
             else{
                 $reprint = DB::connection(Session::get('connection'))

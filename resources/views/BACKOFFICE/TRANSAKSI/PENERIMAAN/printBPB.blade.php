@@ -93,6 +93,10 @@
                 <div class="container">
                     <div class="row">
                         <div class="col">
+                            <div id="jabatan">
+                                <p><b>Jabatan: </b>Logistic Adm.Clerk</p>
+                                <input type="text" class="form-control" id="nama_personil" placeholder="">
+                            </div>
                             <div id="sig"></div>
                             <br />
                             <button id="clear" class="btn btn-danger">Clear</button>
@@ -139,12 +143,12 @@
 
     .kbw-signature {
         width: 400px;
-        height: 350px;
+        height: 400px;
     }
 
     #sig canvas {
-        width: 100% !important;
-        height: auto;
+        width: 100%;
+        height: 100%;
     }
 </style>
 

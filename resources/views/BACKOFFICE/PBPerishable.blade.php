@@ -654,7 +654,7 @@
                                                 </td>
                                                 <td style="width: 10%"><input disabled type="text" class="form-control pkm text-right" value="`+ result[i].pbp_pkm +`"></td>
                                                 <td style="width: 10%"><input disabled type="text" class="form-control avgsales text-right" value="`+ result[i].pbp_avgsales +`"></td>
-                                                <td style="width: 10%"><input disabled type="text" class="form-control isictn text-right" value="`+ result[i].pbp_isictn +`"></td>
+                                                <td style= "width: 10%"><input disabled type="text" class="form-control isictn text-right" value="`+ result[i].pbp_isictn +`"></td>
                                                 <td style="width: 10%"><input disabled type="text" class="form-control stock text-right" value="`+ result[i].pbp_stock +`"></td>
                                                 <td style="width: 10%"><input disabled type="text" class="form-control poout text-right" value="`+ result[i].pbp_qtypoout +`"></td>
                                                 <td style="width: 10%"><input disabled type="text" class="form-control pbout text-right" value="`+ result[i].pbp_qtypbout +`"></td>
@@ -723,6 +723,9 @@
             let kodesup = $('.supplierid')[idsup].value;
             let kodesar = $('.kodesarana')[idsup].value;
             let volsar = $('.volsarana')[idsup].value;
+            var volsarint = parseInt(thousands_combiners(volsar));
+            console.log('volsarint');
+            console.log(volsarint);
             let plu     = $('.plu')[index].value;
             let pkm     = $('.pkm')[index].value;
             let stock = $('.stock')[index].value;
@@ -750,9 +753,10 @@
                     //$('#modal-loader').modal('hide');
                     console.log(result);
                     if(result.message == ''){
-                        $('.kubikase')[index].value = result.kubikase;
-                        $('.totalkubik')[idsup].value = result.totalkubik;
-                        if( result.totalkubik > volsar){
+                        $('.kubikase')[index].value = thousands_separators(result.kubikase);
+                        var totalkubik = parseInt(result.totalkubik);
+                        $('.totalkubik')[idsup].value = thousands_separators(totalkubik);
+                        if(totalkubik > volsarint){
                             $('.flag')[idsup].value = "X";
                         }
                     }
@@ -973,6 +977,11 @@
         num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         return num_parts.join(".");
 
+    }
+    function thousands_combiners(num){
+        var num_parts = num.toString().split(".");
+        num_parts[0] = num_parts[0].replace(",", "");
+        return num_parts.join(".");
     }
 
 

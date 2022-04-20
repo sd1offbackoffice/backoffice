@@ -225,26 +225,29 @@
             $('#periode1').val(output1);
             $('#periode2').val(output2);
 
+            $('.daterange-periode').daterangepicker({
+                "singleDatePicker": true,
+                locale: {
+                    format: 'DD/MM/YYYY'
+                },
+                minDate: output1,
+                maxDate: $('#periode2').val(output2)
 
-        // $('.date').datepicker({
-        //     "dateFormat" : "dd/mm/yy",
-        // });
-
-        // console.log(new Date($('#periode2').val()));
-        // console.log(new Date($('#periode1').val()));
+            });
 
         getSupplier('');
     });
     // end document
 
-    $('.daterange-periode').daterangepicker({
-        autoUpdateInput: false,
-        "singleDatePicker": true,
-        locale: {
-            cancelLabel: 'Clear'
-        },
+    // $('.daterange-periode').daterangepicker({
+    //     autoUpdateInput: false,
+    //     "singleDatePicker": true,
+    //     locale: {
+    //         cancelLabel: 'Clear'
+    //     },
         
-    });
+    // });
+
 
     $('.daterange-periode').on('apply.daterangepicker', function (ev, picker) {
         // $('#periode1').val(picker.startDate.format('DD/MM/YYYY'));
@@ -487,19 +490,9 @@
         var startDate = $('#periode1').val();
         var endDate = $('#periode2').val();
 
-        console.log(Date.parse(startDate) > Date.parse(endDate));
-        // console.log(Date.parse(endDate));
-        // console.log(Date.parse(startDate));
-        console.log(startDate);
-        console.log(endDate);
-        console.log(startDate > endDate);
-        // if ($('#periode1').val() == '' || $('#periode2').val() == '') 
-        // {
-        //     swal('Error', "Pilih tanggal untuk cetak PDF !", 'error');
-        // }
-        if(startDate > endDate)
+        if ($('#periode1').val() == '' || $('#periode2').val() == '') 
         {
-            swal('Error', "End date tidak boleh lebih besar dari Start Date", 'error');
+            swal('Error', "Pilih tanggal untuk cetak PDF !", 'error');
         }
         else 
         {
@@ -510,21 +503,10 @@
     function printCSV() {
         var startDate = new Date($('#periode1').val());
         var endDate = new Date($('#periode2').val());
-        // console.log(Date.parse(endDate) < Date.parse(startDate));
-        // if ($('#div1').val() == '' || $('#div2').val() == '' 
-        // || $('#dept1').val() == '' || $('#dept2').val() == ''
-        // || $('#kat1').val() == '' || $('#kat2').val() == ''
-        // || $('#kodesupp').val() == '' || $('#kodemcg').val() == '' || $('#namasupplier').val() == ''
-        // || $('#periode1').val() == '' || $('#periode2').val() == '') {
-        //     swal('Error', "Input semua kolom untuk cetak CSV !", 'error');
-        // }
+
         if ($('#periode1').val() == '' || $('#periode2').val() == '') 
         {
             swal('Error', "Pilih tanggal untuk cetak CSV !", 'error');
-        }
-        else if(Date.parse(endDate) < Date.parse(startDate))
-        {
-            swal('Error', "End date tidak boleh lebih besar dari Start Date", 'error');
         }
         else 
         {

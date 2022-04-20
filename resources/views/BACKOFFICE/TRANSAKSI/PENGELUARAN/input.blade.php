@@ -415,6 +415,7 @@
         var rowheader;
         var row = 1;
         var kdsup = '';
+        let arrDeletedPlu = []
 
         $(document).ready(function () {
             reset();
@@ -878,11 +879,11 @@
                         else {
                             if (response.model === '* NOTA SUDAH DICETAK *') {
                                 $('#btnHapusDokumen').attr('disabled', true);
-                                // $('.btn-delete-row-header').attr('disabled', true);
+                                
                             }
                             else {
                                 $('#btnHapusDokumen').attr('disabled', false);
-                                // $('.btn-delete-row-header').attr('disabled', false);
+                                
                                 $('#btnSimpan').attr('disabled', false);
                                 $('#btnAddRow').show();
                                 getDataSupplier(response.supplier)
@@ -1079,7 +1080,12 @@
             var current = $(this);
             var rh = current.attr('rowheader');
             let headerPlu = $(this).parents('tr').find('.plu-header').val()
+            let model = $('#txtModel').val();
             // console.log('headerPlu: ' + headerPlu);
+
+            if (model == '* KOREKSI *') {
+                arrDeletedPlu.push(headerPlu)
+            }
 
             $('#body-table-header tr').each(function () {
                 let plu = $(this).find('.plu-header').val();
@@ -1149,7 +1155,7 @@
                 $('#modal-loader').modal('show');
                 var current = $(this);
                 var rh = current.attr('rowheader');
-                var model = $('#txtModel').val();
+                var model = $('#txtModel').val();                
                 var nodoc = $('#txtNoDoc').val();
                 var tgldoc = $('#dtTglDoc').val();
                 var kdsup = $('#txtKdSupplier').val();
@@ -1366,7 +1372,7 @@
                                     $('#modal-loader').modal('hide');
                                 });
                             }
-                            if (model == '* TAMBAH *' || model == '* KOREKSI *') {
+                            if (model == '*TAMBAH*' || model == '* KOREKSI *') {
                                 proses(plu, ctn, frac, pcs, rh);
                                 // proses(plu, ((ctn * frac) + pcs), rh);
                             }
@@ -1697,12 +1703,35 @@
                         var nodoc = $('#txtNoDoc').val();
                         var tgldoc = $('#dtTglDoc').val();
                         var kdsup = $('#txtKdSupplier').val();
+                        // let model = $('#txtModel').val();
+
+                        // if (model == '* KOREKSI *') {
+                        //     ajaxSetup()
+                        //     $.ajax({
+                        //         type: "post",
+                        //         url: "{{ url()->current() }}/delete-first",
+                        //         data: {
+                        //             nodoc: nodoc,
+                        //             tgldoc: tgldoc,
+                        //             s
+                        //         },
+                        //         dataType: "dataType",
+                        //         success: function (response) {
+                                    
+                        //         }
+                        //     });
+                        // }
 
                         datas = [];
                         let index = 1;
                         $('#body-table-detail tr.row-detail').each(function () {
                             var data = {};
-                            let tempFrac = $(this).find(".satuan").val();
+
+                            let satuan = $(this).find('.satuan').val();                            
+                            let tempFrac = satuan.split('/');
+                            let frac = tempFrac[1];
+                            console.log('satuan ' + satuan);
+                            console.log('tempFrac ' + frac);                            
                         
                             data.seqno = index;
                             data.nodoc = nodoc;
@@ -1714,7 +1743,7 @@
                             data.kdsup = kdsup;
                             data.plu = $(this).find(".plu").val();
                             data.ctn = $(this).find(".qtyctn").val();
-                            data.frac = tempFrac.split('/')[1];
+                            data.frac = frac;
                             data.qty = $(this).find(".qtypcs").val();
                             data.hargasatuan = $(this).find(".hargasatuan").val();
                             data.persendisc = $(this).find(".persendisc").val();
@@ -1727,13 +1756,14 @@
 
                             index++;
                         });
-                        // console.log($(this).find(".satuan").val());
+                        
                         ajaxSetup();
                         $.ajax({
                             type: "POST",
                             url: "{{ url('/bo/transaksi/pengeluaran/input/save') }}",
                             data: {
-                                datas: datas
+                                datas: datas,
+                                arrDeletedPlu: arrDeletedPlu
                             },
                             beforeSend: function () {
                                 $('#modal-loader').modal('show');
