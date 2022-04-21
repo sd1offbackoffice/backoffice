@@ -40,9 +40,9 @@
         </div>
     </div>
 
-    <a href="http://172.20.28.17/BackOffice/public/file_procedure/sp_hitung_mpluso_web.txt" target="blank">SP_HITUNG_MPLUSO_WEB</a> <br>
-    <a href="http://172.20.28.17/BackOffice/public/file_procedure/sp_hitung_mplusi_web.txt" target="blank">SP_HITUNG_MPLUSI_WEB</a> <br>
-    <a href="http://172.20.28.17/BackOffice/public/file_procedure/sp_tarik_seasonalomi_web.txt" target="blank">SP_TARIK_SEASONALOMI_WEB</a>
+{{--    <a href="http://172.20.28.17/BackOffice/public/file_procedure/sp_hitung_mpluso_web.txt" target="blank">SP_HITUNG_MPLUSO_WEB</a> <br>--}}
+{{--    <a href="http://172.20.28.17/BackOffice/public/file_procedure/sp_hitung_mplusi_web.txt" target="blank">SP_HITUNG_MPLUSI_WEB</a> <br>--}}
+{{--    <a href="http://172.20.28.17/BackOffice/public/file_procedure/sp_tarik_seasonalomi_web.txt" target="blank">SP_TARIK_SEASONALOMI_WEB</a>--}}
 
     <script>
         $("#dateLaporan").datepicker({

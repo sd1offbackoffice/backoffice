@@ -91,7 +91,7 @@
     </div>
 </div>
 
-<a href="http://172.20.28.17/BackOffice/public/file_procedure/sp_create_pb_auto_by_sup_web.txt" target="blank">Procedure</a>
+{{--<a href="http://172.20.28.17/BackOffice/public/file_procedure/sp_create_pb_auto_by_sup_web.txt" target="blank">Procedure</a>--}}
 
 <p class="text-hide" id="idField"></p>
 

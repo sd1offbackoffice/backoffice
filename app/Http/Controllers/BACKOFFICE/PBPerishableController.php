@@ -253,7 +253,7 @@ class PBPerishableController extends Controller
         if ($temp[0]->temp > 0){
             $message = 'No.PB sudah terpakai, akan diganti dengan nomor baru';
             $status = 'info';
-            $errflag = 1;
+            $errflag = 2;
             return response()->json(['message' => $message, 'status' => $status, 'errflag' => $errflag]);
         }
         else if($temp[0]->temp == 0){

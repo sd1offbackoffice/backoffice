@@ -172,9 +172,9 @@
                         Pengirim,
                         <hr>
                         <br><br>
-                        <img style="max-width: 100px;" src="../storage/signature/{{$ttd . '.png'}}"></img>
+                        <img style="max-width: 100px; z-index: 0" src="../storage/signature/{{$ttd . '.png'}}"></img>
                         <br>
-                        NAMA
+                        {{ $signedby }}
                         <hr>
                         Supplier/Expedisi
                     </td>
@@ -182,9 +182,10 @@
                         Disetujui,
                         <hr>
                         <br><br>
-                        <img style="max-width: 100px;" src="../storage/signature/{{$ttd . '.png'}}"></img>
+                        <img style="max-width: 100px;" src="../storage/signature/{{$ttd . '_srclerk.png'}}"></img>
+                        <img style="max-width: 200px; position: absolute; z-index: 2;" src="../storage/stempel/{{$datas[$i]->prs_namacabang . '.png'}}"></img>
                         <br>
-                        NAMA
+                        {{ $signedby2 }}
                         <hr>
                         Logistic Adm.Sr.Clerk
                     </td>
@@ -192,9 +193,9 @@
                         Dicetak,
                         <hr>
                         <br><br>
-                        <img style="max-width: 100px;" src="../storage/signature/{{$ttd . '.png'}}"></img>
+                        <img style="max-width: 100px; z-index: 0" src="../storage/signature/{{$ttd . '_clerk.png'}}"></img>
                         <br>
-                        NAMA
+                        {{ $signedby3 }}
                         <hr>
                         Logistic Adm.Clerk
                     </td>

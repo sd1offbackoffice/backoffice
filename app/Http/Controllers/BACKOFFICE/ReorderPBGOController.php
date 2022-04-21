@@ -1131,5 +1131,22 @@ class ReorderPBGOController extends Controller
         else return $value;
     }
 
+    public function procedure(){
+        set_time_limit(0);
+
+        $usid = Session::get('usid');
+
+        $c = loginController::getConnectionProcedure();
+        $s = oci_parse($c, "BEGIN PROSES_GO_MIGRASI(:usid, :status, :result, :tolakan2, :tolakan3); END;");
+        oci_bind_by_name($s, ':status', $status, 255);
+        oci_bind_by_name($s, ':result', $result, 255);
+        oci_bind_by_name($s, ':tolakan2', $tolakan2, 255);
+        oci_bind_by_name($s, ':tolakan3', $tolakan3, 255);
+        oci_bind_by_name($s, ':usid',$usid, 255);
+        oci_execute($s);
+
+        return response()->json(compact(['status','result','tolakan2','tolakan3','usid']));
+    }
+
 }
 

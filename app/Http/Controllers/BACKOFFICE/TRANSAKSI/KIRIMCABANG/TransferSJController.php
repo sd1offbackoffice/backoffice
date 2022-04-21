@@ -165,7 +165,7 @@ class TransferSJController extends Controller
             if(file_exists($filepath)){
                 unlink($filepath);
             }
-            $header = HeaderFactory::create(TableType::DBASE_7_NOMEMO);
+            $header = HeaderFactory::create(TableType::DBASE_III_PLUS_NOMEMO);
 
             $tableCreator = new TableCreator($filepath, $header);
 

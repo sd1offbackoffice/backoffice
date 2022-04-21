@@ -12,7 +12,7 @@ class FaktorPKMTokoController extends Controller
 {
     public function index()
     {
-        $datas = DB::connection(Session::get('connection'))->table('tbmaster_pkmplus')
+        $datas = DB::connection('simckl')->table('tbmaster_pkmplus')
         ->select("PKMP_KODEIGR",
         "PKMP_PRDCD",
         "PKMP_MPLUSI",
@@ -27,7 +27,7 @@ class FaktorPKMTokoController extends Controller
 
     public function getDataTableM()
     {
-        $data = DB::connection(Session::get('connection'))->table('tbmaster_pkmplus')
+        $data = DB::connection('simckl')->table('tbmaster_pkmplus')
         ->select("PKMP_KODEIGR",
         "PKMP_PRDCD",
         "PKMP_MPLUSI",
@@ -42,7 +42,7 @@ class FaktorPKMTokoController extends Controller
 
     public function getDataDetail(Request $request)
     {
-        $data = DB::connection(Session::get('connection'))
+        $data = DB::connection('simckl')
         ->select("SELECT prd_prdcd, prd_deskripsipanjang, pkm_pkmt, pkm_mpkm
         FROM tbmaster_prodmast, tbmaster_kkpkm
         WHERE prd_prdcd = pkm_prdcd(+)
@@ -53,26 +53,73 @@ class FaktorPKMTokoController extends Controller
         return response()->json($data);
     }
 
+    public function searchPLU(Request $request)
+    {
+
+        $data_table = DB::connection('simckl')->table('tbmaster_pkmplus')
+        ->select("PKMP_KODEIGR",
+        "PKMP_PRDCD",
+        "PKMP_MPLUSI",
+        "PKMP_MPLUSO",
+        DB::raw("PKMP_MPLUSI + PKMP_MPLUSO AS PKMP_MPLUS"))
+        ->where('PKMP_PRDCD',$request->search_plu)
+        ->get();
+
+        $count_table = count($data_table);
+
+        if($count_table == 1)
+        {
+            $data_table = DB::connection('simckl')->table('tbmaster_pkmplus')
+            ->select("PKMP_KODEIGR",
+            "PKMP_PRDCD",
+            "PKMP_MPLUSI",
+            "PKMP_MPLUSO",
+            DB::raw("PKMP_MPLUSI + PKMP_MPLUSO AS PKMP_MPLUS"))
+            ->where('PKMP_PRDCD',$request->search_plu)
+            ->get();
+
+            $data_detail = DB::connection('simckl')
+            ->select("SELECT prd_prdcd, prd_deskripsipanjang, pkm_pkmt, pkm_mpkm
+            FROM tbmaster_prodmast, tbmaster_kkpkm
+            WHERE prd_prdcd = pkm_prdcd(+)
+            AND prd_prdcd = '".$request->search_plu."' 
+            ");
+
+            return response()->json($data_table,$data_detail);
+        }
+        else
+        {
+            return response()->json([
+                'title' => 'An error occurred !',
+                'message' => 'PLU tidak ditemukan !',
+                'status' => 'error'
+            ], 500);
+        }
+    }
+
     public function insertPLU(Request $request)
     {
-        $check_prodmast = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
-        ->select('pkmp_prdcd')
-        ->where('prd_prdcd',$request->ma_prdcd)
+        $check_prodmast = DB::connection('simckl')->table('TBMASTER_PRODMAST')
+        ->select("PRD_PRDCD")
+        ->where('PRD_PRDCD','=',$request->ma_prdcd)
         ->get();
       
         $count_prodmast = count($check_prodmast);
 
-        dd($check_prodmast, $count_prodmast);
+        // dd($check_prodmast, $count_prodmast);
 
         if($count_prodmast == 1)
         {
-            $data = DB::connection(Session::get('connection'))
+            $data = DB::connection('simckl')
             ->select("select prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang 
-                    into div, dep, kat
                     from tbmaster_prodmast
                     where prd_prdcd = '".$request->ma_prdcd."' ");
 
-            $check_pkmplus = DB::connection(Session::get('connection'))->table('tbmaster_pkmplus')
+            $div = $data[0]->prd_kodedivisi;
+            $dep = $data[0]->prd_kodedepartement;
+            $kat = $data[0]->prd_kodekategoribarang;
+
+            $check_pkmplus = DB::connection('simckl')->table('tbmaster_pkmplus')
             ->select('pkmp_prdcd')
             ->where('pkmp_prdcd',$request->ma_prdcd)
             ->get();
@@ -91,7 +138,7 @@ class FaktorPKMTokoController extends Controller
                 $kodeigr = Session::get('kdigr');
                 $usid = Session::get('usid');
 
-                $insert_pkmplus = DB::connection(Session::get('connection'))
+                $insert_pkmplus = DB::connection('simckl')
                 ->insert("INSERT INTO tbmaster_pkmplus (
                     PKMP_KODEIGR,
                     PKMP_KODEDIVISI,
@@ -102,20 +149,21 @@ class FaktorPKMTokoController extends Controller
                     PKMP_CREATE_BY,
                     PKMP_CREATE_DT,
                     PKMP_MPLUSI,
-                    PKMP_MPLUSO)
-                    VALUES ( 
-                    $kodeigr,
-                    div, 
-                    dep, 
-                    kat,
-                    :ma_prdcd,
+                    PKMP_MPLUSO
+                    )VALUES ( 
+                    '".$kodeigr."',
+                     '".$div."', 
+                     '".$dep."', 
+                     '".$kat."',
+                     '".$request->ma_prdcd."',
                     nvl('".$request->ma_mplus_i."',0) + nvl('".$request->ma_mplus_o."',0) ,
-                    $usid,
+                    '".$usid."',
                     SYSDATE,
                     nvl('".$request->ma_mplus_i."',0),
-                    nvl('".$request->ma_mplus_o."',0) )");
+                    nvl('".$request->ma_mplus_o."',0) )
+                    ");
 
-                $check_kkpkm = DB::connection(Session::get('connection'))->table('tbmaster_kkpkm')
+                $check_kkpkm = DB::connection('simckl')->table('tbmaster_kkpkm')
                 ->select('pkm_prdcd')
                 ->where('pkm_prdcd',$request->ma_prdcd)
                 ->get();
@@ -124,20 +172,19 @@ class FaktorPKMTokoController extends Controller
 
                 if($count_kkpkm > 0)
                 {
-                    $update_kkpkm = DB::connection(Session::get('connection'))
+                    $update_kkpkm = DB::connection('simckl')
                     ->update("update tbmaster_kkpkm
                     set pkm_qtymplus = ( nvl('".$request->ma_mplus_i."',0) + nvl('".$request->ma_mplus_o."',0) ),
                             pkm_pkmt = pkm_mpkm + ( nvl('".$request->ma_mplus_i."',0) + nvl('".$request->ma_mplus_o."',0) )
                     where pkm_prdcd= '".$request->ma_prdcd."' ");
                    
                     
-                    $select_kkpkm = DB::connection(Session::get('connection'))
+                    $select_kkpkm = DB::connection('simckl')
                     ->select("SELECT pkm_pkmt
-                            INTO v_pkmt
                             FROM tbmaster_kkpkm
                             WHERE pkm_prdcd = '".$request->ma_prdcd."' ");
 
-                    $select_pkmgondola = DB::connection(Session::get('connection'))->table('tbtr_pkmgondola')
+                    $select_pkmgondola = DB::connection('simckl')->table('tbtr_pkmgondola')
                     ->select("pkmg_prdcd")
                     ->where('pkmg_prdcd',$request->ma_prdcd)
                     ->get();
@@ -146,7 +193,7 @@ class FaktorPKMTokoController extends Controller
 
                     if($count_pkmgondola > 0)
                     {
-                        $update_pkmgondola = DB::connection(Session::get('connection'))
+                        $update_pkmgondola = DB::connection('simckl')
                         ->update("UPDATE tbtr_pkmgondola
                         SET PKMG_NILAIPKMG = nvl(v_pkmt,0) + PKMG_NILAIGONDOLA,
                         PKMG_NILAIPKMB = nvl(v_pkmt,0) + PKMG_NILAIGONDOLA,                   

@@ -48,10 +48,15 @@ return [
             'root' => storage_path('app'),
         ],
 
+        'receipts' => [
+            'driver' => 'local',
+            'root'   => '../storage/signature/',
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
         ],
 
@@ -64,9 +69,22 @@ return [
             'url' => env('AWS_URL'),
         ],
 
+        'custom-ftp' => [
+            'driver' => 'ftp',
+            'host' => '172.20.28.18',
+            'username' => 'btbigr',
+            'password' => 'xxbtbigrxx',
+            // Optional FTP Settings...
+            // 'port'     => 21,
+            // 'root' => '/opt/btbigr/temp/',
+            // 'passive'  => true,
+            // 'ssl'      => true,
+            // 'timeout'  => 30,
+        ],
+
         'DBF' => [
             'driver' => 'local',
-//            'root' => public_path() . '/DBF', //DIganti oleh JR 21/01/2022 karena error ketika write file ke folder DBF
+            //            'root' => public_path() . '/DBF', //DIganti oleh JR 21/01/2022 karena error ketika write file ke folder DBF
             'root' => public_path() . '\DBF',
             'visibility' => 'public',
         ],

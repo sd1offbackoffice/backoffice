@@ -146,7 +146,7 @@
                     <br>
                     <div class="row">
                         <div class="col-lg-6">
-                            <table class="table table-sm table-bordered mb-3 text-center" id="tblM">
+                            <table class="table table-sm table-bordered text-center" id="tblM">
                                 <thead>
                                     <tr>
                                         <th><input type="checkbox"></th>
@@ -157,22 +157,25 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <tr>
+
+                                    </tr>
                                 <!-- row data -->
                                 </tbody>
                             </table>
                         </div>
                         
-                        <div class="col-lg-5 mt-4">
+                        <div class="col-lg-6 mt-4">
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="form-group">
                                         <label>PLU</label>
                                         <div class="row">
                                             <div class="col-lg-3">
-                                                <input type="text" class="form-control" id="md_prdcd" placeholder="MD_PRDCD">
+                                                <input type="text" class="form-control" id="md_prdcd" placeholder="MD_PRDCD" disabled>
                                             </div>
                                             <div class="col-lg-9">
-                                                <input type="text" class="form-control" id="md_deskripsi" placeholder="MD_Deskripsi">
+                                                <input type="text" class="form-control" id="md_deskripsi" placeholder="MD_Deskripsi" disabled>
                                             </div>
                                         </div>
                                     </div>
@@ -181,11 +184,11 @@
                                         <label style="margin-left:5px;">PKMT</label>
                                         <div class="row">
                                             <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="md_mpkm" placeholder="MD_MPKM">
+                                                <input type="text" class="form-control" id="md_mpkm" placeholder="MD_MPKM" disabled>
                                             </div>
                                             
                                             <div class="col-sm-2">
-                                                <input type="text" class="form-control" id="md_pkmt" placeholder="MD_PKMT">
+                                                <input type="text" class="form-control" id="md_pkmt" placeholder="MD_PKMT" disabled>
                                             </div>
                                         </div>
                                     </div>
@@ -250,7 +253,7 @@
                             <div class="vl-2"></div>
                         </div>
                         <div class="col-lg-2 mt-4">
-                            <button class="btn btn-primary btn-md">REFRESH</button>
+                            <button class="btn btn-primary btn-md" onclick="refreshTable()">REFRESH</button>
                         </div>
                     </div>
                 </div>
@@ -283,6 +286,7 @@
 
 {{-- <script src={{asset('/js/sweetalert2.js')}}></script> --}}
 <script>
+    var temp = 0;
     $(document).ready(function () {
         $('.m-form').hide();
 
@@ -292,8 +296,15 @@
         });
         $('#mBtn').click(function (e) {
             $('.n-form').hide();
+            $('#tblM').DataTable().destroy();
+            $('#tblM').DataTable({
+                "scrollY": "400px",
+                "scrollCollapse": true,
+                "paging": false,
+            });
             $('.m-form').show();            
         });
+
         getDataTableM();
     });
 
@@ -316,7 +327,7 @@
             ],
             "paging": false,
             "lengthChange": true,
-            "searching": true,
+            "searching": false,
             "ordering": false,
             "info": true,
             "autoWidth": false,
@@ -329,11 +340,12 @@
                 arrDataTableM.push(data);
             },
             "order" : [],
-            "scrollY" : "53vh",
+            "scrollY" : "200px",
             "scrollX" : false,
+            "scrollCollapse": true,
             "initComplete": function(){
                 $(document).on('click', '.row-data-table-m', function (e) {
-                    console.log(e,'ini e');
+                    
                     $('.row-data-table-m').removeAttr('style').css({'cursor': 'pointer'});
                     $(this).css({"background-color": "#acacac","color": "white"});
 
@@ -350,13 +362,6 @@
     function showDetail(index){
         data = arrDataTableM[index];
 
-        // console.log(data.pkmp_prdcd);
-
-        // $('#md_prdcd').val(data.pkmp_prdcd);
-        // $('#md_deskripsi').val(data.pkmp_mplus);
-        // $('#md_mpkm').val(data.pkmp_mplusi);
-        // $('#md_pkmt').val(data.pkmp_mpluso);
-
             ajaxSetup();
             $.ajax({
                 url : '{{ route('get-data-detail')  }}',
@@ -366,15 +371,72 @@
                 },
                 success: function(response)
                 {
-                    console.log(response);
                     $('#md_prdcd').val(response[0].prd_prdcd);
                     $('#md_deskripsi').val(response[0].prd_deskripsipanjang);
                     $('#md_mpkm').val(response[0].pkm_pkmt);
                     $('#md_pkmt').val(response[0].pkm_mpkm);
                 }
             });
-      
     }
+
+    $('#mf_prdcd').keypress(function (e) {
+        if (e.keyCode == 13) {
+
+            var status = false;
+
+            $('.row-data-table-m').each(function()
+            {
+                if($(this).find('td:eq(1)').html() == $('#mf_prdcd').val())
+                {
+                    status = true;
+                    $(this).click();
+                }
+            });
+            if(!status)
+            {
+                swal('PLU tidak ditemukan !','','warning');
+                $('.row-data-table-m:eq(0)').click();
+            }
+        }
+    });
+
+
+    $('#ma_prdcd').keypress(function (e) {
+        if (e.keyCode == 13) {
+            plu = $(this).val();
+            if (plu.length < 7) {
+                plu = convertPlu($(this).val());
+            }
+            $(this).val(plu);
+            $('#ma_prdcd').val(plu);
+        }
+    });
+
+    $('#ma_mplus_i').focus(function () {
+            plu = $('#ma_prdcd').val();
+            console.log(plu.length);
+            if (plu.length < 7 && plu.length != 0) {
+                
+                plu = convertPlu($('#ma_prdcd').val());
+            }
+            else if(plu.length == 0)
+            {
+                plu = '';
+            }
+            $('#ma_prdcd').val(plu);
+    });
+
+    $('#ma_mplus_o').focus(function () {
+            plu = $('#ma_prdcd').val();
+            if (plu.length < 7 && plu.length != 0) {
+                plu = convertPlu($('#ma_prdcd').val());
+            }
+            else if(plu.length == 0)
+            {
+                plu = '';
+            }
+            $('#ma_prdcd').val(plu);
+    });
 
     function insertPLU()
     {
@@ -386,13 +448,12 @@
         {
             swal('PLU harus terdiri dari 7 angka', '', 'warning');
         }
-        else if($('#ma_mplus_i').val() + $('#ma_mplus_o').val() == '0' )
+        else if(($('#ma_mplus_i').val() + $('#ma_mplus_o').val()) == 0 )
         {
             swal('Qty harus > 0', '', 'warning');
         }
         else
         {
-            // convertPlu($('#'+id).val())
             swal({
                 title: 'Apakah anda yakin ingin menambahkan PLU ini ? ',
                 icon: 'warning',
@@ -414,6 +475,11 @@
                                 title: response.title,
                                 text: response.message,
                                 icon: 'success'
+                            }).then(function(ok)
+                            {
+                                $('#ma_prdcd').val('');
+                                $('#ma_mplus_i').val('');
+                                $('#ma_mplus_o').val('');
                             });
                         }, error: function (error) {
                             swal({
@@ -426,6 +492,11 @@
                 }// if ok
             })
         }       
+    }
+
+    function refreshTable()
+    {
+        $('.row-data-table-m:eq(0)').click();
     }
 </script>
 @endsection

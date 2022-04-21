@@ -97,18 +97,71 @@
             swal({
                 icon: 'warning',
                 title: 'Proses akan dilakukan?',
+                text: 'Proses mungkin membutuhkan waktu beberapa saat',
                 buttons: true,
                 dangerMode: true
             }).then(function(ok){
                 if (ok) {
-                    $('#btn-reorder').html(' Processing ').append('<i class="fas fa-spin fa-spinner"></i>').prop('disabled',true);
-                    processGO('',false);
+                    // $('#btn-reorder').html(' Processing ').append('<i class="fas fa-spin fa-spinner"></i>').prop('disabled',true);
+                    // processGO('',false);
+                    procedure();
                 }
                 else {
                     console.log(ok);
                 }
             });
         });
+
+        function procedure(){
+            $.ajax({
+                url: '{{ url()->current().'/procedure' }}',
+                type: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+
+                    if(response.status == 'TRUE'){
+                        if(response.tolak2 == 'TRUE' || response.tolak3 == 'TRUE') {
+                            if(response.tolak2 == 'TRUE') {
+                                $('#btn-order').show();
+                                $('#btn-order').attr('href','cetak_tolakan?recid=2&nopb='+response.NOPB);
+                            }
+                            else $('#btn-order').hide();
+
+                            if(response.tolak3 == 'TRUE'){
+                                $('#btn-rupiah').show();
+                                $('#btn-rupiah').attr('href','cetak_tolakan?recid=3&nopb='+response.NOPB);
+                            }
+                            else $('#btn-rupiah').hide();
+
+                            swal({
+                                icon: 'warning',
+                                title: 'Terdapat barang tolakan!',
+                            }).then(function(){
+                                $('#modal-tolakan').modal('show');
+                            });
+                        }
+                    }
+                    else{
+                        swal({
+                            icon: 'error',
+                            title: 'Terjadi kesalahan!',
+                            text: response.result,
+                        }).then(function(){
+
+                        });
+                    }
+                }
+            });
+        }
 
         function processGO(nopb, final){
             $.ajax({

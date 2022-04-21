@@ -1468,7 +1468,13 @@ class InformasiHistoryProductController extends Controller
                                          sup_namasupplier,
                                          sup_pkp,
                                          tag_kodetag,
-                                         tag_keterangan ftketr')
+                                         tag_keterangan ftketr,
+                                         hgb_qtymulai1bonus02,
+                                         hgb_qtymulai2bonus02,
+                                         hgb_qtymulai3bonus02,
+                                         hgb_qty1bonus02,
+                                         hgb_qty2bonus02,
+                                         hgb_qty3bonus02')
             ->whereRaw('substr(hgb_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
             ->orderBy('hgb_tipe')
             ->orderBy('hgb_kodesupplier')
@@ -1594,15 +1600,59 @@ class InformasiHistoryProductController extends Controller
             $hb_bnslipat = $hargabeli[$i]->fmklpt;
             $hb_periodbns = '';
             if (Self::ceknull($hargabeli[$i]->fmbntm, "") != "") {
-                $hb_periodbns = $hargabeli[$i]->fmbntm . ' s/d ' . $hargabeli[$i]->fmbnta;
+                $hb_periodbns = date("d-M-Y",strtotime(substr($hargabeli[$i]->fmbntm,0,10))) . ' s/d ' . date("d-M-Y",strtotime(substr($hargabeli[$i]->fmbnta,0,10)));
             }
 
-            $hb_qtybeli1 = Self::ceknull($hargabeli[$i]->fmqbl1, 0) * $hargabeli[$i]->frac;
-            $hb_qtybeli2 = Self::ceknull($hargabeli[$i]->fmqbl2, 0) * $hargabeli[$i]->frac;
-            $hb_qtybeli3 = Self::ceknull($hargabeli[$i]->fmqbl3, 0) * $hargabeli[$i]->frac;
-            $hb_qtybns1 = Self::ceknull($hargabeli[$i]->fmqbs1, 0) * $hargabeli[$i]->frac;
-            $hb_qtybns2 = Self::ceknull($hargabeli[$i]->fmqbs2, 0) * $hargabeli[$i]->frac;
-            $hb_qtybns3 = Self::ceknull($hargabeli[$i]->fmqbs3, 0) * $hargabeli[$i]->frac;
+            $hb_qtybeli1 = 0;
+            $hb_qtybeli2 = 0;
+            $hb_qtybeli3 = 0;
+            $hb_qtybns1 = 0;
+            $hb_qtybns2 = 0;
+            $hb_qtybns3 = 0;
+            $hb_qty2beli1 = 0;
+            $hb_qty2beli2 = 0;
+            $hb_qty2beli3 = 0;
+            $hb_qty2bns1 = 0;
+            $hb_qty2bns2 = 0;
+            $hb_qty2bns3 = 0;
+
+            if ($hargabeli[$i]->fmfbns == 'B') {
+                $hb_qtybeli1 = Self::ceknull($hargabeli[$i]->fmqbl1, 0) * $hargabeli[$i]->frac;
+                $hb_qtybeli2 = Self::ceknull($hargabeli[$i]->fmqbl2, 0) * $hargabeli[$i]->frac;
+                $hb_qtybeli3 = Self::ceknull($hargabeli[$i]->fmqbl3, 0) * $hargabeli[$i]->frac;
+                $hb_qtybns1 = Self::ceknull($hargabeli[$i]->fmqbs1, 0) * $hargabeli[$i]->frac;
+                $hb_qtybns2 = Self::ceknull($hargabeli[$i]->fmqbs2, 0) * $hargabeli[$i]->frac;
+                $hb_qtybns3 = Self::ceknull($hargabeli[$i]->fmqbs3, 0) * $hargabeli[$i]->frac;
+
+                $hb_qty2beli1 = Self::ceknull($hargabeli[$i]->hgb_qtymulai1bonus02, 0) * $hargabeli[$i]->frac;
+                $hb_qty2beli2 = Self::ceknull($hargabeli[$i]->hgb_qtymulai2bonus02, 0) * $hargabeli[$i]->frac;
+                $hb_qty2beli3 = Self::ceknull($hargabeli[$i]->hgb_qtymulai3bonus02, 0) * $hargabeli[$i]->frac;
+                $hb_qty2bns1 = Self::ceknull($hargabeli[$i]->hgb_qty1bonus02, 0) * $hargabeli[$i]->frac;
+                $hb_qty2bns2 = Self::ceknull($hargabeli[$i]->hgb_qty2bonus02, 0) * $hargabeli[$i]->frac;
+                $hb_qty2bns3 = Self::ceknull($hargabeli[$i]->hgb_qty3bonus02, 0) * $hargabeli[$i]->frac;
+            }else {
+                $hb_qtybeli1 = Self::ceknull($hargabeli[$i]->fmqbl1, 0);
+                $hb_qtybeli2 = Self::ceknull($hargabeli[$i]->fmqbl2, 0);
+                $hb_qtybeli3 = Self::ceknull($hargabeli[$i]->fmqbl3, 0);
+                $hb_qtybns1 = Self::ceknull($hargabeli[$i]->fmqbs1, 0);
+                $hb_qtybns2 = Self::ceknull($hargabeli[$i]->fmqbs2, 0);
+                $hb_qtybns3 = Self::ceknull($hargabeli[$i]->fmqbs3, 0);
+
+                $hb_qty2beli1 = Self::ceknull($hargabeli[$i]->hgb_qtymulai1bonus02, 0);
+                $hb_qty2beli2 = Self::ceknull($hargabeli[$i]->hgb_qtymulai2bonus02, 0);
+                $hb_qty2beli3 = Self::ceknull($hargabeli[$i]->hgb_qtymulai3bonus02, 0);
+                $hb_qty2bns1 = Self::ceknull($hargabeli[$i]->hgb_qty1bonus02, 0);
+                $hb_qty2bns2 = Self::ceknull($hargabeli[$i]->hgb_qty2bonus02, 0);
+                $hb_qty2bns3 = Self::ceknull($hargabeli[$i]->hgb_qty3bonus02, 0);
+
+            }
+
+//            $hb_qtybeli1 = Self::ceknull($hargabeli[$i]->fmqbl1, 0) * $hargabeli[$i]->frac;
+//            $hb_qtybeli2 = Self::ceknull($hargabeli[$i]->fmqbl2, 0) * $hargabeli[$i]->frac;
+//            $hb_qtybeli3 = Self::ceknull($hargabeli[$i]->fmqbl3, 0) * $hargabeli[$i]->frac;
+//            $hb_qtybns1 = Self::ceknull($hargabeli[$i]->fmqbs1, 0) * $hargabeli[$i]->frac;
+//            $hb_qtybns2 = Self::ceknull($hargabeli[$i]->fmqbs2, 0) * $hargabeli[$i]->frac;
+//            $hb_qtybns3 = Self::ceknull($hargabeli[$i]->fmqbs3, 0) * $hargabeli[$i]->frac;
 
             $hargabeli[$i]->hb_plu = $hb_plu;
             $hargabeli[$i]->hb_tglberlaku = $hb_tglberlaku;
@@ -1656,6 +1706,13 @@ class InformasiHistoryProductController extends Controller
             $hargabeli[$i]->hb_qtybns1 = $hb_qtybns1;
             $hargabeli[$i]->hb_qtybns2 = $hb_qtybns2;
             $hargabeli[$i]->hb_qtybns3 = $hb_qtybns3;
+
+            $hargabeli[$i]->hb_qty2beli1 = $hb_qty2beli1;
+            $hargabeli[$i]->hb_qty2beli2 = $hb_qty2beli2;
+            $hargabeli[$i]->hb_qty2beli3 = $hb_qty2beli3;
+            $hargabeli[$i]->hb_qty2bns1 = $hb_qty2bns1;
+            $hargabeli[$i]->hb_qty2bns2 = $hb_qty2bns2;
+            $hargabeli[$i]->hb_qty2bns3 = $hb_qty2bns3;
         }
         return compact([ 'hargabeli']);
 

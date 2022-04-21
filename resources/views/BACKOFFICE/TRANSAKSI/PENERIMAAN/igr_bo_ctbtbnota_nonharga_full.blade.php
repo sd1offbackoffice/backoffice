@@ -169,15 +169,33 @@
                     <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
                         Pengirim,
                         <hr>
-                        <img style="max-width: 100px;" src="../storage/signature/{{$ttd . '.png'}}"></img>
+                        <br><br>
+                        <img style="max-width: 100px; z-index: 0" src="../storage/signature/{{$ttd . '.png'}}"></img>
+                        <br>
+                        {{ $signedby }}
+                        <hr>
+                        Supplier/Expedisi
                     </td>
                     <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
                         Disetujui,
                         <hr>
+                        <br><br>
+                        <img style="max-width: 100px;" src="../storage/signature/{{$ttd . '_srclerk.png'}}"></img>
+                        <img style="max-width: 200px; position: absolute; z-index: 2;" src="../storage/stempel/{{$datas[$i]->prs_namacabang . '.png'}}"></img>
+                        <br>
+                        {{ $signedby2 }}
+                        <hr>
+                        Logistic Adm.Sr.Clerk
                     </td>
                     <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
                         Dicetak,
                         <hr>
+                        <br><br>
+                        <img style="max-width: 100px; z-index: 0" src="../storage/signature/{{$ttd . '_clerk.png'}}"></img>
+                        <br>
+                        {{ $signedby3 }}
+                        <hr>
+                        Logistic Adm.Clerk
                     </td>
                 </tr>
             </tbody>

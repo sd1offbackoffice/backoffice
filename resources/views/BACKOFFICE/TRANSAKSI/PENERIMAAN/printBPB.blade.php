@@ -47,6 +47,7 @@
                             <button class="btn btn-primary offset-sm-8 col-sm-1 btn-block mr-3" type="button" onclick="viewData()">View Data</button>
                             <button class="btn btn-primary col-sm-1 mr-3" type="button" onclick="cetakData()" id="btnCetak">Cetak BPB</button>
                             <button class="btn btn-danger col-sm-1" type="button" onclick="batalCetak()">Batal</button>
+                            <button class="btn btn-info col-sm-1" type="button" onclick="kirimFtp()">Jangan Dipencet</button>
                         </div>
                     </form>
                 </div>
@@ -84,24 +85,45 @@
 </div>
 
 <div class="modal fade" id="m_signature" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-md" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Sign Here : </h5>
             </div>
             <div class="modal-body">
                 <div class="container">
+                    <table class="table-borderless">
+                        <tbody>
+                            <tr>
+                                <td>Supplier/Expedisi</td>
+                                <td>Logistic Adm.Sr.Clerk</td>
+                                <td>Logistic Adm.Clerk</td>
+                            </tr>
+                            <tr>
+                                <td><input type="text" class="form-control" id="nama_personil" placeholder="Mohon isi nama pejabat"></td>
+                                <td><input type="text" class="form-control" id="nama_personil2" placeholder="Mohon isi nama pejabat"></td>
+                                <td><input type="text" class="form-control" id="nama_personil3" placeholder="Mohon isi nama pejabat"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br>
                     <div class="row">
                         <div class="col">
-                            <div id="jabatan">
+                            <!-- <div id="jabatan">
                                 <p><b>Jabatan: </b>Logistic Adm.Clerk</p>
-                                <input type="text" class="form-control" id="nama_personil" placeholder="">
+                                <input type="text" class="form-control" id="nama_personil" placeholder="Mohon isi nama pejabat">
+                            </div> -->
+                            <div class="containersig" style="text-align:center;">
+                                <div id="sig"></div>
+                                <div id="sig2"></div>
+                                <div id="sig3"></div>
                             </div>
-                            <div id="sig"></div>
                             <br />
                             <button id="clear" class="btn btn-danger">Clear</button>
                             <button id="save" class="btn btn-success">Save</button>
                             <textarea id="signature64" name="signed" style="display: none"></textarea>
+                            <textarea id="signature64_2" name="signed" style="display: none"></textarea>
+                            <textarea id="signature64_3" name="signed" style="display: none"></textarea>
                         </div>
                     </div>
                 </div>
@@ -142,13 +164,19 @@
     }
 
     .kbw-signature {
-        width: 400px;
-        height: 400px;
+        width: 225px;
+        height: 175px;
     }
 
-    #sig canvas {
+    #sig canvas,
+    #sig2 canvas,
+    #sig3 canvas {
         width: 100%;
         height: 100%;
+    }
+
+    td {
+        text-align: center;
     }
 </style>
 
@@ -277,6 +305,26 @@
         }
     });
 
+    function kirimFtp() {
+        var currUrl = '{{ url()->current() }}';
+        currUrl = currUrl.replace("index", "");
+        $.ajax({
+            method: 'GET',
+            url: currUrl + 'kirimftp',
+            beforeSend: () => {
+                $('#modal-loader').modal('show');
+            },
+            success: (response) => {
+                $('#modal-loader').modal('hide');
+                console.log(response);
+            },
+            error: () => {
+                $('#modal-loader').modal('hide');
+
+            }
+        });
+    }
+
     function cetakData() {
         let startDate = $('#startDate').val();
         let endDate = $('#endDate').val();
@@ -310,6 +358,9 @@
             },
             beforeSend: () => {
                 $('#modal-loader').modal('show');
+                var signedBy = $('#nama_personil').val('');
+                var signedBy2 = $('#nama_personil2').val('');
+                var signedBy3 = $('#nama_personil3').val('');
             },
             success: function(result) {
                 $('#modal-loader').modal('hide');
@@ -325,15 +376,35 @@
                                 syncField: '#signature64',
                                 syncFormat: 'PNG'
                             });
+                            var sig2 = $('#sig2').signature({
+                                syncField: '#signature64_2',
+                                syncFormat: 'PNG'
+                            });
+                            var sig3 = $('#sig3').signature({
+                                syncField: '#signature64_3',
+                                syncFormat: 'PNG'
+                            });
                             $('#save').click(function(e) {
                                 var dataURL = $('#sig').signature('toDataURL', 'image/jpeg', 0.8);
+                                var dataURL2 = $('#sig2').signature('toDataURL', 'image/jpeg', 0.8);
+                                var dataURL3 = $('#sig3').signature('toDataURL', 'image/jpeg', 0.8);
+                                signedBy = $('#nama_personil').val();
+                                signedBy2 = $('#nama_personil2').val();
+                                signedBy3 = $('#nama_personil3').val();
                                 ajaxSetup();
                                 $.ajax({
                                     type: "POST",
                                     url: currUrl + 'save',
                                     data: {
                                         sign: dataURL,
-                                        signed: $('#signature64').val()
+                                        signed: $('#signature64').val(),
+                                        sign2: dataURL2,
+                                        signed2: $('#signature64_2').val(),
+                                        sign3: dataURL3,
+                                        signed3: $('#signature64_3').val(),
+                                        signedby: signedBy,
+                                        signedby2: signedBy2,
+                                        signedby3: signedBy3
                                     },
                                     beforeSend: function() {
                                         $('#modal-loader').modal('show');
@@ -371,6 +442,10 @@
                                 e.preventDefault();
                                 sig.signature('clear');
                                 $("#signature64").val('');
+                                sig2.signature('clear');
+                                $("#signature64_2").val('');
+                                sig3.signature('clear');
+                                $("#signature64_3").val('');
                             });
                         }
                     }

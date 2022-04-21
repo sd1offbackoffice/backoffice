@@ -917,11 +917,17 @@
                 }
 
                 qtyk = qtyk % frac;
-                subtotal = (qty * frac + qtyk) * (dataPLU.hrgsatuan / frac);
+                subtotal = qty * dataPLU.hrgsatuan;
+
+                console.log('qty : ' + qty);
+                console.log('qtyk : ' + qtyk);
+                console.log('harga : ' + harga);
+                console.log('frac : ' + frac);
 
                 $('#qty').val(parseInt(qty));
                 $('#qtyk').val(qtyk);
                 $('#subtotal').val(subtotal);
+                console.log('x');
             }
         }
 

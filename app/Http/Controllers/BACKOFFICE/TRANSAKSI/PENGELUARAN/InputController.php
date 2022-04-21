@@ -77,6 +77,7 @@ class InputController extends Controller
             $ip = Session::get('ip');
 
             $pIP = str_replace('.', '0', SUBSTR(Session::get('ip'), -3));
+            // dd($pIP);
 
             $c = loginController::getConnectionProcedure();
             $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMORSTADOC('" . Session::get('kdigr') . "','RPB','Nomor Reff Pengeluaran Barang'," . $pIP . " || '2' , 6, FALSE); END;");
@@ -217,7 +218,7 @@ class InputController extends Controller
                 'TRBO_PPNRPH',
                 'TRBO_ISTYPE',
                 'TRBO_INVNO',
-                'TRBO_TGLINV',
+                DB::connection(Session::get('connection'))->raw("to_char(TRBO_TGLINV,'dd/mm/yyyy') TRBO_TGLINV"),
                 'TRBO_NOREFF',
                 'TRBO_KETERANGAN',
             )
@@ -934,29 +935,99 @@ class InputController extends Controller
         $trbo_typetrn = 'K';
         $trbo_flagdoc = 0;
         $trbo_create_by = Session::get('usid');
-        $trbo_create_dt = Carbon::now()->format('Y-m-d');
-        $datas = $request->datas;
+        $trbo_create_dt = Carbon::now()->format('d/m/Y');
+        // dd($trbo_create_dt);
+        // $datas = $request->datas;
         $arrDeletedPlu = $request->arrDeletedPlu;
-        // dd($arrDeletedPlu);
+        $model = $request->model;
+        $tgldoc = $request->tgldoc;
+        $datas_detail = $request->datas_detail;
+        dd($datas_detail);
         
         DB::connection(Session::get('connection'))->beginTransaction();
-        foreach ($datas as $data) {
-            // $check = DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
-            //         ->where([
-            //             'trbo_kodeigr' => $trbo_kodeigr,
-            //             'trbo_nodoc' => $data['nodoc'],
-            //             'trbo_prdcd' => $data['plu'],
-            //         ])
-            //         ->count(1);
-            // if ($check > 0) {
-            //     DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
-            //         ->where([
-            //             'trbo_kodeigr' => $trbo_kodeigr,
-            //             'trbo_nodoc' => $data['nodoc'],
-            //             'trbo_prdcd' => $data['plu'],
-            //         ])
-            //         ->delete();
-            // }
+        if ($arrDeletedPlu != null) {            
+            $nodoc = $request->nodoc;
+            
+            for ($i=0;$i < sizeof($arrDeletedPlu); $i++) { 
+                DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
+                    ->where([
+                        'trbo_kodeigr' => $trbo_kodeigr,
+                        'trbo_nodoc' => $nodoc,
+                        'trbo_prdcd' => $arrDeletedPlu[$i],
+                    ])
+                    ->delete();
+            }
+        }
+
+        foreach ($datas_detail as $data) {
+            if ($model == '* KOREKSI *') {
+                if ($tgldoc == $data['tgldoc']) {
+                    $data['tgldoc'] = DB::connection(Session::get('connection'))->raw("to_date('".$data['tgldoc']."','dd/mm/yyyy')");
+                } else {
+                    $data['tgldoc'] = date('d/m/Y', strtotime($data['tgldoc']));
+                }
+                $data['tglinv'] = DB::connection(Session::get('connection'))->raw("to_date('".$data['tglinv']."','dd/mm/yyyy')");
+                $trbo_create_dt = DB::connection(Session::get('connection'))->raw("to_date('".$trbo_create_dt."','dd/mm/yyyy')");
+
+                // if (strpos($data['hargasatuan'], ",") == true) {
+                //     $tempHargaSatuan = explode(",", $data['hargasatuan']);
+                //     $tempHargaSatuan = $tempHargaSatuan[0] . $tempHargaSatuan[1];
+                //     // $tempHargaSatuan = (int)$tempHargaSatuan;
+                //     $data['hargasatuan'] = $tempHargaSatuan;
+
+                //     $data['tgldoc'] = date('d/m/Y', strtotime($data['tgldoc']));
+                //     $data['tglinv'] = date('d/m/Y', strtotime($data['tglinv']));
+                //     $trbo_create_dt = Carbon::now()->format('d/m/Y');
+                // }
+                // if (strpos($data['gross'], ",") == true) {
+                //     $tempGross = explode(",", $data['gross']);
+                //     $tempGross = $tempGross[0].$tempGross[1];
+                //     // $tempGross = (int)$tempGross;
+                //     $data['gross'] = $tempGross;
+                // }
+                // if ($data['discrph'] != 0) {
+                //     if (strpos($data['discrph'], ",") == true) {
+                //         $tempDiscprh = explode(",", $data['discrph']);
+                //         $tempDiscprh = $tempDiscprh[0].$tempDiscprh[1];
+                //         // $tempDiscprh = (int)$tempDiscprh;
+                //         $data['discrph'] = $tempDiscprh;
+                //     }
+                // }
+                // if (strpos($data['ppnrph'], ",") == true) {
+                //     $tempPpn = explode(",", $data['ppnrph']);
+                //     $tempPpn = $tempPpn[0].$tempPpn[1];
+                //     // $tempPpn = (int)$tempPpn;
+                //     $data['ppnrph'] = $tempPpn;
+                // }
+            
+
+                // $tempHargaSatuan = explode(",", $data['hargasatuan']);
+                // $tempHargaSatuan = $tempHargaSatuan[0] . $tempHargaSatuan[1];
+                // $tempHargaSatuan = (int)$tempHargaSatuan;
+                // $data['hargasatuan'] = $tempHargaSatuan;
+                // // dd($tempHargaSatuan);
+                
+                // $tempGross = explode(",", $data['gross']);
+                // $tempGross = $tempGross[0].$tempGross[1];
+                // $tempGross = (int)$tempGross;
+                // $data['gross'] = $tempGross;
+                // // dd($data['posqty']);
+                // if ($data['discrph'] != 0) {
+                //     $tempDiscprh = explode(",", $data['discrph']);
+                //     $tempDiscprh = $tempDiscprh[0].$tempDiscprh[1];
+                //     $tempDiscprh = (int)$tempDiscprh;
+                //     $data['discrph'] = $tempDiscprh;
+                // }
+
+                // $tempPpn = explode(",", $data['ppnrph']);
+                // $tempPpn = $tempPpn[0].$tempPpn[1];
+                // $tempPpn = (int)$tempPpn;
+                // $data['ppnrph'] = $tempPpn;
+            } else {
+                $data['tgldoc'] = date('d/m/Y', strtotime($data['tgldoc']));
+                $data['tglinv'] = date('d/m/Y', strtotime($data['tglinv']));
+                // $trbo_create_dt = Carbon::now()->format('d/m/Y');
+            }
 
             $temp = DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
                 ->where([
@@ -981,16 +1052,19 @@ class InputController extends Controller
                     ])
                     ->update([
                         'trbo_typetrn' => $trbo_typetrn,
-                        'trbo_tgldoc' => Carbon::parse($data['tgldoc']),
+                        // 'trbo_tgldoc' => date('d/m/Y', strtotime($data['tgldoc'])),
+                        'trbo_tgldoc' => $data['tgldoc'],
                         'trbo_noreff' => $data['noreff'],
                         'trbo_istype' => $data['istype'],
                         'trbo_invno' => $data['invno'],
                         'trbo_tglinv' => $data['tglinv'],
+                        // 'trbo_tglinv' => $data['tglinv'],
                         'trbo_kodesupplier' => $data['kdsup'],
                         'trbo_qty' => ($data['ctn'] * $data['frac']) + $data['qty'],
                         'trbo_hrgsatuan' => $data['hargasatuan'],
                         'trbo_persendisc1' => $data['persendisc'],
                         'trbo_gross' => $data['gross'],
+                        // 'trbo_gross' => $data['gross'],
                         'trbo_discrph' => $data['discrph'],
                         'trbo_ppnrph' => $data['ppnrph'],
                         'trbo_averagecost' => $avg_cost,
@@ -998,6 +1072,7 @@ class InputController extends Controller
                         'trbo_flagdoc' => $trbo_flagdoc,
                         'trbo_create_by' => $trbo_create_by,
                         'trbo_create_dt' => $trbo_create_dt
+                        // 'trbo_create_dt' => $trbo_create_dt
                     ]);
             } else {
                 DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')->insert([
@@ -1006,10 +1081,12 @@ class InputController extends Controller
                     'trbo_nodoc' => $data['nodoc'],
                     'trbo_prdcd' => $data['plu'],
                     'trbo_typetrn' => $trbo_typetrn,
-                    'trbo_tgldoc' => Carbon::parse($data['tgldoc']),
+                    'trbo_tgldoc' => $data['tgldoc'],
+                    // 'trbo_tgldoc' => DB::connection(Session::get('connection'))->raw("to_date('".$data['tgldoc']."','dd/mm/yyyy')"),
                     'trbo_noreff' => $data['noreff'],
                     'trbo_istype' => $data['istype'],
                     'trbo_invno' => $data['invno'],
+                    // 'trbo_tglinv' => DB::connection(Session::get('connection'))->raw("to_date('".$data['tglinv']."','dd/mm/yyyy')"),
                     'trbo_tglinv' => $data['tglinv'],
                     'trbo_kodesupplier' => $data['kdsup'],
                     'trbo_qty' => ($data['ctn'] * $data['frac']) + $data['qty'],
@@ -1022,6 +1099,7 @@ class InputController extends Controller
                     'trbo_posqty' => $data['posqty'],
                     'trbo_flagdoc' => $trbo_flagdoc,
                     'trbo_create_by' => $trbo_create_by,
+                    // 'trbo_create_dt' => DB::connection(Session::get('connection'))->raw("to_date('".$trbo_create_dt."','dd/mm/yyyy')")
                     'trbo_create_dt' => $trbo_create_dt
 
                 ]);

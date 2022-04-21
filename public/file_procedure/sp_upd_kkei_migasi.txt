@@ -1,0 +1,88 @@
+CREATE OR REPLACE PROCEDURE sp_upd_kkei_migrasi(
+    p_kodeigr         VARCHAR2,
+    p_periode         VARCHAR2,
+    p_user            VARCHAR2,
+    p_sukses    OUT   VARCHAR2,
+    p_errmsg    OUT   VARCHAR2
+)
+IS
+    f            UTL_FILE.file_type;
+    p_query      VARCHAR2(10000);
+    p_file       VARCHAR2(100);
+    p_zipname    VARCHAR2(50);
+    temp         NUMBER;
+    csv          VARCHAR2(50);
+    v_nr         NUMBER;
+    temp         NUMBER;
+    p_dirpath    VARCHAR2(100);
+    --p_sukses     BOOLEAN;
+    --p_errmsg     VARCHAR2(1000);
+    c_ipserver   VARCHAR2(100);
+    c_dbuser     VARCHAR2(100);
+    c_dbpass     VARCHAR2(100);
+    l_blob       t_file_transfer.ftfile%TYPE;
+    dbgik        VARCHAR2(10);
+    n_cek        NUMBER;
+BEGIN
+    SELECT COUNT(1)
+      INTO n_cek
+      FROM tb_log_aj
+     WHERE nm_procedure = 'TRANSFER_KKEI';
+
+    IF n_cek = 0
+    THEN
+        p_sukses := 'TRUE';
+
+        INSERT INTO tb_log_aj
+                    (nm_procedure, tgl_create)
+        VALUES      ('TRANSFER_KKEI', SYSDATE);
+
+        COMMIT;
+
+        DELETE FROM tbupload_kkei
+              WHERE kki_periode = TO_DATE(p_periode, 'ddMMyyyy');
+
+        INSERT INTO tbupload_kkei
+            (SELECT TO_DATE(kke_periode, 'ddMMyyyy'),
+                    kke_kdsup,
+                    kke_prdcd,
+                    kke_estimasi,
+                    p_user,
+                    SYSDATE
+               FROM temp_kkei
+              WHERE kke_periode = p_periode);
+
+        SELECT db_ho_name
+          INTO dbgik
+          FROM igr_setup_db;
+
+        EXECUTE IMMEDIATE 'INSERT INTO tbdownload_kkei@' || dbgik
+                          || ' ( SELECT TO_DATE(kke_periode, ''ddMMyyyy''), kke_kdsup, kke_prdcd, kke_estimasi, '''
+                          || p_kodeigr || ''' cabang, NULL PB, ''' || p_user
+                          || ''', sysdate FROM TEMP_KKEI WHERE kke_periode = ''' || p_periode
+                          || ''' )';
+
+        UPDATE temp_kkei
+           SET kke_upload = 'Y'
+         WHERE kke_periode = p_periode;
+
+        COMMIT;
+
+        DELETE FROM tb_log_aj
+              WHERE nm_procedure = 'TRANSFER_KKEI';
+
+        COMMIT;
+
+        sp_mail_kkei(TO_DATE(p_periode, 'ddMMyyyy'));
+        p_sukses := 'TRUE';
+    ELSE
+        p_sukses := 'FALSE';
+        p_errmsg := 'Proses Tarik Data KKEI Sedang Berjalan!';
+    END IF;
+EXCEPTION
+    WHEN OTHERS
+    THEN
+        p_sukses := 'FALSE';
+        p_errmsg := 'KKEI - ' || SQLERRM;
+END;
+/

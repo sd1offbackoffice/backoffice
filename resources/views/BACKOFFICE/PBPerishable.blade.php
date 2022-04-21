@@ -106,7 +106,7 @@
                                             </thead>
                                             <tbody id="tbody2">
                                             @for($i = 0; $i< 10; $i++)
-                                                <tr class="d-flex baris2">
+                                                <tr class="d-flex baris2 ">
                                                     <td class="buttonInside" style="width: 10%"><input disabled type="text" class="form-control plu" id="plu" no="{{$i}}"></td>
                                                     <td style="width: 10%"><input disabled type="text" class="form-control pkm" id="pkm"></td>
                                                     <td style="width: 10%"><input disabled type="text" class="form-control avgsales"></td>
@@ -246,6 +246,8 @@
         .header-table{
             background: #0079C2;
         }
+        .highlight { background-color: blue; }
+
 
         .font{
             color: white;
@@ -293,8 +295,9 @@
 
         $(document).on('keypress', '.qtypb', function (e) {
             if(e.which == 9) {
-                e.preventDefault();
                 qty(this.value,this.id, idsup);
+                changeDesc()
+                e.preventDefault();
             }
         });
 
@@ -304,6 +307,20 @@
                 $('#btn-proses').focus();
             }
         });
+
+        // var detailcounter = 0;
+        // $(document).on('keypress','.qtypb',function(e){
+        //     if (e.which == 9){
+                
+        //     }
+        // });
+
+        // $("#tbody2 tr").click(function() {
+        //     var selected = $(this).hasClass("highlight");
+        //     $("#tbody2 tr").removeClass("highlight");
+        //     if(!selected)
+        //             $(this).addClass("highlight");
+        // });
 
         function nmrBaruPb(nopb){
             if(nopb == ''){
@@ -397,6 +414,7 @@
             }
         })
 
+        var totalsup = 0;
         function chooseSup(nopb) {
             // let tempgross = 0;
             ajaxSetup();
@@ -417,7 +435,7 @@
                         })
                     }
                     else{
-
+                        
 
                         console.log(result.data[0]);
                         console.log(result.flag);
@@ -430,6 +448,7 @@
                             var i;
                             var kodesup = "";
                             var kodesar = "";
+                            totalsup = 0;
                             let tglpb = data.pbp_tglpb;
                             kodesup = data.pbp_kodesupplier;
                             kodesar = data.pbp_kodesarana;
@@ -440,7 +459,7 @@
 
                             for(i=0; i<result.data.length; i++){
 
-                                
+                                totalsup++;
                                 data = result.data[i];
                                 var kubikase2 = parseInt(data.pbp_kubikase);
                                 var ttlkapasitas = parseInt(data.totalkapasitas);
@@ -456,7 +475,7 @@
 
 
                                 if(kubikase2 > ttlkapasitas){
-                                    html1 = `<tr class="d-flex baris1">
+                                    html1 = `<tr id = `+ i +` class="d-flex baris1">
                                         <td style="width: 23%"><input type="text" class="form-control supplierid" id = `+ i +` onclick="chooseDoc('`+data.pbp_nopb +`','`+data.pbp_kodesupplier+`','`+data.pbp_kodesarana+`',this.id)" value="`+ data.pbp_kodesupplier +`"></td>
                                         <td style="width: 23%"><input disabled type="text" id = `+ i +` class="form-control kodesarana" value="`+ data.pbp_kodesarana +`"></td>
                                         <td style="width: 23%"><input disabled type="text" id = `+ i +` class="form-control volsarana text-right" value="`+ thousands_separators(data.totalkapasitas) +`"></td>
@@ -472,7 +491,7 @@
                                 else{
                                     
 
-                                    html1 = `<tr class="d-flex baris1">
+                                    html1 = `<tr id = `+ i +` class="d-flex baris1">
                                         <td style="width: 23%"><input type="text" class="form-control supplierid" id = `+ i +` onclick="chooseDoc('`+data.pbp_nopb +`','`+data.pbp_kodesupplier+`','`+data.pbp_kodesarana+`',this.id)" value="`+ data.pbp_kodesupplier +`"></td>
                                         <td style="width: 23%"><input disabled type="text" id = `+ i +` class="form-control kodesarana" value="`+ data.pbp_kodesarana +`"></td>
                                         <td style="width: 23%"><input disabled type="text" id = `+ i +` class="form-control volsarana text-right" value="`+ thousands_separators(data.totalkapasitas) +`"></td>
@@ -509,13 +528,14 @@
                             var i;
                             var kodesup = "";
                             var kodesar = "";
+                            totalsup = 0;
                             let tglpb = data.pbp_tglpb;
                             kodesup = data.pbp_kodesupplier;
                             kodesar = data.pbp_kodesarana;
                             $('.baris1').remove();
                             console.log('b4 loop');
                             console.log(result.data.length);
-
+                            
 
                             for(i=0; i<result.data.length; i++){
                                 // qtyctn = result[i].trbo_qty / result[i].prd_frac;
@@ -524,7 +544,7 @@
                                 console.log('in loop');
                                 var kubikase2 = parseInt(data.pbp_kubikase);
                                 var ttlkapasitas = parseInt(data.totalkapasitas);
-                                
+                                totalsup++;
                                 if(kubikase2 > ttlkapasitas){
                                     console.log('yes');
                                 }else{
@@ -534,7 +554,7 @@
                                 
 
                                 if(kubikase2 > ttlkapasitas){
-                                    html1 = `<tr class="d-flex baris1">
+                                    html1 = `<tr id = `+ i +` class="d-flex baris1">
                                         <td style="width: 23%"><input type="text" class="form-control supplierid" id = `+ i +` onclick="chooseDoc('`+data.pbp_nopb +`','`+data.pbp_kodesupplier+`','`+data.pbp_kodesarana+`',this.id)" value="`+ data.pbp_kodesupplier +`"></td>
                                         <td style="width: 23%"><input disabled type="text" id = `+ i +` class="form-control kodesarana" value="`+ data.pbp_kodesarana +`"></td>
                                         <td style="width: 23%"><input disabled type="text" id = `+ i +` class="form-control volsarana text-right" value="`+ thousands_separators(data.totalkapasitas) +`"></td>
@@ -548,7 +568,7 @@
                                     // $('#namasupplier').val(data.sup_namasupplier);
                                 }
                                 else{
-                                    html1 = `<tr class="d-flex baris1">
+                                    html1 = `<tr id = `+ i +` class="d-flex baris1">
                                         <td style="width: 23%"><input type="text" class="form-control supplierid" id = `+ i +` onclick="chooseDoc('`+data.pbp_nopb +`','`+data.pbp_kodesupplier+`','`+data.pbp_kodesarana+`',this.id)" value="`+ data.pbp_kodesupplier +`"></td>
                                         <td style="width: 23%"><input disabled type="text" class="form-control kodesarana" value="`+ data.pbp_kodesarana +`"></td>
                                         <td style="width: 23%"><input disabled type="text" id = `+ i +` class="form-control volsarana text-right" value="`+ thousands_separators(data.totalkapasitas) +`"></td>
@@ -570,9 +590,12 @@
                             
                             $('#no-pb').val(data.pbp_nopb);
                             $('#tgl-pb').val(formatDate(data.pbp_tglpb));
-                            var item = $("#model");
-                            if (!item.val('* TAMBAH *') || item.val("")) {
-                                $('#model').val('* KOREKSI *');
+                            var item = $("#model").val();
+                            console.log(item);
+                            if (item == "* TAMBAH *") {
+                                $('#model').val('* TAMBAH *');
+                            } else{
+                                $('#model').val('* KOREKSI *'); 
                             }
                             $('#btn-save').attr('disabled', false);
                             $('.qtypb')[0].focus();
@@ -593,7 +616,7 @@
             $('.qtypb')[0].focus();
         }
 
-        let value = [];
+        let datas = [];
 
         function chooseDoc(nopb, kodesup, kodesar,idsup) {
             // let tempgross = 0;
@@ -615,8 +638,13 @@
                         })
                     }
                     else{
+                        console.log(totalsup);
+                        for(i = 0 ; i<totalsup ; i++){
+                            $('.baris1')[i].style.backgroundColor = "";
+                        }
                         $('#namasupplier').val(result[0].sup_namasupplier);
-                        
+                        $('.baris1')[idsup].style.backgroundColor = "teal";
+
                         data = result[0];
                         tglpb = data.pbp_tglpb;
                         // for(i=0; i<result.length; i++){
@@ -627,7 +655,7 @@
                         for(i=0; i<result.length; i++){
                             // if(result[i].temp > 0){
                                 //console.log(result[0])
-                                value[i] = result[i];
+                                datas[i] = result[i];
                                 var temp = $('#tbody2').find('tr').length;
                                 let index = parseInt(temp, 10)
                                 var html1 = "";
@@ -648,7 +676,7 @@
                                 // kubikase = ((result[i].pbp_stock + result[i].pbp_poout + result[i].pbp_pbout + result[i].pbp_qtypb)/ result[i].pbp_isictn) * result[i].pbp_dimensi; 
                                 // result[i].pbp_kubikase = kubikase;      
 
-                                html2 = `<tr class="d-flex baris2">                                               
+                                html2 = `<tr id = `+ i +` class="d-flex baris2">                                               
                                                 <td class="buttonInside" style="width: 10%">
                                                     <input disabled type="text" class="form-control plu" value="`+ result[i].pbp_prdcd +`">
                                                 </td>
@@ -660,14 +688,14 @@
                                                 <td style="width: 10%"><input disabled type="text" class="form-control pbout text-right" value="`+ result[i].pbp_qtypbout +`"></td>
                                                 <td style="width: 10%"><input disabled type="text" class="form-control mindisp text-right" value="`+ result[i].pbp_mindisplay +`"></td>
                                                 <td style="width: 10%"><input disabled type="text" class="form-control minord text-right" value="`+ result[i].pbp_minorder +`"></td>
-                                                <td style="width: 10%"><input type="text" class="form-control qtypb text-right" value="` + result[i].pbp_qtypb +`" id="`+ i +`" onclick="changeDesc('`+result[i].pbp_prdcd+`')" onchange="qty(this.value,this.id, `+ idsup +`)"></td>
+                                                <td style="width: 10%"><input type="text" class="form-control qtypb text-right" value="` + thousands_separators(result[i].pbp_qtypb) +`" id="`+ i +`"  onclick="changeDesc('`+result[i].pbp_prdcd+`')" onkeypress="qty(this.value,this.id, `+ idsup +`,event)"></td>
                                                 <td style="width: 10%"><input disabled type="text" class="form-control dimensi text-right" value="`+ thousands_separators(result[i].pbp_dimensi)  +`"></td>
                                                 <td style="width: 10%"><input disabled type="text" class="form-control kubikase text-right" value="`+ thousands_separators(result[i].pbp_kubikase) +`"></td>
                                             </tr>`;
                                 
                                 
                                 $('#tbody2').append(html2);
-                               
+                                // onchange="qty(this.value,this.id, `+ idsup +`)"
                                 // total = tempgross + ppn;
                                 // $('#total').val(convertToRupiah(tempgross));
                                 
@@ -676,11 +704,9 @@
                             //         alert('Tidak ada PLU yang bisa di PB untuk tgl ' + tglpb);
                             //     }
                         }
-                        // function changeDesc(deskripsiPanjang){
-                        //     descPjg = deskripsiPanjang
-                        //     $('#deskripsiPanjang').val(descPjg);
-                        // };
                         $('#deskripsiPanjang').val(data.prd_deskripsipanjang);
+                        $('.qtypb')[0].focus();
+                        $('.baris2')[0].style.backgroundColor = "teal";
                        
                     }
                         
@@ -695,13 +721,22 @@
                 // alert("No DOC yg dipilih : " + val)
             })
             $('#modal-help-1').modal('hide');
-            $('.qtypb')[0].focus();
+            
         }
 
         function changeDesc(prdcd){
-            for(i = 0 ; i < value.length ; i++){
-                if (value[i].pbp_prdcd == prdcd){
-                    $('#deskripsiPanjang').val(value[i].prd_deskripsipanjang);
+            console.log(datas.length);
+            for(i = 0 ; i < datas.length ; i++){
+                document.getElementsByClassName('baris2')[i].setAttribute("style", "background: '' ");
+                // var boxElement = document.querySelector('.baris2')
+                // boxElement.style.backgroundColor = '';
+                // $('.baris2')[i].style.backgroundColor = "" 
+            }
+            for(i = 0 ; i < datas.length ; i++){
+                if (datas[i].pbp_prdcd == prdcd){
+                    $('#deskripsiPanjang').val(datas[i].prd_deskripsipanjang);
+                    $('.baris2')[i].style.backgroundColor = "teal"
+                    // inputVal.style.backgroundColor = "yellow"
                     return;
                 }
             }
@@ -710,7 +745,7 @@
 
         
 
-        function qty(value, index, idsup){
+        function qty(val, index , idsup,e){
             //((STOCK + PO OUT + PB OUT + qty PB)/ ISI CTN) * DIMENSI
 
             // select pbp_qtypb into qtypb_db
@@ -719,58 +754,75 @@
             //     AND pbp_kodesupplier = :h_supp
             //     AND pbp_kodesarana = :h_sarana
             //     AND pbp_prdcd = :d_prdcd;
-            let nopb = $('#no-pb').val();
-            let kodesup = $('.supplierid')[idsup].value;
-            let kodesar = $('.kodesarana')[idsup].value;
-            let volsar = $('.volsarana')[idsup].value;
-            var volsarint = parseInt(thousands_combiners(volsar));
-            console.log('volsarint');
-            console.log(volsarint);
-            let plu     = $('.plu')[index].value;
-            let pkm     = $('.pkm')[index].value;
-            let stock = $('.stock')[index].value;
-            let poout = $('.poout')[index].value;
-            let pbout = $('.pbout')[index].value;
-            let qtypb = $('.qtypb')[index].value;
-            let minorder = $('.minord')[index].value;
-            let isictn = $('.isictn')[index].value;
-            let dimensi = $('.dimensi')[index].value;
-            let tempKubikase;
-            // let round = ROUND (( $pkm - $stock) / $minorder);
-            // tempKubikase = ROUND(((stock + poout + pbout + qtypb)/isictn) * dimensi);
+            // console.log(e.which);
+            if(e.which === 13) {
+                // changeDesc();
+                e.preventDefault();
+                index = parseInt(index);
+                let nopb = $('#no-pb').val();
+                let kodesup = $('.supplierid')[idsup].value;
+                let kodesar = $('.kodesarana')[idsup].value;
+                let volsar = $('.volsarana')[idsup].value;
+                var volsarint = parseInt(thousands_combiners(volsar));
+                console.log('volsarint');
+                console.log(volsarint);
+                let plu     = $('.plu')[index].value;
+                let pkm     = $('.pkm')[index].value;
+                let stock = $('.stock')[index].value;
+                let poout = $('.poout')[index].value;
+                let pbout = $('.pbout')[index].value;
+                let qtypb = thousands_combiners($('.qtypb')[index].value);
+                let minorder = $('.minord')[index].value;
+                let isictn = $('.isictn')[index].value;
+                let dimensi = $('.dimensi')[index].value;
+                let tempKubikase;
+                // let round = ROUND (( $pkm - $stock) / $minorder);
+                // tempKubikase = ROUND(((stock + poout + pbout + qtypb)/isictn) * dimensi);
 
-            // $('.kubikase')[index].value = tempKubikase;
+                // $('.kubikase')[index].value = tempKubikase;
 
-            ajaxSetup();
-            $.ajax({
-                url: '{{ url()->current() }}/qtyPb',
-                type: 'post',
-                data: {plu:plu, nopb: nopb, qtypb:qtypb, stock:stock, poout:poout, minorder:minorder, pkm:pkm, isictn:isictn, dimensi:dimensi, kodesup:kodesup, kodesar:kodesar}, //noplu sebelah kiri buat panggil noplu di controller, sebelah kanan yg dari parameter
-                // beforeSend: function () {
-                //     $('#modal-loader').modal('show');
-                // },
-                success: function (result) { //result bukan dr controller, cuma penamaan
-                    //$('#modal-loader').modal('hide');
-                    console.log(result);
-                    if(result.message == ''){
-                        $('.kubikase')[index].value = thousands_separators(result.kubikase);
-                        var totalkubik = parseInt(result.totalkubik);
-                        $('.totalkubik')[idsup].value = thousands_separators(totalkubik);
-                        if(totalkubik > volsarint){
-                            $('.flag')[idsup].value = "X";
+                ajaxSetup();
+                $.ajax({
+                    url: '{{ url()->current() }}/qtyPb',
+                    type: 'post',
+                    data: {plu:plu, nopb: nopb, qtypb:qtypb, stock:stock, poout:poout, minorder:minorder, pkm:pkm, isictn:isictn, dimensi:dimensi, kodesup:kodesup, kodesar:kodesar}, //noplu sebelah kiri buat panggil noplu di controller, sebelah kanan yg dari parameter
+                    beforeSend: function () {
+                        $('#modal-loader').modal('show');
+                    },
+                    success: function (result) { //result bukan dr controller, cuma penamaan
+                        $('#modal-loader').modal('hide');
+                        console.log(result);
+                        if(result.message == ''){
+                            $('.kubikase')[index].value = thousands_separators(result.kubikase);
+                            var totalkubik = parseInt(result.totalkubik);
+                            $('.totalkubik')[idsup].value = thousands_separators(totalkubik);
+                            if(totalkubik > volsarint){
+                                $('.flag')[idsup].value = "X";
+                            }
+                            
                         }
+                        else{
+                            swal({
+                                title: result.message,
+                                icon: 'error'
+                            })
+                            return;
+                        }
+                        $('.qtypb')[index].value = thousands_separators(qtypb);
+                        console.log(datas.length);
+                        console.log(index+1);
+
+                        if(index+1 != datas.length){
+                            $('.qtypb')[index+1].click();
+                            $('.qtypb')[index+1].focus();
+                        }
+                    }, error: function (error) {
+                        //$('#modal-loader').modal('hide')
+                        console.log(error)
                     }
-                    else{
-                        swal({
-                            title: result.message,
-                            icon: 'error'
-                        })
-                    }
-                }, error: function (error) {
-                    //$('#modal-loader').modal('hide')
-                    console.log(error)
-                }
-            })
+                })
+            }
+             
             
         }
         
@@ -837,13 +889,13 @@
                 let stock = $('.stock')[i].value;
                 let poout = $('.poout')[i].value;
                 let pbout = $('.pbout')[i].value;
-                let qtypb = $('.qtypb')[i].value;
+                let qtypb = thousands_combiners($('.qtypb')[i].value);
                 let minorder = $('.minord')[i].value;
                 let mindisplay = $('.mindisp')[i].value;
                 let isictn = $('.isictn')[i].value;
-                let dimensi = $('.dimensi')[i].value;
+                let dimensi = thousands_combiners($('.dimensi')[i].value);
                 let avgsales = $('.avgsales')[i].value;
-                let kubikase = $('.kubikase')[i].value;
+                let kubikase = thousands_combiners($('.kubikase')[i].value);
  
                 data.push({'plu' : plu , 'pkm' : pkm, 'stock' : stock, 'poout' : poout, 'pbout' : pbout, 'qtypb' : qtypb, 'minorder' : minorder, 'mindisplay' : mindisplay, 'isictn' : isictn, 'dimensi' : dimensi, 'avgsales' : avgsales, 'kubikase' : kubikase})
                 
@@ -864,11 +916,128 @@
                     console.log(result)
                     if(result.errflag == 1){
                         swal({
-                                    title:result.status,
-                                    text: result.message,
-                                    icon: result.status,
-                                });
+                            title:result.status,
+                            text: result.message,
+                            icon: result.status,
+                        });
                         return;
+                    }
+                    else if (result.errflag == 2){
+                        swal({
+                            title:result.status,
+                            text: result.message,
+                            icon: result.status,
+                        }).then(function(confirm){
+                            if(confirm){
+                                ajaxSetup();
+                                $.ajax({
+                                    url: '{{ url()->current() }}/saveDoc2',
+                                    type: 'post',
+                                    data: {
+                                        data:data,
+                                        tglpb:tglpb,
+                                        nopb:nopb
+                                    },
+                                    beforeSend: function () {
+                                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                                    },
+                                    success: function (result){
+                                        $('#modal-loader').modal('hide')
+                                        swal({
+                                            title: result.status,
+                                            text: result.message,
+                                            icon: result.status,
+                                        });
+
+                                        if(!result.nopbnew){
+                                            return;
+                                        }
+                                        else{
+                                            swal({
+                                                title: 'Simpan PB ?',
+                                                icon: 'warning',
+                                                dangerMode: true,
+                                                buttons: true,
+                                            }).then(function(confirm){
+                                                if(confirm){ 
+                                                    ajaxSetup();
+                                                    $.ajax({
+                                                        url: '{{ url()->current() }}/saveDoc3',
+                                                        type: 'post',
+                                                        data: {
+                                                            data:data,
+                                                            tglpb:tglpb,
+                                                            nopb:nopb
+                                                        },
+                                                        beforeSend: function () {
+                                                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                                                        },
+                                                        success: function (result){
+                                                            $('#modal-loader').modal('hide')
+                                                            swal({
+                                                                title: result.status,
+                                                                text: result.message,
+                                                                icon: result.status,
+                                                            });
+                                                            clearField();
+                                                            $('#btn-save').attr("disabled", true)
+
+                                                        }, error: function () {
+                                                            alert('error');
+                                                            //$('#modal-loader').modal('hide')
+                                                        }
+                                                    })
+                                                } else {
+                                                    console.log('Tidak Save Doc3');
+                                                }
+                                            })
+                                        }
+
+                                    }, error: function () {
+                                        alert('error');
+                                        // $('#modal-loader').modal('hide')
+                                    }
+                                })
+                            }   
+                        })
+                    }
+                    else {
+                        swal({
+                            title: 'Simpan PB ?',
+                            icon: 'warning',
+                            dangerMode: true,
+                            buttons: true,
+                        }).then(function(confirm){
+                            if(confirm){
+                                ajaxSetup();
+                                $.ajax({
+                                    url: '{{ url()->current() }}/saveDoc3',
+                                    type: 'post',
+                                    data: {
+                                        data:data,
+                                        tglpb:tglpb,
+                                        nopb:nopb
+                                    },
+                                    beforeSend: function () {
+                                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                                    },
+                                    success: function (result){
+                                        $('#modal-loader').modal('hide')
+                                        swal({
+                                            title: result.status,
+                                            text: result.message,
+                                            icon: result.status,
+                                        });
+                                        clearField();
+                                        $('#btn-save').attr("disabled", true)
+
+                                    }, error: function () {
+                                        alert('error');
+                                        //$('#modal-loader').modal('hide')
+                                    }
+                                })
+                            }
+                        })
                     }
                 //     swal({
                 //     title: result.message,
@@ -877,75 +1046,75 @@
                 //     buttons: true,
                 // }).then(function(confirm){
                 //     if(confirm){ 
-                        ajaxSetup();
-                        $.ajax({
-                            url: '{{ url()->current() }}/saveDoc2',
-                            type: 'post',
-                            data: {
-                                data:data,
-                                tglpb:tglpb,
-                                nopb:nopb
-                            },
-                            // beforeSend: function () {
-                            //     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                            // },
-                            success: function (result){
-                            
-                                swal({
-                                    title: result.status,
-                                    text: result.message,
-                                    icon: result.status,
-                                });
+                        // ajaxSetup();
+                        // $.ajax({
+                        //     url: '{{ url()->current() }}/saveDoc2',
+                        //     type: 'post',
+                        //     data: {
+                        //         data:data,
+                        //         tglpb:tglpb,
+                        //         nopb:nopb
+                        //     },
+                        //     beforeSend: function () {
+                        //         $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                        //     },
+                        //     success: function (result){
+                        //         $('#modal-loader').modal('hide')
+                        //         swal({
+                        //             title: result.status,
+                        //             text: result.message,
+                        //             icon: result.status,
+                        //         });
 
-                                if(!result.nopbnew){
-                                    return;
-                                }
-                                else{
-                                    swal({
-                                        title: 'Simpan PB ?',
-                                        icon: 'warning',
-                                        dangerMode: true,
-                                        buttons: true,
-                                    }).then(function(confirm){
-                                        if(confirm){ 
-                                            ajaxSetup();
-                                            $.ajax({
-                                                url: '{{ url()->current() }}/saveDoc3',
-                                                type: 'post',
-                                                data: {
-                                                    data:data,
-                                                    tglpb:tglpb,
-                                                    nopb:nopb
-                                                },
-                                                // beforeSend: function () {
-                                                //     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                                                // },
-                                                success: function (result){
-                                                
-                                                    swal({
-                                                        title: result.status,
-                                                        text: result.message,
-                                                        icon: result.status,
-                                                    });
-                                                    clearField();
-                                                    $('#btn-save').attr("disabled", true)
+                        //         if(!result.nopbnew){
+                        //             return;
+                        //         }
+                        //         else{
+                        //             swal({
+                        //                 title: 'Simpan PB ?',
+                        //                 icon: 'warning',
+                        //                 dangerMode: true,
+                        //                 buttons: true,
+                        //             }).then(function(confirm){
+                        //                 if(confirm){ 
+                        //                     ajaxSetup();
+                        //                     $.ajax({
+                        //                         url: '{{ url()->current() }}/saveDoc3',
+                        //                         type: 'post',
+                        //                         data: {
+                        //                             data:data,
+                        //                             tglpb:tglpb,
+                        //                             nopb:nopb
+                        //                         },
+                        //                         beforeSend: function () {
+                        //                             $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                        //                         },
+                        //                         success: function (result){
+                        //                             $('#modal-loader').modal('hide')
+                        //                             swal({
+                        //                                 title: result.status,
+                        //                                 text: result.message,
+                        //                                 icon: result.status,
+                        //                             });
+                        //                             clearField();
+                        //                             $('#btn-save').attr("disabled", true)
 
-                                                }, error: function () {
-                                                    alert('error');
-                                                    //$('#modal-loader').modal('hide')
-                                                }
-                                            })
-                                        } else {
-                                            console.log('Tidak Save Doc3');
-                                        }
-                                    })
-                                }
+                        //                         }, error: function () {
+                        //                             alert('error');
+                        //                             //$('#modal-loader').modal('hide')
+                        //                         }
+                        //                     })
+                        //                 } else {
+                        //                     console.log('Tidak Save Doc3');
+                        //                 }
+                        //             })
+                        //         }
 
-                            }, error: function () {
-                                alert('error');
-                                //$('#modal-loader').modal('hide')
-                            }
-                        })
+                        //     }, error: function () {
+                        //         alert('error');
+                        //         // $('#modal-loader').modal('hide')
+                        //     }
+                        // })
                 //     } else {
                 //         console.log('Tidak Save Doc2');
                 //     }

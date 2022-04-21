@@ -12,7 +12,7 @@
 @endsection
 
 @section('subtitle')
-    TANGGAL {{ $date1 }} - {{ $date2 }}
+    TANGGAL : {{ $date1 }} s/d {{ $date2 }}
 @endsection
 
 @section('content')
@@ -22,7 +22,8 @@
             <th class="left">PLU</th>
             <th class="left">DESKRIPSI</th>
             <th class="right">SATUAN</th>
-            <th class="right">TAGDIV</th>
+            <th class="right">TAG</th>
+            <th class="right">DIV</th>
             <th class="right">DEPT</th>
             <th class="right">KAT</th>
             <th class="right padding-right">PKMT</th>
@@ -41,15 +42,16 @@
         @for($i=0; $i<sizeof($data); $i++)
             @if($i == 0)
                 <tr>
-                    <td colspan="8" style="font-weight: bold !important; margin-top: 10px !important;" class="left">Tanggal : {{date('d-m-y', strtotime($data[$i]->tglpb))}}  Dokumen : {{$data[$i]->nopb}}</td>
+                    <td colspan="9" style="font-weight: bold !important; margin-top: 10px !important;" class="left">Tanggal : {{date('d-m-y', strtotime($data[$i]->tglpb))}}  Dokumen : {{$data[$i]->nopb}}</td>
                 </tr>
                 <tr>
                     <td  style="font-weight: bold !important;" class="left">{{$data[$i]->supco}} - {{$data[$i]->supname}}</td>
                 </tr>
             @else
-                @if(substr($data[$i]->tglpb,0,10) != substr($data[$i-1]->tglpb,0,10))
+{{--                @if(substr($data[$i]->tglpb,0,10) != substr($data[$i-1]->tglpb,0,10))--}} {{-- Rev 20/04/22 By JR -> lupa juga kenapa diisi tanggal bukan no pb--}}
+                @if($data[$i]->nopb != $data[$i-1]->nopb)
                     <tr>
-                        <td colspan="8" style="font-weight: bold !important; margin-top: 10px !important;" class="left">Tanggal : {{date('d-m-y', strtotime($data[$i]->tglpb))}}  Dokumen : {{$data[$i]->nopb}}</td>
+                        <td colspan="9" style="font-weight: bold !important; margin-top: 10px !important;" class="left">Tanggal : {{date('d-m-y', strtotime($data[$i]->tglpb))}}  Dokumen : {{$data[$i]->nopb}}</td>
                     </tr>
                     <tr>
                         <td  style="font-weight: bold !important;" class="left">{{$data[$i]->supco}} - {{$data[$i]->supname}}</td>
@@ -65,6 +67,7 @@
                 <td class="left">{{$data[$i]->prdcd}}</td>
                 <td class="left">{{$data[$i]->deskripsi}}</td>
                 <td class="right">{{$data[$i]->satuan}}</td>
+                <td class="right">{{$data[$i]->tag}}</td>
                 <td class="right">{{$data[$i]->div}}</td>
                 <td class="right">{{$data[$i]->dep}}</td>
                 <td class="right">{{$data[$i]->kat}}</td>

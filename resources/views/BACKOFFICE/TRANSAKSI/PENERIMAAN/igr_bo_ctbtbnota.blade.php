@@ -41,6 +41,7 @@
 <body>
     @if($datas)
     @php
+    dd($datas[0]->msth_tgldoc);
     $no = 0;
     @endphp
     @for($i = 0; $i < sizeof($datas); $i++) @if($i==0 || $datas[$i]->msth_nodoc != $datas[$i-1]->msth_nodoc)

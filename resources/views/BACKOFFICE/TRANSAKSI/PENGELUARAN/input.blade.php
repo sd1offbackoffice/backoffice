@@ -337,6 +337,9 @@
                                         </tr>
                                         </thead>
                                         <tbody id="body-table-usulan">
+                                        <div class="col-sm-5">
+                                            <input type="text" id="txt_prdcd" class="text-center form-control" disabled>
+                                        </div>
                                         </tbody>
                                     </table>
                                 </div>
@@ -416,6 +419,7 @@
         var row = 1;
         var kdsup = '';
         let arrDeletedPlu = []
+        let datas_detail;
 
         $(document).ready(function () {
             reset();
@@ -863,10 +867,10 @@
                         reset();
                     },
                     success: function (response) {
-                        console.log(response);
+                        // console.log(response);
                         $('#modal-loader').modal('hide');
                         $('#btnUsulanRetur').attr('disabled', false);
-                        
+
 
                         if (response.status == 'error') {
                             swal({
@@ -879,11 +883,11 @@
                         else {
                             if (response.model === '* NOTA SUDAH DICETAK *') {
                                 $('#btnHapusDokumen').attr('disabled', true);
-                                
+
                             }
                             else {
                                 $('#btnHapusDokumen').attr('disabled', false);
-                                
+
                                 $('#btnSimpan').attr('disabled', false);
                                 $('#btnAddRow').show();
                                 getDataSupplier(response.supplier)
@@ -926,7 +930,7 @@
                                 //     '<td><input class="form-control " type="text" value="' + pcs + '"></td>' +
                                 //     '<td><input class="form-control " type="text" value="' + ket + '"></td>' +
                                 //     '</tr>');
-                                
+
                                     $('#body-table-header').append(
                                         `<tr class="row-header-${index+1}">` +
                                             `<td><button class="btn btn-block btn-danger btn-delete-row-header" rowheader="${index+1}"><i class="icon fas fa-times"></i></button></td>` +
@@ -961,7 +965,7 @@
                             //         '<td><input class="form-control " type="text" value="' + ket + '"></td>' +
                             //         '</tr>');
 
-                            var datas_detail = response.datas_detail;
+                            datas_detail = response.datas_detail;
                             var i = 1;
                             var tot_gross = 0;
                             var tot_potongan = 0;
@@ -1089,24 +1093,26 @@
 
             $('#body-table-header tr').each(function () {
                 let plu = $(this).find('.plu-header').val();
-            
+
                 if (plu == headerPlu) {
                     // console.log('detailPlu: ' + detailPlu + ' same');
-                    $(this).empty();
+                    // $(this).empty();
+                    $(this).remove();
                 }
             });
 
             // $('.row-header-' + rh).empty();
             // $('.row-detail-' + rh).empty();
             // $(this).find('.plu-header');
-            
+
             $('#body-table-detail tr').each(function () {
                 let detailPlu = $(this).find('.plu').val();
                 // console.log('detailPlu: ' + detailPlu + ' same');
                 // let detailPlu = $('.plu').val();
                 if (detailPlu == headerPlu) {
                     // console.log('detailPlu: ' + detailPlu + ' same');
-                    $(this).empty();
+                    // $(this).empty();
+                    $(this).remove();
                 }
             });
         });
@@ -1155,7 +1161,7 @@
                 $('#modal-loader').modal('show');
                 var current = $(this);
                 var rh = current.attr('rowheader');
-                var model = $('#txtModel').val();                
+                var model = $('#txtModel').val();
                 var nodoc = $('#txtNoDoc').val();
                 var tgldoc = $('#dtTglDoc').val();
                 var kdsup = $('#txtKdSupplier').val();
@@ -1391,7 +1397,7 @@
                 $('#modal-loader').modal('hide');
             }
         });
-        
+
         function proses(plu, ctn, frac, pcs, rh) {
             var nodoc = $('#txtNoDoc').val();
             var pkp = $('#txtPKP').val();
@@ -1414,7 +1420,7 @@
                 success: function (response) {
                     $('#modal-loader').modal('hide');
                     datas_detail = response.datas;
-                    console.log(response);
+                    console.log(datas_detail);
                     let ctn = Math.floor(qtyretur / frac)
                     let qtypcs = qtyretur % frac
                     $(`.ctn-header-${rh}`).val(ctn);
@@ -1426,12 +1432,13 @@
                         // let detailPlu = $('.plu').val();
                         if (detailPlu == plu) {
                             // console.log('detailPlu: ' + detailPlu + ' same');
-                            $(this).empty();
+                            // $(this).empty();
+                            $(this).remove();
                         }
                     });
 
                     if (datas_detail.length > 0) {
-                        // console.log(response);                       
+                        // console.log(response);
                         // $('.row-detail-' + rh).remove();
                         datas_detail.forEach(function (dd) {
                             $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + rowheader + '" deskripsi="' + dd.deskripsi + '">' +
@@ -1702,37 +1709,22 @@
                     if (yes) {
                         var nodoc = $('#txtNoDoc').val();
                         var tgldoc = $('#dtTglDoc').val();
+                        // console.log(tgldoc);                        
                         var kdsup = $('#txtKdSupplier').val();
-                        // let model = $('#txtModel').val();
-
-                        // if (model == '* KOREKSI *') {
-                        //     ajaxSetup()
-                        //     $.ajax({
-                        //         type: "post",
-                        //         url: "{{ url()->current() }}/delete-first",
-                        //         data: {
-                        //             nodoc: nodoc,
-                        //             tgldoc: tgldoc,
-                        //             s
-                        //         },
-                        //         dataType: "dataType",
-                        //         success: function (response) {
-                                    
-                        //         }
-                        //     });
-                        // }
+                        let model = $('#txtModel').val();                       
 
                         datas = [];
                         let index = 1;
                         $('#body-table-detail tr.row-detail').each(function () {
                             var data = {};
 
-                            let satuan = $(this).find('.satuan').val();                            
+                            let satuan = $(this).find('.satuan').val();
                             let tempFrac = satuan.split('/');
                             let frac = tempFrac[1];
-                            console.log('satuan ' + satuan);
-                            console.log('tempFrac ' + frac);                            
-                        
+                            // console.log('satuan ' + satuan);
+                            // console.log('tempFrac ' + tempFrac);
+                            // console.log('frac ' + frac);
+
                             data.seqno = index;
                             data.nodoc = nodoc;
                             data.tgldoc = tgldoc;
@@ -1747,6 +1739,27 @@
                             data.qty = $(this).find(".qtypcs").val();
                             data.hargasatuan = $(this).find(".hargasatuan").val();
                             data.persendisc = $(this).find(".persendisc").val();
+                            // if (model == '* KOREKSI *') {
+                            //     data.gross = $(this).find(".gross").val();
+                            //     data.discrph = $(this).find(".discrph").val();
+                            //     data.ppnrph = $(this).find(".ppn").val();
+                            //     data.posqty = $(this).find(".posqty").val();
+                            //     // if (data.gross.includes(',') == true) {
+                            //     //     data.gross = parseFloat($(this).find(".gross").val());
+                            //     // }
+                            //     // if (data.discrph.includes(',') == true) {
+                            //     //     data.discrph = parseFloat($(this).find(".discrph").val());
+                            //     // }
+                            //     // if (data.ppnrph.includes(',') == true) {
+                            //     //     data.ppnrph = parseFloat($(this).find(".ppn").val());
+                            //     // }
+                            // } else {
+                            //     data.gross = parseFloat($(this).find(".gross").val());
+                            //     data.discrph = parseFloat($(this).find(".discrph").val());
+                            //     data.ppnrph = parseFloat($(this).find(".ppn").val());
+                            //     data.posqty = parseFloat($(this).find(".posqty").val());
+                            // }
+
                             data.gross = parseFloat($(this).find(".gross").val());
                             data.discrph = parseFloat($(this).find(".discrph").val());
                             data.ppnrph = parseFloat($(this).find(".ppn").val());
@@ -1756,19 +1769,26 @@
 
                             index++;
                         });
-                        
+
+                        // console.log(datas);
+
                         ajaxSetup();
                         $.ajax({
                             type: "POST",
                             url: "{{ url('/bo/transaksi/pengeluaran/input/save') }}",
                             data: {
                                 datas: datas,
-                                arrDeletedPlu: arrDeletedPlu
+                                arrDeletedPlu: arrDeletedPlu,
+                                nodoc: nodoc,
+                                tgldoc: tgldoc,
+                                model: model,
+                                datas_detail: datas_detail
                             },
                             beforeSend: function () {
                                 $('#modal-loader').modal('show');
                             },
                             success: function (response) {
+                                console.log(datas_detail);
                                 $('#modal-loader').modal('hide');
                                 swal({
                                     title: response.status,

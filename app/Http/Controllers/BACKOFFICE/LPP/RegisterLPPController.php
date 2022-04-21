@@ -515,28 +515,28 @@ ORDER BY lpp_kodedivisi,
             set_time_limit(0);
 
             $title = '** POSISI & MUTASI PERSEDIAAN BARANG BAIK **';
-            $chunks = $data->chunk(500);
-            $i=0;
-            foreach ($chunks as $chunk)
-            {
-                $filename = 'chunk_'.$i;
-                $i++;
-
-                $dompdf = new PDF();
-
-                $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid.'_pdf', compact(['title', 'perusahaan', 'chunk', 'tgl1', 'tgl2']));
-
-                error_reporting(E_ALL ^ E_DEPRECATED);
-
-                $pdf->output();
-                $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-                $canvas = $dompdf->get_canvas();
-                $canvas->page_text(509, 77.75, "Page {PAGE_NUM} dari {PAGE_COUNT}", null, 8, array(0, 0, 0));
-
-                $dompdf = $pdf;
-                $pdf->save(storage_path($filename));
-            }
+//            $chunks = $data->chunk(500);
+//            $i=0;
+//            foreach ($chunks as $chunk)
+//            {
+//                $filename = 'chunk_'.$i;
+//                $i++;
+//
+//                $dompdf = new PDF();
+//
+//                $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid.'_pdf', compact(['title', 'perusahaan', 'chunk', 'tgl1', 'tgl2']));
+//
+//                error_reporting(E_ALL ^ E_DEPRECATED);
+//
+//                $pdf->output();
+//                $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+//
+//                $canvas = $dompdf->get_canvas();
+//                $canvas->page_text(509, 77.75, "Page {PAGE_NUM} dari {PAGE_COUNT}", null, 8, array(0, 0, 0));
+//
+//                $dompdf = $pdf;
+//                $pdf->save(storage_path($filename));
+//            }
 
 
 
@@ -545,15 +545,15 @@ ORDER BY lpp_kodedivisi,
 
 
             //excel
-//            $filename = 'aa.xlsx';
-//            $view = view('BACKOFFICE.LPP.' . $repid . '_xlxs', compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']))->render();
-//            $maxColumn = 'U';
-//            $subtitle = 'RINCIAN PER DIVISI (UNIT/RUPIAH)';
-//            $this->createExcel($view,$filename,$maxColumn,$title,$subtitle);
-//
-//            return response()->download(storage_path($filename))->deleteFileAfterSend(true);
+            $filename = 'aa.xlsx';
+            $view = view('BACKOFFICE.LPP.' . $repid . '_xlxs', compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']))->render();
+            $maxColumn = 'U';
+            $subtitle = 'RINCIAN PER DIVISI (UNIT/RUPIAH)';
+            $this->createExcel($view,$filename,$maxColumn,$title,$subtitle);
 
-//html
+            return response()->download(storage_path($filename))->deleteFileAfterSend(true);
+
+            //html
 //            return view('BACKOFFICE.LPP.' . $repid.'_xlxs', compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
             return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 

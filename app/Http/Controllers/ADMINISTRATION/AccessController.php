@@ -155,7 +155,8 @@ class AccessController extends Controller
             self::insertBaseMenu();
         }
 
-        if(Session::get('usid') == 'ADM' || Session::get('usid') == 'JEF'){
+        if(in_array(Session::get('usid'), ['ADM','DEV','SUP','DV1','DV2','DV3','SP1','SP2','SP3','JEF'])){
+//        if(Session::get('usid') == 'ADM' || Session::get('usid') == 'JEF'){
 //            $listMenu = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
 //                ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
 //                ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")

@@ -6,11 +6,15 @@ use App\AllModel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use Carbon\Exceptions\Exception as ExceptionsException;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Exception;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+
+session_start();
 
 class printBPBController extends Controller
 {
@@ -35,13 +39,23 @@ class printBPBController extends Controller
             $file = storage_path($path . $id . '.' . $img['image_type']);
             file_put_contents($file, $img['image_base64']);
 
-            $message = "Signature Saved!";
+            $img2 = $this->dataURLtoImage($request->signed2);
+            $file2 = storage_path($path . $id . '_srclerk.' . $img2['image_type']);
+            file_put_contents($file2, $img2['image_base64']);
+
+            $img3 = $this->dataURLtoImage($request->signed3);
+            $file3 = storage_path($path . $id . '_clerk.' . $img3['image_type']);
+            file_put_contents($file3, $img3['image_base64']);
+
+            $message = "Signatures Saved!";
             $status = "success";
         } catch (Exception $e) {
             $message = $e->getMessage();
             $status = "error";
         }
-
+        Session::put('signer', $request->signedby);
+        Session::put('signer2', $request->signedby2);
+        Session::put('signer3', $request->signedby3);
         // return compact(['message', 'status']);
         return response()->json(['message' => $message, 'status' => $status, 'data' => $id]);
     }
@@ -103,6 +117,45 @@ class printBPBController extends Controller
                 return response()->json($data);
             }
         }
+    }
+
+    public function kirimFtp()
+    {
+        $msg = '';
+        $ftp_server = config('ftp.ftp_server');
+        $ftp_user_name = config('ftp.ftp_user_name');
+        $ftp_user_pass = config('ftp.ftp_user_pass');
+        // $file = "../storage/signature/625a8b938c9f7.png";
+        // $remote_file = "/opt/btbigr/temp";
+        try {
+            // // set up basic connection
+            // $conn_id = ftp_connect($ftp_server);
+
+            // // login with username and password
+            // $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+
+            // // upload a file
+            // if (ftp_put($conn_id, $remote_file, $file, FTP_ASCII)) {
+            //     $msg =  "successfully uploaded $file\n";
+            // } else {
+            //     $msg =  "There was a problem while uploading $file\n";
+            // }
+            // // close the connection
+            // ftp_close($conn_id);
+            $conn_id = ftp_connect($ftp_server);
+            ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+            $signatures = Storage::disk('receipts')->allFiles();
+            foreach ($signatures as $sig => $value) {
+                $filePath = '../storage/signature/' . $value;
+                ftp_put($conn_id, '/opt/btbigr/temp/' . $value, $filePath);
+            }
+
+            $msg = 'Report Transferred';
+        } catch (Exception $e) {
+            $msg = 'Report Transfer Failed';
+            return response()->json(['kode' => 0, 'message' => $msg . $e]);
+        }
+        return response()->json(['kode' => 1, 'message' => $msg]);
     }
 
     public function cetakData(Request $request)
@@ -1533,14 +1586,23 @@ class printBPBController extends Controller
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
+        for($i = 0; $i < sizeof($datas); $i++) {
+                $content = $pdf->download()->getOriginalContent();
+                Storage::put('../storage/receipts/' . 'BTB_' . $datas[$i]->msth_nodoc . '.pdf', $content);
+            
+        }
         $canvas = $dompdf->get_canvas();
         $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
+        
         return $pdf->stream('igr_bo_ctklokasi.pdf');
     }
 
     public function viewReport(Request $request)
     {
+        $signedBy = Session::get('signer');
+        $signedBy2 = Session::get('signer2');
+        $signedBy3 = Session::get('signer3');
         $report = $request->report;
         $noDoc  = $request->noDoc;
         $reprint = $request->reprint;
@@ -1749,7 +1811,7 @@ class printBPBController extends Controller
             and msth_nodoc in ($document)
             order by msth_nodoc");
 
-            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota_nonharga', ['datas' => $datas, 're_print' => $re_print, 'ttd' => $ttd])->setPaper('a4', 'potrait');
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota_nonharga', ['datas' => $datas, 're_print' => $re_print, 'ttd' => $ttd, 'signedby' => $signedBy, 'signedby2' => $signedBy2, 'signedby3' => $signedBy3])->setPaper('a4', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
@@ -1780,7 +1842,7 @@ class printBPBController extends Controller
             and msth_nodoc in ($document)
             order by msth_nodoc");
 
-            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota_nonharga_full', ['datas' => $datas, 're_print' => $re_print, 'ttd' => $ttd])->setPaper('a4', 'potrait');
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota_nonharga_full', ['datas' => $datas, 're_print' => $re_print, 'ttd' => $ttd, 'signedby' => $signedBy, 'signedby2' => $signedBy2, 'signedby3' => $signedBy3])->setPaper('a4', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 

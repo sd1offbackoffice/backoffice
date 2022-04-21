@@ -63,45 +63,46 @@ class KirimKKEIController extends Controller
         try{
             DB::connection(Session::get('connection'))->beginTransaction();
 
-//            $upload = DB::connection(Session::get('connection'))->table('temp_kkei')
-//                ->whereIn('kke_periode', $request->periode)
-//                ->update(['kke_upload' => 'Y']);
-//
-//            foreach($request->periode as $p){
-//                $c = loginController::getConnectionProcedure();
-//                $s = oci_parse($c, "BEGIN SP_UPD_KKEI ( :kodeigr,
-//                            :periode,
-//                            :user,
-//                            :status,
-//                            :message); END;");
-//                oci_bind_by_name($s, ':kodeigr', $kodeigr, 32);
-//                oci_bind_by_name($s, ':periode', $p, 32);
-//                oci_bind_by_name($s, ':user', $user, 32);
-//                oci_bind_by_name($s, ':status', $status, 32);
-//                oci_bind_by_name($s, ':message', $message, 32);
-//                oci_execute($s);
-//            }
+            $upload = DB::connection(Session::get('connection'))->table('temp_kkei')
+                ->whereIn('kke_periode', $request->periode)
+                ->update(['kke_upload' => 'Y']);
 
-//            if($status == 'TRUE'){
-//                DB::connection(Session::get('connection'))->commit();
-//
-//                return response()->json([
-//                    'message' => 'Berhasil upload data KKEI!'
-//                ], 200);
-//            }
-//            else{
-//                DB::connection(Session::get('connection'))->rollBack();
-//
-//                return response()->json([
-//                    'message' => $message
-//                ], 500);
-//            }
+            foreach($request->periode as $p){
+                $c = loginController::getConnectionProcedure();
+                $s = oci_parse($c, "BEGIN SP_UPD_KKEI_MIGRASI ( :kodeigr,
+                            :periode,
+                            :user,
+                            :status,
+                            :message); END;");
+                oci_bind_by_name($s, ':kodeigr', $kodeigr, 32);
+                oci_bind_by_name($s, ':periode', $p, 32);
+                oci_bind_by_name($s, ':user', $user, 32);
+                oci_bind_by_name($s, ':status', $status, 32);
+                oci_bind_by_name($s, ':message', $message, 255);
+                oci_execute($s);
+            }
+
+            if($status == 'TRUE'){
+                DB::connection(Session::get('connection'))->commit();
+
+                return response()->json([
+                    'message' => 'Berhasil upload data KKEI!'
+                ], 200);
+            }
+            else{
+                DB::connection(Session::get('connection'))->rollBack();
+
+                return response()->json([
+                    'message' => $message
+                ], 500);
+            }
         }
         catch (\Exception $e) {
             DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
-                'message' => 'Gagal upload data KKEI!'
+                'message' => 'Gagal upload data KKEI!',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
