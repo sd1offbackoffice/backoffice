@@ -1,0 +1,225 @@
+CREATE OR REPLACE PROCEDURE SIMCKL.sp_upload_mplus_go (v_userid   IN     VARCHAR2,
+                                                v_result      OUT VARCHAR2)
+IS
+   p_filename       VARCHAR2 (20) := 'MPLUS_GO.CSV';
+   p_exist          BOOLEAN := TRUE;
+   n_req_id         NUMBER := 999999;
+   p_err            VARCHAR2 (1000);
+   f                UTL_FILE.file_type;
+   v_line           VARCHAR2 (30000);
+   line             NUMBER;
+
+   TYPE TEMP_MPLUSGO IS TABLE OF TEMP_MPLUS_GO%ROWTYPE;
+
+   TEMP_MPLUS_GO1   TEMP_MPLUSGO;
+BEGIN
+   EXECUTE IMMEDIATE
+      'create or replace directory TRF_MPLUS as ''/u01/lhost/trf_mplus/DATA/''';
+
+   DELETE FROM TEMP_MPLUS_GO;
+
+   --cek file
+
+   p_exist := FALSE;
+   get_dir_list ('/u01/lhost/trf_mplus/DATA/', n_req_id);
+
+   FOR rec IN (SELECT *
+                 FROM dir_list_tmp
+                WHERE req_id = 999999 AND filename LIKE '%' || p_filename)
+   LOOP
+      p_exist := TRUE;
+   END LOOP;
+
+
+   --ada file
+   IF p_exist
+   THEN
+      --read file csv
+
+      TEMP_MPLUS_GO1 := TEMP_MPLUSGO ();
+
+      f := UTL_FILE.fopen ('TRF_MPLUS', p_filename, 'R');
+      TEMP_MPLUS_GO1.EXTEND (1);
+
+      IF UTL_FILE.is_open (f)
+      THEN
+         line := 1;
+
+         LOOP
+            BEGIN
+               UTL_FILE.get_line (f, v_line, 30000);
+
+               IF v_line IS NULL
+               THEN
+                  EXIT;
+               END IF;
+
+               IF line = 1
+               THEN
+                  NULL;
+               ELSE
+                  v_line := ' ' || v_line;
+
+                  TEMP_MPLUS_GO1 (line - 1).CABANG :=
+                     TRIM (REGEXP_SUBSTR (REPLACE (v_line, '|', '| '),
+                                          '[^|]+',
+                                          1,
+                                          1));
+                  TEMP_MPLUS_GO1 (line - 1).PLU :=
+                     TRIM (REGEXP_SUBSTR (REPLACE (v_line, '|', '| '),
+                                          '[^|]+',
+                                          1,
+                                          2));
+
+                  TEMP_MPLUS_GO1 (line - 1).MPLUS_I :=
+                     REPLACE (
+                        REPLACE (
+                           TRIM (REGEXP_SUBSTR (REPLACE (v_line, '|', '| '),
+                                                '[^|]+',
+                                                1,
+                                                3)),
+                           CHR (13),
+                           ''),
+                        CHR (10),
+                        '');
+                  TEMP_MPLUS_GO1 (line - 1).MPLUS_O :=
+                     REPLACE (
+                        REPLACE (
+                           TRIM (REGEXP_SUBSTR (REPLACE (v_line, '|', '| '),
+                                                '[^|]+',
+                                                1,
+                                                4)),
+                           CHR (13),
+                           ''),
+                        CHR (10),
+                        '');
+
+                  TEMP_MPLUS_GO1.EXTEND (1);
+               END IF;
+
+               line := line + 1;
+            EXCEPTION
+               WHEN NO_DATA_FOUND
+               THEN
+                  EXIT;
+            END;
+         END LOOP;
+
+         UTL_FILE.fclose (f);
+
+         DELETE FROM temp_mplus_go;
+
+         FORALL i IN 1 .. line - 2
+            INSERT INTO TEMP_MPLUS_GO (CABANG,
+                                       PLU,
+                                       MPLUS_I,
+                                       MPLUS_O)
+                 VALUES (TEMP_MPLUS_GO1 (i).CABANG,
+                         LPAD (TEMP_MPLUS_GO1 (i).PLU, 7, '0'),
+                         TO_NUMBER (TEMP_MPLUS_GO1 (i).MPLUS_I),
+                         TO_NUMBER (TEMP_MPLUS_GO1 (i).MPLUS_O));
+
+         COMMIT;
+      END IF;
+
+      --proses
+
+      ----merge tbmaster_pkmplus
+
+      MERGE INTO tbmaster_pkmplus
+           USING (SELECT cabang,
+                         prd_kodedivisi div,
+                         prd_kodedepartement dep,
+                         prd_kodekategoribarang kat,
+                         plu,
+                         (NVL (mplus_i, 0) + NVL (mplus_o, 0)) mplus,
+                         NVL (mplus_i, 0) mplus_i,
+                         NVL (mplus_o, 0) mplus_o
+                    FROM TEMP_MPLUS_GO, tbmaster_prodmast
+                   WHERE plu = prd_prdcd)
+              ON (pkmp_kodeigr = cabang AND pkmp_prdcd = plu)
+      WHEN NOT MATCHED
+      THEN
+         INSERT     (pkmp_kodeigr,
+                     pkmp_kodedivisi,
+                     pkmp_kodedepartemen,
+                     pkmp_kodekategoribrg,
+                     pkmp_prdcd,
+                     pkmp_qtyminor,
+                     pkmp_create_by,
+                     pkmp_create_dt,
+                     pkmp_mplusi,
+                     pkmp_mpluso)
+             VALUES (cabang,
+                     div,
+                     dep,
+                     kat,
+                     plu,
+                     mplus,
+                     v_userid,
+                     SYSDATE,
+                     mplus_i,
+                     mplus_o)
+      WHEN MATCHED
+      THEN
+         UPDATE SET
+            pkmp_qtyminor = mplus,
+            pkmp_mplusi = mplus_i,
+            pkmp_mpluso = mplus_o;
+
+      ----merge tbmaster_kkpkm
+
+      MERGE INTO tbmaster_kkpkm
+           USING (SELECT cabang,
+                         plu,
+                         (NVL (mplus_i, 0) + NVL (mplus_o, 0)) mplus
+                    FROM TEMP_MPLUS_GO)
+              ON (pkm_kodeigr = cabang AND pkm_prdcd = plu)
+      WHEN MATCHED
+      THEN
+         UPDATE SET pkm_qtymplus = mplus, pkm_pkmt = pkm_mpkm + mplus;
+
+
+      ----merge tbtr_pkmgondola
+
+      MERGE INTO tbtr_pkmgondola
+           USING (SELECT cabang,
+                         plu,
+                         (NVL (mplus_i, 0) + NVL (mplus_o, 0)) mplus
+                    FROM TEMP_MPLUS_GO)
+              ON (pkmg_kodeigr = cabang AND pkmg_prdcd = plu)
+      WHEN MATCHED
+      THEN
+         UPDATE SET
+            PKMG_NILAIPKMG = PKMG_NILAIMPKM + NVL (mplus, 0) + PKMG_NILAIGONDOLA,
+            PKMG_NILAIPKMB = PKMG_NILAIMPKM + NVL (mplus, 0) + PKMG_NILAIGONDOLA,
+            PKMG_NILAIPKMT = PKMG_NILAIMPKM + NVL (mplus, 0);
+
+
+      --back up
+
+      host_command (
+         p_command   => '/bin/mkdir /u01/lhost/trf_mplus/DATA/BACKUP/');
+
+      host_command (
+         p_command   =>    '/bin/mv /u01/lhost/trf_mplus/DATA/'
+                        || p_filename
+                        || ' /u01/lhost/trf_mplus/DATA/BACKUP/'
+                        || TO_CHAR (SYSDATE, 'yyyyMMddhh24miss')
+                        || p_filename);
+
+      --result OK
+
+      COMMIT;
+      v_result := 'OK';
+   ELSE
+      v_result := 'file ' || p_filename || ' not found.';
+   END IF;
+EXCEPTION
+   WHEN OTHERS
+   THEN
+      ROLLBACK;
+      p_err := SUBSTR (SQLERRM, 1, 1000);
+      v_result := p_err;
+END;
+/

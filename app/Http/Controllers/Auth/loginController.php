@@ -593,4 +593,9 @@ class loginController extends Controller
     {
         return oci_connect('SIMBDG', 'SIMBDG' , '192.168.222.193:1521/SIMBDG' );
     }
+
+    public static function getConnectionProcedureCKL()
+    {
+        return oci_connect('SIMCKL', 'SIMCKL' , '192.168.249.193:1521/SIMCKL' );
+    }
 }

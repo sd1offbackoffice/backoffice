@@ -126,7 +126,7 @@
             ajaxSetup();
             let tableModal = $('#tableModalNPB1').DataTable({
                 "ajax": {
-                    'type': "get",
+                    'type': "post",
                     'url': '{{ url()->current() }}/lov-search1',
                     "data": {
                         // '_token': '{{ csrf_token() }}',
@@ -166,7 +166,7 @@
             ajaxSetup();
             let tableModal = $('#tableModalNPB2').DataTable({
                 "ajax": {
-                    'type': "get",
+                    'type': "post",
                     'url': '{{ url()->current() }}/lov-search2',
                     "data": {
                         // '_token': '{{ csrf_token() }}',

@@ -436,7 +436,7 @@ class PBPerishableController extends Controller
     //       RETURN;
     //    END IF;
 
-        if($qtypb == 0 && $stock == 0 && $poout ==0){
+        if($qtypb == 0 && $stock == 0 && $poout == 0){
             $message = 'PLU ' . $plu . ' Sarana ' . $kodesar . ' Stock 0, PB harus >= 1';
 
             return response()->json(['message' => $message]);
@@ -449,7 +449,7 @@ class PBPerishableController extends Controller
 
         if($qtypb % $minorder > 0){
             $message = ('Qty PB kelipatan min order');
-
+            
             return response()->json(['message' => $message]);
         }
 
@@ -524,7 +524,7 @@ class PBPerishableController extends Controller
         //     :h_flag := NULL;
         // END IF;
 
-        return response()->json(['message' => $message, 'kubikase' => $kubikase, 'totalkubik' => $totalkubik[0]->ttlkubik]);
+        return response()->json(['message' => $message, 'qtypblog' => $qtypb , 'kubikase' => $kubikase, 'totalkubik' => $totalkubik[0]->ttlkubik]);
 
 
     }

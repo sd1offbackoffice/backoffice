@@ -43,6 +43,9 @@
     @endphp
     @for($i = 0; $i < sizeof($datas); $i++) @if($i==0 || $datas[$i]->msth_nodoc != $datas[$i-1]->msth_nodoc)
         @if($i != 0)
+        @php
+        $no = 0;
+        @endphp
         <div class="page-break"></div>
         @endif
         <header>
@@ -126,7 +129,7 @@
                     $generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG();
                     @endphp
 
-                    <img style="max-width: 250px;" src="data:image/png;base64,{{ base64_encode($generatorPNG->getBarcode($datas[$i]->barcode, $generatorPNG::TYPE_CODE_128)) }}">
+                    <img style="max-width: 250px;" src="data:image/png;base64,{{ base64_encode($generatorPNG->getBarcode($datas[$i]->msth_nodoc, $generatorPNG::TYPE_CODE_128)) }}">
                 </div>
             </div>
         </header>
@@ -219,18 +222,54 @@
             <tbody>
                 <tr>
                     <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
-                        ADMINISTRASI
+                        Pengirim,
                         <hr>
+                        <div class="row align-items-center">
+                            <div class="col-5" style="margin-top: 10px">
+                                <img style="max-width: 125px;" src="../storage/signature_expedition/{{$ttd . '.png'}}"></img>
+                            </div>
+                        </div>
                     </td>
                     <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
-                        KEPALA
-                        GUDANG
+                        Disetujui,
                         <hr>
+                        <div class="row align-items-center">
+                            <div class="col-5">
+                                <img style="max-width: 120px; position: absolute; margin-left:25%; z-index: 0;" src="../storage/signature/srclerk.png"></img>
+                                <img style="max-width: 150px; position: absolute; margin-left:65%; margin-top: 10%; z-index: 10;" src="../storage/stempel/{{$datas[$i]->prs_namacabang . '.png'}}"></img>
+                            </div>
+                        </div>
                     </td>
                     <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
-                        SUPPLIER
+                        Dicetak,
                         <hr>
-                        <img style="max-width: 100px;" src="../storage/signature/{{$ttd . '.png'}}"></img>
+                        <div class="row align-items-center">
+                            <div class="col-5">
+                                <img style="max-width: 120px; position: absolute; margin-left:25%; z-index: 0;" src="../storage/signature/clerk.png"></img>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px black solid; width: 240px; text-align: center;">
+                        {{ strtoupper(Session::get('signer')) }}
+                    </td>
+                    <td style="border: 1px black solid; width: 240px; text-align: center;">
+                        {{ file_get_contents('../storage/names/srclerk.txt') }}
+                    </td>
+                    <td style="border: 1px black solid; width: 240px; text-align: center;">
+                        {{ file_get_contents('../storage/names/clerk.txt') }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px black solid; width: 240px; text-align: center;">
+                        Supplier/Expedisi
+                    </td>
+                    <td style="border: 1px black solid; width: 240px; text-align: center;">
+                        Logistic Adm.Sr.Clerk
+                    </td>
+                    <td style="border: 1px black solid; width: 240px; text-align: center;">
+                        Logistic Adm.Clerk
                     </td>
                 </tr>
             </tbody>

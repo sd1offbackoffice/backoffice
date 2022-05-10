@@ -41,7 +41,7 @@
                                     {{--</tr>--}}
                                     {{--@endforeach--}}
                                     </tbody>
-                                    </table>
+{{--                                    </table>--}}
                                 {{--</fieldset>--}}
                             </div>
 

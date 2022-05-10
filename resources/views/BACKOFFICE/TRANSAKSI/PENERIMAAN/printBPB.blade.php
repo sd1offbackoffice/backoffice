@@ -44,10 +44,10 @@
                         </div>
 
                         <div class="form-group row mb-0">
-                            <button class="btn btn-primary offset-sm-8 col-sm-1 btn-block mr-3" type="button" onclick="viewData()">View Data</button>
+                            <button class="btn btn-primary offset-sm-7 col-sm-1 btn-block mr-3" type="button" onclick="viewData()">View Data</button>
                             <button class="btn btn-primary col-sm-1 mr-3" type="button" onclick="cetakData()" id="btnCetak">Cetak BPB</button>
-                            <button class="btn btn-danger col-sm-1" type="button" onclick="batalCetak()">Batal</button>
-                            <button class="btn btn-info col-sm-1" type="button" onclick="kirimFtp()">Jangan Dipencet</button>
+                            <button class="btn btn-danger col-sm-1 mr-3" type="button" onclick="batalCetak()">Batal</button>
+                            <button class="btn btn-info col-sm-1 mr-3" type="button" onclick="kirimFtp()">Kirim Report</button>
                         </div>
                     </form>
                 </div>
@@ -85,417 +85,580 @@
 </div>
 
 <div class="modal fade" id="m_signature" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Sign Here : </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <div class="container">
-                    <table class="table-borderless">
-                        <tbody>
-                            <tr>
-                                <td>Supplier/Expedisi</td>
-                                <td>Logistic Adm.Sr.Clerk</td>
-                                <td>Logistic Adm.Clerk</td>
-                            </tr>
-                            <tr>
-                                <td><input type="text" class="form-control" id="nama_personil" placeholder="Mohon isi nama pejabat"></td>
-                                <td><input type="text" class="form-control" id="nama_personil2" placeholder="Mohon isi nama pejabat"></td>
-                                <td><input type="text" class="form-control" id="nama_personil3" placeholder="Mohon isi nama pejabat"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="row align-items-center">
+                        <div class="col-2"></div>
+                        <div class="col-3">
+                            <label for="nama_personil">Supplier/Expedisi</label>
+                        </div>
+                        <div class="col-5">
+                            <div class="input-group mb">
+                                <input autocomplete="off" type="text" id="nama_personil" class="form-control">
+                                <button id="showUserBtn" class="btn btn btn-light" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="showUser()" placeholder="Mohon isi nama personil">&#x1F50E;</button>
+                            </div>
+                        </div>
+                    </div>
                     <br>
                     <div class="row">
                         <div class="col">
-                            <!-- <div id="jabatan">
-                                <p><b>Jabatan: </b>Logistic Adm.Clerk</p>
-                                <input type="text" class="form-control" id="nama_personil" placeholder="Mohon isi nama pejabat">
-                            </div> -->
                             <div class="containersig" style="text-align:center;">
                                 <div id="sig"></div>
-                                <div id="sig2"></div>
-                                <div id="sig3"></div>
+                                <div id="sig2" hidden></div>
+                                <div id="sig3" hidden></div>
                             </div>
                             <br />
-                            <button id="clear" class="btn btn-danger">Clear</button>
-                            <button id="save" class="btn btn-success">Save</button>
                             <textarea id="signature64" name="signed" style="display: none"></textarea>
-                            <textarea id="signature64_2" name="signed" style="display: none"></textarea>
-                            <textarea id="signature64_3" name="signed" style="display: none"></textarea>
+                            <textarea id="signature64_2" name="signed" style="display: none" hidden></textarea>
+                            <textarea id="signature64_3" name="signed" style="display: none" hidden></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-5"></div>
+                        <div class="col">
+                            <button id="clear" class="btn btn-danger btn-lg">Clear</button>
+                            <span class="space"></span>
+                            <button id="save" class="btn btn-success btn-lg">Save</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <label for="">Save -> Enter</label>
+                    <label for="">/</label>
+                    <label for="">Clear -> Space</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- BTB Modal -->
+    <div class="modal fade" id="modalHelp" tabindex="-1" role="dialog" aria-labelledby="modalHelpTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col">
+                                <table class="table table-borderless" id="tableModalHelp">
+                                    <thead class="theadDataTables">
+                                        <tr>
+                                            <th id="modalThName1"></th>
+                                            <th id="modalThName2"></th>
+                                            <th id="modalThName3"></th>
+                                            <th id="modalThName4"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyModalHelp"></tbody>
+                                </table>
+                                <p class="text-hide" id="idModal"></p>
+                                <p class="text-hide" id="idRow"></p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <label for="">Save -> Enter</label>
-                <label for="">/</label>
-                <label for="">Clear -> Space</label>
-            </div>
         </div>
     </div>
-</div>
+    <!-- BTB Modal -->
 
-<style>
-    .table-wrapper {
-        overflow-y: scroll;
-        height: 500px;
-    }
-
-    .table-wrapper th {
-        position: sticky;
-        top: 0;
-    }
-
-    .table-wrapper table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-
-    .table-wrapper th {
-        background: #5AA4DD;
-    }
-
-    .table-wrapper td,
-    th {
-        padding: 10px;
-        text-align: center;
-    }
-
-    .kbw-signature {
-        width: 225px;
-        height: 175px;
-    }
-
-    #sig canvas,
-    #sig2 canvas,
-    #sig3 canvas {
-        width: 100%;
-        height: 100%;
-    }
-
-    td {
-        text-align: center;
-    }
-</style>
-
-<script>
-    let typeTrn;
-    let tablePrintBPB;
-    let btnCetak = $('#btnCetak');
-    let documentTemp;
-    var currUrl = '{{ url()->current() }}';
-    currUrl = currUrl.replace("index", "");
-    $(document).ready(function() {
-        startAlert();
-        // typeTrn = 'B'
-        btnCetak.attr('disabled', true);
-        // tablePrintBPB = $('#tablePrintBPB').DataTable()
-    });
-
-    function startAlert() {
-        swal({
-            title: 'Jenis Penerimaan?',
-            icon: 'info',
-            buttons: {
-                confirm: "Penerimaan",
-                roll: {
-                    text: "Lain-lain",
-                    value: "lain",
-                },
-            }
-        }).then(function(confirm) {
-            switch (confirm) {
-                case true:
-                    typeTrn = 'B';
-                    break;
-
-                case "lain":
-                    typeTrn = 'L';
-                    break;
-
-                default:
-                    typeTrn = 'N';
-            }
-            $('#startDate').focus();
-        })
-    }
-
-    function viewData() {
-        if (!typeTrn || typeTrn === 'N') {
-            startAlert();
-
-            return false;
+    <style>
+        .table-wrapper {
+            overflow-y: scroll;
+            height: 500px;
         }
 
-        let startDate = $('#startDate').val();
-        let endDate = $('#endDate').val();
-        let type = $('#type').val();
-        let size = $('#size').val();
-        let checked = ($("input:checked").val()) ? $("input:checked").val() : '0';
+        .table-wrapper th {
+            position: sticky;
+            top: 0;
+        }
 
-        ajaxSetup();
-        $.ajax({
-            method: 'POST',
-            url: currUrl + 'viewdata',
-            data: {
-                startDate: startDate,
-                endDate: endDate,
-                type: type,
-                size: size,
-                checked: checked,
-                typeTrn: typeTrn
-            },
-            beforeSend: () => {
-                $('#modal-loader').modal('show');
-                // tablePrintBPB.row().remove();
-                $('.rowTbodyTableBTB').remove();
-            },
-            success: function(result) {
-                $("#selectAll").prop("checked", false);
-                console.log(result);
-                $('#modal-loader').modal('hide');
-                if (type == 2) {
-                    $('#changeTheadName').text('No Dokumen');
-                } else {
-                    $('#changeTheadName').text('No Referensi');
+        .table-wrapper table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .table-wrapper th {
+            background: #5AA4DD;
+        }
+
+        .table-wrapper td,
+        th {
+            padding: 10px;
+            text-align: center;
+        }
+
+        .kbw-signature {
+            width: 800px;
+            height: 750px;
+        }
+
+        #sig canvas,
+        #sig2 canvas,
+        #sig3 canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        td {
+            text-align: center;
+        }
+
+        .modalRowNames {
+            cursor: pointer;
+        }
+
+        .modalRowNames:hover {
+            background-color: #e9ecef;
+        }
+    </style>
+
+    <script>
+        let typeTrn;
+        let tablePrintBPB;
+        let btnCetak = $('#btnCetak');
+        let documentTemp;
+        var currUrl = '{{ url()->current() }}';
+        currUrl = currUrl.replace("index", "");
+        let modalHelpTitle = $('#modalHelpTitle')
+        let modalThName1 = $('#modalThName1');
+        let modalThName2 = $('#modalThName2');
+        let modalThName3 = $('#modalThName3');
+        let modalThName4 = $('#modalThName4');
+        let modalHelp = $('#modalHelp');
+        let tableModalHelp = $('#tableModalHelp').DataTable();
+        let nama_personil = $('#nama_personil');
+        $(document).ready(function() {
+            startAlert();
+            // typeTrn = 'B'
+            btnCetak.attr('disabled', true);
+            // tablePrintBPB = $('#tablePrintBPB').DataTable()
+        });
+
+        function startAlert() {
+            swal({
+                title: 'Jenis Penerimaan?',
+                icon: 'info',
+                buttons: {
+                    confirm: "Penerimaan",
+                    roll: {
+                        text: "Lain-lain",
+                        value: "lain",
+                    },
                 }
+            }).then(function(confirm) {
+                switch (confirm) {
+                    case true:
+                        typeTrn = 'B';
+                        viewData();
+                        break;
 
-                if (result.length > 0) {
-                    for (let i = 0; i < result.length; i++) {
-                        // tablePrintBPB.row.add([result[i].msth_nodoc, formatDate(result[i].msth_tgldoc), `<input type="checkbox" class="form-control"  value="1">`]).draw()
-                        $('#tbodyTableBTB').append(`<tr class="rowTbodyTableBTB">
+                    case "lain":
+                        typeTrn = 'L';
+                        viewData();
+                        break;
+
+                    default:
+                        typeTrn = 'N';
+                }
+                $('#startDate').focus();
+            })
+        }
+
+        function viewData() {
+            if (!typeTrn || typeTrn === 'N') {
+                startAlert();
+
+                return false;
+            }
+
+            let startDate = $('#startDate').val();
+            let endDate = $('#endDate').val();
+            let type = $('#type').val();
+            let size = $('#size').val();
+            let checked = ($("input:checked").val()) ? $("input:checked").val() : '0';
+
+            ajaxSetup();
+            $.ajax({
+                method: 'POST',
+                url: currUrl + 'viewdata',
+                data: {
+                    startDate: startDate,
+                    endDate: endDate,
+                    type: type,
+                    size: size,
+                    checked: checked,
+                    typeTrn: typeTrn
+                },
+                beforeSend: () => {
+                    $('#modal-loader').modal('show');
+                    // tablePrintBPB.row().remove();
+                    $('.rowTbodyTableBTB').remove();
+                },
+                success: function(result) {
+                    $("#selectAll").prop("checked", false);
+                    console.log(result);
+                    $('#modal-loader').modal('hide');
+                    if (type == 2) {
+                        $('#changeTheadName').text('No Dokumen');
+                    } else {
+                        $('#changeTheadName').text('No Referensi');
+                    }
+
+                    if (result.length > 0) {
+                        for (let i = 0; i < result.length; i++) {
+                            // tablePrintBPB.row.add([result[i].msth_nodoc, formatDate(result[i].msth_tgldoc), `<input type="checkbox" class="form-control"  value="1">`]).draw()
+                            $('#tbodyTableBTB').append(`<tr class="rowTbodyTableBTB">
                                                             <td>${result[i].nodoc}</td>
                                                             <td>${formatDate(result[i].tgldoc)}</td>
                                                             <td><input type="checkbox" class="form-control data-checkbox" name="type"  value="${result[i].nodoc}"></td>
                                                         </tr>`)
-                    }
-                    btnCetak.attr('disabled', false);
-                } else {
-                    $('#tbodyTableBTB').append(`<tr class="rowTbodyTableBTB"> <td colspan="3" class="text-center">No data available in table</td> </tr>`)
-                    // tablePrintBPB.row.add(['--', '--', '--']).draw()
-                    btnCetak.attr('disabled', true);
-                }
-            },
-            error: function(err) {
-                $('#modal-loader').modal('hide');
-                console.log(err.responseJSON.message.substr(0, 100));
-                alertError(err.statusText, err.responseJSON.message)
-            }
-        })
-    }
-
-    function batalCetak() {
-        location.reload();
-    }
-
-    function showModal() {
-        $('#m_signature').modal({
-            backdrop: 'static',
-            keyboard: false
-        });
-    }
-
-    $(document).keypress(function(e) {
-        if (e.keyCode == 32) {
-            $('#clear').click();
-        } else if (e.keyCode == 13) {
-            $('#save').click();
-        }
-    });
-
-    function kirimFtp() {
-        var currUrl = '{{ url()->current() }}';
-        currUrl = currUrl.replace("index", "");
-        $.ajax({
-            method: 'GET',
-            url: currUrl + 'kirimftp',
-            beforeSend: () => {
-                $('#modal-loader').modal('show');
-            },
-            success: (response) => {
-                $('#modal-loader').modal('hide');
-                console.log(response);
-            },
-            error: () => {
-                $('#modal-loader').modal('hide');
-
-            }
-        });
-    }
-
-    function cetakData() {
-        let startDate = $('#startDate').val();
-        let endDate = $('#endDate').val();
-        let type = $('#type').val();
-        let size = $('#size').val();
-        let checked = ($("#re-print").prop('checked')) ? '1' : '0';
-        let document = [];
-        var currUrl = '{{ url()->current() }}';
-        currUrl = currUrl.replace("index", "");
-        if (!startDate || !endDate) {
-            swal('Tanggal harus diisi !!', '', 'warning');
-            return false;
-        }
-
-        $("input:checkbox[name=type]:checked").each(function() {
-            document.push($(this).val());
-            console.log($(this).val());
-        });
-
-        $.ajax({
-            method: 'POST',
-            url: currUrl + 'cetakdata',
-            data: {
-                startDate: startDate,
-                endDate: endDate,
-                type: type,
-                size: size,
-                checked: checked,
-                typeTrn: typeTrn,
-                document: document
-            },
-            beforeSend: () => {
-                $('#modal-loader').modal('show');
-                var signedBy = $('#nama_personil').val('');
-                var signedBy2 = $('#nama_personil2').val('');
-                var signedBy3 = $('#nama_personil3').val('');
-            },
-            success: function(result) {
-                $('#modal-loader').modal('hide');
-                console.log(result);
-                if (result.kode == 1) {
-                    documentTemp = document;
-                    if (result.list == 1) {
-                        window.open(currUrl + 'viewreport/' + checked + '/' + result.data + '/' + documentTemp + '/' + result.list);
-                    } else {
-                        if (result.nota != null || result.nota != '') {
-                            showModal();
-                            var sig = $('#sig').signature({
-                                syncField: '#signature64',
-                                syncFormat: 'PNG'
-                            });
-                            var sig2 = $('#sig2').signature({
-                                syncField: '#signature64_2',
-                                syncFormat: 'PNG'
-                            });
-                            var sig3 = $('#sig3').signature({
-                                syncField: '#signature64_3',
-                                syncFormat: 'PNG'
-                            });
-                            $('#save').click(function(e) {
-                                var dataURL = $('#sig').signature('toDataURL', 'image/jpeg', 0.8);
-                                var dataURL2 = $('#sig2').signature('toDataURL', 'image/jpeg', 0.8);
-                                var dataURL3 = $('#sig3').signature('toDataURL', 'image/jpeg', 0.8);
-                                signedBy = $('#nama_personil').val();
-                                signedBy2 = $('#nama_personil2').val();
-                                signedBy3 = $('#nama_personil3').val();
-                                ajaxSetup();
-                                $.ajax({
-                                    type: "POST",
-                                    url: currUrl + 'save',
-                                    data: {
-                                        sign: dataURL,
-                                        signed: $('#signature64').val(),
-                                        sign2: dataURL2,
-                                        signed2: $('#signature64_2').val(),
-                                        sign3: dataURL3,
-                                        signed3: $('#signature64_3').val(),
-                                        signedby: signedBy,
-                                        signedby2: signedBy2,
-                                        signedby3: signedBy3
-                                    },
-                                    beforeSend: function() {
-                                        $('#modal-loader').modal('show');
-                                    },
-                                    success: function(response) {
-                                        console.log(response);
-                                        swal({
-                                            title: response.message,
-                                            icon: 'success'
-                                        }).then(function(ok) {
-                                            $('#clear').click();
-                                            $('#modal-loader').modal('hide');
-                                            $('#m_signature').modal('hide');
-                                            data_nota = result.data;
-                                            split_nota = data_nota.split(",");
-                                            window.open(currUrl + 'viewreport/' + checked + '/' + split_nota[0] + '/' + result.nota + '/' + response.data);
-                                            window.open(currUrl + 'viewreport/' + checked + '/' + split_nota[1] + '/' + result.nota + '/' + response.data);
-                                            if (result.lokasi == 1 && checked == 0) {
-                                                window.open(currUrl + 'viewreport/' + checked + '/' + 'lokasi' + '/' + documentTemp + '/' + result.lokasi);
-                                            }
-                                        });
-                                    },
-                                    error: function(error) {
-                                        $('#modal-loader').modal('hide');
-                                        swal({
-                                            title: error.message,
-                                            icon: 'error',
-                                        }).then(() => {
-                                            $('#modal-loader').modal('hide');
-                                        });
-                                    },
-                                })
-                            });
-                            $('#clear').click(function(e) {
-                                e.preventDefault();
-                                sig.signature('clear');
-                                $("#signature64").val('');
-                                sig2.signature('clear');
-                                $("#signature64_2").val('');
-                                sig3.signature('clear');
-                                $("#signature64_3").val('');
-                            });
                         }
+                        btnCetak.attr('disabled', false);
+                    } else {
+                        $('#tbodyTableBTB').append(`<tr class="rowTbodyTableBTB"> <td colspan="3" class="text-center">No data available in table</td> </tr>`)
+                        // tablePrintBPB.row.add(['--', '--', '--']).draw()
+                        btnCetak.attr('disabled', true);
                     }
-                } else {
-                    swal('Data tidak terbaca', 'Mohon muat ulang dan coba lagi/ uncheck check all sebelum view data', 'error');
+                },
+                error: function(err) {
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0, 100));
+                    alertError(err.statusText, err.responseJSON.message)
                 }
-            },
-            error: function(err) {
-                $('#modal-loader').modal('hide');
-                console.log(err.responseJSON.message.substr(0, 100));
-                alertError(err.statusText, err.responseJSON.message)
+            })
+        }
+
+        function batalCetak() {
+            location.reload();
+        }
+
+        function showUser() {
+            try {
+                modalHelp.modal('show');
+                modalHelpTitle.text("Daftar Nama");
+                modalThName1.text('Id');
+                modalThName2.text('Level');
+                modalThName3.text('Nama');
+                modalThName3.show();
+                modalThName4.hide();
+            } catch (e) {
+                swal({
+                    icon: 'info',
+                    title: 'Data Sama',
+                    text: 'Data Tidak Ditemukan!',
+                    timer: 2000
+                });
+            }
+
+            tableModalHelp.clear().destroy();
+            tableModalHelp = $('#tableModalHelp').DataTable({
+                ajax: currUrl + 'users',
+                responsive: true,
+                paging: true,
+                ordering: true,
+                paging: true,
+                autoWidth: false,
+                columns: [{
+                        data: 'userid',
+                        name: 'Id'
+                    },
+                    {
+                        data: 'userlevel',
+                        name: 'Level'
+                    },
+                    {
+                        data: 'username',
+                        name: 'Nama'
+                    },
+                ],
+                createdRow: function(row, data, dataIndex) {
+                    $(row).addClass('modalRowNames');
+                },
+                "order": []
+            });
+        }
+
+        $(document).on('click', '.modalRowNames', function() {
+            let currentButton = $(this);
+            let userid = currentButton.children().first().text();
+            let userlevel = currentButton.children().first().next().text();
+            let username = currentButton.children().first().next().next().text();
+            nama_personil.val(username);
+            modalHelp.modal('hide');
+        });
+
+        function showModal() {
+            $('#m_signature').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+        }
+
+        $(document).keypress(function(e) {
+            if (e.keyCode == 32) {
+                $('#clear').click();
+            } else if (e.keyCode == 13) {
+                $('#save').click();
+            }
+        });
+
+        function kirimFtp() {
+            var currUrl = '{{ url()->current() }}';
+            currUrl = currUrl.replace("index", "");
+            swal("Kirim File dari server ke SD6?", {
+                icon: "info",
+                buttons: {
+                    cancel: {
+                        text: "Tutup",
+                        value: 'tutup',
+                        visible: true
+                    },
+                    confirm: {
+                        text: "Kirim",
+                        value: 'kirim',
+                        visible: true
+                    },
+                },
+            }).then((result) => {
+                if (result == 'kirim') {
+                    $.ajax({
+                        method: 'GET',
+                        url: currUrl + 'kirimftp',
+                        beforeSend: () => {
+                            $('#modal-loader').modal('show');
+                        },
+                        success: (response) => {
+                            $('#modal-loader').modal('hide');
+                            if (response['kode'] == 0) {
+                                swal('', response['message'], 'error');
+                            } else if (response['kode'] == 1) {
+                                swal('', response['message'], 'success');
+                            } else {
+                                swal('', response['message'], 'info');
+                            }
+                        },
+                        error: () => {
+                            $('#modal-loader').modal('hide');
+                        }
+                    });
+                }
+            });
+        }
+
+        function fxcetakData(startDate, endDate, type, size, checked, typeTrn, document) {
+            $.ajax({
+                method: 'POST',
+                url: currUrl + 'cetakdata',
+                data: {
+                    startDate: startDate,
+                    endDate: endDate,
+                    type: type,
+                    size: size,
+                    checked: checked,
+                    typeTrn: typeTrn,
+                    document: document
+                },
+                beforeSend: () => {
+                    $('#modal-loader').modal('show');
+                    var signedBy = $('#nama_personil').val('');
+                },
+                success: function(result) {
+                    $('#modal-loader').modal('hide');
+                    console.log(result);
+                    if (result.kode == 1) {
+                        documentTemp = document;
+                        if (result.list == 1) {
+                            window.open(currUrl + 'viewreport/' + checked + '/' + result.data + '/' + documentTemp + '/' + result.list);
+                        } else {
+                            if (result.nota != null || result.nota != '') {
+                                showModal();
+                                var sig = $('#sig').signature({
+                                    syncField: '#signature64',
+                                    syncFormat: 'PNG'
+                                });
+                                $('#save').click(function(e) {
+                                    if ($('#nama_personil').val() == null || $('#nama_personil').val() == '') {
+                                        swal({
+                                            icon: 'info',
+                                            title: 'Nama Kosong',
+                                            text: 'Harap mengisi nama personil expedisi!',
+                                            timer: 2000
+                                        });
+                                    } else {
+                                        var dataURL = $('#sig').signature('toDataURL', 'image/jpeg', 0.8);
+                                        signedBy = $('#nama_personil').val();
+                                        ajaxSetup();
+                                        $.ajax({
+                                            type: "POST",
+                                            url: currUrl + 'save',
+                                            data: {
+                                                sign: dataURL,
+                                                signed: $('#signature64').val(),
+                                                signedby: signedBy
+                                            },
+                                            beforeSend: function() {
+                                                $('#modal-loader').modal('show');
+                                            },
+                                            success: function(response) {
+                                                console.log(response);
+                                                swal({
+                                                    title: response.message,
+                                                    icon: 'success'
+                                                }).then(function(ok) {
+                                                    $('#clear').click();
+                                                    $('#modal-loader').modal('hide');
+                                                    $('#m_signature').modal('hide');
+                                                    data_nota = result.data;
+                                                    split_nota = data_nota.split(",");
+                                                    window.open(currUrl + 'viewreport/' + checked + '/' + split_nota[0] + '/' + result.nota + '/' + response.data);
+                                                    window.open(currUrl + 'viewreport/' + checked + '/' + split_nota[1] + '/' + result.nota + '/' + response.data);
+                                                    if (result.lokasi == 1 && checked == 0) {
+                                                        window.open(currUrl + 'viewreport/' + checked + '/' + 'lokasi' + '/' + documentTemp + '/' + result.lokasi);
+                                                    }
+                                                    // setTimeout(function() {
+                                                    //     $.ajax({
+                                                    //         method: 'GET',
+                                                    //         url: currUrl + 'deleteSigs',
+                                                    //         beforeSend: () => {
+                                                    //             $('#modal-loader').modal('show');
+                                                    //         },
+                                                    //         success: (response) => {
+                                                    //             $('#modal-loader').modal('hide');
+                                                    //             console.log(response);
+                                                    //             if (response['kode'] == 0) {
+                                                    //                 swal('', response['message'], 'error');
+                                                    //             } else if (response['kode'] == 1) {
+                                                    //                 swal('', response['message'], 'success');
+                                                    //             } else {
+                                                    //                 swal('', response['message'], 'info');
+                                                    //             }
+                                                    //         },
+                                                    //         error: () => {
+                                                    //             $('#modal-loader').modal('hide');
+                                                    //         }
+                                                    //     });
+                                                    // }, 2000);
+                                                });
+                                            },
+                                            error: function(error) {
+                                                $('#modal-loader').modal('hide');
+                                                swal({
+                                                    title: error.message,
+                                                    icon: 'error',
+                                                }).then(() => {
+                                                    $('#modal-loader').modal('hide');
+                                                });
+                                            },
+                                        })
+                                    }
+                                });
+                                $('#clear').click(function(e) {
+                                    e.preventDefault();
+                                    sig.signature('clear');
+                                    $("#signature64").val('');
+                                });
+                            }
+                        }
+                    } else {
+                        swal('Data tidak terbaca', 'Mohon muat ulang dan coba lagi/ uncheck check all sebelum view data', 'error');
+                    }
+                },
+                error: function(err) {
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0, 100));
+                    alertError(err.statusText, err.responseJSON.message)
+                }
+            })
+        }
+
+        function cetakData() {
+            let startDate = $('#startDate').val();
+            let endDate = $('#endDate').val();
+            let type = $('#type').val();
+            let size = $('#size').val();
+            let checked = ($("#re-print").prop('checked')) ? '1' : '0';
+            let document = [];
+            var currUrl = '{{ url()->current() }}';
+            currUrl = currUrl.replace("index", "");
+            if (!startDate || !endDate) {
+                swal('Tanggal harus diisi !!', '', 'warning');
+                return false;
+            }
+
+            $("input:checkbox[name=type]:checked").each(function() {
+                document.push($(this).val());
+                console.log($(this).val());
+            });
+
+            if (document.length > 1) {
+                swal({
+                    title: 'Peringatan',
+                    text: 'Anda akan mencetak beberapa dokumen dengan tanda tangan yang sama, apakah anda yakin?',
+                    icon: 'warning',
+                    buttons: {
+                        cancel: {
+                            text: "Batal",
+                            value: 'batal',
+                            visible: true
+                        },
+                        confirm: {
+                            text: "Oke",
+                            value: 'oke',
+                            visible: true
+                        },
+                    },
+                }).then((result) => {
+                    if (result == 'oke') {
+                        fxcetakData(startDate, endDate, type, size, checked, typeTrn, document);
+                    }
+                });
+            } else {
+                fxcetakData(startDate, endDate, type, size, checked, typeTrn, document);
+            }
+        }
+
+        $("#selectAll").click(function() {
+            $(".data-checkbox").prop('checked', $(this).prop('checked'));
+        });
+
+        $('#startDate').on('change', function(e) {
+            if ($('#endDate').val() < $('#startDate').val()) {
+                swal("Tanggal Tidak Benar", "", "warning");
+                $('#startDate').focus();
+                $('#startDate').val('');
+                return false
+            } else {
+                $('#endDate').focus();
             }
         })
-    }
 
-    $("#selectAll").click(function() {
-        $(".data-checkbox").prop('checked', $(this).prop('checked'));
-        // $("input[type=checkbox]").prop('checked', $(this).prop('checked'));
-        // $(".data-checkbox").prop('checked', true);
-    });
+        $('#endDate').on('change', function(e) {
+            if ($('#endDate').val() < $('#startDate').val()) {
+                swal("Tanggal Tidak Benar", "", "warning");
+                $('#endDate').focus();
+                $('#endDate').val('');
+                return false
+            } else {
+                $('#type').focus();
+            }
+        })
 
-    $('#startDate').on('change', function(e) {
-        if ($('#endDate').val() < $('#startDate').val()) {
-            swal("Tanggal Tidak Benar", "", "warning");
-            $('#startDate').focus();
-            $('#startDate').val('');
-            return false
-        } else {
-            $('#endDate').focus();
-        }
-    })
-
-    $('#endDate').on('change', function(e) {
-        if ($('#endDate').val() < $('#startDate').val()) {
-            swal("Tanggal Tidak Benar", "", "warning");
-            $('#endDate').focus();
-            $('#endDate').val('');
-            return false
-        } else {
-            $('#type').focus();
-        }
-    })
-
-    $('#size').keypress(function(e) {
-        if (e.which === 13) {
-            viewData();
-        }
-    })
-</script>
+        $('#size').keypress(function(e) {
+            if (e.which === 13) {
+                viewData();
+            }
+        })
+    </script>
 
 
 
-@endsection
+    @endsection

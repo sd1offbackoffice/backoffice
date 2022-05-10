@@ -1,0 +1,834 @@
+CREATE OR REPLACE PROCEDURE SP_REODER_GO_MIGRASI(
+    P_USID IN VARCHAR2,
+    p_status out varchar2,
+    p_result out varchar2,
+    p_tolakan2 out varchar,
+    p_tolakan3 out varchar
+)
+IS
+--http://172.20.28.17/BackOffice/public/bo/pb/reorder-pb-go/procedure
+    STEP               NUMBER        := 0;
+    NOPB               VARCHAR2 (9);
+    CEK_ADA            NUMBER;
+    QTYA               NUMBER        := 0;
+    FDHSATA            NUMBER        := 0;
+    FDDIS1A            NUMBER        := 0;
+    FDDIR1A            NUMBER        := 0;
+    PPMA               NUMBER        := 0;
+    BTLA               NUMBER        := 0;
+    --fdbns1A number := 0;
+    --fdjtopA := fdnourA :=
+    FDFDI1A            VARCHAR2 (1);
+    FDBNS1A            NUMBER        := 0;
+    FDBNS2A            NUMBER        := 0;
+    FDJTOPA            NUMBER        := 0;
+    FDDIS2A            NUMBER        := 0;
+    FDDISRA            NUMBER        := 0;
+    FDQTYBA            NUMBER        := 0;
+    FDQTYKA            NUMBER        := 0;
+    FDTNILA            NUMBER        := 0;
+    --fdfdisA := ' '
+    FDTPPNA            NUMBER        := 0;
+    FDTPPMA            NUMBER        := 0;
+    FDTBTLA            NUMBER        := 0;
+    FDFDISA            VARCHAR2 (19) := NULL;
+    TGLTAKHIR          DATE;
+    NILAIPPN           NUMBER;
+    TEMP_FRAC          NUMBER;
+    OKE                BOOLEAN;
+    V_FMJTOP           NUMBER;
+    V_FMTIPE           VARCHAR2 (1);
+    V_FMQBL1           NUMBER;
+    V_FMBTM2           DATE;
+    V_FMRCID           VARCHAR2 (1);
+    V_FMQBL2           NUMBER;
+    V_FMBTA2           DATE;
+    V_FMKSUP           VARCHAR2 (5);
+    V_FMQBL3           NUMBER;
+    V_FMKLP2           VARCHAR2 (1);
+    V_FMBELI           NUMBER;
+    V_FMQBL4           NUMBER;
+    V_FMQPB1           NUMBER;
+    V_FMDIRP           NUMBER;
+    V_FMQBL5           NUMBER;
+    V_FMQPB2           NUMBER;
+    V_FMDIRR           NUMBER;
+    V_FMQBL6           NUMBER;
+    V_FMQPB3           NUMBER;
+    V_FMDIRS           VARCHAR2 (1);
+    V_FMQBS1           NUMBER;
+    V_FMQBN1           NUMBER;
+    V_FMPPNB           NUMBER;
+    V_FMQBS2           NUMBER;
+    V_FMQBN2           NUMBER;
+    V_FMNBTL           NUMBER;
+    V_FMQBS3           NUMBER;
+    V_FMQBN3           NUMBER;
+    V_FMBNTM           DATE;
+    V_FMQBS4           NUMBER;
+    V_FMDITM           DATE;
+    V_FMBNTA           DATE;
+    V_FMQBS5           NUMBER;
+    V_FMDITA           DATE;
+    V_FMKLPT           VARCHAR2 (1);
+    V_FMQBS6           NUMBER;
+    V_FMDITP           NUMBER;
+    V_FMDITR           NUMBER;
+    V_FTOP             VARCHAR (1);
+    V_KPKN             NUMBER;
+    V_KPKR             NUMBER;
+    V_PKP              VARCHAR (1);
+    V_MINR             NUMBER;
+    V_MINC             NUMBER;
+    V_STQTY            NUMBER;
+    TEMP_PRINT         NUMBER;
+    TEMP_RECID         VARCHAR2 (1)  := NULL;
+    T_QTY              NUMBER;
+    T_DISCR1           NUMBER;
+    T_DISCR2           NUMBER;
+    T_BNSPO1           NUMBER;
+    T_BNSPO2           NUMBER;
+    T_GROSS            NUMBER;
+    T_PPN              NUMBER;
+    T_PPNBM            NUMBER;
+    T_BOTOL            NUMBER;
+    TEMP_SEEKPBPRINT   NUMBER;
+    FDKSUPA            VARCHAR2 (5);
+    RPHMINB            NUMBER;
+    QTYMINB            NUMBER;
+    QTYMINA            NUMBER        := 0;
+    RPHMINA            NUMBER        := 0;
+    FDNOURA            NUMBER        := 0;
+    TEMP_PBMAST        NUMBER;
+    TP_QTYPB           NUMBER        := 0;
+    TP_BONUSPO1        NUMBER        := 0;
+    TP_BONUSPO2        NUMBER        := 0;
+    TP_GROSS           NUMBER        := 0;
+    TP_PPN             NUMBER        := 0;
+    TP_PPNBM           NUMBER        := 0;
+    TP_PPNBOTOL        NUMBER        := 0;
+    TEMP_TOLAK2        NUMBER;
+    TEMP_TOLAK3        NUMBER;
+    P_KODEIGR VARCHAR2(2);
+    P_NOPB VARCHAR2(100);
+BEGIN
+    STEP := 0;
+
+    SELECT PRS_KODEIGR INTO P_KODEIGR FROM TBMASTER_PERUSAHAAN;
+
+    SELECT TRUNC (PRS_PERIODETERAKHIR), (1+(nvl(PRS_NILAIPPN,10)/100)) PRS_NILAIPPN
+      INTO TGLTAKHIR, NILAIPPN
+      FROM TBMASTER_PERUSAHAAN
+     WHERE PRS_KODEIGR = P_KODEIGR;
+
+    -----
+    --IF NILAIPPN = 0
+    --THEN
+      --  NILAIPPN := 1.1;
+    --END IF;
+
+    -----
+    NOPB :=
+        F_IGR_GET_NOMOR (P_KODEIGR,
+                         'PB',
+                         'Nomor Permintaan Barang',
+                         P_KODEIGR || TO_CHAR (SYSDATE, 'yyMM'),
+                         3,
+                         FALSE
+                        );
+    OKE := FALSE;
+    ----
+    STEP := 1;
+    --first_record;
+
+    FOR PB IN
+        (SELECT   TPOD_QTYPO, TPOD_QTYPB, PRD_ISIBELI, PRD_PRDCD, PRD_FRAC, PRD_UNIT,
+                            PRD_FLAGBKP1, PRD_KODEDEPARTEMENT, PRD_KODEKATEGORIBARANG,
+                                    PRD_KODEDIVISI, PRD_KODEDIVISIPO, PRD_KODETAG, TPOD_RECORDID,
+                                    TPOD_NOPO, TPOD_TGLPO, TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN,
+                                    TPOD_DIVISIPO, TPOD_KATEGORIBARANG, TPOD_PRDCD, ((nvl(PRD_PPN,10)/100)) PRD_PPN
+             FROM TBTR_PO_H, TBTR_PO_D, TBMASTER_PRODMAST, TBTR_MSTRAN_H
+            WHERE TPOD_KODEIGR = P_KODEIGR
+              AND TPOD_PRDCD = PRD_PRDCD
+              AND TPOH_NOPO = TPOD_NOPO
+              AND (   NVL (TPOD_QTYPB, 0) =
+                          0
+                   OR (NVL (TPOD_QTYPO, 0) - NVL (TPOD_QTYPB, 0)) <> 0
+                  )
+              AND NVL (TPOD_KODETAG, 'Z') <> '*' --dihilangkan 14-2-14 info pak sugi
+                                                                                       --dibuka lagi agar po yg sudah direorder tidak reorder lagi
+              --AND NVL (PRD_KODETAG, 'zzz') =
+               --       'zzz'
+-------- Flag Tidak boleh order -------- //!EMPTY( prodmast->ptag) .AND. REFER( "t_status", "tstatus1", prodmast->ptag, "ftftbo")=="Y" skip
+              AND NVL (PRD_FLAGBARANGORDERTOKO, 'Z') <> 'Y'   ----- Flag Barang Order Toko -------
+              AND SUBSTR (PRD_KODEKATEGORIBARANG, 1, 1) <> 'C'          ----- Barang Counter -------
+              AND (   NVL (PRD_KODETAG, '1') IN (SELECT TAG_KODETAG
+                                                   FROM TBMASTER_TAG
+                                                  WHERE NVL (TAG_TIDAKBOLEHORDER, 'N') <> 'Y')
+                   OR NVL (PRD_KODETAG, '1') = '1' or prd_kodetag = '' or prd_kodetag = ' '
+                  )
+              AND MSTH_NOPO = TPOH_NOPO
+                             AND NVL(MSTH_RECORDID,'0') <> '1'
+         ORDER BY TPOD_PRDCD, TPOH_KODESUPPLIER)
+    LOOP
+        STEP := 2;
+        ------- Cek PO OutStanding -------
+        QTYA := NVL (PB.TPOD_QTYPO, 0) - NVL (PB.TPOD_QTYPB, 0);
+        STEP := 3;
+
+        ------- Pembulatan Ke Atas bila Diatas 50% -------
+        IF MOD (QTYA, PB.PRD_ISIBELI) <> 0
+        THEN
+            QTYA := (PB.PRD_ISIBELI * ROUND (QTYA / PB.PRD_ISIBELI)) + PB.PRD_ISIBELI;
+        END IF;
+
+        STEP := 4;
+
+        ------------ Ambil supplier -------------
+        FOR HGBELI IN (SELECT *
+                         FROM TBMASTER_HARGABELI
+                        WHERE NVL (HGB_RECORDID, 'zzz') = 'zzz'
+                                                               --AND nvl(HGB_Tipe,'zzz') = 'zzz'
+                              AND HGB_PRDCD = PB.PRD_PRDCD)
+        LOOP
+            STEP := 5;
+            V_FMJTOP := HGBELI.HGB_TOP;
+            V_FMTIPE := HGBELI.HGB_TIPE;
+            V_FMQBL1 := HGBELI.HGB_QTYMULAI1BONUS01;
+            V_FMBTM2 := HGBELI.HGB_TGLMULAIBONUS02;
+            V_FMRCID := HGBELI.HGB_RECORDID;
+            V_FMQBL2 := HGBELI.HGB_QTYMULAI2BONUS01;
+            V_FMBTA2 := HGBELI.HGB_TGLAKHIRBONUS02;
+            V_FMKSUP := HGBELI.HGB_KODESUPPLIER;
+            V_FMQBL3 := HGBELI.HGB_QTYMULAI3BONUS01;
+            V_FMKLP2 := HGBELI.HGB_FLAGKELIPATANBONUS02;
+            V_FMBELI := HGBELI.HGB_HRGBELI;
+            V_FMQBL4 := HGBELI.HGB_QTYMULAI4BONUS01;
+            V_FMQPB1 := HGBELI.HGB_QTYMULAI1BONUS02;
+            V_FMDIRP := HGBELI.HGB_PERSENDISC01;
+            V_FMQBL5 := HGBELI.HGB_QTYMULAI5BONUS01;
+            V_FMQPB2 := HGBELI.HGB_QTYMULAI2BONUS02;
+            V_FMDIRR := HGBELI.HGB_RPHDISC01;
+            V_FMQBL6 := HGBELI.HGB_QTYMULAI6BONUS01;
+            V_FMQPB3 := HGBELI.HGB_QTYMULAI3BONUS02;
+            V_FMDIRS := HGBELI.HGB_FLAGDISC01;
+            V_FMQBS1 := HGBELI.HGB_QTY1BONUS01;
+            V_FMQBN1 := HGBELI.HGB_QTY1BONUS02;
+            V_FMPPNB := HGBELI.HGB_PPNBM;
+            V_FMQBS2 := HGBELI.HGB_QTY2BONUS01;
+            V_FMQBN2 := HGBELI.HGB_QTY2BONUS02;
+            V_FMNBTL := HGBELI.HGB_PPNBOTOL;
+            V_FMQBS3 := HGBELI.HGB_QTY3BONUS01;
+            V_FMQBN3 := HGBELI.HGB_QTY3BONUS02;
+            V_FMBNTM := HGBELI.HGB_TGLMULAIBONUS01;
+            V_FMQBS4 := HGBELI.HGB_QTY4BONUS01;
+            V_FMDITM := HGBELI.HGB_TGLMULAIDISC02;
+            V_FMBNTA := HGBELI.HGB_TGLAKHIRBONUS01;
+            V_FMQBS5 := HGBELI.HGB_QTY5BONUS01;
+            V_FMDITA := HGBELI.HGB_TGLAKHIRDISC02;
+            V_FMKLPT := HGBELI.HGB_FLAGKELIPATANBONUS01;
+            V_FMQBS6 := HGBELI.HGB_QTY6BONUS01;
+            V_FMDITP := HGBELI.HGB_PERSENDISC02;
+            V_FMDITR := HGBELI.HGB_RPHDISC02;
+
+            FOR SUPPLIER IN (SELECT *
+                               FROM TBMASTER_SUPPLIER
+                              WHERE SUP_KODESUPPLIER = V_FMKSUP)
+            LOOP
+                STEP := 6;
+                V_FTOP := SUPPLIER.SUP_FLAGOPENTOP;
+                V_KPKN := SUPPLIER.SUP_KONDISIPBYKONSINYASI;
+                V_KPKR := TO_NUMBER (SUPPLIER.SUP_KONDISIPBYKREDIT);
+                V_PKP := SUPPLIER.SUP_PKP;
+                V_MINR := SUPPLIER.SUP_MINRPH;
+                V_MINC := SUPPLIER.SUP_MINKARTON;
+            END LOOP;
+        END LOOP;
+
+        STEP := 7;
+
+        IF PB.PRD_FRAC = 1000 AND PB.PRD_UNIT = 'KG'
+        THEN
+            FDHSATA := V_FMBELI * 1;
+        ELSE
+            FDHSATA := V_FMBELI * PB.PRD_FRAC;
+        END IF;
+
+        IF V_FMDIRP <> 0
+        THEN
+            FDDIS1A := V_FMDIRP;
+            FDDIR1A := 0;
+            FDFDI1A := NULL;
+        ELSE
+            FDDIS1A := 0;
+            FDDIR1A := V_FMDIRR;
+            FDFDI1A := V_FMDIRS;
+        END IF;
+
+        STEP := 8;
+
+        IF PB.PRD_FRAC = 1000 AND PB.PRD_UNIT = 'KG'
+        THEN
+            PPMA := V_FMPPNB * 1;
+        ELSE
+            PPMA := V_FMPPNB * PB.PRD_FRAC;
+        END IF;
+
+        STEP := 9;
+
+        IF PB.PRD_FRAC = 1000 AND PB.PRD_UNIT = 'KG'
+        THEN
+            BTLA := V_FMNBTL * 1;
+        ELSE
+            BTLA := V_FMNBTL * PB.PRD_FRAC;
+        END IF;
+
+        --++140313--
+        FDBNS1A := 0;
+        FDBNS2A := 0;
+        ----140313--
+        STEP := 10;
+
+        IF V_FMBNTM <= SYSDATE AND V_FMBNTA >= SYSDATE AND V_FMBNTA IS NOT NULL
+        THEN
+            IF V_FMKLPT = 'Y'
+            THEN
+                IF NVL (QTYA, 0) >= NVL (V_FMQBL1, 0)
+                THEN
+                    FDBNS1A := ROUND (NVL (QTYA, 0) / NVL (V_FMQBL1, 0)) * NVL (V_FMQBS1, 0);
+                END IF;
+            ELSE
+                CASE
+                    WHEN QTYA >= V_FMQBL1 AND QTYA < V_FMQBL2
+                    THEN
+                        FDBNS1A := NVL (V_FMQBS1, 0);
+                    WHEN QTYA >= V_FMQBL2 AND QTYA < V_FMQBL3
+                    THEN
+                        FDBNS1A := NVL (V_FMQBS2, 0);
+                    WHEN QTYA >= V_FMQBL3 AND QTYA < V_FMQBL4
+                    THEN
+                        FDBNS1A := NVL (V_FMQBS3, 0);
+                    WHEN QTYA >= V_FMQBL4 AND QTYA < V_FMQBL5
+                    THEN
+                        FDBNS1A := NVL (V_FMQBS4, 0);
+                    WHEN QTYA >= V_FMQBL5 AND QTYA < V_FMQBL6
+                    THEN
+                        FDBNS1A := NVL (V_FMQBS5, 0);
+                    WHEN QTYA >= V_FMQBL6
+                    THEN
+                        FDBNS1A := NVL (V_FMQBS6, 0);
+                END CASE;
+            END IF;
+        END IF;
+
+        STEP := 11;
+
+        IF V_FMBTM2 <= SYSDATE AND V_FMBTA2 >= SYSDATE AND V_FMBTA2 IS NOT NULL
+        THEN
+            IF V_FMKLP2 = 'Y'
+            THEN
+                IF QTYA >= V_FMQPB1
+                THEN
+                    FDBNS2A := ROUND (NVL (QTYA, 0) / NVL (V_FMQPB1, 0)) * NVL (V_FMQBN1, 0);
+                END IF;
+            ELSE
+                CASE
+                    WHEN QTYA >= V_FMQPB1 AND QTYA < V_FMQPB2
+                    THEN
+                        FDBNS2A := NVL (V_FMQBN1, 0);
+                    WHEN QTYA >= V_FMQPB2 AND QTYA < V_FMQPB3
+                    THEN
+                        FDBNS2A := NVL (V_FMQBN2, 0);
+                    WHEN QTYA >= V_FMQPB3
+                    THEN
+                        FDBNS2A := NVL (V_FMQBN3, 0);
+                END CASE;
+            END IF;
+        END IF;
+
+        STEP := 12;
+
+        ---------- TOP ----------
+        IF V_FTOP = 'Y'
+        THEN
+            FDJTOPA := NVL (V_FMJTOP, 0);
+        ELSE
+            IF V_KPKN IS NOT NULL
+            THEN
+                FDJTOPA := NVL (V_KPKN, 0);
+            ELSE
+                FDJTOPA := NVL (V_KPKR, 0);
+            END IF;
+        END IF;
+
+        STEP := 13;
+
+                --linda
+                FDDIS2A := 0;
+                FDDISRA := 0;
+
+        -- Discount x Bonus
+        IF TRUNC (TGLTAKHIR) >= V_FMDITM AND TRUNC (TGLTAKHIR) <= V_FMDITA
+        THEN
+            FDDIS2A := NVL (V_FMDITP, 0);
+            FDDISRA := NVL (V_FMDITR, 0);
+        END IF;
+
+        STEP := 14;
+
+
+        -- Nilai PB x Discount 1 x 2
+        FDQTYBA := ROUND (QTYA / PB.PRD_FRAC);
+        FDQTYKA := MOD (QTYA, PB.PRD_FRAC);
+        --insert into temp_linda2 values (PB.PRD_PRDCD, fdtnila, 0, 0, 0, 0, 0, 0, 'A');
+        FDTNILA :=
+              ((FDQTYBA * FDHSATA) + (FDQTYKA / PB.PRD_FRAC * FDHSATA))
+            - (((FDQTYBA * FDHSATA) + (FDQTYKA / PB.PRD_FRAC * FDHSATA)) * FDDIS1A / 100);
+            --insert into temp_linda2 values (PB.PRD_PRDCD, 0, fdtnila, 0, 0, 0, 0, 0, 'B');
+        FDTNILA := FDTNILA - (FDTNILA * (FDDIS2A / 100));
+        --insert into temp_linda2 values (PB.PRD_PRDCD, 0, 0, fdtnila, 0, 0, 0, 0, 'C');
+        STEP := 15;
+
+        ------------- Discount 1 Rupiah -----------------
+        IF FDDIR1A IS NOT NULL /*AND !EMPTY(fdfdi1A)*/
+        THEN
+            IF FDFDI1A = 'K'
+            THEN
+                FDTNILA := FDTNILA - (FDDIR1A * ((FDQTYBA * PB.PRD_FRAC) + FDQTYKA));
+            ELSE
+                FDTNILA := FDTNILA - (FDDIR1A * FDQTYBA);
+            END IF;
+        END IF;
+        --insert into temp_linda2 values (PB.PRD_PRDCD, 0, 0, 0, fdtnila, 0, 0, 0, 'D');
+
+
+        STEP := 16;
+
+        ------------- Discount 2 Rupiah -----------------
+        IF FDDISRA IS NOT NULL /*AND. !EMPTY(fdfdisA)*/
+        THEN
+            IF FDFDI1A = 'K'
+            THEN
+                FDTNILA := FDTNILA - (FDDISRA * ((FDQTYBA * PB.PRD_FRAC) + FDQTYKA));
+            ELSE
+                FDTNILA := FDTNILA - (FDDISRA * FDQTYBA);
+            END IF;
+        END IF;
+--insert into temp_linda2 values (PB.PRD_PRDCD, fddisra, FDQTYBA, FDQTYKA, PB.PRD_FRAC, fdtnila, 0, 0, 'E' || FDFDI1A);
+        STEP := 17;
+
+        IF PB.PRD_FLAGBKP1 = 'Y' AND V_PKP = 'Y'
+        THEN
+            FDTPPNA := FDTNILA * (1+PB.PRD_PPN) - FDTNILA;
+        ELSE
+            FDTPPNA := 0;
+        END IF;
+
+
+        FDTPPMA := (PPMA * FDQTYBA) + (FDQTYKA / PB.PRD_FRAC * PPMA);
+        FDTBTLA := (BTLA * FDQTYBA) + (FDQTYKA / PB.PRD_FRAC * BTLA);
+        STEP := 18;
+        /* --------------- Persiapan utk buat PB --------------
+        IF docnoA = SPAC(9)
+            docnoA  := STRZERO(const->docno,9)
+            const->(rec_lock())
+            DO WHIL const->docno == VAL(docnoA)
+                const->docno := VAL(docnoA)+1
+            ENDD
+            --const->( DBCOMMIT())
+            const->( DBUNLOCK())
+        ENDI
+        */
+
+        --------------- Cek PBPRIN --------------
+        /*
+        SELECT COUNT(1) into cek_ada
+        FROM all_tables
+        WHERE table_name = 'TEMP_PBPRINT'
+        ;
+        if cek_ada = 0 then
+            null; --create table
+        end if;
+        */
+        --------------- Add PBPRIN --------------
+        STEP := 19;
+
+        SELECT NVL (COUNT (1), 0)
+          INTO TEMP_PRINT
+          FROM TEMP_PBPRINT
+         WHERE DEPT = PB.PRD_KODEDEPARTEMENT
+           AND KATB = PB.PRD_KODEKATEGORIBARANG
+           AND PRDCD = SUBSTR (PB.PRD_PRDCD, 1, 6) || 0
+           --docno = docnoA
+           AND DOCNO = NOPB;
+
+--      dc_alert.ok(pb.PRD_PRDCD||' '||qtya);
+        IF TEMP_PRINT = 0
+        THEN
+            STEP := 20;
+            --insert
+            ------- Cek Minimum Order -------
+            TEMP_RECID := NULL;
+
+            --cegatan untuk minimum order dihilangkan sesuai info pak sugi 12-11-13
+            --if qtyA < pb.PRD_MinOrder then
+            --  temp_recid := '2';
+            --end if;
+            IF PB.PRD_FRAC = 1000 AND PB.PRD_UNIT = 'KG'
+            THEN
+                TEMP_FRAC := 1;
+            ELSE
+                TEMP_FRAC := PB.PRD_FRAC;
+            END IF;
+
+            FOR ST IN (SELECT *
+                         FROM TBMASTER_STOCK
+                        WHERE ST_PRDCD = SUBSTR (PB.PRD_PRDCD, 1, 6) || '0' AND ST_LOKASI = '01')
+            LOOP
+                V_STQTY := ST.ST_SALDOAKHIR;
+            END LOOP;
+
+            STEP := 21;
+
+            --  dc_alert.ok('save');
+            INSERT INTO TEMP_PBPRINT
+                        (RECID, DOCNO, TGL, PRDCD, DEPT,
+                         KATB, DIV, DIVPO,
+                         QTY, PRICE, DISCP1, DISCR1, FDISC1, DISCP2, DISCR2,
+                         FDISC2, BNSPO1, BNSPO2, GROSS, CTERM, PPN, PPNBM, BOTOL,
+                         SUPCO, MINR, MINC, OUT_PO, OUT_PB,
+                                                           --fdmaxt,
+                                                           --fdmint,
+                                                           FDQEBT, PTAG, FDXREV
+                        )                                                                     --33-3
+                 VALUES (TEMP_RECID, NOPB,                                                  --docno,
+                                          TGLTAKHIR, PB.PRD_PRDCD, PB.PRD_KODEDEPARTEMENT,
+                         PB.PRD_KODEKATEGORIBARANG, PB.PRD_KODEDIVISI, PB.PRD_KODEDIVISIPO,
+                         NVL (QTYA, 0), FDHSATA, FDDIS1A, FDDIR1A, FDFDI1A, FDDIS2A, FDDISRA,
+                         FDFDISA, FDBNS1A, FDBNS2A, FDTNILA, FDJTOPA, FDTPPNA, FDTPPMA, FDTBTLA,
+                         V_FMKSUP, V_MINR, V_MINC, 0, 0,
+                                                        --stmast->max
+                                                        --stmast->min
+                                                        V_STQTY, PB.PRD_KODETAG, 'T'
+                        );
+
+            --COMMIT;
+        --  dc_alert.ok('save OK!');
+        ELSE
+            STEP := 22;
+
+            SELECT NVL (QTY, 0), NVL (DISCR1, 0), NVL (DISCR2, 0), NVL (BNSPO1, 0),
+                   NVL (BNSPO2, 0), NVL (GROSS, 0), NVL (PPN, 0), NVL (PPNBM, 0), NVL (BOTOL, 0)
+              INTO T_QTY, T_DISCR1, T_DISCR2, T_BNSPO1,
+                   T_BNSPO2, T_GROSS, T_PPN, T_PPNBM, T_BOTOL
+              FROM TEMP_PBPRINT
+             WHERE DEPT = PB.PRD_KODEDEPARTEMENT
+               AND KATB = PB.PRD_KODEKATEGORIBARANG
+               AND PRDCD = SUBSTR (PB.PRD_PRDCD, 1, 6) || 0
+               AND DOCNO = NOPB;
+
+            TEMP_RECID := NULL;
+            --cegatan untuk minimum order dihilangkan sesuai info pak sugi 12-11-13
+            --if t_Qty < pb.PRD_MinOrder then
+            --  temp_recid := '2';
+            --else
+            --      temp_recid := null;
+            --end if;
+            STEP := 23;
+
+--insert into temp_linda2 values (PB.PRD_PRDCD, 0, 0, 0, 0, 0, t_gross, fdtnila, 'G');
+            UPDATE TEMP_PBPRINT
+               SET RECID = TEMP_RECID,                                                    --tambahan
+                   QTY = T_QTY + NVL (QTYA, 0),
+                   DISCR1 = T_DISCR1 + NVL (FDDIR1A, 0),
+                   DISCR2 = T_DISCR2 + NVL (FDDISRA, 0),
+                   BNSPO1 = T_BNSPO1 + NVL (FDBNS1A, 0),
+                   BNSPO2 = T_BNSPO2 + NVL (FDBNS2A, 0),
+                   GROSS = T_GROSS + NVL (FDTNILA, 0),
+                   PPN = T_PPN + NVL (FDTPPNA, 0),
+                   PPNBM = T_PPNBM + NVL (FDTPPMA, 0),
+                   BOTOL = T_BOTOL + NVL (FDTBTLA, 0)
+             WHERE DEPT = PB.PRD_KODEDEPARTEMENT
+               AND KATB = PB.PRD_KODEKATEGORIBARANG
+               AND PRDCD = SUBSTR (PB.PRD_PRDCD, 1, 6) || 0
+               AND DOCNO = NOPB;
+
+            --COMMIT;
+        END IF;
+
+        STEP := 24;
+
+        --dc_alert.ok(pb.tpod_recordid||' - '|| pb.tpod_nopo ||' - '||pb.tpod_tglpo||' - '||pb.tpod_kodedivisi ||' - '||    pb.tpod_kodedepartemen||' - '||pb.tpod_divisipo ||' - '||pb.tpod_kategoribarang ||' - '||pb.tpod_prdcd);
+        UPDATE TBTR_PO_D
+           SET TPOD_KODETAG = '*',
+               TPOD_PDATE = SYSDATE
+         WHERE NVL(TPOD_RECORDID, '0') = nvl(PB.TPOD_RECORDID, '0')
+           AND TPOD_NOPO = PB.TPOD_NOPO
+           AND TRUNC (NVL (TPOD_TGLPO, SYSDATE)) = TRUNC (NVL (PB.TPOD_TGLPO, SYSDATE))
+           AND TPOD_KODEDIVISI = PB.TPOD_KODEDIVISI
+           AND TPOD_KODEDEPARTEMEN = PB.TPOD_KODEDEPARTEMEN
+           AND NVL (TPOD_DIVISIPO, '_') = NVL (PB.TPOD_DIVISIPO, '_')
+           AND TPOD_KATEGORIBARANG = PB.TPOD_KATEGORIBARANG
+           AND TPOD_PRDCD = PB.TPOD_PRDCD;
+
+        --COMMIT;
+    END LOOP;
+
+    --DC_ALERT.OK('save to pbprint OK');
+
+    -------------
+    STEP := 25;
+
+    SELECT NVL (COUNT (1), 0)
+      INTO TEMP_SEEKPBPRINT
+      FROM TEMP_PBPRINT
+     WHERE RECID IS NULL AND TRUNC (TGL) = TRUNC (TGLTAKHIR)
+                                                            --docno
+           AND DOCNO = NOPB;
+
+    IF TEMP_SEEKPBPRINT = 0
+    THEN
+        p_result := 'Tidak ada yang dapat di proses ....';
+    ELSE
+        NOPB :=
+            F_IGR_GET_NOMOR (P_KODEIGR,
+                             'PB',
+                             'Nomor Permintaan Barang',
+                             P_KODEIGR || TO_CHAR (SYSDATE, 'yyMM'),
+                             3,
+                             TRUE
+                            );
+        OKE := TRUE;
+        STEP := 26;
+
+        FOR PBPRINT IN (SELECT *
+                          FROM TEMP_PBPRINT
+                         WHERE RECID IS NULL AND TRUNC (TGL) = TRUNC (TGLTAKHIR)
+                                                                                --docno
+                               AND DOCNO = NOPB order by fdksupa)
+        LOOP
+            STEP := 27;
+
+                --DO WHIL PBPRIN->(!EOF()) .AND. ' '+DTOS(_fmprdt)+docnoA == PBPRIN->(recid+DTOS(date)+docno)
+            --   @ 24,70 SAY PBPRIN->prdcd
+            --   IF PBPRIN->recid == '2'
+            --      PBPRIN->(dBSkip())
+            --      LOOP
+            --   ENDI
+            IF     NVL (PBPRINT.SUPCO, 'zzzzz') <> 'zzzzz'
+               AND (NVL (PBPRINT.MINR, 9999999) <> 9999999 OR NVL (PBPRINT.MINC, 999999) <> 999999)
+            THEN
+                FDKSUPA := PBPRINT.SUPCO;
+                QTYMINB := PBPRINT.MINC;
+                RPHMINB := PBPRINT.MINR;
+                STEP := 28;
+
+                --insert into temp_linda values (fdksupa, qtyminb, rphminb, qtymina, rphmina, 'A');
+
+--dc_alert.ok(fdksupa || '-' || qtyminb || '-' || rphminb);
+qtymina := 0;
+rphmina := 0;
+                FOR SUP IN (SELECT *
+                              FROM TEMP_PBPRINT
+                             WHERE TRUNC (TGL) = TRUNC (TGLTAKHIR)
+                               AND DOCNO = NOPB
+                               --and docno =
+                               AND SUPCO = FDKSUPA)
+                LOOP
+                    QTYMINA := QTYMINA + SUP.QTY;
+                    RPHMINA := RPHMINA + (SUP.GROSS + SUP.PPN + SUP.PPNBM + SUP.BOTOL);
+                END LOOP;
+                    --insert into temp_linda values (fdksupa, qtyminb, rphminb, qtymina, rphmina, 'B');
+--dc_alert.ok(fdksupa || '-' || qtymina || '-' || rphmina);
+                STEP := 29;
+
+                IF    (QTYMINA < QTYMINB AND QTYMINB IS NOT NULL)
+                   OR (RPHMINA < RPHMINB AND RPHMINB IS NOT NULL)
+                THEN
+                --insert into temp_linda values (fdksupa, qtyminb, rphminb, qtymina, rphmina, 'C' || nopb);
+                --dc_alert.ok(nopb || '-' || fdksupa);
+                    UPDATE TEMP_PBPRINT
+                       SET RECID = '3'
+                     WHERE RECID IS NULL
+                       AND TRUNC (TGL) = TRUNC (TGLTAKHIR)
+                       AND DOCNO = NOPB
+                       --and docno =
+                       AND SUPCO = FDKSUPA;
+
+
+                END IF;
+            END IF;
+        END LOOP;
+    END IF;
+
+----------------
+    STEP := 30;
+
+    FOR PBMAST IN (SELECT *
+                     FROM TEMP_PBPRINT
+                    WHERE RECID IS NULL
+                      AND TRUNC (TGL) = TRUNC (TGLTAKHIR)
+                      AND DOCNO = NOPB
+                      --and docno
+                      AND NVL (RECID, 'z') NOT IN ('2', '3'))
+    LOOP
+        STEP := 31;
+        FDNOURA := FDNOURA + 1;
+        STEP := 311;
+        --message(pbmast.prdcd);
+        STEP := 312;
+
+        --insert to pb_d
+        INSERT INTO TBTR_PB_D
+                    (PBD_KODEIGR, PBD_NOPB, PBD_PRDCD, PBD_KODEDEPARTEMENT, PBD_KODEKATEGORIBRG,
+                     PBD_KODEDIVISI, PBD_KODEDIVISIPO, PBD_QTYPB, PBD_NOURUT, PBD_HRGSATUAN,
+                     PBD_PERSENDISC1, PBD_RPHDISC1, PBD_FLAGDISC1, PBD_PERSENDISC2,
+                     PBD_RPHDISC2, PBD_FLAGDISC2, PBD_BONUSPO1, PBD_BONUSPO2,
+                     PBD_GROSS, PBD_TOP, PBD_PPN, PBD_PPNBM, PBD_PPNBOTOL,
+                     PBD_KODESUPPLIER, PBD_KODETAG, PBD_OSTPO, PBD_OSTPB, PBD_CREATE_DT,
+                     PBD_CREATE_BY, PBD_FDXREV
+                    )
+             VALUES (P_KODEIGR, NOPB, PBMAST.PRDCD, PBMAST.DEPT, PBMAST.KATB,
+                     PBMAST.DIV, NVL (PBMAST.DIVPO, NULL), PBMAST.QTY, FDNOURA, PBMAST.PRICE,
+                     PBMAST.DISCP1, PBMAST.DISCR1, NVL (PBMAST.FDISC1, NULL), PBMAST.DISCP2,
+                     PBMAST.DISCR2, NVL (PBMAST.FDISC2, NULL), PBMAST.BNSPO1, PBMAST.BNSPO2,
+                     PBMAST.GROSS, PBMAST.CTERM, PBMAST.PPN, PBMAST.PPNBM, PBMAST.BOTOL,
+                     PBMAST.SUPCO, NVL (PBMAST.PTAG, NULL), PBMAST.OUT_PO, PBMAST.OUT_PB, SYSDATE,
+                     P_USID, 'T'
+                    );
+
+        --COMMIT;
+        STEP := 313;
+
+        SELECT NVL (COUNT (1), 0)
+          INTO TEMP_PBMAST
+          FROM TBTR_PB_H
+         WHERE PBH_KODEIGR = P_KODEIGR AND PBH_NOPB = NOPB;
+
+        STEP := 314;
+
+--dc_alert.ok(temp_pbmast);
+        IF TEMP_PBMAST = 0
+        THEN
+            STEP := 32;
+
+            --insert to pb_h
+            INSERT INTO TBTR_PB_H
+                        (PBH_KODEIGR, PBH_TIPEPB, PBH_NOPB, PBH_TGLPB, PBH_QTYPB, PBH_BONUSPO1,
+                         PBH_BONUSPO2, PBH_GROSS, PBH_PPN, PBH_PPNBM, PBH_PPNBOTOL,
+                         PBH_KETERANGANPB, PBH_CREATE_BY, PBH_CREATE_DT
+                        )
+                 VALUES (P_KODEIGR, 'R', NOPB, TGLTAKHIR, PBMAST.QTY, PBMAST.BNSPO1,
+                         PBMAST.BNSPO2, PBMAST.GROSS, PBMAST.PPN, PBMAST.PPNBM, PBMAST.BOTOL,
+                         'PB REORDER', P_USID, SYSDATE
+                        );
+
+            --COMMIT;
+        ELSE
+            SELECT PBH_QTYPB, PBH_BONUSPO1, PBH_BONUSPO2, PBH_GROSS, PBH_PPN, PBH_PPNBM,
+                   PBH_PPNBOTOL
+              INTO TP_QTYPB, TP_BONUSPO1, TP_BONUSPO2, TP_GROSS, TP_PPN, TP_PPNBM,
+                   TP_PPNBOTOL
+              FROM TBTR_PB_H
+             WHERE PBH_NOPB = NOPB                                                           --docno
+                   AND TRUNC (PBH_TGLPB) = TRUNC (TGLTAKHIR);
+
+            STEP := 33;
+
+            --update pb_h
+            UPDATE TBTR_PB_H
+               SET PBH_QTYPB = TP_QTYPB + PBMAST.QTY,
+                   PBH_BONUSPO1 = TP_BONUSPO1 + PBMAST.BNSPO1,
+                   PBH_BONUSPO2 = TP_BONUSPO2 + PBMAST.BNSPO2,
+                   PBH_GROSS = TP_GROSS + PBMAST.GROSS,
+                   PBH_PPN = TP_PPN + PBMAST.PPN,
+                   PBH_PPNBM = TP_PPNBM + PBMAST.PPNBM,
+                   PBH_PPNBOTOL = TP_PPNBOTOL + PBMAST.BOTOL
+             WHERE PBH_NOPB = NOPB                                                           --docno
+                   AND TRUNC (PBH_TGLPB) = TRUNC (SYSDATE);
+
+            --COMMIT;
+        END IF;
+    END LOOP;
+
+    ----------- Pencetakan PLU yg ditolak ---------------
+    STEP := 34;
+    P_NOPB := NOPB;
+
+    SELECT NVL (COUNT (1), 0)
+      INTO TEMP_TOLAK2
+      FROM TEMP_PBPRINT
+     WHERE RECID = '2' AND DOCNO = NOPB;
+
+    SELECT NVL (COUNT (1), 0)
+      INTO TEMP_TOLAK3
+      FROM TEMP_PBPRINT
+     WHERE RECID = '3' AND DOCNO = NOPB;
+
+    IF TEMP_TOLAK2 <> 0
+    THEN
+        --CETAK_TOLAKAN ('2');
+        p_tolakan2 := 'TRUE';
+    END IF;
+
+    IF TEMP_TOLAK3 <> 0
+    THEN
+        --CETAK_TOLAKAN ('3');
+        p_tolakan3 := 'TRUE';
+    END IF;
+
+--  dc_alert.ok('No. Dokumen ini adalah : '||docnoA,'Pesan');
+    IF OKE = TRUE
+    THEN
+        COMMIT;
+        p_status := 'TRUE';
+        p_result := 'No. Dokumen ini adalah : ' || P_NOPB;
+    END IF;
+EXCEPTION
+    WHEN OTHERS
+    THEN
+
+        --++  18-04-2012
+        --FORMS_DDL ('ROLLBACK');
+        ROLLBACK;
+        --dc_alert.ok('BUTTON ' || SQLERRM);
+        p_status := 'FALSE';
+        p_result := 'PROSES - STEP = ' || STEP || ',ERROR = ' || SQLERRM;
+----  18-04-2012
+END;
+
+/*
+contoh data ubntuk simulasi
+
+update tbtr_po_d set TPOD_KODETAG = null where tpod_nopo in (
+select TPOD_NOPO
+--SELECT   TPOD_QTYPO, TPOD_QTYPB, PRD_ISIBELI, PRD_PRDCD, PRD_FRAC, PRD_UNIT,
+--                            PRD_FLAGBKP1, PRD_KODEDEPARTEMENT, PRD_KODEKATEGORIBARANG,
+--                                    PRD_KODEDIVISI, PRD_KODEDIVISIPO, PRD_KODETAG, TPOD_RECORDID,
+--                                    TPOD_NOPO, TPOD_TGLPO, TPOD_KODEDIVISI, TPOD_KODEDEPARTEMEN,
+--                                    TPOD_DIVISIPO, TPOD_KATEGORIBARANG, TPOD_PRDCD
+             FROM TBTR_PO_H, TBTR_PO_D, TBMASTER_PRODMAST, TBTR_MSTRAN_H
+            WHERE TPOD_KODEIGR = '22'
+              AND TPOD_PRDCD = PRD_PRDCD
+              AND TPOH_NOPO = TPOD_NOPO
+              AND (   NVL (TPOD_QTYPB, 0) =
+                          0
+                   OR (NVL (TPOD_QTYPO, 0) - NVL (TPOD_QTYPB, 0)) <> 0
+                  )
+             -- AND NVL (TPOD_KODETAG, 'Z') <> '*' --dihilangkan 14-2-14 info pak sugi
+                                                                                       --dibuka lagi agar po yg sudah direorder tidak reorder lagi
+              --AND NVL (PRD_KODETAG, 'zzz') =
+               --       'zzz'
+-------- Flag Tidak boleh order -------- //!EMPTY( prodmast->ptag) .AND. REFER( "t_status", "tstatus1", prodmast->ptag, "ftftbo")=="Y" skip
+              AND NVL (PRD_FLAGBARANGORDERTOKO, 'Z') <> 'Y'   ----- Flag Barang Order Toko -------
+              AND SUBSTR (PRD_KODEKATEGORIBARANG, 1, 1) <> 'C'          ----- Barang Counter -------
+              AND (   NVL (PRD_KODETAG, '1') IN (SELECT TAG_KODETAG
+                                                   FROM TBMASTER_TAG
+                                                  WHERE NVL (TAG_TIDAKBOLEHORDER, 'N') <> 'Y')
+                   OR NVL (PRD_KODETAG, '1') = '1' or prd_kodetag = '' or prd_kodetag = ' '
+                  )
+              AND MSTH_NOPO = TPOH_NOPO
+                             AND NVL(MSTH_RECORDID,'0') <> '1'
+                             and tpoh_tglpo >= sysdate-30)
+                             */
+/

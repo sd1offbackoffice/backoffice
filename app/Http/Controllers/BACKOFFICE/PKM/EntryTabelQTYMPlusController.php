@@ -475,7 +475,7 @@ class EntryTabelQTYMPlusController extends Controller
                         $pkmtnew = $pkmtold - $mplusold + $d->mpl_qty;
 
                         DB::connection(Session::get('connection'))
-                            ->table('tbhistory_pkmplus')
+                            ->table('TBHISTORY_PLUMPLUS')
                             ->insert([
                                 'hmp_plu' => $d->mpl_plu,
                                 'hmp_minor' => $mplusold,

@@ -665,6 +665,9 @@ class CetakDokumenController extends Controller
         $tgl2 = $request->tgl2;
         $kertas = $request->kertas;
         $nrfp = $request->nrfp;
+        $namattd = $request->namattd;
+        $jabatan1 = $request->jbt1;
+        $jabatan2 = $request->jbt2;
         $data = $request->data;
 
         $nodocs = [];
@@ -1512,7 +1515,7 @@ class CetakDokumenController extends Controller
                                and PRD_FLAGBKP2 = 'Y'")[0]->count;
 
                                         if ($tmp > 0) {
-                                            array_push($file, Self::CETAK_BARU($nonota, $reprint));
+                                            array_push($file, Self::CETAK_BARU($nonota, $reprint, $namattd,$jabatan1,$jabatan2));
                                         }
                                     }
                                 }
@@ -1533,7 +1536,7 @@ class CetakDokumenController extends Controller
                             and PRD_FLAGBKP2 = 'Y'")[0]->count;
 
                                     if ($tmp > 0) {
-                                        array_push($file, Self::CETAK_BARU($nodoc, $reprint));
+                                        array_push($file, Self::CETAK_BARU($nodoc, $reprint, $namattd,$jabatan1,$jabatan2));
 
                                     }
                                 }
@@ -1948,8 +1951,8 @@ class CetakDokumenController extends Controller
                     null;
                     break;
                 case  'K' :     // Pengeluaran data belum keluar
-                    $cw = 700;
-                    $ch = 45;
+                    $cw = 510;
+                    $ch = 78;
                     $filename = 'list-pengeluaran';
                     $P_PN = " AND TRBO_NODOC IN (" . $NoDoc . ") AND TRBO_TYPETRN='K'";
                     $data1 = DB::connection(Session::get('connection'))->select("SELECT   TRBO_NODOC, TRBO_TGLDOC, TRBO_KODESUPPLIER, TRBO_ISTYPE, TRBO_INVNO, TRBO_TGLINV,
@@ -2199,14 +2202,13 @@ class CetakDokumenController extends Controller
 
     }
 
-    public function CETAK_BARU($nodoc, $reprint)
+    public function CETAK_BARU($nodoc, $reprint, $namattd,$jabatan1,$jabatan2)
     {
-        $cw = 700;
-        $ch = 45;
+
         $filename = 'ctk-rtrpjk';
         $P_PN = "AND MSTH_NODOC IN (" . $nodoc . ") AND MSTH_TYPETRN='K'";
 
-        $data1 = DB::connection(Session::get('connection'))->select("SELECT   MSTH_NODOC, trunc(msth_tgldoc) msth_tgldoc, MSTH_KODESUPPLIER, MSTD_DOCNO2, MSTD_DATE3 ,
+        $data = DB::connection(Session::get('connection'))->select("SELECT   MSTH_NODOC, trunc(msth_tgldoc) msth_tgldoc, MSTH_KODESUPPLIER, MSTD_DOCNO2, MSTD_DATE3 ,
          MSTD_DATE2 , PRD_PRDCD, MSTD_QTY, MSTD_UNIT, MSTD_FRAC, MSTD_GROSS,
          MSTD_DISCRPH, (MSTD_PPNRPH) MSTD_PPNRPH, MSTD_PKP, MSTH_ISTYPE, MSTH_INVNO, MSTH_FLAGDOC,
          SUP_NAMASUPPLIER, SUP_SINGKATANSUPPLIER, SUP_NAMANPWP,
@@ -2243,23 +2245,19 @@ class CetakDokumenController extends Controller
      AND PRD_KODEIGR = MSTD_KODEIGR
 ORDER BY MSTD_SEQNO");
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
-
-
-        if (sizeof($data1) != 0) {
-            $data = [
-                'perusahaan' => $perusahaan,
-                'data1' => $data1
-            ];
+        $cw = 550;
+        $ch = 45;
+        if (sizeof($data) != 0) {
             $dompdf = new PDF();
 
-            $pdf = PDF::loadview('BACKOFFICE.CETAKDOKUMEN.' . $filename . '-pdf', compact(['data']));
+            $pdf = PDF::loadview('BACKOFFICE.CETAKDOKUMEN.' . $filename . '-pdf', compact(['perusahaan','data','namattd','jabatan1','jabatan2']));
 
             error_reporting(E_ALL ^ E_DEPRECATED);
 
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
             $canvas = $dompdf->get_canvas();
-            $canvas->page_text($cw, $ch, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+            $canvas->page_text($cw, $ch, "HAL : {PAGE_NUM}", null, 7, array(0, 0, 0));
 
             $dompdf = $pdf;
             $filenames = $filename . '_' . $nodoc . '.pdf';

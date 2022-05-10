@@ -872,6 +872,12 @@ class PenerimaanTransferController extends Controller
             if (file_exists($request->file('file'))) {
                 $filename = $request->file('file');
 
+                if(substr($filename->getClientOriginalName(),2,2) != Session::get('kdigr')){
+                    return response()->json([
+                        'message' => 'Kode IGR tidak sesuai!'
+                    ], 500);
+                }
+
                 $zip = new ZipArchive;
 
                 $list = [];
@@ -882,17 +888,15 @@ class PenerimaanTransferController extends Controller
                         $list[] = $entry;
                     }
 
-                    $zip->extractTo(public_path('TRFSJ'));
+                    $zip->extractTo(storage_path('TRFSJ'));
                     $zip->close();
                 } else {
-                    $status = 'error';
-                    $alert = 'Terjadi kesalahan!';
-                    $message = 'Mohon pastikan file zip berasal dari program Transfer SJ - IAS!';
-
-                    return compact(['status', 'alert', 'message']);
+                    return response()->json([
+                        'message' => 'Mohon pastikan file zip berasal dari program Transfer SJ - IAS!'
+                    ],500);
                 }
 
-                $temp = File::files(public_path('TRFSJ'));
+                $temp = File::files(storage_path('TRFSJ'));
 
                 $files = [];
 
@@ -986,6 +990,11 @@ class PenerimaanTransferController extends Controller
                             $temp['usero'] = $recs->get('usero');
 
                             $insert[] = $temp;
+
+//                            dd($temp);
+
+                            DB::connection(Session::get('connection'))->table('tbtr_to')
+                                ->insert($temp);
                         }
 
 //                    dd($insert);
@@ -1012,14 +1021,12 @@ class PenerimaanTransferController extends Controller
                         fclose($handle);
                     }
 
-                    DB::connection(Session::get('connection'))->table('tbtr_to')
-                        ->insert($insert);
-
                     DB::connection(Session::get('connection'))->table('temp_to')
                         ->insert([
                             'to_flag' => 0,
                             'to_nomr' => $insert[0]['docno'],
-                            'to_tagl' => DB::connection(Session::get('connection'))->raw("TO_DATE('".$insert[0]['dateo']."','yyyymmdd')"),
+                            'to_tagl' => Carbon::createFromFormat('Ymd',$insert[0]['dateo']),
+//                                DB::connection(Session::get('connection'))->raw("TO_DATE('".$insert[0]['dateo']."','yyyy-mm-dd ')"),
                             'to_item' => count($insert)
                         ]);
 
@@ -1034,8 +1041,9 @@ class PenerimaanTransferController extends Controller
 
                 DB::connection(Session::get('connection'))->commit();
 
-                $status = 'success';
-                return compact(['status']);
+                return response()->json([
+                    'message' => 'Proses TO berhasil!'
+                ], 200);
             }
         }
         catch(\Exception $e){
@@ -1045,7 +1053,9 @@ class PenerimaanTransferController extends Controller
             $alert = 'Terjadi kesalahan!';
             $message = $e->getMessage();
 
-            return compact(['status', 'alert', 'message']);
+            return response()->json([
+                'message' => $e->getMessage()
+            ],500);
         }
     }
 

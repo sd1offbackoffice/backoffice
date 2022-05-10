@@ -212,13 +212,23 @@ Route::post('/bo/transaksi/penerimaan/printbpb/cetakdata', 'BACKOFFICE\TRANSAKSI
 Route::get('/bo/transaksi/penerimaan/printbpb/viewreport/{reprint}/{report}/{noDoc}/{ttd}', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@viewReport')->middleware('CheckLogin');
 Route::get('/bo/transaksi/penerimaan/printbpb/viewreport/cetakLokasi', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@viewReport')->middleware('CheckLogin');
 
-//SIGNATURE
+// ------Kingsley------
 Route::prefix('/bo/transaksi/penerimaan/printbpb')->group(function () {
     Route::post('/save', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@save')->middleware('CheckLogin');
     Route::get('/get', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@getAllData')->middleware('CheckLogin');
     Route::get('/kirimftp', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@kirimFtp')->middleware('CheckLogin');
+    Route::get('/users', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@showUser')->middleware('CheckLogin');
+    Route::get('/deleteSigs', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@deleteSigs')->middleware('CheckLogin');
 });
-//
+
+Route::prefix('/bo/transaksi/penerimaan/ttd')->group(function () {
+    Route::get('/', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputSignatureController@index')->middleware('CheckLogin');
+    Route::post('/save', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputSignatureController@save')->middleware('CheckLogin');
+    Route::get('/get', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputSignatureController@getAllData')->middleware('CheckLogin');
+    Route::get('/users', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputSignatureController@showUser')->middleware('CheckLogin');
+    Route::get('/getName', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputSignatureController@getName')->middleware('CheckLogin');
+});
+// ------Kingsley------
 
 //BACKOFFICE-TRANSAKSI-PENERIMAAN-CETAK LAPORAN BPB
 Route::get('/bo/transaksi/penerimaan/cetakbpb/index', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\cetakBPBController@index')->middleware('CheckLogin');
@@ -598,7 +608,6 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::prefix('/kirimkkei')->group(function () {
                 Route::get('/', 'BACKOFFICE\KirimKKEIController@index');
                 Route::post('/upload', 'BACKOFFICE\KirimKKEIController@upload');
-                Route::post('/refresh', 'BACKOFFICE\KirimKKEIController@refresh');
             });
 
             /*Leo*/
@@ -1341,6 +1350,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/get-data-history', 'BACKOFFICE\PKM\ProsesKertasKerjaPKMController@getHistory');
                 Route::post('/change-pkm', 'BACKOFFICE\PKM\ProsesKertasKerjaPKMController@changePKM');
                 Route::get('/cetak-status-storage', 'BACKOFFICE\PKM\ProsesKertasKerjaPKMController@cetakStatusStorage');
+                Route::get('/proses', 'BACKOFFICE\PKM\ProsesKertasKerjaPKMController@proses');
             });
 
             Route::prefix('/entry-inquery')->group(function () {
@@ -1419,13 +1429,17 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/cetak', 'BACKOFFICE\PKM\LaporanKertasKerjaPKMController@cetak');
             });
 
-            // Cesar & Steven
+            // Steven
             Route::prefix('/faktor-pkm-toko')->group(function () {
                 Route::get('/', 'BACKOFFICE\PKM\FaktorPKMTokoController@index');
+                Route::get('/get-data-table-n', 'BACKOFFICE\PKM\FaktorPKMTokoController@getDataTableN')->name('get-data-table-n');
+                Route::get('/get-data-detail-n', 'BACKOFFICE\PKM\FaktorPKMTokoController@getDataDetailN')->name('get-data-detail-n');
                 Route::get('/get-data-table-m', 'BACKOFFICE\PKM\FaktorPKMTokoController@getDataTableM')->name('get-data-table-m');
                 Route::get('/get-data-detail', 'BACKOFFICE\PKM\FaktorPKMTokoController@getDataDetail')->name('get-data-detail');
                 Route::get('/search-plu', 'BACKOFFICE\PKM\FaktorPKMTokoController@searchPLU');
                 Route::post('/insert-plu', 'BACKOFFICE\PKM\FaktorPKMTokoController@insertPLU');
+                Route::post('/update-mplus', 'BACKOFFICE\PKM\FaktorPKMTokoController@updateMplus')->name('update-mplus');
+                Route::post('/upload-mplus', 'BACKOFFICE\PKM\FaktorPKMTokoController@uploadMPLUS')->name('upload-mplus');
             });
         });
 
@@ -2297,6 +2311,15 @@ Route::middleware(['CheckLogin'])->group(function () {
 
         Route::prefix('/laporan')->group(function () {
 
+            // hen
+            Route::prefix('/beda-tag-igr')->group(function () {
+                Route::get('/', 'OMI\LAPORAN\BedaTagController@index');
+                Route::get('/get-lov-divisi', 'OMI\LAPORAN\BedaTagController@getLovDivisi');
+                Route::get('/get-lov-departemen', 'OMI\LAPORAN\BedaTagController@getLovDepartemen');
+                Route::get('/get-lov-kategori', 'OMI\LAPORAN\BedaTagController@getLovKategori');
+                Route::post('/validateTag', 'OMI\LAPORAN\BedaTagController@validateTag');
+            });
+
             /*  Jefri */
             Route::prefix('/reprint-bkl')->group(function () {
                 Route::get('/', 'OMI\LAPORAN\ReprintBKLController@index');
@@ -2310,7 +2333,7 @@ Route::middleware(['CheckLogin'])->group(function () {
 
             Route::prefix('/register-ppr')->group(function () {
                 Route::get('/', 'OMI\LAPORAN\LaporanRegisterPPRController@index');
-                Route::get('/lov-nodoc', 'OMI\LAPORAN\LaporanRegisterPPRController@lovNodoc');
+                Route::get('/lov-nodoc', 'konversiOMI\LAPORAN\LaporanRegisterPPRController@lovNodoc');
                 Route::get('/cetak', 'OMI\LAPORAN\LaporanRegisterPPRController@cetak');
             });
             Route::prefix('/rekapitulasi-register-ppr')->group(function () {

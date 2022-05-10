@@ -25,7 +25,7 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
         $tgl2 = $request->tgl2;
         $w = 545;
         $h = 50.75;
-        $data = DB::connection(Session::get('connection'))->select("  SELECT prs_namaperusahaan,
+        $data = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan,
          prs_namacabang,
          tgl_struk,
          customer,
@@ -39,7 +39,7 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
             + +CASE
                   WHEN NVL (OBI_ATTRIBUTE2, 'N') IN ('KlikIGR', 'Corp')
                   THEN
-                     ROUND (OBI_EKSPEDISI / (1+(COALESCE(PRD_PPN, 0)/100)))
+                     ROUND (OBI_EKSPEDISI / (1+(COALESCE(PRS_NILAIPPN, 0)/100)))
                   ELSE
                      0
                END,
@@ -50,7 +50,7 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
             + +CASE
                   WHEN NVL (OBI_ATTRIBUTE2, 'N') IN ('KlikIGR', 'Corp')
                   THEN
-                     (OBI_EKSPEDISI - ROUND (OBI_EKSPEDISI / (1+(COALESCE(PRD_PPN, 0)/100))))
+                     (OBI_EKSPEDISI - ROUND (OBI_EKSPEDISI / (1+(COALESCE(PRS_NILAIPPN, 0)/100))))
                   ELSE
                      0
                END,
@@ -138,8 +138,7 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                                           DF,
                                        FKT_KODEMEMBER,
                                        FKT_NOFAKTUR,
-                                       FKT_TGL,
-                                       PRD_PPN
+                                       FKT_TGL
                                   FROM tbmaster_faktur,
                                        tbtr_jualdetail,
                                        tbmaster_customer,
@@ -157,8 +156,8 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                                             OR TRJD_ADMFEE > 0)
                                        AND cus_flagpkp = 'Y'
                                        AND trjd_transactiontype = 'S'
-                                       AND prd_recordid(+) = fkt_recordid
                                        AND TRUNC (trjd_transactiondate) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy')
+                                       AND TRJD_PRDCD = PRD_PRDCD
                               GROUP BY fkt_tglfaktur,
                                        cus_kodemember,
                                        CUS_NAMAMEMBER,
@@ -220,7 +219,7 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                                                AND JH_CASHIERSTATION =
                                                       TRJD_CASHIERSTATION
                                                AND JH_CASHIERID = TRJD_CREATE_BY
-                                               AND PRD_RECORDID(+) = JH_RECORDID) BB
+                                               AND TRJD_PRDCD = PRD_PRDCD) BB
                               GROUP BY kdmember, nofaktur, tgltrans) B
                                 ON     a.FKT_KODEMEMBER = b.kdmember
                                    AND TRUNC (a.fkt_tgl) = TRUNC (b.tgltrans)
@@ -237,15 +236,13 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                    prs_nilaippn) x,
          tbmaster_perusahaan,
          TBTR_FAKTUR_HDR,
-         tbtr_obi_h,
-         tbmaster_prodmast
+         tbtr_obi_h
    WHERE     no_seri_fp = nomor_faktur(+)
          AND TRUNC (transactiondate) = TRUNC (obi_tglstruk(+))
          AND transactionno = obi_nostruk(+)
          AND cashierstation = obi_kdstation(+)
          AND kodemember = obi_kdmember(+)
          AND cashierid = obi_cashierid(+)
-         AND prd_recordid(+) = obi_recid
 ORDER BY tgl_struk, no_seri_fp");
 
 

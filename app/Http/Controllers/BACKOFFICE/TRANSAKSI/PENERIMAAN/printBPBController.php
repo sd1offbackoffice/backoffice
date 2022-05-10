@@ -13,8 +13,8 @@ use PDF;
 use Exception;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
-
-session_start();
+use Yajra\DataTables\DataTables;
+use ZipArchive;
 
 class printBPBController extends Controller
 {
@@ -30,33 +30,20 @@ class printBPBController extends Controller
         $status = "";
         $id = uniqid();
         try {
-
-            $path = "signature/";
+            $path = "signature_expedition/";
             if (!File::exists(storage_path($path))) {
                 File::makeDirectory(storage_path($path), 0755, true, true);
             }
             $img = $this->dataURLtoImage($request->signed);
             $file = storage_path($path . $id . '.' . $img['image_type']);
             file_put_contents($file, $img['image_base64']);
-
-            $img2 = $this->dataURLtoImage($request->signed2);
-            $file2 = storage_path($path . $id . '_srclerk.' . $img2['image_type']);
-            file_put_contents($file2, $img2['image_base64']);
-
-            $img3 = $this->dataURLtoImage($request->signed3);
-            $file3 = storage_path($path . $id . '_clerk.' . $img3['image_type']);
-            file_put_contents($file3, $img3['image_base64']);
-
-            $message = "Signatures Saved!";
+            $message = "Signature Saved!";
             $status = "success";
         } catch (Exception $e) {
             $message = $e->getMessage();
             $status = "error";
         }
         Session::put('signer', $request->signedby);
-        Session::put('signer2', $request->signedby2);
-        Session::put('signer3', $request->signedby3);
-        // return compact(['message', 'status']);
         return response()->json(['message' => $message, 'status' => $status, 'data' => $id]);
     }
 
@@ -68,19 +55,6 @@ class printBPBController extends Controller
         $image_base64 = base64_decode($image_parts[1]);
         return compact(['image_base64', 'image_type']);
     }
-
-    public function getAllData()
-    {
-        $path = storage_path('signature/');
-        $datas = File::files($path);
-
-        $data = [];
-        foreach ($datas as $d) {
-            $data[] = basename($d);
-        }
-        return compact(['data']);
-    }
-    // Signature
 
     public function viewData(Request $request)
     {
@@ -125,34 +99,42 @@ class printBPBController extends Controller
         $ftp_server = config('ftp.ftp_server');
         $ftp_user_name = config('ftp.ftp_user_name');
         $ftp_user_pass = config('ftp.ftp_user_pass');
-        // $file = "../storage/signature/625a8b938c9f7.png";
-        // $remote_file = "/opt/btbigr/temp";
+        $zipName = Session::get('kdigr') . '_' . date("Ymd", strtotime(Carbon::now())) . '.ZIP';
+        $zipAddress = '../storage/receipts/' . $zipName;
         try {
-            // // set up basic connection
-            // $conn_id = ftp_connect($ftp_server);
-
-            // // login with username and password
-            // $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
-
-            // // upload a file
-            // if (ftp_put($conn_id, $remote_file, $file, FTP_ASCII)) {
-            //     $msg =  "successfully uploaded $file\n";
-            // } else {
-            //     $msg =  "There was a problem while uploading $file\n";
-            // }
-            // // close the connection
-            // ftp_close($conn_id);
             $conn_id = ftp_connect($ftp_server);
             ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
-            $signatures = Storage::disk('receipts')->allFiles();
-            foreach ($signatures as $sig => $value) {
-                $filePath = '../storage/signature/' . $value;
-                ftp_put($conn_id, '/opt/btbigr/temp/' . $value, $filePath);
-            }
+            $files = Storage::disk('receipts')->allFiles();
+            if (count($files) > 0) {
+                if (Storage::disk('receipts')->exists($zipName) == false) {
+                    $zip = new ZipArchive;
+                    if (true === ($zip->open($zipAddress, ZipArchive::CREATE | ZipArchive::OVERWRITE))) {
+                        foreach ($files as $file => $value) {
+                            $filePath = '../storage/receipts/' . $value;
+                            // ftp_put($conn_id, '/opt/btbigr/' . $value, $filePath); --send file separately
+                            $zip->addFile($filePath, $value);
+                        }
+                        $zip->close();
+                        ftp_put($conn_id, '/opt/btbigr/' . $zipName, $zipAddress);
+                        //send to SD6
+                    } else {
+                        $msg = 'Proses kirim file gagal';
+                        return response()->json(['kode' => 0, 'message' => $msg]);
+                    }
+                } else {
+                    ftp_put($conn_id, '/opt/btbigr/' . $zipName, $zipAddress);
+                    //send to SD6
+                }
 
-            $msg = 'Report Transferred';
+                $msg = 'File terkirim ke SD6';
+                File::delete($zipAddress); //delete zip file from storage
+                $this->deleteSigs(); //delete all ttd
+            } else {
+                $msg = 'Empty Record, nothing to transfer';
+                return response()->json(['kode' => 2, 'message' => $msg]);
+            }
         } catch (Exception $e) {
-            $msg = 'Report Transfer Failed';
+            $msg = 'Proses kirim file gagal';
             return response()->json(['kode' => 0, 'message' => $msg . $e]);
         }
         return response()->json(['kode' => 1, 'message' => $msg]);
@@ -228,6 +210,7 @@ class printBPBController extends Controller
         return response()->json(['kode' => 1, 'message' => 'Create Report Success', 'data' => $print_btb, 'lokasi' => $lokasi, 'nota' => $temp_nota, 'list' => $is_list]);
     }
 
+    //masih error di update barang baru
     public function SP_PKM_BPB($kodeigr, $sub_prdcd, $userId, $P_SUKSES, $P_ERROR)
     {
         $model  = new AllModel();
@@ -686,30 +669,28 @@ class printBPBController extends Controller
             if ($data->prd_lastcost == 0) {
                 if ($data->prd_avgcost != 0) {
                     return ['kode' => 0, 'message' => "PLU " . $data->prd_prdcd . " Avg Cost <> 0, Lakukan Update PKM?"];
-                    // $query = oci_parse($conn, "BEGIN :test := SP_PKM_BPB (:IGR, :PRDCD, :USID, :PS, :PE); END;");
-                    // oci_bind_by_name($query, ':IGR', $kodeigr);
-                    // oci_bind_by_name($query, ':PRDCD', $sub_prdcd);
-                    // oci_bind_by_name($query, ':USID', $userId);
-                    // oci_bind_by_name($query, ':PS', $P_SUKSES);
-                    // oci_bind_by_name($query, ':PE', $P_ERROR);
-                    // oci_execute($query);
-
-                    $this->SP_PKM_BPB($kodeigr, $data->trbo_prdcd, $userId, $P_SUKSES, $P_ERROR);
+                    $query = oci_parse($conn, "BEGIN SP_PKM_BPB (:IGR, :PRDCD, :USID, :PS, :PE); END;");
+                    oci_bind_by_name($query, ':IGR', $kodeigr);
+                    oci_bind_by_name($query, ':PRDCD', $sub_prdcd);
+                    oci_bind_by_name($query, ':USID', $userId);
+                    oci_bind_by_name($query, ':PS', $P_SUKSES);
+                    oci_bind_by_name($query, ':PE', $P_ERROR);
+                    oci_execute($query);
+                    // $this->SP_PKM_BPB($kodeigr, $data->trbo_prdcd, $userId, $P_SUKSES, $P_ERROR);
                     DB::connection(Session::get('connection'))->table('TBMASTER_BARANGBARU')
                         ->where('PLN_PRDCD', $data->trbo_prdcd)
                         ->where('PLN_TGLBPB', $TODATEF)
                         ->update(['PLN_TGLBPB' => $sysdatef]);
                 }
             } else {
-                // $query = oci_parse($conn, "BEGIN :test := SP_PKM_BPB (:IGR, :PRDCD, :USID, :PS, :PE); END;");
-                // oci_bind_by_name($query, ':IGR', $kodeigr);
-                // oci_bind_by_name($query, ':PRDCD', $sub_prdcd);
-                // oci_bind_by_name($query, ':USID', $userId);
-                // oci_bind_by_name($query, ':PS', $P_SUKSES);
-                // oci_bind_by_name($query, ':PE', $P_ERROR);
-                // oci_execute($query);
-
-                $this->SP_PKM_BPB($kodeigr, $data->trbo_prdcd, $userId, $P_SUKSES, $P_ERROR);
+                $query = oci_parse($conn, "BEGIN SP_PKM_BPB (:IGR, :PRDCD, :USID, :PS, :PE); END;");
+                oci_bind_by_name($query, ':IGR', $kodeigr);
+                oci_bind_by_name($query, ':PRDCD', $sub_prdcd);
+                oci_bind_by_name($query, ':USID', $userId);
+                oci_bind_by_name($query, ':PS', $P_SUKSES);
+                oci_bind_by_name($query, ':PE', $P_ERROR);
+                oci_execute($query);
+                // $this->SP_PKM_BPB($kodeigr, $data->trbo_prdcd, $userId, $P_SUKSES, $P_ERROR);
                 DB::connection(Session::get('connection'))->table('TBMASTER_BARANGBARU')
                     ->where('PLN_PRDCD', $data->trbo_prdcd)
                     ->where('PLN_TGLBPB', $TODATEF)
@@ -1585,24 +1566,27 @@ class printBPBController extends Controller
         $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctklokasi', ['datas' => $datas]);
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        for($i = 0; $i < sizeof($datas); $i++) {
-                $content = $pdf->download()->getOriginalContent();
-                Storage::put('../storage/receipts/' . 'BTB_' . $datas[$i]->msth_nodoc . '.pdf', $content);
-            
-        }
         $canvas = $dompdf->get_canvas();
         $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-        
-        return $pdf->stream('igr_bo_ctklokasi.pdf');
+
+        return $pdf->stream('igr_bo_ctklokasi.PDF');
+    }
+
+    public function deleteSigs()
+    {
+        $files = Storage::disk('signature_expedition')->allFiles();
+        if (count($files) > 0) {
+            foreach ($files as $file => $value) {
+                $filePath = '../storage/signature_expedition/' . $value;
+                File::delete($filePath);
+            }
+        }
     }
 
     public function viewReport(Request $request)
     {
         $signedBy = Session::get('signer');
-        $signedBy2 = Session::get('signer2');
-        $signedBy3 = Session::get('signer3');
         $report = $request->report;
         $noDoc  = $request->noDoc;
         $reprint = $request->reprint;
@@ -1645,7 +1629,7 @@ class printBPBController extends Controller
             $canvas = $dompdf->get_canvas();
             $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-            return $pdf->stream('igr_bo_listbtb_full.pdf');
+            return $pdf->stream('igr_bo_listbtb_full.PDF');
         } else if ($report == 'IGR_BO_LISTBTB') {
             $datas = DB::connection(Session::get('connection'))->select("select trbo_nodoc, TO_CHAR(trbo_tgldoc,'DD/MM/YY') trbo_tgldoc, trbo_nopo, TO_CHAR(trbo_tglpo,'DD/MM/YY') trbo_tglpo, trbo_nofaktur, TO_CHAR(trbo_tglfaktur,'DD/MM/YY') trbo_tglfaktur,
                                         floor(trbo_qty/prd_frac) qty, mod(trbo_qty,prd_frac) qtyk, trbo_qtybonus1, trbo_qtybonus2, trbo_typetrn, trbo_qty, nvl(trbo_flagdoc,'0') flagdoc,
@@ -1686,7 +1670,7 @@ class printBPBController extends Controller
             $canvas = $dompdf->get_canvas();
             $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-            return $pdf->stream('igr_bo_listbtb.pdf');
+            return $pdf->stream('igr_bo_listbtb.PDF');
         } else if ($report == 'IGR_BO_CTBTBNOTA') {
             $datas = DB::connection(Session::get('connection'))->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
                                         prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
@@ -1716,7 +1700,19 @@ class printBPBController extends Controller
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
-            return $pdf->stream('igr_bo_ctbtbnota.pdf');
+            $path = 'receipts/';
+            if (!File::exists(storage_path($path))) {
+                File::makeDirectory(storage_path($path), 0755, true, true);
+            }
+
+            for ($i = 0; $i < sizeof($datas); $i++) {
+                $content = $pdf->download()->getOriginalContent();
+                $id = 'BTB_' . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
+                $file = storage_path($path . $id . '.PDF');
+                file_put_contents($file, $content);
+            }
+
+            return $pdf->stream($id . '.PDF');
         } else if ($report == 'IGR_BO_CTBTBNOTA_FULL') {
             $datas = DB::connection(Session::get('connection'))->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
                                         prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
@@ -1747,7 +1743,19 @@ class printBPBController extends Controller
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
-            return $pdf->stream('igr_bo_ctbtbnota_full.pdf');
+            $path = 'receipts/';
+            if (!File::exists(storage_path($path))) {
+                File::makeDirectory(storage_path($path), 0755, true, true);
+            }
+
+            for ($i = 0; $i < sizeof($datas); $i++) {
+                $content = $pdf->download()->getOriginalContent();
+                $id = 'BTB_' . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
+                $file = storage_path($path . $id . '.PDF');
+                file_put_contents($file, $content);
+            }
+
+            return $pdf->stream($id . '.PDF');
         } else if ($report == 'lokasi') {
             $datas = DB::connection(Session::get('connection'))->select("SELECT trbo_prdcd,
                                        SUBSTR (prd_deskripsipanjang, 1, 50) desc2,
@@ -1784,7 +1792,7 @@ class printBPBController extends Controller
             $canvas = $dompdf->get_canvas();
             $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
-            return $pdf->stream('igr_bo_ctklokasi.pdf');
+            return $pdf->stream('igr_bo_ctklokasi.PDF');
         } else if ($report == 'IGR_BO_CTBTBNOTA_NONHARGA') {
             $datas = DB::connection(Session::get('connection'))->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
             prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
@@ -1811,11 +1819,15 @@ class printBPBController extends Controller
             and msth_nodoc in ($document)
             order by msth_nodoc");
 
-            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota_nonharga', ['datas' => $datas, 're_print' => $re_print, 'ttd' => $ttd, 'signedby' => $signedBy, 'signedby2' => $signedBy2, 'signedby3' => $signedBy3])->setPaper('a4', 'potrait');
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota_nonharga', ['datas' => $datas, 're_print' => $re_print, 'ttd' => $ttd, 'signedby' => $signedBy])->setPaper('a4', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
-            return $pdf->stream('igr_bo_ctbtbnota_nonharga.pdf');
+            for ($i = 0; $i < sizeof($datas); $i++) {
+                $id = 'BTB_' . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
+            }
+
+            return $pdf->stream($id . '.PDF');
         } else if ($report == 'IGR_BO_CTBTBNOTA_NONHARGA_FULL') {
             $datas = DB::connection(Session::get('connection'))->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
             prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
@@ -1842,13 +1854,24 @@ class printBPBController extends Controller
             and msth_nodoc in ($document)
             order by msth_nodoc");
 
-            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota_nonharga_full', ['datas' => $datas, 're_print' => $re_print, 'ttd' => $ttd, 'signedby' => $signedBy, 'signedby2' => $signedBy2, 'signedby3' => $signedBy3])->setPaper('a4', 'potrait');
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota_nonharga_full', ['datas' => $datas, 're_print' => $re_print, 'ttd' => $ttd, 'signedby' => $signedBy])->setPaper('a4', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
-            return $pdf->stream('igr_bo_ctbtbnota_nonharga_full.pdf');
+            for ($i = 0; $i < sizeof($datas); $i++) {
+                $id = 'BTB_' . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
+            }
+
+            return $pdf->stream($id . '.PDF');
         }
 
-        dd($report);
+        // dd($report);
+    }
+
+    public function showUser()
+    {
+        $records =  DB::connection(Session::get('connection'))->select("SELECT DISTINCT USERNAME, USERLEVEL, USERID
+                        FROM TBMASTER_USER");
+        return DataTables::of($records)->make(true);
     }
 }

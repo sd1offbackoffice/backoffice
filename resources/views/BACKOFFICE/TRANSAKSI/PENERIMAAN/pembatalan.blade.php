@@ -278,6 +278,7 @@
                 $('#modal-loader').modal('show');
             },
             success: function(result) {
+                console.log(result)
                 $('#modal-loader').modal('hide');
                 tableInquery.clear().draw();
                 $('#noBTB').val('');

@@ -110,24 +110,6 @@
         </div>
     </div>
 
-    {{--LOADER--}}
-    <div class="modal fade" id="modal-loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style="vertical-align: middle;">
-        <div class="modal-dialog modal-dialog-centered" role="document" >
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="loader" id="loader"></div>
-                            <div class="col-sm-12 text-center">
-                                <label for="">LOADING...</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
 
     <style>
         body {
@@ -195,118 +177,44 @@
                 }
             });
 
-            $.ajax({
-                url: '{{ url()->current() }}/upload',
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: {periode: periode},
-                beforeSend: function () {
-                    $('#modal-loader').modal('show');
-                    console.log(periode);
-                },
-                success: function (response, xhr) {
-                    $('#modal-loader').modal('hide');
+            if(periode.length == 0){
+                swal({
+                    title: 'Tidak ada periode yang dipilih!',
+                    icon: 'warning'
+                });
+            }
+            else{
+                $.ajax({
+                    url: '{{ url()->current() }}/upload',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {periode: periode},
+                    beforeSend: function () {
+                        $('#modal-loader').modal('show');
+                        console.log(periode);
+                    },
+                    success: function (response, xhr) {
+                        // $('#modal-loader').modal('hide');
 
-                    swal({
-                        title: response.message,
-                        icon: "success"
-                    }).then(function(){
-                        refresh();
-                    });
-                },
-                error: function (error) {
-                    swal({
-                        title: error.responseJSON.message,
-                        icon: 'error',
-                    }).then(() => {
-                        $('#modal-loader').modal('hide');
-                    });
-                }
-            });
-        }
-
-        function refresh() {
-            $.ajax({
-                url: '{{ url()->current() }}/refresh',
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                beforeSend: function () {
-                    $('#modal-loader').modal('toggle');
-                },
-                success: function (response) {
-                    $('#modal-loader').modal('toggle');
-                    console.log(response);
-
-                    $('#table-upload tbody tr').remove();
-
-                    for(i=0;i<response.kkei.length;i++){
-                        html = '<tr class="d-flex">' +
-                                '<td class="col-sm-2">' +
-                                    '<div class="custom-control custom-checkbox text-center">' +
-                                        '<input type="checkbox" class="custom-control-input cb_kkei" id="cb_h'+response.kkei[i].kke_periode+'">' +
-                                        '<label class="custom-control-label mt-2" for="cb_h'+response.kkei[i].kke_periode+'"></label>' +
-                                    '</div>' +
-                                '</td>' +
-                                '<td class="col-sm-10">' +
-                                    '<input disabled type="text" class="form-control periode" value="'+response.kkei[i].kke_periode+'">' +
-                                '</td>' +
-                            '</tr>';
-
-                        $('#table-upload').append(html);
+                        swal({
+                            title: response.message,
+                            icon: "success"
+                        }).then(function(){
+                            window.location.reload();
+                        });
+                    },
+                    error: function (error) {
+                        swal({
+                            title: error.responseJSON.message,
+                            icon: 'error',
+                        }).then(() => {
+                            $('#modal-loader').modal('hide');
+                        });
                     }
-
-                    for(i=response.kkei.length;i<10;i++){
-                        html = '<tr class="d-flex">' +
-                            '<td class="col-sm-2">' +
-                            '<div class="custom-control custom-checkbox text-center">' +
-                            '<input type="checkbox" class="custom-control-input cb_kkei" id="cb_h'+i+'">' +
-                            '<label class="custom-control-label mt-2" for="cb_h'+i+'"></label>' +
-                            '</div>' +
-                            '</td>' +
-                            '<td class="col-sm-10">' +
-                            '<input disabled type="text" class="form-control periode">' +
-                            '</td>' +
-                            '</tr>';
-
-                        $('#table-upload').append(html);
-                    }
-
-
-
-                    $('#table-monitoring tbody tr').remove();
-
-                    for(i=0;i<response.data.length;i++){
-                        html = '<tr class="d-flex">'+
-                            '<td class="col-sm-2 format">'+response.data[i].kke_periode+'</td>' +
-                            '<td class="col-sm-2 format">'+response.data[i].kke_create_dt+'</td>' +
-                            '<td class="col-sm-3">'+response.data[i].kke_nomorpb+'</td>' +
-                            '<td class="col-sm-3">'+response.data[i].pbd_nopo+'</td>' +
-                            '<td class="col-sm-2">'+response.data[i].msth_nodoc+'</td>' +
-                            '</tr>';
-
-                        $('#table-monitoring').append(html);
-                    }
-                    for(i=response.data.length;i<17;i++){
-                        html = '<tr class="d-flex">'+
-                            '<td class="col-sm-2" style="color:white">AA</td>' +
-                            '<td class="col-sm-2" style="color:white">AA</td>' +
-                            '<td class="col-sm-3" style="color:white">AA</td>' +
-                            '<td class="col-sm-3" style="color:white">AA</td>' +
-                            '<td class="col-sm-2" style="color:white">AA</td>' +
-                            '</tr>';
-
-                        $('#table-monitoring').append(html);
-                    }
-
-                    $('.format').each(function(){
-                        $(this).html(formatDate($(this).html()));
-                    });
-                }
-            });
+                });
+            }
         }
     </script>
 

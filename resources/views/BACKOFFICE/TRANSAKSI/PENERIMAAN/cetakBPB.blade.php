@@ -10,11 +10,11 @@
                     <form>
                         <div class="form-group row mb-1">
                             <label class="col-sm-2 col-form-label text-right">Jenis Laporan</label>
-                            <div class="col-sm-3">
+                            <div class="col-sm-4">
                                 <select class="form-control" id="typeLaporan">
-                                    <option value="B1">1. DAFTAR TRANSAKSI YANG BELUM TRANSAKSI BPB</option>
-                                    <option value="B2">2. MONITORING BUKTI PENERIMAAN BARANG</option>
-                                    <option value="P1">3. LIST DRAFT PO/RINCIAN PO</option>
+                                    <option id="optB1" onclick="startAlert()" value="B1">1. DAFTAR TRANSAKSI YANG BELUM TRANSAKSI BPB</option>
+                                    <option id="optB2" onclick="startAlert()" value="B2">2. MONITORING BUKTI PENERIMAAN BARANG</option>
+                                    <option id="optP1" onclick="startAlert()" value="P1">3. LIST DRAFT PO/RINCIAN PO</option>
                                 </select>
                             </div>
                         </div>
@@ -33,7 +33,7 @@
                             <label class="col-sm-2 col-form-label text-right">No PO</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control nullPermission" id="noPO" value="">
-                                <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#modalPO">
+                                <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#modalPO" onclick="getNoPO()">
                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                 </button>
                             </div>
@@ -125,17 +125,33 @@
     let formUkuranP1 = $('#formUkuranP1');
     var currUrl = '{{ url()->current() }}';
     currUrl = currUrl.replace("index", "");
-
+    let startDate = $('#startDate');
+    let endDate = $('#endDate');
+    let b1 = $('#optB1');
+    let b2 = $('#optB2');
+    let p1 = $('#optP1');
     $(document).ready(function() {
-        // startAlert();
-        typeTrn = 'B'
+        startAlert();
         formatDate();
         formNoPO.hide();
         formSupplier.hide();
         formDetailP1.hide();
         formUkuranP1.hide();
-        getNoPO();
+        // getNoPO();
     });
+
+    startDate.keypress(function(e) {
+        if (e.keyCode == 13) {
+            endDate.focus();
+        }
+    });
+
+    endDate.keypress(function(e) {
+        if (e.keyCode == 13) {
+            $('#btnCetak').click();
+        }
+    });
+
 
     function formatDate() {
         $('#startDate').datepicker({
@@ -170,7 +186,7 @@
                 default:
                     typeTrn = 'N';
             }
-            $('#startDate').focus();
+            $('#typeLaporan').focus();
         })
     }
 
@@ -208,6 +224,7 @@
         let formatLaporan = $('#formatLaporan').val();
         let ukuranLaporan = $('#ukuranLaporan').val();
 
+        console.log(startDate, endDate, typeLaporan)
         if (typeLaporan != 'P1') {
             if (!startDate || !endDate) {
                 swal('Tanggal Harus Terisi', '', 'warning');
@@ -261,6 +278,8 @@
 
     $('#typeLaporan').on('change', function() {
         let typeLaporan = $('#typeLaporan').val();
+        startAlert();
+        console.log(typeLaporan, typeTrn);
 
         if (typeLaporan == 'P1') {
             formNoPO.show();
@@ -274,7 +293,6 @@
             formUkuranP1.hide();
             formDate.show();
         }
-
         console.log();
     })
 

@@ -4,16 +4,20 @@ namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PENERIMAAN;
 
 use PDF;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
-class cetakBPBController extends Controller {
-    public function index(){
+class cetakBPBController extends Controller
+{
+    public function index()
+    {
         return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.cetakBPB');
     }
 
-    public function showPO(){
+    public function showPO()
+    {
         $kodeigr = Session::get('kdigr');
 
         $data = DB::connection(Session::get('connection'))->select("SELECT tpoh_nopo, sup_kodesupplier || '-' || sup_namasupplier supplier
@@ -27,7 +31,8 @@ class cetakBPBController extends Controller {
         return DataTables::of($data)->make(true);
     }
 
-    public function searchPO(Request  $request){
+    public function searchPO(Request  $request)
+    {
         $kodeigr = Session::get('kdigr');
         $value  = $request->value;
 
@@ -42,7 +47,8 @@ class cetakBPBController extends Controller {
         return response()->json($data);
     }
 
-    public function cetakLaporan(Request  $request){ // 1 => Draf || 2 => Rincian
+    public function cetakLaporan(Request  $request)
+    { // 1 => Draf || 2 => Rincian
         $kodeigr    = Session::get('kdigr');
         $typeTrn    = $request->typeTrn;
         $startDate  = $request->startDate;
@@ -52,24 +58,25 @@ class cetakBPBController extends Controller {
         $formatLaporan = $request->formatLaporan;
         $ukuranLaporan = $request->ukuranLaporan;
 
-        if ($typeLaporan != 'P1'){
-            $result = $this->print_ctk_bpb($kodeigr, $startDate, $endDate, $typeTrn,$typeLaporan);
+        if ($typeLaporan != 'P1') {
+            $result = $this->print_ctk_bpb($kodeigr, $startDate, $endDate, $typeTrn, $typeLaporan);
             Session::put('penerimaan-report-data', $result);
 
             return response()->json($result);
         } else {
-            $result = $this->print_ctk_bpb1($formatLaporan,$ukuranLaporan,$noPO, $kodeigr, $typeTrn);
+            $result = $this->print_ctk_bpb1($formatLaporan, $ukuranLaporan, $noPO, $kodeigr, $typeTrn);
             Session::put('penerimaan-report-data', $result);
 
             return response()->json($result);
         }
     }
 
-    public function print_ctk_bpb($kodeigr, $date1, $date2, $typeTrn, $typeLaporan){
+    public function print_ctk_bpb($kodeigr, $date1, $date2, $typeTrn, $typeLaporan)
+    {
         $startDate  = date('Y-m-d', strtotime($date1));
         $endDate    = date('Y-m-d', strtotime($date2));
 
-        if ($typeLaporan == 'B1'){
+        if ($typeLaporan == 'B1') {
             $temp = DB::connection(Session::get('connection'))->select("SELECT *
                                         FROM TBTR_BACKOFFICE
                                         WHERE TRBO_KODEIGR = '$kodeigr'
@@ -78,38 +85,39 @@ class cetakBPBController extends Controller {
                                         AND TRBO_TGLDOC BETWEEN '$startDate' and '$endDate'
                                         AND TRBO_RECORDID <> '2'");
 
-            if (!$temp){
+            if (!$temp) {
                 return ['kode' => 0, 'msg' => "Data Tidak Ditemukan!!", 'data' => ''];
             } else {
-                $data = ['url' => 'IGR_BO_BLMPRSBPB', 'kodeigr' => $kodeigr, 'startDate' => $startDate, 'endDate' => $endDate, 'typeTrn' => $typeTrn, 'typeLaporan' => $typeLaporan];
+                $data = ['url' => 'IGR_BO_BLMPRSBPB', 'kodeigr' => $kodeigr, 'startDate' => $startDate, 'endDate' => $endDate, 'typeTrn' => $typeTrn, 'typeLaporan' => $typeLaporan, 'data' => $temp];
                 return ['kode' => 1, 'msg' => "Cetak Laporan", 'data' => $data];
             }
-        } else if ($typeLaporan == 'B2'){
+        } else if ($typeLaporan == 'B2') {
             $temp = DB::connection(Session::get('connection'))->select("SELECT *
                                         FROM TBTR_MSTRAN_H
                                         WHERE MSTH_KODEIGR = '$kodeigr'
                                         AND MSTH_TYPETRN = '$typeTrn'
                                         AND MSTH_TGLDOC BETWEEN '$startDate' AND '$endDate' ");
 
-            if (!$temp){
+            if (!$temp) {
                 return ['kode' => 0, 'msg' => "Data Tidak Ditemukan!!", 'data' => ''];
             } else {
-                $data = ['url' => 'IGR_BO_MONITORBPB', 'kodeigr' => $kodeigr, 'startDate' => $startDate, 'endDate' => $endDate, 'typeTrn' => $typeTrn, 'typeLaporan' => $typeLaporan];
+                $data = ['url' => 'IGR_BO_MONITORBPB', 'kodeigr' => $kodeigr, 'startDate' => $startDate, 'endDate' => $endDate, 'typeTrn' => $typeTrn, 'typeLaporan' => $typeLaporan, 'data' => $temp];
                 return ['kode' => 1, 'msg' => "Cetak Laporan", 'data' => $data];
             }
-        } else if ($typeLaporan == 'B2'){
+        } else if ($typeLaporan == 'B2') {
             return ['kode' => 1, 'msg' => "Cetak Laporan", 'data' => 'url'];
             //CETAK_BLMPRS_PB (kdoeigr, date1, date2, p_prog:IGR031E, typetrn)
         }
     }
 
-    public function print_ctk_bpb1($formatLaporan, $ukuranLaporan, $noPO, $kodeigr, $typeTrn){
-        if ($formatLaporan == 1){
+    public function print_ctk_bpb1($formatLaporan, $ukuranLaporan, $noPO, $kodeigr, $typeTrn)
+    {
+        if ($formatLaporan == 1) {
             //CETAK_LIFTDRAF_PO1(KDOEIGR,NOPO,'IGR031G')
             $data = ['url' => 'CETAK_LIFTDRAF_PO1', 'kodeigr' => $kodeigr, 'typeTrn' => $typeTrn, 'noPO' => $noPO];
             return ['kode' => 1, 'msg' => "Cetak Laporan", 'data' => $data];
         } else {
-            if ($ukuranLaporan == 'K'){
+            if ($ukuranLaporan == 'K') {
                 $data = ['url' => 'CETAK_LIFTDRAF_PO2', 'kodeigr' => $kodeigr, 'typeTrn' => $typeTrn, 'noPO' => $noPO];
                 return ['kode' => 1, 'msg' => "Cetak Laporan", 'data' => $data];
             } else {
@@ -119,31 +127,32 @@ class cetakBPBController extends Controller {
         }
     }
 
-    public function viewReport(Request $request){
+    public function viewReport(Request $request)
+    {
         $data = Session::get('penerimaan-report-data');
         $data = $data['data'];
         $report = $data['url'];
 
-        if ($report == 'IGR_BO_BLMPRSBPB'){
+
+        if ($report == 'IGR_BO_BLMPRSBPB') {
             $datas = $this->IGR_BO_BLMPRSBPB($data);
 
             $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_blmprsbpb', ['datas' => $datas])->setPaper('a4', 'landscape');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf ->get_canvas();
+            $canvas = $dompdf->get_canvas();
             $canvas->page_text(764, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
             return $pdf->stream('igr_bo_blmprsbpb.pdf');
-        }   else if ($report == 'IGR_BO_MONITORBPB'){
+        } else if ($report == 'IGR_BO_MONITORBPB') {
             $datas = $this->IGR_BO_MONITORBPB($data);
-
-            foreach ($datas as $value){
+            foreach ($datas as $value) {
                 $nqty = $value->qty * $value->mstd_frac + $value->qtyk + $value->mstd_qtybonus1;
                 $nlcost = ($nqty > 0) ?  (($value->mstd_gross - $value->mstd_discrph + $value->mstd_ppnbmrph + $value->mstd_ppnbtlrph) / $nqty) * $value->mstd_frac : 0;
                 $value->nlcost = $nlcost;
                 $value->namt = $value->mstd_gross - $value->mstd_discrph + $value->mstd_ppnbmrph + $value->mstd_ppnbtlrph + $value->mstd_ppnrph;
 
-                if ($value->prd_hrgjual > 0){
+                if ($value->prd_hrgjual > 0) {
                     if ($value->mstd_bkp == 'Y') {
                         $value->nmargin_aktual = ($value->prd_hrgjual != 0) ? (1 - 1.1 * $nlcost / $value->prd_hrgjual) * 100 : 0;
                     } else {
@@ -157,33 +166,35 @@ class cetakBPBController extends Controller {
             $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_monitorbpb', ['datas' => $datas])->setPaper('a4', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf ->get_canvas();
+            $canvas = $dompdf->get_canvas();
             $canvas->page_text(518, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
             return $pdf->stream('igr_bo_monitorbpb.pdf');
-        }  else if ($report == 'CETAK_LIFTDRAF_PO1'){
+        } else if ($report == 'CETAK_LIFTDRAF_PO1') {
             $datas = $this->IGR_BO_LISTDRAFT_PO1($data);
 
-            foreach ($datas as $value){
-                $satjual = DB::connection(Session::get('connection'))->select(" select LISTAGG( '[ ' || substr(prd_prdcd,-1) || ' : ' || prd_unit||' / '||prd_frac || ']', ' ') WITHIN GROUP (ORDER BY prd_prdcd) as satjual
-                                            from tbmaster_prodmast
-                                            where substr(prd_prdcd,1,6)= substr('$value->prd_prdcd',1,6)
-                                            and prd_kodeigr = '$value->prs_kodecabang'");
+            foreach ($datas as $value) {
+                $satjual = DB::connection(Session::get('connection'))->select(
+                    "SELECT LISTAGG( '[ ' || substr(prd_prdcd,-1) || ' : ' || prd_unit||' / '||prd_frac || ']', ' ') WITHIN GROUP (ORDER BY prd_prdcd) as satjual
+                            from tbmaster_prodmast
+                            where substr(prd_prdcd,1,6)= substr('$value->prd_prdcd',1,6)
+                            and prd_kodeigr = '$value->prs_kodecabang'
+                    "
+                );
 
                 $value->satjual = $satjual[0]->satjual;
             }
-
             $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_listdraft_po1', ['datas' => $datas])->setPaper('a4', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf ->get_canvas();
+            $canvas = $dompdf->get_canvas();
             $canvas->page_text(518, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
             return $pdf->stream('igr_bo_listdraft_po1.pdf');
-        } else if ($report == 'CETAK_LIFTDRAF_PO2'){
+        } else if ($report == 'CETAK_LIFTDRAF_PO2') {
             $datas = $this->IGR_BO_LISTDRAFT_PO2($data);
 
-            foreach ($datas as $value){
+            foreach ($datas as $value) {
                 $satjual = DB::connection(Session::get('connection'))->select(" select LISTAGG( '[ ' || substr(prd_prdcd,-1) || ' : ' || prd_unit||' / '||prd_frac || ']', ' ') WITHIN GROUP (ORDER BY prd_prdcd) as satjual
                                             from tbmaster_prodmast
                                             where substr(prd_prdcd,1,6)= substr('$value->tpod_prdcd',1,6)
@@ -195,14 +206,14 @@ class cetakBPBController extends Controller {
             $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_listdraft_po2', ['datas' => $datas])->setPaper('a5', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf ->get_canvas();
+            $canvas = $dompdf->get_canvas();
             $canvas->page_text(518, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
             return $pdf->stream('igr_bo_listdraft_po2.pdf');
-        } else if ($report == 'CETAK_LIFTDRAF_PO3'){
+        } else if ($report == 'CETAK_LIFTDRAF_PO3') {
             $datas = $this->IGR_BO_LISTDRAFT_PO2($data);
 
-            foreach ($datas as $value){
+            foreach ($datas as $value) {
                 $satjual = DB::connection(Session::get('connection'))->select(" select LISTAGG( '[ ' || substr(prd_prdcd,-1) || ' : ' || prd_unit||' / '||prd_frac || ']', ' ') WITHIN GROUP (ORDER BY prd_prdcd) as satjual
                                             from tbmaster_prodmast
                                             where substr(prd_prdcd,1,6)= substr('$value->tpod_prdcd',1,6)
@@ -214,7 +225,7 @@ class cetakBPBController extends Controller {
             $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_listdraft_po3', ['datas' => $datas])->setPaper('a4', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            $canvas = $dompdf ->get_canvas();
+            $canvas = $dompdf->get_canvas();
             $canvas->page_text(518, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
 
             return $pdf->stream('igr_bo_listdraft_po3.pdf');
@@ -223,7 +234,8 @@ class cetakBPBController extends Controller {
         return 0;
     }
 
-    public function IGR_BO_BLMPRSBPB($data){
+    public function IGR_BO_BLMPRSBPB($data)
+    {
         $kodeigr = $data['kodeigr'];
         $startDate = $data['startDate'];
         $endDate = $data['endDate'];
@@ -285,12 +297,12 @@ class cetakBPBController extends Controller {
         return $datas;
     }
 
-    public function IGR_BO_MONITORBPB($data){
+    public function IGR_BO_MONITORBPB($data)
+    {
         $kodeigr = $data['kodeigr'];
         $startDate = $data['startDate'];
         $endDate = $data['endDate'];
         $typeTrn = $data['typeTrn'];
-
         $datas = DB::connection(Session::get('connection'))->select(" SELECT    mstd_nodoc
                                              || ' '
                                              || CASE WHEN msth_flagdoc = 'Y' THEN '(REPRINT)' ELSE '' END
@@ -360,11 +372,11 @@ class cetakBPBController extends Controller {
                                              AND prd_kodetag = 'L' --sementara(dilimit)
                                              -- and mstd_nodoc = '02125351'
                                     ORDER BY nomor DESC");
-
         return $datas;
     }
 
-    public function IGR_BO_LISTDRAFT_PO1($data){
+    public function IGR_BO_LISTDRAFT_PO1($data)
+    {
         $kodeigr = $data['kodeigr'];
         $noPO   = $data['noPO'];
 
@@ -381,6 +393,14 @@ class cetakBPBController extends Controller {
                                            tpod_ppn,
                                            tpod_ppnbm,
                                            tpod_ppnbotol,
+                                           CASE
+                                              WHEN NVL (PBD_PRDCD, 0) <> 0
+                                              THEN
+                                                ''
+                                              ELSE
+                                                'PO ALOKASI'
+                                           END
+                                              alokasi,
                                            CASE
                                               WHEN NVL (tpod_persentasedisc1, 0) <> 0
                                               THEN
@@ -458,7 +478,8 @@ class cetakBPBController extends Controller {
         return $datas;
     }
 
-    public function IGR_BO_LISTDRAFT_PO2($data){
+    public function IGR_BO_LISTDRAFT_PO2($data)
+    {
         $kodeigr = $data['kodeigr'];
         $noPO   = $data['noPO'];
 
@@ -503,5 +524,4 @@ class cetakBPBController extends Controller {
 
         return $datas;
     }
-
 }

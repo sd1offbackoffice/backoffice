@@ -49,7 +49,7 @@
                                     </div>
                                     <button class="btn btn-secondary" onclick="$('#zip').click()">...</button>
                                     <input class="d-none" type="file" accept=".zip" id="zip"/>
-                                    <button class="ml-3 col-sm-2 btn btn-primary">ISI TO</button>
+                                    <button class="ml-3 col-sm-2 btn btn-primary" id="btnIsiTO">ISI TO</button>
                                 </div>
                             </fieldset>
                             <fieldset class="card border-secondary">
@@ -165,6 +165,7 @@
         var selectedTo = [];
         var dataTo = [];
         var tableDetail;
+        var upload;
 
         $(document).ready(function(){
             $('.tanggal').datepicker({
@@ -352,21 +353,31 @@
             var filename = e.target.files[0].name;
 
             var file = $(this)[0].files[0];
-            var upload = new Upload(file);
+            upload = new Upload(file);
+
+            $('#filename').val(filename);
+        });
+
+        $('#btnIsiTO').on('click',function(){
+            // var filename = e.target.files[0].name;
+            //
+            // var file = $(this)[0].files[0];
+            // var upload = new Upload(file);
 
             swal({
-                title: 'Proses file ' + filename + ' ?',
+                title: 'Proses file ' + $('#filename').val() + ' ?',
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true
             }).then(function(ok){
                 if(ok){
-                    $('#filename').val(filename);
+                    // $('#filename').val(filename);
                     upload.doImport();
                 }
                 else{
                     $('#filename').val('...');
                     $('#zip').val('');
+                    upload = null;
                 }
             })
         });
@@ -414,22 +425,19 @@
                 success: function (response) {
                     $('#modal-loader').modal('hide');
 
-                    if(response.status == 'success'){
-                        swal({
-                            title: 'File ' + filename + ' berhasil diproses!',
-                            icon: response.status
-                        });
+                    swal({
+                        title: 'File ' + filename + ' berhasil diproses!',
+                        icon: 'success'
+                    });
 
-                        getDataTo();
-                    }
-                    // $('#modal-loader').modal('hide');
+                    getDataTo();
                 },
                 error: function (error) {
                     // handle error
                     $('#modal-loader').modal('hide');
                     swal({
                         title: 'Terjadi Kesalahan!',
-                        text: 'Mohon pastikan file zip berasal dari program Transfer SJ - IAS!',
+                        text: error.responseJSON.message,
                         icon: 'error'
                     }).then(function(){
                         location.reload();

@@ -14,7 +14,7 @@
                         <div class="row form-group">
                             <label for="periode" class="col-sm-3 text-right col-form-label">Periode Proses</label>
                             <div class="col-sm-2">
-                                <input maxlength="10" type="text" class="form-control tanggal" id="periode">
+                                <input maxlength="10" type="text" class="form-control tanggal" id="periode" autocomplete="off">
                             </div>
                             <label class="col-form-label">[ MM/YYYY ]</label>
                         </div>
@@ -37,21 +37,21 @@
                         <div class="row form-group">
                             <label for="sales1" class="col-sm-3 text-right col-form-label">Periode Sales 1</label>
                             <div class="col-sm-2">
-                                <input maxlength="10" type="text" class="form-control tanggal" id="sales1">
+                                <input maxlength="10" type="text" class="form-control tanggal" id="sales1" autocomplete="off">
                             </div>
                             <label class="col-form-label">[ MM/YYYY ]</label>
                         </div>
                         <div class="row form-group">
                             <label for="sales2" class="col-sm-3 text-right col-form-label">Periode Sales 2</label>
                             <div class="col-sm-2">
-                                <input maxlength="10" type="text" class="form-control tanggal" id="sales2">
+                                <input maxlength="10" type="text" class="form-control tanggal" id="sales2" autocomplete="off">
                             </div>
                             <label class="col-form-label">[ MM/YYYY ]</label>
                         </div>
                         <div class="row form-group">
                             <label for="sales3" class="col-sm-3 text-right col-form-label">Periode Sales 3</label>
                             <div class="col-sm-2">
-                                <input maxlength="10" type="text" class="form-control tanggal" id="sales3">
+                                <input maxlength="10" type="text" class="form-control tanggal" id="sales3" autocomplete="off">
                             </div>
                             <label class="col-form-label">[ MM/YYYY ]</label>
                         </div>
@@ -460,78 +460,78 @@
             {{--periodeAktif = $.datepicker.formatDate('mm/yy', new Date());--}}
 
             {{--if(!$('#periode').val() || !$('#prdcd').val() || !$('#sales1').val() || !$('#sales2').val() || !$('#sales3').val()){--}}
-                {{--swal({--}}
-                    {{--title: 'Inputan belum lengkap!',--}}
-                    {{--icon: 'error'--}}
-                {{--});--}}
+            {{--    swal({--}}
+            {{--        title: 'Inputan belum lengkap!',--}}
+            {{--        icon: 'error'--}}
+            {{--    });--}}
             {{--}--}}
             {{--else if($('#periode').val() > periodeAktif){--}}
-                {{--swal({--}}
-                    {{--title: 'Periode lebih besar dari periode aktif!',--}}
-                    {{--icon: 'error'--}}
-                {{--});--}}
+            {{--    swal({--}}
+            {{--        title: 'Periode lebih besar dari periode aktif!',--}}
+            {{--        icon: 'error'--}}
+            {{--    });--}}
             {{--}--}}
             {{--else if($('#sales1').val() > periodeAktif){--}}
-                {{--swal({--}}
-                    {{--title: 'Periode Sales 1 lebih besar dari periode aktif!',--}}
-                    {{--icon: 'error'--}}
-                {{--});--}}
+            {{--    swal({--}}
+            {{--        title: 'Periode Sales 1 lebih besar dari periode aktif!',--}}
+            {{--        icon: 'error'--}}
+            {{--    });--}}
             {{--}--}}
             {{--else if($('#sales2').val() > periodeAktif){--}}
-                {{--swal({--}}
-                    {{--title: 'Periode Sales 2 lebih besar dari periode aktif!',--}}
-                    {{--icon: 'error'--}}
-                {{--});--}}
+            {{--    swal({--}}
+            {{--        title: 'Periode Sales 2 lebih besar dari periode aktif!',--}}
+            {{--        icon: 'error'--}}
+            {{--    });--}}
             {{--}--}}
             {{--else if($('#sales3').val() > periodeAktif){--}}
-                {{--swal({--}}
-                    {{--title: 'Periode Sales 3 lebih besar dari periode aktif!',--}}
-                    {{--icon: 'error'--}}
-                {{--});--}}
+            {{--    swal({--}}
+            {{--        title: 'Periode Sales 3 lebih besar dari periode aktif!',--}}
+            {{--        icon: 'error'--}}
+            {{--    });--}}
             {{--}--}}
             {{--else{--}}
-                {{--swal({--}}
-                    {{--title: 'Yakin ingin melakukan proses data?',--}}
-                    {{--icon: 'warning',--}}
-                    {{--buttons: true,--}}
-                    {{--dangerMode: true--}}
-                {{--}).then((ok) => {--}}
-                    {{--if(ok){--}}
-                        {{--$.ajax({--}}
-                            {{--url: '{{ url()->current() }}/proses',--}}
-                            {{--type: 'POST',--}}
-                            {{--headers: {--}}
-                                {{--'X-CSRF-TOKEN': '{{ csrf_token() }}'--}}
-                            {{--},--}}
-                            {{--data: {--}}
-                                {{--periode: $('#periode').val(),--}}
-                                {{--sales1: $('#sales1').val(),--}}
-                                {{--sales2: $('#sales2').val(),--}}
-                                {{--sales3: $('#sales3').val(),--}}
+            {{--    swal({--}}
+            {{--        title: 'Yakin ingin melakukan proses data?',--}}
+            {{--        icon: 'warning',--}}
+            {{--        buttons: true,--}}
+            {{--        dangerMode: true--}}
+            {{--    }).then((ok) => {--}}
+            {{--        if(ok){--}}
+            {{--            $.ajax({--}}
+            {{--                url: '{{ url()->current() }}/proses',--}}
+            {{--                type: 'POST',--}}
+            {{--                headers: {--}}
+            {{--                    'X-CSRF-TOKEN': '{{ csrf_token() }}'--}}
+            {{--                },--}}
+            {{--                data: {--}}
+            {{--                    periode: $('#periode').val(),--}}
+            {{--                    sales1: $('#sales1').val(),--}}
+            {{--                    sales2: $('#sales2').val(),--}}
+            {{--                    sales3: $('#sales3').val(),--}}
 
-                            {{--},--}}
-                            {{--beforeSend: function () {--}}
-                                {{--$('#modal-loader').modal('show');--}}
-                            {{--},--}}
-                            {{--success: function (response) {--}}
-                                {{--$('#modal-loader').modal('hide');--}}
-                                {{--swal({--}}
-                                    {{--title: response.title,--}}
-                                    {{--text: response.message,--}}
-                                    {{--icon: response.status,--}}
-                                {{--});--}}
-                            {{--},--}}
-                            {{--error: function (error) {--}}
-                                {{--$('#modal-loader').modal('hide');--}}
-                                {{--swal({--}}
-                                    {{--title: 'Terjadi kesalahan!',--}}
-                                    {{--text: error.responseJSON.message,--}}
-                                    {{--icon: 'error',--}}
-                                {{--});--}}
-                            {{--}--}}
-                        {{--});--}}
-                    {{--}--}}
-                {{--});--}}
+            {{--                },--}}
+            {{--                beforeSend: function () {--}}
+            {{--                    $('#modal-loader').modal('show');--}}
+            {{--                },--}}
+            {{--                success: function (response) {--}}
+            {{--                    $('#modal-loader').modal('hide');--}}
+            {{--                    swal({--}}
+            {{--                        title: response.title,--}}
+            {{--                        text: response.message,--}}
+            {{--                        icon: response.status,--}}
+            {{--                    });--}}
+            {{--                },--}}
+            {{--                error: function (error) {--}}
+            {{--                    $('#modal-loader').modal('hide');--}}
+            {{--                    swal({--}}
+            {{--                        title: 'Terjadi kesalahan!',--}}
+            {{--                        text: error.responseJSON.message,--}}
+            {{--                        icon: 'error',--}}
+            {{--                    });--}}
+            {{--                }--}}
+            {{--            });--}}
+            {{--        }--}}
+            {{--    });--}}
             {{--}--}}
         }
 

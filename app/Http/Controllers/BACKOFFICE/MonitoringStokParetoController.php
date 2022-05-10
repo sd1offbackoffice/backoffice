@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE;
 
+use App\Http\Controllers\Auth\loginController;
 use Carbon\Carbon;
 use http\Env\Response;
 use Illuminate\Database\QueryException;
@@ -70,6 +71,12 @@ class MonitoringStokParetoController extends Controller
         $hrkj++;
 
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
+
+        $monitoring = DB::connection(Session::get('connection'))
+            ->table('tbtr_monitoringplu')
+            ->selectRaw("mpl_kodemonitoring kode, mpl_namamonitoring nama")
+            ->where('mpl_kodemonitoring','=',$kodemon)
+            ->first();
 
         $data = [];
 
@@ -210,21 +217,7 @@ class MonitoringStokParetoController extends Controller
 //            dd($d);
         }
 
-        $dompdf = new PDF();
-
-        $pdf = PDF::loadview('BACKOFFICE.MONITORINGSTOKPARETO.kkhpb-pdf',compact(['perusahaan','data']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(755, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream('Kertas Kerja Harian PB Manual.pdf');
+        return view('BACKOFFICE.MONITORINGSTOKPARETO.kkhpb-pdf',compact(['perusahaan','data','monitoring']));
     }
 
     public function printMontok(Request $request){
@@ -233,6 +226,12 @@ class MonitoringStokParetoController extends Controller
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
         $data = [];
+
+        $monitoring = DB::connection(Session::get('connection'))
+            ->table('tbtr_monitoringplu')
+            ->selectRaw("mpl_kodemonitoring kode, mpl_namamonitoring nama")
+            ->where('mpl_kodemonitoring','=',$kodemon)
+            ->first();
 
         $data = DB::connection(Session::get('connection'))->select("SELECT   MPL_PRDCD PLU, PRD_DESKRIPSIPENDEK DESKRIPSI,
              PRD_UNIT || '/' || PRD_FRAC SATUAN, PRD_UNIT UNIT, ST_SALDOAKHIR SALDOAKHIR, OUTPO, OUTQTY,
@@ -367,20 +366,6 @@ class MonitoringStokParetoController extends Controller
 
 //        dd($data);
 
-        $dompdf = new PDF();
-
-        $pdf = PDF::loadview('BACKOFFICE.MONITORINGSTOKPARETO.montok-pdf',compact(['perusahaan','data']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream('Monitoring Stok Item Pareto.pdf');
+        return view('BACKOFFICE.MONITORINGSTOKPARETO.montok-pdf',compact(['perusahaan','data','monitoring']));
     }
 }

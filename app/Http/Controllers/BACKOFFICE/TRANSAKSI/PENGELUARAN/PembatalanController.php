@@ -22,7 +22,7 @@ class PembatalanController extends Controller
     public function getDataLovNPB()
     {
         $data = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
-            ->select('msth_nodoc', 'msth_tgldoc')
+            ->selectRaw("msth_nodoc ,to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc")
             ->where('msth_kodeigr', '=', Session::get('kdigr'))
             ->where('msth_typetrn', '=', 'K')
             ->where(DB::connection(Session::get('connection'))->raw("nvl(msth_recordid,'0')"), '<>', '1')

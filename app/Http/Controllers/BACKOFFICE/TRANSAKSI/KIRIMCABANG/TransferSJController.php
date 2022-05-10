@@ -89,7 +89,7 @@ class TransferSJController extends Controller
             DB::connection(Session::get('connection'))->beginTransaction();
 
             $data = DB::connection(Session::get('connection'))->insert("insert into temp_sj select mstd_recordid recid , mstd_typetrn rtype, mstd_nodoc docno,
-                              mstd_tgldoc DATEO, mstd_noref3 noref1, mstd_tgref3 tgref1,mstd_docno2 noref2,
+                              to_char(mstd_tgldoc,'yyyymmdd') DATEO, mstd_noref3 noref1, mstd_tgref3 tgref1,mstd_docno2 noref2,
                               mstd_date2 tgref2,
 						       mstd_docno2 docno2, mstd_date2  date2, mstd_istype istype,  mstd_invno invno,
 						       mstd_date3 date3, mstd_nott nott,  mstd_tgltt date4, mstd_kodesupplier supco,
@@ -246,7 +246,7 @@ class TransferSJController extends Controller
 
         $filename = 'TO'.$datas[0][0]['loc2'].$tgl.'.zip';
 
-        if ($zip->open(public_path($filename), ZipArchive::CREATE) === TRUE)
+        if ($zip->open(storage_path($filename), ZipArchive::CREATE) === TRUE)
         {
             $files = File::files(storage_path('TRFSJ'));
 
@@ -260,13 +260,13 @@ class TransferSJController extends Controller
 
         File::delete($files);
 
-        return response()->download(public_path($filename))->deleteFileAfterSend(true);
+        return response()->download(storage_path($filename))->deleteFileAfterSend(true);
     }
 
     public function open(){
-        $dataFileDBF = new TableReader(storage_path('test.dbf'));
+        $dataFileDBF = new TableReader(storage_path('TO220421.DBF'));
 
-        dd($dataFileDBF->getRecordCount());
+//        dd($dataFileDBF->getRecordCount());
         while($recs = $dataFileDBF->nextRecord()){
             dd($recs);
         }

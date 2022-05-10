@@ -43,6 +43,9 @@
     @endphp
     @for($i = 0; $i < sizeof($datas); $i++) @if($i==0 || $datas[$i]->msth_nodoc != $datas[$i-1]->msth_nodoc)
         @if($i != 0)
+        @php
+        $no = 0;
+        @endphp
         <div class="page-break"></div>
         @endif
         <header>
@@ -54,12 +57,12 @@
                 <div style="margin-top: -100px;margin-left: 150px !important;">
                     <p style="text-align: center">BUKTI PENERIMAAN BARANG</p>
                     <p style="text-align: center">{{$datas[$i]->judul}}</p>
-                    <p style="text-align: center">No.: {{$datas[$i]->barcode}} Tgl: {{ date("d-M-y") }}</p>
+                    <p style="text-align: center">No.: {{$datas[$i]->msth_nodoc}} Tgl: {{ date("d-M-y") }}</p>
                     @php
                     $generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG();
                     @endphp
 
-                    <img style="max-width: 250px;" src="data:image/png;base64,{{ base64_encode($generatorPNG->getBarcode($datas[$i]->barcode, $generatorPNG::TYPE_CODE_128)) }}">
+                    <img style="max-width: 250px;" src="data:image/png;base64,{{ base64_encode($generatorPNG->getBarcode($datas[$i]->msth_nodoc, $generatorPNG::TYPE_CODE_128)) }}">
                     <br>
                 </div>
                 <table style="line-height: 8px !important;">
@@ -98,7 +101,7 @@
                             </tr>
                             <tr>
                                 <td>No.SJ/F</td>
-                                <td>: {{$datas[$i]->msth_nodoc}}</td>
+                                <td>: {{$datas[$i]->msth_nofaktur}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -169,32 +172,51 @@
                     <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
                         Pengirim,
                         <hr>
-                        <br><br>
-                        <img style="max-width: 100px; z-index: 0" src="../storage/signature/{{$ttd . '.png'}}"></img>
-                        <br>
-                        {{ $signedby }}
-                        <hr>
-                        Supplier/Expedisi
+                        <div class="row align-items-center">
+                            <div class="col-5" style="margin-top: 10px">
+                                <img style="max-width: 125px;" src="../storage/signature_expedition/{{$ttd . '.png'}}"></img>
+                            </div>
+                        </div>
                     </td>
                     <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
                         Disetujui,
                         <hr>
-                        <br><br>
-                        <img style="max-width: 100px;" src="../storage/signature/{{$ttd . '_srclerk.png'}}"></img>
-                        <img style="max-width: 200px; position: absolute; z-index: 2;" src="../storage/stempel/{{$datas[$i]->prs_namacabang . '.png'}}"></img>
-                        <br>
-                        {{ $signedby2 }}
-                        <hr>
-                        Logistic Adm.Sr.Clerk
+                        <div class="row align-items-center">
+                            <div class="col-5">
+                                <img style="max-width: 120px; position: absolute; margin-left:25%; z-index: 0;" src="../storage/signature/srclerk.png"></img>
+                                <img style="max-width: 150px; position: absolute; margin-left:65%; margin-top: 10%; z-index: 10;" src="../storage/stempel/{{$datas[$i]->prs_namacabang . '.png'}}"></img>
+                            </div>
+                        </div>
                     </td>
                     <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
                         Dicetak,
                         <hr>
-                        <br><br>
-                        <img style="max-width: 100px; z-index: 0" src="../storage/signature/{{$ttd . '_clerk.png'}}"></img>
-                        <br>
-                        {{ $signedby3 }}
-                        <hr>
+                        <div class="row align-items-center">
+                            <div class="col-5">
+                                <img style="max-width: 120px; position: absolute; margin-left:25%; z-index: 0;" src="../storage/signature/clerk.png"></img>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px black solid; width: 240px; text-align: center;">
+                        {{ strtoupper($signedby) }}
+                    </td>
+                    <td style="border: 1px black solid; width: 240px; text-align: center;">
+                        {{ file_get_contents('../storage/names/srclerk.txt') }}
+                    </td>
+                    <td style="border: 1px black solid; width: 240px; text-align: center;">
+                        {{ file_get_contents('../storage/names/clerk.txt') }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: 1px black solid; width: 240px; text-align: center;">
+                        Supplier/Expedisi
+                    </td>
+                    <td style="border: 1px black solid; width: 240px; text-align: center;">
+                        Logistic Adm.Sr.Clerk
+                    </td>
+                    <td style="border: 1px black solid; width: 240px; text-align: center;">
                         Logistic Adm.Clerk
                     </td>
                 </tr>

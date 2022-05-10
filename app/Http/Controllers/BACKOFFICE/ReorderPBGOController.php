@@ -1055,9 +1055,9 @@ class ReorderPBGOController extends Controller
         }
     }
 
-    public function cetak_tolakan(){
-        $recid = $_GET['recid'];
-        $nopb = $_GET['nopb'];
+    public function cetak_tolakan(Request $request){
+        $recid = $request->recid;
+        $nopb = $request->nopb;
 
         if($recid == 2){
             $title = '** DAFTAR TOLAKAN P.B. YANG DIBAWAH MINIMUM ORDER **';
@@ -1137,7 +1137,7 @@ class ReorderPBGOController extends Controller
         $usid = Session::get('usid');
 
         $c = loginController::getConnectionProcedure();
-        $s = oci_parse($c, "BEGIN PROSES_GO_MIGRASI(:usid, :status, :result, :tolakan2, :tolakan3); END;");
+        $s = oci_parse($c, "BEGIN SP_REODER_GO_MIGRASI(:usid, :status, :result, :tolakan2, :tolakan3); END;");
         oci_bind_by_name($s, ':status', $status, 255);
         oci_bind_by_name($s, ':result', $result, 255);
         oci_bind_by_name($s, ':tolakan2', $tolakan2, 255);

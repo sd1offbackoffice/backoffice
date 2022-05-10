@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title> RETUR BARANG KE SUPPLIER & SUPPLIER  </title>
+    <title> RETUR BARANG KE SUPPLIER</title>
 </head>
 <body>
 
@@ -20,7 +20,7 @@ $datetime->setTimezone($timezone);
     </div>
     <div style="float:right; margin-top: 0px; line-height: 10px !important;">
         <p>TANGGAL : {{ date("d-m-Y") }}<br><br>
-            PROGRAM : RETUR BARANG KE SUPPLIER & SUPPLIER <br><br>
+     <!--       PROGRAM : RETUR BARANG KE SUPPLIER & SUPPLIER <br><br> -->
             JAM : {{ $datetime->format('H:i:s') }}<br><br>
     </div>
     <h2 style="text-align: center">RETUR BARANG KE SUPPLIER & SUPPLIER</h2>
@@ -59,7 +59,7 @@ $datetime->setTimezone($timezone);
             <td colspan="13" style="border-bottom: 1px black solid"></td>
         </tr>
     </table>
-    <span class="right" style="float: right">** AKHIR LAPORAN **</span><span style="float: left" class="left">{{count($data)}} Item(s) Transferred</span>
+    <span class="right" style="float: right">** AKHIR DARI LAPORAN **</span><span style="float: left" class="left">{{count($data)}} Item(s) Transferred</span>
 </main>
 
 <br>

@@ -61,11 +61,9 @@ class KirimKKEIController extends Controller
 
     public function upload(Request $request){
         try{
-            DB::connection(Session::get('connection'))->beginTransaction();
-
-            $upload = DB::connection(Session::get('connection'))->table('temp_kkei')
-                ->whereIn('kke_periode', $request->periode)
-                ->update(['kke_upload' => 'Y']);
+            $kodeigr = Session::get('kdigr');
+            $p = $request->periode;
+            $user = Session::get('usid');
 
             foreach($request->periode as $p){
                 $c = loginController::getConnectionProcedure();
@@ -106,51 +104,4 @@ class KirimKKEIController extends Controller
             ], 500);
         }
     }
-
-    public function refresh(){
-        $kodeigr = Session::get('kdigr');
-
-        $kkei = DB::connection(Session::get('connection'))->table('temp_kkei')
-            ->select('kke_periode')
-            ->whereRaw("nvl(kke_upload,'N') <> 'Y'")
-            ->distinct()
-            ->orderBy('kke_periode')
-            ->get();
-
-        foreach($kkei as $k){
-            $k->kke_periode = substr_replace($k->kke_periode, '/', 2, 0);
-            $k->kke_periode = substr_replace($k->kke_periode, '/', 5, 0);
-        }
-
-        $query1 = DB::connection(Session::get('connection'))->table('tbupload_kkei')
-            ->select('kki_periode')
-            ->distinct()
-            ->toSql();
-
-        $query2 = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw('tbtr_pb_d@igrgij'))
-            ->join(DB::connection(Session::get('connection'))->raw('tbtr_pb_h@igrgij'),'pbd_nopb','pbh_nopb')
-            ->leftJoin(DB::connection(Session::get('connection'))->raw('tbtr_po_h@igrgij'),'pbd_nopo','tpoh_nopo')
-            ->select('pbd_nopb','pbh_tglpb','pbd_nopo','tpoh_tglpo','pbh_cab_penerima')
-            ->distinct()
-            ->toSql();
-
-        $query3 = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw('tbtr_mstran_h@igrgij'))
-            ->select('msth_nodoc','msth_tgldoc','msth_nopo','msth_typetrn')
-            ->toSql();
-
-        $data = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw('tbdownload_kkei@igrgij'))
-            ->join(DB::connection(Session::get('connection'))->raw('('.$query1.')'),'kke_periode','kki_periode')
-            ->leftJoin(DB::connection(Session::get('connection'))->raw('('.$query2.')'),'kke_nomorpb','pbd_nopb')
-            ->leftJoin(DB::connection(Session::get('connection'))->raw('('.$query3.')'),'pbd_nopo','msth_nopo')
-            ->where('pbh_cab_penerima',$kodeigr)
-            ->where('msth_typetrn','B')
-            ->whereRaw("TO_CHAR (kki_periode, 'yyyyMM') >= TO_CHAR (SYSDATE - 90, 'yyyyMM')")
-            ->where('kke_cabang',$kodeigr)
-            ->distinct()
-            ->limit(10)
-            ->get();
-
-        return compact(['kkei','data']);
-    }
-
 }

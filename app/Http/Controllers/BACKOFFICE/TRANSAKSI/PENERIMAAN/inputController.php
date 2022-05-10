@@ -7,10 +7,7 @@ use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-//use App\Http\Controllers\Controller;
-//use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\DataTables;
 
 class inputController extends Controller
@@ -2115,8 +2112,11 @@ class inputController extends Controller
             foreach ($tempdata as $temp) {
                 $data = (object) $temp;
 
-                //                dd($data);
-
+                if (isset($data->trbo_persenppn) == false) {
+                    $tax = 11;
+                } else {
+                    $tax = $data->trbo_persenppn;
+                }
                 DB::connection(Session::get('connection'))->table('tbtr_backoffice')->insert([
                     "TRBO_KODEIGR" => $kodeigr,
                     "TRBO_RECORDID" => '',
@@ -2132,7 +2132,7 @@ class inputController extends Controller
                     "TRBO_KODESUPPLIER" => $request->supplier,
                     "TRBO_SEQNO" => $data->trbo_seqno,
                     "TRBO_PRDCD" => $data->trbo_prdcd,
-                    "TRBO_QTY" => $data->qty,
+                    "TRBO_QTY" => $data->trbo_qty,
                     "TRBO_QTYBONUS1" => $data->trbo_qtybonus1,
                     "TRBO_QTYBONUS2" => $data->trbo_qtybonus2,
                     "TRBO_HRGSATUAN" => $data->trbo_hrgsatuan,
@@ -2169,7 +2169,7 @@ class inputController extends Controller
                     "TRBO_FLAGDOC" => 0,
                     "TRBO_CREATE_BY" => $user,
                     "TRBO_CREATE_DT" => $date,
-                    "TRBO_PERSENPPN" => $data->trbo_persenppn
+                    "TRBO_PERSENPPN" => $tax
                 ]);
             }
 

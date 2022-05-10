@@ -22,13 +22,15 @@ class InqueryController extends Controller
     public function getDataLovNPB()
     {
         $data = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
-            ->select('msth_nodoc', 'msth_tgldoc')
+         // ->select('msth_nodoc', 'msth_tgldoc')
+            ->selectRaw("msth_nodoc ,to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc")
             ->where('msth_kodeigr', '=', Session::get('kdigr'))
             ->where('msth_typetrn', '=', 'K')
             ->where(DB::connection(Session::get('connection'))->raw("nvl(msth_recordid,'0')"), '<>', '1')
             ->orderBy('msth_nodoc', 'desc')
             ->limit(1000)
             ->get();
+
         return Datatables::of($data)->make(true);
     }
 
@@ -40,7 +42,7 @@ class InqueryController extends Controller
             ->join('tbtr_mstran_d', 'msth_nodoc', '=', 'mstd_nodoc')
             ->join('tbmaster_prodmast', 'mstd_prdcd', '=', 'prd_prdcd')
             ->rightJoin('tbmaster_supplier', 'msth_kodesupplier', '=', 'sup_kodesupplier')
-            ->selectRaw('msth_nodoc, msth_tgldoc, msth_istype, msth_invno, msth_tglinv, mstd_unit||\'/\'||mstd_frac satuan,
+            ->selectRaw('msth_nodoc, to_char(msth_tgldoc,\'dd/mm/yyyy\')msth_tgldoc, msth_istype, msth_invno, msth_tglinv, mstd_unit||\'/\'||mstd_frac satuan,
 									mstd_prdcd, mstd_noref3, floor(mstd_qty/mstd_frac) mstd_qty, mod(mstd_qty,mstd_frac) mstd_qtyk, mstd_gross, mstd_ppnrph, mstd_discrph,
 									((mstd_gross - mstd_discrph) * mstd_frac) / (floor(mstd_qty/mstd_frac) * mstd_frac + mod(mstd_qty,mstd_frac))nPrice,
 									mstd_gross - mstd_discrph nAmt,

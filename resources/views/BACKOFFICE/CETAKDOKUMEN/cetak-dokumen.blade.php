@@ -11,7 +11,7 @@
                     <div class="card-body">
                         <fieldset class="card border-secondary">
                             <legend class="w-auto ml-3">CETAK DOKUMEN
-{{--                                <span class="text-danger">[ Jenis Dokumen : Pengeluaran dibuat oleh Pak Slamet]</span>--}}
+                                {{--                                <span class="text-danger">[ Jenis Dokumen : Pengeluaran dibuat oleh Pak Slamet]</span>--}}
                             </legend>
                             <div class="card-body">
                                 <div class="row form-group">
@@ -33,7 +33,8 @@
                                         </select>
                                     </div>
                                     <div class="col-sm-4 form-check notareturfp">
-                                        <input type="checkbox" class="form-check-input" id="cetaknotareturfp">
+                                        <input type="checkbox" class="form-check-input" id="cetaknotareturfp"
+                                               onchange="popupModalTTD()">
                                         <label for="cetaknotareturfp"> CETAK NOTA RETUR FP</label><br>
                                     </div>
                                 </div>
@@ -116,18 +117,55 @@
         </div>
     </div>
 
+    <div class="modal fade" id="m_ttd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog-centered modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">TTD</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row form-group">
+                        <label class="col-sm-5 col-form-label">Nama Penandatangan</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="nama-penandatangan">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <label class="col-sm-5 col-form-label">Jabatan</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="jabatan1">
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <label class="col-sm-5 col-form-label">Jabatan 2</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="jabatan2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         body {
             background-color: #edece9;
             /*background-color: #ECF2F4  !important;*/
         }
+
         label {
             color: #232443;
             font-weight: bold;
         }
+
         .cardForm {
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         }
+
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button,
         input[type=date]::-webkit-inner-spin-button,
@@ -135,19 +173,23 @@
             -webkit-appearance: none;
             margin: 0;
         }
+
         .row_lov:hover {
             cursor: pointer;
             background-color: #acacac;
             color: white;
         }
+
         .my-custom-scrollbar {
             position: relative;
             height: 400px;
             overflow-y: auto;
         }
+
         .table-wrapper-scroll-y {
             display: block;
         }
+
         .clicked, .row-detail:hover {
             background-color: grey !important;
             color: white;
@@ -173,6 +215,7 @@
             cekMenu();
             showData();
         });
+
         function cekMenu() {
             if ($('#dokumen').val() == 'K' && $('#laporan').val() == 'N') {
                 nomor = 'NOMOR REFERENSI'
@@ -183,6 +226,7 @@
             }
             $('#nomor').html(nomor);
         }
+
         function cekTanggal() {
             tgl1 = $.datepicker.parseDate('dd/mm/yy', $('#tgl1').val());
             tgl2 = $.datepicker.parseDate('dd/mm/yy', $('#tgl2').val());
@@ -201,6 +245,7 @@
                 }
             }
         }
+
         function showData() {
             checked = [];
             $('#tableDocument').DataTable().destroy();
@@ -241,6 +286,7 @@
                 "order": []
             });
         }
+
         $('#check10lbl').on('change', function () {
             var bool = true;
             if ($(this).prop('checked') == true) {
@@ -277,14 +323,14 @@
                 }
             }
         });
+
         function cetakEFaktur() {
-            if($('#dokumen').val() != 'K' && $('#laporan').val() != 'N'){
+            if ($('#dokumen').val() != 'K' && $('#laporan').val() != 'N') {
                 swal({
                     title: 'Button Create CSV Faktur hanya untuk Dokumen Keluaran yang sudah cetak List.',
                     icon: 'info'
                 });
-            }
-            else if (checked.length != 0) {
+            } else if (checked.length != 0) {
                 ajaxSetup();
                 $.ajax({
                     url: '{{ url()->current() }}/CSVeFaktur',
@@ -303,13 +349,12 @@
                     success: function (result) {
                         $('#modal-loader').modal('hide');
                         console.log(result);
-                        if(result.status){
+                        if (result.status) {
                             swal({
                                 title: result.message,
                                 icon: result.status
                             });
-                        }
-                        else{
+                        } else {
                             window.open('../' + result, '_blank');
                         }
                     }, error: function (err) {
@@ -324,6 +369,16 @@
                 });
             }
         }
+
+        function popupModalTTD() {
+            if ($('#cetaknotareturfp:checked').val() == 'on') {
+                $('#nama-penandatangan').val('');
+                $('#jabatan').val('');
+                $('#jabatan2').val('');
+                $('#m_ttd').modal('show');
+            }
+        }
+
         function cetak() {
             if (checked.length != 0) {
                 ajaxSetup();
@@ -332,6 +387,9 @@
                     type: 'post',
                     data: {
                         nrfp: $('#cetaknotareturfp:checked').val(),
+                        namattd: $('#nama-penandatangan').val(),
+                        jbt1: $('#jabatan1').val(),
+                        jbt2: $('#jabatan2').val(),
                         doc: $('#dokumen').val(),
                         lap: $('#laporan').val(),
                         reprint: $('#reprint:checked').val(),
@@ -349,8 +407,9 @@
                         console.log(result);
                         buttons = '';
                         if (result) {
-                            for (i=0;i<result.length;i++){
-                                window.open(`{{ url()->current() }}/download?file=${result[i]}`,'_blank');
+
+                            for (i = 0; i < result.length; i++) {
+                                window.open(`{{ url()->current() }}/download?file=${result[i]}`, '_blank');
                             }
 
                             {{--$.each(result, function (index, value) {--}}
@@ -361,8 +420,12 @@
                         }
                         // $('#m_result').modal('show');
                         showData();
-                        // window.open('../' + result, '_blank');
-                    }, error: function (err) {
+                        if (result.message) {
+                            swal({
+                                title: result.message,
+                                icon: result.status
+                            });
+                        }                    }, error: function (err) {
                         $('#modal-loader').modal('hide');
                         errorHandlingforAjax(err);
                     }

@@ -241,8 +241,8 @@
                         'text-align': 'right'
                     });
 
-                    $(row).children().first().next().next().next().next().next().text(convertToRupiah2($(row).children().first().next().next().next().next().next().text()));
-                    $(row).children().first().next().next().next().next().next().next().text(convertToRupiah2($(row).children().first().next().next().next().next().next().next().text()));
+                    $(row).children().first().next().next().next().next().next().text(convertToRupiah($(row).children().first().next().next().next().next().next().text()));
+                    $(row).children().first().next().next().next().next().next().next().text(convertToRupiah($(row).children().first().next().next().next().next().next().next().text()));
                     $('#modal-loader').modal('hide');
 
                 }
@@ -275,9 +275,16 @@
                             },
                             success: function (response) {
                                 $('#modal-loader').modal('hide');
-                                console.log(response);
                                 if (response.message) {
-                                    swal(response.status, response.message, response.status);
+                                    swal({
+                                        title: response.message,
+                                        icon: response.status,
+                                        buttons: true,
+                                        timer: 3000
+                                    }).then((ok) => {
+                                        if(ok)
+                                            window.location.reload();
+                                    });
                                 }
                             }, error: function (error) {
                                 console.log(error);

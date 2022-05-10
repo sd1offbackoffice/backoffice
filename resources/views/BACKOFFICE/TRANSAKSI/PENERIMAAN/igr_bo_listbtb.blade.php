@@ -110,6 +110,9 @@
         <p style="color: white">{{$no = 0}}</p>
         @for($i=0; $i < sizeof($datas); $i++) @if($i==0 || $datas[$i]->trbo_nodoc != $datas[$i-1] ->trbo_nodoc)
             @if($i != 0)
+            @php
+            $no = 0;
+            @endphp
             <div class="page-break"></div>
             @endif
             <div>

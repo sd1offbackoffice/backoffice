@@ -37,7 +37,7 @@ BEGIN
                     (nm_procedure, tgl_create)
         VALUES      ('TRANSFER_KKEI', SYSDATE);
 
-        COMMIT;
+        --COMMIT;
 
         DELETE FROM tbupload_kkei
               WHERE kki_periode = TO_DATE(p_periode, 'ddMMyyyy');
@@ -51,6 +51,8 @@ BEGIN
                     SYSDATE
                FROM temp_kkei
               WHERE kke_periode = p_periode);
+
+        --COMMIT;
 
         SELECT db_ho_name
           INTO dbgik
@@ -66,7 +68,7 @@ BEGIN
            SET kke_upload = 'Y'
          WHERE kke_periode = p_periode;
 
-        COMMIT;
+        --COMMIT;
 
         DELETE FROM tb_log_aj
               WHERE nm_procedure = 'TRANSFER_KKEI';
@@ -76,12 +78,17 @@ BEGIN
         sp_mail_kkei(TO_DATE(p_periode, 'ddMMyyyy'));
         p_sukses := 'TRUE';
     ELSE
+        ROLLBACK;
+
         p_sukses := 'FALSE';
         p_errmsg := 'Proses Tarik Data KKEI Sedang Berjalan!';
     END IF;
 EXCEPTION
     WHEN OTHERS
     THEN
+        ROLLBACK;
+
+        delete FROM tb_log_aj WHERE nm_procedure = 'TRANSFER_KKEI';
         p_sukses := 'FALSE';
         p_errmsg := 'KKEI - ' || SQLERRM;
 END;

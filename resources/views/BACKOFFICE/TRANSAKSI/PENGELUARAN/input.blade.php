@@ -24,17 +24,23 @@
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
+                                        <label class="col-sm-2 col-form-label text-sm-right" style="font-size: 12px">
+                                            Reff NRB Batal
+                                        </label>
+                                        <div class="col-sm-2 buttonInside">
+                                            <input type="text" class="form-control" id="txtNrb">
+                                            <button type="button" class="btn btn-lov p-0" data-target="#m_lov_nrb"
+                                                    data-toggle="modal" id="btn-lov-trn">
+                                                <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
+                                            </button>
+                                        </div>
                                         <div class="col-sm-2">
                                             <button type="button" id="btnHapusDokumen"
                                                     class="btn btn-danger float-left" disabled><i
                                                     class="icon fas fa-trash"></i> Hapus Dokumen
                                             </button>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <input type="text" id="txtModel"
-                                                   class="text-center form-control" disabled>
-                                        </div>
-                                        <div class="offset-2 col-sm-2">
+                                        </div>                                        
+                                        <div class=" col-sm-2">
                                             <button type="button" id="btnSimpan" class="btn btn-primary"><i
                                                     class="icon fas fa-save"></i> Simpan
                                             </button>
@@ -45,6 +51,11 @@
                                         <div class="col-sm-2">
                                             <input type="text" id="dtTglDoc"
                                                    class="form-control">
+                                        </div>
+
+                                        <div class="col-sm-3">
+                                            <input type="text" id="txtModel"
+                                                   class="text-center form-control" disabled>
                                         </div>
                                     </div>
                                     <div class="form-group row mb-0">
@@ -415,24 +426,29 @@
 
 
     <script>
-        var rowheader;
-        var row = 1;
-        var kdsup = '';
+        let rowheader;
+        let row = 1;
+        let kdsup = '';
         let arrDeletedPlu = []
-        let datas_detail;
+        let datas_detail = []
+        let datas_header = []
 
         $(document).ready(function () {
             reset();
             $('#dtTglDoc').datepicker({
-                "dateFormat": "mm/dd/yy",
+                "dateFormat": "dd/mm/yy",
                 "setDate": new Date()
             });
             $('#btnAddRow').hide();
+
+            if ($('.txt-usl-status').val() === 'USULAN DISETUJUI') {
+                $('#btnKirimUsulan').attr('disabled', true);
+            }
         });
 
         $('#txtNoDoc').keypress(function (e) {
             if (e.keyCode == 13) {
-                var nodoc = $(this).val();
+                let nodoc = $(this).val();
                 getDataTrn(nodoc);
             }
         });
@@ -473,7 +489,7 @@
         });
 
         $(document).on('click', '.row-lov-trn', function () {
-            var currentButton = $(this);
+            let currentButton = $(this);
             nodoc = currentButton.children().first().text();
             $('#txtNoDoc').val(nodoc);
             getDataTrn(nodoc);
@@ -503,33 +519,70 @@
         });
 
         $(document).on('click', '.row-lov-supplier', function () {
-            var currentButton = $(this);
+            let currentButton = $(this);
             kdsup = currentButton.children().first().next().text();
             getDataSupplier(kdsup);
 
             $('#m_lov_supplier').modal('hide');
         });
 
-        $('#table_lov_plu').DataTable({
-            "ajax": '{{ url('/bo/transaksi/pengeluaran/input/get-data-lov-plu') }}',
-            "columns": [
-                {data: 'prd_prdcd', name: 'prd_prdcd'},
-                {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'}
-            ],
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-            "processing": true,
-            "serverSide": true,
-            "createdRow": function (row, data, dataIndex) {
-                $(row).addClass('row-lov-plu').css({'cursor': 'pointer'});
-            },
-            "order": []
-        });
+        function getDataLovPlu(kdsup) {
+            $('#table_lov_plu').DataTable({
+                "ajax": '{{ url('/bo/transaksi/pengeluaran/input/get-data-lov-plu') }}',
+                // "ajax": {                
+                //     "type": "GET",
+                //     "url": "{{ url('/bo/transaksi/pengeluaran/input/get-data-lov-plu') }}",
+                //     "data": {
+                //         "kdsup": kdsup
+                //     },                                                  
+                // },
+                "columns": [
+                    {data: 'prd_prdcd', name: 'prd_prdcd'},
+                    {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'}
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "processing": true,
+                "serverSide": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('row-lov-plu').css({'cursor': 'pointer'});
+                },
+                "order": []
+            });
+        }
+
+        // $('#table_lov_plu').DataTable({
+        //     // "ajax": '{{ url('/bo/transaksi/pengeluaran/input/get-data-lov-plu') }}',
+        //     "ajax": {                
+        //         "type": "GET",
+        //         "url": "{{ url('/bo/transaksi/pengeluaran/input/get-data-lov-plu') }}",
+        //         "data": {
+        //             "kdsup": $('#txtKdSupplier').val()
+        //         },                                                  
+        //     },
+        //     "columns": [
+        //         {data: 'prd_prdcd', name: 'prd_prdcd'},
+        //         {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'}
+        //     ],
+        //     "paging": true,
+        //     "lengthChange": true,
+        //     "searching": true,
+        //     "ordering": true,
+        //     "info": true,
+        //     "autoWidth": false,
+        //     "responsive": true,
+        //     "processing": true,
+        //     "serverSide": true,
+        //     "createdRow": function (row, data, dataIndex) {
+        //         $(row).addClass('row-lov-plu').css({'cursor': 'pointer'});
+        //     },
+        //     "order": []
+        // });
 
         $(document).on('click', '.btn-lov-plu, .plu-header', function () {
             rowheader = $(this).attr("rowheader");
@@ -537,29 +590,29 @@
 
         $(document).on('keypress', '.plu-header', function (e) {
             if (e.keyCode == 13) {
-                var temp = '';
-                for (var i = 0; i < 7 - $(this).val().length; i++) {
+                let temp = '';
+                for (let i = 0; i < 7 - $(this).val().length; i++) {
                     temp = '0' + temp;
                 }
                 temp = temp + $(this).val();
                 $(this).val(temp);
                 let currRowHeader = $(this).attr('rowheader');
                 getDataPLU(temp, currRowHeader);
-                // console.log('currRowHeader: '+currRowHeader);
             }
         });
 
         $(document).on('click', '.row-lov-plu', function () {
-            var currentButton = $(this);
-
-            var plu = currentButton.children().first().text();
+            // let currentButton = $(this);
+            let currRowHeader = $(this).attr('rowheader');
+            console.log(currRowHeader);
+            let plu = currentButton.children().first().text();
 
             getDataPLU(plu);
             $('#m_lov_plu').modal('hide');
         });
 
         $(document).on('click', '#btnHapusDokumen', function () {
-            var nodoc = $('#txtNoDoc').val();
+            let nodoc = $('#txtNoDoc').val();
             swal({
                 title: 'Hapus No Doc ' + nodoc + ' ?',
                 text: 'Tekan Tombol OK untuk Melanjutkan!',
@@ -646,8 +699,6 @@
                         });
                     }
                     if (response.data) {
-                        // let totalHeaderRow = $('#body-table-header tr').length;
-                        // console.log(totalHeaderRow);
                         $(".plu-header-" + rowheader).val(response.data.st_prdcd);
                         $(".plu-header-" + rowheader).attr('max_qty', response.data.qtypb);
                         $(".deskripsi-header-" + rowheader).val(response.data.prd_deskripsipendek);
@@ -703,6 +754,8 @@
                         $('#txtKdSupplier').val(kdsup);
                         $('#txtNmSupplier').val(namasupplier);
                         $('#txtPKP').val(pkp);
+
+                        getDataLovPlu(kdsup);
                     }
 
                 },
@@ -788,6 +841,10 @@
                                 else {
                                     $('#txtNoDoc').val(response.data.no);
                                     $("#dtTglDoc").datepicker().datepicker("setDate", new Date());
+                                    // $('#dtTglDoc').datepicker({
+                                    //     "dateFormat": "mm/dd/yyyy",
+                                    //     "setDate": new Date()
+                                    // });
                                     $('#txtModel').val(response.data.model);
                                     $('#txtKdSupplier').focus();
                                     // getDataSupplier('I0519');
@@ -867,10 +924,9 @@
                         reset();
                     },
                     success: function (response) {
-                        // console.log(response);
+                        console.log(response);
                         $('#modal-loader').modal('hide');
                         $('#btnUsulanRetur').attr('disabled', false);
-
 
                         if (response.status == 'error') {
                             swal({
@@ -905,31 +961,25 @@
                             $('#txt-usl-nama-supplier').val(response.nmsupplier);
                             $('#txt-usl-pkp').val(response.pkp);
 
-                            var datas_header = response.datas_header;
+                            datas_header = response.datas_header;
+                            // let tempDataHeader = []
                             datas_header.forEach(function (dh, index) {
-                                var plu = dh.h_plu == null ? '' : dh.h_plu;
-                                var deskripsi = dh.h_deskripsi == null ? '' : dh.h_deskripsi;
-                                var satuan = dh.h_satuan == null ? '' : dh.h_satuan;
-                                var bkp = dh.h_bkp == null ? '' : dh.h_bkp;
-                                var stock = dh.h_stock == null ? '' : dh.h_stock;
-                                var ctn = dh.h_ctn == null ? '' : dh.h_ctn;
-                                var pcs = dh.h_pcs == null ? '' : dh.h_pcs;
-                                var ket = dh.h_ket == null ? '' : dh.h_ket;
+                                let plu = dh.h_plu == null ? '' : dh.h_plu;
+                                let deskripsi = dh.h_deskripsi == null ? '' : dh.h_deskripsi;
+                                let satuan = dh.h_satuan == null ? '' : dh.h_satuan;
+                                let bkp = dh.h_bkp == null ? '' : dh.h_bkp;
+                                let stock = dh.h_stock == null ? '' : dh.h_stock;
+                                let ctn = dh.h_ctn == null ? '' : dh.h_ctn;
+                                let pcs = dh.h_pcs == null ? '' : dh.h_pcs;
+                                let ket = dh.h_ket == null ? '' : dh.h_ket;
                                 let frac = dh.h_frac == null ? '' : dh.h_frac;
 
-                                // ctn += ctn
-                                // pcs += pcs
-                                // $('#body-table-header').append('<tr>' +
-                                //     '<td><button class="btn btn-block btn-danger btn-delete-row-header"><i class="icon fas fa-times"></i></button></td>' +
-                                //     '<td><input class="form-control " type="text" value="' + plu + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + deskripsi + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + satuan + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + bkp + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + stock + '"></td>' +
-                                //     '<td><input class="form-control " type="text" value="' + ctn + '"></td>' +
-                                //     '<td><input class="form-control " type="text" value="' + pcs + '"></td>' +
-                                //     '<td><input class="form-control " type="text" value="' + ket + '"></td>' +
-                                //     '</tr>');
+                                // if (index != 0) {
+                                //     ctn += ctn[index-1]
+                                //     pcs += pcs[index-1]
+                                // }
+                                // let data = {}
+                                // data.trbo_prdcd
 
                                     $('#body-table-header').append(
                                         `<tr class="row-header-${index+1}">` +
@@ -949,50 +999,45 @@
                                             `<td><input class="form-control keterangan-header keterangan-header-${index+1}" rowheader="${index+1}" type="text" value="${ket}"></td>` +
                                         `</tr>`);
                             });
-                            // let totalQty = (ctn * frac) + pcs
-                            // let qtyCtn = Math.floor(totalQty / frac)
-                            // let qtyPcs = totalQty % frac
-                            // console.log(datas_header);
-                            // $('#body-table-header').append('<tr>' +
-                            //         '<td><button class="btn btn-block btn-danger btn-delete-row-header"><i class="icon fas fa-times"></i></button></td>' +
-                            //         '<td><input class="form-control " type="text" value="' + plu + '"></td>' +
-                            //         '<td><input disabled class="form-control " type="text" value="' + deskripsi + '"></td>' +
-                            //         '<td><input disabled class="form-control " type="text" value="' + satuan + '"></td>' +
-                            //         '<td><input disabled class="form-control " type="text" value="' + bkp + '"></td>' +
-                            //         '<td><input disabled class="form-control " type="text" value="' + stock + '"></td>' +
-                            //         '<td><input class="form-control " type="text" value="' + ctn + '"></td>' +
-                            //         '<td><input class="form-control " type="text" value="' + pcs + '"></td>' +
-                            //         '<td><input class="form-control " type="text" value="' + ket + '"></td>' +
-                            //         '</tr>');
 
+                            // console.log(`total ctn: ` + ctn);
+                            // console.log(`total pcs: ` + pcs);
+
+                            // if (datas_detail !== null) {
+                            //     datas_detail.push(response.datas_detail)
+                            // } else {
+                            //     datas_detail = response.datas_detail;
+                            // }
                             datas_detail = response.datas_detail;
-                            var i = 1;
-                            var tot_gross = 0;
-                            var tot_potongan = 0;
-                            var tot_ppn = 0;
-                            var tot_total = 0;
+                            console.log(datas_detail);
+
+                            let i = 1;
+                            let tot_gross = 0;
+                            let tot_potongan = 0;
+                            let tot_ppn = 0;
+                            let tot_total = 0;
                             datas_detail.forEach(function (dd, index) {
-                                var plu = dd.plu == null ? '' : dd.plu;
-                                var desk = dd.desk == null ? '' : dd.desk;
-                                var deskripsi = dd.deskripsi == null ? '' : dd.deskripsi;
-                                var satuan = dd.satuan == null ? '' : dd.satuan;
-                                var bkp = dd.bkp == null ? '' : dd.bkp;
-                                var stock = dd.stok == null ? '' : dd.stok;
-                                var hrgsatuan = dd.hrgsatuan == null ? '' : dd.hrgsatuan;
-                                var ctn = dd.ctn == null ? '' : dd.ctn;
-                                var pcs = dd.pcs == null ? '' : dd.pcs;
-                                var gross = dd.gross == null ? '' : dd.gross;
-                                var discper = dd.discper == null ? '' : dd.discper;
-                                var discrp = dd.discrp == null ? '' : dd.discrp;
-                                var ppn = dd.ppn == null ? '' : dd.ppn;
-                                var faktur = dd.faktur == null ? '' : dd.faktur;
-                                var pajakno = dd.pajakno == null ? '' : dd.pajakno;
-                                var tglfp = dd.tglfp == null ? '' : dd.tglfp;
-                                var noreffbtb = dd.noreffbtb == null ? '' : dd.noreffbtb;
-                                var keterangan = dd.keterangan == null ? '' : dd.keterangan;
-                                var pkp = dd.pkp == null ? '' : dd.pkp;
-                                var frac = dd.frac == null ? '' : dd.frac;
-                                var unit = dd.unit == null ? '' : dd.unit;
+                                let plu = dd.trbo_prdcd == null ? '' : dd.trbo_prdcd;
+                                let desk = dd.desk == null ? '' : dd.desk;
+                                let deskripsi = dd.deskripsi == null ? '' : dd.deskripsi;
+                                let satuan = dd.satuan == null ? '' : dd.satuan;
+                                let bkp = dd.bkp == null ? '' : dd.bkp;
+                                let stock = dd.trbo_posqty == null ? '' : dd.trbo_posqty;
+                                let hrgsatuan = dd.trbo_hrgsatuan == null ? '' : dd.trbo_hrgsatuan;
+                                let ctn = dd.qtyctn == null ? '' : dd.qtyctn;
+                                let pcs = dd.qtypcs == null ? '' : dd.qtypcs;
+                                let gross = dd.trbo_gross == null ? '' : dd.trbo_gross;
+                                let discper = dd.discper == null ? '' : dd.discper;
+                                let discrp = dd.trbo_discrph == null ? '' : dd.trbo_discrph;
+                                let ppn = dd.trbo_ppnrph == null ? '' : dd.trbo_ppnrph;
+                                let faktur = dd.trbo_istype == null ? '' : dd.trbo_istype;
+                                let pajakno = dd.trbo_inv == null ? '' : dd.trbo_inv;
+                                let tglfp = dd.trbo_tgl == null ? '' : dd.trbo_tgl;
+                                let noreffbtb = dd.trbo_noreff == null ? '' : dd.trbo_noreff;
+                                let keterangan = dd.keterangan == null ? '' : dd.keterangan;
+                                let pkp = dd.pkp == null ? '' : dd.pkp;
+                                let frac = dd.frac == null ? '' : dd.frac;
+                                let unit = dd.unit == null ? '' : dd.unit;
 
                                 $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + (index+1) + '" deskripsi="' + deskripsi + '">' +
                                 '<td><input disabled class="form-control plu" type="text" value="' + plu + '"></td>' +
@@ -1013,25 +1058,7 @@
                                 '<td><input disabled class="form-control noreff" type="text" value="' + noreffbtb + '"></td>' +
                                 '<td><input disabled class="form-control keterangan" type="text" value="' + keterangan + '"></td>' +
                                 '</tr>');
-                                // $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + i + '" deskripsi="' + deskripsi + '">' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + plu + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + desk + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + satuan + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + bkp + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + stock + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(hrgsatuan) + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(ctn) + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(pcs) + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(gross) + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + discper + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(discrp) + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(ppn) + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + faktur + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + pajakno + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + tglfp + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + noreffbtb + '"></td>' +
-                                //     '<td><input disabled class="form-control " type="text" value="' + keterangan + '"></td>' +
-                                //     '</tr>');
+
                                 i++;
                                 tot_gross += parseFloat(gross);
                                 tot_potongan += parseFloat(discrp);
@@ -1081,22 +1108,23 @@
         }
 
         $(document).on('click', '.btn-delete-row-header', function (e) {
-            var current = $(this);
-            var rh = current.attr('rowheader');
+            let current = $(this);
+            let rh = current.attr('rowheader');
             let headerPlu = $(this).parents('tr').find('.plu-header').val()
-            let model = $('#txtModel').val();
+            // let model = $('#txtModel').val();
             // console.log('headerPlu: ' + headerPlu);
 
-            if (model == '* KOREKSI *') {
-                arrDeletedPlu.push(headerPlu)
-            }
+            datas_detail = datas_detail.filter(dd => dd.trbo_prdcd !== `${headerPlu}`)
+            console.log(datas_detail);
+
+            // if (model == '* KOREKSI *') {
+            //     arrDeletedPlu.push(headerPlu)
+            // }
 
             $('#body-table-header tr').each(function () {
                 let plu = $(this).find('.plu-header').val();
 
                 if (plu == headerPlu) {
-                    // console.log('detailPlu: ' + detailPlu + ' same');
-                    // $(this).empty();
                     $(this).remove();
                 }
             });
@@ -1107,11 +1135,7 @@
 
             $('#body-table-detail tr').each(function () {
                 let detailPlu = $(this).find('.plu').val();
-                // console.log('detailPlu: ' + detailPlu + ' same');
-                // let detailPlu = $('.plu').val();
                 if (detailPlu == headerPlu) {
-                    // console.log('detailPlu: ' + detailPlu + ' same');
-                    // $(this).empty();
                     $(this).remove();
                 }
             });
@@ -1119,16 +1143,16 @@
 
         $(document).on('keypress', '.ctn-header', function (e) {
             if (e.keyCode == 13) {
-                var nodoc = $(this).val();
-                var current = $(this);
-                var rh = current.attr('rowheader');
-                var ctn = current.val();
-                var pcs = $('.pcs-header-' + rh).val();
-                var stock = $('.pcs-stock-' + rh).val();
-                var satuan = $('.satuan-header-' + rh).val();
-                var tempFrac = satuan.split('/');
-                var frac = tempFrac[1];
-                var max_qty = $('.plu-header-' + rh).attr('max_qty');
+                let nodoc = $(this).val();
+                let current = $(this);
+                let rh = current.attr('rowheader');
+                let ctn = current.val();
+                let pcs = $('.pcs-header-' + rh).val();
+                let stock = $('.pcs-stock-' + rh).val();
+                let satuan = $('.satuan-header-' + rh).val();
+                let tempFrac = satuan.split('/');
+                let frac = tempFrac[1];
+                let max_qty = $('.plu-header-' + rh).attr('max_qty');
 
                 if (ctn < 0 || ctn == '') {
                     current.val(0);
@@ -1159,27 +1183,27 @@
             if (e.keyCode == 13) {
 
                 $('#modal-loader').modal('show');
-                var current = $(this);
-                var rh = current.attr('rowheader');
-                var model = $('#txtModel').val();
-                var nodoc = $('#txtNoDoc').val();
-                var tgldoc = $('#dtTglDoc').val();
-                var kdsup = $('#txtKdSupplier').val();
-                var plu = $('.plu-header-' + rh).val();
-                var ctn = parseInt($('.ctn-header-' + rh).val());
-                var fracTemp = $('.satuan-header-' + rh).val().split('/');
-                var frac = parseInt(fracTemp[1]);
-                var pcs = parseInt($('.pcs-header-' + rh).val());
-                var stock = parseInt($('.stock-header-' + rh).val());
-                var bkp = $('.bkp-header-' + rh).val();
-                // var keterangan = $('.keterangan-header-' + rh).val();
+                let current = $(this);
+                let rh = current.attr('rowheader');
+                let model = $('#txtModel').val();
+                let nodoc = $('#txtNoDoc').val();
+                let tgldoc = $('#dtTglDoc').val();
+                let kdsup = $('#txtKdSupplier').val();
+                let plu = $('.plu-header-' + rh).val();
+                let ctn = parseInt($('.ctn-header-' + rh).val());
+                let fracTemp = $('.satuan-header-' + rh).val().split('/');
+                let frac = parseInt(fracTemp[1]);
+                let pcs = parseInt($('.pcs-header-' + rh).val());
+                let stock = parseInt($('.stock-header-' + rh).val());
+                let bkp = $('.bkp-header-' + rh).val();
+                // let keterangan = $('.keterangan-header-' + rh).val();
 
-                var message = '';
-                var status = '';
-                var inputan = '';
-                var qtypb = '';
-                var qtyretur = '';
-                var qtysisa = '';
+                let message = '';
+                let status = '';
+                let inputan = '';
+                let qtypb = '';
+                let qtyretur = '';
+                let qtysisa = '';
 
                 // if (model == 'KOREKSI') {
                 //     return false;
@@ -1224,6 +1248,7 @@
                     $.ajax({
                         type: "POST",
                         url: "{{ url('/bo/transaksi/pengeluaran/input/cek-pcs-1') }}",
+                        async: false,
                         data: {
                             plu: plu,
                             kdsup: kdsup
@@ -1238,6 +1263,24 @@
                             // console.log(qtyretur);
 
                             inputan = ((ctn * frac) + pcs);
+
+                            if (inputan > qtyretur && qtysisa == qtyretur) {
+                                ctn = 0;
+                                pcs = qtyretur;
+                                $('.ctn-header-' + rh).val(ctn);
+                                $('.pcs-header-' + rh).val(pcs);
+                                // console.log(qtyretur);
+                                message = 'qty plu yang bisa diretur hanya ' + qtyretur;
+                                status = 'info';
+                                swal({
+                                    title: status,
+                                    text: message,
+                                    icon: status
+                                }).then(() => {
+                                    $('#modal-loader').modal('hide');
+                                });
+                            }
+
                             if (inputan > qtyretur && qtysisa > qtyretur) {
                                 if (inputan > qtysisa) {
                                     message = 'qty PLU yang bisa diretur hanya ' + qtysisa + ' [set ctn pcs 0]';
@@ -1280,10 +1323,14 @@
                                                 $('#modal-loader').modal('hide');
                                             });
                                         }
+                                        
+                                        // datas_detail = datas_detail.filter(dd => dd.trbo_prdcd !== `${plu}`)
+
                                         ajaxSetup();
                                         $.ajax({
                                             url: "{{ url('/bo/transaksi/pengeluaran/input/cek-pcs-2') }}",
                                             type: 'Post',
+                                            async: false,
                                             data: {
                                                 nodoc: nodoc,
                                                 plu: plu,
@@ -1293,8 +1340,13 @@
                                                 inputan: inputan,
                                                 qtyretur: qtyretur
                                             },
+                                            beforeSend: function () {
+                                                $('#modal-loader').modal('show');
+                                            },
                                             success: function (response) {
                                                 // console.log(response);
+                                                                                                
+                                                $('#modal-loader').modal('hide');
                                             },
                                             error: function (error) {
                                                 console.log(error);
@@ -1312,13 +1364,18 @@
                                         $('.ctn-header-' + rh).val(ctn);
                                         $('.pcs-header-' + rh).val(pcs);
                                     }
-                                });
-                            }
-                            else {
+
+                                    if (model == '*TAMBAH*' || model == '* KOREKSI *') {
+                                        proses(plu, ctn, frac, pcs, rh);
+                                        // proses(plu, ((ctn * frac) + pcs), rh);
+                                    }
+                                });                                
+                            } else {
                                 ajaxSetup();
                                 $.ajax({
                                     url: "{{ url('/bo/transaksi/pengeluaran/input/cek-pcs-3') }}",
                                     type: 'POST',
+                                    async: false,
                                     data: {
                                         nodoc: nodoc,
                                         plu: plu
@@ -1337,6 +1394,7 @@
                                                     $.ajax({
                                                         url: "{{ url('/bo/transaksi/pengeluaran/input/cek-pcs-4') }}",
                                                         type: 'Post',
+                                                        async: false,
                                                         data: {
                                                             nodoc: nodoc,
                                                             plu: plu
@@ -1358,30 +1416,19 @@
                                     }, error: function (error) {
                                         console.log(error);
 
-                                    }
+                                    }                                    
                                 });
+                                
+                                if(model == '*TAMBAH*' || model == '* KOREKSI *') {
+                                    proses(plu, ctn, frac, pcs, rh);
+                                    // proses(plu, ((ctn * frac) + pcs), rh);
+                                }
                             }
-
-                            if (inputan > qtyretur && qtysisa == qtyretur) {
-                                ctn = 0;
-                                pcs = qtyretur;
-                                $('.ctn-header-' + rh).val(ctn);
-                                $('.pcs-header-' + rh).val(pcs);
-                                // console.log(qtyretur);
-                                message = 'qty plu yang bisa diretur hanya ' + qtyretur;
-                                status = 'info';
-                                swal({
-                                    title: status,
-                                    text: message,
-                                    icon: status
-                                }).then(() => {
-                                    $('#modal-loader').modal('hide');
-                                });
-                            }
-                            if (model == '*TAMBAH*' || model == '* KOREKSI *') {
-                                proses(plu, ctn, frac, pcs, rh);
-                                // proses(plu, ((ctn * frac) + pcs), rh);
-                            }
+                            
+                            // if (model == '*TAMBAH*' || model == '* KOREKSI *') {
+                            //     proses(plu, ctn, frac, pcs, rh);
+                            //     // proses(plu, ((ctn * frac) + pcs), rh);
+                            // }
 
                         },
                         error: function (error) {
@@ -1399,9 +1446,9 @@
         });
 
         function proses(plu, ctn, frac, pcs, rh) {
-            var nodoc = $('#txtNoDoc').val();
-            var pkp = $('#txtPKP').val();
-            var keterangan = $('.keterangan-header-' + rh).val();
+            let nodoc = $('#txtNoDoc').val();
+            let pkp = $('#txtPKP').val();
+            let keterangan = $('.keterangan-header-' + rh).val();
             let qtyretur = (ctn * frac) + pcs
 
             ajaxSetup();
@@ -1419,7 +1466,12 @@
                 },
                 success: function (response) {
                     $('#modal-loader').modal('hide');
-                    datas_detail = response.datas;
+                    let detail = response.datas;
+                    detail.forEach(i => {
+                        // if (detail.trbo_noreff != datas_detail.trbo_noreff) {
+                            datas_detail.push(i)
+                        // }
+                    });
                     console.log(datas_detail);
                     let ctn = Math.floor(qtyretur / frac)
                     let qtypcs = qtyretur % frac
@@ -1428,18 +1480,16 @@
 
                     $('#body-table-detail tr').each(function () {
                         let detailPlu = $(this).find('.plu').val();
-                        // console.log('detailPlu: ' + detailPlu + ' same');
-                        // let detailPlu = $('.plu').val();
                         if (detailPlu == plu) {
-                            // console.log('detailPlu: ' + detailPlu + ' same');
-                            // $(this).empty();
                             $(this).remove();
                         }
                     });
 
                     if (datas_detail.length > 0) {
                         // console.log(response);
-                        // $('.row-detail-' + rh).remove();
+                        $('#body-table-detail tr').each(function () {
+                            $(this).remove()
+                        });
                         datas_detail.forEach(function (dd) {
                             $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + rowheader + '" deskripsi="' + dd.deskripsi + '">' +
                                 '<td><input disabled class="form-control plu" type="text" value="' + dd.trbo_prdcd + '"></td>' +
@@ -1481,15 +1531,15 @@
                             '<td><input class="form-control keterangan-header keterangan-header-' + row + '" rowheader=' + row + ' type="text"></td>' +
                             '</tr>');
 
-                        var tot_gross = 0;
-                        var tot_potongan = 0;
-                        var tot_ppn = 0;
-                        var tot_total = 0;
-                        var i = 0;
+                        let tot_gross = 0;
+                        let tot_potongan = 0;
+                        let tot_ppn = 0;
+                        let tot_total = 0;
+                        let i = 0;
                         $('#body-table-detail tr').each(function () {
-                            var gross = parseFloat($(this).find(".gross").val());
-                            var potongan = parseFloat($(this).find(".discrph").val());
-                            var ppn = parseFloat($(this).find(".ppn").val());
+                            let gross = parseFloat($(this).find(".gross").val());
+                            let potongan = parseFloat($(this).find(".discrph").val());
+                            let ppn = parseFloat($(this).find(".ppn").val());
 
                             tot_gross += gross;
                             tot_potongan += potongan;
@@ -1510,34 +1560,34 @@
         }
 
         $(document).on('click', '.row-detail', function () {
-            var currentElement = $(this);
+            let currentElement = $(this);
             $('.row-detail').css('background-color', '');
             currentElement.css('background-color', 'lightgray');
 
-            var deskripsi = currentElement.attr('deskripsi');
+            let deskripsi = currentElement.attr('deskripsi');
             $('#label-deskripsi').val(deskripsi);
         });
 
         $(document).on('keyup', '#txt-usl-otp', function (e) {
-            var currentElement = $(this);
+            let currentElement = $(this);
             if (e.keyCode == 13) {
-                var nodoc = $('#txtNoDoc').val();
-                var otp = currentElement.val();
-                var tgldoc = $('#dtTglDoc').val();
-                var kdsup = $('#txtKdSupplier').val();
-                var pkp = $('#txtPKP').val();
-                var datas = [];
+                let nodoc = $('#txtNoDoc').val();
+                let otp = currentElement.val();
+                let tgldoc = $('#dtTglDoc').val();
+                let kdsup = $('#txtKdSupplier').val();
+                let pkp = $('#txtPKP').val();
+                let datas = [];
 
                 $('#body-table-usulan tr').each(function () {
-                    var data = {};
+                    let data = {};
                     data.prdcd = $(this).find(".usl-prdcd").val();
                     data.qty = $(this).find(".usl-qty").val();
                     datas.push(data);
                 });
 
-                var datah = [];
+                let datah = [];
                 $('#body-table-header tr').each(function () {
-                    var data = {};
+                    let data = {};
 
                     data.plu = $(this).find(".plu-header").val();
                     data.ctn = $(this).find(".ctn-header").val();
@@ -1548,9 +1598,9 @@
                     datah.push(data);
                 });
 
-                var datad = [];
+                let datad = [];
                 $('#body-table-detail tr').each(function () {
-                    var data = {};
+                    let data = {};
 
                     data.plu = $(this).find(".plu").val();
                     data.ctn = $(this).find(".qtyctn").val();
@@ -1578,6 +1628,7 @@
                 $.ajax({
                     url: "{{ url('/bo/transaksi/pengeluaran/input/cek-OTP') }}",
                     type: 'POST',
+                    async: false,
                     data: {
                         nodoc: nodoc,
                         datas: datas,
@@ -1586,7 +1637,7 @@
                         otp: otp,
                         kdsup: kdsup,
                         tgldoc: tgldoc,
-                        pkp: pkp
+                        pkp: pkp,
                     },
                     beforeSend: function () {
                         $('#modal-loader').modal('show');
@@ -1596,87 +1647,86 @@
 
                         if (response.status == 'error') {
                             $('#txt-usl-otp').val('');
-
                         }
-                        else {
-                            var datas_header = response.datah;
-                            datas_header.forEach(function (dh) {
-                                var plu = dh.h_plu == null ? '' : dh.h_plu;
-                                var deskripsi = dh.h_deskripsi == null ? '' : dh.h_deskripsi;
-                                var satuan = dh.h_satuan == null ? '' : dh.h_satuan;
-                                var bkp = dh.h_bkp == null ? '' : dh.h_bkp;
-                                var stock = dh.h_stock == null ? '' : dh.h_stock;
-                                var ctn = dh.h_ctn == null ? '' : dh.h_ctn;
-                                var pcs = dh.h_pcs == null ? '' : dh.h_pcs;
-                                var ket = dh.h_ket == null ? '' : dh.h_ket;
+                        else {                            
+                            // let datas_header = response.datah;
+                            // datas_header.forEach(function (dh) {
+                            //     let plu = dh.h_plu == null ? '' : dh.h_plu;
+                            //     let deskripsi = dh.h_deskripsi == null ? '' : dh.h_deskripsi;
+                            //     let satuan = dh.h_satuan == null ? '' : dh.h_satuan;
+                            //     let bkp = dh.h_bkp == null ? '' : dh.h_bkp;
+                            //     let stock = dh.h_stock == null ? '' : dh.h_stock;
+                            //     let ctn = dh.h_ctn == null ? '' : dh.h_ctn;
+                            //     let pcs = dh.h_pcs == null ? '' : dh.h_pcs;
+                            //     let ket = dh.h_ket == null ? '' : dh.h_ket;
 
-                                $('#body-table-header').append('<tr>' +
-                                    '<td><button class="btn btn-block btn-danger btn-delete-row-header"><i class="icon fas fa-times"></i></button></td>' +
-                                    '<td><input class="form-control " type="text" value="' + plu + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + deskripsi + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + satuan + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + bkp + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + stock + '"></td>' +
-                                    '<td><input class="form-control " type="text" value="' + ctn + '"></td>' +
-                                    '<td><input class="form-control " type="text" value="' + pcs + '"></td>' +
-                                    '<td><input class="form-control " type="text" value="' + ket + '"></td>' +
-                                    '</tr>');
-                            });
+                            //     $('#body-table-header').append('<tr>' +
+                            //         '<td><button class="btn btn-block btn-danger btn-delete-row-header"><i class="icon fas fa-times"></i></button></td>' +
+                            //         '<td><input class="form-control " type="text" value="' + plu + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + deskripsi + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + satuan + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + bkp + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + stock + '"></td>' +
+                            //         '<td><input class="form-control " type="text" value="' + ctn + '"></td>' +
+                            //         '<td><input class="form-control " type="text" value="' + pcs + '"></td>' +
+                            //         '<td><input class="form-control " type="text" value="' + ket + '"></td>' +
+                            //         '</tr>');
+                            // });
 
-                            var datas_detail = response.datad;
-                            var i = 1;
-                            var tot_gross = 0;
-                            var tot_potongan = 0;
-                            var tot_ppn = 0;
-                            var tot_total = 0;
-                            datas_detail.forEach(function (dd) {
-                                var plu = dd.plu == null ? '' : dd.plu;
-                                var desk = dd.desk == null ? '' : dd.desk;
-                                var deskripsi = dd.deskripsi == null ? '' : dd.deskripsi;
-                                var satuan = dd.satuan == null ? '' : dd.satuan;
-                                var bkp = dd.bkp == null ? '' : dd.bkp;
-                                var stock = dd.stok == null ? '' : dd.stok;
-                                var hrgsatuan = dd.hrgsatuan == null ? '' : dd.hrgsatuan;
-                                var ctn = dd.ctn == null ? '' : dd.ctn;
-                                var pcs = dd.pcs == null ? '' : dd.pcs;
-                                var gross = dd.gross == null ? '' : dd.gross;
-                                var discper = dd.discper == null ? '' : dd.discper;
-                                var discrp = dd.discrp == null ? '' : dd.discrp;
-                                var ppn = dd.ppn == null ? '' : dd.ppn;
-                                var faktur = dd.faktur == null ? '' : dd.faktur;
-                                var pajakno = dd.pajakno == null ? '' : dd.pajakno;
-                                var tglfp = dd.tglfp == null ? '' : dd.tglfp;
-                                var noreffbtb = dd.noreffbtb == null ? '' : dd.noreffbtb;
-                                var keterangan = dd.keterangan == null ? '' : dd.keterangan;
-                                var pkp = dd.pkp == null ? '' : dd.pkp;
-                                var frac = dd.frac == null ? '' : dd.frac;
-                                var unit = dd.unit == null ? '' : dd.unit;
+                            // let datas_detail = response.datad;
+                            // let i = 1;
+                            // let tot_gross = 0;
+                            // let tot_potongan = 0;
+                            // let tot_ppn = 0;
+                            // let tot_total = 0;
+                            // datas_detail.forEach(function (dd) {
+                            //     let plu = dd.plu == null ? '' : dd.plu;
+                            //     let desk = dd.desk == null ? '' : dd.desk;
+                            //     let deskripsi = dd.deskripsi == null ? '' : dd.deskripsi;
+                            //     let satuan = dd.satuan == null ? '' : dd.satuan;
+                            //     let bkp = dd.bkp == null ? '' : dd.bkp;
+                            //     let stock = dd.stok == null ? '' : dd.stok;
+                            //     let hrgsatuan = dd.hrgsatuan == null ? '' : dd.hrgsatuan;
+                            //     let ctn = dd.ctn == null ? '' : dd.ctn;
+                            //     let pcs = dd.pcs == null ? '' : dd.pcs;
+                            //     let gross = dd.gross == null ? '' : dd.gross;
+                            //     let discper = dd.discper == null ? '' : dd.discper;
+                            //     let discrp = dd.discrp == null ? '' : dd.discrp;
+                            //     let ppn = dd.ppn == null ? '' : dd.ppn;
+                            //     let faktur = dd.faktur == null ? '' : dd.faktur;
+                            //     let pajakno = dd.pajakno == null ? '' : dd.pajakno;
+                            //     let tglfp = dd.tglfp == null ? '' : dd.tglfp;
+                            //     let noreffbtb = dd.noreffbtb == null ? '' : dd.noreffbtb;
+                            //     let keterangan = dd.keterangan == null ? '' : dd.keterangan;
+                            //     let pkp = dd.pkp == null ? '' : dd.pkp;
+                            //     let frac = dd.frac == null ? '' : dd.frac;
+                            //     let unit = dd.unit == null ? '' : dd.unit;
 
-                                $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + i + '" deskripsi="' + deskripsi + '">' +
-                                    '<td><input disabled class="form-control " type="text" value="' + plu + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + desk + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + satuan + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + bkp + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + stock + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(hrgsatuan) + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(ctn) + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(pcs) + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(gross) + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + discper + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(discrp) + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(ppn) + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + faktur + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + pajakno + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + tglfp + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + noreffbtb + '"></td>' +
-                                    '<td><input disabled class="form-control " type="text" value="' + keterangan + '"></td>' +
-                                    '</tr>');
-                                i++;
-                                tot_gross += parseFloat(gross);
-                                tot_potongan += parseFloat(discrp);
-                                tot_ppn += parseFloat(ppn);
-                            });
-                            tot_total = tot_gross - tot_potongan + tot_ppn;
+                            //     $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + i + '" deskripsi="' + deskripsi + '">' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + plu + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + desk + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + satuan + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + bkp + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + stock + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(hrgsatuan) + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(ctn) + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(pcs) + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(gross) + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + discper + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(discrp) + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + convertToRupiah2(ppn) + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + faktur + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + pajakno + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + tglfp + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + noreffbtb + '"></td>' +
+                            //         '<td><input disabled class="form-control " type="text" value="' + keterangan + '"></td>' +
+                            //         '</tr>');
+                            //     i++;
+                            //     tot_gross += parseFloat(gross);
+                            //     tot_potongan += parseFloat(discrp);
+                            //     tot_ppn += parseFloat(ppn);
+                            // });
+                            // tot_total = tot_gross - tot_potongan + tot_ppn;
                         }
                         swal({
                             title: response.status,
@@ -1685,6 +1735,46 @@
                         }).then(() => {
                             getDataUsulan();
                         });
+
+                        let model = $('#txtModel').val();
+                        $.ajax({
+                                type: "POST",
+                                url: "{{ url('/bo/transaksi/pengeluaran/input/save') }}",
+                                async: false,
+                                data: {
+                                    // datas: datas,                                    
+                                    nodoc: nodoc,
+                                    tgldoc: tgldoc,
+                                    model: model,
+                                    kdsup: kdsup,
+                                    datas_detail: datas_detail
+                                },
+                                beforeSend: function () {
+                                    $('#modal-loader').modal('show');
+                                },
+                                success: function (response) {
+                                    console.log(response);
+                                    $('#modal-loader').modal('hide');
+                                    swal({
+                                        title: response.status,
+                                        text: response.message,
+                                        icon: response.status
+                                    }).then(() => {
+                                        window.location.reload();
+                                    });
+
+                                },
+                                error: function (error) {
+                                    $('#modal-loader').modal('hide');
+                                    // handle error
+                                    swal({
+                                        title: 'Gagal!',
+                                        text: 'Data gagal disimpan!',
+                                        icon: 'error'
+                                    }).then(() => {
+                                    });
+                                }
+                            });
                     }, error: function (error) {
                         console.log(error);
                     }
@@ -1693,8 +1783,8 @@
         });
 
         $(document).on('click', '#btnSimpan', function () {
-            var currentButton = $(this);
-            var count = 0;
+            let currentButton = $(this);
+            let count = 0;
             $('#body-table-detail tr').each(function () {
                 count++;
             });
@@ -1707,88 +1797,84 @@
                     buttons: true,
                 }).then((yes) => {
                     if (yes) {
-                        var nodoc = $('#txtNoDoc').val();
-                        var tgldoc = $('#dtTglDoc').val();
-                        // console.log(tgldoc);                        
-                        var kdsup = $('#txtKdSupplier').val();
-                        let model = $('#txtModel').val();                       
+                        let nodoc = $('#txtNoDoc').val();
+                        let tgldoc = $('#dtTglDoc').val();
+                        console.log(tgldoc);
+                        let kdsup = $('#txtKdSupplier').val();
+                        let model = $('#txtModel').val();
 
-                        datas = [];
-                        let index = 1;
-                        $('#body-table-detail tr.row-detail').each(function () {
-                            var data = {};
+                        // datas = [];
+                        // let index = 1;
+                        // $('#body-table-detail tr.row-detail').each(function () {
+                        //     let data = {};
 
-                            let satuan = $(this).find('.satuan').val();
-                            let tempFrac = satuan.split('/');
-                            let frac = tempFrac[1];
-                            // console.log('satuan ' + satuan);
-                            // console.log('tempFrac ' + tempFrac);
-                            // console.log('frac ' + frac);
+                        //     let satuan = $(this).find('.satuan').val();
+                        //     let tempFrac = satuan.split('/');
+                        //     let frac = tempFrac[1];
 
-                            data.seqno = index;
-                            data.nodoc = nodoc;
-                            data.tgldoc = tgldoc;
-                            data.noreff = $(this).find(".noreff").val();
-                            data.istype = $(this).find(".istype").val();
-                            data.invno = $(this).find(".invno").val();
-                            data.tglinv = $(this).find(".tglinv").val();
-                            data.kdsup = kdsup;
-                            data.plu = $(this).find(".plu").val();
-                            data.ctn = $(this).find(".qtyctn").val();
-                            data.frac = frac;
-                            data.qty = $(this).find(".qtypcs").val();
-                            data.hargasatuan = $(this).find(".hargasatuan").val();
-                            data.persendisc = $(this).find(".persendisc").val();
-                            // if (model == '* KOREKSI *') {
-                            //     data.gross = $(this).find(".gross").val();
-                            //     data.discrph = $(this).find(".discrph").val();
-                            //     data.ppnrph = $(this).find(".ppn").val();
-                            //     data.posqty = $(this).find(".posqty").val();
-                            //     // if (data.gross.includes(',') == true) {
-                            //     //     data.gross = parseFloat($(this).find(".gross").val());
-                            //     // }
-                            //     // if (data.discrph.includes(',') == true) {
-                            //     //     data.discrph = parseFloat($(this).find(".discrph").val());
-                            //     // }
-                            //     // if (data.ppnrph.includes(',') == true) {
-                            //     //     data.ppnrph = parseFloat($(this).find(".ppn").val());
-                            //     // }
-                            // } else {
-                            //     data.gross = parseFloat($(this).find(".gross").val());
-                            //     data.discrph = parseFloat($(this).find(".discrph").val());
-                            //     data.ppnrph = parseFloat($(this).find(".ppn").val());
-                            //     data.posqty = parseFloat($(this).find(".posqty").val());
-                            // }
+                        //     data.seqno = index;
+                        //     data.nodoc = nodoc;
+                        //     data.tgldoc = tgldoc;
+                        //     data.noreff = $(this).find(".noreff").val();
+                        //     data.istype = $(this).find(".istype").val();
+                        //     data.invno = $(this).find(".invno").val();
+                        //     data.tglinv = $(this).find(".tglinv").val();
+                        //     data.kdsup = kdsup;
+                        //     data.plu = $(this).find(".plu").val();
+                        //     data.ctn = $(this).find(".qtyctn").val();
+                        //     data.frac = frac;
+                        //     data.qty = $(this).find(".qtypcs").val();
+                        //     data.hargasatuan = $(this).find(".hargasatuan").val();
+                        //     data.persendisc = $(this).find(".persendisc").val();
+                        //     // if (model == '* KOREKSI *') {
+                        //     //     data.gross = $(this).find(".gross").val();
+                        //     //     data.discrph = $(this).find(".discrph").val();
+                        //     //     data.ppnrph = $(this).find(".ppn").val();
+                        //     //     data.posqty = $(this).find(".posqty").val();
+                        //     //     // if (data.gross.includes(',') == true) {
+                        //     //     //     data.gross = parseFloat($(this).find(".gross").val());
+                        //     //     // }
+                        //     //     // if (data.discrph.includes(',') == true) {
+                        //     //     //     data.discrph = parseFloat($(this).find(".discrph").val());
+                        //     //     // }
+                        //     //     // if (data.ppnrph.includes(',') == true) {
+                        //     //     //     data.ppnrph = parseFloat($(this).find(".ppn").val());
+                        //     //     // }
+                        //     // } else {
+                        //     //     data.gross = parseFloat($(this).find(".gross").val());
+                        //     //     data.discrph = parseFloat($(this).find(".discrph").val());
+                        //     //     data.ppnrph = parseFloat($(this).find(".ppn").val());
+                        //     //     data.posqty = parseFloat($(this).find(".posqty").val());
+                        //     // }
 
-                            data.gross = parseFloat($(this).find(".gross").val());
-                            data.discrph = parseFloat($(this).find(".discrph").val());
-                            data.ppnrph = parseFloat($(this).find(".ppn").val());
-                            data.posqty = parseFloat($(this).find(".posqty").val());
-                            data.keterangan = $(this).find(".keterangan").val();
-                            datas.push(data);
+                        //     data.gross = parseFloat($(this).find(".gross").val());
+                        //     data.discrph = parseFloat($(this).find(".discrph").val());
+                        //     data.ppnrph = parseFloat($(this).find(".ppn").val());
+                        //     data.posqty = parseFloat($(this).find(".posqty").val());
+                        //     data.keterangan = $(this).find(".keterangan").val();
+                        //     datas.push(data);
 
-                            index++;
-                        });
-
-                        // console.log(datas);
+                        //     index++;
+                        // });
 
                         ajaxSetup();
                         $.ajax({
                             type: "POST",
                             url: "{{ url('/bo/transaksi/pengeluaran/input/save') }}",
                             data: {
-                                datas: datas,
+                                // datas: datas,
                                 arrDeletedPlu: arrDeletedPlu,
                                 nodoc: nodoc,
                                 tgldoc: tgldoc,
                                 model: model,
+                                kdsup: kdsup,
                                 datas_detail: datas_detail
                             },
                             beforeSend: function () {
                                 $('#modal-loader').modal('show');
                             },
                             success: function (response) {
-                                console.log(datas_detail);
+                                console.log(response);
                                 $('#modal-loader').modal('hide');
                                 swal({
                                     title: response.status,
@@ -1826,10 +1912,10 @@
         });
 
         function getDataUsulan() {
-            var nodoc = $('#txtNoDoc').val();
-            var kdsup = $('#txtKdSupplier').val();
-            var pkp = $('#txtPKP').val();
-            var namasup = $('#txtNmSupplier').val();
+            let nodoc = $('#txtNoDoc').val();
+            let kdsup = $('#txtKdSupplier').val();
+            let pkp = $('#txtPKP').val();
+            let namasup = $('#txtNmSupplier').val();
             ajaxSetup();
             $.ajax({
                 type: "POST",
@@ -1860,12 +1946,12 @@
                         $('#txt-usl-status').val(response.dataUsulan[0].usl_status);
                         $('#txt-usl-nodok').val(nodoc);
 
-                        for (var i = 0; i < response.dataUsulan.length; i++) {
+                        for (let i = 0; i < response.dataUsulan.length; i++) {
                             $('#body-table-usulan').append('<tr class="table-sm">\n' +
                                 '                               <td class="small usl-prdcd">' + response.dataUsulan[i].usl_prdcd + '</td>\n' +
                                 '                               <td class="small usl-desk">' + response.dataUsulan[i].prd_deskripsipanjang + '</td>\n' +
                                 '                               <td class="small usl-qty">' + response.dataUsulan[i].usl_qty_sisaretur + '</td>\n' +
-                                '                               <td class="small usl-status">' + response.dataUsulan[i].usl_status + '</td>\n' +
+                                '                               <td class="small usl-status">' + response.dataUsulan[i].usl_qty_retur + '</td>\n' +
                                 '                            </tr>')
                         }
                     }
@@ -1885,17 +1971,17 @@
         }
 
         $(document).on('click', '#btnUsulanRetur', function () {
-            var currentButton = $(this);
+            let currentButton = $(this);
             getDataUsulan();
         });
 
         $(document).on('click', '#btnKirimUsulan', function () {
-            var currentButton = $(this);
-            var nodoc = $('#txt-usl-nodok').val();
-            var kdsup = $('#txt-usl-kode-supplier').val();
-            var pkp = $('#txt-usl-pkp').val();
-            var status = $('#txt-usl-status').val();
-            var tgldoc = $('#dtTglDoc').val();
+            let currentButton = $(this);
+            let nodoc = $('#txt-usl-nodok').val();
+            let kdsup = $('#txt-usl-kode-supplier').val();
+            let pkp = $('#txt-usl-pkp').val();
+            let status = $('#txt-usl-status').val();
+            let tgldoc = $('#dtTglDoc').val();
 
             if (status != 'USULAN') {
                 swal({
@@ -1938,13 +2024,15 @@
                     // handle error
                     swal({
                         title: 'Gagal!',
-                        text: 'Data gagal diambil!',
+                        text: 'Data gagal dikirim!',
                         icon: 'error'
                     }).then(() => {
                     });
                 }
             });
         });
+
+
 
         $('#btnAddRow').click(function () {
             let totalHeaderRow = $('#body-table-header tr').length;

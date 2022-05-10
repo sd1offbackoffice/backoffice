@@ -43,7 +43,7 @@ class InputController extends Controller
             ->where('sup_kodeigr', '=', Session::get('kdigr'))
             ->orderBy('sup_namasupplier', 'asc')
             ->limit(100)
-            ->get();
+            ->get();            
 
         return Datatables::of($data)->make(true);
     }
@@ -80,10 +80,18 @@ class InputController extends Controller
             // dd($pIP);
 
             $c = loginController::getConnectionProcedure();
-            $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMORSTADOC('" . Session::get('kdigr') . "','RPB','Nomor Reff Pengeluaran Barang'," . $pIP . " || '2' , 6, FALSE); END;");
+            $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMORSTADOC('" . Session::get('kdigr') . "','RPB','Nomor Reff Pengeluaran Barang'," . $pIP . " || '2' , 7, FALSE); END;");
             oci_bind_by_name($s, ':ret', $no, 32);
             oci_execute($s);
 
+            $checkNoDoc = DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
+                ->where('trbo_nodoc', '=', $no)
+                ->where('trbo_kodeigr', '=', Session::get('kdigr'))
+                ->first();
+            if ($checkNoDoc) {
+                $no = $no + 1;
+            }
+            // dd($no);
             DB::connection(Session::get('connection'))->table('tbtr_tac')
                 ->where('tac_kodeigr', Session::get('kdigr'))
                 ->where('tac_nodoc', $no)
@@ -118,7 +126,9 @@ class InputController extends Controller
         $status = '';
         $notrn = $request->notrn;
 
-        $datas = DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE ')
+        $kdigr = Session::get('kdigr');
+
+        $datas = DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
             ->leftJoin('TBMASTER_SUPPLIER', 'TRBO_KODESUPPLIER', 'SUP_KODESUPPLIER')
             ->where('TRBO_KODEIGR', '=', Session::get('kdigr'))
             ->where('TRBO_NODOC', '=', $notrn)
@@ -126,9 +136,11 @@ class InputController extends Controller
             ->orderBy('TRBO_SEQNO')
             ->distinct()
             ->get();
+            // dd($datas);
 
         foreach ($datas as $p) {
             $model = '* KOREKSI *';
+            // $tgldoc = $p->trbo_tgldoc;
             $tgldoc = date("d/m/Y", strtotime($p->trbo_tgldoc));
             $supplier = $p->trbo_kodesupplier;
             $nmsupplier = $p->sup_namasupplier;
@@ -136,6 +148,7 @@ class InputController extends Controller
 
             $nofps = $p->trbo_istype;
             $nourutfps = $p->trbo_invno;
+            // $tglfps = $p->trbo_tglinv;
             $tglfps = date("d/m/Y", strtotime($p->trbo_tglinv));
             $flagdoc = $p->trbo_flagdoc;
             $nodoc = $p->trbo_nodoc;
@@ -176,7 +189,7 @@ class InputController extends Controller
             }
 
             $cek2 = DB::connection(Session::get('connection'))->table('TEMP_URUT_RETUR ')->count();
-
+            // dd($cek2);
             if ($cek2 == 0) {
                 $message = 'Tidak ada data history penerimaan untuk Supplier ' . $supplier;
                 $status = 'error';
@@ -190,6 +203,65 @@ class InputController extends Controller
         }
 
         $dh = DB::connection(Session::get('connection'))->table("TBTR_BACKOFFICE")
+            ->leftJoin('TBMASTER_PRODMAST', function ($join) {
+                $join->on('TBMASTER_PRODMAST.PRD_KODEIGR', '=', 'TBTR_BACKOFFICE.TRBO_KODEIGR')
+                    ->on('TBMASTER_PRODMAST.PRD_PRDCD', '=', 'TBTR_BACKOFFICE.TRBO_PRDCD');
+            })
+            ->leftJoin('TBMASTER_SUPPLIER', function ($join) {
+                $join->on('TBMASTER_SUPPLIER.SUP_KODEIGR', '=', 'TBTR_BACKOFFICE.TRBO_KODEIGR')
+                    ->on('TBMASTER_SUPPLIER.SUP_KODESUPPLIER', '=', 'TBTR_BACKOFFICE.TRBO_KODESUPPLIER');
+            })
+            ->select(
+                'TRBO_PRDCD',
+                'PRD_DESKRIPSIPENDEK',
+                DB::connection(Session::get('connection'))->raw("PRD_UNIT || '/' || PRD_FRAC SATUAN"),
+                'PRD_FLAGBKP1',
+                'TRBO_POSQTY',
+                'PRD_FRAC',
+                DB::connection(Session::get('connection'))->raw('SUM(TRBO_QTY) QTY'),
+                'TRBO_KETERANGAN'
+            )
+            ->where(
+                [
+                    'TRBO_KODEIGR' => Session::get('kdigr'),
+                    'TRBO_NODOC' => $notrn,
+                    'TRBO_TYPETRN' => 'K'
+                ]
+            )
+            ->groupBy(
+                [
+                    'TRBO_PRDCD',
+                    'PRD_DESKRIPSIPENDEK',
+                    DB::connection(Session::get('connection'))->raw("PRD_UNIT || '/' || PRD_FRAC"),
+                    'PRD_FLAGBKP1',
+                    'TRBO_POSQTY',
+                    'PRD_FRAC',
+                    'TRBO_KETERANGAN',
+                ]
+            )
+            ->orderBy('TRBO_PRDCD')
+            ->get();
+            // dd($dh);
+
+
+        $datas_header = [];
+        foreach ($dh as $d) {
+            $data = (object)'';
+
+            $data->h_plu = $d->trbo_prdcd;
+            $data->h_deskripsi = $d->prd_deskripsipendek;
+            $data->h_satuan = $d->satuan;
+            $data->h_bkp = $d->prd_flagbkp1;
+            $data->h_stock = $d->trbo_posqty;
+            $data->h_ctn = floor($d->qty / $d->prd_frac);
+            $data->h_pcs = $d->qty % $d->prd_frac;
+            $data->h_frac = $d->prd_frac;
+            $data->h_ket = $d->trbo_keterangan;
+
+            array_push($datas_header, $data);
+        }
+
+        $dd = DB::connection(Session::get('connection'))->table("TBTR_BACKOFFICE")
             ->leftJoin('TBMASTER_PRODMAST', function ($join) {
                 $join->on('TBMASTER_PRODMAST.PRD_KODEIGR', '=', 'TBTR_BACKOFFICE.TRBO_KODEIGR')
                     ->on('TBMASTER_PRODMAST.PRD_PRDCD', '=', 'TBTR_BACKOFFICE.TRBO_PRDCD');
@@ -218,7 +290,8 @@ class InputController extends Controller
                 'TRBO_PPNRPH',
                 'TRBO_ISTYPE',
                 'TRBO_INVNO',
-                DB::connection(Session::get('connection'))->raw("to_char(TRBO_TGLINV,'dd/mm/yyyy') TRBO_TGLINV"),
+                'TRBO_TGLINV',
+                // DB::connection(Session::get('connection'))->raw("to_char(TRBO_TGLINV,'dd/mm/yyyy') TRBO_TGLINV"),
                 'TRBO_NOREFF',
                 'TRBO_KETERANGAN',
             )
@@ -255,50 +328,31 @@ class InputController extends Controller
                     'TRBO_KETERANGAN'
                 ]
             )
-            ->orderBy('TRBO_NOREFF', 'desc')
+            ->orderBy('TRBO_PRDCD')
             ->distinct()
             ->get();
-            // dd($dh);
-
-
-        $datas_header = [];
-        foreach ($dh as $d) {
-            $data = (object)'';
-
-            $data->h_plu = $d->trbo_prdcd;
-            $data->h_deskripsi = $d->prd_deskripsipendek;
-            $data->h_satuan = $d->satuan;
-            $data->h_bkp = $d->prd_flagbkp1;
-            $data->h_stock = $d->trbo_posqty;
-            $data->h_ctn = floor($d->qty / $d->prd_frac);
-            $data->h_pcs = $d->qty % $d->prd_frac;
-            $data->h_frac = $d->prd_frac;
-            $data->h_ket = $d->trbo_keterangan;
-
-            array_push($datas_header, $data);
-        }
 
         $datas_detail = [];
-        foreach ($dh as $d) {
+        foreach ($dd as $d) {
             $data = (object)'';
 
-            $data->plu = $d->trbo_prdcd;
-            $data->deskripsi = $d->prd_deskripsipanjang;
+            $data->trbo_prdcd = $d->trbo_prdcd;
             $data->desk = $d->prd_deskripsipendek;
+            $data->deskripsi = $d->prd_deskripsipanjang;
             $data->satuan = $d->satuan;
             $data->bkp = $d->prd_flagbkp1;
-            $data->stok = $d->trbo_posqty;
-            $data->hrgsatuan = $d->trbo_hrgsatuan;
-            $data->ctn = floor($d->qty / $d->prd_frac);
-            $data->pcs = $d->qty % $d->prd_frac;
-            $data->gross = $d->trbo_gross;
+            $data->trbo_posqty = $d->trbo_posqty;
+            $data->trbo_hrgsatuan = $d->trbo_hrgsatuan;
+            $data->qtyctn = floor($d->qty / $d->prd_frac);
+            $data->qtypcs = $d->qty % $d->prd_frac;
+            $data->trbo_gross = $d->trbo_gross;
             $data->discper = ($d->trbo_discrph / $d->trbo_gross) * 100;
-            $data->discrp = $d->trbo_discrph;
-            $data->ppn = $d->trbo_ppnrph;
-            $data->faktur = $d->trbo_istype;
-            $data->pajakno = $d->trbo_invno;
-            $data->tglfp = $d->trbo_tglinv;
-            $data->noreffbtb = $d->trbo_noreff;
+            $data->trbo_discrph = $d->trbo_discrph;
+            $data->trbo_ppnrph = $d->trbo_ppnrph;
+            $data->trbo_istype = $d->trbo_istype;
+            $data->trbo_inv = $d->trbo_invno;
+            $data->trbo_tgl = date('d/m/Y', strtotime($d->trbo_tglinv));
+            $data->trbo_noreff = $d->trbo_noreff;
             $data->keterangan = $d->trbo_keterangan;
             $data->pkp = $d->sup_pkp;
             $data->frac = $d->prd_frac;
@@ -404,12 +458,18 @@ class InputController extends Controller
 
     public function getDataLovPLU()
     {
-        $result = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
-            ->select('prd_prdcd', 'prd_deskripsipanjang')
-            ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
-            ->whereRaw("nvl(prd_recordid,'9')<>'1'")
-            ->orderBy('prd_prdcd')
-            ->get();
+        // $kdsup = $request->kdsup;
+        // $result = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+        //     ->select('prd_prdcd', 'prd_deskripsipanjang')
+        //     ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
+        //     ->whereRaw("nvl(prd_recordid,'9')<>'1'")
+        //     // ->where('PRD_PLUSUPPLIER', '=', $kdsup)
+        //     ->orderBy('prd_prdcd')
+        //     ->get();
+        $result = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')                
+                    ->join('TEMP_URUT_RETUR', 'PRD_PRDCD', '=', 'PRDCD')
+                    ->orderBy('PRD_DESKRIPSIPANJANG')
+                    ->get();
 
         return Datatables::of($result)->make(true);
     }
@@ -544,6 +604,7 @@ class InputController extends Controller
         $bkp = $request->bkp;
         $inputan = $request->inputan;
         $qtyretur = $request->qtyretur;
+        $nowDate = Carbon::now()->format('d/m/Y');
 
         try {
             $temp = DB::connection(Session::get('connection'))->table('tbtr_usul_returlebih')
@@ -552,10 +613,29 @@ class InputController extends Controller
                 ->where('usl_prdcd', '=', $plu)
                 ->count();
             if ($temp == 0) {
-                DB::connection(Session::get('connection'))->table('tbtr_usul_returlebih')->insert(['usl_kodeigr' => Session::get('kdigr'), 'usl_trbo_nodoc' => $nodoc, 'usl_trbo_tgldoc' => $tgldoc, 'usl_kodesupplier' => $kdsup, 'usl_prdcd' => $plu, 'usl_flagbkp' => $bkp, 'usl_qty_retur' => $inputan, 'usl_qty_sisaretur' => $qtyretur, 'usl_status' => 'USULAN', 'usl_create_by' => Session::get('usid'), 'usl_create_dt' => Carbon::now()]);
+                DB::connection(Session::get('connection'))->table('tbtr_usul_returlebih')
+                ->insert([
+                    'usl_kodeigr' => Session::get('kdigr'),
+                    'usl_trbo_nodoc' => $nodoc,
+                    'usl_trbo_tgldoc' => DB::connection(Session::get('connection'))->raw("to_date('".$tgldoc."','dd/mm/yyyy')"),
+                    // 'usl_trbo_tgldoc' => $tgldoc,
+                    'usl_kodesupplier' => $kdsup,
+                    'usl_prdcd' => $plu,
+                    'usl_flagbkp' => $bkp,
+                    'usl_qty_retur' => $inputan,
+                    'usl_qty_sisaretur' => $qtyretur,
+                    'usl_status' => 'USULAN',
+                    'usl_create_by' => Session::get('usid'),
+                    'usl_create_dt' => DB::connection(Session::get('connection'))->raw("to_date('".$nowDate."','dd/mm/yyyy')")
+                ]);
             } else {
                 DB::connection(Session::get('connection'))->table('tbtr_usul_returlebih')->where(['usl_kodeigr' => Session::get('kdigr'), 'usl_trbo_nodoc' => $nodoc, 'usl_trbo_tgldoc' => $tgldoc, 'usl_prdcd' => $plu])
-                    ->update(['usl_qty_retur' => $inputan, 'usl_qty_sisaretur' => $qtyretur, 'usl_modify_by' => Session::get('usid'), 'usl_modify_dt' => Carbon::now()]);
+                    ->update([
+                        'usl_qty_retur' => $inputan,
+                        'usl_qty_sisaretur' => $qtyretur,
+                        'usl_modify_by' => Session::get('usid'),
+                        'usl_modify_dt' => DB::connection(Session::get('connection'))->raw("to_date('".$nowDate."','dd/mm/yyyy')")
+                    ]);
             }
             return response()->json([
                 'status' => 'SUCCESS',
@@ -638,9 +718,11 @@ class InputController extends Controller
         $trbo_discrph = '';
         $datas = [];
 
+        $frac = 0;
         $ppn = 0;
         $trbo_prdcd = '';
         $desk = '';
+        $deskripsi = '';
         $satuan = '';
         $bkp = '';
         $trbo_posqty = '';
@@ -709,7 +791,7 @@ class InputController extends Controller
                                 and prd_prdcd = " . $plu . "
                                 and prd_prdcd = prdcd
                                 and nvl(nodoc_bpb, 'zz') = " . $no_bpb);
-                    // dd($res2);
+                    // return dd($res2);
             //         DB::Connection('simsmg')->raw('update temp_urut_retur set qtyretur = case when qty > (qty_pb - qty_histretur) and ke <> maxtrn then(qty_pb - qty_histretur) else qty end where prdcd = ' . $plu . ' and trn = ' . $ke . ' and nodoc_bpb = ' . $no_bpb);
 
             //         $trbo_prdcd = $plu;
@@ -794,7 +876,7 @@ class InputController extends Controller
 
                     $trbo_istype = $temp3->istype;
                     $trbo_invno = $temp3->invno;
-                    $trbo_tglinv = $temp3->tglinv;
+                    $trbo_tglinv = date('d/m/Y', strtotime($temp3->tglinv));
                     $max_qty = $temp3->qtypb;
                     $trbo_hrgsatuan = $temp3->hrgsatuan;
                     $trbo_noreff = $temp3->nodoc_bpb;
@@ -936,110 +1018,42 @@ class InputController extends Controller
         $trbo_flagdoc = 0;
         $trbo_create_by = Session::get('usid');
         $trbo_create_dt = Carbon::now()->format('d/m/Y');
-        // dd($trbo_create_dt);
-        // $datas = $request->datas;
-        $arrDeletedPlu = $request->arrDeletedPlu;
         $model = $request->model;
+        $nodoc = $request->nodoc;
         $tgldoc = $request->tgldoc;
+        $kdsup = $request->kdsup;
         $datas_detail = $request->datas_detail;
-        dd($datas_detail);
-        
+        // dd($datas_detail);
+
         DB::connection(Session::get('connection'))->beginTransaction();
-        if ($arrDeletedPlu != null) {            
-            $nodoc = $request->nodoc;
-            
-            for ($i=0;$i < sizeof($arrDeletedPlu); $i++) { 
-                DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
-                    ->where([
-                        'trbo_kodeigr' => $trbo_kodeigr,
-                        'trbo_nodoc' => $nodoc,
-                        'trbo_prdcd' => $arrDeletedPlu[$i],
-                    ])
-                    ->delete();
-            }
+        if ($model = '* KOREKSI *') {
+            DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
+                ->where([
+                    'trbo_kodeigr' => $trbo_kodeigr,
+                    'trbo_nodoc' => $nodoc,
+                ])
+                ->delete();
         }
-
+        $index = 1;
         foreach ($datas_detail as $data) {
-            if ($model == '* KOREKSI *') {
-                if ($tgldoc == $data['tgldoc']) {
-                    $data['tgldoc'] = DB::connection(Session::get('connection'))->raw("to_date('".$data['tgldoc']."','dd/mm/yyyy')");
-                } else {
-                    $data['tgldoc'] = date('d/m/Y', strtotime($data['tgldoc']));
-                }
-                $data['tglinv'] = DB::connection(Session::get('connection'))->raw("to_date('".$data['tglinv']."','dd/mm/yyyy')");
-                $trbo_create_dt = DB::connection(Session::get('connection'))->raw("to_date('".$trbo_create_dt."','dd/mm/yyyy')");
+            $data['tgldoc'] = DB::connection(Session::get('connection'))->raw("to_date('".$tgldoc."','dd/mm/yyyy')");
+            $data['trbo_tgl'] = DB::connection(Session::get('connection'))->raw("to_date('".$data['trbo_tgl']."','dd/mm/yyyy')");
+            $data['trbo_create_dt'] = DB::connection(Session::get('connection'))->raw("to_date('".$trbo_create_dt."','dd/mm/yyyy')");
 
-                // if (strpos($data['hargasatuan'], ",") == true) {
-                //     $tempHargaSatuan = explode(",", $data['hargasatuan']);
-                //     $tempHargaSatuan = $tempHargaSatuan[0] . $tempHargaSatuan[1];
-                //     // $tempHargaSatuan = (int)$tempHargaSatuan;
-                //     $data['hargasatuan'] = $tempHargaSatuan;
-
-                //     $data['tgldoc'] = date('d/m/Y', strtotime($data['tgldoc']));
-                //     $data['tglinv'] = date('d/m/Y', strtotime($data['tglinv']));
-                //     $trbo_create_dt = Carbon::now()->format('d/m/Y');
-                // }
-                // if (strpos($data['gross'], ",") == true) {
-                //     $tempGross = explode(",", $data['gross']);
-                //     $tempGross = $tempGross[0].$tempGross[1];
-                //     // $tempGross = (int)$tempGross;
-                //     $data['gross'] = $tempGross;
-                // }
-                // if ($data['discrph'] != 0) {
-                //     if (strpos($data['discrph'], ",") == true) {
-                //         $tempDiscprh = explode(",", $data['discrph']);
-                //         $tempDiscprh = $tempDiscprh[0].$tempDiscprh[1];
-                //         // $tempDiscprh = (int)$tempDiscprh;
-                //         $data['discrph'] = $tempDiscprh;
-                //     }
-                // }
-                // if (strpos($data['ppnrph'], ",") == true) {
-                //     $tempPpn = explode(",", $data['ppnrph']);
-                //     $tempPpn = $tempPpn[0].$tempPpn[1];
-                //     // $tempPpn = (int)$tempPpn;
-                //     $data['ppnrph'] = $tempPpn;
-                // }
-            
-
-                // $tempHargaSatuan = explode(",", $data['hargasatuan']);
-                // $tempHargaSatuan = $tempHargaSatuan[0] . $tempHargaSatuan[1];
-                // $tempHargaSatuan = (int)$tempHargaSatuan;
-                // $data['hargasatuan'] = $tempHargaSatuan;
-                // // dd($tempHargaSatuan);
-                
-                // $tempGross = explode(",", $data['gross']);
-                // $tempGross = $tempGross[0].$tempGross[1];
-                // $tempGross = (int)$tempGross;
-                // $data['gross'] = $tempGross;
-                // // dd($data['posqty']);
-                // if ($data['discrph'] != 0) {
-                //     $tempDiscprh = explode(",", $data['discrph']);
-                //     $tempDiscprh = $tempDiscprh[0].$tempDiscprh[1];
-                //     $tempDiscprh = (int)$tempDiscprh;
-                //     $data['discrph'] = $tempDiscprh;
-                // }
-
-                // $tempPpn = explode(",", $data['ppnrph']);
-                // $tempPpn = $tempPpn[0].$tempPpn[1];
-                // $tempPpn = (int)$tempPpn;
-                // $data['ppnrph'] = $tempPpn;
-            } else {
-                $data['tgldoc'] = date('d/m/Y', strtotime($data['tgldoc']));
-                $data['tglinv'] = date('d/m/Y', strtotime($data['tglinv']));
-                // $trbo_create_dt = Carbon::now()->format('d/m/Y');
-            }
+            $tempFrac = explode("/", $data['satuan']);
+            $data['frac'] = $tempFrac[1];
 
             $temp = DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
                 ->where([
                     'trbo_kodeigr' => $trbo_kodeigr,
-                    'trbo_nodoc' => $data['nodoc'],
-                    'trbo_prdcd' => $data['plu'],
-                    'trbo_noreff' => $data['noreff']
+                    'trbo_nodoc' => $nodoc,
+                    'trbo_prdcd' => $data['trbo_prdcd'],
+                    'trbo_noreff' => $data['trbo_noreff']
                 ])
                 ->count(1);
             $avg_cost = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                 ->select('prd_avgcost')
-                ->where('prd_prdcd', '=', $data['plu'])
+                ->where('prd_prdcd', '=', $data['trbo_prdcd'])
                 ->first();
     //        dd( Carbon::parse($data['tgldoc']));
             $avg_cost = $avg_cost->prd_avgcost;
@@ -1047,67 +1061,61 @@ class InputController extends Controller
                 DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
                     ->where([
                         'trbo_kodeigr' => $trbo_kodeigr,
-                        'trbo_nodoc' => $data['nodoc'],
-                        'trbo_prdcd' => $data['plu']
+                        'trbo_nodoc' => $nodoc,
+                        'trbo_prdcd' => $data['trbo_prdcd']
                     ])
                     ->update([
                         'trbo_typetrn' => $trbo_typetrn,
-                        // 'trbo_tgldoc' => date('d/m/Y', strtotime($data['tgldoc'])),
                         'trbo_tgldoc' => $data['tgldoc'],
-                        'trbo_noreff' => $data['noreff'],
-                        'trbo_istype' => $data['istype'],
-                        'trbo_invno' => $data['invno'],
-                        'trbo_tglinv' => $data['tglinv'],
-                        // 'trbo_tglinv' => $data['tglinv'],
-                        'trbo_kodesupplier' => $data['kdsup'],
-                        'trbo_qty' => ($data['ctn'] * $data['frac']) + $data['qty'],
-                        'trbo_hrgsatuan' => $data['hargasatuan'],
-                        'trbo_persendisc1' => $data['persendisc'],
-                        'trbo_gross' => $data['gross'],
-                        // 'trbo_gross' => $data['gross'],
-                        'trbo_discrph' => $data['discrph'],
-                        'trbo_ppnrph' => $data['ppnrph'],
+                        'trbo_noreff' => $data['trbo_noreff'],
+                        'trbo_istype' => $data['trbo_istype'],
+                        'trbo_invno' => $data['trbo_inv'],
+                        'trbo_tglinv' => $data['trbo_tgl'],
+                        'trbo_kodesupplier' => $kdsup,
+                        'trbo_qty' => ($data['qtyctn'] * $data['frac']) + $data['qtypcs'],
+                        'trbo_hrgsatuan' => $data['trbo_hrgsatuan'],
+                        'trbo_persendisc1' => $data['discper'],
+                        'trbo_gross' => $data['trbo_gross'],
+                        'trbo_discrph' => $data['trbo_discrph'],
+                        'trbo_ppnrph' => $data['trbo_ppnrph'],
                         'trbo_averagecost' => $avg_cost,
-                        'trbo_posqty' => $data['posqty'],
+                        'trbo_posqty' => $data['trbo_posqty'],
                         'trbo_flagdoc' => $trbo_flagdoc,
                         'trbo_create_by' => $trbo_create_by,
-                        'trbo_create_dt' => $trbo_create_dt
-                        // 'trbo_create_dt' => $trbo_create_dt
+                        'trbo_create_dt' => $data['trbo_create_dt']
                     ]);
             } else {
                 DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')->insert([
                     'trbo_kodeigr' => $trbo_kodeigr,
-                    'trbo_seqno' => $data['seqno'],
-                    'trbo_nodoc' => $data['nodoc'],
-                    'trbo_prdcd' => $data['plu'],
+                    'trbo_seqno' => $index,
+                    'trbo_nodoc' => $nodoc,
+                    'trbo_prdcd' => $data['trbo_prdcd'],
                     'trbo_typetrn' => $trbo_typetrn,
                     'trbo_tgldoc' => $data['tgldoc'],
-                    // 'trbo_tgldoc' => DB::connection(Session::get('connection'))->raw("to_date('".$data['tgldoc']."','dd/mm/yyyy')"),
-                    'trbo_noreff' => $data['noreff'],
-                    'trbo_istype' => $data['istype'],
-                    'trbo_invno' => $data['invno'],
-                    // 'trbo_tglinv' => DB::connection(Session::get('connection'))->raw("to_date('".$data['tglinv']."','dd/mm/yyyy')"),
-                    'trbo_tglinv' => $data['tglinv'],
-                    'trbo_kodesupplier' => $data['kdsup'],
-                    'trbo_qty' => ($data['ctn'] * $data['frac']) + $data['qty'],
-                    'trbo_hrgsatuan' => $data['hargasatuan'],
-                    'trbo_persendisc1' => $data['persendisc'],
-                    'trbo_gross' => $data['gross'],
-                    'trbo_discrph' => $data['discrph'],
-                    'trbo_ppnrph' => $data['ppnrph'],
+                    'trbo_noreff' => $data['trbo_noreff'],
+                    'trbo_istype' => $data['trbo_istype'],
+                    'trbo_invno' => $data['trbo_inv'],
+                    'trbo_tglinv' => $data['trbo_tgl'],
+                    'trbo_kodesupplier' => $kdsup,
+                    'trbo_qty' => ($data['qtyctn'] * $data['frac']) + $data['qtypcs'],
+                    'trbo_hrgsatuan' => $data['trbo_hrgsatuan'],
+                    'trbo_persendisc1' => $data['discper'],
+                    'trbo_gross' => $data['trbo_gross'],
+                    'trbo_discrph' => $data['trbo_discrph'],
+                    'trbo_ppnrph' => $data['trbo_ppnrph'],
                     'trbo_averagecost' => $avg_cost,
-                    'trbo_posqty' => $data['posqty'],
+                    'trbo_posqty' => $data['trbo_posqty'],
                     'trbo_flagdoc' => $trbo_flagdoc,
                     'trbo_create_by' => $trbo_create_by,
-                    // 'trbo_create_dt' => DB::connection(Session::get('connection'))->raw("to_date('".$trbo_create_dt."','dd/mm/yyyy')")
-                    'trbo_create_dt' => $trbo_create_dt
-
+                    'trbo_create_dt' => $data['trbo_create_dt']
                 ]);
             }
+
+            $index++;
         }
         DB::connection(Session::get('connection'))->commit();
 
-        $message = 'Nodoc ' . $request->datas[0]['nodoc'] . ' Berhasil di simpan';
+        $message = 'Nodoc ' . $nodoc . ' Berhasil di simpan';
         $status = 'success';
         return compact(['message', 'status']);
     }
@@ -1135,6 +1143,7 @@ class InputController extends Controller
             ->where('usl_trbo_nodoc', '=', $nodoc)
             ->where('usl_kodesupplier', '=', $kdsup)
             ->get();
+            // dd($dataUsulan);
         $usul_status = $dataUsulan[0]->usl_status;
 
         if ($usul_status == 'USULAN' || $usul_status == 'MENUNGGU KONFIRMASI') {
@@ -1154,6 +1163,8 @@ class InputController extends Controller
 
     public function sendUsulan(Request $request)
     {
+
+        $userid = Session::get('usid');
 
 //	OTP_FIN;
         $ip = (int)(substr($request->nodoc, 1, 3));
@@ -1207,22 +1218,23 @@ class InputController extends Controller
 
 //   --otp
         $otp = $digit1 . $digit2 . $digit3 . $digit4 . $digit5 . $digit6;
-
+        // dd($userid);
         $nodoc = $request->nodoc;
         $kdsup = $request->kdsup;
-//        $tgldoc = date("m/d/Y", strtotime($request->tgldoc));
         $tgldoc = $request->tgldoc;
+//        $tgldoc = date('Y-m-d', strtotime($request->tgldoc));
         $kdigr = Session::get('kdigr');
         $errm = '';
+
         $c = loginController::getConnectionProcedure();
-        $s = oci_parse($c, "BEGIN sp_usulanretur(:kodeigr,:nodoc,to_date('" . $tgldoc . "','dd/mm/yyyy'),:supplier,:otp,:userid,:errm); END;");
+        $s = oci_parse($c, "BEGIN sp_usulanretur(:kodeigr,:nodoc,to_date('".$tgldoc."','dd/mm/yyyy'),:supplier,:otp,:userid,:errm); END;");
         oci_bind_by_name($s, ':kodeigr', $kdigr);
         oci_bind_by_name($s, ':nodoc', $nodoc);
 //        oci_bind_by_name($s, ':tgldoc', $tgldoc);
         oci_bind_by_name($s, ':supplier', $kdsup);
         oci_bind_by_name($s, ':otp', $otp);
-        oci_bind_by_name($s, ':userid', Session::get('usid'));
-        oci_bind_by_name($s, ':errm', $errm, 200);
+        oci_bind_by_name($s, ':userid', $userid);
+        oci_bind_by_name($s, ':errm', $errm, 2000);
 
         oci_execute($s);
 
@@ -1231,7 +1243,7 @@ class InputController extends Controller
             $status = 'error';
             return compact(['message', 'status']);
         } else {
-            $message = 'usulan retur sudah dikirm ke email finance';
+            $message = 'Usulan retur sudah dikirm ke email finance';
             $status = 'info';
         }
 
@@ -1242,6 +1254,7 @@ class InputController extends Controller
             ->where('usl_kodesupplier', '=', $kdsup)
             ->distinct()
             ->first();
+        // dd($status_usul);
 
         $status_usul = $status_usul->usl_status;
         return compact(['message', 'status', 'status_usul']);
@@ -1264,6 +1277,14 @@ class InputController extends Controller
         $datas = $request->datas;
         $datah = $request->datah;
         $datad = $request->datad;
+
+        // $trbo_kodeigr = Session::get('kdigr');
+        // $trbo_typetrn = 'K';
+        // $trbo_flagdoc = 0;
+        // $trbo_create_dt = Carbon::now()->format('d/m/Y');
+        // $trbo_create_by = Session::get('usid');
+        // $datas_detail = $request->datas_detail;
+        // dd($datas_detail);
 
         $ip = (int)(substr($request->nodoc, 1, 3));
         $doc = (int)(substr($request->nodoc, 5));
@@ -1313,7 +1334,6 @@ class InputController extends Controller
         $digit6 = floor(sqrt($digit6));
         $digit6 = Self::f_sum_digits($digit6);
         $digit6 = substr(($digit6), -1, 1);
-
 //   --otp
         $otp = $digit1 . $digit2 . $digit3 . $digit4 . $digit5 . $digit6;
         if ($request->otp == $otp) {
@@ -1324,13 +1344,14 @@ class InputController extends Controller
                 ->get();
 
             $datahke = 0;
+            $i = 0;
             foreach ($usuls as $usul) {
 //                [[proses usulan]]
                 while (1) {
-                    if ($datah[$datahke]['plu'] == $usul->usl_prdcd)
-                        $datah[$datahke]['ctn'] = round($usul->usl_qty_retur / $datah[$datahke]['frac']);
-                    $datah[$datahke]['pcs'] = $usul->usl_qty_retur % $datah[$datahke]['frac'];
-
+                    if ($datah[$datahke]['plu'] == $usul->usl_prdcd){
+                        $datah[$datahke]['ctn'] = floor($usul->usl_qty_retur / $datah[$datahke]['frac']);
+                        $datah[$datahke]['pcs'] = $usul->usl_qty_retur % $datah[$datahke]['frac'];
+                    }
                     if ($datah[$datahke]['plu'] == $usul->usl_prdcd) {
                         break;
                     }
@@ -1338,21 +1359,22 @@ class InputController extends Controller
                 }
 
 //    [HAPUS]
-                $lastrecord = 0;
-                if (isset($datad)) {
-                    $lastrecord = sizeof($datad) - 1;
-                }
+                // $lastrecord = 0;
+                // if (isset($datad)) {
+                //     $lastrecord = sizeof($datad) - 1;
+                // }
 
-                $j = 0;
-                for ($i = 1; $i < $lastrecord; $i++) {
-                    for ($j = 1; $j < $lastrecord; $j++) {
-                        if ($datad[$j]->plu == $datah[$datahke]['plu']) {
-                            array_splice($datad, $j, 1);
-                        }
-                    }
-                }
+//                $j = 0;
+//                for ($i = 0; $i < sizeof($datad) ; $i++) {
+//                    for ($j = 0; $j < sizeof($datad) ; $j++) {
+//                        if ($datad[$j]['plu'] == $datah[$datahke]['plu']) {
+//                            array_splice($datad, $j, 1);
+//                        }
+//                        $datahke++;
+//                    }
+//                }
 
-                DB::connection(Session::get('connection'))->select('update temp_urut_retur set qtyretur = 0 where prdcd = ' . $datah[$i]->plu . ' or pluold = ' . $datah[$i]->plu . ' or exists (select 1 from tbtr_konversiplu where kvp_pluold = prdcd and kvp_plunew= ' . $datah[$i]->plu . ')');
+                // DB::connection(Session::get('connection'))->update('update temp_urut_retur set qtyretur = 0 where prdcd = ' . $datah[$i]->plu . ' or pluold = ' . $datah[$i]->plu . ' or exists (select 1 from tbtr_konversiplu where kvp_pluold = prdcd and kvp_plunew= ' . $datah[$i]->plu . ')');
 
                 //====
 
@@ -1362,14 +1384,41 @@ class InputController extends Controller
                     ->where('prdcd', '=', $PLU)
                     ->orderBy('trn')
                     ->get();
+                    // dd($data_usuls);
 
                 foreach ($data_usuls as $data_usul) {
                     $data = (object)'';
 
-                    $NO_BPB = $data_usul->nodoc_bpb;
+                    if ($data_usul->nodoc_bpb != null) {
+                        $NO_BPB = $data_usul->nodoc_bpb;
+                    } else {
+                        $NO_BPB = 'zz';
+                    }
+
                     $data->prdcd = $PLU;
 
-                    $res = DB::connection(Session::get('connection'))->select("select prd_deskripsipanjang, prd_deskripsipendek, frac, prd_flagbkp1,prd_avgcost, st_avgcost, nvl(st_saldoakhir, 0) st_saldoakhir, hrgsatuan, qtypb from tbmaster_prodmast, tbmaster_stock, temp_urut_retur where prd_prdcd = st_prdcd(+) and '02' =  st_lokasi(+) and prd_prdcd = " . $PLU . " and prd_prdcd = prdcd and nvl(nodoc_bpb, 'zz') = " . $NO_BPB);
+                    $res = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
+                        ->join('TBMASTER_STOCK', 'PRD_PRDCD', '=', 'ST_PRDCD')
+                        ->join('TEMP_USUL_RETUR', 'PRD_PRDCD', '=', 'PRDCD')
+                        ->select(
+                            'PRD_DESKRIPSIPANJANG',
+                            'PRD_DESKRIPSIPENDEK',
+                            'FRAC',
+                            'PRD_FLAGBKP1',
+                            'PRD_AVGCOST',
+                            'PRD_PPN',
+                            'ST_AVGCOST',
+                            'ST_SALDOAKHIR',
+                            'HRGSATUAN',
+                            'QTYBPB'
+                        )
+                        ->where('ST_LOKASI', '=', '02')
+                        ->where('PRD_PRDCD', '=', $PLU)
+                        ->where('NODOC_BPB', '=', $NO_BPB)
+                        ->get();
+                        // dd($res);
+                    // $res = DB::connection(Session::get('connection'))
+                    //     ->select("select prd_deskripsipanjang, prd_deskripsipendek, frac, prd_flagbkp1,prd_avgcost, prd_ppn, st_avgcost, nvl(st_saldoakhir, 0) st_saldoakhir, hrgsatuan, qtypb from tbmaster_prodmast, tbmaster_stock, temp_urut_retur where prd_prdcd = st_prdcd(+) and '02' =  st_lokasi(+) and prd_prdcd = " . $PLU . " and prd_prdcd = prdcd and nvl(nodoc_bpb, 'zz') = " . $NO_BPB);
 
                     $data->deskripsi = $res[0]->prd_deskripsipanjang;
                     $data->desk = $res[0]->prd_deskripsipendek;
@@ -1377,15 +1426,19 @@ class InputController extends Controller
                     $data->bkp = $res[0]->prd_flagbkp1;
                     $data->acostprd = $res[0]->prd_avgcost;
                     $data->acostst = $res[0]->st_avgcost;
-                    $data->trbo_posqty = $res[0]->st_saldoakhir;
+                    if ($res[0]->st_saldoakhir != null) {
+                        $data->trbo_posqty = $res[0]->st_saldoakhir;
+                    } else {
+                        $data->trbo_posqty = 0;
+                    }
                     $data->trbo_hrgsatuan = $res[0]->hrgsatuan;
-                    $data->max_qty = $res[0]->qtypb;
+                    $data->max_qty = $res[0]->qtybpb;
 //            --++Get Unit From mstran BTB
                     $temp = DB::connection(Session::get('connection'))->table('tbtr_mstran_btb')
                         ->select('btb_unit')
                         ->where('btb_prdcd', '=', $PLU)
                         ->where('btb_nodoc', '=', $NO_BPB)
-                        ->count();
+                        ->count(1);
 
                     if ($temp > 0) {
                         $unit = DB::connection(Session::get('connection'))->table('tbtr_mstran_btb')
@@ -1399,9 +1452,9 @@ class InputController extends Controller
 
 //            ----Get Unit From mstran BTB
 
-                    $data->satuan = $data->unit . '/' . TO_CHAR($data->frac);
+                    $data->satuan = $data->unit . '/' . $data->frac;
                     $data->trbo_qty = $data_usul->qtyretur;
-                    $data->qtyctn = round($data->trbo_qty / $data->frac);
+                    $data->qtyctn = floor($data->trbo_qty / $data->frac);
                     $data->qtypcs = $data->trbo_qty % $data->frac;
 
                     if ($data->acostst == '' || !isset($data->acostst) || $data->acostst == 0) {
@@ -1412,7 +1465,7 @@ class InputController extends Controller
 
 //            ---** Hitung PPN ** ---
                     if ($request->pkp == 'Y' AND $data->bkp == 'Y') {
-                        $data->ppn = 10;
+                        $data->ppn = $res[0]->prd_ppn;
                     } else {
                         $data->ppn = 0;
                     }
@@ -1437,11 +1490,54 @@ class InputController extends Controller
                     array_push($datad, $data);
                 }
 
+                $index = 1;
+
+                DB::connection(Session::get('connection'))->beginTransaction();
+                // foreach ($datas_detail as $data_detail) {
+                //     $avg_cost = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
+                //             ->select('prd_avgcost')
+                //             ->where('prd_prdcd', '=', $data_detail['trbo_prdcd'])
+                //             ->first();
+                //     $data_detail['tgldoc'] = DB::connection(Session::get('connection'))->raw("to_date('".$request->tgldoc."','dd/mm/yyyy')");
+                //     $data_detail['trbo_tgl'] = DB::connection(Session::get('connection'))->raw("to_date('".$data_detail['trbo_tgl']."','dd/mm/yyyy')");
+                //     $data_detail['trbo_create_dt'] = DB::connection(Session::get('connection'))->raw("to_date('".$trbo_create_dt."','dd/mm/yyyy')");
+
+                //     $tempFrac = explode("/", $data_detail['satuan']);
+                //     $data_detail['frac'] = $tempFrac[1];
+
+                //     DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')->insert([
+                //         'trbo_kodeigr' => $trbo_kodeigr,
+                //         'trbo_seqno' => $index,
+                //         'trbo_nodoc' => $request->$nodoc,
+                //         'trbo_prdcd' => $data_detail['trbo_prdcd'],
+                //         'trbo_typetrn' => $trbo_typetrn,
+                //         'trbo_tgldoc' => $data_detail['tgldoc'],
+                //         'trbo_noreff' => $data_detail['trbo_noreff'],
+                //         'trbo_istype' => $data_detail['trbo_istype'],
+                //         'trbo_invno' => $data_detail['trbo_inv'],
+                //         'trbo_tglinv' => $data_detail['trbo_tgl'],
+                //         'trbo_kodesupplier' => $request->$kdsup,
+                //         'trbo_qty' => ($data_detail['qtyctn'] * $data_detail['frac']) + $data_detail['qtypcs'],
+                //         'trbo_hrgsatuan' => $data_detail['trbo_hrgsatuan'],
+                //         'trbo_persendisc1' => $data_detail['discper'],
+                //         'trbo_gross' => $data_detail['trbo_gross'],
+                //         'trbo_discrph' => $data_detail['trbo_discrph'],
+                //         'trbo_ppnrph' => $data_detail['trbo_ppnrph'],
+                //         'trbo_averagecost' => $avg_cost,
+                //         'trbo_posqty' => $data_detail['trbo_posqty'],
+                //         'trbo_flagdoc' => $trbo_flagdoc,
+                //         'trbo_create_by' => $trbo_create_by,
+                //         'trbo_create_dt' => $data_detail['trbo_create_dt']
+                //     ]);
+
+                //     $index++;
+                // }
 
                 DB::connection(Session::get('connection'))->table('tbtr_usul_returlebih')
                     ->where('usl_kodeigr', '=', Session::get('kdigr'))
                     ->where('usl_trbo_nodoc', '=', $request->nodoc)
                     ->update(['usl_status' => 'USULAN DISETUJUI']);
+                DB::connection(Session::get('connection'))->commit();
 
                 $message = 'Kode OTP yang dimasukkan berhasil.';
                 $status = 'success';
@@ -1452,11 +1548,5 @@ class InputController extends Controller
             $status = 'error';
             return compact(['message', 'status']);
         }
-    }
-
-    public function deleteFirst(Request $request) {
-        $nodoc = $request->nodoc;
-        $tgldoc = $request->tgldoc;
-        $kdsup = $request->kdsup;
-    }
+    }    
 }

@@ -321,7 +321,6 @@
 
         $(document).ready(function () {
             $('#table').DataTable();
-
         });
 
 
@@ -357,8 +356,8 @@
             var currentButton = $(this);
             var no_npb = currentButton.children().first().text();
             $('#txtNoDoc').val(no_npb);
-            getDataNPB(no_npb);
             $('#m_lov_npb').modal('hide');
+            getDataNPB(no_npb);
         });
 
         function getDataNPB(no_npb) {
@@ -380,10 +379,11 @@
                         'no_npb': no_npb,
                     }
                 },
-                "columns": [{
+                "columns": [
+                    {
                     data: 'detail',
                     name: 'detail'
-                },
+                    },
                     {
                         data: 'mstd_prdcd',
                         name: 'mstd_prdcd'
@@ -446,10 +446,10 @@
                     });
                     // console.log(data);
                     // console.log(dataIndex);
-                    $(row).children().first().next().next().next().next().text(convertToRupiah2($(row).children().first().next().next().next().next().text()));
-                    $(row).children().first().next().next().next().next().next().text(convertToRupiah2($(row).children().first().next().next().next().next().next().text()));
-                    $(row).children().first().next().next().next().next().next().next().text(convertToRupiah2($(row).children().first().next().next().next().next().next().next().text()));
-                    $(row).children().first().next().next().next().next().next().next().next().text(convertToRupiah2($(row).children().first().next().next().next().next().next().next().next().text()));
+                    $(row).children().first().next().next().next().next().text(convertToRupiah($(row).children().first().next().next().next().next().text()));
+                    $(row).children().first().next().next().next().next().next().text(convertToRupiah($(row).children().first().next().next().next().next().next().text()));
+                    $(row).children().first().next().next().next().next().next().next().text(convertToRupiah($(row).children().first().next().next().next().next().next().next().text()));
+                    $(row).children().first().next().next().next().next().next().next().next().text(convertToRupiah($(row).children().first().next().next().next().next().next().next().next().text()));
 
                     $('#total-item').val(dataIndex + 1);
 
@@ -458,10 +458,18 @@
                     ppn += parseFloat(data.mstd_ppnrph);
                     total += parseFloat(data.totalall);
 
-                    $('#gross').val(convertToRupiah2(gross));
-                    $('#potongan').val(convertToRupiah2(potongan));
-                    $('#ppn').val(convertToRupiah2(ppn));
-                    $('#total').val(convertToRupiah2(total));
+
+
+                   // $('#gross').val(convertToRupiah2(gross));
+                   // $('#potongan').val(convertToRupiah2(potongan));
+                   // $('#ppn').val(convertToRupiah2(ppn));
+                   // $('#total').val(convertToRupiah2(total));
+
+                    $('#gross').val(convertToRupiah2(Math.round(gross)));
+                    $('#potongan').val(convertToRupiah2(Math.round(potongan)));
+                    $('#ppn').val(convertToRupiah2(Math.round(ppn)));
+                    $('#total').val(convertToRupiah2(Math.round(total)));
+
 
                     $('#txtTanggalNPB').val(data.msth_tgldoc);
                     $('#txtSupplier').val(data.supp);
@@ -504,19 +512,19 @@
                     $('#dtag').val(response.dtag);
                     $('#dbandrol').val(response.dbandrol);
                     $('#bkp').val(response.bkp);
-                    $('#lcost').val(convertToRupiah2(response.dlcost));
-                    $('#acost').val(convertToRupiah2(response.dacost));
-                    $('#dhrgsat').val(convertToRupiah2(response.dhrgsat));
+                    $('#lcost').val(convertToRupiah(response.dlcost));
+                    $('#acost').val(convertToRupiah(response.dacost));
+                    $('#dhrgsat').val(convertToRupiah(response.dhrgsat));
                     $('#dqty').val(response.dqty);
                     $('#dunit').val(response.dunit);
                     $('#dqtyk').val(response.dqtyk);
-                    $('#drp1').val(convertToRupiah2(response.drp1));
+                    $('#drp1').val(convertToRupiah(response.drp1));
                     $('#persen1').val(Math.round(response.dpersen1));
-                    $('#drp2').val(convertToRupiah2(response.drp2));
-                    $('#drp3').val(convertToRupiah2(response.drp3));
+                    $('#drp2').val(convertToRupiah(response.drp2));
+                    $('#drp3').val(convertToRupiah(response.drp3));
                     $('#persen2').val(Math.round(response.dpersen2));
-                    $('#drp4').val(convertToRupiah2(response.drp4));
-                    $('#drp5').val(convertToRupiah2(response.drp5));
+                    $('#drp4').val(convertToRupiah(response.drp4));
+                    $('#drp5').val(convertToRupiah(response.drp5));
                     $('#dket').val(response.dket);
                     $('#dstok').val(Math.floor(response.dstok));
                     $('#dstok2').val(response.dstok2);

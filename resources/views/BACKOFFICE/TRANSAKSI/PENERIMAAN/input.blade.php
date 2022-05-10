@@ -23,7 +23,7 @@
                             <label for="btb_date" class="col-form-label">Tgl. BTB</label>
                         </div>
                         <div class="col-4">
-                            <input type="date" id="btb_date" class="form-control" autocomplete="off" aria-describedby="btbDate">
+                            <input type="text" class="form-control nullPermission" id="btb_date" placeholder="dd/mm/yyyy">
                         </div>
                     </div>
 
@@ -71,7 +71,8 @@
                             <label for="po_date" class="col-form-label">Tgl. PO</label>
                         </div>
                         <div class="col-4">
-                            <input autocomplete="off" type="date" id="po_date" class="form-control" aria-describedby="po_date" disabled>
+                            <!-- <input autocomplete="off" type="date" id="po_date" class="form-control" aria-describedby="po_date" disabled> -->
+                            <input type="text" class="form-control nullPermission" id="po_date" placeholder="dd/mm/yyyy" disabled>
                         </div>
                     </div>
                     <div class="row align-items-center">
@@ -99,7 +100,8 @@
                             <label for="fracture_date" class="col-form-label">Tgl Faktur</label>
                         </div>
                         <div class="col-4">
-                            <input autocomplete="off" type="date" id="fracture_date" class="form-control" aria-describedby="factureDateAmt">
+                            <!-- <input autocomplete="off" type="date" id="fracture_date" class="form-control" aria-describedby="factureDateAmt"> -->
+                            <input type="text" class="form-control nullPermission" id="fracture_date" placeholder="dd/mm/yyyy">
                         </div>
                     </div>
                     <div class="row align-items-center">
@@ -176,9 +178,9 @@
         </div>
     </div>
     <div class="card border-dark cardForm" id="input_new_trn">
-        <span></span>
+        <span class="space"></span>
         <h4><span class="badge badge-dark">Input Transaksi Pembelian/ Penerimaan Barang</span></h4>
-        <span></span>
+        <span class="space"></span>
         <div class="container-fluid">
             <div class="row align-items-center">
                 <div class="col-1">
@@ -309,9 +311,9 @@
                     <input autocomplete="off" type="text" id="i_gross" class="form-control" aria-describedby="bonusAmt" disabled>
                 </div>
             </div>
-            <span></span>
+            <span class="space"></span>
             <h4><span class="badge badge-dark">Potongan</span></h4>
-            <span></span>
+            <span class="space"></span>
             <div class="row align-items-center">
                 <div class="col-1">
                     <label for="i_persendis1" class="col-form-label">I %</label>
@@ -477,7 +479,7 @@
                     <input autocomplete="off" type="text" id="i_ppn" class="form-control" aria-describedby="ppnTotalAmt" disabled>
                 </div>
             </div>
-            <span></span>
+            <span class="space"></span>
             <div class="row align-items-center">
                 <div class="col-1">
                     <label for="i_keterangan" class="col-form-label">Keterangan</label>
@@ -523,8 +525,8 @@
                 </div>
             </div>
         </div>
-        <span></span>
-        <span></span>
+        <span class="space"></span>
+        <span class="space"></span>
         <div class="container">
             <div class="row">
                 <div class="col-sm">
@@ -608,7 +610,7 @@
                     </table>
                 </div>
             </div>
-            <span></span>
+            <span class="space"></span>
             <div class="row align-items-center">
                 <div class="col">
                     <button class="btn btn-danger btn-lg" onclick="closeTab()">Tutup Daftar</button>
@@ -668,7 +670,7 @@
         background-color: #f75f54;
     }
 
-    span {
+    .space {
         margin: 10px;
     }
 
@@ -828,6 +830,16 @@
         typeTrn = 'B'
         chooseTypeBtn.click();
         btb_number.focus();
+
+        btb_date.datepicker({
+            "dateFormat": "dd/mm/yy",
+        });
+        po_date.datepicker({
+            "dateFormat": "dd/mm/yy",
+        });
+        fracture_date.datepicker({
+            "dateFormat": "dd/mm/yy",
+        });
     });
 
     function setJenisPenerimaan(flag) {
@@ -922,9 +934,7 @@
                                         //         console.log(key);
                                         //     }
                                         // });
-                                        setTimeout(function() {
-                                            btb_date.focus();
-                                        }, 500)
+                                        btb_date.focus();
                                         tempDataBTB = [];
                                         clearSecondField();
                                         $('#modal-loader').modal('hide');
@@ -969,7 +979,7 @@
 
         tableModalHelp.clear().destroy();
         tableModalHelp = $('#tableModalHelp').DataTable({
-            ajax: 'http://172.20.28.17/BackOffice/public/bo/transaksi/penerimaan/input/showbtb/B',
+            ajax: '{{ url()->current() }}/showbtb/B',
             responsive: true,
             paging: true,
             ordering: true,
@@ -1493,15 +1503,18 @@
                     supplier_name.val(result.data[0].sup_namasupplier);
                     fracture.val(result.data[0].trbo_nofaktur);
                     try {
-                        fracture_date.val(result.data[0].trbo_tglfaktur.substr(0, 10));
-                        btb_date.val((result.data[0].trbo_tgldoc).substr(0, 10));
-                        po_date.val((result.data[0].trbo_tglpo).substr(0, 10));
+                        fracture_date.val(formatDate((result.data[0].trbo_tgldoc.substr(0, 10))));
+                        btb_date.val(formatDate((result.data[0].trbo_tgldoc.substr(0, 10))));
+                        po_date.val(formatDate((result.data[0].trbo_tgldoc.substr(0, 10))));
                     } catch {
                         fracture_date.val('');
                         btb_date.val('');
                         po_date.val('');
                     }
-
+                    console.log('dates');
+                    console.log(btb_date.val());
+                    console.log(po_date.val());
+                    console.log(fracture_date.val());
                     pkp_amt.val(result.data[0].sup_pkp);
                     // Right Table
                     setValueTableDetail(result.data);
@@ -1550,6 +1563,7 @@
             let keterangan = $(this).val().toUpperCase();
             tempDataPLU.i_keterangan = keterangan;
             $('#modal-loader').modal('hide');
+            checkFlag();
         }
     })
 
@@ -1840,6 +1854,7 @@
 
                     po_number.val(data.tpoh_nopo);
                     po_date.val(data.tpoh_tglpo.substr(0, 10));
+                    po_date.val(po_date.val().split('-').reverse().join('/'));
                     supplier_code.val(data.tpoh_kodesupplier);
                     supplier_name.val(data.sup_namasupplier);
                     pkp_amt.val(data.sup_pkp);
@@ -2112,10 +2127,12 @@
                     console.log(data);
                     tempDataPLU = data;
                     setValue(data);
-                    i_hrgbeli.focus();
-                    if (jenisPenerimaan == 1) {
-                        i_bonus1.focus();
-                    }
+                    setTimeout(function() {
+                        i_hrgbeli.focus();
+                        if (jenisPenerimaan == 1) {
+                            i_bonus1.focus();
+                        }
+                    }, 500);
                 } else if (result.kode == '2') {
                     swal({
                         icon: 'warning',
@@ -2389,18 +2406,19 @@
                 timer: 2000
             });
         } else {
+            console.log(tempDataSave)
             ajaxSetup();
             $.ajax({
                 url: '{{ url()->current() }}/savedata',
                 type: 'post',
                 data: {
                     noBTB: btb_number.val(),
-                    tglBTB: btb_date.val(),
+                    tglBTB: btb_date.val().split('/').reverse().join('-'),
                     noPO: po_number.val(),
-                    tglPO: po_date.val(),
+                    tglPO: po_date.val().split('/').reverse().join('-'),
                     supplier: supplier_code.val(),
                     noFaktur: fracture.val(),
-                    tglFaktur: fracture_date.val(),
+                    tglFaktur: fracture_date.val().split('/').reverse().join('-'),
                     tempDataSave: tempDataSave,
                     typeTrn: typeTrn
                 },
@@ -2461,7 +2479,6 @@
     po_number.keypress(function(e) {
         if (e.which === 13) {
             let val = $(this).val();
-
             if (!val) {
                 supplier_code.attr('disabled', false)
                 supplier_code.focus();
@@ -2542,6 +2559,12 @@
     fracture_date.keypress(function(e) {
         if (e.which === 13) {
             i_plu.focus();
+        }
+    });
+
+    i_plu.keypress(function(e) {
+        if (e.which === 13) {
+            choosePLU(i_plu.val());
         }
     });
 

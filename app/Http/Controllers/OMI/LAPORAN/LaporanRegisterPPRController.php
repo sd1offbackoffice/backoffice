@@ -78,8 +78,8 @@ class LaporanRegisterPPRController extends Controller
                      WHEN ROM_FLAGBKP = 'Y' AND ROM_FLAGBKP2 <> 'P'
                          THEN CASE
                                  WHEN PRD_UNIT = 'KG'
-                                     THEN (ROM_TTL / 1000) / 1.1
-                                 ELSE ROM_TTL / 1.1
+                                     THEN (ROM_TTL / 1000) / (1+ (COALESCE (prd_ppn,10)/100)) --1.1
+                                 ELSE ROM_TTL / (1+ (COALESCE (prd_ppn,10)/100)) --1.1
                              END
                      ELSE ROM_TTL
                  END HARGA,
@@ -87,8 +87,8 @@ class LaporanRegisterPPRController extends Controller
                      WHEN ROM_FLAGBKP = 'Y' AND ROM_FLAGBKP2 <> 'P'
                          THEN CASE
                                  WHEN PRD_UNIT = 'KG'
-                                     THEN ((ROM_TTL / 1000) / 1.1) * 0.1
-                                 ELSE (ROM_TTL / 1.1) * 0.1
+                                     THEN ((ROM_TTL / 1000) /  (1+ (COALESCE (prd_ppn,10)/100)) ) *  ( (COALESCE (prd_ppn,10)/100)) --((ROM_TTL / 1000) / 1.1) * 0.1
+                                 ELSE (ROM_TTL / (1+ (COALESCE (prd_ppn,10)/100)) ) *  ( (COALESCE (prd_ppn,10)/100)) --(ROM_TTL / 1.1) * 0.1
                              END
                      ELSE 0
                  END PPN,

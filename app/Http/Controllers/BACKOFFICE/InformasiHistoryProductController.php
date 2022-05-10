@@ -238,7 +238,7 @@ class InformasiHistoryProductController extends Controller
         if (!is_null($produk->prmd_prdcd)) {
             if (Carbon::now() >= $produk->prm_tglmulai and Carbon::now() <= $produk->prm_tglakhir) {
                 $showpromo = true;
-                $tglpromo = substr(Carbon::now()->format('d/m/y'), 0, 10) . ' s/d ' . date('d/m/y', strtotime(substr($produk->prm_tglakhir, 0, 10)));
+                $tglpromo = date('d/m/y', strtotime(substr($produk->prm_tglmulai, 0, 10))) . ' s/d ' . date('d/m/y', strtotime(substr($produk->prm_tglakhir, 0, 10)));
                 if (!is_null($produk->prm_jammulai)) {
                     $jampromo = $produk->prm_jammulai . ' s/d ' . $produk->prm_jamakhir;
                 }

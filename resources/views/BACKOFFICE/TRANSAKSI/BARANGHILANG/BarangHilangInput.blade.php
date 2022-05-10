@@ -281,14 +281,13 @@
 
     <script>
 
-        // let tempTrn;
-        // let tempPlu;
-        var tempStock = [{'plu' : '0000000', 'deskripsipanjang' : ''}];
+        var tempData = [{'plu' : '0000000', 'deskripsipanjang' : ''}];
         var today = new Date();
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
         var yyyy = today.getFullYear();
         today = dd + '/' + mm + '/' + yyyy;
+        var index = '';
 
         $("#tgl-doc").datepicker({
             "dateFormat" : "dd/mm/yy",
@@ -338,6 +337,7 @@
                                 $('#btn-hapus').attr('disabled', false);
                                 $('#btn-save').attr('disabled', false);
                                 $('#btn-addRow').attr('disabled', false);
+                                $('.plu')[0].focus()
                             }, error: function () {
                                 alert('error');
                                 //$('#modal-loader').modal('hide')
@@ -404,15 +404,16 @@
 
         $('#search-modal-2').keypress(function (e) {
             if (e.which === 13) {
+                // let index = this['attributes'][4]['value'];
                 let search = $('#search-modal-2').val();
-                let index = this['attributes'][4]['value'];
+
                 ajaxSetup();
                 $.ajax({
                     url: '{{ url()->current() }}/lov_plu',
                     type: 'POST',
                     data: {search: search},
                     success: function (result) {
-                        // console.log(result)
+                         //console.log(result)
                         $('.modalRow').remove();
                         for (i = 0; i < result.length; i++) {
                             let temp = "<tr onclick=choosePlu('"+ result[i].prd_prdcd +"','"+ index +"') class='modalRow'>" +
@@ -421,7 +422,6 @@
                                 "</tr>"
                             $('.tbody-modal-2').append(temp);
                         }
-                        // $('#modal-help-1').modal('show');
                     }, error: function () {
                         alert('error');
                     }
@@ -430,8 +430,10 @@
         });
 
         function getPlu(temp) {
+            console.log(temp)
             $('#search-modal-2').val('')
-            let index = temp['attributes'][4]['value']; //value nya string makanya pake petik
+            rowID = temp['attributes'][4]['value']; //value nya string makanya pake petik
+            index = rowID;
             // console.log(index)
             ajaxSetup();
             $.ajax({
@@ -583,6 +585,10 @@
             //     }
             // }
 
+            // console.log(noplu)
+            // console.log(index)
+            // return false
+
             $('.plu')[index].value = noplu;
             $('#modal-help-2').modal('hide');
             let temp = 0;
@@ -618,6 +624,7 @@
                             }
                         }
                         $('#total-item').val(temp)
+                        $('.ctn')[index].focus()
                     } else if (result.noplu === 0){
                         swal('', result.message, 'warning')
                         $('#deskripsiPanjang').val('');
@@ -654,11 +661,17 @@
             // alert("No PLU yg dipilih : " + noplu)
         }
 
+        function inputPlu(val, row){
+            choosePlu(convertPlu(val),row)
+        }
+
         $('.plu').keypress(function (e) {
             if (e.which === 13) {
                 let row = $(this).attr('no');
                 let val = convertPlu($(this).val());
+
                 choosePlu(val,row)
+
             }
         })
 
@@ -838,7 +851,7 @@
                                                     <button class="btn btn-danger btn-delete"  style="width: 100%" onclick="deleteRow(this)">X</button>
                                                 </td>
                                                 <td class="buttonInside" style="width: 7%">
-                                                    <input type="text" class="form-control plu" value=""  no="`+ index +`" id="`+ index +`">
+                                                    <input type="text" class="form-control plu" value=""  no="`+ index +`" id="`+ index +`" onchange="inputPlu(this.value, this.id)">
                                                      <button id="btn-no-plu" type="button" class="btn btn-lov ml-3" onclick="getPlu(this)" no="`+ index +`">
                                                         <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                                     </button>

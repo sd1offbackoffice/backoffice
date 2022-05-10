@@ -493,7 +493,6 @@ WHERE SUBSTR (hbv_prdcd_brj, 1, 6) = SUBSTR (trjd_prdcd, 1, 6) AND st_prdcd = hb
         AND kat_kodekategori(+) = lpp_kategoribrg
         " . $and_kat . "
         AND prs_kodeigr = lpp_kodeigr
-        and rownum<1000
                 " . $and_plu . " )
 GROUP BY lpp_kodedivisi,
          div_namadivisi,
@@ -1992,12 +1991,20 @@ order by prd_kodedivisi,
     }
 
     function createExcel($view,$filename,$maxColumn,$title,$subtitle){
+        $password='rahasia';
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan', 'prs_namacabang', 'prs_namawilayah')
             ->first();
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
         $spreadsheet = $reader->loadFromString($view);
+        $spreadsheet->getActiveSheet()->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(1,7);
+
         $spreadsheet->getActiveSheet()->getProtection()->setSheet(true);
+        $spreadsheet->getActiveSheet()->getProtection()->setPassword($password);
+        $security = $spreadsheet->getSecurity();
+        $security->setLockWindows(true);
+        $security->setLockStructure(true);
+        $security->setWorkbookPassword($password);
         $sheet = $spreadsheet->getActiveSheet();
 
         $column = [];

@@ -7,15 +7,15 @@
             <button class="btn btn-primary" id="nBtn">N+</button>
             <button class="btn btn-primary" id="mBtn">M+</button>
 
-            <fieldset class="card border-dark n-form">               
+            <fieldset class="card border-dark n-form">
                 <div class="card-body shadow-lg cardForm">
                     <br>
                     <div class="row">
                         <div class="col-md-8">
-                            <table class="table">
+                            <table class="table table table-sm table-bordered text-center" id="tblN">
                                 <thead>
                                     <tr>
-                                        <th><input type="checkbox" name="" id=""></th>
+                                        <th><input type="checkbox"></th>
                                         <th>NO PERJANJIAN</th>
                                         <th>PLU</th>
                                         <th>KD DISPLAY</th>
@@ -25,7 +25,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    
+                                    <tr>
+
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -48,7 +50,7 @@
                             <hr style="background-color: grey">
                             <div class="form-group">
                                 <label for="searchPLU">CARI PLU</label>
-                                <input type="text" class="form-control" name="searchPLU" id="searchPLU" aria-describedby="searchPLU" placeholder="TGL AKHIR">
+                                <input type="text" class="form-control" name="searchPLU" id="searchPLU" aria-describedby="searchPLU" placeholder="NF_PRDCD">
                             </div>
                             <hr style="background-color: grey">
                             <div class="d-flex justify-content-center">
@@ -57,33 +59,49 @@
                             <div class="d-flex justify-content-center">
                                 <small class="form-text text-muted"><span style="color: red;">*</span>check qty yang akan diupdate</small>
                             </div>
-                            
+
                         </div>
                     </div>
                     <hr style="background-color: grey">
-                    <div class="row no-gutters no-gutters">
-                        <label class="col-sm-2" for="plu">PLU</label>
-                        <input class="form-control col-sm-2" type="text" name="plu" id="plu" placeholder="plu">
-                        
-                        <label class="col-sm-1 text-center" for="plu2" >-</label>
-                        <input class="form-control col-sm-5" type="text" name="plu2" id="plu2" placeholder="plu2">
+                
+                    <div class="form-group no-gutters row">
+                        <label for="plu" class="col-sm-1 col-form-label">PLU</label>
+                        <div class="col-sm-10 row">
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="nd_prdcd" placeholder="ND_PRDCD" disabled>
+                            </div>
+                            <label> - </label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="nd_deskripsi" placeholder="ND_DESKRIPSI" disabled>
+                            </div>            
+                        </div>
                     </div>
+
                     <br>
-                    <div class="row no-gutters no-gutters">
-                        <label class="col-sm-1" for="mpkm">MPKM</label>
-                        <input class="form-control col-sm-1" type="text" name="mpkm" id="mpkm" placeholder="mpkm">
 
-                        <label class="col-sm-1 text-center" for="plu2" >M+</label>
-                        <input class="form-control col-sm-1" type="text" name="plu2" id="plu2" placeholder="plu2">
-
-                        <label class="col-sm-1 text-center" for="plu2" >PKMT</label>
-                        <input class="form-control col-sm-1" type="text" name="plu2" id="plu2" placeholder="plu2">
-
-                        <label class="col-sm-1 text-center" for="plu2" >QTY GONDOLA</label>
-                        <input class="form-control col-sm-2" type="text" name="plu2" id="plu2" placeholder="plu2">
-
-                        <label class="col-sm-1 text-center" for="plu2" >PKMG</label>
-                        <input class="form-control col-sm-2" type="text" name="plu2" id="plu2" placeholder="plu2">
+                    <div class="form-group no-gutters row">
+                        <label for="nd_mpkm" class="col-sm-1 col-form-label">MPKM</label>
+                        <div class="col-lg-10 row">
+                            <div class="col-sm-2">
+                                <input class="form-control" type="text" name="nd_mpkm" id="nd_mpkm" placeholder="ND_MPKM" disabled>
+                            </div>
+                            <label for="nd_mplus" class="col-sm-1 col-form-label">M+</label>
+                            <div class="col-sm-1">
+                                <input class="form-control" type="text" name="nd_mplus" id="nd_mplus" placeholder="ND_MPLUS" disabled>
+                            </div>
+                            <label for="nd_pkmt" class="col-sm-1 col-form-label">PKMT</label>
+                            <div class="col-sm-1">
+                                <input class="form-control" type="text" name="nd_pkmt" id="nd_pkmt" placeholder="ND_PKMT" disabled>
+                            </div>
+                            <label for="nd_nilaigondola" class="col-sm-2 col-form-label">QTY GONDOLA</label>
+                            <div class="col-sm-1">
+                                <input class="form-control" type="text" name="nd_nilaigondola" id="nd_nilaigondola" placeholder="ND_NILAIGONDOLA" disabled>
+                            </div>
+                            <label for="nd_pkmg" class="col-sm-1 col-form-label">PKMG</label>
+                            <div class="col-sm-2">
+                                <input class="form-control" type="text" name="nd_pkmg" id="nd_pkmg" placeholder="ND_PKMG" disabled>
+                            </div>
+                        </div>
                     </div>
                     <hr style="background-color: grey">
                     <div class="row">
@@ -109,7 +127,7 @@
                                         <td><input type="text" class="form-control"></td>
                                         <td><input type="text" class="form-control"></td>
                                     </tr>
-                                    
+
                                 </tbody>
                             </table>
                         </div>
@@ -141,7 +159,7 @@
                 </div>
             </fieldset>
 
-            <fieldset class="card border-dark m-form">               
+            <fieldset class="card border-dark m-form">
                 <div class="card-body shadow-lg cardForm">
                     <br>
                     <div class="row">
@@ -149,7 +167,7 @@
                             <table class="table table-sm table-bordered text-center" id="tblM">
                                 <thead>
                                     <tr>
-                                        <th><input type="checkbox"></th>
+                                        <th><input type="checkbox" id="main_check" onclick="selectAll()"></th>
                                         <th>PLU</th>
                                         <th>M+</th>
                                         <th>M+ I</th>
@@ -164,7 +182,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        
+
                         <div class="col-lg-6 mt-4">
                             <div class="row">
                                 <div class="col-lg-12">
@@ -186,13 +204,13 @@
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="md_mpkm" placeholder="MD_MPKM" disabled>
                                             </div>
-                                            
+
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="md_pkmt" placeholder="MD_PKMT" disabled>
                                             </div>
                                         </div>
                                     </div>
-                                   
+
                                     <div class="form-group row no-gutters d-flex justify-content-end">
                                         <label class="col-sm-2">CARI PLU</label>
                                         <div class="col-sm-4">
@@ -202,7 +220,7 @@
                                     <hr class="hl">
                                     <div class="form-group row no-gutters d-flex justify-content-center">
                                         <div class="col-sm-6">
-                                            <button type="button" class="btn btn-primary btn-lg">UPDATE</button>
+                                            <button class="btn btn-primary btn-lg" onclick="updateQty()">UPDATE</button>
                                             <label>*check qty yang akan diupdate</label>
                                         </div>
                                     </div>
@@ -241,7 +259,7 @@
 
                         </div>
                         <div class="col-lg-1 justify-content-end">
-                            <button class="btn btn-primary btn-md">UPLOAD</button>
+                            <button class="btn btn-primary btn-md" id="btn-import" onclick="uploadMplus()">UPLOAD</button>
                         </div>
                         <div class="col-lg-5">
                             <p>File CSV harus ada di server database /u01/lhost/trf_mplus/DATA/ <br>
@@ -276,7 +294,7 @@
 
 #tblM, #tblB {
     overflow-x : disabled;
-    overflow-y : scroll; 
+    overflow-y : scroll;
 }
 
 .hl {
@@ -284,31 +302,147 @@
 }
 </style>
 
-{{-- <script src={{asset('/js/sweetalert2.js')}}></script> --}}
 <script>
     var temp = 0;
+    var arrDataTableM = [];
+    var arrDataTableN = [];
     $(document).ready(function () {
+        getDataTableN();
         $('.m-form').hide();
 
         $('#nBtn').click(function (e) {
-            $('.m-form').hide();          
-            $('.n-form').show();          
+            $('.m-form').hide();
+            getDataTableN();
+            $('.n-form').show();
         });
         $('#mBtn').click(function (e) {
             $('.n-form').hide();
-            $('#tblM').DataTable().destroy();
-            $('#tblM').DataTable({
-                "scrollY": "400px",
-                "scrollCollapse": true,
-                "paging": false,
-            });
-            $('.m-form').show();            
+            getDataTableM();
+            $('.m-form').show();
         });
 
-        getDataTableM();
+    });
+    // ------------------------------ MENU N ------------------------------------------------
+    function getDataTableN()
+    {
+        arrDataTableN = [];
+
+        if($.fn.DataTable.isDataTable('#tblN')){
+            $('#tblN').DataTable().destroy();
+            $("#tblN tbody tr").remove();
+        }
+
+        $('#tblN').DataTable({
+            "ajax": '{{ route('get-data-table-n')  }}',
+            "columns": [
+                {data: null, render: function(data, type, full, meta){
+                        return `<input type="checkbox" class="form-control-sm cb_n" id="cb_n_${meta.row}">`;
+                    }
+                },
+                {data: 'gdl_noperjanjiansewa'},
+                {data: 'gdl_prdcd'},
+                {data: 'gdl_kodedisplay'},
+                {data: 'gdl_tglawal'},
+                {data: 'gdl_tglakhir'}, 
+                {data: 'gdl_qty', render: function(data, type, full, meta){
+                        return `<input type="text" class="form-control-sm text-center gdl_qty" value="${data}" id="gdl_qty_${meta.row}" onchange="checkList(${meta.row})">`;
+                    }
+                },
+            ],
+            "paging": false,
+            "lengthChange": true,
+            "searching": false,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "createdRow": function (row, data, dataIndex) {
+                // row -> <tr>
+                // data -> isi semua data dalam array
+                // dataIndex -> lopping nilai index setiap data
+                $(row).addClass('row-data-table-n').css({'cursor': 'pointer'});
+                // $(row).find('td:eq(1)').addClass('kode_plu');
+
+                arrDataTableN.push(data);
+            },
+            "order" : [],
+            "scrollY" : "400px",
+            "scrollX" : false,
+            "scrollCollapse": true,
+            "initComplete": function(){
+                $(document).on('click', '.row-data-table-n', function (e) {
+
+                    $('.row-data-table-n').removeAttr('style').css({'cursor': 'pointer'});
+                    $(this).css({"background-color": "#acacac","color": "white"});
+
+                    showDetailN($(this).index());
+                    currentIndex = $(this).index();
+                });
+
+                $('.row-data-table-n:eq(0)').css({"background-color": "#acacac","color": "white"});
+                showDetailN(0);
+            }
+        });
+    }
+
+    function showDetailN(index){
+        dataN = arrDataTableN[index];
+
+        ajaxSetup();
+        $.ajax({
+            url : '{{ route('get-data-detail-n')  }}',
+            type : 'get',
+            data : {
+                n_prdcd : dataN.gdl_prdcd
+            },
+            success: function(response)
+            {
+                $('#nd_prdcd').val(response.nd_prdcd);
+                $('#nd_deskripsi').val(response.nd_deskripsi);
+                $('#nd_nilaigondola').val(response.nd_nilaigondola);
+                $('#nd_pkmg').val(response.nd_pkmg);
+                $('#nd_pkmt').val(response.nd_pkmt);
+                $('#nd_mpkm').val(response.nd_mpkm);
+                $('#nd_mplus').val(response.nd_mplus);
+            }
+        });
+    }
+
+    $('#searchPLU').keypress(function (e) {
+        if (e.keyCode == 13) {
+
+            var status = false;
+
+            $('.row-data-table-n').each(function()
+            {
+                if($(this).find('td:eq(2)').html() == $('#searchPLU').val())
+                {
+                    status = true;
+                    $(this).click();
+                }
+            });
+            if(!status)
+            {
+                swal('PLU tidak ditemukan !','','warning');
+                $('.row-data-table-n:eq(0)').click();
+            }
+        }
     });
 
-    function getDataTableM() {
+    // ------------------------------ MENU M ------------------------------------------------
+    function checkList(value)
+    {
+        if(arrDataTableM[value].pkmp_mplusi != $('#mi_'+value).val() || arrDataTableM[value].pkmp_mpluso != $('#mo_'+value).val() ) 
+        {
+            $('#cb_'+value).prop('checked',true);
+        }
+        else{
+            $('#cb_'+value).prop('checked',false);
+        }
+    }
+
+    function getDataTableM()
+    {
         arrDataTableM = [];
 
         if($.fn.DataTable.isDataTable('#tblM')){
@@ -319,11 +453,20 @@
         $('#tblM').DataTable({
             "ajax": '{{ route('get-data-table-m')  }}',
             "columns": [
-                {data: 'pkmp_kodeigr'},
+                {data: null, render: function(data, type, full, meta){
+                        return `<input type="checkbox" class="form-control-sm cb" id="cb_${meta.row}">`;
+                    }
+                },
                 {data: 'pkmp_prdcd'},
                 {data: 'pkmp_mplus'},
-                {data: 'pkmp_mplusi'},
-                {data: 'pkmp_mpluso'},
+                {data: 'pkmp_mplusi', render: function(data, type, full, meta){
+                        return `<input type="text" class="form-control-sm text-center m_i" value="${data}" id="mi_${meta.row}" onchange="checkList(${meta.row})">`;
+                    }
+                },
+                {data: 'pkmp_mpluso', render: function(data, type, full, meta){
+                        return `<input type="text" class="form-control-sm text-center m_o" value="${data}" id="mo_${meta.row}" onchange="checkList(${meta.row})">`;
+                    }
+                },
             ],
             "paging": false,
             "lengthChange": true,
@@ -337,15 +480,17 @@
                 // data -> isi semua data dalam array
                 // dataIndex -> lopping nilai index setiap data
                 $(row).addClass('row-data-table-m').css({'cursor': 'pointer'});
+                $(row).find('td:eq(1)').addClass('kode_plu');
+
                 arrDataTableM.push(data);
             },
             "order" : [],
-            "scrollY" : "200px",
+            "scrollY" : "400px",
             "scrollX" : false,
             "scrollCollapse": true,
             "initComplete": function(){
                 $(document).on('click', '.row-data-table-m', function (e) {
-                    
+
                     $('.row-data-table-m').removeAttr('style').css({'cursor': 'pointer'});
                     $(this).css({"background-color": "#acacac","color": "white"});
 
@@ -359,24 +504,70 @@
         });
     }
 
+    function updateQty(value)
+    {
+        let arrDataUpdateMplus = [];
+
+        $('.row-data-table-m').each(function(row, data, dataIndex){
+            if($(this).find('.cb').is(':checked',true))
+            {
+                let mplus = new Object;
+                mplus['plu'] = $(this).find('.kode_plu').html();
+                mplus['m_i']= $(this).find('.m_i').val();
+                mplus['m_o'] = $(this).find('.m_o').val();
+
+                arrDataUpdateMplus.push(mplus);
+            }
+        });
+
+        ajaxSetup();
+        $.ajax({
+            url : '{{ route('update-mplus')  }}',
+            type : 'post',
+            data : {
+                update_mplus : arrDataUpdateMplus
+            },
+            success: function(response)
+            {
+                swal({
+                    title: response.title,
+                    text: response.message,
+                    icon: 'success'
+                }).then(function(ok)
+                {
+                    getDataTableM();
+                });
+            },
+            error : function(error)
+            {
+                swal({
+                    title: error.responseJSON.title,
+                    text: error.responseJSON.message,
+                    icon: 'error'
+                });
+            }
+        });
+        
+    }
+
     function showDetail(index){
         data = arrDataTableM[index];
 
-            ajaxSetup();
-            $.ajax({
-                url : '{{ route('get-data-detail')  }}',
-                type : 'get',
-                data : {
-                    pkmp_prdcd : data.pkmp_prdcd
-                },
-                success: function(response)
-                {
-                    $('#md_prdcd').val(response[0].prd_prdcd);
-                    $('#md_deskripsi').val(response[0].prd_deskripsipanjang);
-                    $('#md_mpkm').val(response[0].pkm_pkmt);
-                    $('#md_pkmt').val(response[0].pkm_mpkm);
-                }
-            });
+        ajaxSetup();
+        $.ajax({
+            url : '{{ route('get-data-detail')  }}',
+            type : 'get',
+            data : {
+                pkmp_prdcd : data.pkmp_prdcd
+            },
+            success: function(response)
+            {
+                $('#md_prdcd').val(response[0].prd_prdcd);
+                $('#md_deskripsi').val(response[0].prd_deskripsipanjang);
+                $('#md_mpkm').val(response[0].pkm_pkmt);
+                $('#md_pkmt').val(response[0].pkm_mpkm);
+            }
+        });
     }
 
     $('#mf_prdcd').keypress(function (e) {
@@ -413,29 +604,29 @@
     });
 
     $('#ma_mplus_i').focus(function () {
-            plu = $('#ma_prdcd').val();
-            console.log(plu.length);
-            if (plu.length < 7 && plu.length != 0) {
-                
-                plu = convertPlu($('#ma_prdcd').val());
-            }
-            else if(plu.length == 0)
-            {
-                plu = '';
-            }
-            $('#ma_prdcd').val(plu);
+        plu = $('#ma_prdcd').val();
+        console.log(plu.length);
+        if (plu.length < 7 && plu.length != 0) {
+
+            plu = convertPlu($('#ma_prdcd').val());
+        }
+        else if(plu.length == 0)
+        {
+            plu = '';
+        }
+        $('#ma_prdcd').val(plu);
     });
 
     $('#ma_mplus_o').focus(function () {
-            plu = $('#ma_prdcd').val();
-            if (plu.length < 7 && plu.length != 0) {
-                plu = convertPlu($('#ma_prdcd').val());
-            }
-            else if(plu.length == 0)
-            {
-                plu = '';
-            }
-            $('#ma_prdcd').val(plu);
+        plu = $('#ma_prdcd').val();
+        if (plu.length < 7 && plu.length != 0) {
+            plu = convertPlu($('#ma_prdcd').val());
+        }
+        else if(plu.length == 0)
+        {
+            plu = '';
+        }
+        $('#ma_prdcd').val(plu);
     });
 
     function insertPLU()
@@ -491,12 +682,48 @@
                     })// ajax
                 }// if ok
             })
-        }       
+        }
     }
 
     function refreshTable()
     {
+        $('#tblM').animate({
+            scrollTop: $(".row-data-table-m:eq(0)").offset().top
+        }, 2000);
         $('.row-data-table-m:eq(0)').click();
+        $('.cb').prop('checked',false);
+        $('#main_check').prop('checked',false);
+
     }
+
+    function selectAll()
+    {
+        $('.cb').prop('checked',$('#main_check').is(':checked'));
+    }
+
+    function uploadMplus()
+    {
+        ajaxSetup();
+        $.ajax({
+            url : '{{ route('upload-mplus')  }}',
+            type : 'POST',
+            success: function(response)
+            {
+                swal({
+                    title: response.title,
+                    text : response.message,
+                    icon: 'success'
+                });
+            },
+            error: function (error) {
+                swal({
+                    title: error.responseJSON.title,
+                    text: error.responseJSON.message,
+                    icon: 'error'
+                })
+            }
+        });
+    }
+
 </script>
 @endsection

@@ -2269,7 +2269,7 @@
                             '         <input type="text" class="form-control text-center" value="' + convertToRupiah2(Math.round(parseFloat(response['so'][i].sop_newavgcost))) + '" disabled>\n' +
                             '    </td>\n' +
                             '    <td class="p-0">\n' +
-                            '         <input type="text" class="form-control text-center" value="' + convertToRupiah(Math.round(parseFloat(response['so'][i].rupiah))) + '" disabled>\n' +
+                            '         <input type="text" class="form-control text-center" value="' + convertToRupiah((parseFloat(response['so'][i].rupiah))) + '" disabled>\n' +
                             '    </td>\n' +
                             '</tr>');
                     }

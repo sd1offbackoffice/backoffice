@@ -68,7 +68,7 @@ $datetime->setTimezone($timezone);
                 <p> PRG : IGR031G  </p>
             </div>
             <div style="line-height: 0.3 !important; text-align: center ;">
-                <h2 style="text-align: center"><strong>** RINCIAN POS **</strong></h2>
+                <h2 style="text-align: center"><strong>** RINCIAN PO **</strong></h2>
             </div>
             <div style="margin-left: 320px">
                 <table>

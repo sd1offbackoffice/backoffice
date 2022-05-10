@@ -48,9 +48,16 @@ return [
             'root' => storage_path('app'),
         ],
 
+        // Kingsley
         'receipts' => [
             'driver' => 'local',
-            'root'   => '../storage/signature/',
+            'root'   => '../storage/receipts/',
+        ],
+
+        // Kingsley
+        'signature_expedition' => [
+            'driver' => 'local',
+            'root'   => '../storage/signature_expedition/',
         ],
 
         'public' => [
@@ -69,6 +76,7 @@ return [
             'url' => env('AWS_URL'),
         ],
 
+        // Kingsley
         'custom-ftp' => [
             'driver' => 'ftp',
             'host' => '172.20.28.18',
@@ -87,6 +95,15 @@ return [
             //            'root' => public_path() . '/DBF', //DIganti oleh JR 21/01/2022 karena error ketika write file ke folder DBF
             'root' => public_path() . '\DBF',
             'visibility' => 'public',
+        ],
+
+        'ftp' => [
+            'driver' => 'ftp',
+            'host' => '172.20.12.31',
+            'port' => '26001',
+            'username' => 'allsdeis',
+            'password' => 'all5deis@17',
+            'root' => '/ICC'
         ],
 
     ],

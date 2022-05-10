@@ -93,7 +93,7 @@
                             </div>
 
                             <label class="col-sm-2 col-form-label text-right">Grant Total</label>
-                            <div class="col-sm-1">
+                            <div class="col-sm-2">
                                 <input type="text" class="form-control text-right" id="grantTotal" disabled>
                             </div>
 
@@ -519,7 +519,7 @@
                         let qty = (!tempQty) ? 1 : tempQty;
 
                         tableInquery.row.add(
-                            [result[i]['mstd_prdcd'], result[i]['barang'], result[i]['satuan'], qty, convertToRupiah(result[i]['hpp']), convertToRupiah(result[i]['mstd_gross'])]
+                            [result[i]['mstd_prdcd'], result[i]['barang'], result[i]['satuan'], parseInt(qty), convertToRupiah(result[i]['hpp']), convertToRupiah(result[i]['total'])]
                         ).draw();
 
                         grantTotal = parseInt(grantTotal) + parseInt(result[i]['ppntot']);
@@ -617,12 +617,18 @@
                     $('#bm').val(convertToRupiah(result[0].bm));
                     $('#btl').val(convertToRupiah(result[0].btl));
                     $('#ket').val(result[0].ket);
-                    $('#rpdisc1').val(convertToRupiah(result[0].ndisc1));
-                    $('#rpdisc4').val(convertToRupiah(result[0].ndisc4));
-                    $('#rpdisc2').val(convertToRupiah(result[0].ndisc2));
-                    $('#rpdisc2ii').val(convertToRupiah(result[0].ndisc2a));
-                    $('#rpdisc2iii').val(convertToRupiah(result[0].ndisc2b));
-                    $('#rpdisc3').val(convertToRupiah(result[0].ndisc3));
+                    // $('#rpdisc1').val(convertToRupiah(result[0].ndisc1));
+                    // $('#rpdisc4').val(convertToRupiah(result[0].ndisc4));
+                    // $('#rpdisc2').val(convertToRupiah(result[0].ndisc2));
+                    // $('#rpdisc2ii').val(convertToRupiah(result[0].ndisc2a));
+                    // $('#rpdisc2iii').val(convertToRupiah(result[0].ndisc2b));
+                    // $('#rpdisc3').val(convertToRupiah(result[0].ndisc3));
+                    $('#rpdisc1').val(convertToRupiah(result[0].rphdisc1));
+                    $('#rpdisc4').val(convertToRupiah(result[0].rphdisc4));
+                    $('#rpdisc2').val(convertToRupiah(result[0].rphdisc2));
+                    $('#rpdisc2ii').val(convertToRupiah(result[0].rphdisc2a));
+                    $('#rpdisc2iii').val(convertToRupiah(result[0].rphdisc2b));
+                    $('#rpdisc3').val(convertToRupiah(result[0].rphdisc3));
                     $('#sbandrol').val(result[0].sbandrol);
                     $('#stotal').val(convertToRupiah(result[0].namt));
                 }
