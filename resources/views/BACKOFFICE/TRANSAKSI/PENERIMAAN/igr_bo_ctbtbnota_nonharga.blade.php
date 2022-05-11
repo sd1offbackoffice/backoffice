@@ -105,6 +105,9 @@
                                 <td>No.SJ/F</td>
                                 <td>: {{$datas[$i]->msth_nofaktur}}</td>
                             </tr>
+                            <tr>
+                                <td style="text-align: right">{{$re_print}}</td>
+                            </tr>
                         </tbody>
                     </table>
                     <!-- <br>                    

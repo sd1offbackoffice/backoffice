@@ -15,7 +15,7 @@
                             <table class="table table table-sm table-bordered text-center" id="tblN">
                                 <thead>
                                     <tr>
-                                        <th><input type="checkbox"></th>
+                                        <th><input type="checkbox" id="main_check_n" onclick="selectAllN()"></th>
                                         <th>NO PERJANJIAN</th>
                                         <th>PLU</th>
                                         <th>KD DISPLAY</th>
@@ -120,21 +120,19 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td><input type="text" class="form-control"></td>
-                                        <td><input type="text" class="form-control"></td>
-                                        <td><input type="text" class="form-control"></td>
-                                        <td><input type="text" class="form-control"></td>
-                                        <td><input type="text" class="form-control"></td>
-                                        <td><input type="text" class="form-control"></td>
+                                        <td><input type="text" class="form-control" id="na_noperjanjian"></td>
+                                        <td><input type="text" class="form-control" id="na_prdcd" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"></td>
+                                        <td><input type="text" class="form-control" id="na_kodedisplay" onkeyup="this.value = this.value.toUpperCase();" maxlength="2"></td>
+                                        <td><input type="text" class="form-control" id="na_tglawal"></td>
+                                        <td><input type="text" class="form-control" id="na_tglakhir"></td>
+                                        <td><input type="text" class="form-control" id="na_qty" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"></td>
                                     </tr>
 
                                 </tbody>
                             </table>
                         </div>
                         <div class="col-sm-2 d-flex align-items-center justify-content-center">
-                            {{-- <div> --}}
-                                <button type="button" class="btn btn-primary w-75" >ADD</button>
-                            {{-- </div>                             --}}
+                            <button type="button" class="btn btn-primary w-75 mt-4" onclick="insertPerjanjian()">ADD</button>
                         </div>
                     </div>
                     <hr style="background-color: grey">
@@ -142,7 +140,7 @@
                         <div class="col-sm-2 justify-content-center">
                             <h6>UPLOAD</h6>
                             <div class="d-flex justify-content-center">
-                                <button type="button" class="btn btn-primary">UPLOAD</button>
+                                <button type="button" class="btn btn-primary" onclick="uploadNplus()">UPLOAD</button>
                             </div>
                         </div>
                         <div class="col-sm-8">
@@ -152,7 +150,7 @@
                         </div>
                         <div class="col-sm-2 d-flex align-items-center justify-content-center">
                             <div>
-                                <button type="button" class="btn btn-primary">REFRESH</button>
+                                <button type="button" class="btn btn-primary" onclick="refreshTableN()">REFRESH</button>
                             </div>
                         </div>
                     </div>
@@ -429,6 +427,72 @@
         }
     });
 
+    $('#na_prdcd').keypress(function (e) {
+        if (e.keyCode == 13) {
+            plu = $(this).val();
+            if (plu.length < 7) {
+                plu = convertPlu($(this).val());
+            }
+            $(this).val(plu);
+            $('#na_prdcd').val(plu);
+        }
+    });
+
+    function insertPerjanjian()
+    {
+        if($('#na_noperjanjian').val() == '' || $('#na_prdcd').val() == '' || $('#na_kodedisplay').val() == '' || $('#na_tglawal').val() == '' || $('#na_tglakhir').val() == '' || $('#na_qty').val() == '')
+        {
+            swal('Inputan harus diisi semua !!', '', 'warning');
+        }
+        else
+        {
+            $.ajax({
+
+            });
+        }
+    }
+
+    function refreshTableN()
+    {
+        $('#tblN').animate({
+            scrollTop: $(".row-data-table-n:eq(0)").offset().top
+        }, 2000);
+        $('.row-data-table-n:eq(0)').click();
+        $('.cb_n').prop('checked',false);
+        $('#main_check_n').prop('checked',false);
+
+    }
+
+    function selectAllN()
+    {
+        $('.cb_n').prop('checked',$('#main_check_n').is(':checked'));
+    }
+
+
+    function uploadNplus()
+    {
+        ajaxSetup();
+        $.ajax({
+            url : '{{ route('upload-nplus')  }}',
+            type : 'POST',
+            success: function(response)
+            {
+                swal({
+                    title: response.title,
+                    text : response.message,
+                    icon: 'success'
+                });
+            },
+            error: function (error) {
+                swal({
+                    title: error.responseJSON.title,
+                    text: error.responseJSON.message,
+                    icon: 'error'
+                })
+            }
+        });
+    }
+
     // ------------------------------ MENU M ------------------------------------------------
     function checkList(value)
     {
@@ -605,7 +669,6 @@
 
     $('#ma_mplus_i').focus(function () {
         plu = $('#ma_prdcd').val();
-        console.log(plu.length);
         if (plu.length < 7 && plu.length != 0) {
 
             plu = convertPlu($('#ma_prdcd').val());
@@ -693,7 +756,6 @@
         $('.row-data-table-m:eq(0)').click();
         $('.cb').prop('checked',false);
         $('#main_check').prop('checked',false);
-
     }
 
     function selectAll()

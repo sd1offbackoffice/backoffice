@@ -94,6 +94,11 @@ class InqueryRtrSupController extends Controller
             ->where('prs_kodeigr', '=', Session::get('kdigr'))
             ->first();
 
+        $supplier = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
+            ->select('sup_kodesupplier', 'sup_namasupplier')
+            ->where('sup_kodesupplier', '=',$kdsup)
+            ->first();
+
         $data = DB::connection(Session::get('connection'))->table('TBMASTER_HARGABELI')
             ->join('TBMASTER_STOCK', 'ST_PRDCD', 'HGB_PRDCD')
             ->join('TBMASTER_PRODMAST', 'HGB_PRDCD', 'PRD_PRDCD')
@@ -105,7 +110,9 @@ class InqueryRtrSupController extends Controller
             ->orderBy('HGB_PRDCD')
             ->get();
 
-        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENGELUARAN.cetakrtrsup', compact(['data', 'perusahaan']));
+
+
+        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENGELUARAN.cetakrtrsup', compact(['data', 'perusahaan','supplier']));
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 

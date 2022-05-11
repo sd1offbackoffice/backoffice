@@ -55,7 +55,7 @@ class EntryTabelQTYMPlusController extends Controller
     public function getDataPLU(Request $request){
         $data = new \stdClass();
         $prd = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
-            ->selectRaw("prd_prdcd,prd_deskripsipanjang,prd_kodetag")
+            ->selectRaw("prd_prdcd,prd_deskripsipanjang,prd_kodetag,prd_unit,prd_frac")
             ->where('prd_kodeigr',Session::get('kdigr'))
             ->where('prd_prdcd','=',$request->plu)
             ->whereRaw("substr(prd_prdcd,-1) = '0'")
@@ -76,6 +76,7 @@ class EntryTabelQTYMPlusController extends Controller
                 $data->prd_prdcd = $prd->prd_prdcd;
                 $data->prd_deskripsipanjang = $prd->prd_deskripsipanjang;
                 $data->prd_kodetag = $prd->prd_kodetag;
+                $data->prd_unit = $prd->prd_unit.'/'.$prd->prd_frac;
 
                 $kkpkm = DB::connection(Session::get('connection'))
                     ->table('tbmaster_kkpkm')

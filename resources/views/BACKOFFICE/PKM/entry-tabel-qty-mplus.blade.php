@@ -31,13 +31,13 @@
                                 </div>
                                 <div class="row form-group">
                                     <label for="avgsales" class="col-sm-2 col-form-label text-right pl-0 pr-0">Average Sales</label>
-                                    <div class="col-sm-1">
+                                    <div class="col-sm-2">
                                         <input type="text" class="form-control" id="avgsales" disabled>
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <label for="omi" class="col-sm-2 col-form-label text-right pl-0 pr-0">OMI</label>
-                                    <div class="col-sm-1">
+                                    <div class="col-sm-2">
                                         <input type="text" class="form-control" id="omi" disabled>
                                     </div>
                                     <div class="col pl-0"></div>
@@ -45,11 +45,11 @@
                                 </div>
                                 <div class="row form-group">
                                     <label for="qtymplus" class="col-sm-2 col-form-label text-right pl-0 pr-0">QTY M+</label>
-                                    <div class="col-sm-1">
+                                    <div class="col-sm">
                                         <input type="number" class="form-control" id="qtymplus" disabled>
                                     </div>
                                     <label for="pkmt" class="col-sm-1 col-form-label text-right pl-0 pr-0">PKMT</label>
-                                    <div class="col-sm-1">
+                                    <div class="col-sm">
                                         <input type="text" class="form-control" id="pkmt" disabled>
                                     </div>
                                     <button class="col-sm-2 mr-1 btn btn-primary" id="btnPrintAll" onclick="printAll()">PRINT ALL</button>
@@ -81,6 +81,15 @@
                             <tbody>
                             </tbody>
                         </table>
+                        <div class="row form-group">
+                            <label for="deskripsi" class="col-sm-1 col-form-label text-right pl-0 pr-0">Deskripsi</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="all_deskripsi" disabled>
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="all_unit" disabled>
+                            </div>
+                        </div>
                     </div>
                 </fieldset>
             </div>
@@ -154,6 +163,11 @@
         </div>
     </div>
 
+    <style>
+        .row-all-data{
+            cursor: pointer;
+        }
+    </style>
 
     <script>
         var index = -1;
@@ -273,6 +287,7 @@
 
                         $('#plu').val(response.prd_prdcd);
                         $('#deskripsi').val(response.prd_deskripsipanjang);
+                        $('#unit').val(response.prd_unit);
                         $('#avgsales').val(response.pkm_qtyaverage);
                         $('#omi').val(response.omi);
                         $('#qtymplus').prop('disabled',false).val(response.qtym).select();
@@ -302,25 +317,35 @@
                 },
                 "columns": [
                     {data: 'pkmp_prdcd'},
-                    {data: 'pkm_qtyaverage'},
+                    {data: null, render: function(data){
+                            return convertToRupiah(data.pkm_qtyaverage);
+                        }
+                    },
                     {data: 'omi'},
                     {data: 'pkmp_qtyminor'},
                     {data: 'pkm_pkmt'},
                 ],
                 "paging": false,
                 "lengthChange": true,
-                "searching": true,
+                "searching": false,
                 "ordering": true,
                 "info": true,
                 "autoWidth": false,
                 "responsive": true,
-                "scrollY" : "400px",
+                "scrollY" : "230px",
                 "createdRow": function (row, data, dataIndex) {
                     $(row).find(':eq(0)').addClass('text-center');
                     $(row).find(':eq(1)').addClass('text-right');
                     $(row).find(':eq(2)').addClass('text-center');
                     $(row).find(':eq(3)').addClass('text-right');
                     $(row).find(':eq(4)').addClass('text-right');
+                    $(row).addClass('row-all-data');
+                    $(row).on('click',function(){
+                        $('.row-all-data').removeClass('selected');
+                        $(this).addClass('selected');
+                        $('#all_deskripsi').val(data.prd_deskripsipanjang);
+                        $('#all_unit').val(data.unit);
+                    });
                 },
                 "initComplete" : function(){
 

@@ -14,7 +14,7 @@
 @endsection
 
 @section('subtitle')
-    {{$urut}}
+    {{$p_periodtgl}}
 @endsection
 
 @php
@@ -48,21 +48,14 @@
     <table class="table table-bordered table-responsive" style="border-collapse: collapse">
         <thead style="border-top: 2px solid black;border-bottom: 2px solid black;">
             <tr>
-                <th style="vertical-align: middle; text-align: left">KODE</th>
-                <th style="vertical-align: middle; text-align: left">NAMA BARANG</th>
+                <th style="vertical-align: middle; text-align: left">PLU_OMI</th>
+                <th style="vertical-align: middle; text-align: left">PLU_IGR</th>
+                <th style="vertical-align: middle; text-align: left">DESKRIPSI</th>
+                <th style="vertical-align: middle">FLAG OMI</th>
                 <th style="vertical-align: middle">SATUAN</th>
-                <th style="vertical-align: middle">MIN<br>JUAL</th>
-                <th style="vertical-align: middle; text-align: right">HPP AKHIR</th>
-                <th style="vertical-align: middle; text-align: right">HPP RATA2</th>
-                <th style="vertical-align: middle; text-align: right">HRG JUAL</th>
-                <th style="vertical-align: middle; text-align: right">MARGIN</th>
-                <th style="vertical-align: middle">TGL AKTIF</th>
-                <th style="vertical-align: middle">TAG</th>
-                <th style="vertical-align: middle">RCV</th>
-                <th style="vertical-align: middle">SUPPLIER</th>
-                <th style="vertical-align: middle; text-align: right">TOP</th>
-                <th style="vertical-align: middle; text-align: right">MINOR</th>
-                <th style="vertical-align: middle;">PKM</th>
+                <th style="vertical-align: middle">TAG_OMI</th>
+                <th style="vertical-align: middle">TAG_IGR</th>
+                <th style="vertical-align: middle">LOKASI</th>
             </tr>
         </thead>
         <tbody style="text-align: center; vertical-align: middle">
@@ -107,28 +100,19 @@
                 </tr>
             @endif
             <tr>
-                <td style="text-align: left">{{$data[$i]->prd}}</td>
+                <td>{{$data[$i]->prdomi}}</td>
+                <td>{{$data[$i]->prdigr}}</td>
                 <td style="text-align: left">{{$data[$i]->desc2}}</td>
+                <td>{{$data[$i]->flagomi}}</td>
                 <td>{{$data[$i]->satuan}}</td>
-                <td>{{$data[$i]->minjl}}</td>
-                @if($p_hpp == '1')
-                    <td style="text-align: right">{{oneDigit($data[$i]->prd_lastcost)}}</td>
-                    <td style="text-align: right">{{oneDigit($data[$i]->prd_avgcost)}}</td>
-                @else
-                    <td style="text-align: right">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td style="text-align: right">&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                @endif
-                <td style="text-align: right">{{oneDigit($data[$i]->prd_hrgjual)}}</td>
-                @if($cf_nmargin[$i] != -100)
+                <td>{{$data[$i]->tagomi}}</td>
+                <td>{{$data[$i]->tagigr}}</td>
+                <td>{{$data[$i]->lokasi}}</td>
+                {{-- @if($cf_nmargin[$i] != -100)
                     <td style="text-align: right">{{$cf_nmargin[$i]}}%</td>
                 @else
                     <td style="text-align: right">%</td>
                 @endif
-                <?php
-                $date = new DateTime($data[$i]->prd_tglaktif);
-                $strip = $date->format('d-m-Y');
-                ?>
-                <td>{{$strip}}</td>
                 <td>{{$data[$i]->prd_kodetag}}</td>
                 @if($data[$i]->st_prdcd != null)
                     <td>Y</td>
@@ -146,9 +130,9 @@
                 <td style="text-align: right">{{zeroDigit($data[$i]->prd_minorder)}}</td>
                 @if($data[$i]->pkm_prdcd != null)
                     <td>Y</td>
-                @else
+                @elsec
                     <td>&nbsp;</td>
-                @endif
+                @endif --}}
             </tr>
             @php
                 if($produkHolder == ''){

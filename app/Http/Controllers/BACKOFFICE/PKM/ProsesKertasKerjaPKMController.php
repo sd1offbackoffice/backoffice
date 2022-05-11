@@ -55,12 +55,12 @@ class ProsesKertasKerjaPKMController extends Controller
                    TO_CHAR(TO_DATE('01' || pkm_periodeproses, 'ddMMyyyy'), 'MON yy') bulan,
                    CASE
                        WHEN pkm_modify_by IS NULL
-                           THEN pkm_create_dt || ' - ' || pkm_create_by
-                       ELSE pkm_modify_dt || ' - ' || pkm_modify_by
+                           THEN to_char(pkm_create_dt, 'dd/mm/yyyyy') || ' - ' || pkm_create_by
+                       ELSE to_char(pkm_modify_dt, 'dd/mm/yyyyy') || ' - ' || pkm_modify_by
                    END proses,
                    CASE
                        WHEN pkm_adjust_by IS NOT NULL
-                           THEN pkm_adjust_dt || ' - ' || pkm_adjust_by
+                           THEN to_char(pkm_adjust_dt, 'dd/mm/yyyyy') || ' - ' || pkm_adjust_by
                    END adjust
               FROM tbmaster_kkpkm, tbmaster_prodmast, tbmaster_supplier
              WHERE pkm_kodeigr = '".Session::get('kdigr')."'
@@ -204,7 +204,7 @@ class ProsesKertasKerjaPKMController extends Controller
                  pkm_prdcd,
                  pkm_mindisplay,
                  pkm_minorder,
-                 pkm_qtyaverage,
+                 round(pkm_qtyaverage,2) pkm_qtyaverage,
                  SUBSTR (pkm_periode1, 1, 2) || '-' || SUBSTR (pkm_periode1, 3, 4)
                     pkm_periode1,
                  pkM_qty1,
@@ -305,6 +305,8 @@ class ProsesKertasKerjaPKMController extends Controller
             unset($data->pkm_qtyminor);
         }
 
+//        dd($datas);
+
         $columnHeader = [
             'PLU',
             'Qty Min Disp',
@@ -350,5 +352,9 @@ class ProsesKertasKerjaPKMController extends Controller
         }
         fclose($file);
         return response()->download($filename, $filename, $headers)->deleteFileAfterSend(true);
+    }
+
+    public function proses(){
+
     }
 }

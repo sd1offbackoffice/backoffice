@@ -155,10 +155,12 @@
 
     function formatDate() {
         $('#startDate').datepicker({
-            dateFormat: 'dd-mm-yy'
+            dateFormat: 'dd-mm-yy',
+            timeFormat: 'hh:mm:ss'
         });
         $('#endDate').datepicker({
-            dateFormat: 'dd-mm-yy'
+            dateFormat: 'dd-mm-yy',
+            timeFormat: 'hh:mm:ss'
         })
     }
 
@@ -223,7 +225,19 @@
         let noPO = $('#noPO').val();
         let formatLaporan = $('#formatLaporan').val();
         let ukuranLaporan = $('#ukuranLaporan').val();
-
+        
+        startDate = new Date();
+        endDate = new Date();
+        let sdate = startDate.getMonth() + 1;
+        let edate = endDate.getMonth() + 1;
+        if (sdate < 10) {
+            sdate = '0' + sdate;
+        }
+        if (edate < 10) {
+            edate = '0' + edate;
+        }
+        startDate = (startDate.getDate() + "-" + sdate + "-" + startDate.getFullYear() + " 00:00:00")
+        endDate = (endDate.getDate() + "-" + edate + "-" + endDate.getFullYear() + " " + endDate.getHours() + ":" + endDate.getMinutes() + ":" + endDate.getSeconds())
         console.log(startDate, endDate, typeLaporan)
         if (typeLaporan != 'P1') {
             if (!startDate || !endDate) {

@@ -1966,11 +1966,11 @@
                     },
                     beforeSend: () => {
                         $('#modal-loader').modal('show');
-                        tbodyModalHelpPLU.empty();
-                        theadDataTables.empty();
                     },
                     success: function(result) {
                         $('#modal-loader').modal('hide');
+                        tbodyModalHelpPLU.empty();
+                        theadDataTables.empty();
                         console.log(result)
                         for (var i = 0; i < result.length; i++) {
                             let value = result[i];
@@ -2286,7 +2286,7 @@
                 },
                 success: (result) => {
                     $('#modal-loader').modal('hide');
-                    console.log(result);
+                    console.log(tempDataPLU);
                     console.log(tempDataSave);
                     if (result.kode == 0) {
                         swal({

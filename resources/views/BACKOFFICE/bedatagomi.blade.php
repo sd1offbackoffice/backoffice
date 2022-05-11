@@ -888,7 +888,7 @@
             // $('#menu1daterangepicker').data('daterangepicker').setEndDate(moment().format('DD/MM/YYYY'));
         }
 
-        function menu1Cetak(){
+        function menu1Cetak(sort){
             //Date
             let date = $('#menu1daterangepicker').val();
             // if(date == null || date == ""){
@@ -897,9 +897,11 @@
             // }
             let dateA = date.substr(0,10);
             dateA = dateA.split('/').join('-');
+            
 
             //DIV & DEP & KAT
             let temp = '';
+            let tag = $('#kodetagigr').val();
             let div1 = $('#menu1Div1Input').val();
             let div2 = $('#menu1Div2Input').val();
             let dep1 = $('#menu1Dep1Input').val();
@@ -971,42 +973,43 @@
             // }
 
             // TAG
-            let tag1 = $('#menu1Tag1').val();
-            let tag2 = $('#menu1Tag2').val();
-            let tag3 = $('#menu1Tag3').val();
-            let tag4 = $('#menu1Tag4').val();
-            let tag5 = $('#menu1Tag5').val();
-            let ptag = '';
-            if(tag1 != '' || tag2 != '' || tag3 != '' || tag4 != '' || tag5 != ''){
-                if(tag1 != ''){
-                    ptag = "'"+tag1+"'";
-                }else{
-                    ptag = "'b'";
-                }
-                if(tag2 != ''){
-                    ptag = ptag+",'"+tag2+"'";
-                }else{
-                    ptag = ptag+",'b'";
-                }
-                if(tag3 != ''){
-                    ptag = ptag+",'"+tag3+"'";
-                }else{
-                    ptag = ptag+",'b'";
-                }
-                if(tag4 != ''){
-                    ptag = ptag+",'"+tag4+"'";
-                }else{
-                    ptag = ptag+",'b'";
-                }
-                if(tag5 != ''){
-                    ptag = ptag+",'"+tag5+"'";
-                }else{
-                    ptag = ptag+",'b'";
-                }
-            }
+            // let tag1 = $('#menu1Tag1').val();
+            // let tag2 = $('#menu1Tag2').val();
+            // let tag3 = $('#menu1Tag3').val();
+            // let tag4 = $('#menu1Tag4').val();
+            // let tag5 = $('#menu1Tag5').val();
+            // let ptag = '';
+            // if(tag1 != '' || tag2 != '' || tag3 != '' || tag4 != '' || tag5 != ''){
+            //     if(tag1 != ''){
+            //         ptag = "'"+tag1+"'";
+            //     }else{
+            //         ptag = "'b'";
+            //     }
+            //     if(tag2 != ''){
+            //         ptag = ptag+",'"+tag2+"'";
+            //     }else{
+            //         ptag = ptag+",'b'";
+            //     }
+            //     if(tag3 != ''){
+            //         ptag = ptag+",'"+tag3+"'";
+            //     }else{
+            //         ptag = ptag+",'b'";
+            //     }
+            //     if(tag4 != ''){
+            //         ptag = ptag+",'"+tag4+"'";
+            //     }else{
+            //         ptag = ptag+",'b'";
+            //     }
+            //     if(tag5 != ''){
+            //         ptag = ptag+",'"+tag5+"'";
+            //     }else{
+            //         ptag = ptag+",'b'";
+            //     }
+            // }
 
             //sortby
-            let sort = $('#menu1SortBy').val();
+            // let sort = $('#menu1SortBy').val();
+            let sort = sort;
 
             //PRINT
             window.open(`{{ url()->current() }}/print-beda-tag?div1=${div1}&div2=${div2}&dep1=${dep1}&dep2=${dep2}&kat1=${kat1}&kat2=${kat2}&ptag=${ptag}&date=${dateA}&produkbaru=${produkbaru}&chp=${chp}&sort=${sort}`, '_blank');
@@ -1033,8 +1036,53 @@
             menu1Clear();
         }
 
+        function createButton(text, cb) {
+            return $('<button>' + text + '</button>').on('click', cb);
+        }
+
+
+
         function cetak(){
-            menu1Cetak();            
+            // var buttons = $('<div>')
+            // .append(createButton('PLU', function() {
+            //     swal.close();
+            //     menu1Cetak('PLU');
+            //     console.log('PLU'); 
+            // })).append(createButton('DDK', function() {
+            //     swal.close();
+            //     menu1Cetak('DDK');
+            //     console.log('DDK'); 
+            // }));
+            
+            $(document).on('click', '.SwalBtn1', function() {
+                //Some code 1
+                console.log('Button 1');
+                swal.clickConfirm();
+            });
+            $(document).on('click', '.SwalBtn2', function() {
+                //Some code 2 
+                console.log('Button 2');
+                swal.clickConfirm();
+            });
+            
+            // e.preventDefault();
+            swal({
+                title: 'Sort By',
+                html: "" +
+                    "<br>" +
+                    '<button type="button" role="button" tabindex="0" class="SwalBtn1 customSwalBtn">' + 'PLU' + '</button>' +
+                    '<button type="button" role="button" tabindex="0" class="SwalBtn2 customSwalBtn">' + 'DDK' + '</button>',
+                showCancelButton: false,
+                showConfirmButton: false
+            });
+            // swal({
+            //     title: "Sort By ?",
+            //     html: buttons,
+            //     type: "warning",
+            //     showConfirmButton: true,
+            //     showCancelButton: true
+            // });
+            // menu1Cetak();            
         }
 
         // IMPORTANT!!! ### BUTUH CURSOR UNTUK MENDETEKSI TOMBOL MANA YANG MEMANGGIL! ###

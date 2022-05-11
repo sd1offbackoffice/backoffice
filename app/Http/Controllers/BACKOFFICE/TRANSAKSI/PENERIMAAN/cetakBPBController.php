@@ -73,9 +73,8 @@ class cetakBPBController extends Controller
 
     public function print_ctk_bpb($kodeigr, $date1, $date2, $typeTrn, $typeLaporan)
     {
-        $startDate  = date('Y-m-d', strtotime($date1));
-        $endDate    = date('Y-m-d', strtotime($date2));
-
+        $startDate  = date('Y-m-d H:i:s', strtotime($date1));
+        $endDate    = date('Y-m-d H:i:s', strtotime($date2));
         if ($typeLaporan == 'B1') {
             $temp = DB::connection(Session::get('connection'))->select("SELECT *
                                         FROM TBTR_BACKOFFICE
@@ -104,10 +103,11 @@ class cetakBPBController extends Controller
                 $data = ['url' => 'IGR_BO_MONITORBPB', 'kodeigr' => $kodeigr, 'startDate' => $startDate, 'endDate' => $endDate, 'typeTrn' => $typeTrn, 'typeLaporan' => $typeLaporan, 'data' => $temp];
                 return ['kode' => 1, 'msg' => "Cetak Laporan", 'data' => $data];
             }
-        } else if ($typeLaporan == 'B2') {
-            return ['kode' => 1, 'msg' => "Cetak Laporan", 'data' => 'url'];
-            //CETAK_BLMPRS_PB (kdoeigr, date1, date2, p_prog:IGR031E, typetrn)
-        }
+        } 
+        // else if ($typeLaporan == 'B2') {
+        //     return ['kode' => 1, 'msg' => "Cetak Laporan", 'data' => 'url'];
+        //     //CETAK_BLMPRS_PB (kdoeigr, date1, date2, p_prog:IGR031E, typetrn)
+        // }
     }
 
     public function print_ctk_bpb1($formatLaporan, $ukuranLaporan, $noPO, $kodeigr, $typeTrn)
@@ -303,7 +303,7 @@ class cetakBPBController extends Controller
         $startDate = $data['startDate'];
         $endDate = $data['endDate'];
         $typeTrn = $data['typeTrn'];
-        $datas = DB::connection(Session::get('connection'))->select(" SELECT    mstd_nodoc
+        $datas = DB::connection(Session::get('connection'))->select(" SELECT mstd_nodoc
                                              || ' '
                                              || CASE WHEN msth_flagdoc = 'Y' THEN '(REPRINT)' ELSE '' END
                                                 nomor,
@@ -369,7 +369,7 @@ class cetakBPBController extends Controller
                                              AND prd_prdcd = mstd_prdcd
                                              AND prd_kodeigr = mstd_kodeigr
                                              AND prs_kodeigr = msth_kodeigr
-                                             AND prd_kodetag = 'L' --sementara(dilimit)
+                                             --AND prd_kodetag = 'L' --sementara(dilimit)
                                              -- and mstd_nodoc = '02125351'
                                     ORDER BY nomor DESC");
         return $datas;

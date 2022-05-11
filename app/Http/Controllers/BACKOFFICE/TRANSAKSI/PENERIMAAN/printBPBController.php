@@ -129,6 +129,7 @@ class printBPBController extends Controller
                 $msg = 'File terkirim ke SD6';
                 File::delete($zipAddress); //delete zip file from storage
                 $this->deleteSigs(); //delete all ttd
+                $this->deleteFiles(); //delete all files
             } else {
                 $msg = 'Empty Record, nothing to transfer';
                 return response()->json(['kode' => 2, 'message' => $msg]);
@@ -528,7 +529,7 @@ class printBPBController extends Controller
         $P_ERROR = '';
         $dummyvar = 0;
         $SUPCO = null;
-        $sysdatef = Carbon::now()->format('Y-m-d');
+        $sysdatef = Carbon::now()->format('Y-m-d H:i:s');
         $btb_date = Carbon::now()->format('y');
         $no_btb = '';
         if ($trnType == 'B') {
@@ -1149,7 +1150,7 @@ class printBPBController extends Controller
             "MSTH_PKP" => $PKP,
             "MSTH_CTERM" => $SUPTOP,
             "MSTH_CREATE_BY" => $userId,
-            "MSTH_CREATE_DT" => Carbon::now()->format('Y-m-d')
+            "MSTH_CREATE_DT" => Carbon::now()->format('Y-m-d H:i:s')
         ]);
 
         if ($SUPCO != null) {
@@ -1584,6 +1585,17 @@ class printBPBController extends Controller
         }
     }
 
+    public function deleteFiles()
+    {
+        $files = Storage::disk('receipts')->allFiles();
+        if (count($files) > 0) {
+            foreach ($files as $file => $value) {
+                $filePath = '../storage/receipts/' . $value;
+                File::delete($filePath);
+            }
+        }
+    }
+
     public function viewReport(Request $request)
     {
         $signedBy = Session::get('signer');
@@ -1622,7 +1634,7 @@ class printBPBController extends Controller
                                                  AND trbo_nodoc in ($document)
                                         ORDER BY trbo_nodoc, trbo_prdcd", (['p_kodeigr' => $kodeigr]));
 
-            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_listbtb_full', ['datas' => $datas]);
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_listbtb_full', ['datas' => $datas, 're_print' => $re_print]);
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
@@ -1663,7 +1675,7 @@ class printBPBController extends Controller
                 }
             }
 
-            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_listbtb', ['datas' => $datas]);
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_listbtb', ['datas' => $datas, 're_print' => $re_print]);
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 

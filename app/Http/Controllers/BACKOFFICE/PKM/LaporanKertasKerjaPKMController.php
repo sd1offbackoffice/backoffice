@@ -21,42 +21,81 @@ class LaporanKertasKerjaPKMController extends Controller
         return view('BACKOFFICE.PKM.laporan-kertas-kerja-pkm');
     }
 
-    public function getLovPLU()
+    public function getLovPLU(Request $request)
     {
-        $data = DB::connection(Session::get('connection'))->select("select prd_deskripsipanjang desk, prd_prdcd plu, prd_unit || '/' || prd_frac konversi, prd_hrgjual from tbmaster_prodmast
+        $plu = $request->plu;
+        $and_plu = '';
+        if($plu != ''){
+            $and_plu = " and prd_prdcd >= '".$plu."'";
+        }
+        $data = DB::connection(Session::get('connection'))
+            ->select("select prd_deskripsipanjang desk, prd_prdcd plu, prd_unit || '/' || prd_frac konversi, prd_hrgjual from tbmaster_prodmast
             where prd_kodeigr = '" . Session::get('kdigr') . "'
+            ".$and_plu."
             and substr(prd_Prdcd,7,1) = '0'
-            order by prd_deskripsipanjang");
+            order by prd_prdcd,prd_deskripsipanjang");
 
         return DataTables::of($data)->make(true);
     }
 
-    public function getLovDivisi()
+    public function getLovDivisi(Request $request)
     {
+        $value = $request->div ;
+        $and_div = '';
+        if($value != ''){
+            $and_div = " and div_kodedivisi >= '".$value."'";
+        }
         $data = DB::connection(Session::get('connection'))->select("SELECT div_namadivisi, div_kodedivisi
                 FROM TBMASTER_DIVISI
                 WHERE div_kodeigr ='" . Session::get('kdigr') . "'
+                ".$and_div."
                 order by div_kodedivisi");
 
         return DataTables::of($data)->make(true);
     }
 
-    public function getLovDepartement()
+    public function getLovDepartement(Request $request)
     {
+        $dep = $request->dep ;
+        $div1 = $request->div1;
+        $div2 = $request->div2;
+        $and_dep = '';
+        $and_div = '';
+        if($dep != ''){
+            $and_dep = " and dep_kodedepartement >= '".$dep."'";
+        }
+        if($div1 != ''){
+            $and_div = " and dep_kodedivisi >= '".$div1."' and dep_kodedivisi <= '".$div2."'" ;
+        }
         $data = DB::connection(Session::get('connection'))->select("SELECT distinct dep_namadepartement, dep_kodedepartement, dep_kodedivisi
                 FROM TBMASTER_DEPARTEMENT
                 WHERE dep_kodeigr ='" . Session::get('kdigr') . "'
+                ".$and_dep."
+                ".$and_div."
                 order by dep_kodedepartement");
 
         return DataTables::of($data)->make(true);
     }
 
-    public function getLovKategori()
+    public function getLovKategori(Request $request)
     {
+        $kat = $request->kat;
+        $dep1 = $request->dep1;
+        $dep2 = $request->dep2;
+        $and_dep = '';
+        $and_kat = '';
+        if($kat != ''){
+            $and_kat = " and kat_kodekategori >= '".$kat."'";
+        }
+        if($dep1 != ''){
+            $and_dep = " and kat_kodedepartement >= '".$dep1 ."' and kat_kodedepartement <= '".$dep2."'" ;
+        }
         $data = DB::connection(Session::get('connection'))->select("SELECT distinct kat_namakategori, kat_kodekategori, kat_kodedepartement
                 FROM TBMASTER_KATEGORI
                 WHERE kat_kodeigr ='" . Session::get('kdigr') . "'
-                order by kat_kodekategori");
+                ".$and_kat."
+                ".$and_dep."
+                order by kat_kodedepartement,kat_kodekategori");
 
         return DataTables::of($data)->make(true);
     }

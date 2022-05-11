@@ -784,9 +784,10 @@ Route::middleware(['CheckLogin'])->group(function () {
                 // Cetak Ulang Faktur Pajak
                 Route::prefix('/cetak-ulang-faktur-pajak')->group(function () {
                     Route::get('/', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\CetakUlangFakturPajakController@index');
-                    Route::post('/lov-search1', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\CetakUlangFakturPajakController@lovSearchNPB1');
-                    Route::post('/lov-search2', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\CetakUlangFakturPajakController@lovSearchNPB2');
-                    Route::post('/check-data', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\CetakUlangFakturPajakController@checkData');
+                    Route::get('/lov-search1', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\CetakUlangFakturPajakController@lovSearchNPB1');
+                    Route::get('/lov-search2', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\CetakUlangFakturPajakController@lovSearchNPB2');
+                    Route::get('/check-data', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\CetakUlangFakturPajakController@checkData');
+                    Route::get('/print-doc', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\CetakUlangFakturPajakController@printDocument');
                 });
             });
 
@@ -1350,7 +1351,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/get-data-history', 'BACKOFFICE\PKM\ProsesKertasKerjaPKMController@getHistory');
                 Route::post('/change-pkm', 'BACKOFFICE\PKM\ProsesKertasKerjaPKMController@changePKM');
                 Route::get('/cetak-status-storage', 'BACKOFFICE\PKM\ProsesKertasKerjaPKMController@cetakStatusStorage');
-                Route::get('/proses', 'BACKOFFICE\PKM\ProsesKertasKerjaPKMController@proses');
+                Route::post('/proses', 'BACKOFFICE\PKM\ProsesKertasKerjaPKMController@proses');
             });
 
             Route::prefix('/entry-inquery')->group(function () {
@@ -1434,6 +1435,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/', 'BACKOFFICE\PKM\FaktorPKMTokoController@index');
                 Route::get('/get-data-table-n', 'BACKOFFICE\PKM\FaktorPKMTokoController@getDataTableN')->name('get-data-table-n');
                 Route::get('/get-data-detail-n', 'BACKOFFICE\PKM\FaktorPKMTokoController@getDataDetailN')->name('get-data-detail-n');
+                Route::post('/upload-nplus', 'BACKOFFICE\PKM\FaktorPKMTokoController@uploadNPLUS')->name('upload-nplus');
                 Route::get('/get-data-table-m', 'BACKOFFICE\PKM\FaktorPKMTokoController@getDataTableM')->name('get-data-table-m');
                 Route::get('/get-data-detail', 'BACKOFFICE\PKM\FaktorPKMTokoController@getDataDetail')->name('get-data-detail');
                 Route::get('/search-plu', 'BACKOFFICE\PKM\FaktorPKMTokoController@searchPLU');

@@ -1,0 +1,295 @@
+CREATE OR REPLACE PROCEDURE SIMCKL.sp_upload_nplus_go (v_userid   IN     VARCHAR2,
+                                                v_result      OUT VARCHAR2)
+IS
+   p_filename      VARCHAR2 (20) := 'NPLUS_GO.CSV';
+   p_exist         BOOLEAN := TRUE;
+   n_req_id        NUMBER := 999999;
+   temp            NUMBER;
+   p_err           VARCHAR2 (1000);
+
+   f               UTL_FILE.file_type;
+   v_line          VARCHAR2 (30000);
+   line            NUMBER;
+
+   TYPE TEMP_NPLUSGO IS TABLE OF TEMP_NPLUS_GO%ROWTYPE;
+
+   TEMP_NPLUSGO1   TEMP_NPLUSGO;
+
+   tglawal         DATE;
+   tglakhir        DATE;
+   qtygdl          NUMBER;
+BEGIN
+   EXECUTE IMMEDIATE
+      'create or replace directory TRF_MPLUS as ''/u01/lhost/trf_mplus/DATA/''';
+
+   DELETE FROM TEMP_MPLUS_GO;
+
+   --cek file
+   p_exist := FALSE;
+   get_dir_list ('/u01/lhost/trf_mplus/DATA/', n_req_id);
+
+   FOR rec IN (SELECT *
+                 FROM dir_list_tmp
+                WHERE req_id = 999999 AND filename LIKE '%' || p_filename)
+   LOOP
+      p_exist := TRUE;
+   END LOOP;
+
+   --ada file
+   IF p_exist
+   THEN
+      --read file csv
+
+      TEMP_NPLUSGO1 := TEMP_NPLUSGO ();
+
+      f := UTL_FILE.fopen ('TRF_MPLUS', p_filename, 'R');
+      TEMP_NPLUSGO1.EXTEND (1);
+
+      IF UTL_FILE.is_open (f)
+      THEN
+         line := 1;
+
+         LOOP
+            BEGIN
+               UTL_FILE.get_line (f, v_line, 30000);
+
+               IF v_line IS NULL
+               THEN
+                  EXIT;
+               END IF;
+
+               IF line = 1
+               THEN
+                  NULL;
+               ELSE
+                  v_line := ' ' || v_line;
+
+                  TEMP_NPLUSGO1 (line - 1).Nomor_Kontrak_Sewa :=
+                     TRIM (REGEXP_SUBSTR (REPLACE (v_line, '|', '| '),
+                                          '[^|]+',
+                                          1,
+                                          1));
+                  TEMP_NPLUSGO1 (line - 1).Kode_Rak_Display :=
+                     TRIM (REGEXP_SUBSTR (REPLACE (v_line, '|', '| '),
+                                          '[^|]+',
+                                          1,
+                                          2));
+
+                  TEMP_NPLUSGO1 (line - 1).Tanggal_Mulai_Sewa :=
+                     TRIM (REGEXP_SUBSTR (REPLACE (v_line, '|', '| '),
+                                          '[^|]+',
+                                          1,
+                                          3));
+                  TEMP_NPLUSGO1 (line - 1).Tanggal_Berakhir_Sewa :=
+                     TRIM (REGEXP_SUBSTR (REPLACE (v_line, '|', '| '),
+                                          '[^|]+',
+                                          1,
+                                          4));
+                  TEMP_NPLUSGO1 (line - 1).PLU :=
+                     TRIM (REGEXP_SUBSTR (REPLACE (v_line, '|', '| '),
+                                          '[^|]+',
+                                          1,
+                                          5));
+                  TEMP_NPLUSGO1 (line - 1).Qty :=
+                     TRIM (REGEXP_SUBSTR (REPLACE (v_line, '|', '| '),
+                                          '[^|]+',
+                                          1,
+                                          6));
+
+
+
+                  TEMP_NPLUSGO1 (line - 1).Cabang :=
+                     REPLACE (
+                        REPLACE (
+                           TRIM (REGEXP_SUBSTR (REPLACE (v_line, '|', '| '),
+                                                '[^|]+',
+                                                1,
+                                                7)),
+                           CHR (13),
+                           ''),
+                        CHR (10),
+                        '');
+
+                  TEMP_NPLUSGO1.EXTEND (1);
+               END IF;
+
+               line := line + 1;
+            EXCEPTION
+               WHEN NO_DATA_FOUND
+               THEN
+                  EXIT;
+            END;
+         END LOOP;
+
+         UTL_FILE.fclose (f);
+         
+         delete from temp_nplus_go;
+
+         FORALL i IN 1 .. line - 2
+            INSERT INTO TEMP_NPLUS_GO (Nomor_Kontrak_Sewa,
+                                       Kode_Rak_Display,
+                                       Tanggal_Mulai_Sewa,
+                                       Tanggal_Berakhir_Sewa,
+                                       PLU,
+                                       Qty,
+                                       Cabang)
+                 VALUES (TEMP_NPLUSGO1 (i).Nomor_Kontrak_Sewa,
+                         TEMP_NPLUSGO1 (i).Kode_Rak_Display,
+                         TEMP_NPLUSGO1 (i).Tanggal_Mulai_Sewa,
+                         TEMP_NPLUSGO1 (i).Tanggal_Berakhir_Sewa,
+                         LPAD (TEMP_NPLUSGO1 (i).PLU, 7, '0'),
+                         TO_NUMBER (TEMP_NPLUSGO1 (i).Qty),
+                         TEMP_NPLUSGO1 (i).Cabang);
+
+         COMMIT;
+      END IF;
+
+      --proses
+
+      ----merge tbtrgondola
+
+      MERGE INTO tbtr_gondola
+           USING (SELECT DISTINCT
+                         Nomor_Kontrak_Sewa,
+                         Kode_Rak_Display,
+                         TO_DATE (Tanggal_Mulai_Sewa, 'dd-mm-yyyy')
+                            Tanggal_Mulai_Sewa,
+                         TO_DATE (Tanggal_Berakhir_Sewa, 'dd-mm-yyyy')
+                            Tanggal_Berakhir_Sewa,
+                         LPAD (PLU, 7, '0') PLU,
+                         Qty,
+                         SUBSTR (cabang, 1, 2) Cabang
+                    FROM TEMP_NPLUS_GO)
+              ON (    GDL_NOPERJANJIANSEWA = Nomor_Kontrak_Sewa
+                  AND GDL_PRDCD = PLU
+                  AND GDL_KODEDISPLAY = Kode_Rak_Display)
+      WHEN NOT MATCHED
+      THEN
+         INSERT     (GDL_KODEIGR,
+                     GDL_NOPERJANJIANSEWA,
+                     GDL_PRDCD,
+                     GDL_QTY,
+                     GDL_KODECABANG,
+                     GDL_KODEDISPLAY,
+                     GDL_TGLAWAL,
+                     GDL_TGLAKHIR,
+                     GDL_CREATE_BY,
+                     GDL_CREATE_DT)
+             VALUES (Cabang,
+                     Nomor_Kontrak_Sewa,
+                     PLU,
+                     Qty,
+                     Cabang,
+                     Kode_Rak_Display,
+                     Tanggal_Mulai_Sewa,
+                     Tanggal_Berakhir_Sewa,
+                     v_userid,
+                     SYSDATE)
+      WHEN MATCHED
+      THEN
+         UPDATE SET GDL_QTY = Qty,
+                    GDL_TGLAWAL = Tanggal_Mulai_Sewa,
+                    GDL_TGLAKHIR = Tanggal_Berakhir_Sewa,
+                    GDL_MODIFY_BY = v_userid,
+                    GDL_MODIFY_DT = SYSDATE;
+
+      ----merge tbtr_pkmgondola
+
+      FOR rec IN (  SELECT DISTINCT prd_kodeigr,
+                                    prd_kodedivisi,
+                                    prd_kodedepartement,
+                                    prd_kodekategoribarang,
+                                    prd_prdcd,
+                                    NVL (pkm_pkmt, 0) pkm_pkmt,
+                                    NVL (pkm_mpkm, 0) pkm_mpkm
+                      FROM tbmaster_prodmast, tbtr_gondola, tbmaster_kkpkm
+                     WHERE prd_prdcd = gdl_prdcd AND prd_prdcd = pkm_prdcd(+)
+                  ORDER BY prd_prdcd)
+      LOOP
+         SELECT gdl_tglawal, gdl_tglakhir
+           INTO tglawal, tglakhir
+           FROM tbtr_gondola
+          WHERE gdl_prdcd = rec.prd_prdcd AND ROWNUM = 1;
+
+
+         SELECT SUM (gdl_qty)
+           INTO qtygdl
+           FROM tbtr_gondola
+          WHERE gdl_prdcd = rec.prd_prdcd;
+
+         SELECT COUNT (1)
+           INTO temp
+           FROM tbtr_pkmgondola
+          WHERE pkmg_prdcd = rec.prd_prdcd;
+
+         IF temp = 0
+         THEN
+            INSERT INTO tbtr_pkmgondola (PKMG_KODEIGR,
+                                         PKMG_KODEDIVISI,
+                                         PKMG_KODEDEPARTEMENT,
+                                         PKMG_KODEKATEGORIBRG,
+                                         PKMG_PRDCD,
+                                         PKMG_NILAIPKMT,
+                                         PKMG_NILAIMPKM,
+                                         PKMG_NILAIGONDOLA,
+                                         PKMG_NILAIPKMG,
+                                         PKMG_NILAIPKMB,
+                                         PKMG_TGLAWALPKM,
+                                         PKMG_TGLAKHIRPKM,
+                                         PKMG_CREATE_BY,
+                                         PKMG_CREATE_DT)
+                 VALUES (rec.prd_kodeigr,
+                         rec.prd_kodedivisi,
+                         rec.prd_kodedepartement,
+                         rec.prd_kodekategoribarang,
+                         rec.prd_prdcd,
+                         rec.pkm_pkmt,
+                         rec.pkm_mpkm,
+                         qtygdl,
+                         rec.pkm_pkmt + qtygdl,
+                         rec.pkm_pkmt + qtygdl,
+                         tglawal,
+                         tglakhir,
+                         v_userid,
+                         SYSDATE);
+         ELSE
+            UPDATE tbtr_pkmgondola
+               SET PKMG_NILAIPKMT = rec.pkm_pkmt,
+                   PKMG_NILAIMPKM = rec.pkm_mpkm,
+                   PKMG_NILAIGONDOLA = qtygdl,
+                   PKMG_NILAIPKMG = rec.pkm_pkmt + qtygdl,
+                   PKMG_NILAIPKMB = rec.pkm_pkmt + qtygdl,
+                   PKMG_MODIFY_BY = v_userid,
+                   PKMG_MODIFY_DT = SYSDATE,
+                   PKMG_TGLAWALPKM = tglawal,
+                   PKMG_TGLAKHIRPKM = TGLAKHIR
+             WHERE pkmg_prdcd = rec.prd_prdcd;
+         END IF;
+      END LOOP;
+
+      --back up
+      host_command (
+         p_command   => '/bin/mkdir /u01/lhost/trf_mplus/DATA/BACKUP/');
+
+      host_command (
+         p_command   =>    '/bin/mv /u01/lhost/trf_mplus/DATA/'
+                        || p_filename
+                        || ' /u01/lhost/trf_mplus/DATA/BACKUP/'
+                        || TO_CHAR (SYSDATE, 'yyyyMMddhh24miss')
+                        || p_filename);
+
+      --result OK
+
+      COMMIT;
+      v_result := 'OK';
+   ELSE
+      v_result := 'file ' || p_filename || ' not found.';
+   END IF;
+EXCEPTION
+   WHEN OTHERS
+   THEN
+      ROLLBACK;
+      p_err := SUBSTR (SQLERRM, 1, 1000);
+      v_result := p_err;
+END;
+/

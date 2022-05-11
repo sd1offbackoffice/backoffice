@@ -16,14 +16,19 @@ $datetime->setTimezone($timezone);
         <p>
             {{ $perusahaan->prs_namaperusahaan }}<br><br>
             {{ $perusahaan->prs_namacabang }}
+
         </p>
     </div>
-    <div style="float:right; margin-top: 0px; line-height: 10px !important;">
+
+    <div style="float:right; margin-top: 8px; line-height: 10px !important;">
         <p>TANGGAL : {{ date("d-m-Y") }}<br><br>
-     <!--       PROGRAM : RETUR BARANG KE SUPPLIER & SUPPLIER <br><br> -->
+     <!--       PROGRAM : RETUR BARANG KE SUPPLIER<br><br> -->
             JAM : {{ $datetime->format('H:i:s') }}<br><br>
     </div>
-    <h2 style="text-align: center">RETUR BARANG KE SUPPLIER & SUPPLIER</h2>
+    <div style="margin-top: 35px; line-height: 0.1 !important;">
+        <h2 style="text-align: center">RETUR BARANG KE SUPPLIER {{$supplier->sup_namasupplier}} ({{$supplier->sup_kodesupplier}})</h2>
+    </div>
+
 </header>
 
 <footer>
@@ -37,7 +42,7 @@ $datetime->setTimezone($timezone);
             <th class="tengah" width="5%">NO.</th>
             <th class="tengah" style="text-align: left" width="10%">PLU</th>
             <th class="tengah" style="text-align: left" width="40%">DESKRIPSI</th>
-            <th class="tengah" width="10%">UNIT/FRAC</th>
+            <th class="tengah" width="10% ">UNIT/FRAC</th>
             <th class="tengah" width="20%">TAG</th>
             <th class="tengah" width="20%">QTY RETUR</th>
         </tr>
@@ -49,7 +54,7 @@ $datetime->setTimezone($timezone);
                 <td>{{ $j+1 }}</td>
                 <td style="text-align: left">{{ $data[$j]->plu }}</td>
                 <td style="text-align: left">{{ $data[$j]->barang }}</td>
-                <td style="text-align: left">{{ $data[$j]->satuan }}</td>
+                <td style="text-align: center">{{ $data[$j]->satuan }}</td>
                 <td>{{ $data[$j]->tag }}</td>
                 <td>{{ $data[$j]->qty }}</td>
             </tr>

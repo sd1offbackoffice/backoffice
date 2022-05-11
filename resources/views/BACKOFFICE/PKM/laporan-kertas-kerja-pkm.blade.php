@@ -452,10 +452,10 @@
                 Button: false
             });
 
-            getDivisi();
-            getDepartement();
-            getKategori();
-            getPRDCD();
+            getDivisi('');
+            // getDepartement('');
+            // getKategori();
+            // getPRDCD();
             getMonitoring();
             getSupplier();
             getTag();
@@ -470,6 +470,11 @@
         });
 
         function getPRDCD() {
+            if ($.fn.DataTable.isDataTable('#table_prdcd')) {
+                $('#table_prdcd').DataTable().destroy();
+            }
+
+            $("#table_prdcd tbody [role='row']").remove();
             $('#table_prdcd').DataTable({
                 "ajax": '{{ url()->current().'/get-lov-plu' }}',
                 "columns": [
@@ -502,7 +507,7 @@
             });
         }
 
-        function getDivisi() {
+        function getDivisi(value) {
             if ($.fn.DataTable.isDataTable('#table_divisi')) {
                 $('#table_divisi').DataTable().destroy();
             }
@@ -510,7 +515,12 @@
             $("#table_divisi tbody [role='row']").remove();
 
             lovutuh = $('#table_divisi').DataTable({
-                "ajax": '{{ url()->current().'/get-lov-divisi' }}',
+                "ajax": {
+                    "url": '{{ url()->current().'/get-lov-divisi' }}',
+                    "data": {
+                        div: value
+                    },
+                },
                 "columns": [
                     {data: 'div_kodedivisi'},
                     {data: 'div_namadivisi'},
@@ -539,7 +549,7 @@
             });
         }
 
-        function getDepartement() {
+        function getDepartement(value) {
             if ($.fn.DataTable.isDataTable('#table_departement')) {
                 $('#table_departement').DataTable().destroy();
             }
@@ -548,7 +558,12 @@
 
             lovutuh = $('#table_departement').DataTable({
                 "ajax": {
-                    url: '{{ url()->current().'/get-lov-departement' }}',
+                    "url": '{{ url()->current().'/get-lov-departement' }}',
+                    "data": {
+                        dep: value,
+                        div1: $('#div1').val(),
+                        div2: $('#div2').val(),
+                    },
                 },
                 "columns": [
                     {data: 'dep_kodedepartement'},
@@ -578,7 +593,7 @@
             });
         }
 
-        function getKategori() {
+        function getKategori(value) {
             if ($.fn.DataTable.isDataTable('#table_kategori')) {
                 $('#table_kategori').DataTable().destroy();
             }
@@ -587,7 +602,12 @@
 
             lovutuh = $('#table_kategori').DataTable({
                 "ajax": {
-                    url: '{{ url()->current().'/get-lov-kategori' }}',
+                    "url": '{{ url()->current().'/get-lov-kategori' }}',
+                    "data": {
+                        kat: value,
+                        dep1: $('#dep1').val(),
+                        dep2: $('#dep2').val(),
+                    },
                 },
                 "columns": [
                     {data: 'kat_kodekategori'},
@@ -647,8 +667,7 @@
                 "initComplete": function () {
                     $(document).on('click', '.row-monitoring', function (e) {
                         $('#mtr').val($(this).find('td:eq(0)').html());
-                        $('#mtr_nama').val($(this).find('td:eq(1)').html());
-                        mtr.val($(this).find('td:eq(0)').html());
+                        $('#nmmtr').val($(this).find('td:eq(1)').html());
 
                         $('#m_monitoring').modal('hide');
 
@@ -739,22 +758,39 @@
 
         function changeObjDiv(val) {
             div = $('#' + val);
+            if(val == 'div2'){
+                getDivisi($('#div1').val());
+            }
         }
 
         function changeObjDep(val) {
             dep = $('#' + val);
+            if(val == 'dep1'){
+                getDepartement('');
+            }
+            else if(val == 'dep2'){
+                getDepartement($('#dep1').val());
+            }
         }
 
         function changeObjKat(val) {
             kat = $('#' + val);
+            if(val == 'kat1'){
+                getKategori('');
+            }
+            else if(val == 'kat2'){
+                getKategori($('#kat1').val());
+            }
         }
 
         function changeObjPlu(val) {
             plu = $('#' + val);
-        }
-
-        function changeObjMtr(val) {
-            mtr = $('#' + val);
+            if(val == 'plu1'){
+                getPRDCD('');
+            }
+            else if(val == 'plu2'){
+                getPRDCD($('#plu1').val());
+            }
         }
 
         function changeObjSup(val) {

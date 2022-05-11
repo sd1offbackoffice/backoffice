@@ -523,7 +523,7 @@
         function showDesc(prdcd){
             i = $.inArray(prdcd,dataPRDCDNew);
 
-            $('#desk').val(dataMonitoring[i].prd_deskripsipanjang);
+            $('#desk').val(decodeHtml(dataMonitoring[i].prd_deskripsipanjang));
             $('#unit').val(dataMonitoring[i].prd_satuan);
         }
 

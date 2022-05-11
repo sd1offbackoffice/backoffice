@@ -109,12 +109,12 @@
                     <td style="width: 40px">{{$data->konversi}}</td>
                     <td style="width: 20px; text-align: center">{{$data->qty}}</td>
                     <td style="width: 20px; text-align: center">{{$data->qtyk}}</td>
-                    <td style="width: 40px; text-align: center">{{number_format(round($data->tpod_hrgsatuan) ,2,',','.')}}</td>
-                    <td style="width: 40px; text-align: center">{{number_format(round($data->tpod_gross) ,2,',','.')}}</td>
-                    <td style="width: 40px; text-align: center">{{number_format(round($data->tpod_rphttldisc) ,2,',','.')}}</td>
-                    <td style="width: 40px; text-align: center">{{number_format(round($data->tpod_ppn) ,2,',','.')}}</td>
-                    <td style="width: 40px; text-align: center">{{number_format(round($data->tpod_ppnbm) ,2,',','.')}}</td>
-                    <td style="width: 40px; text-align: center">{{number_format(round($data->tpod_ppnbotol) ,2,',','.')}}</td>
+                    <td style="width: 40px; text-align: center">{{number_format(round($data->tpod_hrgsatuan) ,0,',','.')}}</td>
+                    <td style="width: 40px; text-align: center">{{number_format(round($data->tpod_gross) ,0,',','.')}}</td>
+                    <td style="width: 40px; text-align: center">{{number_format(round($data->tpod_rphttldisc) ,0,',','.')}}</td>
+                    <td style="width: 40px; text-align: center">{{number_format(round($data->tpod_ppn) ,0,',','.')}}</td>
+                    <td style="width: 40px; text-align: center">{{number_format(round($data->tpod_ppnbm) ,0,',','.')}}</td>
+                    <td style="width: 40px; text-align: center">{{number_format(round($data->tpod_ppnbotol) ,0,',','.')}}</td>
                 </tr>
                 <tr>
                     <td style="width: 50px; text-align: center">{{$data->discount1}}</td>

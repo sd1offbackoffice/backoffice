@@ -144,7 +144,7 @@ class CetakUlangFakturPajakController extends Controller
                     AND PRD_KODEIGR = MSTD_KODEIGR
             ORDER BY MSTD_SEQNO");
 
-            // return dd($data);
+        // dd($data);
 
         return view('BACKOFFICE.TRANSAKSI.PENGELUARAN.cetakulangfakturpajak_pdf', compact('npb1', 'npb2', 'perusahaan', 'data', 'ttd', 'role1', 'role2'));
     }

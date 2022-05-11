@@ -195,41 +195,58 @@
         });
 
         function getDataPLU(){
-            $.ajax({
-                url: '{{ url()->current() }}/get-data-plu',
-                type: 'GET',
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                data: {
-                    plu: convertPlu($('#plu').val())
-                },
-                beforeSend: function () {
-                    $('#modal-loader').modal('show');
-                },
-                success: function (response) {
-                    $('#modal-loader').modal('hide');
+            {{--$.ajax({--}}
+            {{--    url: '{{ url()->current() }}/get-data-plu',--}}
+            {{--    type: 'GET',--}}
+            {{--    headers: {--}}
+            {{--        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
+            {{--    },--}}
+            {{--    data: {--}}
+            {{--        plu: convertPlu($('#plu').val())--}}
+            {{--    },--}}
+            {{--    beforeSend: function () {--}}
+            {{--        $('#modal-loader').modal('show');--}}
+            {{--    },--}}
+            {{--    success: function (response) {--}}
+            {{--        $('#modal-loader').modal('hide');--}}
 
-                    $.each(response.alert, function(index, value){
-                        swal({
-                            title: value,
-                            icon: 'error'
-                        });
-                    });
+            {{--        $.each(response.alert, function(index, value){--}}
+            {{--            swal({--}}
+            {{--                title: value,--}}
+            {{--                icon: 'error'--}}
+            {{--            });--}}
+            {{--        });--}}
 
-                    fillDetail(response.result);
-                },
-                error: function (error) {
-                    $('#modal-loader').modal('hide');
-                    // handle error
-                    swal({
-                        title: error.responseJSON.message,
-                        icon: 'error'
-                    }).then(() => {
-                        $('input').val('');
-                    });
+            {{--        fillDetail(response.result);--}}
+            {{--    },--}}
+            {{--    error: function (error) {--}}
+            {{--        $('#modal-loader').modal('hide');--}}
+            {{--        // handle error--}}
+            {{--        swal({--}}
+            {{--            title: error.responseJSON.message,--}}
+            {{--            icon: 'error'--}}
+            {{--        }).then(() => {--}}
+            {{--            $('input').val('');--}}
+            {{--        });--}}
+            {{--    }--}}
+            {{--});--}}
+
+            found = false;
+            plu = convertPlu($('#plu').val());
+            for(i=0;i<arrData.length;i++){
+                if(plu == arrData[i].plu){
+                    found = true;
+                    index = i;
+                    fillDetail(arrData[i]);
+                    break;
                 }
-            });
+            }
+            if(!found){
+                swal({
+                    title: 'PLU '+plu+' tidak ditemukan!',
+                    icon: 'error'
+                });
+            }
         }
 
         function getData(){

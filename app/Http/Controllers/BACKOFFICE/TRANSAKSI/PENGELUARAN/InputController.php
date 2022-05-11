@@ -469,6 +469,7 @@ class InputController extends Controller
         $result = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')                
                     ->join('TEMP_URUT_RETUR', 'PRD_PRDCD', '=', 'PRDCD')
                     ->orderBy('PRD_DESKRIPSIPANJANG')
+                    ->distinct()
                     ->get();
 
         return Datatables::of($result)->make(true);
@@ -784,7 +785,7 @@ class InputController extends Controller
 
                     $trbo_prdcd = $plu;
                     $res2 = DB::connection(Session::get('connection'))->select("select prd_deskripsipanjang, prd_deskripsipendek, frac, prd_flagbkp1,
-                                prd_avgcost, st_avgcost, nvl(st_saldoakhir, 0) st_saldoakhir, hrgsatuan, qtypb, prd_ppn
+                                prd_avgcost, st_avgcost, nvl(st_saldoakhir, 0) st_saldoakhir, hrgsatuan, qtypb, prd_ppn, persenppn
                             from tbmaster_prodmast, tbmaster_stock, temp_urut_retur
                             where prd_prdcd = st_prdcd(+)
                                 and '02' =  st_lokasi(+)
@@ -863,7 +864,7 @@ class InputController extends Controller
 
 //            ---** hitung ppn ** ---
                     if ($pkp == 'Y' && $bkp == 'Y') {
-                        $ppn = $res2->prd_ppn;
+                        $ppn = $res2->persenppn;
                     } else {
                         $ppn = 0;
                     }
@@ -970,6 +971,7 @@ class InputController extends Controller
                     $data->trbo_inv = $trbo_invno;
                     $data->trbo_tgl = $trbo_tglinv;
                     $data->trbo_noreff = $trbo_noreff;
+                    $data->persen_ppn = $res2->persenppn;
                     // $data->trbo_keterangan = $trbo->trbo_keterangan;
                     array_push($datas, $data);
                 }

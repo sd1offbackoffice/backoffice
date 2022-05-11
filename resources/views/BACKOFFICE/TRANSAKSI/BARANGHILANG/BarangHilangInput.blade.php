@@ -625,6 +625,18 @@
                         }
                         $('#total-item').val(temp)
                         $('.ctn')[index].focus()
+
+                        $('.ctn').keypress(function (e) {
+                            if (e.which == 13) {
+                                $('.pcs')[index].focus();
+                            }
+                        });
+
+                        $('.pcs').keypress(function (e) {
+                            if (e.which == 13) {
+                                $('.keterangan')[index].focus();
+                            }
+                        });
                     } else if (result.noplu === 0){
                         swal('', result.message, 'warning')
                         $('#deskripsiPanjang').val('');

@@ -9,11 +9,11 @@
     842pt
 @endsection
 @section('page_title')
-    KERJA KERJA PKM
+    KERTAS KERJA PKM
 @endsection
 
 @section('title')
-    KERJA KERJA PKM
+    KERTAS KERJA PKM
 @endsection
 
 @section('subtitle')
@@ -88,28 +88,28 @@
             @endif
             <tr>
                 <td class="right">{{ $i+1 }}</td>
-                <td class="right padding-right">{{ $data[$i]->ftkplu }}
-                <td class="left">{{ $data[$i]->prd_deskripsipanjang }}
-                <td class="left">{{ $data[$i]->prd_satuan }}
-                <td class="left">{{ $data[$i]->prd_kodetag }}
-                <td class="right">{{ $data[$i]->ftmind }}
-                <td class="right">{{ $data[$i]->ftnl03 }}
-                <td class="right">{{ $data[$i]->ftnl02 }}
-                <td class="right">{{ $data[$i]->ftnl01 }}
-                <td class="right">{{ $data[$i]->ftavgs }}
-                <td class="right">{{ $data[$i]->ftltim }}
-                <td class="right">{{ $data[$i]->koef }}
-                <td class="right">{{ $data[$i]->hs }}
-                <td class="right">{{ $data[$i]->ftpkmm }}
-                <td class="right">{{ $data[$i]->ftmpkm }}
-                <td class="right">{{ $data[$i]->ftpkmt }}
-                <td class="right">{{ $data[$i]->nplus }}
-                <td class="right">{{ $data[$i]->pkmexist }}
-                <td class="right">{{ $data[$i]->dsi }}
-                <td class="right">{{ $data[$i]->mord }}
-                <td class="right">{{ $data[$i]->top }}
-                <td class="right">{{ $data[$i]->omi }}
-                <td class="right">{{ $data[$i]->sl }}
+                <td class="right padding-right">{{ $data[$i]->ftkplu }}</td>
+                <td class="left">{{ $data[$i]->prd_deskripsipanjang }}</td>
+                <td class="left">{{ $data[$i]->prd_satuan }}</td>
+                <td class="left">{{ $data[$i]->prd_kodetag }}</td>
+                <td class="right">{{ number_format($data[$i]->ftmind, 0, '.', ',') }}</td>
+                <td class="right">{{ number_format($data[$i]->ftnl03, 0, '.', ',') }}</td>
+                <td class="right">{{ number_format($data[$i]->ftnl02, 0, '.', ',') }}</td>
+                <td class="right">{{ number_format($data[$i]->ftnl01, 0, '.', ',') }}</td>
+                <td class="right">{{ number_format($data[$i]->ftavgs, 1, '.', ',') }}</td>
+                <td class="right">{{ number_format($data[$i]->ftltim, 0, '.', ',') }}</td>
+                <td class="right">{{ number_format($data[$i]->koef, 0, '.', ',') }}</td>
+                <td class="right">{{ number_format($data[$i]->hs, 0, '.', ',') }}</td>
+                <td class="right">{{ number_format($data[$i]->ftpkmm, 0, '.', ',') }}</td>
+                <td class="right">{{ number_format($data[$i]->ftmpkm, 0, '.', ',') }}</td>
+                <td class="right">{{ number_format($data[$i]->ftpkmt, 0, '.', ',') }}</td>
+                <td class="right">{{ number_format($data[$i]->nplus, 0, '.', ',') }}</td>
+                <td class="right">{{ number_format($data[$i]->pkmexist, 0, '.', ',') }}</td>
+                <td class="right">{{ number_format($data[$i]->dsi, 0, '.', ',') }}</td>
+                <td class="right">{{ number_format($data[$i]->mord, 0, '.', ',') }}</td>
+                <td class="right">{{ number_format($data[$i]->top, 0, '.', ',') }}</td>
+                <td class="right">{{ $data[$i]->omi }}</td>
+                <td class="right">{{ number_format($data[$i]->sl, 0, '.', ',') }}</td>
             </tr>
                 @if(!isset($data[$i+1]->cp_periode) || ( isset($data[$i+1]->cp_periode) && $tempPeriode != $data[$i+1]->cp_periode ))
                     </tbody>

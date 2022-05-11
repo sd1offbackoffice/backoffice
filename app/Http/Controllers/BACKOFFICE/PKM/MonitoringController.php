@@ -362,20 +362,6 @@ class MonitoringController extends Controller
                     AND FMKPLU BETWEEN '".$request->prdcd1."' AND '".$request->prdcd2."'
                     ORDER BY FMKPLU");
 
-        $dompdf = new PDF();
-
-        $pdf = PDF::loadview('BACKOFFICE.PKM.monitoring-pdf',compact(['perusahaan','data']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 80.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream('Monitoring PLU Baru '.$request->prdcd1.' - '.$request->prdcd2.'.pdf');
+        return view('BACKOFFICE.PKM.monitoring-pdf',compact(['perusahaan','data']));
     }
 }

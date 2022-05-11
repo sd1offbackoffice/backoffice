@@ -36,7 +36,7 @@ class FaktorPKMTokoController extends Controller
         TO_CHAR(gdl_tglawal,'DD-MM-YYYY') AS gdl_tglawal,
         TO_CHAR(gdl_tglakhir,'DD-MM-YYYY') AS gdl_tglakhir,
         gdl_qty")
-        ->limit(100)
+        ->limit(1000)
         ->orderBy('gdl_noperjanjiansewa','ASC')
         ->get();
 
@@ -63,9 +63,21 @@ class FaktorPKMTokoController extends Controller
 
             $nd_prdcd = $data_prod_pkm[0]->prd_prdcd;
             $nd_deskripsi = $data_prod_pkm[0]->prd_deskripsipanjang;
-            $nd_nilaigondola = $data_prod_pkm[0]->pkmg_nilaigondola;
-            $nd_pkmg = $data_prod_pkm[0]->pkmg_nilaipkmg;
 
+            if($data_prod_pkm[0]->pkmg_nilaigondola == 0)
+            {
+                $nd_nilaigondola = '';
+            }else{
+                $nd_nilaigondola = $data_prod_pkm[0]->pkmg_nilaigondola;
+            }
+
+            if($data_prod_pkm[0]->pkmg_nilaipkmg == 0)
+            {
+                $nd_pkmg = '';
+            }else{
+                $nd_pkmg = $data_prod_pkm[0]->pkmg_nilaipkmg;
+            }
+        
             $check_kkpkm = DB::connection('simckl')->table('tbmaster_kkpkm')
             ->where('pkm_prdcd',$request->n_prdcd)
             ->get();
@@ -81,7 +93,16 @@ class FaktorPKMTokoController extends Controller
 
                 $nd_pkmt = $data_kkpkm[0]->pkm_pkmt;
                 $nd_mpkm = $data_kkpkm[0]->pkm_mpkm;
-                $nd_mplus = $data_kkpkm[0]->pkm_qtymplus;
+
+                if($data_kkpkm[0]->pkm_qtymplus == 0)
+                {
+                    $nd_mplus = '';
+                }
+                else
+                {
+                    $nd_mplus = $data_kkpkm[0]->pkm_qtymplus;
+                }
+               
 
                 return compact(['nd_prdcd','nd_deskripsi','nd_nilaigondola','nd_pkmg','nd_pkmt','nd_mpkm','nd_mplus']);
 
@@ -107,6 +128,30 @@ class FaktorPKMTokoController extends Controller
 
             return compact(['nd_prdcd','nd_deskripsi','nd_nilaigondola','nd_pkmg','nd_pkmt','nd_mpkm','nd_mplus']);
 
+        }
+    }
+
+    public function uploadNPLUS()
+    {
+        $userid = Session::get('usid');
+        $c = loginController::getConnectionProcedureCKL();
+        $s = oci_parse($c, "BEGIN SP_UPLOAD_NPLUS_GO (:userid,:result); END;");
+        oci_bind_by_name($s, ':userid',$userid) ;
+        oci_bind_by_name($s, ':result', $result,1000);
+        oci_execute($s);
+
+        if ($result == 'OK') {
+            return response()->json([
+                'title' => 'success !',
+                'message' => ' Upload data gondola sukses !',
+                'status' => 'OK'
+            ], 200);
+        } else {
+            return response()->json([
+                'title' => 'An error occurred !',
+                'message' => $result,
+                'status' => 'error'
+            ], 500);
         }
     }
 

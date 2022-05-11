@@ -361,6 +361,10 @@
         });
 
         function getDataNPB(no_npb) {
+            gross = 0;
+            ppn = 0;
+            potongan = 0;
+            total = 0;
             $('#modal-loader').modal('show');
             ajaxSetup();
             $('#table').DataTable().destroy();

@@ -103,7 +103,7 @@
                         <div class="col-5">
                             <div class="input-group mb">
                                 <input autocomplete="off" type="text" id="nama_personil" class="form-control">
-                                <button id="showUserBtn" class="btn btn btn-light" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="showUser()" placeholder="Mohon isi nama personil">&#x1F50E;</button>
+                                <!-- <button id="showUserBtn" class="btn btn btn-light" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="showUser()" placeholder="Mohon isi nama personil">&#x1F50E;</button> -->
                             </div>
                         </div>
                     </div>
@@ -314,6 +314,7 @@
                     }
 
                     if (result.length > 0) {
+                        $('.rowTbodyTableBTB').remove();
                         for (let i = 0; i < result.length; i++) {
                             // tablePrintBPB.row.add([result[i].msth_nodoc, formatDate(result[i].msth_tgldoc), `<input type="checkbox" class="form-control"  value="1">`]).draw()
                             $('#tbodyTableBTB').append(`<tr class="rowTbodyTableBTB">
@@ -324,6 +325,7 @@
                         }
                         btnCetak.attr('disabled', false);
                     } else {
+                        $('.rowTbodyTableBTB').remove();
                         $('#tbodyTableBTB').append(`<tr class="rowTbodyTableBTB"> <td colspan="3" class="text-center">No data available in table</td> </tr>`)
                         // tablePrintBPB.row.add(['--', '--', '--']).draw()
                         btnCetak.attr('disabled', true);
@@ -478,6 +480,7 @@
                         documentTemp = document;
                         if (result.list == 1) {
                             window.open(currUrl + 'viewreport/' + checked + '/' + result.data + '/' + documentTemp + '/' + result.list);
+                            setTimeout(window.location.reload(), 500);
                         } else {
                             if (result.nota != null || result.nota != '') {
                                 showModal();
@@ -524,29 +527,7 @@
                                                     if (result.lokasi == 1 && checked == 0) {
                                                         window.open(currUrl + 'viewreport/' + checked + '/' + 'lokasi' + '/' + documentTemp + '/' + result.lokasi);
                                                     }
-                                                    // setTimeout(function() {
-                                                    //     $.ajax({
-                                                    //         method: 'GET',
-                                                    //         url: currUrl + 'deleteSigs',
-                                                    //         beforeSend: () => {
-                                                    //             $('#modal-loader').modal('show');
-                                                    //         },
-                                                    //         success: (response) => {
-                                                    //             $('#modal-loader').modal('hide');
-                                                    //             console.log(response);
-                                                    //             if (response['kode'] == 0) {
-                                                    //                 swal('', response['message'], 'error');
-                                                    //             } else if (response['kode'] == 1) {
-                                                    //                 swal('', response['message'], 'success');
-                                                    //             } else {
-                                                    //                 swal('', response['message'], 'info');
-                                                    //             }
-                                                    //         },
-                                                    //         error: () => {
-                                                    //             $('#modal-loader').modal('hide');
-                                                    //         }
-                                                    //     });
-                                                    // }, 2000);
+                                                    setTimeout(window.location.reload(), 500);
                                                 });
                                             },
                                             error: function(error) {
@@ -652,6 +633,12 @@
             }
         })
 
+        $('#type').on('change', function(e) {
+            $('#modal-loader').modal('show');
+            setTimeout(viewData, 500);
+            setTimeout(viewData, 500);
+            $('#modal-loader').modal('hide');
+        })
         $('#size').keypress(function(e) {
             if (e.which === 13) {
                 viewData();

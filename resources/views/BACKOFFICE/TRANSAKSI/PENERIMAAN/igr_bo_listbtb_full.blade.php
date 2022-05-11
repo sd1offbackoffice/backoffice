@@ -144,6 +144,7 @@
                     <tr style="line-height: 10px">
                         <td>T.O.P</td>
                         <td>: {{$datas[$i]->sup_top}} HARI</td>
+                        <td style="text-align: right;">{{$re_print}}</td>
                     </tr>
                 </table>
             </div>

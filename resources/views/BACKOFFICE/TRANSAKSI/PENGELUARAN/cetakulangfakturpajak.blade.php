@@ -125,15 +125,15 @@
         function showDataNPB1(value) {
             ajaxSetup();
             let tableModal = $('#tableModalNPB1').DataTable({
+                // "ajax": '{{ url('bo/transaksi/pengeluaran/cetak-ulang-faktur-pajak/lov-search1') }}',
                 "ajax": {
-                    'type': "post",
+                    'type': "get",
                     'url': '{{ url()->current() }}/lov-search1',
                     "data": {
                         // '_token': '{{ csrf_token() }}',
                         'value': value
                     },
-                },
-                
+                },                
                 "columns": [
                     {data: 'msth_nodoc', name: 'msth_nodoc'},
                     {data: 'msth_tgldoc', name: 'msth_tgldoc'},
@@ -165,15 +165,15 @@
         function showDataNPB2(value) {
             ajaxSetup();
             let tableModal = $('#tableModalNPB2').DataTable({
+                // "ajax": '{{ url('bo/transaksi/pengeluaran/cetak-ulang-faktur-pajak/lov-search2') }}',
                 "ajax": {
-                    'type': "post",
+                    'type': "get",
                     'url': '{{ url()->current() }}/lov-search2',
                     "data": {
                         // '_token': '{{ csrf_token() }}',
                         'value': value
                     },
-                },
-                
+                },                
                 "columns": [
                     {data: 'msth_nodoc', name: 'msth_nodoc'},
                     {data: 'msth_tgldoc', name: 'msth_tgldoc'},
@@ -231,18 +231,18 @@
                 swal.fire('Range Nomor NPB salah')
                 return;
             }
-            if (!signedName) {
-                swal.fire('Nama Penandatangan Harus Terisi')
-                return;
-            }
-            if (!role) {
-                swal.fire('Jabatan Harus Terisi')
-                return;
-            }
-            if (!role2) {
-                swal.fire('Jabatan 2 Harus Terisi')
-                return;
-            }
+            // if (!signedName) {
+            //     swal.fire('Nama Penandatangan Harus Terisi')
+            //     return;
+            // }
+            // if (!role) {
+            //     swal.fire('Jabatan Harus Terisi')
+            //     return;
+            // }
+            // if (!role2) {
+            //     swal.fire('Jabatan 2 Harus Terisi')
+            //     return;
+            // }
 
             ajaxSetup();
             $.ajax({
@@ -275,6 +275,24 @@
                     }
 
                     console.log(concatData);
+                    // $.ajax({
+                    //     type: "get",
+                    //     url: "{{ url()->current() }}/print-doc",
+                    //     data: {
+                    //         concatData: concatData,
+                    //         npb1:npb1,
+                    //         npb2:npb2,
+                    //         signedName:signedName,
+                    //         role1:role1,
+                    //         role2:role2
+                    //     },
+                    //     beforeSend: function () {
+                    //         $('#modal-loader').modal('show')
+                    //     },
+                    //     success: function (response) {
+                    //         $('#modal-loader').modal('hide')
+                    //     }
+                    // });
                     window.open(`{{ url()->current() }}/print-doc?concatData=${concatData}&npb1=${npb1}&npb2=${npb2}&signedName=${signedName}&role1=${role1}&role2=${role2}`);
 
                     $('#modal-loader').modal('hide');

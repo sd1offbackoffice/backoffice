@@ -144,38 +144,33 @@ class BedaTagController extends Controller
         if ($ptag != '') {
             $p_tagq = "and NVL(prd_kodetag,'b') in (" . $ptag . ")";
         }
-        $produkbaru = $request->produkbaru;
+        // $produkbaru = $request->produkbaru;
         $chp = $request->chp;
         $sort = $request->sort;
         $date = $request->date;
         $date = DateTime::createFromFormat('d-m-Y', $date)->format('d-M-Y');
-        if ((int)$produkbaru == 1) {
-            $judul = " ** DAFTAR PRODUK BARU ** ";
-            $temp = DB::connection(Session::get('connection'))->table("dual")
-                ->selectRaw("nvl(TO_DATE('$date','DD-MON-YYYY'),sysdate)-91 as result")
-                ->first();
-            $tgla = $temp->result;
-            $tgla = DateTime::createFromFormat('Y-m-d H:i:s', $tgla)->format('d-M-Y');
-            $p_periodtgl = " and prd_tglaktif >= to_date('$tgla','dd-MON-yy') ";
-        } else {
-            $judul = " ** DAFTAR PRODUK ** ";
-            $p_periodtgl = '';
-        }
-        // if ((int)$sort == 1) {
-        //     $p_urut = "URUT: DIV+DEPT+KATEGORI+KODE";
-        //     $p_orderby = " order by prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, prd_prdcd";
-        // } elseif ((int)$sort == 2) {
-        //     $p_urut = "URUT: DIV+DEPT+KATEGORI+NAMA";
-        //     $p_orderby = " order by prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, prd_deskripsipanjang";
+        // if ((int)$produkbaru == 1) {
+        //     $judul = "LAPORAN PERBEDAAN KODE TAG IGR-OMI";
+        //     $temp = DB::connection(Session::get('connection'))->table("dual")
+        //         ->selectRaw("nvl(TO_DATE('$date','DD-MON-YYYY'),sysdate)-91 as result")
+        //         ->first();
+        //     $tgla = $temp->result;
+        //     $tgla = DateTime::createFromFormat('Y-m-d H:i:s', $tgla)->format('d-M-Y');
+        //     $p_periodtgl = " and prd_tglaktif >= to_date('$tgla','dd-MON-yy') ";
         // } else {
-        //     $p_urut = "URUT: NAMA";
-        //     $p_orderby = " order by prd_deskripsipanjang";
+            $judul = "LAPORAN PERBEDAAN KODE TAG IGR-OMI";
+            $p_periodtgl = $date;
         // }
+        if ((int)$sort == 1) {
+            // $p_urut = "URUT: PLU";
+            $p_orderby = " order by prd_prdcd";
+        } else {
+            // $p_urut = "URUT: DDK";
+            $p_orderby = " order by prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, prd_deskripsipanjang";
+        }
 
-        $datas = DB::connection(Session::get('connection'))->select("select prd_prdcd prd, prd_deskripsipanjang desc2, prd_unit||'/'||prd_frac satuan,
-case when substr(prd_prdcd,-1) = 1 then 1 else prd_minjual end minjl,
-prd_lastcost, prd_avgcost, prd_hrgjual, prd_flagbkp1, prd_flagbkp2,
-prd_unit, prd_frac, prd_tglaktif, prd_kodetag, prd_minorder, prd_ppn,
+        $datas = DB::connection(Session::get('connection'))->select("select prd_prdcd prd, prd_deskripsipanjang desc2, prd_unit||'/'||prd_frac satuan, prd_flagbkp1, prd_flagbkp2,
+prd_unit, prd_frac, prd_kodetag, prd_ppn,
 prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang,
 st_prdcd, st_avgcost,case when substr(prd_prdcd,-1) = '0' then 1 else 0 end produk,
 sls_kodesupplier||'-'||substr(sup_namasupplier,1,8) SUPPLIER,
@@ -219,52 +214,52 @@ and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'|
 and pkm_prdcd(+) = prd_prdcd
 and pkm_kodeigr(+) = prd_kodeigr
 and prs_kodeigr(+) = prd_kodeigr
-" );
+" . $p_orderby);
 
-        $cf_nmargin = [];
-        for ($i = 0; $i < sizeof($datas); $i++) {
-            $ppn = isset($datas[$i]->prd_ppn) ? 1 + ($datas[$i]->prd_ppn / 100) : 1.1;
-            if ($datas[$i]->prd_unit == 'KG') {
-                $multiplier = 1;
-            } else {
-                $multiplier = (int)$datas[$i]->prd_frac;
-            }
-            $nAcost = (float)$datas[$i]->st_avgcost * $multiplier;
+//         $cf_nmargin = [];
+//         for ($i = 0; $i < sizeof($datas); $i++) {
+//             $ppn = isset($datas[$i]->prd_ppn) ? 1 + ($datas[$i]->prd_ppn / 100) : 1.1;
+//             if ($datas[$i]->prd_unit == 'KG') {
+//                 $multiplier = 1;
+//             } else {
+//                 $multiplier = (int)$datas[$i]->prd_frac;
+//             }
+//             $nAcost = (float)$datas[$i]->st_avgcost * $multiplier;
 
-            if ($nAcost > 0) {
-                if ($datas[$i]->prd_flagbkp1 == 'Y' && $datas[$i]->prd_flagbkp2 != 'P') {
-                    $cf_nmargin[$i] = isset($datas[$i]->prd_hrgjual) ? round((1 - $ppn * $nAcost / $datas[$i]->prd_hrgjual) * 100,2): 0;
+//             if ($nAcost > 0) {
+//                 if ($datas[$i]->prd_flagbkp1 == 'Y' && $datas[$i]->prd_flagbkp2 != 'P') {
+//                     $cf_nmargin[$i] = isset($datas[$i]->prd_hrgjual) ? round((1 - $ppn * $nAcost / $datas[$i]->prd_hrgjual) * 100,2): 0;
 
-                    //rumus disamaain dengan informasihistoryproduct berdasarkan UAT 22-03-2022 By Remus,Denni
-//                    $cf_nmargin[$i] = round((($datas[$i]->prd_hrgjual) / ($ppn * $nAcost) - 1) * 100, 2);
-                    //sini
-                } else {
-                    $cf_nmargin[$i] = isset($datas[$i]->prd_hrgjual) ? round((1 - $nAcost / $datas[$i]->prd_hrgjual) * 100,2):0;
-                    //rumus disamaain dengan informasihistoryproduct berdasarkan UAT 22-03-2022 By Remus,Denni
-//                    $cf_nmargin[$i] = round((($datas[$i]->prd_hrgjual) / $nAcost - 1) * 100, 2);
-                }
-            } else {
-                $cf_nmargin[$i] = 0;
-            }
-        }
+//                     //rumus disamaain dengan informasihistoryproduct berdasarkan UAT 22-03-2022 By Remus,Denni
+// //                    $cf_nmargin[$i] = round((($datas[$i]->prd_hrgjual) / ($ppn * $nAcost) - 1) * 100, 2);
+//                     //sini
+//                 } else {
+//                     $cf_nmargin[$i] = isset($datas[$i]->prd_hrgjual) ? round((1 - $nAcost / $datas[$i]->prd_hrgjual) * 100,2):0;
+//                     //rumus disamaain dengan informasihistoryproduct berdasarkan UAT 22-03-2022 By Remus,Denni
+// //                    $cf_nmargin[$i] = round((($datas[$i]->prd_hrgjual) / $nAcost - 1) * 100, 2);
+//                 }
+//             } else {
+//                 $cf_nmargin[$i] = 0;
+//             }
+//         }
 
 
 
         //PRINT
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
-        if ((int)$sort < 3) {
+        // if ((int)$sort < 3) {
             //CETAK_DAFTARPRODUK (IGR_BO_DAFTARPRODUK.jsp)
-            return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-produk-pdf',
+            return view('BACKOFFICE.bedatag-produk-pdf',
                 ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
-                    'judul' => $judul, 'urut' => $p_urut, 'p_hpp' => $chp,
-                    'cf_nmargin' => $cf_nmargin]);
-        } else {
-            //CETAK_DAFTARPRDNAMA (IGR_BO_DAFTARPRDNM.jsp)
-            return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-produk-nama-pdf',
-                ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
-                    'judul' => $judul, 'urut' => $p_urut, 'p_hpp' => $chp,
-                    'cf_nmargin' => $cf_nmargin]);
-        }
+                    'judul' => $judul, 'p_hpp' => $chp,
+                    ]);
+        // } else {
+        //     //CETAK_DAFTARPRDNAMA (IGR_BO_DAFTARPRDNM.jsp)
+        //     return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-produk-nama-pdf',
+        //         ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
+        //             'judul' => $judul, 'p_hpp' => $chp,
+        //             'cf_nmargin' => $cf_nmargin]);
+        // }
     }
 
 }
