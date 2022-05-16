@@ -72,14 +72,16 @@ class BedaTagController extends Controller
         $tag = $request->tag;
 
         $temp = DB::connection(Session::get('connection'))
-        ->select("SELECT COUNT(1) into temp
+        ->select("SELECT COUNT(1) AS temp
                     FROM tbmaster_tag
-                    WHERE tag_kodetag = $tag");
+                    WHERE tag_kodetag = '$tag'");
         
         if($temp[0]->temp == 0){
-            return response()->json(['message' => 'Kode Tag tidak terdaftar', 'errflag' => $errflag, 'status' => 'error']);
+            $errflag = 1;
+            return response()->json(['temp' => $temp[0]->temp, 'message' => 'Kode Tag tidak terdaftar', 'errflag' => $errflag, 'status' => 'error']);
         }
 
+        return response()->json(['temp' => $temp[0]->temp, 'message' => 'Kode Tag tidak terdaftar', 'errflag' => $errflag, 'status' => 'info']);
     }
 
 
@@ -139,16 +141,26 @@ class BedaTagController extends Controller
                 ->first();
             $kat2 = $temp->result;
         }
-        $ptag = $request->ptag;
-        $p_tagq = "";
-        if ($ptag != '') {
-            $p_tagq = "and NVL(prd_kodetag,'b') in (" . $ptag . ")";
-        }
+        // $ptag = $request->ptag;
+        // $p_tagq = "";
+
+        // if ($ptag != '') {
+        //     $p_tagq = "and NVL(prd_kodetag,'b') in (" . $ptag . ")";
+        // }
         // $produkbaru = $request->produkbaru;
-        $chp = $request->chp;
+        // $chp = $request->chp;
+
         $sort = $request->sort;
         $date = $request->date;
         $date = DateTime::createFromFormat('d-m-Y', $date)->format('d-M-Y');
+
+        $tag = $request->tag;
+        $wheretag = "";
+        if ($tag != ''){
+            $wheretag = " AND NVL(TRIM(PRD_KODETAG),'_') = '$tag' "; 
+        }
+
+        
         // if ((int)$produkbaru == 1) {
         //     $judul = "LAPORAN PERBEDAAN KODE TAG IGR-OMI";
         //     $temp = DB::connection(Session::get('connection'))->table("dual")
@@ -159,99 +171,250 @@ class BedaTagController extends Controller
         //     $p_periodtgl = " and prd_tglaktif >= to_date('$tgla','dd-MON-yy') ";
         // } else {
             $judul = "LAPORAN PERBEDAAN KODE TAG IGR-OMI";
-            $p_periodtgl = $date;
+            // $p_periodtgl = $date;
         // }
         if ((int)$sort == 1) {
-            // $p_urut = "URUT: PLU";
-            $p_orderby = " order by prd_prdcd";
-        } else {
-            // $p_urut = "URUT: DDK";
-            $p_orderby = " order by prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang, prd_deskripsipanjang";
+            $datas = DB::connection(Session::get('connection'))->select("SELECT TGL,
+            PRS_NAMAPERUSAHAAN,
+            PRS_NAMACABANG,
+            PRD_PRDCD,
+            PRC_PLUIGR,
+            PRC_PLUOMI,
+            PRD_DESKRIPSIPENDEK,
+            divisi || ' - ' || departement || ' - ' || kategori DDK,
+            PRD_SATUAN,
+            PRD_FLAGOMI,
+            PRD_KODETAG,
+            PRC_KODETAG,
+            TAG_IGR,
+            TAG_OMI,
+            LOKASI
+    FROM (SELECT TO_CHAR (SYSDATE, 'dd MON yyyy hh24:mi:ss') TGL,
+                    PRS_NAMAPERUSAHAAN,
+                    PRS_NAMACABANG,
+                    PRD_PRDCD,
+                    PRC_PLUIGR,
+                    PRC_PLUOMI,
+                    PRD_DESKRIPSIPENDEK,
+            div_kodedivisi || ' ' || div_namadivisi divisi,
+            dep_kodedepartement || ' ' || dep_namadepartement DEPARTEMENT,
+            kat_kodekategori || ' ' || kat_namakategori KATEGORI,
+                    PRD_UNIT || '/' || PRD_FRAC PRD_SATUAN,
+                    PRD_FLAGOMI,
+                    PRD_KODETAG,
+                    PRC_KODETAG,
+                    CASE
+                    WHEN NVL (REPLACE (prd_kodetag, ' ', '_'), '_') IN ('E',
+                                                                        'D',
+                                                                        'S',
+                                                                        'L',
+                                                                        'C',
+                                                                        'Z',
+                                                                        '_')
+                    THEN
+                        'TAG_AKTIF'
+                    WHEN NVL (REPLACE (prd_kodetag, ' ', '_'), '_') IN ('H',
+                                                                        'A',
+                                                                        'N',
+                                                                        'O',
+                                                                        'X',
+                                                                        'T',
+                                                                        'Q',
+                                                                        'U',
+                                                                        'G',
+                                                                        'B')
+                    THEN
+                        'TAG_NONAKTIF'
+                    END
+                    TAG_IGR,
+                    CASE
+                    WHEN NVL (REPLACE (prc_kodetag, ' ', '_'), '_') IN ('E',
+                                                                        'D',
+                                                                        'S',
+                                                                        'L',
+                                                                        '_')
+                    THEN
+                        'TAG_AKTIF'
+                    WHEN NVL (REPLACE (prc_kodetag, ' ', '_'), '_') IN ('H',
+                                                                        'N',
+                                                                        'O',
+                                                                        'X',
+                                                                        'T')
+                    THEN
+                        'TAG_NONAKTIF'
+                    END
+                    TAG_OMI
+            --select *
+            FROM TBMASTER_PRODCRM,
+                    TBMASTER_PRODMAST,
+                    TBMASTER_PERUSAHAAN,
+                    (SELECT div_kodedivisi,
+                            div_namadivisi,
+                            dep_kodedepartement,
+                            dep_namadepartement,
+                            kat_kodekategori,
+                            kat_namakategori
+                    FROM tbmaster_kategori,
+                            tbmaster_departement,
+                            tbmaster_divisi
+                    WHERE     kat_kodedepartement = dep_kodedepartement
+                            AND dep_kodedivisi = div_kodedivisi)
+            --WHERE SUBSTR (prc_pluigr, 1, 6) = SUBSTR (PRD_PRDCD(+), 1, 6)
+            WHERE     prc_pluigr = PRD_PRDCD--(+)
+    AND PRD_FLAGOMI = 'Y'
+                    AND prc_group ='O'
+                    AND prd_kodedivisi = div_kodedivisi
+                    AND prd_kodedepartement = dep_kodedepartement
+                    AND prd_kodekategoribarang = kat_kodekategori
+    AND div_kodedivisi between '$div1' and '$div2'
+    AND dep_kodedepartement between '$dep1' and '$dep2'
+    AND kat_kodekategori between '$kat1' and '$kat2'
+                    ". $wheretag ."
+            ),
+            (SELECT lks_prdcd,
+                    LKS_KODERAK
+                    || '.'
+                    || LKS_KODESUBRAK
+                    || '.'
+                    || LKS_TIPERAK
+                    || '.'
+                    || LKS_SHELVINGRAK
+                    || '.'
+                    || LKS_NOURUT
+                    lokasi
+            FROM tbmaster_lokasi
+            WHERE lks_jenisrak IN ('D', 'N'))
+    WHERE tag_igr <> tag_omi AND prd_prdcd = lks_prdcd --(+)
+    --and rownum < 100
+    ORDER BY NVL (TRIM (PRD_PRDCD), 'zzzzzzz'), PRC_PLUOMI, lokasi");
+        } 
+        else {
+            $datas = DB::connection(Session::get('connection'))->select("SELECT TGL,
+                   PRS_NAMAPERUSAHAAN,
+                   PRS_NAMACABANG,
+                   PRD_PRDCD,
+                   PRC_PLUIGR,
+                   PRC_PLUOMI,
+                   PRD_DESKRIPSIPENDEK,
+                   divisi || ' - ' || departement || ' - ' || kategori DDK,
+                   PRD_SATUAN,
+                   PRD_FLAGOMI,
+                   PRD_KODETAG,
+                   PRC_KODETAG,
+                   TAG_IGR,
+                   TAG_OMI,
+                   LOKASI
+              FROM (SELECT TO_CHAR (SYSDATE, 'dd MON yyyy hh24:mi:ss') TGL,
+                           PRS_NAMAPERUSAHAAN,
+                           PRS_NAMACABANG,
+                           PRD_PRDCD,
+                           PRC_PLUIGR,
+                           PRC_PLUOMI,
+                           PRD_DESKRIPSIPENDEK,
+                   div_kodedivisi || ' ' || div_namadivisi divisi,
+                   dep_kodedepartement || ' ' || dep_namadepartement DEPARTEMENT,
+                   kat_kodekategori || ' ' || kat_namakategori KATEGORI,
+                           PRD_UNIT || '/' || PRD_FRAC PRD_SATUAN,
+                           PRD_FLAGOMI,
+                           PRD_KODETAG,
+                           PRC_KODETAG,
+                           CASE
+                              WHEN NVL (REPLACE (prd_kodetag, ' ', '_'), '_') IN ('E',
+                                                                                  'D',
+                                                                                  'S',
+                                                                                  'L',
+                                                                                  'C',
+                                                                                  'Z',
+                                                                                  '_')
+                              THEN
+                                 'TAG_AKTIF'
+                              WHEN NVL (REPLACE (prd_kodetag, ' ', '_'), '_') IN ('H',
+                                                                                  'A',
+                                                                                  'N',
+                                                                                  'O',
+                                                                                  'X',
+                                                                                  'T',
+                                                                                  'Q',
+                                                                                  'U',
+                                                                                  'G',
+                                                                                  'B')
+                              THEN
+                                 'TAG_NONAKTIF'
+                           END
+                              TAG_IGR,
+                           CASE
+                              WHEN NVL (REPLACE (prc_kodetag, ' ', '_'), '_') IN ('E',
+                                                                                  'D',
+                                                                                  'S',
+                                                                                  'L',
+                                                                                  '_')
+                              THEN
+                                 'TAG_AKTIF'
+                              WHEN NVL (REPLACE (prc_kodetag, ' ', '_'), '_') IN ('H',
+                                                                                  'N',
+                                                                                  'O',
+                                                                                  'X',
+                                                                                  'T')
+                              THEN
+                                 'TAG_NONAKTIF'
+                           END
+                              TAG_OMI
+                      --select *
+                      FROM TBMASTER_PRODCRM,
+                           TBMASTER_PRODMAST,
+                           TBMASTER_PERUSAHAAN,
+                           (SELECT div_kodedivisi,
+                                   div_namadivisi,
+                                   dep_kodedepartement,
+                                   dep_namadepartement,
+                                   kat_kodekategori,
+                                   kat_namakategori
+                              FROM tbmaster_kategori,
+                                   tbmaster_departement,
+                                   tbmaster_divisi
+                             WHERE     kat_kodedepartement = dep_kodedepartement
+                                   AND dep_kodedivisi = div_kodedivisi)
+                     --WHERE SUBSTR (prc_pluigr, 1, 6) = SUBSTR (PRD_PRDCD(+), 1, 6)
+                     WHERE     prc_pluigr = PRD_PRDCD--(+)
+          AND PRD_FLAGOMI = 'Y'
+                           AND prc_group ='O'
+                           AND prd_kodedivisi = div_kodedivisi
+                           AND prd_kodedepartement = dep_kodedepartement
+                           AND prd_kodekategoribarang = kat_kodekategori
+    AND div_kodedivisi between '$div1' and '$div2'
+    AND dep_kodedepartement between '$dep1' and '$dep2'
+    AND kat_kodekategori between '$kat1' and '$kat2'
+                           ". $wheretag ."
+                   ),
+                   (SELECT lks_prdcd,
+                              LKS_KODERAK
+                           || '.'
+                           || LKS_KODESUBRAK
+                           || '.'
+                           || LKS_TIPERAK
+                           || '.'
+                           || LKS_SHELVINGRAK
+                           || '.'
+                           || LKS_NOURUT
+                              lokasi
+                      FROM tbmaster_lokasi
+                     WHERE lks_jenisrak IN ('D', 'N'))
+             WHERE tag_igr <> tag_omi AND prd_prdcd = lks_prdcd --(+)
+          --and rownum < 100
+          ORDER BY NVL (TRIM (PRD_PRDCD), 'zzzzzzz'), PRC_PLUOMI, lokasi");
         }
-
-        $datas = DB::connection(Session::get('connection'))->select("select prd_prdcd prd, prd_deskripsipanjang desc2, prd_unit||'/'||prd_frac satuan, prd_flagbkp1, prd_flagbkp2,
-prd_unit, prd_frac, prd_kodetag, prd_ppn,
-prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang,
-st_prdcd, st_avgcost,case when substr(prd_prdcd,-1) = '0' then 1 else 0 end produk,
-sls_kodesupplier||'-'||substr(sup_namasupplier,1,8) SUPPLIER,
-hgb_top, sup_top,
-div_kodedivisi||' - '||div_namadivisi divisi,
-dep_kodedepartement||' - '|| dep_namadepartement dept,
-kat_kodekategori||' - '|| kat_namakategori kategori,
-pkm_prdcd,
-prs_namaperusahaan, prs_namacabang
-from tbmaster_prodmast, tbmaster_stock, tbtr_salesbulanan, tbmaster_supplier,
-     tbmaster_hargabeli, tbmaster_divisi, tbmaster_departement, tbmaster_kategori,
-     tbmaster_kkpkm, tbmaster_perusahaan
-where prd_kodeigr = '$kodeigr'
-and nvl(prd_recordid,'9')!='1'
-and st_prdcd (+) = substr(prd_prdcd,0,6)||'0'
-and st_kodeigr(+)=prd_kodeigr
-and st_lokasi(+)='01'
-and sls_kodesupplier(+) = prd_kodesupplier
-and sls_prdcd(+)=substr(prd_prdcd,0,6)||'0'
-and sls_kodeigr(+)=prd_kodeigr
-and sup_kodesupplier(+)=sls_kodesupplier
-and sup_kodeigr(+)=sls_kodeigr
-and hgb_prdcd(+)=prd_prdcd
-and hgb_kodesupplier(+)=prd_kodesupplier
-and hgb_kodeigr(+)=prd_kodeigr
-and div_kodedivisi = prd_kodedivisi
-and div_kodeigr=prd_kodeigr
---and div_kodedivisi between  :p_div1 and  :p_div2
-and dep_kodedepartement = prd_kodedepartement
-and dep_kodedivisi = div_kodedivisi
-and dep_kodeigr = prd_kodeigr
---and dep_kodedepartement between :p_dep1 and :p_dep2
-and kat_kodekategori = prd_kodekategoribarang
-and kat_kodedepartement = dep_kodedepartement
-and kat_kodeigr= prd_kodeigr
-" . $p_tagq . "
-and prs_kodeigr = prd_kodeigr
-and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'||'$dep1'||'$kat1' and '$div2'||'$dep2'||'$kat2'
---and kat_kodekategori between :p_kat1 and :p_kat2
-" . $p_periodtgl . "
-and pkm_prdcd(+) = prd_prdcd
-and pkm_kodeigr(+) = prd_kodeigr
-and prs_kodeigr(+) = prd_kodeigr
-" . $p_orderby);
-
-//         $cf_nmargin = [];
-//         for ($i = 0; $i < sizeof($datas); $i++) {
-//             $ppn = isset($datas[$i]->prd_ppn) ? 1 + ($datas[$i]->prd_ppn / 100) : 1.1;
-//             if ($datas[$i]->prd_unit == 'KG') {
-//                 $multiplier = 1;
-//             } else {
-//                 $multiplier = (int)$datas[$i]->prd_frac;
-//             }
-//             $nAcost = (float)$datas[$i]->st_avgcost * $multiplier;
-
-//             if ($nAcost > 0) {
-//                 if ($datas[$i]->prd_flagbkp1 == 'Y' && $datas[$i]->prd_flagbkp2 != 'P') {
-//                     $cf_nmargin[$i] = isset($datas[$i]->prd_hrgjual) ? round((1 - $ppn * $nAcost / $datas[$i]->prd_hrgjual) * 100,2): 0;
-
-//                     //rumus disamaain dengan informasihistoryproduct berdasarkan UAT 22-03-2022 By Remus,Denni
-// //                    $cf_nmargin[$i] = round((($datas[$i]->prd_hrgjual) / ($ppn * $nAcost) - 1) * 100, 2);
-//                     //sini
-//                 } else {
-//                     $cf_nmargin[$i] = isset($datas[$i]->prd_hrgjual) ? round((1 - $nAcost / $datas[$i]->prd_hrgjual) * 100,2):0;
-//                     //rumus disamaain dengan informasihistoryproduct berdasarkan UAT 22-03-2022 By Remus,Denni
-// //                    $cf_nmargin[$i] = round((($datas[$i]->prd_hrgjual) / $nAcost - 1) * 100, 2);
-//                 }
-//             } else {
-//                 $cf_nmargin[$i] = 0;
-//             }
-//         }
-
 
 
         //PRINT
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         // if ((int)$sort < 3) {
             //CETAK_DAFTARPRODUK (IGR_BO_DAFTARPRODUK.jsp)
-            return view('BACKOFFICE.bedatag-produk-pdf',
-                ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
-                    'judul' => $judul, 'p_hpp' => $chp,
+            // dd($datas);
+
+            $tanggal = sizeof($datas) > 0 ? $datas[0]->tgl : '';
+            return view('BACKOFFICE.bedatagomi-pdf',
+                ['kodeigr' => $kodeigr, 'data' => $datas, 'tanggal' => $tanggal, 'perusahaan' => $perusahaan,
+                    'judul' => $judul
                     ]);
         // } else {
         //     //CETAK_DAFTARPRDNAMA (IGR_BO_DAFTARPRDNM.jsp)

@@ -172,7 +172,7 @@ class AccessController extends Controller
 //                ->get();
             $listMenu = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
                 ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
-                ->where('acc_status','=',0)
+//                ->where('acc_status','=',0)
                 ->orderBy('acc_group')
                 ->orderBy('acc_subgroup1')
                 ->orderBy('acc_subgroup2')

@@ -453,7 +453,7 @@ class InputController extends Controller
             return compact(['message', 'status']);
         }
 
-        return compact(['result']);
+        return compact(['result', 'message', 'status']);
     }
 
     public function getDataLovPLU()
@@ -712,6 +712,7 @@ class InputController extends Controller
         $plu = $request->p_prdcd;
         $nodoc = $request->nodoc;
         $pkp = $request->pkp;
+        $keterangan = $request->keterangan;
 
         $no_bpb = '';
         $mintrn = '';
@@ -962,7 +963,6 @@ class InputController extends Controller
                     $data->trbo_hrgsatuan = $trbo_hrgsatuan;
                     $data->qtyctn = $qtyctn;
                     $data->qtypcs = $qtypcs;
-                    // $data->qtypcs = $qtypcs;
                     $data->trbo_gross = $trbo_gross;
                     $data->discper = $trbo_discper;
                     $data->trbo_discrph = $trbo_discrph;
@@ -972,7 +972,7 @@ class InputController extends Controller
                     $data->trbo_tgl = $trbo_tglinv;
                     $data->trbo_noreff = $trbo_noreff;
                     $data->persen_ppn = $res2->persenppn;
-                    // $data->trbo_keterangan = $trbo->trbo_keterangan;
+                    $data->trbo_keterangan = $keterangan;
                     array_push($datas, $data);
                 }
                 if ($qty <= 0) {
@@ -1083,6 +1083,7 @@ class InputController extends Controller
                         'trbo_averagecost' => $avg_cost,
                         'trbo_posqty' => $data['trbo_posqty'],
                         'trbo_flagdoc' => $trbo_flagdoc,
+                        'trbo_keterangan' => $data['trbo_keterangan'],
                         'trbo_create_by' => $trbo_create_by,
                         'trbo_create_dt' => $data['trbo_create_dt']
                     ]);
@@ -1108,6 +1109,7 @@ class InputController extends Controller
                     'trbo_averagecost' => $avg_cost,
                     'trbo_posqty' => $data['trbo_posqty'],
                     'trbo_flagdoc' => $trbo_flagdoc,
+                    'trbo_keterangan' => $data['trbo_keterangan'],
                     'trbo_create_by' => $trbo_create_by,
                     'trbo_create_dt' => $data['trbo_create_dt']
                 ]);

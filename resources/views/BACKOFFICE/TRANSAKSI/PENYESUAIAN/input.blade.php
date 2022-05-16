@@ -719,215 +719,171 @@
         });
 
         function hitungQTY(){
-            qty = parseFloat($('#qty').val());
-            qtyk = parseFloat($('#qtyk').val());
-            harga = parseFloat(unconvertToRupiah($('#hrgsatuan').val()));
-            frac = parseFloat($('#kemasan').val().split('/').pop());
-
-            if(dataPLU.persediaan + qty < 0){
+            if(!$('#plu').val()){
                 swal({
-                    title: 'Persediaan Negatif!',
-                    icon: 'warning'
+                    title: 'Pilih PLU terlebih dahulu!',
+                    icon: 'error'
                 }).then(() => {
-                    $('#qty').val('').select();
+                    $('#qty').val('');
+                    $('#qtyk').val('');
+                    $('#subtotal').val('');
+                    $('#plu').select();
                 });
             }
             else{
+                qty = parseFloat(nvl($('#qty').val(),0));
+                qtyk = parseFloat(nvl($('#qtyk').val(),0));
+                harga = parseFloat(unconvertToRupiah($('#hrgsatuan').val()));
+                frac = parseFloat($('#kemasan').val().split('/').pop());
+
+                if(dataPLU.persediaan + qty < 0){
+                    swal({
+                        title: 'Persediaan Negatif!',
+                        icon: 'warning'
+                    }).then(() => {
+                        $('#qty').val('').select();
+                    });
+                }
+
                 if($('#tipe_mpp').val() == '1'){
                     if(dataPLU.hrgsatuan > 0){
-                        subtotal = (qty * frac + qtyk) * (dataPLU.hrgsatuan / frac);
+                        subtotal = (qty * frac + qtyk) * (Math.round(dataPLU.hrgsatuan) / frac);
+                        $('#subtotal').val(subtotal.toFixed(2));
                     }
                     validateMPP();
                 }
                 else{
-                    if(qtyk != null && $('#tipe_mpp').val() != '1'){
-                        if(qtyk > 0 && $('#totalitem').val() == 0){
+                    if(qty != null && $('#tipe_mpp').val() != '1'){
+                        if(qty > 0 && $('#totalitem').val() == 0){
                             swal({
                                 title: 'Quantity pertama harus diisi minus!',
                                 icon: 'warning'
                             }).then(() => {
-                                $('#qtyk').val(parseInt($('#qtyk').val()) * -1).select();
-                                $('#qty').val(parseInt($('#qty').val()) * -1).select();
-
-                                qty = parseFloat($('#qty').val());
-                                qtyk = parseFloat($('#qtyk').val());
-
+                                qty = qty * -1;
+                                $('#qty').val(qty);
                                 subtotal = (qty * frac + qtyk) * (dataPLU.hrgsatuan / frac);
-
-                                $('#subtotal').val(subtotal);
+                                $('#subtotal').val(subtotal.toFixed(2));
+                                $('#qtyk').select();
                             });
                         }
 
                         if(dataPLU.hrgsatuan > 0){
                             subtotal = (qty * frac + qtyk) * (dataPLU.hrgsatuan / frac);
+                            $('#subtotal').val(subtotal.toFixed(2));
+                            $('#qtyk').select();
                         }
+
                     }
                     else if(qty != null){
                         if(dataPLU.hrgsatuan > 0){
                             subtotal = (qty * frac + qtyk) * (dataPLU.hrgsatuan / frac);
+                            $('#subtotal').val(subtotal.toFixed(2));
                         }
                         validateMPP();
+
+                        $('#qtyk').select();
                     }
                 }
-
-                $('#subtotal').val(convertToRupiah(subtotal));
             }
         }
 
         function hitungQTYK(){
-            qty = parseFloat($('#qty').val());
-            qtyk = parseFloat($('#qtyk').val());
-            harga = parseFloat(unconvertToRupiah($('#hrgsatuan').val()));
-            frac = parseFloat($('#kemasan').val().split('/').pop());
-
-            lqtyk = 0;
-
-            v_lastrec = 0;
-
-            for(i=0;i<listPLU.length;i++){
-                if(listPLU[i].trbo_prdcd == $('#plu').val()){
-                    v_lastrec = i;
-                    break;
-                }
+            if(!$('#plu').val()){
+                swal({
+                    title: 'Pilih PLU terlebih dahulu!',
+                    icon: 'error'
+                }).then(() => {
+                    $('#qty').val('');
+                    $('#qtyk').val('');
+                    $('#subtotal').val('');
+                    $('#plu').select();
+                });
             }
-
-            if(v_lastrec == 0 && $('#tipe_mpp').val() != '1'){
-                if(qty > 0){
-                    $.ajax({
-                        url: '{{ url()->current() }}/hitung-qtyk',
-                        type: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        data: {
-                            nodoc: $('#no_penyesuaian').val(),
-                        },
-                        beforeSend: function () {
-
-                        },
-                        success: function (response) {
-                            jum = response.jum;
-
-                            if(jum == 0){
-                                swal({
-                                    title: 'QTY item pertama harus diisi minus!',
-                                    icon: 'error'
-                                }).then(() => {
-                                    $('#qtyk').val(parseInt($('#qtyk').val()) * -1).select();
-                                    $('#qty').val(parseInt($('#qty').val()) * -1).select();
-
-                                    qty = parseFloat($('#qty').val());
-                                    qtyk = parseFloat($('#qtyk').val());
-
-                                    subtotal = (qty * frac + qtyk) * (dataPLU.hrgsatuan / frac);
-
-                                    $('#subtotal').val(subtotal);
-
-                                    lqtyk = 1;
-                                });
-                            }
-                        }
-                    });
-                }
-                else if(qtyk > 0){
-                    $.ajax({
-                        url: '{{ url()->current() }}/hitung-qtyk',
-                        type: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        data: {
-                            nodoc: $('#no_penyesuaian').val(),
-                        },
-                        beforeSend: function () {
-
-                        },
-                        success: function (response) {
-                            jum = response.jum;
-
-                            if(jum == 0){
-                                $('#qtyk').val(parseInt($('#qtyk').val()) * -1).select();
-                                $('#qty').val(parseInt($('#qty').val()) * -1).select();
-
-                                qty = parseFloat($('#qty').val());
-                                qtyk = parseFloat($('#qtyk').val());
-
-                                subtotal = (qty * frac + qtyk) * (dataPLU.hrgsatuan / frac);
-
-                                $('#subtotal').val(subtotal);
-
-                                swal({
-                                    title: 'QTY item pertama harus diisi minus!',
-                                    icon: 'error'
-                                }).then(() => {
-
-                                    lqtyk = 1;
-                                });
-                            }
-                        }
-                    });
-                }
-
-                if(lqtyk == 1){
-                    $('#qty').select();
-                }
-                else $('#subtotal').select();
-
-                if(qtyk == 0 && qty == 0){
+            else{
+                if(dataPLU.hrgsatuan <= 0){
                     swal({
-                        title: 'Quantity harus diisi!',
+                        title: 'Harga satuan tidak boleh lebih kecil atau sama dengan nol!',
                         icon: 'warning'
+                    }).then(() => {
+                        $('#qtyk').val('').select();
                     });
-                }
-            }
-
-            if(qtyk != null && v_lastrec > 1 && $('#tipe_mpp').val() != '1'){
-                validateMPP();
-            }
-
-            if(dataPLU.hrgsatuan > 0){
-                if($('#tipe_mpp').val() == '1'){
-                    qty = qty + qtyk / frac;
                 }
                 else{
-                    $.ajax({
-                        url: '{{ url()->current() }}/hitung-qtyk',
-                        type: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        data: {
-                            nodoc: $('#no_penyesuaian').val(),
-                        },
-                        beforeSend: function () {
+                    qty = parseFloat(nvl($('#qty').val(),0));
+                    qtyk = parseFloat(nvl($('#qtyk').val(),0));
+                    harga = parseFloat(unconvertToRupiah($('#hrgsatuan').val()));
+                    frac = parseFloat($('#kemasan').val().split('/').pop());
+                    jum = $('#totalitem').val();
 
-                        },
-                        success: function (response) {
-                            jum = response.jum;
+                    v_lastrec = listPLU.length;
 
+                    for(i=0;i<listPLU.length;i++){
+                        if(listPLU[i].trbo_prdcd == $('#plu').val()){
+                            v_lastrec = i;
+                            break;
+                        }
+                    }
+
+                    if(v_lastrec == 0 && $('#tipe_mpp').val() != '1'){
+                        if(qty > 0 || qtyk > 0){
+                            if(jum == 0){
+                                qtyk = qtyk * -1;
+                                $('#qtyk').val(qtyk);
+                                $('#qty').select();
+
+                                swal({
+                                    title: 'QTY item pertama harus diisi minus!',
+                                    icon: 'error'
+                                }).then(() => {
+
+                                });
+                            }
+                        }
+                        if(qty == 0 && qtyk == 0){
+                            swal({
+                                title: 'Quantity harus diisi!',
+                                icon: 'warning'
+                            }).then(() => {
+                                $('#qty').select();
+                            });
+                        }
+                    }
+
+                    if(qtyk != null && v_lastrec > 0 && $('#tipe_mpp').val() != '1'){
+                        validateMPP();
+                    }
+
+                    if(dataPLU.hrgsatuan > 0){
+                        if($('#tipe_mpp').val() == '1'){
+                            qty = parseInt(qty + qtyk / frac);
+                            $('#qty').val(qty);
+                        }
+                        else{
                             if(jum < 1){
                                 if(qty > 0){
-                                    qty = ((qty * -1) + qtyk) / frac;
+                                    qty = parseInt(Math.abs(qty) + (qty / frac) * -1);
+                                    $('#qty').val(qty);
                                 }
-                                else qty = (qty + qtyk) / frac;
+                                else{
+                                    qty = parseInt(qty + qtyk / frac);
+                                    $('#qty').val(qty);
+                                }
                             }
-                            else qty = (qty + qtyk) / frac;
+                            else{
+                                qty = parseInt(qty + qtyk / frac);
+                                $('#qty').val(qty);
+                            }
                         }
-                    });
+
+                        qtyk = qtyk % frac;
+                        $('#qtyk').val(qtyk);
+
+                        subtotal = (qty * frac + qtyk) * harga / frac;
+                        $('#subtotal').val(subtotal.toFixed(2));
+                    }
+
+                    $('#qtyk').select();
                 }
-
-                qtyk = qtyk % frac;
-                subtotal = qty * dataPLU.hrgsatuan;
-
-                console.log('qty : ' + qty);
-                console.log('qtyk : ' + qtyk);
-                console.log('harga : ' + harga);
-                console.log('frac : ' + frac);
-
-                $('#qty').val(parseInt(qty));
-                $('#qtyk').val(qtyk);
-                $('#subtotal').val(subtotal);
-                console.log('x');
             }
         }
 
@@ -997,6 +953,8 @@
                                 swal({
                                     title: 'Harga satuan PLU kedua harus sama dengan PLU pertama!',
                                     icon: 'error'
+                                }).then(() => {
+                                    $('#plu').select();
                                 });
                             }
                         }
@@ -1012,6 +970,13 @@
                     icon: 'error'
                 }).then(function(){
                     $('#no_penyesuaian').select();
+                });
+            }
+            else if(!$('#no_penyesuaian').val() || !$('#tgl_penyesuaian').val() || !$('#plu').val() || !$('#qty').val() || !$('#qtyk').val()){
+                swal({
+                    title: 'Inputan belum lengkap!',
+                    icon: 'error'
+                }).then(function(){
                 });
             }
             else{
@@ -1097,7 +1062,10 @@
                         success: function (response) {
                             $('#modal-loader').modal('hide');
 
-                            doc_select($('#no_penyesuaian').val());
+                            if($('#totalitem').val() > 1){
+                                doc_select($('#no_penyesuaian').val());
+                            }
+                            else window.location.reload();
 
                             if(typeof response.message === 'undefined'){
                                 swal({

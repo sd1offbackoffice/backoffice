@@ -84,7 +84,7 @@
                 <td class="right">{{ number_format($data[$i]->ftnl03, 0, '.', ',') }}</td>
                 <td class="right">{{ number_format($data[$i]->ftnl02, 0, '.', ',') }}</td>
                 <td class="right">{{ number_format($data[$i]->ftnl01, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($data[$i]->ftavgs, 0, '.', ',') }}</td>
+                <td class="right">{{ number_format($data[$i]->ftavgs, 1, '.', ',') }}</td>
                 <td class="right">{{ number_format($data[$i]->ftltim, 0, '.', ',') }}</td>
                 <td class="right">{{ number_format($data[$i]->koef, 0, '.', ',') }}</td>
                 <td class="right">{{ number_format($data[$i]->hs, 0, '.', ',') }}</td>

@@ -170,7 +170,6 @@ class CetakDokumenController extends Controller
         $tgldoc = Carbon::now();
         $nofak = '';
         $temp = '';
-
         $doc = $request->doc;
         $lap = $request->lap;
         $reprint = $request->reprint;
@@ -191,7 +190,7 @@ class CetakDokumenController extends Controller
         } else {
             $reprint = 0;
         }
-
+        DB::connection(Session::get('connection'))->beginTransaction();
         if ($doc <> 'K' && $lap <> 'N') {
             $message = 'Button Create CSV Faktur hanya untuk Dokumen Keluaran yang sudah cetak List.';
             $status = 'info';
@@ -305,30 +304,7 @@ class CetakDokumenController extends Controller
                     . ' . CSV';
 
 //            -- HEADER'
-                $columnHeader = [
-                    'PLU',
-                    'Qty Min Disp',
-                    'Qty Min Ord',
-                    'Avg Sales 3 bulan',
-                    'Bulan 1',
-                    'Sales (qty)',
-                    'Hari',
-                    'Bulan 2',
-                    'Sales (qty)',
-                    'Hari',
-                    'Bulan 3',
-                    'Sales (qty)',
-                    'Hari',
-                    'PKM',
-                    'Kode Supplier',
-                    'N',
-                    'Periode proses',
-                    'Tgl edit PKM',
-                    'Sebelum Proses PKM',
-                    'Usulan (by program)',
-                    'Adjust (by user)'
-                ];
-                $columnHeader = ['RM', 'NPWP', 'NAMA', 'KD_JENIS_TRANSAKSI', 'FG_PENGGANTI', 'NOMOR_FAKTUR', 'TANGGAL_FAKTUR', 'IS_CREDITABLE', 'NOMOR_DOKUMEN_RETUR', 'TANGGAL_RETUR', 'MASA_PAJAK_RETUR', 'TAHUN_PAJAK_RETUR', 'NILAI_RETUR_DPP', 'NILAI_RETUR_PPN', 'NILAI_RETUR_PPNBM'];
+                array_push($linebuffs, ['RM', 'NPWP', 'NAMA', 'KD_JENIS_TRANSAKSI', 'FG_PENGGANTI', 'NOMOR_FAKTUR', 'TANGGAL_FAKTUR', 'IS_CREDITABLE', 'NOMOR_DOKUMEN_RETUR', 'TANGGAL_RETUR', 'MASA_PAJAK_RETUR', 'TAHUN_PAJAK_RETUR', 'NILAI_RETUR_DPP', 'NILAI_RETUR_PPN', 'NILAI_RETUR_PPNBM']);
                 $tgldoc = $tgldocbo;
             }
 
@@ -398,18 +374,19 @@ class CetakDokumenController extends Controller
 
                 DB::connection(Session::get('connection'))->table('TBHISTORY_FAKTURRM')->where('FRM_KODEIGR', '=', Session::get('kdigr'))->where('frm_nodocbo', '=', $nodocbo)->delete();
 
-                DB::connection(Session::get('connection'))->insert(" INSERT INTO TBHISTORY_FAKTURRM (FRM_KODEIGR,
+                DB::connection(Session::get('connection'))
+                    ->insert("INSERT INTO TBHISTORY_FAKTURRM (FRM_KODEIGR,
                                             FRM_NODOCBO,
                                             FRM_TGLBO,
                                             FRM_REFERENSIFP,
                                             FRM_CREATE_BY,
                                             FRM_CREATE_DT)
                     SELECT TRBO_KODEIGR,TRBO_NODOC,TRBO_TGLDOC,
-                      TRBO_ISTYPE . '.' . TRBO_INVNO,
-                      '" . Session::get('usid') . "'
+                      TRBO_ISTYPE || '.' || TRBO_INVNO,
+                      '" . Session::get('usid') . "',
                       SYSDATE
                  FROM TBTR_BACKOFFICE, TBMASTER_SUPPLIER
-                WHERE     TRBO_KODEIGR = '" . Session::get('kdigr') . "'
+                WHERE TRBO_KODEIGR = '" . Session::get('kdigr') . "'
                 and TRBO_KODEIGR = SUP_KODEIGR
                 and TRBO_KODESUPPLIER = SUP_KODESUPPLIER
                 and SUP_PKP = 'Y'
@@ -417,7 +394,7 @@ class CetakDokumenController extends Controller
             }
 
         }
-
+        DB::connection(Session::get('connection'))->commit();
         $filename = 'RM.' . Session::get('kdigr') . '.csv';
 
         $headers = [
@@ -428,7 +405,6 @@ class CetakDokumenController extends Controller
         ];
         $file = fopen($filename, 'w');
 
-        fputcsv($file, $columnHeader, '|');
         foreach ($linebuffs as $linebuff) {
             fputcsv($file, $linebuff, '|');
         }
@@ -1954,8 +1930,9 @@ class CetakDokumenController extends Controller
                     $cw = 510;
                     $ch = 78;
                     $filename = 'list-pengeluaran';
-                    $P_PN = " AND TRBO_NODOC IN (" . $NoDoc . ") AND TRBO_TYPETRN='K'";
-                    $data1 = DB::connection(Session::get('connection'))->select("SELECT   TRBO_NODOC, TRBO_TGLDOC, TRBO_KODESUPPLIER, TRBO_ISTYPE, TRBO_INVNO, TRBO_TGLINV,
+                    $P_PN = " AND TRBO_NODOC IN ('" . $NoDoc . "') AND TRBO_TYPETRN='K'";
+                    $data1 = DB::connection(Session::get('connection'))
+                            ->select("SELECT   TRBO_NODOC, TRBO_TGLDOC, TRBO_KODESUPPLIER, TRBO_ISTYPE, TRBO_INVNO, TRBO_TGLINV,
                                  TRBO_PRDCD, TRBO_HRGSATUAN, TRBO_KETERANGAN, TRBO_GROSS, TRBO_DISCRPH, TRBO_PPNRPH,
                                  CASE
                                      WHEN '" . $REPRINT . "' = '1'

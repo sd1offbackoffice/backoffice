@@ -236,7 +236,7 @@
                         <div class="row align-items-center">
                             <div class="col-5">
                                 <img style="max-width: 120px; position: absolute; margin-left:25%; z-index: 0;" src="../storage/signature/srclerk.png"></img>
-                                <img style="max-width: 150px; position: absolute; margin-left:65%; margin-top: 10%; z-index: 10;" src="../storage/stempel/{{$datas[$i]->prs_namacabang . '.png'}}"></img>
+                                <img style="max-width: 150px; position: absolute; margin-left:50%; margin-top: 10%; z-index: 10;" src="../storage/stempel/{{$datas[$i]->prs_namacabang . '.png'}}"></img>
                             </div>
                         </div>
                     </td>

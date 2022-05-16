@@ -47,7 +47,7 @@
                             <button class="btn btn-primary offset-sm-7 col-sm-1 btn-block mr-3" type="button" onclick="viewData()">View Data</button>
                             <button class="btn btn-primary col-sm-1 mr-3" type="button" onclick="cetakData()" id="btnCetak">Cetak BPB</button>
                             <button class="btn btn-danger col-sm-1 mr-3" type="button" onclick="batalCetak()">Batal</button>
-                            <button class="btn btn-info col-sm-1 mr-3" type="button" onclick="kirimFtp()">Kirim Report</button>
+                            <button class="btn btn-info col-sm-1 mr-3" type="button" onclick="showFtp()" data-target="#ftpModal" data-toggle="modal">Kirim Report</button>
                         </div>
                     </form>
                 </div>
@@ -55,6 +55,31 @@
         </div>
     </div>
 </div>
+
+<!-- FTP Modal -->
+<div class="modal fade" id="ftpModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-sm">
+                    <label for="chosenDate">Tanggal</label>
+                    <div class="input-group mb-3">
+                        <input type="date" class="form-control" id="chosenDate">
+                    </div>
+                    <div class="row justify-content-center">
+                        <button class="btn btn-info btn-lg" type="button" onclick="kirimFtp()">Kirim Report</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- FTP Modal -->
 
 <div class="container-fluid mt-4">
     <div class="row justify-content-center">
@@ -236,6 +261,8 @@
         let modalHelp = $('#modalHelp');
         let tableModalHelp = $('#tableModalHelp').DataTable();
         let nama_personil = $('#nama_personil');
+        let ftpModal = $('#ftpModal');
+        let chosenDate = $('#chosenDate');
         $(document).ready(function() {
             startAlert();
             // typeTrn = 'B'
@@ -268,6 +295,7 @@
 
                     default:
                         typeTrn = 'N';
+                        viewData();
                 }
                 $('#startDate').focus();
             })
@@ -414,46 +442,62 @@
         });
 
         function kirimFtp() {
-            var currUrl = '{{ url()->current() }}';
-            currUrl = currUrl.replace("index", "");
-            swal("Kirim File dari server ke SD6?", {
-                icon: "info",
-                buttons: {
-                    cancel: {
-                        text: "Tutup",
-                        value: 'tutup',
-                        visible: true
-                    },
-                    confirm: {
-                        text: "Kirim",
-                        value: 'kirim',
-                        visible: true
-                    },
-                },
-            }).then((result) => {
-                if (result == 'kirim') {
-                    $.ajax({
-                        method: 'GET',
-                        url: currUrl + 'kirimftp',
-                        beforeSend: () => {
-                            $('#modal-loader').modal('show');
+            if (chosenDate.val() == null || chosenDate.val() == '') {
+                swal({
+                    icon: 'warning',
+                    title: 'Tanggal Kosong',
+                    text: 'Mohon isi tanggal!',
+                    timer: 2000
+                });
+            } else {
+                var currUrl = '{{ url()->current() }}';
+                currUrl = currUrl.replace("index", "");
+                swal("Kirim File dari server ke SD6?", {
+                    icon: "info",
+                    buttons: {
+                        cancel: {
+                            text: "Tutup",
+                            value: 'tutup',
+                            visible: true
                         },
-                        success: (response) => {
-                            $('#modal-loader').modal('hide');
-                            if (response['kode'] == 0) {
-                                swal('', response['message'], 'error');
-                            } else if (response['kode'] == 1) {
-                                swal('', response['message'], 'success');
-                            } else {
-                                swal('', response['message'], 'info');
+                        confirm: {
+                            text: "Kirim",
+                            value: 'kirim',
+                            visible: true
+                        },
+                    },
+                }).then((result) => {
+                    if (result == 'kirim') {
+                        $.ajax({
+                            method: 'GET',
+                            data: {
+                                chosenDate: chosenDate.val()
+                            },
+                            url: currUrl + 'kirimftp',
+                            beforeSend: () => {
+                                $('#modal-loader').modal('show');
+                            },
+                            success: (response) => {
+                                $('#modal-loader').modal('hide');
+                                if (response['kode'] == 0) {
+                                    swal('', response['message'], 'error');
+                                } else if (response['kode'] == 1) {
+                                    swal('', response['message'], 'success');
+                                } else {
+                                    swal('', response['message'], 'info');
+                                }
+                            },
+                            error: () => {
+                                $('#modal-loader').modal('hide');
                             }
-                        },
-                        error: () => {
-                            $('#modal-loader').modal('hide');
-                        }
-                    });
-                }
-            });
+                        });
+                    }
+                });
+            }
+        }
+
+        function showFtp() {
+            ftpModal.modal();
         }
 
         function fxcetakData(startDate, endDate, type, size, checked, typeTrn, document) {

@@ -58,7 +58,9 @@
                         <th rowspan="2" class="tengah right">DSI</th>
                         <th rowspan="2" class="tengah right">MINOR</th>
                         <th rowspan="2" class="tengah right">TOP</th>
-                        <th rowspan="2" class="tengah right">ITEM<br>OMI</th>
+                        @if($ket_jenispkm != 'PKM item OMI/IDM')
+                            <th rowspan="2" class="tengah right">ITEM<br>OMI</th>
+                        @endif
                         <th rowspan="2" class="tengah right">%SL</th>
                     </tr>
                     <tr>
@@ -72,12 +74,12 @@
                     $tempPeriode = $data[$i]->cp_periode;
                 @endphp
             @endif
-            @if($tempSup!=$data[$i]->ftksup)
+            @if($tempSup!=($data[$i]->ftksup.$data[$i]->sup_namasupplier))
                 <tr>
                     <th colspan="5" class="left">SUPPLIER : {{$data[$i]->ftksup}} - {{$data[$i]->sup_namasupplier}}</th>
                 </tr>
                 @php
-                    $tempsup = $data[$i]->ftksup;
+                    $tempSup = $data[$i]->ftksup.$data[$i]->sup_namasupplier;
                 @endphp
             @endif
             <tr>
@@ -90,7 +92,7 @@
                 <td class="right">{{ number_format($data[$i]->ftnl03, 0, '.', ',') }}</td>
                 <td class="right">{{ number_format($data[$i]->ftnl02, 0, '.', ',') }}</td>
                 <td class="right">{{ number_format($data[$i]->ftnl01, 0, '.', ',') }}</td>
-                <td class="right">{{ number_format($data[$i]->ftavgs, 0, '.', ',') }}</td>
+                <td class="right">{{ number_format($data[$i]->ftavgs,1 , '.', ',') }}</td>
                 <td class="right">{{ number_format($data[$i]->ftltim, 0, '.', ',') }}</td>
                 <td class="right">{{ number_format($data[$i]->koef, 0, '.', ',') }}</td>
                 <td class="right">{{ number_format($data[$i]->hs, 0, '.', ',') }}</td>
@@ -102,8 +104,14 @@
                 <td class="right">{{ number_format($data[$i]->dsi, 0, '.', ',') }}</td>
                 <td class="right">{{ number_format($data[$i]->mord, 0, '.', ',') }}</td>
                 <td class="right">{{ number_format($data[$i]->top, 0, '.', ',') }}</td>
-                <td class="right">{{ $data[$i]->omi }}</td>
-                <td class="right">{{ number_format($data[$i]->sl, 0, '.', ',') }}</td>
+                @if($ket_jenispkm != 'PKM item OMI/IDM')
+                    <td class="right">{{ $data[$i]->omi }}</td>
+                @endif
+                @if($ket_jenispkm != 'PKM item OMI/IDM')
+                    <td class="right">{{ number_format($data[$i]->sl, 0, '.', ',') }}</td>
+                @else
+                    <td class="right"></td>
+                @endif
             </tr>
                 @if(!isset($data[$i+1]->cp_periode) || ( isset($data[$i+1]->cp_periode) && $tempPeriode != $data[$i+1]->cp_periode ))
                     </tbody>

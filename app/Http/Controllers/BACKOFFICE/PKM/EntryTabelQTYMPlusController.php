@@ -156,7 +156,7 @@ class EntryTabelQTYMPlusController extends Controller
             ->where('pkmp_kodeigr','=',Session::get('kdigr'))
             ->orderBy('pkmp_prdcd')
             ->orderBy('omi')
-            ->limit(100)
+//            ->limit(100)
             ->get();
 
         $finalData = [];
@@ -489,8 +489,7 @@ class EntryTabelQTYMPlusController extends Controller
                             ]);
                     }
 
-                    DB::connection(Session::get('connection'))
-                        ->commit();
+                    DB::connection(Session::get('connection'))->commit();
 
                     return response()->json([
                         'message' => 'Data CSV sudah selesai diupload!'

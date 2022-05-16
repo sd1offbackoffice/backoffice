@@ -128,7 +128,7 @@
                                 <thead class="theadDataTables">
                                 <tr class="table-sm text-center">
                                     <th width="7%" class="text-center small">PLU</th>
-                                    <th width="20%" class="text-center small">DESKRIPSI</th>
+                                    <th width="16%" class="text-center small">DESKRIPSI</th>
                                     <th width="6%" class="text-center small">SATUAN</th>
                                     <th width="3%" class="text-center small">BKP</th>
                                     <th width="4%" class="text-center small">STOCK</th>
@@ -136,10 +136,10 @@
                                     <th width="3%" class="text-center small">CTN</th>
                                     <th width="3%" class="text-center small">PCS</th>
                                     <th width="7%" class="text-center small">GROSS</th>
-                                    <th width="3%" class="text-center small">DISC %</th>
+                                    <th width="4%" class="text-center small">DISC %</th>
                                     <th width="7%" class="text-center small">DISC Rp</th>
-                                    <th width="3%" class="text-center small">PPN %</th>
-                                    <th width="3%" class="text-center small">PPN</th>
+                                    <th width="4%" class="text-center small">PPN %</th>
+                                    <th width="4%" class="text-center small">PPN</th>
                                     <th width="6%" class="text-center small">FAKTUR</th>
                                     <th width="7%" class="text-center small">PAJAK No.</th>
                                     <th width="6%" class="text-center small">TGL FP</th>
@@ -553,6 +553,7 @@
         });
 
         function getDataLovPlu(kdsup) {
+            $('#table_lov_plu').DataTable().destroy()
             $('#table_lov_plu').DataTable({
                 "ajax": '{{ url('/bo/transaksi/pengeluaran/input/get-data-lov-plu') }}',
                 // "ajax": {
@@ -736,6 +737,7 @@
                 success: function (response) {
                     $('#modal-loader').modal('hide');
                     $('.plu-header-1').focus();
+                    getDataLovPlu(kdsup);
 
                     if (response.message) {
                         swal({
@@ -751,9 +753,7 @@
 
                         $('#txtKdSupplier').val(kdsup);
                         $('#txtNmSupplier').val(namasupplier);
-                        $('#txtPKP').val(pkp);
-
-                        getDataLovPlu(kdsup);
+                        $('#txtPKP').val(pkp);                        
                     }
 
                 },
@@ -1043,7 +1043,7 @@
                             });
                             tot_total = tot_gross - tot_potongan + tot_ppn;
 
-                            $('#gross').val(convertRupiah(tot_gross));
+                            $('#gross').val(convertRupiah2(Math_round(tot_gross)));
                             $('#potongan').val(convertRupiah(tot_potongan));
                             $('#ppn').val(convertRupiah(tot_ppn));
                             $('#total').val(convertRupiah(tot_total));
@@ -1452,7 +1452,8 @@
                     qtyretur: qtyretur,
                     p_prdcd: plu,
                     nodoc: nodoc,
-                    pkp: pkp
+                    pkp: pkp,
+                    keterangan: keterangan
                 },
                 beforeSend: function () {
                     $('#modal-loader').modal('show');
@@ -1460,8 +1461,8 @@
                 success: function (response) {
                     $('#modal-loader').modal('hide');
                     let detail = response.datas;
-                    detail.forEach(i => {                        
-                        datas_detail.push(i)                        
+                    detail.forEach(i => {
+                        datas_detail.push(i)
                     });
                     console.log(datas_detail);
                     let ctn = Math.floor(qtyretur / frac)
@@ -1499,7 +1500,7 @@
                                 '<td><input disabled class="form-control invno" type="text" value="' + dd.trbo_inv + '"></td>' +
                                 '<td><input disabled class="form-control tglinv" type="text" value="' + dd.trbo_tgl + '"></td>' +
                                 '<td><input disabled class="form-control noreff" type="text" value="' + dd.trbo_noreff + '"></td>' +
-                                '<td><input disabled class="form-control keterangan" type="text" value="' + keterangan + '"></td>' +
+                                '<td><input disabled class="form-control keterangan" type="text" value="' + dd.trbo_keterangan + '"></td>' +
                                 '</tr>');
 
                             tot_gross += dd.trbo_gross;

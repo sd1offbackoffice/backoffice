@@ -60,7 +60,9 @@
                         <th rowspan="2" class="tengah right">DSI</th>
                         <th rowspan="2" class="tengah right">MINOR</th>
                         <th rowspan="2" class="tengah right">TOP</th>
-                        <th rowspan="2" class="tengah right">ITEM<br>OMI</th>
+                        @if($ket_jenispkm != 'PKM item OMI/IDM')
+                            <th rowspan="2" class="tengah right">ITEM<br>OMI</th>
+                        @endif
                         <th rowspan="2" class="tengah right">%SL</th>
                     </tr>
                     <tr>
@@ -108,8 +110,14 @@
                 <td class="right">{{ number_format($data[$i]->dsi, 0, '.', ',') }}</td>
                 <td class="right">{{ number_format($data[$i]->mord, 0, '.', ',') }}</td>
                 <td class="right">{{ number_format($data[$i]->top, 0, '.', ',') }}</td>
-                <td class="right">{{ $data[$i]->omi }}</td>
-                <td class="right">{{ number_format($data[$i]->sl, 0, '.', ',') }}</td>
+                @if($ket_jenispkm != 'PKM item OMI/IDM')
+                    <td class="right">{{ $data[$i]->omi }}</td>
+                @endif
+                @if($ket_jenispkm != 'PKM item OMI/IDM')
+                    <td class="right">{{ number_format($data[$i]->sl, 0, '.', ',') }}</td>
+                @else
+                    <td class="right"></td>
+                @endif
             </tr>
                 @if(!isset($data[$i+1]->cp_periode) || ( isset($data[$i+1]->cp_periode) && $tempPeriode != $data[$i+1]->cp_periode ))
                     </tbody>

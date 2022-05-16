@@ -73,17 +73,16 @@ class cetakBPBController extends Controller
 
     public function print_ctk_bpb($kodeigr, $date1, $date2, $typeTrn, $typeLaporan)
     {
-        $startDate  = date('Y-m-d H:i:s', strtotime($date1));
-        $endDate    = date('Y-m-d H:i:s', strtotime($date2));
+        $startDate  = date('Y-m-d', strtotime($date1));
+        $endDate    = date('Y-m-d', strtotime($date2));
+
         if ($typeLaporan == 'B1') {
             $temp = DB::connection(Session::get('connection'))->select("SELECT *
                                         FROM TBTR_BACKOFFICE
                                         WHERE TRBO_KODEIGR = '$kodeigr'
                                         AND TRBO_TYPETRN = '$typeTrn'
-                                        --AND TRBO_TGLDOC BETWEEN to_date('','yyyy-dd-mm') AND to_date('','yyyy-dd-mm')
-                                        AND TRBO_TGLDOC BETWEEN '$startDate' and '$endDate'
-                                        AND TRBO_RECORDID <> '2'");
-
+                                        AND TRBO_TGLDOC BETWEEN to_date('$startDate','yyyy-mm-dd') AND to_date('$endDate','yyyy-mm-dd')
+                                        AND NVL(TRBO_RECORDID,'0') <> '2'");
             if (!$temp) {
                 return ['kode' => 0, 'msg' => "Data Tidak Ditemukan!!", 'data' => ''];
             } else {
@@ -103,11 +102,10 @@ class cetakBPBController extends Controller
                 $data = ['url' => 'IGR_BO_MONITORBPB', 'kodeigr' => $kodeigr, 'startDate' => $startDate, 'endDate' => $endDate, 'typeTrn' => $typeTrn, 'typeLaporan' => $typeLaporan, 'data' => $temp];
                 return ['kode' => 1, 'msg' => "Cetak Laporan", 'data' => $data];
             }
-        } 
-        // else if ($typeLaporan == 'B2') {
-        //     return ['kode' => 1, 'msg' => "Cetak Laporan", 'data' => 'url'];
-        //     //CETAK_BLMPRS_PB (kdoeigr, date1, date2, p_prog:IGR031E, typetrn)
-        // }
+        } else if ($typeLaporan == 'B2') {
+            return ['kode' => 1, 'msg' => "Cetak Laporan", 'data' => 'url'];
+            // CETAK_BLMPRS_PB (kdoeigr, date1, date2, p_prog:IGR031E, typetrn)
+        }
     }
 
     public function print_ctk_bpb1($formatLaporan, $ukuranLaporan, $noPO, $kodeigr, $typeTrn)
@@ -136,7 +134,6 @@ class cetakBPBController extends Controller
 
         if ($report == 'IGR_BO_BLMPRSBPB') {
             $datas = $this->IGR_BO_BLMPRSBPB($data);
-
             $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_blmprsbpb', ['datas' => $datas])->setPaper('a4', 'landscape');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);

@@ -200,6 +200,10 @@
             vertical-align: bottom !important;
         }
 
+        .bawah{
+            vertical-align: bottom !important;
+        }
+
         .blank-row {
             line-height: 70px!important;
             color: white;

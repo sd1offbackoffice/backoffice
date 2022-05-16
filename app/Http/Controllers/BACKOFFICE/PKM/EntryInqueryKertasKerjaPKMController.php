@@ -384,7 +384,9 @@ class EntryInqueryKertasKerjaPKMController extends Controller
             }
 
             $d->maxpalet = $d->mpt_maxqty;
-            $temp = $d->pkmx + ($d->min + 0.5);
+            $temp = $d->pkmx + ($d->min * 0.5);
+
+            $d->maxd = intval($d->maxd);
 
             if($temp >= $d->maxd && $temp >= $d->maxpalet)
                 $d->slp = 'S';
@@ -395,6 +397,16 @@ class EntryInqueryKertasKerjaPKMController extends Controller
             else $d->slp = '';
 
             $d->pkm_qtyaverage = number_format($d->pkm_qtyaverage,3);
+
+//            $d->acost = $d->prd_avgcost;
+//            $d->unit3 = $d->prd_unit;
+//            $d->frac = $d->prd_frac;
+//            $d->ndsi1 = 0;
+//            $d->ndsi2 = 0;
+//            $d->ntop = 0;
+//            $d->nmin_rp = 0;
+//            $d->nmid_rp = 0;
+//            $d->nrph1 = 0;
         }
 
         return DataTables::of($data)->make(true);

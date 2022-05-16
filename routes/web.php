@@ -510,6 +510,21 @@ Route::middleware(['CheckLogin'])->group(function () {
 
         /*Leo*/
         Route::prefix('/pb')->group(function () {
+            /*Denni*/
+            Route::prefix('/manual-md')->group(function () {
+                Route::get('/', 'BACKOFFICE\PB\PBManualMDController@index');
+                Route::get('/get-product-list', 'BACKOFFICE\PB\PBManualMDController@getProductList');
+                Route::get('/get-pb-product', 'BACKOFFICE\PB\PBManualMDController@getPBProduct');
+                Route::get('/get-product-detail', 'BACKOFFICE\PB\PBManualMDController@getProductDetail');
+                Route::post('/save-pb-data', 'BACKOFFICE\PB\PBManualMDController@savePBData');
+                Route::get('/print-item', 'BACKOFFICE\PB\PBManualMDController@printItem');
+                Route::get('/print-proses', 'BACKOFFICE\PB\PBManualMDController@printProses');
+                Route::get('/get-pb-draft-list', 'BACKOFFICE\PB\PBManualMDController@getPBDraftList');
+                Route::get('/get-pb-draft-detail', 'BACKOFFICE\PB\PBManualMDController@getPBDraftDetail');
+                Route::post('/delete-pb-draft', 'BACKOFFICE\PB\PBManualMDController@deletePBDraft');
+                Route::get('/new-pb-draft', 'BACKOFFICE\PB\PBManualMDController@newPBDraft');
+                Route::get('/get-draft-product-detail', 'BACKOFFICE\PB\PBManualMDController@getDraftProductDetail');
+            });
 
             /*Denni*/
             Route::prefix('/manual')->group(function () {
@@ -1435,6 +1450,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/', 'BACKOFFICE\PKM\FaktorPKMTokoController@index');
                 Route::get('/get-data-table-n', 'BACKOFFICE\PKM\FaktorPKMTokoController@getDataTableN')->name('get-data-table-n');
                 Route::get('/get-data-detail-n', 'BACKOFFICE\PKM\FaktorPKMTokoController@getDataDetailN')->name('get-data-detail-n');
+                Route::post('/insert-perjanjian', 'BACKOFFICE\PKM\FaktorPKMTokoController@insertPerjanjian');
                 Route::post('/upload-nplus', 'BACKOFFICE\PKM\FaktorPKMTokoController@uploadNPLUS')->name('upload-nplus');
                 Route::get('/get-data-table-m', 'BACKOFFICE\PKM\FaktorPKMTokoController@getDataTableM')->name('get-data-table-m');
                 Route::get('/get-data-detail', 'BACKOFFICE\PKM\FaktorPKMTokoController@getDataDetail')->name('get-data-detail');
@@ -2320,6 +2336,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/get-lov-departemen', 'OMI\LAPORAN\BedaTagController@getLovDepartemen');
                 Route::get('/get-lov-kategori', 'OMI\LAPORAN\BedaTagController@getLovKategori');
                 Route::post('/validateTag', 'OMI\LAPORAN\BedaTagController@validateTag');
+                Route::get('/print-beda-tag', 'OMI\LAPORAN\BedaTagController@printLaporan');
             });
 
             /*  Jefri */

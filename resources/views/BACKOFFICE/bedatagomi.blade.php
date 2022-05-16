@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','BEDA TAG OMI')
+@section('title','BEDA TAG IGR OMI')
 @section('content')
 
     <div class="container-fluid mt-4">
@@ -534,12 +534,12 @@
         let tableKategori;
         let tableSupplier;
 
-        $('#kodetagigr').on('change',function(){
-            $kodetagigr = $('#kodetagigr').val();
-            validateTag();
-            console.log('ada validate');
+        // $('#kodetagigr').on('change',function(){
+        //     $kodetagigr = $('#kodetagigr').val();
+        //     validateTag();
+        //     console.log('ada validate');
 
-        });
+        // });
 
         $('#menu1daterangepicker').daterangepicker({
             singleDatePicker: true,
@@ -958,19 +958,19 @@
                 }
             }
 
-            // if(div1 != '' && div2 != ''){ // karena dep dan kat tak mungkin isi tanpa isi div, maka hanya perlu 1 kondisi ini,
-            //     if(parseInt(div1) > parseInt(div2)){ // karena nilai dep1 dan ka1 berdasarkan div1, maka ganti cek div1 saja, sama dengan dep2 dan kat2
-            //         temp = div1;
-            //         div1 = div2;
-            //         div2 = temp;
-            //         temp = dep1;
-            //         dep1 = dep2;
-            //         dep2 = temp;
-            //         temp = kat1;
-            //         kat1 = kat2;
-            //         kat2 = temp;
-            //     }
-            // }
+            if(div1 != '' && div2 != ''){ // karena dep dan kat tak mungkin isi tanpa isi div, maka hanya perlu 1 kondisi ini,
+                if(parseInt(div1) > parseInt(div2)){ // karena nilai dep1 dan ka1 berdasarkan div1, maka ganti cek div1 saja, sama dengan dep2 dan kat2
+                    temp = div1;
+                    div1 = div2;
+                    div2 = temp;
+                    temp = dep1;
+                    dep1 = dep2;
+                    dep2 = temp;
+                    temp = kat1;
+                    kat1 = kat2;
+                    kat2 = temp;
+                }
+            }
 
             // TAG
             // let tag1 = $('#menu1Tag1').val();
@@ -1009,10 +1009,10 @@
 
             //sortby
             // let sort = $('#menu1SortBy').val();
-            let sort = sort;
+            
 
             //PRINT
-            window.open(`{{ url()->current() }}/print-beda-tag?div1=${div1}&div2=${div2}&dep1=${dep1}&dep2=${dep2}&kat1=${kat1}&kat2=${kat2}&ptag=${ptag}&date=${dateA}&produkbaru=${produkbaru}&chp=${chp}&sort=${sort}`, '_blank');
+            window.open(`{{ url()->current() }}/print-beda-tag?div1=${div1}&div2=${div2}&dep1=${dep1}&dep2=${dep2}&kat1=${kat1}&kat2=${kat2}&tag=${tag}&date=${dateA}&sort=${sort}`, '_blank');
         }
 
         $(document).ready(function () {
@@ -1043,46 +1043,39 @@
 
 
         function cetak(){
-            // var buttons = $('<div>')
-            // .append(createButton('PLU', function() {
-            //     swal.close();
-            //     menu1Cetak('PLU');
-            //     console.log('PLU'); 
-            // })).append(createButton('DDK', function() {
-            //     swal.close();
-            //     menu1Cetak('DDK');
-            //     console.log('DDK'); 
-            // }));
-            
-            $(document).on('click', '.SwalBtn1', function() {
-                //Some code 1
-                console.log('Button 1');
-                swal.clickConfirm();
-            });
-            $(document).on('click', '.SwalBtn2', function() {
-                //Some code 2 
-                console.log('Button 2');
-                swal.clickConfirm();
-            });
-            
-            // e.preventDefault();
             swal({
-                title: 'Sort By',
-                html: "" +
-                    "<br>" +
-                    '<button type="button" role="button" tabindex="0" class="SwalBtn1 customSwalBtn">' + 'PLU' + '</button>' +
-                    '<button type="button" role="button" tabindex="0" class="SwalBtn2 customSwalBtn">' + 'DDK' + '</button>',
-                showCancelButton: false,
-                showConfirmButton: false
+                title: 'Sort By', 
+                icon: "warning",
+                buttons: {
+                    one: {
+                    text: "PLU",
+                    value: 1
+                    },
+                    two: {
+                    text: "Div-Dep-Kat",
+                    value: 2
+                    }
+                },
+                
+            /*
+            * Only returns one value, because input is overridden by buttons
+            * so you never get the input's value and the button's value
+            * just the button's value.
+            */
+            }).then( value => {
+                switch (value) {                  
+                    case 1:
+                        menu1Cetak(1)
+                        break;
+                    case 2:
+                        menu1Cetak(2)
+                        break;
+                    // default:
+                    //     swal("test sort");
+                }
             });
-            // swal({
-            //     title: "Sort By ?",
-            //     html: buttons,
-            //     type: "warning",
-            //     showConfirmButton: true,
-            //     showCancelButton: true
-            // });
-            // menu1Cetak();            
+            
+        
         }
 
         // IMPORTANT!!! ### BUTUH CURSOR UNTUK MENDETEKSI TOMBOL MANA YANG MEMANGGIL! ###
@@ -1225,6 +1218,7 @@
         } );
 
         function validateTag(){
+            console.log('validating');
             let tag = $('#kodetagigr').val();
             ajaxSetup();
             $.ajax({
@@ -1232,16 +1226,25 @@
                 type: 'post',
                 data: {tag : tag},
                 success: function (result){
-                    
+                    console.log(result.errflag);
+                    console.log(result.temp);
                     if (result.errflag == 1 ){
 
-                        $('#kodetagigr').value = "";
+                        $('#kodetagigr').val("");
 
                         swal({
                             title: result.status,
                             text: result.message,
                             icon: result.status,
                         })
+                        // .then(function(confirm){
+                        //     if(confirm){
+                        //         $('#kodetagigr').val("");
+                        //     }
+                        //     else{
+                        //         $('#kodetagigr').val("");
+                        //     }
+                        // })
 
                     }
 

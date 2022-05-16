@@ -152,7 +152,7 @@
                             </div>
                             <label for="desk" class="col-sm-4 text-right col-form-label">USER</label>
                             <div class="col-sm-1">
-                                <input type="text" class="form-control" id="d_user" value="{{ Session::get('usertype') }}" disabled>
+                                <input type="text" class="form-control" id="d_user" value="{{ Session::get('usertype') != 'XXX' ? Session::get('usertype') : ''}} " disabled>
                             </div>
                             <label for="desk" class="col-sm-2 text-right col-form-label">KETERANGAN</label>
                             <div class="col-sm-2">
@@ -770,7 +770,7 @@
 
         function getDetail(type){
             $('#detail_view input').val('');
-            $('#d_user').val('{{ Session::get('usertype') }}');
+            $('#d_user').val('{{ Session::get('usertype') != 'XXX' ? Session::get('usertype') : '' }}');
 
             $('.d_prdcd').hide();
 
@@ -836,20 +836,50 @@
                 },
                 "columns": [
                     {data: 'pkm_prdcd'},
-                    {data: 'pkm_mindisplay'},
-                    {data: 'maxd'},
-                    {data: 'pkm_qtyaverage'},
-                    {data: 'pkm_leadtime'},
-                    {data: 'pkm_koefisien'},
-                    {data: 'hari'},
+                    {data: null, render: function(data){
+                            return convertToRupiah2(data.pkm_mindisplay);
+                        }
+                    },
+                    {data: null, render: function(data){
+                            return convertToRupiah2(data.maxd);
+                        }
+                    },
+                    {data: null, render: function(data){
+                            return data.pkm_qtyaverage;
+                        }
+                    },
+                    {data: null, render: function(data){
+                            return convertToRupiah2(data.pkm_leadtime);
+                        }
+                    },
+                    {data: null, render: function(data){
+                            return parseFloat(data.pkm_koefisien).toFixed(1);
+                        }
+                    },
+                    {data: null, render: function(data){
+                            return convertToRupiah2(data.hari);
+                        }
+                    },
                     {data: 'pkm_pkm', render: function(data, type, full, meta){
                             return '<input class="text-right row-pkm" onkeypress="changePKM(event, '+meta.row+')" style="width: 5vw" value="' + data + '">';
                         }
                     },
-                    {data: 'pkm_mpkm'},
-                    {data: 'pkm_pkmt'},
-                    {data: 'nplus'},
-                    {data: 'pkmx'},
+                    {data: null, render: function(data){
+                            return convertToRupiah2(data.pkm_mpkm);
+                        }
+                    },
+                    {data: null, render: function(data){
+                            return convertToRupiah2(data.pkm_pkmt);
+                        }
+                    },
+                    {data: null, render: function(data){
+                            return convertToRupiah2(data.nplus);
+                        }
+                    },
+                    {data: null, render: function(data){
+                            return convertToRupiah2(data.pkmx);
+                        }
+                    },
                     {data: 'slp'},
                     {data: 'hgb_statusbarang'},
                     {data: 'slv_servicelevel_qty'},
@@ -1007,21 +1037,21 @@
             ndsi2 = 0;
             nrph1 = 0;
 
-
-
             tag = ['N','H','O','X','A','G'];
 
             for(i=0;i<dataDetail.length;i++){
                 // console.log($.inArray(dataDetail[i].prd_kodetag, tag));
                 if($.inArray(dataDetail[i].prd_kodetag, tag) == -1){
-                    ndsi1 += parseFloat(dataDetail[i].pkmx);
-                    ntop += parseFloat(dataDetail[i].jtopa);
-                    nmin_rp += parseFloat(dataDetail[i].min);
-                    nmid_rp += parseFloat(dataDetail[i].pkm_mindisplay);
+                    acost = dataDetail[i].prd_avgcost / (dataDetail[i].prd_unit == 'KG' ? 1 : dataDetail[i].prd_frac);
+
+                    ndsi1 += parseFloat(dataDetail[i].pkmx) * acost;
+                    ntop += parseFloat(dataDetail[i].jtopa) * acost;
+                    nmin_rp += parseFloat(dataDetail[i].min) * acost;
+                    nmid_rp += parseFloat(dataDetail[i].pkm_mindisplay) * acost;
                 }
 
-                ndsi2 += parseFloat(dataDetail[i].pkm_qtyaverage);
-                nrph1 += parseFloat(dataDetail[i].pkm_qtyaverage);
+                ndsi2 += parseFloat(dataDetail[i].pkm_qtyaverage) * acost;
+                nrph1 += parseFloat(dataDetail[i].pkm_qtyaverage) * acost;
 
             }
 

@@ -60,6 +60,12 @@ return [
             'root'   => '../storage/signature_expedition/',
         ],
 
+        // Kingsley
+        'receipts_backup' => [
+            'driver' => 'local',
+            'root'   => '../storage/receipts_backup/',
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
@@ -74,20 +80,6 @@ return [
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
             'url' => env('AWS_URL'),
-        ],
-
-        // Kingsley
-        'custom-ftp' => [
-            'driver' => 'ftp',
-            'host' => '172.20.28.18',
-            'username' => 'btbigr',
-            'password' => 'xxbtbigrxx',
-            // Optional FTP Settings...
-            // 'port'     => 21,
-            // 'root' => '/opt/btbigr/temp/',
-            // 'passive'  => true,
-            // 'ssl'      => true,
-            // 'timeout'  => 30,
         ],
 
         'DBF' => [

@@ -43,6 +43,224 @@ class FaktorPKMTokoController extends Controller
         return DataTables::of($data)->make(true);
     }
 
+    public function insertPerjanjian(Request $request)
+    {
+        $kodeigr = Session::get('kdigr');
+        $usid = Session::get('usid');
+        
+        $check_prodmast = DB::connection('simckl')->table('tbmaster_prodmast')
+        ->where('prd_prdcd',$request->na_prdcd)
+        ->get();
+ 
+        $count_prodmast = count($check_prodmast);
+
+        if($count_prodmast == 1)
+        {
+            $check_tbtr_gondola = DB::connection('simckl')->table('tbtr_gondola')
+            ->where('gdl_noperjanjiansewa',$request->na_noperjanjian)
+            ->where('gdl_prdcd',$request->na_prdcd)
+            ->where('gdl_kodedisplay',$request->na_kodedisplay)
+            ->get();
+    
+            $count_tbtr_gondola = count($check_tbtr_gondola);
+
+            dd($count_tbtr_gondola);
+
+            if($count_tbtr_gondola > 0)
+            {
+                return response()->json([
+                    'title' => 'An error occurred !',
+                    'message' => 'Kode perjanjian, PLU, Kode Display sudah ada !',
+                    'status' => 'error'
+                ], 500);
+            }
+            else
+            {
+                
+                $insert_tbtr_gondola = DB::connection('simckl')
+                ->insert("INSERT INTO tbtr_gondola 
+                        (
+                            gdl_kodeigr,
+                            gdl_noperjanjiansewa,
+                            gdl_prdcd,
+                            gdl_qty,
+                            gdl_kodecabang,
+                            gdl_kodedisplay,
+                            gdl_tglawal,
+                            gdl_tglakhir,
+                            gdl_create_by,
+                            gdl_create_dt
+                        )
+                        VALUES 
+                        ( 
+                            '".$kodeigr."',
+                            '".$request->na_noperjanjian."',
+                            '".$request->na_prdcd."',
+                            '".$request->na_qty."',
+                            '".$kodeigr."',
+                            '".$request->kodedisplay."',
+                            '".$request->kodedisplay."',
+                            '".$request->na_tglawal."',
+                            '".$request->na_tglakhir."',
+                            '".$usid."',
+                            SYSDATE)
+                        ");
+
+                $check_kkpkm = DB::connection('simckl')->table('tbmaster_kkpkm')
+                ->where('pkm_prdcd',$request->na_prdcd)
+                ->get();
+            
+                $count_kkpkm = count($check_kkpkm);
+
+                if($count_kkpkm > 1)
+                {
+                    $select_kkpkm = DB::connection('simckl')
+                    ->select("SELECT 
+                    PKM_KODEDIVISI
+                    PKM_KODEDEPARTEMENT,
+                    PKM_KODEKATEGORIBARANG,
+                    PKM_PKMT,
+                    PKM_MPKM
+                    FROM tbmaster_kkpkm
+                    WHERE pkm_prdcd = '".$request->na_prdcd."'");
+
+                    $kkdiv = $select_kkpkm[0]->PKM_KODEDIVISI;
+                    $kddep = $select_kkpkm[0]->PKM_KODEDEPARTEMENT;
+                    $kdkat = $select_kkpkm[0]->PKM_KODEKATEGORIBARANG;
+                    $pkmt = $select_kkpkm[0]->PKM_PKMT;
+                    $mpkm = $select_kkpkm[0]->PKM_MPKM;
+
+                }
+                else
+                {
+                    $select_prodmast = DB::connection('simckl')
+                    ->select("SELECT PRD_KODEDIVISI,
+                                PRD_KODEDEPARTEMENT,
+                                PRD_KODEKATEGORIBARANG,
+                                0,
+                                0
+                            FROM tbmaster_prodmast
+                            WHERE prd_prdcd = '".$request->na_prdcd."' 
+                            ");
+
+                    $kkdiv = $select_prodmast[0]->PKM_KODEDIVISI;
+                    $kddep = $select_prodmast[0]->PKM_KODEDEPARTEMENT;
+                    $kdkat = $select_prodmast[0]->PKM_KODEKATEGORIBARANG;
+                    $pkmt = 0;
+                    $mpkm = 0;
+                }
+
+                $ftngdla = 0;
+
+                $loop_gondola = DB::connection('simckl')
+                ->select("SELECT 
+                        GDL_PRDCD,
+                        GDL_TGLAWAL,
+                        GDL_TGLAKHIR,
+                        GDL_QTY
+                        FROM TBTR_GONDOLA
+                        WHERE GDL_PRDCD = '".$request->na_prdcd."' 
+                        ORDER BY NVL (GDL_TGLAWAL, TO_DATE ('01-01-1990', 'dd-mm-yyyy')) DESC,
+                        NVL (GDL_TGLAKHIR, TO_DATE ('31-12-2100', 'dd-mm-yyyy')) DESC
+                        ");
+
+                $count_gondola = count($loop_gondola);
+
+                for($i = 0; $i <= $count_gondola; $i++)
+                {
+                    $adagdl = true;
+                    $ftngdla = $ftngdla + $loop_gondola[$i];  
+                }
+
+                if($adagdl)
+                {
+                    $check_pkmgondola = DB::connection('simckl')->table('tbtr_pkmgondola')
+                    ->where('PKMG_PRDCD',$request->na_prdcd)
+                    ->where('PKMG_TGLAWALPKM',$request->na_tglawal)
+                    ->where('PKMG_TGLAKHIRPKM',$request->na_tglakhir)
+                    ->get();
+    
+                    $count_pkmgondola = count($check_pkmgondola);
+
+                    if($count_pkmgondola == 0)
+                    {
+                        
+                        $insert_tbtr_pkmgondola = DB::connection('simckl')
+                        ->insert(" INSERT INTO TBTR_PKMGONDOLA 
+                        (
+                            PKMG_KODEIGR,
+                            PKMG_KODEDIVISI,
+                            PKMG_KODEDEPARTEMENT,
+                            PKMG_KODEKATEGORIBRG,
+                            PKMG_PRDCD,
+                            PKMG_NILAIPKMG,
+                            PKMG_NILAIPKMB,
+                            PKMG_NILAIMPKM,
+                            PKMG_NILAIPKMT,
+                            PKMG_CREATE_DT,
+                            PKMG_CREATE_BY,
+                            PKMG_NILAIGONDOLA,
+                            PKMG_TGLAWALPKM,
+                            PKMG_TGLAKHIRPKM
+                        )
+                        VALUES ( 
+                        '".$kodeigr."',
+                        '".$kkdiv."',
+                        '".$kddep."',
+                        '".$kdkat."',
+                        '".$request->na_prdcd."',
+                        '".$pkmt."' + '".$ftngdla."',
+                        '".$pkmt."' + '".$ftngdla."',
+                        '".$mpkm."',
+                        '".$pkmt."',
+                        SYSDATE,
+                        '".$usid."',
+                        '".$ftngdla."',
+                        '".$request->na_tglawal."',
+                        '".$request->na_tglakhir."'
+                        )
+                        ");
+                        
+                        return response()->json([
+                            'title' => 'success !',
+                            'message' => ' Upload data gondola sukses !',
+                            'status' => 'OK'
+                        ], 200);
+                       
+                    }
+                    else
+                    {
+                        $update_pkmgondola = DB::connection('simckl')
+                        ->update("  UPDATE TBTR_PKMGONDOLA
+                        SET PKMG_NILAIPKMG = '".$pkmt."' + '".$ftngdla."',
+                            PKMG_NILAIPKMB = '".$pkmt."' + '".$ftngdla."',
+                            PKMG_NILAIMPKM = '".$mpkm."',
+                            PKMG_NILAIPKMT = '".$pkmt."',
+                            PKMG_MODIFY_DT = SYSDATE,
+                            PKMG_MODIFY_BY = '".$usid."',
+                            PKMG_NILAIGONDOLA = '".$ftngdla."', 
+                            WHERE PKMG_PRDCD = '".$request->na_prdcd."' AND PKMG_KODEIGR = '".$usid."' ");
+                    }
+                }
+                        
+            }
+
+            return response()->json([
+                'title' => 'success !',
+                'message' => ' OK !',
+                'status' => 'OK'
+            ], 200);
+            
+        }else{
+            return response()->json([
+                'title' => 'An error occurred !',
+                'message' => 'PLU tidak terdaftar di master product !',
+                'status' => 'error'
+            ], 500);
+        }
+        
+    }
+
     public function getDataDetailN(Request $request)
     {
         $data_join = DB::connection('simckl')
@@ -280,7 +498,8 @@ class FaktorPKMTokoController extends Controller
                     PKMP_CREATE_DT,
                     PKMP_MPLUSI,
                     PKMP_MPLUSO
-                    )VALUES (
+                    )
+                    VALUES (
                     '".$kodeigr."',
                      '".$div."',
                      '".$dep."',
@@ -290,7 +509,8 @@ class FaktorPKMTokoController extends Controller
                     '".$usid."',
                     SYSDATE,
                     nvl('".$request->ma_mplus_i."',0),
-                    nvl('".$request->ma_mplus_o."',0) )
+                    nvl('".$request->ma_mplus_o."',0) 
+                    )
                     ");
 
                 $check_kkpkm = DB::connection('simckl')->table('tbmaster_kkpkm')

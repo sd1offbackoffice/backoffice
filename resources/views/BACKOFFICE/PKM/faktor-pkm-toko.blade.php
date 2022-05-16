@@ -123,8 +123,8 @@
                                         <td><input type="text" class="form-control" id="na_noperjanjian"></td>
                                         <td><input type="text" class="form-control" id="na_prdcd" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"></td>
                                         <td><input type="text" class="form-control" id="na_kodedisplay" onkeyup="this.value = this.value.toUpperCase();" maxlength="2"></td>
-                                        <td><input type="text" class="form-control" id="na_tglawal"></td>
-                                        <td><input type="text" class="form-control" id="na_tglakhir"></td>
+                                        <td><input type="text" class="form-control daterange-periode" id="na_tglawal"></td>
+                                        <td><input type="text" class="form-control daterange-periode" id="na_tglakhir"></td>
                                         <td><input type="text" class="form-control" id="na_qty" onkeypress="return (event.charCode >= 48 && event.charCode <= 57)"></td>
                                     </tr>
 
@@ -321,6 +321,23 @@
 
     });
     // ------------------------------ MENU N ------------------------------------------------
+
+    
+$('.daterange-periode').daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            cancelLabel: 'Clear'
+        }
+    });
+    $('.daterange-periode').on('apply.daterangepicker', function (ev, picker) {
+        $('#na_tglawal').val(picker.startDate.format('DD/MM/YYYY'));
+        $('#na_tglakhir').val(picker.endDate.format('DD/MM/YYYY'));
+    });
+
+    $('.daterange-periode').on('cancel.daterangepicker', function (ev, picker) {
+        $(this).val('');
+    });
+
     function getDataTableN()
     {
         arrDataTableN = [];
@@ -438,6 +455,69 @@
         }
     });
 
+    $('#na_noperjanjian').focus(function () {
+        plu = $('#na_prdcd').val();
+        if (plu.length < 7 && plu.length != 0) {
+
+            plu = convertPlu($('#na_prdcd').val());
+        }
+        else if(plu.length == 0)
+        {
+            plu = '';
+        }
+        $('#na_prdcd').val(plu);
+    });
+
+    $('#na_kodedisplay').focus(function () {
+        plu = $('#na_prdcd').val();
+        if (plu.length < 7 && plu.length != 0) {
+
+            plu = convertPlu($('#na_prdcd').val());
+        }
+        else if(plu.length == 0)
+        {
+            plu = '';
+        }
+        $('#na_prdcd').val(plu);
+    });
+
+    $('#na_tglawal').focus(function () {
+        plu = $('#na_prdcd').val();
+        if (plu.length < 7 && plu.length != 0) {
+
+            plu = convertPlu($('#na_prdcd').val());
+        }
+        else if(plu.length == 0)
+        {
+            plu = '';
+        }
+        $('#na_prdcd').val(plu);
+    });
+    $('#na_tglakhir').focus(function () {
+        plu = $('#na_prdcd').val();
+        if (plu.length < 7 && plu.length != 0) {
+
+            plu = convertPlu($('#na_prdcd').val());
+        }
+        else if(plu.length == 0)
+        {
+            plu = '';
+        }
+        $('#na_prdcd').val(plu);
+    });
+    $('#na_qty').focus(function () {
+        plu = $('#na_prdcd').val();
+        if (plu.length < 7 && plu.length != 0) {
+
+            plu = convertPlu($('#na_prdcd').val());
+        }
+        else if(plu.length == 0)
+        {
+            plu = '';
+        }
+        $('#na_prdcd').val(plu);
+    });
+
     function insertPerjanjian()
     {
         if($('#na_noperjanjian').val() == '' || $('#na_prdcd').val() == '' || $('#na_kodedisplay').val() == '' || $('#na_tglawal').val() == '' || $('#na_tglakhir').val() == '' || $('#na_qty').val() == '')
@@ -446,9 +526,49 @@
         }
         else
         {
-            $.ajax({
-
-            });
+            swal({
+                title: 'Apakah anda yakin ingin menambahkan Perjanjian ini ? ',
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true
+            }).then(function(ok){
+                if(ok){
+                    ajaxSetup();
+                    $.ajax({
+                        url: '{{ url()->current().'/insert-perjanjian' }}',
+                        type: 'post',
+                        data: {
+                            na_noperjanjian : $('#na_noperjanjian').val(),
+                            na_prdcd: $('#na_prdcd').val(),
+                            na_kodedisplay: $('#na_kodedisplay').val(),
+                            na_tglawal: $('#na_tglawal').val(),
+                            na_tglakhir: $('#na_tglakhir').val(),
+                            na_qty: $('#na_qty').val()
+                        },
+                        success: function (response) {
+                            swal({
+                                title: response.title,
+                                text: response.message,
+                                icon: 'success'
+                            }).then(function(ok)
+                            {
+                                $('#na_noperjanjian').val(''),
+                                $('#na_prdcd').val(''),
+                                $('#na_kodedisplay').val('')
+                                $('#na_tglawal').val('')
+                                $('#na_tglakhir').val('')
+                                $('#na_qty').val('')
+                            });
+                        }, error: function (error) {
+                            swal({
+                                title: error.responseJSON.title,
+                                text: error.responseJSON.message,
+                                icon: 'error'
+                            });
+                        }
+                    })// ajax
+                }// if ok
+            })
         }
     }
 

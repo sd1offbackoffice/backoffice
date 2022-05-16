@@ -712,7 +712,6 @@ class inputController extends Controller
         $i_prdcd = '';
 
         $data = $this->query2($noPo, $kodeigr, $prdcd);
-
         if (!$data) {
             return (['2', "Kode Produk tidak terdaftar dalam No.PO ini !!!", ""]);
         }
@@ -765,7 +764,7 @@ class inputController extends Controller
         $data->i_totaldisc = $data->tpod_rphttldisc;
         $data->i_hrgbeli = $nprice;
         $data->i_bkp = $data->prd_flagbkp1 . '/' . $data->prd_flagbkp2;
-        $data->i_ppn = ($data->sup_pkp = 'Y' && $data->prd_flagbkp1 = 'Y') ? 0.1 * $ndpp : 0;
+        $data->i_ppn = ($data->sup_pkp = 'Y' && $data->prd_flagbkp1 = 'Y') ? (($data->tpod_persenppn / 100) * $data->gross) : 0;
         $data->i_bm = $data->tpod_ppnbm;
         $data->i_ppn_persen = $data->tpod_persenppn;
         $data->i_botol = $data->tpod_ppnbotol;
@@ -1806,11 +1805,11 @@ class inputController extends Controller
                     array_push($this->tempDataSave, $temp);
 
                     $qtypb = ($data->i_qty * $data->i_frac) + $data->i_qtyk;
-                    $updatePoD  = DB::connection(Session::get('connection'))->table('tbtr_po_d')
+                    DB::connection(Session::get('connection'))->table('tbtr_po_d')
                         ->where('tpod_kodeigr', $kodeigr)->where('tpod_nopo', $noPo)->where('tpod_prdcd', $prdcd)
                         ->update(['tpod_qtypb' => $qtypb, 'tpod_recordid' => 2]);
 
-                    $updatePoH  = DB::connection(Session::get('connection'))->table('tbtr_po_h')->where('tpoh_nopo', $noPo)->update(['tpoh_recordid' => 2]);
+                    DB::connection(Session::get('connection'))->table('tbtr_po_h')->where('tpoh_nopo', $noPo)->update(['tpoh_recordid' => 2]);
                 }
             }
 
@@ -1859,11 +1858,9 @@ class inputController extends Controller
     {
         $query4 = $this->query4($kodeigr, $supplier, $noPo);
         $query5 = $this->query5($kodeigr, $supplier, $noPo);
-
         if (!$query4) {
             return (['kode' => 2, 'msg' => "Data tidak ada !!", 'data' => '']);
         }
-
         $this->tempDataSave = [];
 
         // IF :parameter.rte = 'Y'

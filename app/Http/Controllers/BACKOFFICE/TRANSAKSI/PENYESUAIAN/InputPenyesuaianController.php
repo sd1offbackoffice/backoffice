@@ -260,11 +260,12 @@ class InputPenyesuaianController extends Controller
                         else{
                             $data = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
                                 ->selectRaw("0 persediaan, 0 persediaan2, nvl(prd_avgcost,0) hrgsatuan,
+                                prd_lastcost oldcost,
                             CASE
                                WHEN TRIM (PRD_UNIT) = 'KG'
                                    THEN 'GRAM'
                                ELSE 'PCS'
-                            END oldcost")
+                            END pcs")
                                 ->where('prd_kodeigr',Session::get('kdigr'))
                                 ->where('prd_prdcd',$plu)
                                 ->first();

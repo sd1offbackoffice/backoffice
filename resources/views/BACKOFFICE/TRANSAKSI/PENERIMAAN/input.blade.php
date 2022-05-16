@@ -1995,6 +1995,7 @@
             let supplier = supplier_code.val();
             let noPo = po_number.val();
             let typeLov = '';
+            headRowPLU.empty();
             headRowPLU.append(`
             <th style="min-width: 300px !important;">Barang</th>
                 <th>PLU</th>
@@ -2055,6 +2056,8 @@
                 success: function(result) {
                     $('#modal-loader').modal('hide');
                     console.log(result)
+                    tbodyModalHelpPLU.empty();
+                    theadDataTables.empty();
                     for (var i = 0; i < result.length; i++) {
                         let value = result[i];
                         tbodyModalHelpPLU.append(`

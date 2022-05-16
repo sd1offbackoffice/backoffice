@@ -110,11 +110,17 @@ class LaporanKertasKerjaPKMController extends Controller
         return DataTables::of($data)->make(true);
     }
 
-    public function getLovSupplier()
+    public function getLovSupplier(Request $request)
     {
+        $sup = $request->sup;
+        $and_sup='';
+        if($sup != ''){
+            $and_sup = " and SUP_KODESUPPLIER >= '".$sup ."'";
+        }
         $data = DB::connection(Session::get('connection'))->select("SELECT SUP_KODESUPPLIER KODE, SUP_NAMASUPPLIER
                 FROM TBMASTER_SUPPLIER
                 WHERE SUP_KODEIGR = '" . Session::get('kdigr') . "'
+                ".$and_sup."
                 ORDER BY SUP_KODESUPPLIER");
 
         return DataTables::of($data)->make(true);
@@ -136,12 +142,12 @@ class LaporanKertasKerjaPKMController extends Controller
         $dep1 = $request->dep1;
         $kat1 = $request->kat1;
         $plu1 = $request->plu1;
-        $sup1 = $request->sup1 != '' ? $request->sup1 : 'ALL';
+        $sup1 = $request->sup1;
         $div2 = $request->div2;
         $dep2 = $request->dep2;
         $kat2 = $request->kat2;
         $plu2 = $request->plu2;
-        $sup2 = $request->sup2 != '' ? $request->sup2 : 'ALL';
+        $sup2 = $request->sup2;
         $mtr = $request->mtr;
         $nmmtr = $request->nmmtr;
         $tag = $request->tag;
@@ -158,7 +164,6 @@ class LaporanKertasKerjaPKMController extends Controller
         $pilih = '';
         $jenispkm = '';
         $filename = '';
-        $supplier = '';
         $ket_jenispkm = '';
 
         if ($mtr <> '') {
@@ -168,14 +173,11 @@ class LaporanKertasKerjaPKMController extends Controller
             $ket_monitoring = '';
         }
 
-        if ($sup1 <> 'ALL' && $sup2 <> 'ALL') {
-            $sup1 = replace($sup1, 'ALL', '000000');
-            $sup2 = replace($sup2, 'ALL', 'ZZZZZZ');
-            $supplier = "AND pkm_kodesupplier BETWEEN '" . $sup1 . "'  AND '" . $sup2 . "' ";
-        }
+
+        $supplier = " AND pkm_kodesupplier BETWEEN NVL ('" . $sup1 . "', '0000000') AND NVL ('" . $sup2 . "', 'ZZZZZZ') ";
 
         if ($tag == 'P') {
-            $pilih = "AND prd_kodetag in ('" . $tag1 . "','" . $tag2 . "','" . $tag3 . "','" . $tag4 . "','" . $tag5 . "')";
+            $pilih = " AND prd_kodetag in ('" . $tag1 . "','" . $tag2 . "','" . $tag3 . "','" . $tag4 . "','" . $tag5 . "')";
         }
 
         if ($item == '1') {
@@ -188,7 +190,6 @@ class LaporanKertasKerjaPKMController extends Controller
         $P_FMPRDT = DB::connection(Session::get('connection'))
             ->table("TBMASTER_PERUSAHAAN")
             ->selectRaw("to_char(PRS_PERIODETERAKHIR,'dd/mm/yyyy') prs_periodeterakhir")->pluck('prs_periodeterakhir')->first();
-
         if ($urut == '1') {
             $filename = 'div';
             $data = DB::connection(Session::get('connection'))
@@ -479,9 +480,6 @@ ORDER BY        FTPRDE,FTKDIV, FTDEPT, FTKATB");
                             " . $jenispkm . "
                 ORDER BY        FTPRDE,PKM_PRDCD");
 
-
-
-
         }
         else if ($urut == '3') {
             $filename = 'sup';
@@ -624,11 +622,11 @@ ORDER BY        FTPRDE,FTKDIV, FTDEPT, FTKATB");
             " . $supplier . "
             " . $pilih . "
             " . $jenispkm . "
-ORDER BY        FTPRDE,FTKSUP, PKM_PRDCD");
+ORDER BY FTPRDE, FTKSUP, PKM_PRDCD");
         }
         for ($i = 0; $i < sizeof($data); $i++) {
             $data[$i]->cp_periode = '';
-            switch (substr($data[$i]->ftprde, 5, 2)) {
+            switch (substr($data[$i]->ftprde, 4, 2)) {
                 case '01':
                     $data[$i]->cp_periode = "  JANUARI";
                     break;

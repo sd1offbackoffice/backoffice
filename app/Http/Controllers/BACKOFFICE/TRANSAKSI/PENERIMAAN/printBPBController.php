@@ -93,13 +93,14 @@ class printBPBController extends Controller
         }
     }
 
-    public function kirimFtp()
+    public function kirimFtp(Request $request)
     {
+        $date = $request->chosenDate;
         $msg = '';
-        $ftp_server = config('ftp.ftp_server');
-        $ftp_user_name = config('ftp.ftp_user_name');
-        $ftp_user_pass = config('ftp.ftp_user_pass');
-        $zipName = Session::get('kdigr') . '_' . date("Ymd", strtotime(Carbon::now())) . '.ZIP';
+        $ftp_server = config('ftp.ftp_server_sd6');
+        $ftp_user_name = config('ftp.ftp_user_name_sd6');
+        $ftp_user_pass = config('ftp.ftp_user_pass_sd6');
+        $zipName = Session::get('kdigr') . '_' . date("Ymd", strtotime($date)) . '.ZIP';
         $zipAddress = '../storage/receipts/' . $zipName;
         try {
             $conn_id = ftp_connect($ftp_server);
@@ -109,14 +110,21 @@ class printBPBController extends Controller
                 if (Storage::disk('receipts')->exists($zipName) == false) {
                     $zip = new ZipArchive;
                     if (true === ($zip->open($zipAddress, ZipArchive::CREATE | ZipArchive::OVERWRITE))) {
-                        foreach ($files as $file => $value) {
-                            $filePath = '../storage/receipts/' . $value;
-                            // ftp_put($conn_id, '/opt/btbigr/' . $value, $filePath); --send file separately
-                            $zip->addFile($filePath, $value);
+                        try {
+                            foreach ($files as $file => $value) {
+                                if (substr($value, -12, -4) == date("Ymd", strtotime($date))) {
+                                    $filePath = '../storage/receipts/' . $value;
+                                    // ftp_put($conn_id, '/opt/btbigr/' . $value, $filePath); --send file separately
+                                    $zip->addFile($filePath, $value);
+                                }
+                            }
+                            $zip->close();
+                            ftp_put($conn_id, '/opt/btbigr/' . $zipName, $zipAddress);
+                            //send to SD6
+                        } catch (Exception $e) {
+                            $msg = 'Tidak ada file pada tanggal ' . $date . '!';
+                            return response()->json(['kode' => 0, 'message' => $msg]);
                         }
-                        $zip->close();
-                        ftp_put($conn_id, '/opt/btbigr/' . $zipName, $zipAddress);
-                        //send to SD6
                     } else {
                         $msg = 'Proses kirim file gagal';
                         return response()->json(['kode' => 0, 'message' => $msg]);
@@ -1596,6 +1604,99 @@ class printBPBController extends Controller
         }
     }
 
+    public function deleteBackupFiles()
+    {
+        $files = Storage::disk('receipts_backup')->allFiles();
+        if (count($files) > 0) {
+            foreach ($files as $file => $value) {
+                $filePath = '../storage/receipts_backup/' . $value;
+                File::delete($filePath);
+            }
+        }
+    }
+
+    public function getArea()
+    {
+        $kodeigr = Session::get('kdigr');
+        $result = DB::connection(Session::get('connection'))->select(
+            "SELECT CAB_KODEWILAYAH
+             FROM TBMASTER_CABANG
+             WHERE CAB_KODECABANG = '$kodeigr'"
+        );
+        return $result[0]->cab_kodewilayah;
+    }
+
+    public function kirimFtpCabang($area)
+    {
+        $cabang = strtolower($area);
+        $msg = '';
+        $ftp_server = config('database.connections.igr' . $cabang . '.host');
+        $ftp_user_name = 'ftpigr';
+        $ftp_user_pass = 'ftpigr';
+        $zipName = Session::get('kdigr') . '_' . date("Ymd", strtotime(Carbon::now())) . '.ZIP';
+        $zipAddress = '../storage/receipts_backup/' . $zipName;
+        try {
+            $conn_id = ftp_connect($ftp_server);
+            ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+            $files = Storage::disk('receipts_backup')->allFiles();
+            if (count($files) > 0) {
+                if (Storage::disk('receipts_backup')->exists($zipName) == false) {
+                    $zip = new ZipArchive;
+                    if (true === ($zip->open($zipAddress, ZipArchive::CREATE | ZipArchive::OVERWRITE))) {
+                        foreach ($files as $file => $value) {
+                            $filePath = '../storage/receipts_backup/' . $value;
+                            $zip->addFile($filePath, $value);
+                        }
+                        $zip->close();
+                        ftp_put($conn_id, '/u01/lhost/bpb_backup/' . $zipName, $zipAddress);
+                        //send to Cabang
+                    } else {
+                        $msg = 'Proses kirim file gagal';
+                        return response()->json(['kode' => 0, 'message' => $msg]);
+                    }
+                } else {
+                    ftp_put($conn_id, '/u01/lhost/bpb_backup/' . $zipName, $zipAddress);
+                    //send to Cabang
+                }
+
+                $msg = 'File terkirim ke Cabang';
+                File::delete($zipAddress); //delete zip file from storage
+                // $this->deleteBackupFiles(); //delete all files
+            } else {
+                $msg = 'Empty Record, nothing to transfer';
+                return response()->json(['kode' => 2, 'message' => $msg]);
+            }
+        } catch (Exception $e) {
+            $msg = 'Proses kirim file gagal (error)';
+            return response()->json(['kode' => 0, 'message' => $msg . $e]);
+        }
+        return response()->json(['kode' => 1, 'message' => $msg]);
+    }
+
+    public function kirimServerCabang($path, $datas, $pdf, $report)
+    {
+        $area = $this->getArea();
+        $type = '';
+        if ($report == 'IGR_BO_CTBTBNOTA' || $report == 'IGR_BO_CTBTBNOTA_FULL') {
+            $type = 'BTB_';
+        } else {
+            $type = 'BTB_NON_HARGA_';
+        }
+
+        if (!File::exists(storage_path($path))) {
+            File::makeDirectory(storage_path($path), 0755, true, true);
+        }
+
+        for ($i = 0; $i < sizeof($datas); $i++) {
+            $content = $pdf->download()->getOriginalContent();
+            $id = $type . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
+            $file = storage_path($path . $id . '.PDF');
+            file_put_contents($file, $content);
+        }
+
+        $this->kirimFtpCabang($area);
+    }
+
     public function viewReport(Request $request)
     {
         $signedBy = Session::get('signer');
@@ -1724,6 +1825,9 @@ class printBPBController extends Controller
                 file_put_contents($file, $content);
             }
 
+            $path = 'receipts_backup/';
+            $this->kirimServerCabang($path, $datas, $pdf, $report);
+
             return $pdf->stream($id . '.PDF');
         } else if ($report == 'IGR_BO_CTBTBNOTA_FULL') {
             $datas = DB::connection(Session::get('connection'))->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
@@ -1766,6 +1870,9 @@ class printBPBController extends Controller
                 $file = storage_path($path . $id . '.PDF');
                 file_put_contents($file, $content);
             }
+
+            $path = 'receipts_backup/';
+            $this->kirimServerCabang($path, $datas, $pdf, $report);
 
             return $pdf->stream($id . '.PDF');
         } else if ($report == 'lokasi') {
@@ -1835,8 +1942,18 @@ class printBPBController extends Controller
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
+            $path = 'receipts_backup/';
+            $type = 'BTB_NON_HARGA_';
+
+            if (!File::exists(storage_path($path))) {
+                File::makeDirectory(storage_path($path), 0755, true, true);
+            }
+
             for ($i = 0; $i < sizeof($datas); $i++) {
-                $id = 'BTB_' . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
+                $content = $pdf->download()->getOriginalContent();
+                $id = $type . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
+                $file = storage_path($path . $id . '.PDF');
+                file_put_contents($file, $content);
             }
 
             return $pdf->stream($id . '.PDF');
@@ -1872,6 +1989,20 @@ class printBPBController extends Controller
 
             for ($i = 0; $i < sizeof($datas); $i++) {
                 $id = 'BTB_' . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
+            }
+
+            $path = 'receipts_backup/';
+            $type = 'BTB_NON_HARGA_';
+
+            if (!File::exists(storage_path($path))) {
+                File::makeDirectory(storage_path($path), 0755, true, true);
+            }
+
+            for ($i = 0; $i < sizeof($datas); $i++) {
+                $content = $pdf->download()->getOriginalContent();
+                $id = $type . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
+                $file = storage_path($path . $id . '.PDF');
+                file_put_contents($file, $content);
             }
 
             return $pdf->stream($id . '.PDF');

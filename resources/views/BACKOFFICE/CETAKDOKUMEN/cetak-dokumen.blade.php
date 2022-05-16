@@ -412,13 +412,7 @@
                                 window.open(`{{ url()->current() }}/download?file=${result[i]}`, '_blank');
                             }
 
-                            {{--$.each(result, function (index, value) {--}}
-                            {{--    $('#pdf').append(`<div class="row form-group" >--}}
-                            {{--        <a href="{{url('/')}}/${value}" target="_blank"><button class="btn btn-primary">${value}</button></a>--}}
-                            {{--    </div>`);--}}
-                            {{--});--}}
                         }
-                        // $('#m_result').modal('show');
                         showData();
                         if (result.message) {
                             swal({
@@ -430,7 +424,6 @@
                         errorHandlingforAjax(err);
                     }
                 });
-                {{--window.open(`{{ url()->current() }}/cetak?doc=${$('#dokumen').val()}&lap=${$('#laporan').val()}&reprint=${$('#reprint:checked').val()}&nrfp=${$('#cetaknotareturfp:checked').val()}&tgl1=${$('#tgl1').val()}&tgl2=${$('#tgl2').val()}&kertas=${$('#kertas').val()}&data=${checked}`, '_blank');--}}
             } else {
                 swal({
                     title: 'Dokumen belum dipilih!',

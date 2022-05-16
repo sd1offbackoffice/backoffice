@@ -9,6 +9,9 @@
 @section('title')
     EDIT LIST PENGELUARAN BARANG
 @endsection
+@section('subtitle')
+
+@endsection
 @section('header_left')
     <table>
         <tr>

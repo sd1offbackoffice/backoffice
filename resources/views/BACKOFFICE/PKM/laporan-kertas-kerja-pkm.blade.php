@@ -457,7 +457,7 @@
             // getKategori();
             // getPRDCD();
             getMonitoring();
-            getSupplier();
+            // getSupplier();
             getTag();
         });
 
@@ -676,7 +676,7 @@
             });
         }
 
-        function getSupplier() {
+        function getSupplier(value) {
             if ($.fn.DataTable.isDataTable('#table_supplier')) {
                 $('#table_supplier').DataTable().destroy();
             }
@@ -686,7 +686,9 @@
             lovutuh = $('#table_supplier').DataTable({
                 "ajax": {
                     url: '{{ url()->current().'/get-lov-supplier' }}',
-                    data: {}
+                    "data": {
+                        sup: value,
+                    },
                 },
                 "columns": [
                     {data: 'kode'},
@@ -795,6 +797,12 @@
 
         function changeObjSup(val) {
             sup = $('#' + val);
+            if(val == 'sup1'){
+                getSupplier('');
+            }
+            else if(val == 'sup2'){
+                getSupplier($('#sup1').val());
+            }
         }
 
         function changeObjTag(val) {

@@ -514,10 +514,10 @@
                     $('#modal-loader').modal('hide');
 
                     swal({
-                        title: response.title,
+                        title: response.message,
                         icon: 'success'
                     }).then(() => {
-
+                        window.location.reload();
                     });
                 },
                 error: function (error) {
