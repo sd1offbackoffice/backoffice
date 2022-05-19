@@ -1,0 +1,204 @@
+CREATE OR REPLACE PROCEDURE sp_igr_bo_pbm_cek_plu_migrasi(
+   v_kodeigr         VARCHAR2,
+   v_plu             VARCHAR2,
+   v_tglpb           DATE,
+   v_deskpjg     OUT VARCHAR2,
+   v_unit        OUT VARCHAR2,
+   v_frac        OUT NUMBER,
+   v_fbkp        OUT VARCHAR2,
+   v_kdsup       OUT VARCHAR2,
+   v_nmsup       OUT VARCHAR2,
+   v_suppkp      OUT VARCHAR2,
+   v_hrgjual     OUT NUMBER,
+   v_isibeli     OUT NUMBER,
+   v_stock       OUT NUMERIC,
+   v_minor       OUT VARCHAR2,
+   v_pkmt        OUT NUMERIC,
+   v_perdisc1    OUT NUMBER,
+   v_rphdisc1    OUT NUMERIC,
+   v_flagdisc1   OUT VARCHAR2,
+   v_perdisc2    OUT NUMERIC,
+   v_rphdisc2    OUT NUMERIC,
+   v_flagdisc2   OUT VARCHAR2,
+   v_top         OUT NUMERIC,
+   v_omi         OUT VARCHAR2,
+   v_idm         OUT VARCHAR2,
+   v_hrgsatuan   OUT NUMBER,
+   v_ppnbm       OUT NUMERIC,
+   v_ppnbotol    OUT NUMERIC,
+   v_lok         OUT VARCHAR2,
+   v_message     OUT VARCHAR2)
+IS
+   v_kettolakan   VARCHAR2 (50);
+   v_adaplu       BOOLEAN := FALSE;
+   temp           NUMBER (1);
+
+   CURSOR hgb_cur
+   IS
+      SELECT hgb_kodesupplier, sup_namasupplier
+        FROM tbmaster_hargabeli hgb, tbmaster_supplier sup
+       WHERE     hgb_prdcd = v_plu
+             AND hgb_kodesupplier = sup_kodesupplier
+             AND hgb_tipe = '2';
+BEGIN
+   v_deskpjg := '';
+   v_unit := '';
+   v_frac := 1;
+   v_lok := 'FALSE';
+
+   FOR rec
+      IN (SELECT *
+            FROM tbmaster_prodmast,
+                 (SELECT prc_pluigr pluomi
+                    FROM tbmaster_prodcrm
+                   WHERE     prc_kodeigr = v_kodeigr
+                         AND prc_pluigr = v_plu
+                         AND prc_group = 'O'),
+                 (SELECT prc_pluigr pluidm
+                    FROM tbmaster_prodcrm
+                   WHERE     prc_kodeigr = v_kodeigr
+                         AND prc_pluigr = v_plu
+                         AND prc_group = 'I'),
+                 tbmaster_tag,
+                 (  SELECT SUBSTR (dpro_plu, 1, 6) || '0' AS prdcd,
+                           MAX (hpro_tglmulai) AS tglawal,
+                           MAX (hpro_tglakhir) AS tglakhir
+                      FROM tbmaster_promosi_hdr hdr, tbmaster_promosi_dtl dtl
+                     WHERE     hdr.hpro_kodeigr = dtl.dpro_kodeigr
+                           AND hdr.hpro_docno = dtl.dpro_docno
+                           AND hdr.hpro_kodeigr = v_kodeigr
+                  GROUP BY SUBSTR (dpro_plu, 1, 6) || '0') promo,
+                 tbmaster_kategoritoko,
+                 tbmaster_kkpkm,
+                 (SELECT DISTINCT (gdl_prdcd) gdl_prdcd
+                    FROM tbtr_gondola
+                   WHERE     gdl_kodeigr = v_kodeigr
+                         AND (    gdl_tglawal - 3 <= v_tglpb
+                              AND gdl_tglakhir - 7 >= v_tglpb)) gnd,
+                 tbtr_pkmgondola,
+                 tbmaster_supplier,
+                 tbmaster_minimumorder,
+                 tbmaster_stock,
+                 tbmaster_hargabeli
+           WHERE     prd_prdcd = pluomi(+)
+                 AND prd_prdcd = pluidm(+)
+                 AND prd_kodeigr = tag_kodeigr(+)
+                 AND prd_kodetag = tag_kodetag(+)
+                 AND prd_prdcd = promo.prdcd(+)
+                 AND prd_kategoritoko = ktk_kodekategoritoko(+)
+                 AND prd_kodeigr = pkm_kodeigr(+)
+                 AND prd_prdcd = pkm_prdcd(+)
+                 AND prd_prdcd = gdl_prdcd(+)
+                 AND prd_kodeigr = pkmg_kodeigr(+)
+                 AND prd_prdcd = pkmg_prdcd(+)
+                 AND hgb_kodeigr = sup_kodeigr(+)
+                 AND hgb_kodesupplier = sup_kodesupplier(+)
+                 AND prd_kodeigr = min_kodeigr(+)
+                 AND prd_prdcd = min_prdcd(+)
+                 AND prd_kodeigr = st_kodeigr(+)
+                 AND prd_prdcd = st_prdcd(+)
+                 AND '01' = st_lokasi(+)
+                 AND prd_kodeigr = hgb_kodeigr(+)
+                 AND prd_prdcd = hgb_prdcd(+)
+                 AND '2' = hgb_tipe(+)
+                 AND prd_kodeigr = v_kodeigr
+                 AND prd_prdcd = v_plu)
+   LOOP
+      v_deskpjg := rec.prd_deskripsipanjang;
+      v_unit := rec.prd_unit;
+      v_frac := NVL (rec.prd_frac, 1);
+      v_fbkp := rec.prd_flagbkp1;
+      v_kdsup := rec.hgb_kodesupplier;
+      v_nmsup := rec.sup_namasupplier;
+      v_suppkp := rec.sup_pkp;
+      v_adaplu := TRUE;
+
+      ---->>> Kotak Kanan Atas <<<----
+      IF rec.min_minorder IS NULL
+      THEN
+         v_minor :=
+            CASE NVL (rec.prd_minorder, 0)
+               WHEN 0 THEN rec.prd_isibeli
+               ELSE rec.prd_minorder
+            END;
+      ELSE
+         v_minor := rec.min_minorder;
+      END IF;
+
+      v_isibeli := rec.prd_isibeli;
+      v_hrgjual := NVL (rec.prd_hrgjual, 0);
+      v_stock := NVL (rec.st_saldoakhir, 0);
+      -----<<<<<>>>>>-----------
+      v_omi := CASE NVL (rec.pluomi, ' ') WHEN ' ' THEN 'N' ELSE 'Y' END;
+      v_idm := CASE NVL (rec.pluidm, ' ') WHEN ' ' THEN 'N' ELSE 'Y' END;
+      v_hrgsatuan :=
+           rec.hgb_hrgbeli
+         * CASE WHEN rec.prd_unit = 'KG' THEN 1 ELSE rec.prd_frac END;
+
+
+      --->>> Cek Data PKM Gondola
+      IF rec.pkm_prdcd IS NOT NULL
+      THEN
+         IF rec.gdl_prdcd IS NOT NULL
+         THEN
+            IF rec.pkmg_prdcd IS NOT NULL
+            THEN
+               v_pkmt := rec.pkmg_nilaipkmg;-- / rec.prd_frac;
+            ELSE
+               v_pkmt := rec.pkm_pkmt;-- / rec.prd_frac;
+            END IF;
+         ELSE
+            v_pkmt := rec.pkm_pkmt;-- / rec.prd_frac;
+         END IF;
+      END IF;
+
+      --->>> Hitung Data Discount <<<---
+      IF NVL (rec.hgb_persendisc01, 0) <> 0
+      THEN
+         v_perdisc1 := rec.hgb_persendisc01;
+         v_rphdisc1 := 0;
+         v_flagdisc1 := ' ';
+      ELSE
+         v_perdisc1 := 0;
+         v_rphdisc1 := rec.hgb_rphdisc01;
+         v_flagdisc1 := rec.hgb_flagdisc01;
+      END IF;
+
+      v_ppnbm := rec.hgb_ppnbm * rec.prd_frac;
+      v_ppnbotol := rec.hgb_ppnbotol * rec.prd_frac;
+
+      IF rec.sup_flagopentop = 'Y'
+      THEN
+         v_top := rec.hgb_top;
+      ELSE
+         IF rec.sup_kondisipbykonsinyasi IS NOT NULL
+         THEN
+            v_top := rec.sup_kondisipbykonsinyasi;
+         ELSE
+            v_top := rec.sup_kondisipbykredit;
+         END IF;
+      END IF;
+
+      IF     TRUNC (SYSDATE) >= rec.hgb_tglmulaidisc02
+         AND TRUNC (SYSDATE) <= rec.hgb_tglakhirdisc02
+      THEN
+         v_perdisc2 := NVL (rec.hgb_persendisc02, 0);
+         v_rphdisc2 := NVL (rec.hgb_rphdisc02, 0);
+      ELSE
+         v_perdisc2 := 0;
+         v_rphdisc2 := 0;
+      END IF;
+
+      v_lok := 'TRUE';
+   END LOOP;
+
+   IF v_adaplu = FALSE
+   THEN
+      v_message := 'Salah isian, tidak terdaftar pd master Barang ....';
+   END IF;
+EXCEPTION
+   WHEN OTHERS
+   THEN
+      v_message := 'Silahkan hubungi IT Support';
+END;
+/

@@ -1,0 +1,181 @@
+CREATE OR REPLACE PROCEDURE sp_kirimdatapb_migrasi (nodraft         VARCHAR2,
+                                                   v_lok       OUT VARCHAR2,
+                                                   v_message   OUT VARCHAR2)
+AS
+   f             UTL_FILE.file_type;
+
+   p_query       VARCHAR2 (10000);
+   p_file        VARCHAR2 (100);
+   user_email    VARCHAR2 (50);
+   user2_email   VARCHAR2 (50);
+   p_directory   VARCHAR2 (20);
+   p_dirpath     VARCHAR2 (20);
+   p_zipname     VARCHAR2 (50);
+
+   p_msg         VARCHAR2 (10000);
+
+   p_from        VARCHAR2 (50);
+   p_subj        VARCHAR2 (100);
+   c_ipserver    VARCHAR2 (100);
+   c_dbuser      VARCHAR2 (100);
+   c_dbpass      VARCHAR2 (100);
+   p_user        VARCHAR2 (50);
+   rcpt_array    DBMS_SQL.varchar2_table;
+   l_blob        t_file_transfer.ftfile%TYPE;
+BEGIN
+   p_from := 'no-reply@Oracle.JobMail';
+   p_subj :=
+         'Data PB Manual '
+      || TO_CHAR (SYSDATE, 'dd Mon YYYY')
+      || ' - Draft No. '
+      || nodraft;
+
+   p_directory := 'DIRLPP';
+
+   SELECT directory_path
+     INTO p_dirpath
+     FROM all_directories
+    WHERE directory_name = p_directory;
+
+   p_zipname := 'PBM_' || TO_CHAR (SYSDATE, 'yyyyMMdd') || '_' || nodraft;
+
+
+   BEGIN
+      ------>>>>> PEROLEHAN POIN <<<<<-----
+      p_file :=
+         'PBM_' || TO_CHAR (SYSDATE, 'yyyyMMdd') || '_' || nodraft || '.csv';
+
+      p_query :=
+            '
+          select pdm_prdcd, prd_deskripsipanjang, pdm_qtypb, pdm_pkmt
+from tbtr_pbm_h, tbtr_pbm_d, tbmaster_prodmast
+where phm_nodraft = '''
+         || nodraft
+         || ''' and nvl(phm_flagdoc, ''0'') = ''2''
+and pdm_nodraft = phm_nodraft
+and prd_prdcd = pdm_Prdcd';
+
+      text_writer (p_query,
+                   '|',
+                   FALSE,
+                   'JOB');
+
+      f := UTL_FILE.fopen (p_directory, p_file, 'w');
+
+      FOR rec IN (  SELECT text_line
+                      FROM t_text_dump
+                     WHERE kd_user = 'JOB'
+                  ORDER BY line_no)
+      LOOP
+         UTL_FILE.put_line (f, rec.text_line);
+      END LOOP;
+
+      UTL_FILE.fclose (f);
+
+      host_command (
+         p_command   =>    'zip -j '
+                        || p_dirpath
+                        || p_zipname
+                        || ' '
+                        || p_dirpath
+                        || p_file);
+      UTL_FILE.fremove (p_directory, p_file);
+
+      p_msg := 'SUKSES';
+   EXCEPTION
+      WHEN OTHERS
+      THEN
+         p_msg := 'KIRIM DATA PB GAGAL, error: ' || SQLERRM;
+   END;
+
+   ------>>>>> SEND MAIL  <<<<<-----
+
+   SELECT LOWER (ip_server_db), LOWER (db_user_name), LOWER (db_password)
+     INTO c_ipserver, c_dbuser, c_dbpass
+     FROM igr_setup_db;
+
+   p_user := TO_CHAR (USERENV ('SESSIONID'));
+
+   DELETE FROM t_file_transfer
+         WHERE ftuser = p_user;
+
+   INSERT INTO t_file_transfer (ftuser, ftfile)
+        VALUES (p_user, EMPTY_BLOB ());
+
+   COMMIT;
+
+   filetools.loadblob (p_dirpath || p_zipname || '.zip',
+                       p_user,
+                       c_ipserver,
+                       c_dbuser,
+                       c_dbpass);
+
+   SELECT ftfile
+     INTO l_blob
+     FROM t_file_transfer
+    WHERE ftuser = p_user;
+
+   SELECT email
+     INTO user_email
+     FROM tbtr_pbm_h, tbmaster_user
+    WHERE     phm_nodraft = nodraft
+          AND NVL (phm_flagdoc, '0') = '2'
+          AND userid = phm_approval;
+
+   SELECT email
+     INTO user2_email
+     FROM tbtr_pbm_h, tbmaster_user
+    WHERE     phm_nodraft = nodraft
+          AND NVL (phm_flagdoc, '0') = '2'
+          AND userid = phm_create_by;
+
+   rcpt_array (1) := user_email;
+   rcpt_array (2) := user2_email;
+
+   --rcpt_array (2) := 'sp1@indogrosir.co.id';
+
+   FOR i IN rcpt_array.FIRST .. rcpt_array.LAST
+   LOOP
+      IF p_msg LIKE '%GAGAL%'
+      THEN
+         send_mail (p_from,
+                    rcpt_array (i),
+                    p_subj,
+                    p_msg);
+      ELSE
+         p_msg :=
+               'Terlampir data PB Manual dengan No Draft '
+            || nodraft
+            || ' Tanggal '
+            || TO_CHAR (SYSDATE, 'dd Mon YYYY')
+            || '.'
+            || CHR (13)
+            || CHR (10)
+            || CHR (13)
+            || CHR (10)
+            || CHR (13)
+            || CHR (10)
+            || 'Terima kasih.';
+
+
+         IF rcpt_array (i) IS NOT NULL
+         THEN
+            send_mail_atchzip (rcpt_array (i),
+                               p_from,
+                               p_subj,
+                               p_msg,
+                               p_zipname || '.zip',
+                               'zip',
+                               l_blob);
+         END IF;
+      END IF;
+   END LOOP;
+
+   DELETE t_file_transfer
+    WHERE ftuser = p_user;
+
+   COMMIT;
+
+   UTL_FILE.fremove (p_directory, p_zipname || '.zip');
+END;
+/

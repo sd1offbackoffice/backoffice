@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE;
 
+use App\Http\Controllers\ExcelController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
@@ -422,6 +423,7 @@ and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'|
 and pkm_prdcd(+) = prd_prdcd
 and pkm_kodeigr(+) = prd_kodeigr
 and prs_kodeigr(+) = prd_kodeigr
+and rownum<1000
 " . $p_orderby);
 
         $cf_nmargin = [];
@@ -455,19 +457,41 @@ and prs_kodeigr(+) = prd_kodeigr
 
         //PRINT
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
+        $title = 'DAFTAR PRODUK';
+        $filename = $title.'_'.Carbon::now()->format('dmY_His').'.xlsx';
+        $view='';
+        $subtitle='';
         if ((int)$sort < 3) {
             //CETAK_DAFTARPRODUK (IGR_BO_DAFTARPRODUK.jsp)
-            return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-produk-pdf',
-                ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
+            //excel
+
+            $view = view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-produk-xlxs', ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
                     'judul' => $judul, 'urut' => $p_urut, 'p_hpp' => $chp,
-                    'cf_nmargin' => $cf_nmargin]);
+                    'cf_nmargin' => $cf_nmargin])->render();
+            $subtitle = '';
+            $keterangan = $p_urut;
+            ExcelController::create($view,$filename,$title,$subtitle,$keterangan);
+
+//            return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-produk-pdf',
+//                ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
+//                    'judul' => $judul, 'urut' => $p_urut, 'p_hpp' => $chp,
+//                    'cf_nmargin' => $cf_nmargin]);
         } else {
             //CETAK_DAFTARPRDNAMA (IGR_BO_DAFTARPRDNM.jsp)
-            return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-produk-nama-pdf',
-                ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
+            $view = view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-produk-nama-xlxs', ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
                     'judul' => $judul, 'urut' => $p_urut, 'p_hpp' => $chp,
-                    'cf_nmargin' => $cf_nmargin]);
+                    'cf_nmargin' => $cf_nmargin])->render();
+            $subtitle = '';
+            $keterangan = $p_urut;
+            ExcelController::create($view,$filename,$title,$subtitle,$keterangan);
+
+//            return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-produk-nama-pdf',
+//                ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
+//                    'judul' => $judul, 'urut' => $p_urut, 'p_hpp' => $chp,
+//                    'cf_nmargin' => $cf_nmargin]);
         }
+        return response()->download(storage_path($filename))->deleteFileAfterSend(true);
+
     }
 
     public function printDaftarPerubahanHargaJual(Request $request)

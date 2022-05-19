@@ -1,0 +1,183 @@
+CREATE OR REPLACE PROCEDURE sp_pbmanual_kirim_otp_migrasi (
+   nodraft          VARCHAR2,
+   c_tgldraft       VARCHAR2,
+   user_auth        NUMBER,
+   v_lok        OUT VARCHAR2,
+   v_message    OUT VARCHAR2)
+AS
+   f             UTL_FILE.file_type;
+
+   p_query       VARCHAR2 (10000);
+   p_file        VARCHAR2 (100);
+   user_email    VARCHAR2 (50);
+   user2_email   VARCHAR2 (50);
+   p_directory   VARCHAR2 (20);
+   p_dirpath     VARCHAR2 (20);
+   p_zipname     VARCHAR2 (50);
+
+   p_msg         VARCHAR2 (10000);
+
+   p_from        VARCHAR2 (50);
+   p_subj        VARCHAR2 (100);
+   c_ipserver    VARCHAR2 (100);
+   c_dbuser      VARCHAR2 (100);
+   c_dbpass      VARCHAR2 (100);
+   p_user        VARCHAR2 (50);
+   rcpt_array    DBMS_SQL.varchar2_table;
+   l_blob        t_file_transfer.ftfile%TYPE;
+   otp           VARCHAR2 (9);
+   tgldraft      DATE;
+BEGIN
+   tgldraft := TO_DATE (c_tgldraft, 'dd/mm/yyyy');
+
+   ----- OTP
+
+   otp :=
+      SUBSTR (
+         LPAD (
+            TO_CHAR (
+                 TO_NUMBER (SUBSTR (nodraft, -4))
+               * TO_NUMBER (SUBSTR (nodraft, -4))
+               * TO_NUMBER (TO_CHAR (tgldraft, 'dd'))),
+            6,
+            '0'),
+         -6);
+   -----
+
+
+   p_from := 'no-reply@Oracle.JobMail';
+   p_subj :=
+         'OTP PB Manual '
+      || TO_CHAR (SYSDATE, 'dd Mon YYYY')
+      || ' - Draft No. '
+      || nodraft;
+
+   p_directory := 'DIRLPP';
+
+   SELECT directory_path
+     INTO p_dirpath
+     FROM all_directories
+    WHERE directory_name = p_directory;
+
+   p_zipname :=
+      'DRAFT_PBM_' || TO_CHAR (SYSDATE, 'yyyyMMdd') || '_' || nodraft;
+
+
+   BEGIN
+      ------>>>>> PEROLEHAN POIN <<<<<-----
+      p_file :=
+         'PBM_' || TO_CHAR (SYSDATE, 'yyyyMMdd') || '_' || nodraft || '.csv';
+
+      p_query :=
+            '
+          select pdm_prdcd, prd_deskripsipanjang, pdm_qtypb, pdm_pkmt
+from tbtr_pbm_h, tbtr_pbm_d, tbmaster_prodmast
+where phm_nodraft = '''
+         || nodraft
+         || '''
+and pdm_nodraft = phm_nodraft
+and prd_prdcd = pdm_Prdcd';
+
+      text_writer (p_query,
+                   '|',
+                   FALSE,
+                   'JOB');
+
+      f := UTL_FILE.fopen (p_directory, p_file, 'w');
+
+      FOR rec IN (  SELECT text_line
+                      FROM t_text_dump
+                     WHERE kd_user = 'JOB'
+                  ORDER BY line_no)
+      LOOP
+         UTL_FILE.put_line (f, rec.text_line);
+      END LOOP;
+
+      UTL_FILE.fclose (f);
+
+      host_command (
+         p_command   =>    'zip -j '
+                        || p_dirpath
+                        || p_zipname
+                        || ' '
+                        || p_dirpath
+                        || p_file);
+      UTL_FILE.fremove (p_directory, p_file);
+
+      p_msg := 'SUKSES';
+   EXCEPTION
+      WHEN OTHERS
+      THEN
+         p_msg := 'CREATE FILE DRAFT DATA PB GAGAL, error: ' || SQLERRM;
+         RETURN;
+   END;
+
+   ------>>>>> SEND MAIL  <<<<<-----
+
+   SELECT LOWER (ip_server_db), LOWER (db_user_name), LOWER (db_password)
+     INTO c_ipserver, c_dbuser, c_dbpass
+     FROM igr_setup_db;
+
+   p_user := TO_CHAR (USERENV ('SESSIONID'));
+
+   DELETE FROM t_file_transfer
+         WHERE ftuser = p_user;
+
+   INSERT INTO t_file_transfer (ftuser, ftfile)
+        VALUES (p_user, EMPTY_BLOB ());
+
+   COMMIT;
+
+   filetools.loadblob (p_dirpath || p_zipname || '.zip',
+                       p_user,
+                       c_ipserver,
+                       c_dbuser,
+                       c_dbpass);
+
+   SELECT ftfile
+     INTO l_blob
+     FROM t_file_transfer
+    WHERE ftuser = p_user;
+
+   FOR rec
+      IN (SELECT email, userid
+            FROM tbmaster_user
+           WHERE     NVL (TO_NUMBER (SUBSTR (jabatan, 1, 1)), 0) = user_auth
+                 AND recordid IS NULL)
+   LOOP
+      p_msg :=
+            'Terlampir draft data PB Manual dengan No Draft '
+         || nodraft
+         || ' Tanggal '
+         || TO_CHAR (tgldraft, 'dd Mon YYYY')
+         || '.'
+         || CHR (13)
+         || CHR (10)
+         || CHR (13)
+         || CHR (10)
+         || 'OTP : '
+         || otp
+         || rec.userid
+         || CHR (13)
+         || CHR (10)
+         || CHR (13)
+         || CHR (10)
+         || 'Terima kasih.';
+
+      send_mail_atchzip (rec.email,
+                         p_from,
+                         p_subj,
+                         p_msg,
+                         p_zipname || '.zip',
+                         'zip',
+                         l_blob);
+   END LOOP;
+
+   DELETE t_file_transfer
+    WHERE ftuser = p_user;
+
+   COMMIT;
+
+   UTL_FILE.fremove (p_directory, p_zipname || '.zip');
+END;
+/

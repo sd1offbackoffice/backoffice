@@ -524,6 +524,10 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::post('/delete-pb-draft', 'BACKOFFICE\PB\PBManualMDController@deletePBDraft');
                 Route::get('/new-pb-draft', 'BACKOFFICE\PB\PBManualMDController@newPBDraft');
                 Route::get('/get-draft-product-detail', 'BACKOFFICE\PB\PBManualMDController@getDraftProductDetail');
+                Route::post('/save-draft', 'BACKOFFICE\PB\PBManualMDController@saveDraft');
+                Route::get('/check-process-draft', 'BACKOFFICE\PB\PBManualMDController@checkProcessDraft');
+                Route::post('/send-otp', 'BACKOFFICE\PB\PBManualMDController@sendOTP');
+                Route::post('/process-draft', 'BACKOFFICE\PB\PBManualMDController@processDraft');
             });
 
             /*Denni*/
@@ -1446,18 +1450,22 @@ Route::middleware(['CheckLogin'])->group(function () {
             });
 
             // Steven
-            Route::prefix('/faktor-pkm-toko')->group(function () {
-                Route::get('/', 'BACKOFFICE\PKM\FaktorPKMTokoController@index');
-                Route::get('/get-data-table-n', 'BACKOFFICE\PKM\FaktorPKMTokoController@getDataTableN')->name('get-data-table-n');
-                Route::get('/get-data-detail-n', 'BACKOFFICE\PKM\FaktorPKMTokoController@getDataDetailN')->name('get-data-detail-n');
-                Route::post('/insert-perjanjian', 'BACKOFFICE\PKM\FaktorPKMTokoController@insertPerjanjian');
-                Route::post('/upload-nplus', 'BACKOFFICE\PKM\FaktorPKMTokoController@uploadNPLUS')->name('upload-nplus');
-                Route::get('/get-data-table-m', 'BACKOFFICE\PKM\FaktorPKMTokoController@getDataTableM')->name('get-data-table-m');
-                Route::get('/get-data-detail', 'BACKOFFICE\PKM\FaktorPKMTokoController@getDataDetail')->name('get-data-detail');
-                Route::get('/search-plu', 'BACKOFFICE\PKM\FaktorPKMTokoController@searchPLU');
-                Route::post('/insert-plu', 'BACKOFFICE\PKM\FaktorPKMTokoController@insertPLU');
-                Route::post('/update-mplus', 'BACKOFFICE\PKM\FaktorPKMTokoController@updateMplus')->name('update-mplus');
-                Route::post('/upload-mplus', 'BACKOFFICE\PKM\FaktorPKMTokoController@uploadMPLUS')->name('upload-mplus');
+            Route::prefix('/faktor-penambah-pkm')->group(function () {
+                Route::get('/', 'BACKOFFICE\PKM\FaktorPenambahPKMController@index');
+                Route::get('/get-data-table-n', 'BACKOFFICE\PKM\FaktorPenambahPKMController@getDataTableN')->name('get-data-table-n');
+                Route::get('/get-data-detail-n', 'BACKOFFICE\PKM\FaktorPenambahPKMController@getDataDetailN')->name('get-data-detail-n');
+                Route::post('/insert-perjanjian', 'BACKOFFICE\PKM\FaktorPenambahPKMController@insertPerjanjian');
+                Route::post('/upload-nplus', 'BACKOFFICE\PKM\FaktorPenambahPKMController@uploadNPLUS')->name('upload-nplus');
+                Route::get('/filter-kode-nplus', 'BACKOFFICE\PKM\FaktorPenambahPKMController@filterKodeNPLUS')->name('filter-kode-nplus');
+                Route::get('/filter-tanggal-nplus', 'BACKOFFICE\PKM\FaktorPenambahPKMController@filterTanggalNPLUS')->name('filter-tanggal-nplus');
+                Route::post('/update-nplus', 'BACKOFFICE\PKM\FaktorPenambahPKMController@updateNPLUS')->name('update-nplus');
+                Route::get('/get-data-table-m', 'BACKOFFICE\PKM\FaktorPenambahPKMController@getDataTableM')->name('get-data-table-m');
+                Route::get('/get-data-detail', 'BACKOFFICE\PKM\FaktorPenambahPKMController@getDataDetail')->name('get-data-detail');
+                Route::get('/search-plu', 'BACKOFFICE\PKM\FaktorPenambahPKMController@searchPLU');
+                Route::post('/insert-plu', 'BACKOFFICE\PKM\FaktorPenambahPKMController@insertPLU');
+                Route::post('/update-mplus', 'BACKOFFICE\PKM\FaktorPenambahPKMController@updateMplus')->name('update-mplus');
+                Route::post('/upload-mplus', 'BACKOFFICE\PKM\FaktorPenambahPKMController@uploadMPLUS')->name('upload-mplus');
+                Route::get('/download-txt', 'BACKOFFICE\PKM\FaktorPenambahPKMController@downloadTXT');
             });
         });
 
@@ -1490,6 +1498,9 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::post('/cetak', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@cetak');
             Route::get('/print-doc', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@PRINT_DOC');
             Route::get('/download', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@downloadFile');
+
+            // Cesar
+            Route::post('/save-signature', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@saveSignature');
         });
 
         /*Leo*/

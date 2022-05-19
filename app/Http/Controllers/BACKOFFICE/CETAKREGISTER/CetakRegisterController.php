@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE\CETAKREGISTER;
 
+use App\Http\Controllers\ExcelController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -173,11 +174,18 @@ class CetakRegisterController extends Controller
             $lain = $total;
         }
 
-        $dompdf = new PDF();
+        $title = 'Register Bukti Penerimaan Barang';
 
-        $title = 'Register Bukti Penerimaan Barang '.$tgl1.' - '.$tgl2;
+//        return view('BACKOFFICE.CETAKREGISTER.regterima-pdf',compact(['perusahaan','data','pkp','npkp','pembelian','lain','total','tgl1','tgl2']));
 
-        return view('BACKOFFICE.CETAKREGISTER.regterima-pdf',compact(['perusahaan','data','pkp','npkp','pembelian','lain','total','tgl1','tgl2']));
+
+        //excel
+        $subtitle = '';
+        $keterangan = $tgl1.'  -  '.$tgl2;
+        $filename = $title.'_'.Carbon::now()->format('dmY_His').'.xlsx';
+        $view = view('BACKOFFICE.CETAKREGISTER.regterima-xlxs', compact(['perusahaan','data','pkp','npkp','pembelian','lain','total','tgl1','tgl2']))->render();
+        ExcelController::create($view,$filename,$title,$subtitle,$keterangan);
+        return response()->download(storage_path($filename))->deleteFileAfterSend(true);
     }
 
     public function regkeluar($ukuran, $register, $tgl1, $tgl2){

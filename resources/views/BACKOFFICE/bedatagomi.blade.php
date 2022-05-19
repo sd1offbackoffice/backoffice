@@ -189,6 +189,7 @@
                                     <tr>
                                         <th>Nama Departemen</th>
                                         <th>Kode Departemen</th>
+                                        <th>Kode Divisi</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyModalDep"></tbody>
@@ -215,7 +216,12 @@
                 </div>
                 {{--UNTUK FILTER DATA--}}
                 <div hidden>
-                    <input type="text" id="limitKat" name="limitKat">
+                    <input type="text" id="minKat" name="minKat">
+                    <input type="text" id="maxKat" name="maxKat">
+                    {{-- <input type="text" id="limitKat" name="limitKat"> --}}
+                </div>
+                <div hidden>
+                    <input type="text" id="filtererKat" name="filtererKat">
                 </div>
                 <div class="modal-body">
                     <div class="container">
@@ -226,6 +232,7 @@
                                     <tr>
                                         <th>Nama Kategori</th>
                                         <th>Kode Kategori</th>
+                                        <th>Kode Departement</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyModalKat"></tbody>
@@ -240,292 +247,6 @@
         </div>
     </div>
 
-    {{--Modal Supplier--}}
-    <div class="modal fade" id="supModal" tabindex="-1" role="dialog" aria-labelledby="supModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Daftar Supplier</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                {{--UNTUK FILTER DATA--}}
-                <div hidden>
-                    <input type="text" id="minSup" name="minSup">
-                </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col">
-                                <table class="table table-striped table-bordered" id="tableModalSup">
-                                    <thead class="theadDataTables">
-                                    <tr>
-                                        <th>Nama Supplier</th>
-                                        <th>Kode Supplier</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="tbodyModalSup"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{--Modal Member--}}
-    <div class="modal fade" id="memModal" tabindex="-1" role="dialog" aria-labelledby="memModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Daftar Member</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                {{--UNTUK FILTER DATA--}}
-                <div hidden>
-                    <input type="text" id="minMem" name="minMem">
-                </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col">
-                                <table class="table table-striped table-bordered" id="tableModalMem">
-                                    <thead class="theadDataTables">
-                                    <tr>
-                                        <th>Nama Member</th>
-                                        <th>Kode Member</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="tbodyModalMem"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{--Modal Member With Date--}}
-    <div class="modal fade" id="memDateModal" tabindex="-1" role="dialog" aria-labelledby="memDateModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Daftar Member</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col">
-                                <table class="table table-striped table-bordered" id="tableModalMemDate">
-                                    <thead class="theadDataTables">
-                                    <tr>
-                                        <th>Nama Member</th>
-                                        <th>Kode Member</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="tbodyModalMemDate"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{--Modal Outlet--}}
-    <div class="modal fade" id="outletModal" tabindex="-1" role="dialog" aria-labelledby="outletModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Daftar Outlet</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col">
-                                <table class="table table-striped table-bordered" id="tableModalOutlet">
-                                    <thead class="theadDataTables">
-                                    <tr>
-                                        <th>Nama Outlet</th>
-                                        <th>Kode Outlet</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="tbodyModalOutlet"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{--Modal Sub-Outlet--}}
-    <div class="modal fade" id="subOutletModal" tabindex="-1" role="dialog" aria-labelledby="subOutletModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Daftar Sub-Outlet</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                {{--UNTUK FILTER DATA--}}
-                <div hidden>
-                    <input type="text" id="outletFilterer" name="outletFilterer">
-                    <input type="text" id="minSubOutlet" name="minSubOutlet">
-                </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col">
-                                <table class="table table-striped table-bordered" id="tableModalSubOutlet">
-                                    <thead class="theadDataTables">
-                                    <tr>
-                                        <th>Nama Sub-Outlet</th>
-                                        <th>Kode Sub-Outlet</th>
-                                        <th>Kode Outlet</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="tbodyModalSubOutlet"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{--Modal PLU--}}
-    <div class="modal fade" id="pluModal" tabindex="-1" role="dialog" aria-labelledby="pluModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Daftar Barang</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col">
-                                <table class="table table-striped table-bordered" id="tableModalPlu">
-                                    <thead class="theadDataTables">
-                                    <tr>
-                                        <th>Deskripsi Barang</th>
-                                        <th>PLU</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="tbodyModalPlu"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{--Modal PLU CUSTOM--}}
-    <div class="modal fade" id="pluCustomModal" tabindex="-1" role="dialog" aria-labelledby="pluCustomModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Daftar Barang</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col">
-                                <table class="table table-striped table-bordered" id="tableModalPluCustom">
-                                    <thead class="theadDataTables">
-                                    <tr>
-                                        <th>Deskripsi Barang</th>
-                                        <th>PLU</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="tbodyModalPluCustom"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{--Modal Rak--}}
-    <div class="modal fade" id="rakModal" tabindex="-1" role="dialog" aria-labelledby="rakModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Daftar Rak</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                {{--UNTUK FILTER DATA--}}
-                <div hidden>
-                    <input type="text" id="rakColumn" name="rakColumn">
-                    <input type="text" id="theRak" name="theRak">
-                    <input type="text" id="theSubRak" name="theSubRak">
-                    <input type="text" id="theTipeRak" name="theTipeRak">
-                </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col">
-                                <table class="table table-striped table-bordered" id="tableModalRak">
-                                    <thead class="theadDataTables">
-                                    <tr>
-                                        <th>Kode Rak</th>
-                                        <th>Kode Sub Rak</th>
-                                        <th>Tipe Rak</th>
-                                        <th>Shelving</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="tbodyModalRak"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script>
         let cursor = '';
@@ -556,10 +277,9 @@
             }
         });
         $('#menu1Dep1Input, #menu1BtnDep1').on('focus',function(){
-
             //limit departemen dalam divisi
             $('#minDep').val($('#menu1Div1Input').val());
-            $('#maxDep').val($('#menu1Div1Input').val()).change();
+            $('#maxDep').val($('#menu1Div2Input').val()).change();
 
             if($('#menu1Div1Input').val() == ''){
                 $('#menu1Div1Input').focus();
@@ -571,7 +291,7 @@
         $('#menu1Dep2Input, #menu1BtnDep2').on('focus',function(){
 
             //limit departemen dalam divisi
-            $('#minDep').val($('#menu1Div2Input').val());
+            $('#minDep').val($('#menu1Div1Input').val());
             $('#maxDep').val($('#menu1Div2Input').val()).change();
             if($('#menu1Div1Input').val() == ''){
                 $('#menu1Div1Input').focus();
@@ -584,8 +304,10 @@
             }
         });
         $('#menu1Kat1Input, #menu1BtnKat1').on('focus',function(){
-            $('#limitKat').val($('#menu1Dep1Input').val()).change();
-
+            $('#minKat').val($('#menu1Dep1Input').val());
+            $('#maxKat').val($('#menu1Dep2Input').val()).change();
+            // $('#limitKat').val($('#menu1Dep1Input').val()).change();
+            
             if($('#menu1Div1Input').val() == ''){
                 $('#menu1Div1Input').focus();
             }
@@ -600,7 +322,9 @@
             }
         });
         $('#menu1Kat2Input, #menu1BtnKat2').on('focus',function(){
-            $('#limitKat').val($('#menu1Dep2Input').val()).change();
+            $('#minKat').val($('#menu1Dep1Input').val());
+            $('#maxKat').val($('#menu1Dep2Input').val()).change();
+            // $('#limitKat').val($('#menu1Dep2Input').val()).change();
 
             if($('#menu1Div1Input').val() == ''){
                 $('#menu1Div1Input').focus();
@@ -690,7 +414,8 @@
             if($('#menu1Dep1Input').val() == ''){
                 $('#menu1BtnDep2').prop("hidden",true);
 
-                $('#limitKat').val('').change();
+                $('#minKat').val('').change();
+                // $('#limitKat').val('').change();
             }else{
                 let index = checkDepExist($('#menu1Dep1Input').val());
                 if(index){
@@ -699,7 +424,8 @@
                     $('#menu1BtnDep2').prop("hidden",false);
                 }else{
                     swal('', "Kode Departement tidak terdaftar", 'warning');
-                    $('#limitKat').val('').change();
+                    $('#minKat').val('').change();
+                    // $('#limitKat').val('').change();
                     $('#menu1Dep1Input').val('').change();
                 }
             }
@@ -714,8 +440,8 @@
             if($('#menu1Dep2Input').val() == ''){
                 $('#menu1BtnKat1').prop("hidden",true);
 
-
-                $('#limitKat').val('').change();
+                $('#maxKat').val('').change();
+                // $('#limitKat').val('').change();
             }else{
                 let index = checkDepExist($('#menu1Dep2Input').val());
                 if(index){
@@ -724,7 +450,8 @@
                     $('#menu1BtnKat1').prop("hidden",false);
                 }else{
                     swal('', "Kode Departement tidak terdaftar", 'warning');
-                    $('#limitKat').val('').change();
+                    $('#maxKat').val('').change();
+                    // $('#limitKat').val('').change();
                     $('#menu1Dep2Input').val('').change();
                 }
             }
@@ -832,7 +559,7 @@
                     setTimeout(function() { //tidak tau kenapa harus selama 10milisecond baru bisa pindah focus
                         $('#menu1Div1Input').focus();
                     }, 10);
-
+                    console.log(`div1: ${kode}`);
                     break;
                 case "Div2":
                     $('#menu1Div2Input').val(kode).change();
@@ -841,6 +568,7 @@
                     setTimeout(function() {
                         $('#menu1Div2Input').focus();
                     }, 10);
+                    console.log(`div2: ${kode}`);
                     break;
                 case "Dep1":
                     $('#menu1Dep1Input').val(kode).change();
@@ -848,6 +576,7 @@
                     setTimeout(function() {
                         $('#menu1Dep1Input').focus();
                     }, 10);
+                    console.log(`dep1: ${kode}`);
                     break;
                 case "Dep2":
                     $('#menu1Dep2Input').val(kode).change();
@@ -855,12 +584,14 @@
                     setTimeout(function() {
                         $('#menu1Dep2Input').focus();
                     }, 10);
+                    console.log(`dep2: ${kode}`);
                     break;
                 case "Kat1":
                     $('#menu1Kat1Input').val(kode).change();
                     setTimeout(function() {
                         $('#menu1Kat1Input').focus();
                     }, 10);
+                    console.log(`kat1: ${kode}`);
                     break;
                 case "Kat2":
                     $('#menu1Kat2Input').val(kode).change();
@@ -941,8 +672,9 @@
             }
             if(kat1 != ''){
                 //limit kategori berdasarkan departemen, tak perlu trigger fungsi change, karena bukan untuk tampilan
-
-                $('#limitKat').val(dep1);
+                $('#minKat').val(dep1);
+                $('#maxKat').val(dep1);
+                // $('#limitKat').val(dep1);
                 if(checkKatExist(kat1) == false){
                     swal('', "Kode Kategori tidak terdaftar", 'warning');
                     return false;
@@ -950,8 +682,9 @@
             }
             if(kat2 != ''){
                 //limit kategori berdasarkan departemen, tak perlu trigger fungsi change, karena bukan untuk tampilan
-
-                $('#limitKat').val(dep2);
+                $('#minKat').val(dep2);
+                $('#maxKat').val(dep2);
+                // $('#limitKat').val(dep2);
                 if(checkKatExist(kat2) == false){
                     swal('', "Kode Kategori tidak terdaftar", 'warning');
                     return false;
@@ -971,44 +704,6 @@
                     kat2 = temp;
                 }
             }
-
-            // TAG
-            // let tag1 = $('#menu1Tag1').val();
-            // let tag2 = $('#menu1Tag2').val();
-            // let tag3 = $('#menu1Tag3').val();
-            // let tag4 = $('#menu1Tag4').val();
-            // let tag5 = $('#menu1Tag5').val();
-            // let ptag = '';
-            // if(tag1 != '' || tag2 != '' || tag3 != '' || tag4 != '' || tag5 != ''){
-            //     if(tag1 != ''){
-            //         ptag = "'"+tag1+"'";
-            //     }else{
-            //         ptag = "'b'";
-            //     }
-            //     if(tag2 != ''){
-            //         ptag = ptag+",'"+tag2+"'";
-            //     }else{
-            //         ptag = ptag+",'b'";
-            //     }
-            //     if(tag3 != ''){
-            //         ptag = ptag+",'"+tag3+"'";
-            //     }else{
-            //         ptag = ptag+",'b'";
-            //     }
-            //     if(tag4 != ''){
-            //         ptag = ptag+",'"+tag4+"'";
-            //     }else{
-            //         ptag = ptag+",'b'";
-            //     }
-            //     if(tag5 != ''){
-            //         ptag = ptag+",'"+tag5+"'";
-            //     }else{
-            //         ptag = ptag+",'b'";
-            //     }
-            // }
-
-            //sortby
-            // let sort = $('#menu1SortBy').val();
             
 
             //PRINT
@@ -1099,123 +794,44 @@
                     let filter = parseInt( $('#filtererDep').val(), 10 );
                     let val = parseFloat( data[2] ) || 0; // use data for the val column, [2] maksudnya kolom ke 2, yaitu kode_div
                     let val2 = parseFloat( data[1] ) || 0;
-                    //filter on table modalDept
-                    if ( ( isNaN( min ) && isNaN( max ) ) ||
-                        ( isNaN( min ) && val <= max ) ||
-                        ( min <= val   && isNaN( max ) ) ||
-                        ( min <= val   && val <= max ) )
+                    // //filter on table modalDept
+                    if ( ( isNaN( min ) && isNaN( max ) ) || ( isNaN( min ) && val <= max ) ||
+                        ( min <= val   && isNaN( max ) ) || ( min <= val   && val <= max ) )
                     {
                         return true;
                     }
                 }
                 if ( settings.nTable.id === 'tableModalKat' ) {
-                    let limit = $('#limitKat').val();
-                    let val = data[2]; // use data for the val column, [2] maksudnya kolom ke 2, yaitu kode_dep
-                    if(limit == '' || limit == val){
-                        return true;
-                    }
-                }
-                if ( settings.nTable.id === 'tableModalSup' ) {
-                    let min = $('#minSup').val();
-                    let val = data[1];
-                    if(min === ''){
-                        return true;
-                    }else if(min <= val){
-                        return true;
-                    }
-
-                }
-                if ( settings.nTable.id === 'tableModalMem' ) {
-                    return true; //no filtering on modal Mem
-                }
-                if ( settings.nTable.id === 'tableModalMemDate' ) {
-                    return true; //no filtering on modal Mem
-                }
-                if ( settings.nTable.id === 'tableModalOutlet' ) {
-                    return true; //no filtering on modal Sup
-                }
-                if ( settings.nTable.id === 'tableModalSubOutlet' ) {
-                    let outlet = parseInt( $('#outletFilterer').val(), 10 );
-                    let min = $('#minSubOutlet').val();
-                    let val2 = parseInt( ( data[2] ), 10 ); // use data for the val column, [2] maksudnya kolom ke 2, yaitu kode_div
-                    let val1 = data[1];
-                    //filter on table modalDept
-                    if ( ( isNaN( outlet ) ) || ( val2 === outlet ) )
+                    let min = parseInt( $('#minKat').val(), 10 );
+                    let max = parseInt( $('#maxKat').val(), 10 );
+                    let filter = parseInt( $('#filtererKat').val(), 10 );
+                    let val = parseFloat( data[2] ) || 0; // use data for the val column, [2] maksudnya kolom ke 2, yaitu kode_div
+                    let val2 = parseFloat( data[1] ) || 0;
+                    // //filter on table modalDept
+                    if ( ( isNaN( min ) && isNaN( max ) ) || ( isNaN( min ) && val <= max ) ||
+                    ( min <= val   && isNaN( max ) ) || ( min <= val   && val <= max ) )
                     {
-                        if(min === '' || min <= val1){
-                            return true;
-                        }
-                    }
-                }
-                if ( settings.nTable.id === 'tableModalPlu' ) {
-                    return true; //no filtering on modal Plu
-                }
-                if ( settings.nTable.id === 'tableModalPluCustom' ) {
-                    return true; //no filtering on modal Plu
-                }
-                if ( settings.nTable.id === 'tableModalRak' ) {
-                    let rak = data[0];
-                    let subrak = data[1];
-                    let tiperak = data[2];
-                    let shelving = data[3];
-
-                    let theRak = $('#theRak').val();
-                    let theSubRak = $('#theSubRak').val();
-                    let theTipeRak = $('#theTipeRak').val();
-
-                    if($('#rakColumn').val() == 'rak'){
-                        if (dataIndex === 0)
-                        {
-                            listRak = [];
-                        }
-                        if ($.inArray(rak,listRak) === -1)
-                        {
-                            listRak.push(rak);
-                            return true;
-                        }
-                    }else if($('#rakColumn').val() === 'subrak'){
-                        if (dataIndex === 0)
-                        {
-                            listSubRak = [];
-                        }
-                        if ($.inArray(subrak,listSubRak) === -1 && theRak === rak)
-                        {
-                            listSubRak.push(subrak);
-                            return true;
-                        }
-                    }else if($('#rakColumn').val() === 'tiperak'){
-                        if (dataIndex === 0)
-                        {
-                            listTipeRak = [];
-                        }
-                        if ($.inArray(tiperak,listTipeRak) === -1 && theRak === rak && theSubRak === subrak)
-                        {
-                            listTipeRak.push(tiperak);
-                            return true;
-                        }
-                    }else if($('#rakColumn').val() === 'shelving'){
-                        if (dataIndex === 0)
-                        {
-                            listShelving = [];
-                        }
-                        if ($.inArray(shelving,listShelving) === -1 && theRak === rak && theSubRak === subrak && theTipeRak === tiperak)
-                        {
-                            listShelving.push(shelving);
-                            return true;
-                        }
-                    }else{
                         return true;
                     }
+                    // let limit = $('#limitKat').val();
+                    // let val = data[2]; // use data for the val column, [2] maksudnya kolom ke 2, yaitu kode_dep
+                    // if(limit == '' || limit == val){
+                    //     return true;
+                    // }
                 }
+                
                 return false;
             }
         );
         $('#minDep, #maxDep').change( function() {
             tableDepartemen.draw();
         } );
-        $('#limitKat').change( function() {
+        $('#minKat, #maxKat').change( function() {
             tableKategori.draw();
         } );
+        // $('#limitKat').change( function() {
+        //     tableKategori.draw();
+        // } );
 
         function validateTag(){
             console.log('validating');
@@ -1294,7 +910,7 @@
                 "columns": [
                     {data: 'dep_namadepartement', name: 'dep_namadepartement'},
                     {data: 'dep_kodedepartement', name: 'dep_kodedepartement'},
-                    {data: 'dep_kodedivisi', name: 'dep_kodedivisi', visible: false},
+                    {data: 'dep_kodedivisi', name: 'dep_kodedivisi'},
                 ],
                 "paging": true,
                 "lengthChange": true,
@@ -1321,7 +937,7 @@
                 "columns": [
                     {data: 'kat_namakategori', name: 'kat_namakategori'},
                     {data: 'kat_kodekategori', name: 'kat_kodekategori'},
-                    {data: 'kat_kodedepartement', name: 'kat_kodedepartement', visible: false},
+                    {data: 'kat_kodedepartement', name: 'kat_kodedepartement'},
                 ],
                 "paging": true,
                 "lengthChange": true,
@@ -1347,61 +963,24 @@
             $('#divModal').modal('toggle');
             let currentButton = $(this);
 
-            if(cursor.substr(0,5) === "menu1"){
-                menu1Choose(currentButton);
-            }else if(cursor.substr(0,5) === "menu2"){
-                menu2Choose(currentButton);
-            }else if(cursor.substr(0,5) === "menu3"){
-                menu3Choose(currentButton);
-            }else if(cursor.substr(0,5) === "menuA"){
-                menuAChoose(currentButton);
-            }else if(cursor.substr(0,5) === "menuE"){
-                menuEChoose(currentButton);
-            }else if(cursor.substr(0,5) === "menuF"){
-                menuFChoose(currentButton);
-            }
+            menu1Choose(currentButton);
+            
         });
         //ONCLICK DEPARTEMEN
         $(document).on('click', '.modalDepartemen', function () {
             $('#depModal').modal('toggle');
             let currentButton = $(this);
 
-            if(cursor.substr(0,5) === "menu1"){
-                menu1Choose(currentButton);
-            }else if(cursor.substr(0,5) === "menu2"){
-                menu2Choose(currentButton);
-            }else if(cursor.substr(0,5) === "menu3"){
-                menu3Choose(currentButton);
-            }else if(cursor.substr(0,5) === "menuA"){
-                menuAChoose(currentButton);
-            }else if(cursor.substr(0,5) === "menuC"){
-                menuCChoose(currentButton);
-            }else if(cursor.substr(0,5) === "menuE"){
-                menuEChoose(currentButton);
-            }else if(cursor.substr(0,5) === "menuF"){
-                menuFChoose(currentButton);
-            }
+            menu1Choose(currentButton);
+           
         });
         //ONCLICK KATEGORI
         $(document).on('click', '.modalKategori', function () {
             $('#katModal').modal('toggle');
             let currentButton = $(this);
 
-            if(cursor.substr(0,5) === "menu1"){
-                menu1Choose(currentButton);
-            }else if(cursor.substr(0,5) === "menu2"){
-                menu2Choose(currentButton);
-            }else if(cursor.substr(0,5) === "menu3"){
-                menu3Choose(currentButton);
-            }else if(cursor.substr(0,5) === "menuA"){
-                menuAChoose(currentButton);
-            }else if(cursor.substr(0,5) === "menuC"){
-                menuCChoose(currentButton);
-            }else if(cursor.substr(0,5) === "menuE"){
-                menuEChoose(currentButton);
-            }else if(cursor.substr(0,5) === "menuF"){
-                menuFChoose(currentButton);
-            }
+            menu1Choose(currentButton);
+           
         });
 
 
@@ -1438,20 +1017,38 @@
 
         //Untuk periksa apakah kat ada
         function checkKatExist(val){
-            let limit = '';
+            let min = 0;
+            let max = tableKategori.data().length;
 
-            if($('#limitKat').val() != ''){
-                limit = $('#limitKat').val();
+            if($('#minKat').val() != ''){
+                min = parseInt( $('#minKat').val(), 10 );
             }
-
+            if($('#maxKat').val() != ''){
+                max = parseInt( $('#maxKat').val(), 10 );
+            }
             for(i=0;i<tableKategori.data().length;i++){
-                if(tableKategori.row(i).data()['kat_kodedepartement'] == limit || limit == ''){
+                if(tableKategori.row(i).data()['kat_kodedepartement'] >= min && tableKategori.row(i).data()['kat_kodedepartement'] <= max){
                     if(tableKategori.row(i).data()['kat_kodekategori'] == val){
                         return i+1;
                     }
                 }
             }
             return 0;
+
+            // let limit = '';
+
+            // if($('#limitKat').val() != ''){
+            //     limit = $('#limitKat').val();
+            // }
+
+            // for(i=0;i<tableKategori.data().length;i++){
+            //     if(tableKategori.row(i).data()['kat_kodedepartement'] == limit || limit == ''){
+            //         if(tableKategori.row(i).data()['kat_kodekategori'] == val){
+            //             return i+1;
+            //         }
+            //     }
+            // }
+            // return 0;
         }
      
     </script>

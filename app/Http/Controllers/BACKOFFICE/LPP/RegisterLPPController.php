@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE\LPP;
 
+use App\Http\Controllers\ExcelController;
 use Carbon\Carbon;
 use Dompdf\Exception;
 use Illuminate\Database\QueryException;
@@ -493,7 +494,8 @@ WHERE SUBSTR (hbv_prdcd_brj, 1, 6) = SUBSTR (trjd_prdcd, 1, 6) AND st_prdcd = hb
         AND kat_kodekategori(+) = lpp_kategoribrg
         " . $and_kat . "
         AND prs_kodeigr = lpp_kodeigr
-                " . $and_plu . " )
+                " . $and_plu . "
+               )
 GROUP BY lpp_kodedivisi,
          div_namadivisi,
          lpp_kodedepartemen,
@@ -513,48 +515,19 @@ ORDER BY lpp_kodedivisi,
          lpp_prdcd");
             set_time_limit(0);
 
-            $title = '** POSISI & MUTASI PERSEDIAAN BARANG BAIK **';
-//            $chunks = $data->chunk(500);
-//            $i=0;
-//            foreach ($chunks as $chunk)
-//            {
-//                $filename = 'chunk_'.$i;
-//                $i++;
-//
-//                $dompdf = new PDF();
-//
-//                $pdf = PDF::loadview('BACKOFFICE.LPP.' . $repid.'_pdf', compact(['title', 'perusahaan', 'chunk', 'tgl1', 'tgl2']));
-//
-//                error_reporting(E_ALL ^ E_DEPRECATED);
-//
-//                $pdf->output();
-//                $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-//
-//                $canvas = $dompdf->get_canvas();
-//                $canvas->page_text(509, 77.75, "Page {PAGE_NUM} dari {PAGE_COUNT}", null, 8, array(0, 0, 0));
-//
-//                $dompdf = $pdf;
-//                $pdf->save(storage_path($filename));
-//            }
-
-
-
-
-
-
 
             //excel
-            $filename = 'aa.xlsx';
+            $title = 'POSISI & MUTASI PERSEDIAAN BARANG BAIK';
+            $filename = $title.'_'.Carbon::now()->format('dmY_His').'.xlsx';
             $view = view('BACKOFFICE.LPP.' . $repid . '_xlxs', compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']))->render();
-            $maxColumn = 'U';
-            $subtitle = 'RINCIAN PER DIVISI (UNIT/RUPIAH)';
-            $this->createExcel($view,$filename,$maxColumn,$title,$subtitle);
+            $keterangan = 'RINCIAN PER DIVISI (UNIT/RUPIAH)';
+            $subtitle = 'Periode : '.$tgl1.' - '.$tgl2;
+            ExcelController::create($view,$filename,$title,$subtitle,$keterangan);
 
             return response()->download(storage_path($filename))->deleteFileAfterSend(true);
 
             //html
-//            return view('BACKOFFICE.LPP.' . $repid.'_xlxs', compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
-            return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
+//            return view('BACKOFFICE.LPP.' . $repid, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
 
 
 //csv
@@ -1990,47 +1963,5 @@ order by prd_kodedivisi,
         }
     }
 
-    function createExcel($view,$filename,$maxColumn,$title,$subtitle){
-        $password='rahasia';
-        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
-            ->select('prs_namaperusahaan', 'prs_namacabang', 'prs_namawilayah')
-            ->first();
-        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
-        $spreadsheet = $reader->loadFromString($view);
-        $spreadsheet->getActiveSheet()->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(1,7);
 
-        $spreadsheet->getActiveSheet()->getProtection()->setSheet(true);
-        $spreadsheet->getActiveSheet()->getProtection()->setPassword($password);
-        $security = $spreadsheet->getSecurity();
-        $security->setLockWindows(true);
-        $security->setLockStructure(true);
-        $security->setWorkbookPassword($password);
-        $sheet = $spreadsheet->getActiveSheet();
-
-        $column = [];
-        foreach (range('A', $maxColumn) as $columnID) {
-            $column[] = $columnID;
-        }
-        foreach (range('A', $maxColumn) as $columnID) {
-            $sheet->getColumnDimension($columnID)->setAutoSize(true);
-            $sheet->getColumnDimension($columnID)->setAutoSize(false);
-        }
-        $sheet->insertNewRowBefore(1);
-        $sheet->insertNewRowBefore(1);
-        $sheet->insertNewRowBefore(1);
-        $sheet->insertNewRowBefore(1);
-        $sheet->insertNewRowBefore(1);
-        $sheet->setCellValue('A1', $perusahaan->prs_namaperusahaan);
-        $sheet->setCellValue('A2', $perusahaan->prs_namacabang);
-        $sheet->setCellValue('B1', $title);
-        $sheet->getStyle('B1')->getAlignment()->setHorizontal('center')->setVertical('center');
-        $sheet->mergeCells('B1:'.$column[sizeof($column)-2].'2');
-        $sheet->setCellValue($maxColumn.'1', 'Tgl. Cetak : ' . date("d/m/Y"));
-        $sheet->setCellValue($maxColumn.'2', 'Jam Cetak : ' . date('H:i:s'));
-        $sheet->setCellValue($maxColumn.'3', 'User ID : ' . Session::get('usid'));
-        $sheet->setCellValue($maxColumn.'4', $subtitle);
-        $sheet->getStyle('A1:'.$maxColumn.'4')->getFont()->setBold(true);
-        $sheet->getStyle('A1');
-        $writer = new Xlsx($spreadsheet);
-        $writer->save(storage_path($filename));    }
 }

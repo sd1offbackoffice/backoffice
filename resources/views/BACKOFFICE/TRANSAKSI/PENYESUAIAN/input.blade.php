@@ -949,7 +949,7 @@
                             }
                         }
                         else{
-                            if(dataPLU.hrgsatuan != hpp){
+                            if(dataPLU.hrgsatuan != hpp.trbo_averagecost){
                                 swal({
                                     title: 'Harga satuan PLU kedua harus sama dengan PLU pertama!',
                                     icon: 'error'

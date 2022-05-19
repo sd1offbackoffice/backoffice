@@ -175,11 +175,11 @@
             <tbody>
                 <tr>
                     <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
-                        Pengirim,
+                        Dicetak,
                         <hr>
                         <div class="row align-items-center">
                             <div class="col-5" style="margin-top: 10px">
-                                <img style="max-width: 125px;" src="../storage/signature_expedition/{{$ttd . '.png'}}"></img>
+                                <img style="max-width: 125px;" src="../storage/signature/clerk.png"></img>
                             </div>
                         </div>
                     </td>
@@ -194,35 +194,35 @@
                         </div>
                     </td>
                     <td style="border: 1px black solid; height: 60px; vertical-align: baseline; width: 240px; text-align: center;">
-                        Dicetak,
+                        Pengirim,
                         <hr>
                         <div class="row align-items-center">
                             <div class="col-5">
-                                <img style="max-width: 120px; position: absolute; margin-left:25%; z-index: 0;" src="../storage/signature/clerk.png"></img>
+                                <img style="max-width: 120px; position: absolute; margin-left:25%; z-index: 0;" src="../storage/signature_expedition/{{$ttd . '.png'}}"></img>
                             </div>
                         </div>
                     </td>
                 </tr>
                 <tr>
                     <td style="border: 1px black solid; width: 240px; text-align: center;">
-                        {{ strtoupper($signedby) }}
+                        {{ file_get_contents('../storage/names/clerk.txt') }}
                     </td>
                     <td style="border: 1px black solid; width: 240px; text-align: center;">
                         {{ file_get_contents('../storage/names/srclerk.txt') }}
                     </td>
                     <td style="border: 1px black solid; width: 240px; text-align: center;">
-                        {{ file_get_contents('../storage/names/clerk.txt') }}
+                        {{ strtoupper(Session::get('signer')) }}
                     </td>
                 </tr>
                 <tr>
                     <td style="border: 1px black solid; width: 240px; text-align: center;">
-                        Supplier/Expedisi
+                        ADMINISTRASI
                     </td>
                     <td style="border: 1px black solid; width: 240px; text-align: center;">
-                        Logistic Adm.Sr.Clerk
+                        KEPALA GUDANG
                     </td>
                     <td style="border: 1px black solid; width: 240px; text-align: center;">
-                        Logistic Adm.Clerk
+                        SUPPLIER
                     </td>
                 </tr>
             </tbody>

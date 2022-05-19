@@ -553,7 +553,6 @@ class inputController extends Controller
             //            Proses looping data dari tbtr_backoffice disini dipindahkan ke bagian JS, mengambil data dari tempData yg didapatkan dari chooseBTB()
             //            Dalam proses looping ada pembuatan status 0 atau 1, disini otomatis menjadi 0 sehingga langung memanggil GET_PO_DETAIL
             $getPODetail = $this->getPODetail($noPo, $kodeigr, $prdcd);
-
             if ($getPODetail[0] == 2) {
                 return response()->json(['kode' => $getPODetail[0], 'msg' => $getPODetail[1], 'data' => $getPODetail[2]]);
             }
@@ -973,7 +972,7 @@ class inputController extends Controller
                 $getDataPlu->i_totaldisc = $data->tpod_rphttldisc;
                 $this->param_ndpp = (round($getDataPlu->i_hrgbeli, 0) != round($data->tpod_hrgsatuan)) ?
                     $getDataPlu->i_gross - ($getDataPlu->i_rphdisc1 + $getDataPlu->i_rphdisc2 + $getDataPlu->i_rphdisc2a + $getDataPlu->i_rphdisc2b + $getDataPlu->i_rphdisc3 + $getDataPlu->i_rphdisc4) : $data->tpod_gross;
-                $getDataPlu->i_ppn = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.1 * $this->param_ndpp : 0;
+                $getDataPlu->i_ppn = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.11 * $this->param_ndpp : 0;
                 $getDataPlu->i_bm = $data->tpod_ppnbm;
                 $getDataPlu->i_botol = $data->tpod_ppnbotol;
                 $getDataPlu->i_total = round(($this->param_ndpp + $getDataPlu->i_ppn + $getDataPlu->i_bm + $getDataPlu->i_botol));
@@ -1028,7 +1027,7 @@ class inputController extends Controller
 
                 $this->param_ndpp = $getDataPlu->i_gross - $getDataPlu->i_totaldisc;
 
-                $getDataPlu->i_ppn = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.1 * $this->param_ndpp : 0;
+                $getDataPlu->i_ppn = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.11 * $this->param_ndpp : 0;
 
                 if ($data->prd_unit != 'KG') {
                     if ($noPo) {
@@ -1136,7 +1135,7 @@ class inputController extends Controller
                 $getDataPlu->i_totaldisc = ($getDataPlu->i_rphdisc1 + $getDataPlu->i_rphdisc2 + $getDataPlu->i_rphdisc2a + $getDataPlu->i_rphdisc2b + $getDataPlu->i_rphdisc3 + $getDataPlu->i_rphdisc4) *
                     ($getDataPlu->i_qty * $data->tpod_isibeli + $getDataPlu->i_qtyk);
                 $this->param_ndpp = $getDataPlu->i_gross - $getDataPlu->i_totaldisc;
-                $getDataPlu->i_ppn = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.1 * $this->param_ndpp : 0;
+                $getDataPlu->i_ppn = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.11 * $this->param_ndpp : 0;
 
                 if (!$noPo) {
                     $getDataPlu->i_disc1 = $getDataPlu->i_rphdisc1 * ($getDataPlu->i_qty * $getDataPlu->i_frac + $getDataPlu->i_qtyk);
@@ -1209,7 +1208,7 @@ class inputController extends Controller
                     $this->param_ndpp = $data->tpod_gross;
                 }
 
-                $getDataPlu->i_ppn = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.1 * $this->param_ndpp : 0;
+                $getDataPlu->i_ppn = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.11 * $this->param_ndpp : 0;
                 $getDataPlu->i_bm = ($data->tpod_ppnbm / $data->tpod_qtypo) * ($getDataPlu->i_qty * $data->tpod_isibeli + $getDataPlu->i_qtyk);
                 $getDataPlu->i_botol = ($data->tpod_ppnbotol / $data->tpod_qtypo) * ($getDataPlu->i_qty * $data->tpod_isibeli + $getDataPlu->i_qtyk);
                 $getDataPlu->i_total = round(($this->param_ndpp + $getDataPlu->i_ppn + $getDataPlu->i_bm + $getDataPlu->i_botol));
@@ -1244,7 +1243,7 @@ class inputController extends Controller
                 $getDataPlu->i_totaldisc = ($getDataPlu->i_rphdisc1 + $getDataPlu->i_rphdisc2 + $getDataPlu->i_rphdisc2a + $getDataPlu->i_rphdisc2b + $getDataPlu->i_rphdisc3 + $getDataPlu->i_rphdisc4) *
                     ($getDataPlu->i_qty * $data->tpod_isibeli + $getDataPlu->i_qtyk);
                 $this->param_ndpp = $getDataPlu->i_gross - $getDataPlu->i_totaldisc;
-                $getDataPlu->i_ppn = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.1 * $this->param_ndpp : 0;
+                $getDataPlu->i_ppn = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.11 * $this->param_ndpp : 0;
 
                 if (!$noPo) {
                     $getDataPlu->i_disc1 = $getDataPlu->i_rphdisc1 * ($getDataPlu->i_qty * $getDataPlu->i_frac + $getDataPlu->i_qtyk);
@@ -1284,7 +1283,7 @@ class inputController extends Controller
                 $getDataPlu->i_gross        =  $getDataPlu->i_bonus1 *  $getDataPlu->i_hrgbeli /  $getDataPlu->i_frac;
                 $getDataPlu->i_totaldisc    = ($getDataPlu->i_rphdisc1 + $getDataPlu->i_rphdisc2 + $getDataPlu->i_rphdisc2a + $getDataPlu->i_rphdisc2b + $getDataPlu->i_rphdisc3 + $getDataPlu->i_rphdisc4) * $getDataPlu->i_bonus1;
                 $this->param_ndpp           = $getDataPlu->i_gross - $getDataPlu->i_totaldisc;
-                $getDataPlu->i_ppn          = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.1 * $this->param_ndpp : 0;
+                $getDataPlu->i_ppn          = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.11 * $this->param_ndpp : 0;
                 $getDataPlu->i_total        = round(($this->param_ndpp + $getDataPlu->i_ppn + $getDataPlu->i_bm + $getDataPlu->i_botol));
 
                 $getDataPlu->i_disc1        = $data->tpod_rphdisc1 * $getDataPlu->i_bonus1;
@@ -1324,7 +1323,7 @@ class inputController extends Controller
             } // Line 1105
 
             $this->param_ndpp    = $getDataPlu->i_gross - $getDataPlu->i_totaldisc;
-            $getDataPlu->i_ppn   = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.1 * $this->param_ndpp : 0;
+            $getDataPlu->i_ppn   = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.11 * $this->param_ndpp : 0;
             $getDataPlu->i_total = round(($this->param_ndpp + $getDataPlu->i_ppn + $getDataPlu->i_bm + $getDataPlu->i_botol));
             $getDataPlu->i_disc1 = (!$noPo) ? $getDataPlu->i_rphdisc1 * ($getDataPlu->i_qty * $getDataPlu->i_frac + $getDataPlu->i_qtyk)  : $getDataPlu->i_rphdisc1;
 
@@ -1386,7 +1385,7 @@ class inputController extends Controller
             } // Line 1230
 
             $this->param_ndpp    = $getDataPlu->i_gross - $getDataPlu->i_totaldisc;
-            $getDataPlu->i_ppn   = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.1 * $this->param_ndpp : 0;
+            $getDataPlu->i_ppn   = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.11 * $this->param_ndpp : 0;
             $getDataPlu->i_total = round(($this->param_ndpp + $getDataPlu->i_ppn + $getDataPlu->i_bm + $getDataPlu->i_botol));
             $getDataPlu->i_disc2 = (!$noPo) ? $getDataPlu->i_rphdisc2 * ($getDataPlu->i_qty * $getDataPlu->i_frac + $getDataPlu->i_qtyk)  : $getDataPlu->i_rphdisc2;
             $getDataPlu->i_disc2a = (!$noPo) ? $getDataPlu->i_rphdisc2a * ($getDataPlu->i_qty * $getDataPlu->i_frac + $getDataPlu->i_qtyk)  : $getDataPlu->i_rphdisc2a;
@@ -1422,7 +1421,7 @@ class inputController extends Controller
             } // Line 1319
 
             $this->param_ndpp    = $getDataPlu->i_gross - $getDataPlu->i_totaldisc;
-            $getDataPlu->i_ppn   = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.1 * $this->param_ndpp : 0;
+            $getDataPlu->i_ppn   = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.11 * $this->param_ndpp : 0;
             $getDataPlu->i_total = round(($this->param_ndpp + $getDataPlu->i_ppn + $getDataPlu->i_bm + $getDataPlu->i_botol));
             $getDataPlu->i_disc3 = (!$noPo) ? $getDataPlu->i_rphdisc3 * ($getDataPlu->i_qty * $getDataPlu->i_frac + $getDataPlu->i_qtyk)  : $getDataPlu->i_rphdisc3;
 
@@ -1455,7 +1454,7 @@ class inputController extends Controller
             } // Line 1402
 
             $this->param_ndpp    = $getDataPlu->i_gross - $getDataPlu->i_totaldisc;
-            $getDataPlu->i_ppn   = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.1 * $this->param_ndpp : 0;
+            $getDataPlu->i_ppn   = ($data->sup_pkp == 'Y' && $data->prd_flagbkp1 == 'Y') ? 0.11 * $this->param_ndpp : 0;
             $getDataPlu->i_total = round(($this->param_ndpp + $getDataPlu->i_ppn + $getDataPlu->i_bm + $getDataPlu->i_botol));
             $getDataPlu->i_disc4 = (!$noPo) ? $getDataPlu->i_rphdisc4 * ($getDataPlu->i_qty * $getDataPlu->i_frac + $getDataPlu->i_qtyk)  : $getDataPlu->i_rphdisc4;
         } //end for each
@@ -1705,7 +1704,6 @@ class inputController extends Controller
         $tempData    = $request->tempDataSave;
         $this->getDataPlu = (object)$tempDataPlu;
         $data = $this->getDataPlu; //**** tempdataplu -> getdataplu supaya berbentuk object. dari getdataplu ke data supaya pakainya lebih mudah
-
         if ($tempData) {
             foreach ($tempData as $datas) {
                 if ($datas['trbo_prdcd'] != $prdcd) {

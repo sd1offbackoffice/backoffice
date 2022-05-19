@@ -39,7 +39,7 @@
                         <th colspan="23" class="center">Periode: {{$data[$i]->cp_periode}}</th>
                     </tr>
                     <tr>
-                        <th rowspan="2" class="tengah right">NO.</th>
+                        <th rowspan="2" class="tengah right padding-right">NO.</th>
                         <th rowspan="2" class="tengah right padding-right">PLU</th>
                         <th rowspan="2" class="tengah left">DESKRIPSI</th>
                         <th rowspan="2" class="tengah left">KEMASAN</th>
@@ -83,7 +83,7 @@
                 @endphp
             @endif
             <tr>
-                <td class="right">{{ $i+1 }}</td>
+                <td class="right padding-right">{{ $i+1 }}</td>
                 <td class="right padding-right">{{ $data[$i]->ftkplu }}</td>
                 <td class="left">{{ $data[$i]->prd_deskripsipanjang }}</td>
                 <td class="left">{{ $data[$i]->prd_satuan }}</td>

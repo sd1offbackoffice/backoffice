@@ -1,3 +1,5 @@
+
+
 <?php
 
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PENGELUARAN;
@@ -22,7 +24,7 @@ class InqueryController extends Controller
     public function getDataLovNPB()
     {
         $data = DB::connection(Session::get('connection'))->table('tbtr_mstran_h')
-         // ->select('msth_nodoc', 'msth_tgldoc')
+            // ->select('msth_nodoc', 'msth_tgldoc')
             ->selectRaw("msth_nodoc ,to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc")
             ->where('msth_kodeigr', '=', Session::get('kdigr'))
             ->where('msth_typetrn', '=', 'K')
@@ -43,11 +45,11 @@ class InqueryController extends Controller
             ->join('tbmaster_prodmast', 'mstd_prdcd', '=', 'prd_prdcd')
             ->rightJoin('tbmaster_supplier', 'msth_kodesupplier', '=', 'sup_kodesupplier')
             ->selectRaw('msth_nodoc, to_char(msth_tgldoc,\'dd/mm/yyyy\')msth_tgldoc, msth_istype, msth_invno, msth_tglinv, mstd_unit||\'/\'||mstd_frac satuan,
-									mstd_prdcd, mstd_noref3, floor(mstd_qty/mstd_frac) mstd_qty, mod(mstd_qty,mstd_frac) mstd_qtyk, mstd_gross, mstd_ppnrph, mstd_discrph,
-									((mstd_gross - mstd_discrph) * mstd_frac) / (floor(mstd_qty/mstd_frac) * mstd_frac + mod(mstd_qty,mstd_frac))nPrice,
-									mstd_gross - mstd_discrph nAmt,
-									prd_deskripsipanjang,
-									sup_kodesupplier||\'-\'||sup_namasupplier supp, sup_pkp')
+                           mstd_prdcd, mstd_noref3, floor(mstd_qty/mstd_frac) mstd_qty, mod(mstd_qty,mstd_frac) mstd_qtyk, mstd_gross, mstd_ppnrph, mstd_discrph,
+                           ((mstd_gross - mstd_discrph) * mstd_frac) / (floor(mstd_qty/mstd_frac) * mstd_frac + mod(mstd_qty,mstd_frac))nPrice,
+                           mstd_gross - mstd_discrph nAmt,
+                           prd_deskripsipanjang,
+                           sup_kodesupplier||\'-\'||sup_namasupplier supp, sup_pkp')
             ->where('msth_kodeigr', '=', Session::get('kdigr'))
             ->where('msth_typetrn', '=', 'K')
             ->where('msth_nodoc', '=', $noNPB)

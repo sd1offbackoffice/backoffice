@@ -70,7 +70,7 @@
         <tr>
             <td width="50px"></td>
             <td>{{$data[$i]->mstd_istype.'.'.$data[$i]->mstd_invno}}</td>
-            <td>{{date('d-m-y', strtotime(substr($data[$i]->mstd_date3, 0, 10)))}}</td>
+            <td>{{date('d-m-Y', strtotime(substr($data[$i]->mstd_date3, 0, 10)))}}</td>
             <td></td>
         </tr>
         <tr>

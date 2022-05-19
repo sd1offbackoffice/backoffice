@@ -86,7 +86,8 @@
                                         </button>
                                     </div>
                                     <div class="col-sm-4">
-                                        <button class="col btn btn-success" onclick="cetak()">CETAK</button>
+                                        <button class="col btn btn-success printBtn" onclick="printWithSignature()">CETAK</button>
+                                        {{-- <button class="col btn btn-success printBtn" onclick="cetak()">CETAK</button> --}}
                                     </div>
                                 </div>
                             </div>
@@ -95,6 +96,62 @@
                 </fieldset>
             </div>
             <div class="col-sm-2"></div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="m_signature" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sign Here : </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-2"></div>
+                            <div class="col-3">
+                                <label for="nama_personil">Supplier/Expedisi</label>
+                            </div>
+                            <div class="col-5">
+                                <div class="input-group mb">
+                                    <input autocomplete="off" type="text" id="nama_personil" class="form-control">
+                                    <!-- <button id="showUserBtn" class="btn btn btn-light" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="showUser()" placeholder="Mohon isi nama personil">&#x1F50E;</button> -->
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col">
+                                <div class="containersig" style="text-align:center;">
+                                    <div id="sig"></div>
+                                    <div id="sig2" hidden></div>
+                                    <div id="sig3" hidden></div>
+                                </div>
+                                <br />
+                                <textarea id="signature64" name="signed" style="display: none"></textarea>
+                                <textarea id="signature64_2" name="signed" style="display: none" hidden></textarea>
+                                <textarea id="signature64_3" name="signed" style="display: none" hidden></textarea>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-5"></div>
+                            <div class="col">
+                                <button id="clear" class="btn btn-danger btn-lg">Clear</button>
+                                <span class="space"></span>
+                                <button id="finalPrintBtn" class="btn btn-success btn-lg">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <label for="">Save -> Enter</label>
+                        <label for="">/</label>
+                        <label for="">Clear -> Space</label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -193,6 +250,13 @@
         .clicked, .row-detail:hover {
             background-color: grey !important;
             color: white;
+        }
+
+        #sig canvas,
+        #sig2 canvas,
+        #sig3 canvas {
+            width: 100%;
+            height: 100%;
         }
     </style>
 
@@ -324,6 +388,57 @@
             }
         });
 
+        function printWithSignature(){
+            $('#m_signature').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+
+            let sig = $('#sig').signature({
+                syncField: '#signature64',
+                syncFormat: 'PNG'
+            });            
+            
+            $('#finalPrintBtn').click(function (e) { 
+                
+                if ($('#nama_personil').val() == null || $('#nama_personil').val() == '') {
+                    swal({
+                        icon: 'info',
+                        title: 'Nama Kosong',
+                        text: 'Harap mengisi nama personil expedisi!',
+                        timer: 2000
+                    });
+                } else {
+                    let dataUrl = $('#sig').signature('toDataURL', 'image/jpeg', 0.8)
+                    ajaxSetup()
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ url()->current() }}/save-signature",
+                        data: {
+                            sign: dataUrl,
+                            signed: $('#signature64').val(),
+                            signedBy: $('#nama_personil').val()
+                        },
+                        beforeSend: function() {
+                            $('#modal-loader').modal('show');
+                        },
+                        success: function (response) {
+                            $('#modal-loader').modal('hide');
+                            $('#m_signature').modal('hide');
+                            
+                            console.log(response);
+
+                            let signatureId = response.data.signatureId
+                            let signedBy = response.data.signedBy
+
+                            cetak(signatureId, signedBy)                            
+                        }
+                    });
+                }
+                
+            });
+        }
+
         function cetakEFaktur() {
             if ($('#dokumen').val() != 'K' && $('#laporan').val() != 'N') {
                 swal({
@@ -379,7 +494,7 @@
             }
         }
 
-        function cetak() {
+        function cetak(signatureId, signedBy) {
             if (checked.length != 0) {
                 ajaxSetup();
                 $.ajax({
@@ -397,6 +512,8 @@
                         tgl2: $('#tgl2').val(),
                         kertas: $('#kertas').val(),
                         data: checked,
+                        signatureId: signatureId,
+                        signedBy: signedBy
                     },
                     beforeSend: function () {
                         $('#modal-loader').modal({backdrop: 'static', keyboard: false});

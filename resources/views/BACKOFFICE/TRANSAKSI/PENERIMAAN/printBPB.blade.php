@@ -623,29 +623,32 @@
                 document.push($(this).val());
                 console.log($(this).val());
             });
-
             if (document.length > 1) {
-                swal({
-                    title: 'Peringatan',
-                    text: 'Anda akan mencetak beberapa dokumen dengan tanda tangan yang sama, apakah anda yakin?',
-                    icon: 'warning',
-                    buttons: {
-                        cancel: {
-                            text: "Batal",
-                            value: 'batal',
-                            visible: true
+                if (type == 2) {
+                    swal({
+                        title: 'Peringatan',
+                        text: 'Anda akan mencetak beberapa dokumen dengan tanda tangan supplier yang sama, apakah anda yakin?',
+                        icon: 'warning',
+                        buttons: {
+                            cancel: {
+                                text: "Batal",
+                                value: 'batal',
+                                visible: true
+                            },
+                            confirm: {
+                                text: "Oke",
+                                value: 'oke',
+                                visible: true
+                            },
                         },
-                        confirm: {
-                            text: "Oke",
-                            value: 'oke',
-                            visible: true
-                        },
-                    },
-                }).then((result) => {
-                    if (result == 'oke') {
-                        fxcetakData(startDate, endDate, type, size, checked, typeTrn, document);
-                    }
-                });
+                    }).then((result) => {
+                        if (result == 'oke') {
+                            fxcetakData(startDate, endDate, type, size, checked, typeTrn, document);
+                        }
+                    });
+                } else {
+                    fxcetakData(startDate, endDate, type, size, checked, typeTrn, document);
+                }
             } else {
                 fxcetakData(startDate, endDate, type, size, checked, typeTrn, document);
             }

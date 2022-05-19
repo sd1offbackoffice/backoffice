@@ -12,7 +12,9 @@ use PDF;
 use Exception;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use OCILob;
 use Yajra\DataTables\DataTables;
+use ZipArchive;
 
 class inputSignatureController extends Controller
 {
@@ -25,6 +27,9 @@ class inputSignatureController extends Controller
     {
         $message = "";
         $status = "";
+        $user = Session::get('usid');
+        $kodeigr = Session::get('kdigr');
+        $sysdate = Carbon::now()->format('Y-m-d');
         try {
             $path = "signature/";
             File::deleteDirectory(storage_path($path), 0755, true, true);
@@ -49,6 +54,65 @@ class inputSignatureController extends Controller
 
             $fileclerk = storage_path($root . 'clerk.txt');
             file_put_contents($fileclerk, $request->signclerk);
+
+            $kodeigr = Session::get('kdigr');
+            $result = DB::connection(Session::get('connection'))->select(
+                "SELECT CAB_KODEWILAYAH
+                FROM TBMASTER_CABANG
+                WHERE CAB_KODECABANG = '$kodeigr'"
+            );
+            $area = $result[0]->cab_kodewilayah;
+
+            $status = Session::get('connection');
+            $cabang = strtolower($area);
+            $message = '';
+
+            if (strtolower(substr($status, 0, 3)) == 'sim') {
+                $ftp_server = config('database.connections.sim' . $cabang . '.host');
+            } else if (strtolower(substr($status, 0, 3)) == 'igr') {
+                $ftp_server = config('database.connections.igr' . $cabang . '.host');
+            }
+            $ftp_user_name = 'ftpigr';
+            $ftp_user_pass = 'ftpigr';
+            //Kirim file ttd
+            try {
+                $conn_id = ftp_connect($ftp_server);
+                ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+                $sigfiles = Storage::disk('signature')->allFiles();
+                if (count($sigfiles) > 0) {
+                    foreach ($sigfiles as $file => $value) {
+                        $filePath = '../storage/signature/' . $value;
+                        ftp_put($conn_id, '/u01/lhost/bpb_signature/' . $value, $filePath);
+                    }
+                    $message = 'File terkirim ke Cabang';
+                } else {
+                    $message = 'Empty Record, nothing to transfer';
+                    return response()->json(['kode' => 2, 'message' => $message]);
+                }
+            } catch (Exception $e) {
+                $message = 'Proses kirim file gagal (error sig)';
+                return response()->json(['kode' => 0, 'message' => $message . $e]);
+            }
+
+            //Kirim file nama ttd
+            try {
+                $conn_id = ftp_connect($ftp_server);
+                ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+                $namefiles = Storage::disk('names')->allFiles();
+                if (count($namefiles) > 0) {
+                    foreach ($namefiles as $file => $value) {
+                        $filePath = '../storage/names/' . $value;
+                        ftp_put($conn_id, '/u01/lhost/bpb_signature/' . $value, $filePath);
+                    }
+                    $message = 'File terkirim ke Cabang';
+                } else {
+                    $message = 'Empty Record, nothing to transfer';
+                    return response()->json(['kode' => 2, 'message' => $message]);
+                }
+            } catch (Exception $e) {
+                $message = 'Proses kirim file gagal (error name)';
+                return response()->json(['kode' => 0, 'message' => $message . $e]);
+            }
 
             $message = "Signature Saved!";
             $status = "success";

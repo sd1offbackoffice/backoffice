@@ -45,7 +45,7 @@
                                 <tr>
                                     <div class="row align-items-center">
                                         <div class="col-3">
-                                            <label for="nama_personil2">Logistic Adm.Sr.Clerk</label>
+                                            <label for="nama_personil2">KEPALA GUDANG</label>
                                         </div>
                                         <div class="col-5">
                                             <div class="input-group mb">
@@ -61,7 +61,7 @@
                                 <tr>
                                     <div class="row align-items-center">
                                         <div class="col-3">
-                                            <label for="nama_personil3">Logistic Adm.Clerk</label>
+                                            <label for="nama_personil3">ADMINISTRASI</label>
                                         </div>
                                         <div class="col-5">
                                             <div class="input-group mb">
@@ -78,8 +78,8 @@
                     <div class="row">
                         <div class="col">
                             <div class="containername" style="text-align:center">
-                                <p style="float: left"><b>Logistic Adm.Sr.Clerk</b></p>
-                                <p style="float: right"><b>Logistic Adm.Clerk</b></p>
+                                <p style="float: left"><b>KEPALA GUDANG</b></p>
+                                <p style="float: right"><b>ADMINISTRASI</b></p>
                             </div>
                             <br>
                             <div class="containersig" style="text-align:center">
@@ -88,8 +88,8 @@
                                 <div id="sig3"></div>
                             </div>
                             <div class="containerbtn" style="text-align:center">
-                                <button id="clear" class="btn btn-danger btn-lg" style="float: left;">Clear Sr.Clerk</button>
-                                <button id="clear2" class="btn btn-danger btn-lg" style="float: right;">Clear Clerk</button>
+                                <button id="clear" class="btn btn-danger btn-lg" style="float: left;">Clear Kepala Gudang</button>
+                                <button id="clear2" class="btn btn-danger btn-lg" style="float: right;">Clear Administrasi</button>
                             </div>
                             <div class="conatiner" style="margin-left: 35%; margin-top: 10%; max-width: 30%">
                                 <button id="save" class="btn btn-success btn-lg btn-block">Simpan</button>
@@ -378,27 +378,27 @@
                         $('#modal-loader').modal('hide');
                         $('#img-data').empty();
                         $('#img-data').append(`
-                    <div class="containersig" style="text-align:center">
-                        <img class="col-sm-3" src="../../../../storage/signature/` + response.data[1] + '?' + Math.random() + `">
-                    <span class="space"></span>
-                        <img class="col-sm-3" src="../../../../storage/signature/` + response.data[0] + '?' + Math.random() + `">
-                    </div>
-                    <div class="containername" style="text-align:center">
-                    <span class="space"></span>
-                    <table class="table table-borderless">
-                        <tbody>
-                            <tr>
-                                <td><p style="float: left; margin-left: 20%;"><b>` + srclerkname + `</b></p></td>
-                                <td><p style="float: right; margin-right: 20%;"><b>` + clerkname + `</b></p></td>
-                            </tr>
-                            <tr>
-                                <td><p style="float: left; margin-left: 20%;"><b>Logistik.Sr.Adm.Clerk</b></p></td>
-                                <td><p style="float: right; margin-right: 20%;"><b>Logistik.Adm.Clerk</b></p></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    </div>
-                `);
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td><img  src="../../../../storage/signature/` + response.data[1] + '?' + Math.random() + `"></td>
+                                    <td><img src="../../../../storage/signature/` + response.data[0] + '?' + Math.random() + `"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td><p margin-left: 20%;"><b>` + srclerkname + `</b></p></td>
+                                    <td><p margin-right: 20%;"><b>` + clerkname + `</b></p></td>
+                                </tr>
+                                <tr>
+                                    <td><p margin-left: 20%;"><b>KEPALA GUDANG</b></p></td>
+                                    <td><p margin-right: 20%;"><b>ADMINISTRASI</b></p></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    `);
                     },
                     error: function(error) {
                         $('#modal-loader').modal('hide');

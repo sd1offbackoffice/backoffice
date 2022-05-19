@@ -37,6 +37,7 @@
             <th rowspan="2" class="bawah center">No.</th>
             <th rowspan="2" class="bawah center">Tgl Input</th>
             <th colspan="2" class="center">Qty</th>
+            <th rowspan="2" class="bawah center">User ID</th>
             <th rowspan="2" class="bawah center">No.</th>
             <th rowspan="2" class="bawah center">Tgl Input</th>
             <th rowspan="2" class="bawah center">Qty</th>
@@ -50,29 +51,41 @@
         <tbody>
         @php
             $no = 1;
+            $div = null;
+            $dep = null;
+            $kat = null;
         @endphp
         @foreach($data as $d)
             <tr>
-                <td class="left">{{ $no++ }}</td>
-                <td class="center">{{ $d->pdm_kodedivisi }}</td>
-                <td class="center">{{ $d->pdm_kodedepartement }}</td>
-                <td class="center">{{ $d->pdm_kodekategoribrg }}</td>
+                @if($div == $d->pdm_kodedivisi && $dep == $d->pdm_kodedepartement && $kat == $d->pdm_kodekategoribrg)
+                    <td class="left"></td>
+                @else
+                    <td class="left">{{ $no++ }}</td>
+                @endif
+                <td class="center">{{ $div == $d->pdm_kodedivisi ? '' : $d->pdm_kodedivisi }}</td>
+                <td class="center">{{ $dep == $d->pdm_kodedepartement ? '' : $d->pdm_kodedepartement }}</td>
+                <td class="center">{{ $kat == $d->pdm_kodekategoribrg ? '' : $d->pdm_kodekategoribrg }}</td>
                 <td class="center">{{ $d->pdm_prdcd }}</td>
                 <td class="left">{{ $d->prd_deskripsipanjang }}</td>
-                <td class="center">{{ $d->pdm_kodesupplier }} - {{ $d->sup_namasupplier }}</td>
-                <td class="center">{{ $d->prd_frac }}</td>
-                <td class="center">{{ $d->pdm_pkmt }}</td>
-                <td class="center">{{ $d->pdm_saldoakhir }}</td>
+                <td class="left">{{ $d->sup_namasupplier }}</td>
+                <td class="right">{{ $d->prd_frac }}</td>
+                <td class="right">{{ $d->pdm_pkmt }}</td>
+                <td class="right">{{ $d->pdm_saldoakhir }}</td>
                 <td class="center">{{ $d->pdm_nodraft }}</td>
                 <td class="center">{{ $d->pdm_create_dt }}</td>
-                <td class="center">{{ $d->qty_input }}</td>
-                <td class="center">{{ $d->pdm_qtypb }}</td>
+                <td class="right">{{ $d->qty_input }}</td>
+                <td class="right">{{ $d->pdm_qtypb }}</td>
                 <td class="center">{{ $d->pdm_create_by }}</td>
                 <td class="center">{{ $d->phm_nopb }}</td>
                 <td class="center">{{ $d->phm_tglpb }}</td>
-                <td class="center">{{ $d->pdm_qtypb }}</td>
+                <td class="right">{{ $d->pdm_qtypb }}</td>
                 <td class="center">{{ $d->phm_approval }}</td>
             </tr>
+            @php
+                $div = $d->pdm_kodedivisi;
+                $dep = $d->pdm_kodedepartement;
+                $kat = $d->pdm_kodekategoribrg;
+            @endphp
         @endforeach
         </tbody>
         <tfoot>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE\LAPORAN;
 
+use App\Http\Controllers\ExcelController;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -239,7 +240,8 @@ order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg");
 
             return view('BACKOFFICE.LAPORAN.daftar-pembelian-ringkasan-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
-        } else if ($tipe === '2') {
+        }
+        else if ($tipe === '2') {
             $and_sup = ' ';
             if (isset($mtr) && $mtr <> '') {
                 $and_sup = " and mstd_kodemonitoring in (select msu_kodemonitoring from tbtr_monitoringsupplier
@@ -319,7 +321,8 @@ order by mstd_kodesupplier");
 
             return view('BACKOFFICE.LAPORAN.daftar-pembelian-ringkasan-per-supplier-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
-        } else if ($tipe === '3') {
+        }
+        else if ($tipe === '3') {
             $data = DB::connection(Session::get('connection'))->select("select no_doc, tgl_doc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
         sum(ctn) ctn, sum(pcs) pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
         mstd_kodedivisi, div_namadivisi,
@@ -427,7 +430,16 @@ group by
         mstd_kodekategoribrg, kat_namakategori
 order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg, no_doc, tgl_doc");
 
-            return view('BACKOFFICE.LAPORAN.daftar-pembelian-rincian-per-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
+            //excel
+            $title = 'Daftar Pembelian Rincian Produk Per Divisi / Departemen / Kategori';
+            $subtitle = '';
+            $keterangan = 'Tanggal :  '.$tgl1.'  -  '.$tgl2;
+            $filename = str_replace($title,'/',' ').'_'.Carbon::now()->format('dmY_His').'.xlsx';
+            $view = view('BACKOFFICE.LAPORAN.daftar-pembelian-rincian-per-divdepkat-xlxs', compact(['perusahaan', 'data', 'tgl1', 'tgl2']))->render();
+            ExcelController::create($view,$filename,$title,$subtitle,$keterangan);
+            return response()->download(storage_path($filename))->deleteFileAfterSend(true);
+
+//            return view('BACKOFFICE.LAPORAN.daftar-pembelian-rincian-per-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
         } else if ($tipe === '4') {
             $data = DB::connection(Session::get('connection'))->select("select no_doc, tgl_doc, msth_tglpo, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
@@ -521,7 +533,16 @@ group by no_doc, tgl_doc, msth_tglpo, plu, prd_deskripsipanjang,
     ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah
 order by mstd_kodesupplier, no_doc, tgl_doc");
 
-            return view('BACKOFFICE.LAPORAN.daftar-pembelian-rincian-produk-per-supplier-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
+            //excel
+            $title = 'Daftar Pembelian Rincian Produk Per Supplier';
+            $subtitle = '';
+            $keterangan = 'Tanggal :  '.$tgl1.'  -  '.$tgl2;
+            $filename = $title.'_'.Carbon::now()->format('dmY_His').'.xlsx';
+            $view = view('BACKOFFICE.LAPORAN.daftar-pembelian-rincian-produk-per-supplier-xlxs', compact(['perusahaan', 'data', 'tgl1', 'tgl2']))->render();
+            ExcelController::create($view,$filename,$title,$subtitle,$keterangan);
+            return response()->download(storage_path($filename))->deleteFileAfterSend(true);
+
+//            return view('BACKOFFICE.LAPORAN.daftar-pembelian-rincian-produk-per-supplier-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
         } else if ($tipe === '5') {
 

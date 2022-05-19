@@ -1,0 +1,31 @@
+CREATE OR REPLACE PROCEDURE sp_pbmanual_cek_otp_migrasi (nodraft         VARCHAR2,
+                                                 v_tgldraft        VARCHAR2,
+                                                 otp             VARCHAR2,
+                                                 p_lok       OUT VARCHAR2,
+                                                 p_message   OUT VARCHAR2)
+AS
+   v_otp   VARCHAR2 (6);
+   tgldraft DATE;
+BEGIN
+   tgldraft := to_date(v_tgldraft,'dd/mm/yyyy');
+
+   v_otp :=
+      SUBSTR (
+         LPAD (
+            TO_CHAR (
+                 TO_NUMBER (SUBSTR (nodraft, -4))
+               * TO_NUMBER (SUBSTR (nodraft, -4))
+               * TO_NUMBER (TO_CHAR (tgldraft, 'dd'))),
+            6,
+            '0'),
+         -6);
+
+   IF v_otp = SUBSTR (otp, 1, 6)
+   THEN
+      p_lok := 'TRUE';
+   ELSE
+      p_lok := 'FALSE';
+      p_message := 'Salah input OTP';
+   END IF;
+END;
+/

@@ -391,16 +391,16 @@ return [
             'prefix' => '',
         ],
 
-        'igrmktho' => [
-            'driver' => 'oracle',
-            'host' => '192.168.71.169',
-            'port' => '1521',
-            'database' => 'IGRMKTHO2',
-            'username' => 'IGRCRM',
-            'password' => 'IGRCRM',
-            'charset' => 'AL32UTF8',
-            'prefix' => '',
-        ],
+        // 'igrmktho' => [
+        //     'driver' => 'oracle',
+        //     'host' => '192.168.71.169',
+        //     'port' => '1521',
+        //     'database' => 'IGRMKTHO2',
+        //     'username' => 'IGRCRM',
+        //     'password' => 'IGRCRM',
+        //     'charset' => 'AL32UTF8',
+        //     'prefix' => '',
+        // ],
 
         'igrckl' => [
             'driver' => 'oracle',

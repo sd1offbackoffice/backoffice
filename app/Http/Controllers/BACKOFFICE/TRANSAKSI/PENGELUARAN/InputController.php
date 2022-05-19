@@ -287,6 +287,7 @@ class InputController extends Controller
                 'TRBO_PPNRPH',
                 'TRBO_HRGSATUAN',
                 'TRBO_GROSS',
+                'TRBO_PERSENPPN',
                 'TRBO_PPNRPH',
                 'TRBO_ISTYPE',
                 'TRBO_INVNO',
@@ -342,12 +343,15 @@ class InputController extends Controller
             $data->satuan = $d->satuan;
             $data->bkp = $d->prd_flagbkp1;
             $data->trbo_posqty = $d->trbo_posqty;
-            $data->trbo_hrgsatuan = $d->trbo_hrgsatuan;
+            $data->trbo_hrgsatuan = number_format((float)$d->trbo_hrgsatuan, 2, '.', '');;
+            // $data->trbo_hrgsatuan = $d->trbo_hrgsatuan;
             $data->qtyctn = floor($d->qty / $d->prd_frac);
             $data->qtypcs = $d->qty % $d->prd_frac;
-            $data->trbo_gross = $d->trbo_gross;
-            $data->discper = ($d->trbo_discrph / $d->trbo_gross) * 100;
+            $data->trbo_gross = number_format((float)$d->trbo_gross, 2, '.', '');;
+            // $data->trbo_gross = $d->trbo_gross;
+            $data->discper = round(($d->trbo_discrph / $d->trbo_gross) * 100);
             $data->trbo_discrph = $d->trbo_discrph;
+            $data->persen_ppn = $d->persenppn;
             $data->trbo_ppnrph = $d->trbo_ppnrph;
             $data->trbo_istype = $d->trbo_istype;
             $data->trbo_inv = $d->trbo_invno;
@@ -376,6 +380,8 @@ class InputController extends Controller
     public function getDataSupplier(Request $request)
     {
         $nodoc = '';
+        $message = '';
+        $status = '';
         if ($request->kdsup == '') {
             $message = 'Kode Supplier Tidak Boleh Kosong';
             $status = 'error';
@@ -392,7 +398,6 @@ class InputController extends Controller
         if ($temp > 0) {
             $message = 'Masih ada inputan Retur Supplier ' . $request->kdsup . ', yang belum cetak nota.';
             $status = 'info';
-
         }
 
 
@@ -453,6 +458,12 @@ class InputController extends Controller
             return compact(['message', 'status']);
         }
 
+        if ($message == '') {
+            $messasge = 'Successfully get Kode Supplier';       
+        }
+        if ($status == '') {
+            $status = 'SUCCESS';
+        }
         return compact(['result', 'message', 'status']);
     }
 
@@ -728,10 +739,10 @@ class InputController extends Controller
         $satuan = '';
         $bkp = '';
         $trbo_posqty = '';
-        $trbo_hrgsatuan = '';
-        $qtyctn = '';
-        $qtypcs = '';
-        $trbo_discrph = '';
+        $trbo_hrgsatuan = 0;
+        $qtyctn = 0;
+        $qtypcs = 0;
+        $trbo_discrph = 0;
         $trbo_istype = '';
         $trbo_invno = '';
         $trbo_tglinv = '';
@@ -755,12 +766,12 @@ class InputController extends Controller
             DB::connection(Session::get('connection'))->table('temp_urut_retur')->where(['NODOC_BPB' => $no_bpb])
                 ->update(['nodoc_bo' => $nodoc]);
 
-            for ($i = $mintrn; $i < $maxtrn; $i++) {
+            for ($i = $mintrn; $i <= $maxtrn; $i++) {
                 // $trbo = DB::connection(Session::get('connection'))->table('tbtr_backoffice')
                 //     ->where('trbo_prdcd', '=', $plu)
                 //     ->where('trbo_typetrn', '=', 'K')
                 //     ->first();
-                //     // dd($trbo);
+                    // dd($trbo);
 
                 // $trbo_discrph = 0;
                 // if ($trbo) {
@@ -845,14 +856,13 @@ class InputController extends Controller
                         ->where('prdcd', '=', $plu)
                         ->where('trn', '=', $ke)
                         ->first();
-
-                    // $trbo_qty = $qty;
-                    $trbo_qty = $trbo_qty->qtyretur;
-                    // dd($trbo_qty);
+                    
+                    $trbo_qty = $trbo_qty->qtyretur;                    
 
                     if ($unit == 'KG') {
                         $frac = 1;
                     }
+                    
                     $qtyctn = intval($trbo_qty / $frac);
                     $qtypcs = $trbo_qty % $frac;
 
@@ -897,8 +907,8 @@ class InputController extends Controller
                         ->first();
 
                     $trbo_discrph = $trbo_discrph->discrph;
-
-                }
+                    
+                }                
 
                 // $temp1 = 0;
                 // if ($ke == $maxtrn) {
@@ -912,8 +922,7 @@ class InputController extends Controller
                 // }
                 // $qty = $qty - $temp1;
 
-//            VALIDATE_ITEM
-
+//            VALIDATE_ITEM                                
                 $trbo_qty = ($qtyctn * $frac) + $qtypcs;
                 $qtyctn = intval($trbo_qty / $frac);
                 $qtypcs = $trbo_qty % $frac;
@@ -927,6 +936,8 @@ class InputController extends Controller
                 // dd($qtypcs);
 
                 $trbo_discper = ($trbo_discrph / $trbo_gross) * 100;
+                // $trbo_discper = round(($trbo_discrph / $trbo_gross) * 100);
+                // dd($trbo_discper);
 
                 if ($trbo_discper > 0) {
                     $trbo_discrph = ($trbo_gross * $trbo_discper) / 100;
@@ -960,19 +971,30 @@ class InputController extends Controller
                     $data->satuan = $satuan;
                     $data->bkp = $bkp;
                     $data->trbo_posqty = $trbo_posqty;
-                    $data->trbo_hrgsatuan = $trbo_hrgsatuan;
+                    $data->trbo_hrgsatuan = number_format((float)$trbo_hrgsatuan, 2, '.', '');
+                    // $data->trbo_hrgsatuan = $trbo_hrgsatuan;
                     $data->qtyctn = $qtyctn;
                     $data->qtypcs = $qtypcs;
-                    $data->trbo_gross = $trbo_gross;
-                    $data->discper = $trbo_discper;
-                    $data->trbo_discrph = $trbo_discrph;
-                    $data->trbo_ppnrph = $trbo_ppnrph;
+                    $data->trbo_gross = number_format((float)round($trbo_gross, 2), 2, '.', '');
+                    // $data->trbo_gross = $trbo_gross;
+                    $data->discper = number_format((float)round($trbo_discper), 2, '.', '');
+                    // $data->discper = $trbo_discper;
+                    $data->trbo_discrph = number_format((float)round($trbo_discrph, 1), 2, '.', '');
+                    // $data->trbo_discrph = $trbo_discrph;
+                    $data->persen_ppn = $res2->persenppn;
+                    $data->trbo_ppnrph = number_format((float)round($trbo_ppnrph, 4), 2, '.', '');
+                    // $data->trbo_ppnrph = $trbo_ppnrph;
                     $data->trbo_istype = $trbo_istype;
                     $data->trbo_inv = $trbo_invno;
                     $data->trbo_tgl = $trbo_tglinv;
                     $data->trbo_noreff = $trbo_noreff;
-                    $data->persen_ppn = $res2->persenppn;
-                    $data->trbo_keterangan = $keterangan;
+                   
+                    if ($keterangan == null) {
+                        $data->trbo_keterangan = '';
+                        // $data->trbo_keterangan = $trbo['trbo_keterangan'];
+                    } else {
+                        $data->trbo_keterangan = $keterangan;
+                    }                   
                     array_push($datas, $data);
                 }
                 if ($qty <= 0) {
@@ -1105,6 +1127,7 @@ class InputController extends Controller
                     'trbo_persendisc1' => $data['discper'],
                     'trbo_gross' => $data['trbo_gross'],
                     'trbo_discrph' => $data['trbo_discrph'],
+                    'trbo_persenppn' => $data['persen_ppn'],
                     'trbo_ppnrph' => $data['trbo_ppnrph'],
                     'trbo_averagecost' => $avg_cost,
                     'trbo_posqty' => $data['trbo_posqty'],

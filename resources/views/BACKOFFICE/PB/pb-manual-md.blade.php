@@ -2,7 +2,7 @@
 @section('title','PB | MASTER ITEM PB MANUAL')
 @section('content')
 
-    <div id="master" style="display: none" class="container">
+    <div id="master" class="container">
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
@@ -51,7 +51,7 @@
         </div>
     </div>
 
-    <div id="draft" class="container-fluid">
+    <div id="draft" class="container-fluid" style="display: none">
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
@@ -84,7 +84,7 @@
                                 <button class="col btn btn-danger" onclick="deletePBDraft()">DELETE DRAFT PB</button>
                             </div>
                             <div class="col-sm-2">
-                                <button class="col btn btn-success" onclick="">PROSES PB</button>
+                                <button class="col btn btn-success" onclick="checkProcessDraft()">PROSES PB</button>
                             </div>
                             <div class="col-sm-2">
                                 <button class="col btn btn-primary" onclick="showField('master')">BACK</button>
@@ -146,7 +146,7 @@
                             <div class="row form-group">
                                 <label class="col-sm-1 text-right col-form-label pl-0">SUPPLIER</label>
                                 <input type="text" class="col-sm-1 form-control text-left" id="draftSupplierCode" disabled>
-                                <input type="text" class="col-sm-2 form-control text-left" id="draftSupplierName" disabled>
+                                <input type="text" class="col-sm-3 form-control text-left" id="draftSupplierName" disabled>
                                 <div class="col-sm"></div>
                                 <input type="text" class="col-sm-1 form-control text-center" id="omi" disabled>
                                 <input type="text" class="col-sm-1 form-control text-center" id="idm" disabled>
@@ -157,7 +157,7 @@
                             <div class="row form-group">
                                 <div class="col-sm-4">
                                     <div class="col-sm-6">
-                                        <button class="col btn btn-success" onclick="">SIMPAN DATA</button>
+                                        <button id="btnSaveDraft" class="col btn btn-success" onclick="saveDraft()">SIMPAN DATA</button>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
@@ -289,6 +289,57 @@
         </div>
     </div>
 
+    <div class="modal fade" id="m_approval" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="form-group row text-center">
+                            <label for="i_username" class="col-sm-12 text-center col-form-label">APPROVAL PB SESUAI PKM - OTP</label>
+                        </div>
+                        <div class="form-group row text-center">
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-left" id="appInfo" disabled>
+                            </div>
+                            <div class="col-sm-1"></div>
+                        </div>
+                        <div class="form-group row text-center">
+                            <div class="col-sm-1"></div>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control text-left" id="appInfoDetail" disabled>
+                            </div>
+                            <div class="col-sm-1"></div>
+                        </div>
+                        <div class="form-group row text-center">
+                            <div class="col-sm-2"></div>
+                            <div class="col-sm-4">
+                                <button id="btnSendOTP" class="col btn btn-primary" onclick="sendOTP()">KIRIM OTP</button>
+                            </div>
+                            <div class="col-sm-4">
+                                <input type="password" class="form-control text-center" id="appOTP" placeholder="OTP">
+                            </div>
+                            <div class="col-sm-2"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="container">
+                            <div class="form-group row text-center">
+                                <div class="col-sm"></div>
+                                <div class="col-sm-4">
+                                    <button id="btnProcessDraft()" class="btn btn-danger col" onclick="processDraft()">OK</button>
+                                </div>
+                                <div class="col-sm-4">
+                                    <button id="btn-hapus-ok" class="btn btn-secondary col" data-dismiss="modal">BACK</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         body {
             background-color: #edece9;
@@ -355,9 +406,10 @@
     <script>
         var currentRow;
         var draftDetail = [];
-        var paramCekPKM;
+        var paramCekPKM = 0;
         var currentField = 'draft';
         var f_pkm;
+        var isNewDraft;
 
         $(document).ready(function(){
             $('#tanggal').daterangepicker({
@@ -365,7 +417,6 @@
                     format: 'DD/MM/YYYY'
                 }
             }).on('change', function(e) {
-                // `e` here contains the extra attributes
                 getPBProduct();
             });
 
@@ -416,7 +467,7 @@
                     $(".row-plu").off();
 
                     $('.row-plu').on('click', function (e) {
-                        if(currentField = 'master'){
+                        if(currentField == 'master'){
                             $('#pb-product-row-'+currentRow+' .plu').val($(this).find('td:eq(1)').html());
 
                             key = jQuery.Event("keypress");
@@ -493,7 +544,7 @@
 
         function initPBProductTable(){
             $('#pbProductTable').DataTable({
-                "scrollY": "40vh",
+                "scrollY": "55vh",
                 "scrollX" : false,
                 "sort": false,
                 "bInfo": false,
@@ -747,6 +798,14 @@
             if(field == 'draft'){
                 $('#draft').show();
                 $('#master').hide();
+
+                destroyPBDraftTable();
+                $('#pbDraftTable tbody tr').remove();
+                initPBDraftTable();
+
+                $('#draft input').val('');
+
+                $("#draftDate").val(formatDate('now'));
                 $('#draftNo').select();
             }
             else{
@@ -756,6 +815,8 @@
         }
 
         function initPBDraftTable(){
+            destroyPBDraftTable();
+
             $('#pbDraftTable').DataTable({
                 "scrollY": "25vh",
                 "scrollX" : false,
@@ -836,22 +897,22 @@
                     <td class="text-right minorrph">${data.sup_minrph}</td>
                     <td class="text-right maxpalet">${nvl(data.mpt_maxqty,'')}</td>
                     <td>
-                        <input type="number" class="form-control text-right qtyctn" value="${data.pdm_qtypb / data.prd_frac}" autocomplete="off" onchange="checkQty(${row},'qtyctn')" onkeypress="checkQtyKey(event,${row},'qtyctn)">
+                        <input type="number" class="form-control text-right qtyctn" value="${parseInt(data.pdm_qtypb / data.prd_frac)}" autocomplete="off" onchange="checkQty(${row},'qtyctn')" onkeypress="checkQtyKey(event,${row},'qtyctn')">
                     </td>
                     <td>
                         <input type="number" class="form-control text-right qtypcs" value="${data.pdm_qtypb % data.prd_frac}" autocomplete="off" onchange="checkQty(${row},'qtypcs')"  onkeypress="checkQtyKey(event,${row},'qtypcs')">
                     </td>
-                    <td class="text-right hrgsatuan">${convertToRupiah2(data.pdm_hrgsatuan)}</td>
-                    <td class="text-right rphdisc1">${convertToRupiah2(data.pdm_rphdisc1)}</td>
-                    <td class="text-right persendisc1">${convertToRupiah2(data.pdm_persendisc1)}</td>
-                    <td class="text-right rphdisc2">${convertToRupiah2(data.pdm_rphdisc2)}</td>
-                    <td class="text-right persendisc2">${convertToRupiah2(data.pdm_persendisc2)}</td>
-                    <td class="text-right bonuspo1">${convertToRupiah2(data.pdm_bonuspo1)}</td>
-                    <td class="text-right bonuspo2">${convertToRupiah2(data.pdm_bonuspo2)}</td>
-                    <td class="text-right gross">${convertToRupiah2(data.pdm_gross)}</td>
-                    <td class="text-right ppn">${convertToRupiah2(data.pdm_ppn)}</td>
-                    <td class="text-right ppnbm">${convertToRupiah2(data.pdm_ppnbm)}</td>
-                    <td class="text-right ppnbotol">${convertToRupiah2(data.pdm_ppnbotol)}</td>
+                    <td class="text-right hrgsatuan">${convertToRupiah2(Math.round(data.pdm_hrgsatuan))}</td>
+                    <td class="text-right rphdisc1">${convertToRupiah2(Math.round(data.pdm_rphdisc1))}</td>
+                    <td class="text-right persendisc1">${convertToRupiah2(Math.round(data.pdm_persendisc1))}</td>
+                    <td class="text-right rphdisc2">${convertToRupiah2(Math.round(data.pdm_rphdisc2))}</td>
+                    <td class="text-right persendisc2">${convertToRupiah2(Math.round(data.pdm_persendisc2))}</td>
+                    <td class="text-right bonuspo1">${convertToRupiah2(Math.round(data.pdm_bonuspo1))}</td>
+                    <td class="text-right bonuspo2">${convertToRupiah2(Math.round(data.pdm_bonuspo2))}</td>
+                    <td class="text-right gross">${convertToRupiah2(Math.round(data.pdm_gross))}</td>
+                    <td class="text-right ppn">${convertToRupiah2(Math.round(data.pdm_ppn))}</td>
+                    <td class="text-right ppnbm">${convertToRupiah2(Math.round(data.pdm_ppnbm))}</td>
+                    <td class="text-right ppnbotol">${convertToRupiah2(Math.round(data.pdm_ppnbotol))}</td>
                     <td class="text-right total">${convertToRupiah2(parseInt(data.pdm_gross) + parseInt(data.pdm_ppn) + parseInt(data.pdm_ppnbm) + parseInt(data.pdm_ppnbotol))}</td>
                 </tr>`
                 );
@@ -882,6 +943,9 @@
                         success: function (response) {
                             $('#modal-loader').modal('hide');
 
+                            isNewDraft = true;
+
+                            $('input').val('');
                             $('#draftNo').val(response.draftNo);
                             $('#draftDate').val(response.draftDate);
                             $('#draftInfo').select();
@@ -891,6 +955,11 @@
                             initPBDraftTable();
 
                             addDraftRow(null,0);
+
+                            $('#draftInfo').prop('disabled',false);
+                            $('#pbDraftTable input').prop('disabled',false);
+                            $('#pbDraftTable button').prop('disabled',false);
+                            $('#btnSaveDraft').prop('disabled',false);
                         },
                         error: function(error){
                             $('#modal-loader').modal('hide');
@@ -937,6 +1006,8 @@
                 success: function (response) {
                     $('#modal-loader').modal('hide');
 
+                    isNewDraft = false;
+
                     header = response.header;
                     $('#draftDate').val(header.phm_tgldraft);
                     $('#draftInfo').val(header.phm_keteranganpb);
@@ -950,9 +1021,27 @@
 
                     draftDetail = response.detail;
 
+                    destroyPBDraftTable();
+                    $('#pbDraftTable tbody tr').remove();
+                    initPBDraftTable();
 
                     for(i=0;i<draftDetail.length;i++){
                         addDraftRow(draftDetail[i],i);
+                        showDetail(i);
+                    }
+
+                    if(header.phm_recordid == '2'){
+                        $('#draftInfo').prop('disabled',true);
+                        $('#pbDraftTable input').prop('disabled',true);
+                        $('#pbDraftTable button').prop('disabled',true);
+                        $('#btnSaveDraft').prop('disabled',true);
+                    }
+                    else{
+                        $('#draftInfo').prop('disabled',false);
+                        $('#pbDraftTable input').prop('disabled',false);
+                        $('#pbDraftTable button').prop('disabled',false);
+                        $('#btnSaveDraft').prop('disabled',false);
+                        addDraftRow(null,draftDetail.length);
                     }
 
                     showDetail(0);
@@ -1048,22 +1137,22 @@
                     $('#bonus2flag3').val(d.hgb_jenisbonus);
 
                 if(d.pdm_qtypb > (d.pdm_pkmt * 10))
-                    f_pkm = 1;
+                    d.f_pkm = 1;
                 else if(d.pdm_qtypb > (d.pdm_pkmt * 5) && d.pdm_qtypb <= (d.pdm_pkmt * 10))
-                    f_pkm = 2;
+                    d.f_pkm = 2;
                 else if(d.pdm_qtypb > (d.pdm_pkmt * 2) && d.pdm_qtypb <= (d.pdm_pkmt * 5))
-                    f_pkm = 3;
+                    d.f_pkm = 3;
                 else if(d.pdm_qtypb <= (d.pdm_pkmt * 2))
-                    f_pkm = 4;
+                    d.f_pkm = 4;
 
-                if(paramCekPKM > f_pkm)
-                    paramCekPKM = f_pkm;
+                if(paramCekPKM > d.f_pkm)
+                    paramCekPKM = d.f_pkm;
 
                 switch(paramCekPKM){
                     case 1 : $('#draftHighestAuth').val('Senior Manager');break;
                     case 2 : $('#draftHighestAuth').val('Store Manager');break;
                     case 3 : $('#draftHighestAuth').val('Store Operation Jr. Mgr / Mgr');break;
-                    default : $('#draftHighestAuth').val('Store Operation Jr. Mgr / Mgr');break;
+                    default : $('#draftHighestAuth').val('Store Operation Jr. Spv / Spv');break;
                 }
             }
         }
@@ -1187,21 +1276,21 @@
             data = draftDetail[row];
 
             tr.find('.plu').val(data.pdm_prdcd);
-            tr.find('.minorpcs').html(data.v_minor);
-            tr.find('.minorctn').html(parseInt(data.v_minor / data.prd_frac));
-            tr.find('.minorrph').html(data.sup_minrph);
+            tr.find('.minorpcs').html(data.prd_minorder);
+            tr.find('.minorctn').html(parseInt(data.prd_minorder / data.prd_frac));
+            tr.find('.minorrph').html(Math.round(data.sup_minrph));
             tr.find('.maxpalet').html(nvl(data.mpt_maxqty,''));
-            tr.find('.hrgsatuan').html(convertToRupiah2(data.pdm_hrgsatuan));
-            tr.find('.rphdisc1').html(convertToRupiah2(data.pdm_rphdisc1));
-            tr.find('.persendisc1').html(convertToRupiah2(data.pdm_persendisc1));
-            tr.find('.rphdisc2').html(convertToRupiah2(data.pdm_rphdisc2));
-            tr.find('.persendisc2').html(convertToRupiah2(data.pdm_persendisc2));
-            tr.find('.bonuspo1').html(convertToRupiah2(data.pdm_bonuspo1));
-            tr.find('.bonuspo2').html(convertToRupiah2(data.pdm_bonuspo2));
-            tr.find('.gross').html(convertToRupiah2(data.pdm_gross));
-            tr.find('.ppn').html(convertToRupiah2(data.pdm_ppn));
-            tr.find('.ppnbm').html(convertToRupiah2(data.pdm_ppnbm));
-            tr.find('.ppnbotol').html(convertToRupiah2(data.pdm_ppnbotol));
+            tr.find('.hrgsatuan').html(convertToRupiah2(Math.round(data.pdm_hrgsatuan)));
+            tr.find('.rphdisc1').html(convertToRupiah2(Math.round(data.pdm_rphdisc1)));
+            tr.find('.persendisc1').html(convertToRupiah2(Math.round(data.pdm_persendisc1)));
+            tr.find('.rphdisc2').html(convertToRupiah2(Math.round(data.pdm_rphdisc2)));
+            tr.find('.persendisc2').html(convertToRupiah2(Math.round(data.pdm_persendisc2)));
+            tr.find('.bonuspo1').html(convertToRupiah2(Math.round(data.pdm_bonuspo1)));
+            tr.find('.bonuspo2').html(convertToRupiah2(Math.round(data.pdm_bonuspo2)));
+            tr.find('.gross').html(convertToRupiah2(Math.round(data.pdm_gross)));
+            tr.find('.ppn').html(convertToRupiah2(Math.round(data.pdm_ppn)));
+            tr.find('.ppnbm').html(convertToRupiah2(Math.round(data.pdm_ppnbm)));
+            tr.find('.ppnbotol').html(convertToRupiah2(Math.round(data.pdm_ppnbotol)));
             tr.find('.total').html(convertToRupiah2(parseInt(data.pdm_gross) + parseInt(data.pdm_ppn) + parseInt(data.pdm_ppnbm) + parseInt(data.pdm_ppnbotol)));
         }
 
@@ -1215,80 +1304,359 @@
             data = draftDetail[row];
 
             tr = $('#pb-draft-row-'+row);
-            qtypcs = parseInt(nvl(tr.find('.qtypcs').val(),0));
-            qtyctn = parseInt(nvl(tr.find('.qtyctn').val(),0));
 
-            if(nvl(data.pdm_recordid,9) != 2){
-                if(((qtyctn * data.prd_frac) + qtypcs) < 0 && (qtyctn + qtypcs) !== 0){
-                    tr.find('.qtypcs').val(0);
-                    tr.find('.qtyctn').val(0);
+            if(
+                (tr.find('.qtypcs').val() && tr.find('.qtypcs').val() < parseInt(tr.find('.minorpcs').html())) &&
+                tr.find('.qtyctn').val() && tr.find('.qtyctn').val() < parseInt(tr.find('.minorctn').html())
+            ){
+            // if(false){
+                swal({
+                    title: 'QTYB + QTYK < MINOR!',
+                    icon: 'warning'
+                }).then(() => {
+                    tr.find('.'+field).select();
+                });
+            }
+            else{
+                qtypcs = parseInt(nvl(tr.find('.qtypcs').val(),0));
+                qtyctn = parseInt(nvl(tr.find('.qtyctn').val(),0));
+
+                qtyctn = qtyctn + parseInt(qtypcs / data.prd_frac);
+                qtypcs = qtypcs % data.prd_frac;
+
+                tr.find('.qtyctn').val(qtyctn);
+                tr.find('.qtypcs').val(qtypcs);
+
+                if(nvl(data.pdm_recordid,9) != 2){
+                    if(tr.find('.qtyctn').val() < 0){
+                        console.log('b');
+                        swal({
+                            title: 'Quantity Carton < 0',
+                            icon: 'warning'
+                        }).then(() => {
+                            tr.find('.qtyctn').select();
+                        });
+                    }
+                    else if(((qtyctn * parseInt(data.prd_frac)) + qtypcs) < 0 && (qtyctn + qtypcs) !== 0){
+                        tr.find('.qtypcs').val(0);
+                        tr.find('.qtyctn').val(0);
+                    }
+                    else{
+                        data.pdm_qtypb = qtyctn * parseInt(data.prd_frac) + qtypcs;
+
+                        data.pdm_gross = ((qtyctn * parseFloat(data.pdm_hrgsatuan)) + ((parseFloat(data.pdm_hrgsatuan) / parseInt(data.prd_frac)) * qtypcs));
+                        tr.find('.gross').val(convertToRupiah2(Math.round(data.pdm_gross)));
+
+                        console.log(data.pdm_gross);
+
+                        if(nvl(parseInt(data.pdm_persendisc1),0) > 0){
+                            // data.pdm_gross -= ((((data.pdm_gross * parseFloat(data.pdm_persendisc1)) / 100)));
+                            data.pdm_gross *= (100 - parseInt(data.pdm_persendisc1)) / 100;
+                            tr.find('.gross').html(convertToRupiah2(Math.round(data.pdm_gross)));
+                        }
+
+                        console.log(data.pdm_gross);
+
+                        if(nvl(parseInt(data.pdm_persendisc2),0) > 0){
+                            //data.pdm_gross -= ((((data.pdm_gross * parseFloat(data.pdm_persendisc2)) / 100)));
+                            data.pdm_gross *= (100 - parseInt(data.pdm_persendisc2)) / 100;
+                            tr.find('.gross').html(convertToRupiah2(Math.round(data.pdm_gross)));
+                        }
+
+                        console.log(data.pdm_gross);
+
+                        if(data.bkp === 'Y'){
+                            data.pdm_ppn = (parseFloat(data.pdm_gross) * parseInt(nvl(data.prd_ppn,11))) / 100;
+                            tr.find('.ppn').html(convertToRupiah2(Math.round(data.pdm_ppn)));
+                        }
+                        else{
+                            data.pdm_ppn = 0;
+                            tr.find('.ppn').html(convertToRupiah2(Math.round(data.pdm_ppn)));
+                        }
+
+                        tr.find('.total').html(convertToRupiah2(parseInt(data.pdm_gross) + parseInt(data.pdm_ppn) + parseInt(data.pdm_ppnbm) + parseInt(data.pdm_ppnbotol)));
+
+                        if(data.pdm_qtypb > (data.pdm_pkmt * 10))
+                            f_pkm = 1;
+                        else if(data.pdm_qtypb > (data.pdm_pkmt * 5) && data.pdm_qtypb <= (data.pdm_pkmt * 10))
+                            f_pkm = 2;
+                        else if(data.pdm_qtypb > (data.pdm_pkmt * 2) && data.pdm_qtypb <= (data.pdm_pkmt * 5))
+                            f_pkm = 3;
+                        else if(data.pdm_qtypb <= (data.pdm_pkmt * 2))
+                            f_pkm = 4;
+
+                        if(paramCekPKM > f_pkm)
+                            paramCekPKM = f_pkm;
+
+                        switch(paramCekPKM){
+                            case 1 : $('#draftHighestAuth').val('Senior Manager');break;
+                            case 2 : $('#draftHighestAuth').val('Store Manager');break;
+                            case 3 : $('#draftHighestAuth').val('Store Operation Jr. Mgr / Mgr');break;
+                            default : $('#draftHighestAuth').val('Store Operation Jr. Mgr / Mgr');break;
+                        }
+
+                        if(field == 'qtyctn'){
+                            showDetail(row);
+                            tr.find('.qtypcs').select();
+                        }
+                        else{
+                            if(tr.find('.plu').val() == $('.pb-draft-row:eq(-1) .plu').val()){
+                                r = $('.pb-draft-row').length;
+                                addDraftRow(null,r);
+                                showDetail(r);
+                                $('#pb-draft-row-'+r).find('.plu').select();
+                            }
+                            else{
+                                r = row+1;
+                                $('#pb-draft-row-'+r).find('.plu').select();
+                                showDetail(r);
+                            }
+                        }
+                    }
                 }
-                else if(qtyctn < 0){
+            }
+        }
+
+        function saveDraft(){
+            if(draftDetail.length == 0){
+                swal({
+                    title: 'Tidak ada data yang akan disimpan!',
+                    icon: 'error'
+                }).then(() => {
+                    $('#draftNo').select();
+                });
+            }
+            else{
+                swal({
+                    title: 'Yakin ingin menyimpan data draft?',
+                    icon: 'warning',
+                    dangerMode: true,
+                    buttons: true
+                }).then((ok) => {
+                    if(ok){
+                        $.ajax({
+                            url: '{{ url()->current() }}/save-draft',
+                            type: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            data: {
+                                isNewDraft : isNewDraft,
+                                draftNo : $('#draftNo').val(),
+                                draftDate : $('#draftDate').val(),
+                                draftInfo : $('#draftInfo').val(),
+                                draftDetail: draftDetail
+                            },
+                            beforeSend: function(){
+                                $('#modal-loader').modal('show');
+                            },
+                            success: function (response) {
+                                $('#modal-loader').modal('hide');
+
+                                swal({
+                                    title: response.message,
+                                    icon: 'success'
+                                }).then(() => {
+                                    isNewDraft = false;
+                                });
+                            },
+                            error: function(error){
+                                $('#modal-loader').modal('hide');
+
+                                swal({
+                                    title: error.responseJSON.message,
+                                    icon: 'error'
+                                }).then(() => {
+
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        }
+
+        function checkProcessDraft(){
+            if(!$('#draftNo').val()){
+                swal({
+                    title: 'Nomor Draft PB tidak boleh kosong!',
+                    icon: 'warning',
+                }).then(() => {
+                    $('#draftNo').select();
+                });
+            }
+            else{
+                swal({
+                    title: 'Yakin ingin proses Draft PB menjadi PB Manual?',
+                    icon: 'warning',
+                    dangerMode: true,
+                    buttons: true
+                }).then((ok) => {
+                    if(ok){
+                        $.ajax({
+                            url: '{{ url()->current() }}/check-process-draft',
+                            type: 'GET',
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            data: {
+                                draftNo : $('#draftNo').val(),
+                            },
+                            beforeSend: function(){
+                                $('#modal-loader').modal('show');
+                            },
+                            success: function (response) {
+                                $('#modal-loader').modal('hide');
+
+                                if(response.message == 'OK'){
+                                    showApproval();
+                                }
+                            },
+                            error: function(error){
+                                $('#modal-loader').modal('hide');
+
+                                swal({
+                                    title: error.responseJSON.message,
+                                    icon: 'error'
+                                }).then(() => {
+
+                                });
+                            }
+                        });
+                    }
+                });
+
+            }
+        }
+
+        function showApproval(){
+            paramCekPKM = 5;
+            for(i=0;i<draftDetail.length;i++){
+                if(paramCekPKM > draftDetail[i].f_pkm)
+                    paramCekPKM = draftDetail[i].f_pkm;
+            }
+
+            switch (paramCekPKM){
+                case 1 : {
+                    limit = '> 10x';
+                    auth = 'Senior Manager';
+                    break;
+                }
+                case 2 : {
+                    limit = '10x';
+                    auth = 'Store Manager';
+                    break;
+                }
+                case 3 : {
+                    limit = '5x';
+                    auth = 'Store Operation Jr. Mgr / Mgr';
+                    break;
+                }
+                default : {
+                    limit = '2x';
+                    auth = 'Store Operation Jr. Spv / Spv';
+                    break;
+                }
+            }
+
+            limit = 'Batasan s/d '+limit+' PKM';
+            auth = 'Otorisasi : '+auth;
+
+            $('#appInfo').val(limit);
+            $('#appInfoDetail').val(auth);
+            $('#m_approval').modal({backdrop: 'static', keyboard: false});
+        }
+
+        function sendOTP(){
+            $.ajax({
+                url: '{{ url()->current() }}/send-otp',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                data: {
+                    draftNo: $('#draftNo').val(),
+                    draftDate: $('#draftDate').val(),
+                    auth: $('#appInfoDetail').val(),
+                    paramCekPKM: paramCekPKM
+                },
+                beforeSend: function(){
+                    $('#modal-loader').modal('show');
+                },
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+
                     swal({
-                        title: 'Quantity Carton < 0',
-                        icon: 'warning'
+                        title: response.message,
+                        icon: 'success'
                     }).then(() => {
-                        tr.find('.qtyctn').val(0).select();
+                        $('#appOTP').val('').select();
+                    });
+                },
+                error: function(error){
+                    $('#modal-loader').modal('hide');
+
+                    swal({
+                        title: error.responseJSON.message,
+                        icon: 'error'
+                    }).then(() => {
+
                     });
                 }
-                else{
-                    data.pdm_qtypb = qtyctn * parseInt(data.prd_frac) + qtypcs;
+            });
+        }
 
-                    data.pdm_gross = (qtyctn * parseFloat(data.pdm_hrgsatuan)) + ((parseFloat(data.pdm_hrgsatuan) / parseInt(data.prd_frac)) * qtypcs);
-                    tr.find('.gross').val(convertToRupiah2(data.pdm_gross));
+        function processDraft(){
+            if(!$('#appOTP').val()){
+                swal({
+                    title: 'Harap isi OTP!',
+                    icon: 'warning'
+                }).then(() => {
+                    $('#appOTP').select();
+                });
+            }
+            else{
+                $.ajax({
+                    url: '{{ url()->current() }}/process-draft',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        draftNo: $('#draftNo').val(),
+                        draftDate: $('#draftDate').val(),
+                        otp: $('#appOTP').val(),
+                        paramCekPKM: paramCekPKM,
+                    },
+                    beforeSend: function(){
+                        $('#modal-loader').modal('show');
+                    },
+                    success: function (response) {
+                        $('#modal-loader').modal('hide');
 
-                    if(nvl(parseInt(data.pdm_persendisc1),0) > 0){
-                        data.pdm_gross -= Math.round(((data.pdm_gross * parseFloat(data.pdm_persendisc1)) / 100));
-                        tr.find('.gross').html(convertToRupiah2(data.pdm_gross));
+                        swal({
+                            title: response[0].message,
+                            icon: response[0].status
+                        }).then(() => {
+                            swal({
+                                title: response[1].message,
+                                icon: response[1].status
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        });
+                    },
+                    error: function(error){
+                        $('#modal-loader').modal('hide');
+
+                        swal({
+                            title: error.responseJSON.message,
+                            icon: 'error'
+                        }).then(() => {
+
+                        });
                     }
-
-                    if(nvl(parseInt(data.pdm_persendisc2),0) > 0){
-                        data.pdm_gross -= Math.round(((data.pdm_gross * parseFloat(data.pdm_persendisc2)) / 100));
-                        tr.find('.gross').html(convertToRupiah2(data.pdm_gross));
-                    }
-
-                    if(data.bkp === 'Y'){
-                        data.pdm_ppn = (parseFloat(data.pdm_gross) * parseInt(nvl(data.prd_ppn,11))) / 100;
-                        tr.find('.ppn').html(convertToRupiah2(data.pdm_ppn));
-                    }
-                    else{
-                        data.pdm_ppn = 0;
-                        tr.find('.ppn').html(convertToRupiah2(data.pdm_ppn));
-                    }
-
-                    tr.find('.total').html(convertToRupiah2(parseInt(data.pdm_gross) + parseInt(data.pdm_ppn) + parseInt(data.pdm_ppnbm) + parseInt(data.pdm_ppnbotol)));
-
-                    if(data.pdm_qtypb > (data.pdm_pkmt * 10))
-                        f_pkm = 1;
-                    else if(data.pdm_qtypb > (data.pdm_pkmt * 5) && data.pdm_qtypb <= (data.pdm_pkmt * 10))
-                        f_pkm = 2;
-                    else if(data.pdm_qtypb > (data.pdm_pkmt * 2) && data.pdm_qtypb <= (data.pdm_pkmt * 5))
-                        f_pkm = 3;
-                    else if(data.pdm_qtypb <= (data.pdm_pkmt * 2))
-                        f_pkm = 4;
-
-                    if(paramCekPKM > f_pkm)
-                        paramCekPKM = f_pkm;
-
-                    switch(paramCekPKM){
-                        case 1 : $('#draftHighestAuth').val('Senior Manager');break;
-                        case 2 : $('#draftHighestAuth').val('Store Manager');break;
-                        case 3 : $('#draftHighestAuth').val('Store Operation Jr. Mgr / Mgr');break;
-                        default : $('#draftHighestAuth').val('Store Operation Jr. Mgr / Mgr');break;
-                    }
-
-                    if(field == 'qtyctn')
-                        tr.find('.qtypcs').val(nvl(this.value,0)).select();
-                    else{
-                        if(tr.find('.plu').val() == $('.pb-draft-row:eq(-1) .plu').val()){
-                            r = $('.pb-draft-row').length;
-                            addDraftRow(null,r);
-                            showDetail(r);
-                            $('#pb-draft-row-'+r).find('.plu').select();
-                        }
-                        else $('#pb-draft-row-'+row+1).find('.plu').select();
-                    }
-                }
+                });
             }
         }
     </script>

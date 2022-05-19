@@ -3,37 +3,37 @@
     <thead >
     <tr>
         <th colspan="2" style="font-weight: bold;border-top: 1px solid black;border-bottom: 1px solid black;"></th>
-        <th colspan="2" style="font-weight: bold;border-top: 1px solid black;border-bottom: 1px solid black;" align="center">PEMBELIAN
+        <th colspan="2" style="font-weight: bold;border: solid;" align="center">PEMBELIAN
         </th>
-        <th colspan="5" style="font-weight: bold;border-top: 1px solid black;border-bottom: 1px solid black;" align="center">PENERIMAAN
+        <th colspan="5" style="font-weight: bold;border: solid;" align="center">PENERIMAAN
         </th>
-        <th colspan="5" style="font-weight: bold;border-top: 1px solid black;border-bottom: 1px solid black;" align="center">PENGELUARAN
+        <th colspan="5" style="font-weight: bold;border: solid;" align="center">PENGELUARAN
         </th>
-        <th colspan="7" style="font-weight: bold;border-top: 1px solid black;border-bottom: 1px solid black;" align="center">
+        <th colspan="7" style="font-weight: bold;border: solid;" align="center">
         </th>
     </tr>
     <tr style="text-align: center;">
         <th style="font-weight: bold;border-bottom: 1px solid black;"></th>
         <th style="font-weight: bold;border-bottom: 1px solid black;" align="right;">SALDO AWAL</th>
-        <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">MURNI</th>
-        <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">BONUS</th>
+        <th style="font-weight: bold;border-bottom: 1px solid black;border-left: 1px solid black;" align="right">MURNI</th>
+        <th style="font-weight: bold;border-bottom: 1px solid black;border-right: 1px solid black;" align="right">BONUS</th>
         <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">TRANSFER IN</th>
-        <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">RETUR<br> PENJUALAN</th>
+        <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">RETUR<br>PENJUALAN</th>
         <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">REPACK IN<br>(REPACK)</th>
         <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">LAIN-LAIN</th>
-        <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">PENJUALAN</th>
+        <th style="font-weight: bold;border-bottom: 1px solid black;border-right: 1px solid black;" align="right">PENJUALAN</th>
         <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">TRANSFER OUT</th>
         <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">REPACK OUT<br>(PREPACK)</th>
         <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">HILANG</th>
         <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">LAIN-LAIN</th>
-        <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">SO</th>
+        <th style="font-weight: bold;border-bottom: 1px solid black;border-right: 1px solid black;" align="right">STOCK OPNAME</th>
         <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">INTRANSIT</th>
         <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">PENYESUAIAN</th>
         <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">KOREKSI</th>
-        <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">SALDO<br>AKHIR</th>
+        <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">SALDO AKHIR</th>
         <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">GUDANG-X<br>SRV. SUP</th>
-        <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">SERV<br>TOKO</th>
-        <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">SALDO<br>TOKO</th>
+        <th style="font-weight: bold;border-bottom: 1px solid black;" align="right">SERV TOKO</th>
+        <th style="font-weight: bold;border-bottom: 1px solid black;border-right: 1px solid black;" align="right">SALDO TOKO</th>
     </tr>
     </thead>
     <tbody>

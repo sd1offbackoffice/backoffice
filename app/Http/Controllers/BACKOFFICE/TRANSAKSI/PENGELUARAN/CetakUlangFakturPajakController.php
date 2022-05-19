@@ -26,6 +26,8 @@ class CetakUlangFakturPajakController extends Controller
                                 AND mstd_noref3 IS NOT NULL
                     ORDER BY msth_nodoc DESC");
 
+
+
         if (!$datas) {
             return response()->json([
                 'status' => 'FAILED',
@@ -146,7 +148,9 @@ class CetakUlangFakturPajakController extends Controller
 
         // dd($data);
 
-        return view('BACKOFFICE.TRANSAKSI.PENGELUARAN.cetakulangfakturpajak_pdf', compact('npb1', 'npb2', 'perusahaan', 'data', 'ttd', 'role1', 'role2'));
+    return view('BACKOFFICE.TRANSAKSI.PENGELUARAN.cetakulangfakturpajak_pdf', compact('npb1', 'npb2', 'perusahaan', 'data', 'ttd', 'role1', 'role2'));
+//        return view('BACKOFFICE.CETAKDOKUMEN.ctk-rtrpjk-pdf', compact('npb1', 'npb2', 'perusahaan', 'data', 'ttd', 'role1', 'role2'));
+
     }
 }
 

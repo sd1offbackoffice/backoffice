@@ -100,7 +100,7 @@ class printBPBController extends Controller
         $ftp_server = config('ftp.ftp_server_sd6');
         $ftp_user_name = config('ftp.ftp_user_name_sd6');
         $ftp_user_pass = config('ftp.ftp_user_pass_sd6');
-        $zipName = Session::get('kdigr') . '_' . date("Ymd", strtotime($date)) . '.ZIP';
+        $zipName = Session::get('kdigr') . '_' . date("dmY", strtotime($date)) . '.ZIP';
         $zipAddress = '../storage/receipts/' . $zipName;
         try {
             $conn_id = ftp_connect($ftp_server);
@@ -220,294 +220,294 @@ class printBPBController extends Controller
     }
 
     //masih error di update barang baru
-    public function SP_PKM_BPB($kodeigr, $sub_prdcd, $userId, $P_SUKSES, $P_ERROR)
-    {
-        $model  = new AllModel();
-        $conn   = $model->connectionProcedure();
-        $sysdatef = Carbon::now();
-        $DIMENSI = 0;
-        $MINORDER = 0;
-        $PKMM = 0;
-        $PKMT = 0;
-        $LEADTIME = 0;
-        $MIND = 0;
-        $MPKM = 0;
-        $N = 0;
-        $AVGSPD = 0;
-        $KSUP = '';
-        $ADA = oci_parse($conn, "SELECT COUNT (1)
-                                FROM tbmaster_kkpkm
-                                WHERE pkm_kodeigr = '$kodeigr' 
-                                AND pkm_prdcd = '$sub_prdcd'");
-        oci_execute($ADA);
-        $ADA_KEY = oci_fetch_array($ADA, OCI_ASSOC);
-        $keys = array_keys($ADA_KEY);
+    // public function SP_PKM_BPB($kodeigr, $sub_prdcd, $userId, $P_SUKSES, $P_ERROR)
+    // {
+    //     $model  = new AllModel();
+    //     $conn   = $model->connectionProcedure();
+    //     $sysdatef = Carbon::now();
+    //     $DIMENSI = 0;
+    //     $MINORDER = 0;
+    //     $PKMM = 0;
+    //     $PKMT = 0;
+    //     $LEADTIME = 0;
+    //     $MIND = 0;
+    //     $MPKM = 0;
+    //     $N = 0;
+    //     $AVGSPD = 0;
+    //     $KSUP = '';
+    //     $ADA = oci_parse($conn, "SELECT COUNT (1)
+    //                             FROM tbmaster_kkpkm
+    //                             WHERE pkm_kodeigr = '$kodeigr' 
+    //                             AND pkm_prdcd = '$sub_prdcd'");
+    //     oci_execute($ADA);
+    //     $ADA_KEY = oci_fetch_array($ADA, OCI_ASSOC);
+    //     $keys = array_keys($ADA_KEY);
 
-        if ($ADA_KEY[$keys[0]] > 0) {
-            $P_SUKSES = 'Y';
-            return $ADA_KEY[$keys[0]];
-        } else {
-            $min_order =  oci_parse($conn, "SELECT PRD_MINORDER
-                                FROM TBMASTER_PRODMAST,
-                                    TBMASTER_KKPKM,
-                                    TBMASTER_PRODCRM,
-                                    TBMASTER_PKMPLUS
-                                WHERE   PRD_KODEIGR     = '$kodeigr'
-                                AND     PRD_PRDCD       = '$sub_prdcd'
-                                AND     PKM_KODEIGR(+)  = '$kodeigr'
-                                AND     PKM_PRDCD(+)    = '$sub_prdcd'
-                                AND     PRC_KODEIGR(+)  = '$kodeigr'
-                                AND     PRC_PLUIGR(+)   = '$sub_prdcd'
-                                AND     PRC_GROUP(+)    = 'O'
-                                AND     PKMP_KODEIGR(+) = '$kodeigr'
-                                AND     PKMP_PRDCD(+)   = '$sub_prdcd'");
+    //     if ($ADA_KEY[$keys[0]] > 0) {
+    //         $P_SUKSES = 'Y';
+    //         return $ADA_KEY[$keys[0]];
+    //     } else {
+    //         $min_order =  oci_parse($conn, "SELECT PRD_MINORDER
+    //                             FROM TBMASTER_PRODMAST,
+    //                                 TBMASTER_KKPKM,
+    //                                 TBMASTER_PRODCRM,
+    //                                 TBMASTER_PKMPLUS
+    //                             WHERE   PRD_KODEIGR     = '$kodeigr'
+    //                             AND     PRD_PRDCD       = '$sub_prdcd'
+    //                             AND     PKM_KODEIGR(+)  = '$kodeigr'
+    //                             AND     PKM_PRDCD(+)    = '$sub_prdcd'
+    //                             AND     PRC_KODEIGR(+)  = '$kodeigr'
+    //                             AND     PRC_PLUIGR(+)   = '$sub_prdcd'
+    //                             AND     PRC_GROUP(+)    = 'O'
+    //                             AND     PKMP_KODEIGR(+) = '$kodeigr'
+    //                             AND     PKMP_PRDCD(+)   = '$sub_prdcd'");
 
-            oci_execute($min_order);
-            $min_order_KEY = oci_fetch_array($min_order, OCI_ASSOC);
-            $keys = array_keys($min_order_KEY);
-            if ($keys > 0) {
-                $MINORDER = $keys;
-            } else {
-                $isi_beli =  oci_parse($conn, "SELECT PRD_ISIBELI
-                                FROM TBMASTER_PRODMAST,
-                                    TBMASTER_KKPKM,
-                                    TBMASTER_PRODCRM,
-                                    TBMASTER_PKMPLUS
-                                WHERE   PRD_KODEIGR     = '$kodeigr'
-                                AND     PRD_PRDCD       = '$sub_prdcd'
-                                AND     PKM_KODEIGR(+)  = '$kodeigr'
-                                AND     PKM_PRDCD(+)    = '$sub_prdcd'
-                                AND     PRC_KODEIGR(+)  = '$kodeigr'
-                                AND     PRC_PLUIGR(+)   = '$sub_prdcd'
-                                AND     PRC_GROUP(+)    = 'O'
-                                AND     PKMP_KODEIGR(+) = '$kodeigr'
-                                AND     PKMP_PRDCD(+)   = '$sub_prdcd'");
-                oci_execute($isi_beli);
-                $isi_beli_KEY = oci_fetch_array($isi_beli, OCI_ASSOC);
-                $keys = array_keys($isi_beli_KEY);
-                if ($keys > 0) {
-                    $MINORDER = $keys;
-                }
-            }
+    //         oci_execute($min_order);
+    //         $min_order_KEY = oci_fetch_array($min_order, OCI_ASSOC);
+    //         $keys = array_keys($min_order_KEY);
+    //         if ($keys > 0) {
+    //             $MINORDER = $keys;
+    //         } else {
+    //             $isi_beli =  oci_parse($conn, "SELECT PRD_ISIBELI
+    //                             FROM TBMASTER_PRODMAST,
+    //                                 TBMASTER_KKPKM,
+    //                                 TBMASTER_PRODCRM,
+    //                                 TBMASTER_PKMPLUS
+    //                             WHERE   PRD_KODEIGR     = '$kodeigr'
+    //                             AND     PRD_PRDCD       = '$sub_prdcd'
+    //                             AND     PKM_KODEIGR(+)  = '$kodeigr'
+    //                             AND     PKM_PRDCD(+)    = '$sub_prdcd'
+    //                             AND     PRC_KODEIGR(+)  = '$kodeigr'
+    //                             AND     PRC_PLUIGR(+)   = '$sub_prdcd'
+    //                             AND     PRC_GROUP(+)    = 'O'
+    //                             AND     PKMP_KODEIGR(+) = '$kodeigr'
+    //                             AND     PKMP_PRDCD(+)   = '$sub_prdcd'");
+    //             oci_execute($isi_beli);
+    //             $isi_beli_KEY = oci_fetch_array($isi_beli, OCI_ASSOC);
+    //             $keys = array_keys($isi_beli_KEY);
+    //             if ($keys > 0) {
+    //                 $MINORDER = $keys;
+    //             }
+    //         }
 
-            $sp_pkm_bpb = oci_parse($conn, "SELECT PRD_PRDCD,
-                                    PRD_LASTCOST,
-                                    PRD_KODETAG,
-                                    PRD_KODECABANG,
-                                    PRD_KATEGORITOKO,
-                                    PRD_KODEDIVISI,
-                                    PRD_KODEDEPARTEMENT,
-                                    PRD_KODEKATEGORIBARANG,
-                                    PRD_TGLDAFTAR,
-                                    PRD_FLAGGUDANG
-                                    FROM TBMASTER_PRODMAST,
-                                        TBMASTER_KKPKM,
-                                        TBMASTER_PRODCRM,
-                                        TBMASTER_PKMPLUS
-                                    WHERE   PRD_KODEIGR     = '$kodeigr'
-                                    AND     PRD_PRDCD       = '$sub_prdcd'
-                                    AND     PKM_KODEIGR(+)  = '$kodeigr'
-                                    AND     PKM_PRDCD(+)    = '$sub_prdcd'
-                                    AND     PRC_KODEIGR(+)  = '$kodeigr'
-                                    AND     PRC_PLUIGR(+)   = '$sub_prdcd'
-                                    AND     PRC_GROUP(+)    = 'O'
-                                    AND     PKMP_KODEIGR(+) = '$kodeigr'
-                                    AND     PKMP_PRDCD(+)   = '$sub_prdcd'");
-            oci_execute($sp_pkm_bpb);
-            $sp_pkm_bpb_KEY = oci_fetch_array($sp_pkm_bpb, OCI_ASSOC);
-            foreach ($sp_pkm_bpb_KEY as $data => $value) {
-                $ADA = oci_parse($conn, "SELECT COUNT (1)
-                                FROM TBMASTER_LOKASI
-                                WHERE LKS_KODEIGR = '$kodeigr' 
-                                AND LKS_PRDCD = '$sub_prdcd'
-                                AND (LKS_KODERAK NOT LIKE 'X%'
-                                AND LKS_KODERAK NOT LIKE 'A%'
-                                AND LKS_KODERAK NOT LIKE 'G%')
-                                AND LKS_TIPERAK <> 'S'");
-                oci_execute($ADA);
-                $ADA_KEY = oci_fetch_array($ADA, OCI_ASSOC);
-                $keys = array_keys($ADA_KEY);
-                if ($ADA_KEY[$keys[0]] == 0) {
-                    $DIMENSI = 0;
-                } else {
-                    $LKS_TIRKIRIKANAN = 0;
-                    $LKS_TIRDEPANBELAKANG = 0;
-                    $LKS_TIRATASBAWAH = 0;
-                    $ADA = oci_parse($conn, "SELECT *
-                                FROM TBMASTER_LOKASI
-                                WHERE LKS_KODEIGR = '$kodeigr'
-                                AND LKS_PRDCD = '$sub_prdcd'
-                                AND (LKS_KODERAK NOT LIKE 'X%'
-                                AND LKS_KODERAK NOT LIKE 'A%'
-                                AND LKS_KODERAK NOT LIKE 'G%')
-                                AND LKS_TIPERAK <> 'S'");
-                    oci_execute($ADA);
-                    $ADA_KEY = oci_fetch_array($ADA, OCI_ASSOC);
-                    foreach ($ADA_KEY as $lks => $lksv) {
-                        if ($lks == 'LKS_TIRKIRIKANAN') {
-                            $LKS_TIRKIRIKANAN += $lksv;
-                        }
-                        if ($lks == 'LKS_TIRDEPANBELAKANG') {
-                            $LKS_TIRDEPANBELAKANG += $lksv;
-                        }
-                        if ($lks == 'LKS_TIRATASBAWAH') {
-                            $LKS_TIRATASBAWAH += $lksv;
-                        }
-                    }
-                    $NILAI = $LKS_TIRKIRIKANAN * $LKS_TIRDEPANBELAKANG * $LKS_TIRATASBAWAH;
-                    // $DIMENSI = DB::connection(Session::get('connection'))
-                    //     ->select("SELECT SUM (NILAI)
-                    //     FROM (SELECT LKS_PRDCD, (LKS_TIRKIRIKANAN * LKS_TIRDEPANBELAKANG * LKS_TIRATASBAWAH) NILAI
-                    //     FROM TBMASTER_LOKASI
-                    //     WHERE LKS_KODEIGR = $kodeigr 
-                    //     AND LKS_PRDCD = $sub_prdcd
-                    //     AND (LKS_KODERAK NOT LIKE 'X%'
-                    //     AND LKS_KODERAK NOT LIKE 'A%'
-                    //     AND LKS_KODERAK NOT LIKE 'G%')
-                    //     AND LKS_TIPERAK <> 'S';
-                    //     GROUP BY LKS_PRDCD");
-                    $DIMENSI = $NILAI;
-                }
-                $PRD_FLAGGUDANG = '999'; //init code boongan
-                if ($data == 'PRD_FLAGGUDANG') {
-                    $PRD_FLAGGUDANG = $value;
-                }
-                $arr = array('Y', 'P');
+    //         $sp_pkm_bpb = oci_parse($conn, "SELECT PRD_PRDCD,
+    //                                 PRD_LASTCOST,
+    //                                 PRD_KODETAG,
+    //                                 PRD_KODECABANG,
+    //                                 PRD_KATEGORITOKO,
+    //                                 PRD_KODEDIVISI,
+    //                                 PRD_KODEDEPARTEMENT,
+    //                                 PRD_KODEKATEGORIBARANG,
+    //                                 PRD_TGLDAFTAR,
+    //                                 PRD_FLAGGUDANG
+    //                                 FROM TBMASTER_PRODMAST,
+    //                                     TBMASTER_KKPKM,
+    //                                     TBMASTER_PRODCRM,
+    //                                     TBMASTER_PKMPLUS
+    //                                 WHERE   PRD_KODEIGR     = '$kodeigr'
+    //                                 AND     PRD_PRDCD       = '$sub_prdcd'
+    //                                 AND     PKM_KODEIGR(+)  = '$kodeigr'
+    //                                 AND     PKM_PRDCD(+)    = '$sub_prdcd'
+    //                                 AND     PRC_KODEIGR(+)  = '$kodeigr'
+    //                                 AND     PRC_PLUIGR(+)   = '$sub_prdcd'
+    //                                 AND     PRC_GROUP(+)    = 'O'
+    //                                 AND     PKMP_KODEIGR(+) = '$kodeigr'
+    //                                 AND     PKMP_PRDCD(+)   = '$sub_prdcd'");
+    //         oci_execute($sp_pkm_bpb);
+    //         $sp_pkm_bpb_KEY = oci_fetch_array($sp_pkm_bpb, OCI_ASSOC);
+    //         foreach ($sp_pkm_bpb_KEY as $data => $value) {
+    //             $ADA = oci_parse($conn, "SELECT COUNT (1)
+    //                             FROM TBMASTER_LOKASI
+    //                             WHERE LKS_KODEIGR = '$kodeigr' 
+    //                             AND LKS_PRDCD = '$sub_prdcd'
+    //                             AND (LKS_KODERAK NOT LIKE 'X%'
+    //                             AND LKS_KODERAK NOT LIKE 'A%'
+    //                             AND LKS_KODERAK NOT LIKE 'G%')
+    //                             AND LKS_TIPERAK <> 'S'");
+    //             oci_execute($ADA);
+    //             $ADA_KEY = oci_fetch_array($ADA, OCI_ASSOC);
+    //             $keys = array_keys($ADA_KEY);
+    //             if ($ADA_KEY[$keys[0]] == 0) {
+    //                 $DIMENSI = 0;
+    //             } else {
+    //                 $LKS_TIRKIRIKANAN = 0;
+    //                 $LKS_TIRDEPANBELAKANG = 0;
+    //                 $LKS_TIRATASBAWAH = 0;
+    //                 $ADA = oci_parse($conn, "SELECT *
+    //                             FROM TBMASTER_LOKASI
+    //                             WHERE LKS_KODEIGR = '$kodeigr'
+    //                             AND LKS_PRDCD = '$sub_prdcd'
+    //                             AND (LKS_KODERAK NOT LIKE 'X%'
+    //                             AND LKS_KODERAK NOT LIKE 'A%'
+    //                             AND LKS_KODERAK NOT LIKE 'G%')
+    //                             AND LKS_TIPERAK <> 'S'");
+    //                 oci_execute($ADA);
+    //                 $ADA_KEY = oci_fetch_array($ADA, OCI_ASSOC);
+    //                 foreach ($ADA_KEY as $lks => $lksv) {
+    //                     if ($lks == 'LKS_TIRKIRIKANAN') {
+    //                         $LKS_TIRKIRIKANAN += $lksv;
+    //                     }
+    //                     if ($lks == 'LKS_TIRDEPANBELAKANG') {
+    //                         $LKS_TIRDEPANBELAKANG += $lksv;
+    //                     }
+    //                     if ($lks == 'LKS_TIRATASBAWAH') {
+    //                         $LKS_TIRATASBAWAH += $lksv;
+    //                     }
+    //                 }
+    //                 $NILAI = $LKS_TIRKIRIKANAN * $LKS_TIRDEPANBELAKANG * $LKS_TIRATASBAWAH;
+    //                 // $DIMENSI = DB::connection(Session::get('connection'))
+    //                 //     ->select("SELECT SUM (NILAI)
+    //                 //     FROM (SELECT LKS_PRDCD, (LKS_TIRKIRIKANAN * LKS_TIRDEPANBELAKANG * LKS_TIRATASBAWAH) NILAI
+    //                 //     FROM TBMASTER_LOKASI
+    //                 //     WHERE LKS_KODEIGR = $kodeigr 
+    //                 //     AND LKS_PRDCD = $sub_prdcd
+    //                 //     AND (LKS_KODERAK NOT LIKE 'X%'
+    //                 //     AND LKS_KODERAK NOT LIKE 'A%'
+    //                 //     AND LKS_KODERAK NOT LIKE 'G%')
+    //                 //     AND LKS_TIPERAK <> 'S';
+    //                 //     GROUP BY LKS_PRDCD");
+    //                 $DIMENSI = $NILAI;
+    //             }
+    //             $PRD_FLAGGUDANG = '999'; //init code boongan
+    //             if ($data == 'PRD_FLAGGUDANG') {
+    //                 $PRD_FLAGGUDANG = $value;
+    //             }
+    //             $arr = array('Y', 'P');
 
-                if (in_array($PRD_FLAGGUDANG, $arr)) {
-                    $ADA = DB::connection(Session::get('connection'))
-                        ->select("SELECT COUNT (1),
-                    FROM TBMASTER_MINIMUMORDER
-                    WHERE MIN_KODEIGR   = $kodeigr 
-                    AND   MIN_PRDCD     = $sub_prdcd");
-                    if ($ADA > 0) {
-                        $MINORDER = DB::connection(Session::get('connection'))
-                            ->select("SELECT MIN_MINORDER
-                            FROM TBMASTER_MINIMUMORDER
-                            WHERE MIN_KODEIGR   = $kodeigr 
-                            AND   MIN_PRDCD     = $sub_prdcd");
-                    }
-                }
-                $MINORDER = 0;
-            }
-            $arr = ['Y', 'P'];
-            $MIND = $DIMENSI;
-            if (in_array('N', $arr)) {
-                $LEADTIME = 15;
-            } else {
-                $PRD_FLAGGUDANG = '999'; //init code boongan
-                if ($data == 'PRD_FLAGGUDANG') {
-                    $PRD_FLAGGUDANG = $value;
-                }
-                $ADA = DB::connection(Session::get('connection'))
-                    ->select("SELECT COUNT (1),
-                        IF ($PRD_FLAGGUDANG = 'N' IN ('Y','P'))
-                        FROM (SELECT *
-                        FROM (SELECT HGB_KODESUPPLIER
-                        FROM TBMASTER_HARGABELI
-                        WHERE     HGB_KODEIGR = P_MEMKODEIGR
-                                AND HGB_PRDCD = P_PRDCD
-                        ORDER BY HGB_TIPE)
-                        WHERE ROWNUM = 1) A,
-                        TBMASTER_SUPPLIER
-                        WHERE     SUP_KODEIGR = $kodeigr
-                        AND       SUP_KODESUPPLIER = HGB_KODESUPPLIER");
-                if ($ADA == 0) {
-                    $LEADTIME = 1;
-                    $KSUP = '';
-                } else {
-                    $LEADTIME = DB::connection(Session::get('connection'))
-                        ->select("SELECT SUP_JANGKAWAKTUKIRIMBARANG
-                        FROM (SELECT *
-                        FROM (SELECT HGB_KODESUPPLIER
-                        FROM TBMASTER_HARGABELI
-                        WHERE     HGB_KODEIGR = P_MEMKODEIGR
-                                AND HGB_PRDCD = P_PRDCD
-                        ORDER BY HGB_TIPE)
-                        WHERE ROWNUM = 1) A,
-                        TBMASTER_SUPPLIER
-                        WHERE     SUP_KODEIGR = $kodeigr
-                        AND       SUP_KODESUPPLIER = HGB_KODESUPPLIER");
+    //             if (in_array($PRD_FLAGGUDANG, $arr)) {
+    //                 $ADA = DB::connection(Session::get('connection'))
+    //                     ->select("SELECT COUNT (1),
+    //                 FROM TBMASTER_MINIMUMORDER
+    //                 WHERE MIN_KODEIGR   = $kodeigr 
+    //                 AND   MIN_PRDCD     = $sub_prdcd");
+    //                 if ($ADA > 0) {
+    //                     $MINORDER = DB::connection(Session::get('connection'))
+    //                         ->select("SELECT MIN_MINORDER
+    //                         FROM TBMASTER_MINIMUMORDER
+    //                         WHERE MIN_KODEIGR   = $kodeigr 
+    //                         AND   MIN_PRDCD     = $sub_prdcd");
+    //                 }
+    //             }
+    //             $MINORDER = 0;
+    //         }
+    //         $arr = ['Y', 'P'];
+    //         $MIND = $DIMENSI;
+    //         if (in_array('N', $arr)) {
+    //             $LEADTIME = 15;
+    //         } else {
+    //             $PRD_FLAGGUDANG = '999'; //init code boongan
+    //             if ($data == 'PRD_FLAGGUDANG') {
+    //                 $PRD_FLAGGUDANG = $value;
+    //             }
+    //             $ADA = DB::connection(Session::get('connection'))
+    //                 ->select("SELECT COUNT (1),
+    //                     IF ($PRD_FLAGGUDANG = 'N' IN ('Y','P'))
+    //                     FROM (SELECT *
+    //                     FROM (SELECT HGB_KODESUPPLIER
+    //                     FROM TBMASTER_HARGABELI
+    //                     WHERE     HGB_KODEIGR = P_MEMKODEIGR
+    //                             AND HGB_PRDCD = P_PRDCD
+    //                     ORDER BY HGB_TIPE)
+    //                     WHERE ROWNUM = 1) A,
+    //                     TBMASTER_SUPPLIER
+    //                     WHERE     SUP_KODEIGR = $kodeigr
+    //                     AND       SUP_KODESUPPLIER = HGB_KODESUPPLIER");
+    //             if ($ADA == 0) {
+    //                 $LEADTIME = 1;
+    //                 $KSUP = '';
+    //             } else {
+    //                 $LEADTIME = DB::connection(Session::get('connection'))
+    //                     ->select("SELECT SUP_JANGKAWAKTUKIRIMBARANG
+    //                     FROM (SELECT *
+    //                     FROM (SELECT HGB_KODESUPPLIER
+    //                     FROM TBMASTER_HARGABELI
+    //                     WHERE     HGB_KODEIGR = P_MEMKODEIGR
+    //                             AND HGB_PRDCD = P_PRDCD
+    //                     ORDER BY HGB_TIPE)
+    //                     WHERE ROWNUM = 1) A,
+    //                     TBMASTER_SUPPLIER
+    //                     WHERE     SUP_KODEIGR = $kodeigr
+    //                     AND       SUP_KODESUPPLIER = HGB_KODESUPPLIER");
 
-                    $KSUP = DB::connection(Session::get('connection'))
-                        ->select("SELECT SUP_KODESUPPLIER
-                        FROM (SELECT *
-                        FROM (SELECT HGB_KODESUPPLIER
-                        FROM TBMASTER_HARGABELI
-                        WHERE     HGB_KODEIGR = P_MEMKODEIGR
-                                AND HGB_PRDCD = P_PRDCD
-                        ORDER BY HGB_TIPE)
-                        WHERE ROWNUM = 1) A,
-                        TBMASTER_SUPPLIER
-                        WHERE     SUP_KODEIGR = $kodeigr
-                        AND       SUP_KODESUPPLIER = HGB_KODESUPPLIER");
-                }
-                $N = 2;
-            }
-            $AVGSPD = 0;
-            $PKMM   = $MIND + $MINORDER;
-            $MPKM   = 0;
+    //                 $KSUP = DB::connection(Session::get('connection'))
+    //                     ->select("SELECT SUP_KODESUPPLIER
+    //                     FROM (SELECT *
+    //                     FROM (SELECT HGB_KODESUPPLIER
+    //                     FROM TBMASTER_HARGABELI
+    //                     WHERE     HGB_KODEIGR = P_MEMKODEIGR
+    //                             AND HGB_PRDCD = P_PRDCD
+    //                     ORDER BY HGB_TIPE)
+    //                     WHERE ROWNUM = 1) A,
+    //                     TBMASTER_SUPPLIER
+    //                     WHERE     SUP_KODEIGR = $kodeigr
+    //                     AND       SUP_KODESUPPLIER = HGB_KODESUPPLIER");
+    //             }
+    //             $N = 2;
+    //         }
+    //         $AVGSPD = 0;
+    //         $PKMM   = $MIND + $MINORDER;
+    //         $MPKM   = 0;
 
-            if ($PKMM <= ($MIND + $MINORDER) || (($PKMM > $MIND) && ($PKMM < ($MIND + $MINORDER)))) {
-                $MPKM = $MIND + $MINORDER;
-            } else if (($PKMM > $MIND) && ($PKMM > ($MIND + $MINORDER))) {
-                $MPKM = $PKMM;
-            }
+    //         if ($PKMM <= ($MIND + $MINORDER) || (($PKMM > $MIND) && ($PKMM < ($MIND + $MINORDER)))) {
+    //             $MPKM = $MIND + $MINORDER;
+    //         } else if (($PKMM > $MIND) && ($PKMM > ($MIND + $MINORDER))) {
+    //             $MPKM = $PKMM;
+    //         }
 
-            $PKMT = $MPKM + $data->PKMP_QTYMINOR;
+    //         $PKMT = $MPKM + $data->PKMP_QTYMINOR;
 
-            if ($data->PKM_PRDCD == '1234567') {
-                DB::connection(Session::get('connection'))->table('TBMASTER_KKPKM')->insert([
-                    "PKM_KODEIGR" => $kodeigr,
-                    "PKM_KODEDIVISI" => $data->prd_kodedivisi,
-                    "PKM_KODEDEPARTEMENT" => $data->prd_kodedepartement,
-                    "PKM_PERIODEPROSES" => Carbon::now()->format('My'),
-                    "PKM_KODEKATEGORIBARANG" => $data->prd_kodekategoribarang,
-                    "PKM_PRDCD" => $data->prd_prdcd,
-                    "PKM_KODESUPPLIER" => $KSUP,
-                    "PKM_MINDISPLAY" => $MIND,
-                    "PKM_MINORDER" => $MINORDER,
-                    "PKM_LEADTIME" => $LEADTIME,
-                    "PKM_KOEFISIEN" => $N,
-                    "PKM_PKM" => $PKMM,
-                    "PKM_PKMT" => $PKMT,
-                    "PKM_MPKM" => $MPKM,
-                    "PKM_CREATE_BY" => $userId,
-                    "PKM_CREATE_DT" => $sysdatef,
-                ]);
-            } else {
-                DB::connection(Session::get('connection'))->table('TBMASTER_KKPKM')
-                    ->where('PKM_KODEIGR', $kodeigr)
-                    ->where('PKM_PRDCD', $sub_prdcd)
-                    ->update([
-                        'PKM_PERIODEPROSES' => Carbon::now()->format('My'), 'PKM_KODESUPPLIER' => $KSUP,
-                        'PKM_MINDISPLAY' => $MIND,
-                        'PKM_MINORDER' => $MINORDER,
-                        'PKM_LEADTIME' => $LEADTIME,
-                        'PKM_KOEFISIEN' => $N,
-                        'PKM_PKM' => $PKMM,
-                        'PKM_PKMT' => $PKMT,
-                        'PKM_MPKM' => $MPKM,
-                        'PKM_MODIFY_BY' => $userId,
-                        'PKM_MODIFY_DT' => $sysdatef
-                    ]);
+    //         if ($data->PKM_PRDCD == '1234567') {
+    //             DB::connection(Session::get('connection'))->table('TBMASTER_KKPKM')->insert([
+    //                 "PKM_KODEIGR" => $kodeigr,
+    //                 "PKM_KODEDIVISI" => $data->prd_kodedivisi,
+    //                 "PKM_KODEDEPARTEMENT" => $data->prd_kodedepartement,
+    //                 "PKM_PERIODEPROSES" => Carbon::now()->format('My'),
+    //                 "PKM_KODEKATEGORIBARANG" => $data->prd_kodekategoribarang,
+    //                 "PKM_PRDCD" => $data->prd_prdcd,
+    //                 "PKM_KODESUPPLIER" => $KSUP,
+    //                 "PKM_MINDISPLAY" => $MIND,
+    //                 "PKM_MINORDER" => $MINORDER,
+    //                 "PKM_LEADTIME" => $LEADTIME,
+    //                 "PKM_KOEFISIEN" => $N,
+    //                 "PKM_PKM" => $PKMM,
+    //                 "PKM_PKMT" => $PKMT,
+    //                 "PKM_MPKM" => $MPKM,
+    //                 "PKM_CREATE_BY" => $userId,
+    //                 "PKM_CREATE_DT" => $sysdatef,
+    //             ]);
+    //         } else {
+    //             DB::connection(Session::get('connection'))->table('TBMASTER_KKPKM')
+    //                 ->where('PKM_KODEIGR', $kodeigr)
+    //                 ->where('PKM_PRDCD', $sub_prdcd)
+    //                 ->update([
+    //                     'PKM_PERIODEPROSES' => Carbon::now()->format('My'), 'PKM_KODESUPPLIER' => $KSUP,
+    //                     'PKM_MINDISPLAY' => $MIND,
+    //                     'PKM_MINORDER' => $MINORDER,
+    //                     'PKM_LEADTIME' => $LEADTIME,
+    //                     'PKM_KOEFISIEN' => $N,
+    //                     'PKM_PKM' => $PKMM,
+    //                     'PKM_PKMT' => $PKMT,
+    //                     'PKM_MPKM' => $MPKM,
+    //                     'PKM_MODIFY_BY' => $userId,
+    //                     'PKM_MODIFY_DT' => $sysdatef
+    //                 ]);
 
-                $gondola = DB::connection(Session::get('connection'))->table('TBTR_PKMGONDOLA')
-                    ->where('PKMG_KODEIGR', $kodeigr)
-                    ->where('PKMG_PRDCD', $sub_prdcd)
-                    ->get('PKMG_NILAIGONDOLA');
+    //             $gondola = DB::connection(Session::get('connection'))->table('TBTR_PKMGONDOLA')
+    //                 ->where('PKMG_KODEIGR', $kodeigr)
+    //                 ->where('PKMG_PRDCD', $sub_prdcd)
+    //                 ->get('PKMG_NILAIGONDOLA');
 
-                DB::connection(Session::get('connection'))->table('TBTR_PKMGONDOLA')
-                    ->where('PKMG_KODEIGR', $kodeigr)
-                    ->where('PKMG_PRDCD', $sub_prdcd)
-                    ->update([
-                        'PKMG_NILAIPKMG' => $gondola + $PKMT
-                    ]);
-            }
-            $P_SUKSES = 'Y';
-            return response()->json(['kode' => $P_SUKSES, 'msg' => 'Sukses']);
-        }
-    }
+    //             DB::connection(Session::get('connection'))->table('TBTR_PKMGONDOLA')
+    //                 ->where('PKMG_KODEIGR', $kodeigr)
+    //                 ->where('PKMG_PRDCD', $sub_prdcd)
+    //                 ->update([
+    //                     'PKMG_NILAIPKMG' => $gondola + $PKMT
+    //                 ]);
+    //         }
+    //         $P_SUKSES = 'Y';
+    //         return response()->json(['kode' => $P_SUKSES, 'msg' => 'Sukses']);
+    //     }
+    // }
 
     public function update_data($noDoc, $kodeigr, $userId, $conn, $type, $trnType)
     {
@@ -537,7 +537,7 @@ class printBPBController extends Controller
         $P_ERROR = '';
         $dummyvar = 0;
         $SUPCO = null;
-        $sysdatef = Carbon::now()->format('Y-m-d H:i:s');
+        $sysdatef = Carbon::now()->format('Y-m-d');
         $btb_date = Carbon::now()->format('y');
         $no_btb = '';
         if ($trnType == 'B') {
@@ -567,7 +567,7 @@ class printBPBController extends Controller
                     TRBO_RPHDISC2III, PRD_FLAGBKP1, TRBO_RPHDISC3, PRD_FLAGBKP2, TRBO_RPHDISC4,
                     TRBO_LOC, TRBO_FLAGDISC1, TRBO_FLAGDISC2, TRBO_FLAGDISC3, TRBO_FLAGDISC4,
                     TRBO_DIS4CP, TRBO_DIS4RP, TRBO_DIS4JP, TRBO_PPNRPH, TRBO_KETERANGAN,
-                    PRD_KODETAG, TPOH_NOPO, TPOH_TOP, TPOH_FLAGALOKASI
+                    PRD_KODETAG, TPOH_NOPO, TPOH_TOP, TPOH_FLAGALOKASI, TRBO_PERSENPPN
                     FROM TBTR_BACKOFFICE AA,
                          TBMASTER_PRODMAST BB,
                          TBMASTER_SUPPLIER CC,
@@ -674,13 +674,14 @@ class printBPBController extends Controller
             } catch (Exception $e) {
                 $sub_prdcd = 0;
             }
+            // dd($data->trbo_prdcd, $sub_prdcd);
             //seharusnya dipake buat sp_pkm_bpb, tapi knp harus di substr
             if ($data->prd_lastcost == 0) {
                 if ($data->prd_avgcost != 0) {
                     return ['kode' => 0, 'message' => "PLU " . $data->prd_prdcd . " Avg Cost <> 0, Lakukan Update PKM?"];
                     $query = oci_parse($conn, "BEGIN SP_PKM_BPB (:IGR, :PRDCD, :USID, :PS, :PE); END;");
                     oci_bind_by_name($query, ':IGR', $kodeigr);
-                    oci_bind_by_name($query, ':PRDCD', $sub_prdcd);
+                    oci_bind_by_name($query, ':PRDCD', $data->trbo_prdcd);
                     oci_bind_by_name($query, ':USID', $userId);
                     oci_bind_by_name($query, ':PS', $P_SUKSES);
                     oci_bind_by_name($query, ':PE', $P_ERROR);
@@ -694,7 +695,7 @@ class printBPBController extends Controller
             } else {
                 $query = oci_parse($conn, "BEGIN SP_PKM_BPB (:IGR, :PRDCD, :USID, :PS, :PE); END;");
                 oci_bind_by_name($query, ':IGR', $kodeigr);
-                oci_bind_by_name($query, ':PRDCD', $sub_prdcd);
+                oci_bind_by_name($query, ':PRDCD', $data->trbo_prdcd);
                 oci_bind_by_name($query, ':USID', $userId);
                 oci_bind_by_name($query, ':PS', $P_SUKSES);
                 oci_bind_by_name($query, ':PE', $P_ERROR);
@@ -757,6 +758,7 @@ class printBPBController extends Controller
                 "MSTD_PERSENDISC2III" => $data->trbo_persendisc2iii,
                 "MSTD_PERSENDISC3" => $data->trbo_persendisc3,
                 "MSTD_PERSENDISC4" => $data->trbo_persendisc4,
+                "MSTD_PERSENPPN" => $data->trbo_persenppn,
                 "MSTD_RPHDISC1" => $data->trbo_rphdisc1,
                 "MSTD_RPHDISC2" => $data->trbo_rphdisc2,
                 "MSTD_RPHDISC2II" => $data->trbo_rphdisc2ii,
@@ -1633,7 +1635,7 @@ class printBPBController extends Controller
         $ftp_server = config('database.connections.igr' . $cabang . '.host');
         $ftp_user_name = 'ftpigr';
         $ftp_user_pass = 'ftpigr';
-        $zipName = Session::get('kdigr') . '_' . date("Ymd", strtotime(Carbon::now())) . '.ZIP';
+        $zipName = Session::get('kdigr') . '_' . date("dmY", strtotime(Carbon::now())) . '.ZIP';
         $zipAddress = '../storage/receipts_backup/' . $zipName;
         try {
             $conn_id = ftp_connect($ftp_server);

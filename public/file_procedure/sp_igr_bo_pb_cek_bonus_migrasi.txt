@@ -1,0 +1,296 @@
+CREATE OR REPLACE PROCEDURE sp_igr_bo_pb_cek_bonus_migrasi (
+   v_plu                VARCHAR2,
+   v_kdsup              VARCHAR2,
+   v_tanggal            DATE,
+   v_frac               NUMBER,
+   v_qtypb     IN OUT   NUMBER,
+   v_bonus1    OUT      NUMBER,
+   v_bonus2    OUT      NUMBER,
+   v_ppn       OUT      NUMBER,
+   v_ppnbm     OUT      NUMBER,
+   v_ppnbtl    OUT      NUMBER,
+   v_lok       OUT      VARCHAR2,
+   v_message   OUT      VARCHAR2
+)
+IS
+   v_kettolakan   VARCHAR2 (50);
+---** Variable Untuk Discount dan Bonus **---
+   v_hrgbeli      NUMBER;
+   v_fracbonus    NUMBER;
+   v_klpt         NUMBER;
+   v_qtynext      NUMBER;
+   v_qtybl1       NUMBER;
+   v_qtybl2       NUMBER;
+   v_discount     NUMBER;
+   v_bnslvl       NUMBER;
+BEGIN
+   v_lok := 'FALSE';
+   v_qtybl1 := v_qtypb;
+   v_qtybl2 := v_qtypb;
+
+   FOR rec IN (SELECT *
+                 FROM tbmaster_hargabeli
+                WHERE hgb_prdcd = v_plu
+                  AND hgb_kodesupplier = v_kdsup
+                  AND hgb_tipe = '2')
+   LOOP
+      ---** Bonus I **---
+      v_fracbonus := (CASE
+                         WHEN rec.hgb_jenisbonus = 'B'
+                            THEN v_frac
+                         ELSE 1
+                      END);
+      v_hrgbeli := rec.hgb_hrgbeli * v_frac;
+
+      ---** Bonus I **---
+      IF (    rec.hgb_tglmulaibonus01 <= v_tanggal
+          AND rec.hgb_tglakhirbonus01 >= v_tanggal
+          AND rec.hgb_tglmulaibonus01 IS NOT NULL
+         )
+      THEN
+         --** Bonus II Berlaku Kelipatan **--
+         IF    rec.hgb_flagkelipatanbonus01 = 'Y'
+            OR (    NVL (rec.hgb_flagkelipatanbonus01, ' ') = ' '
+                AND rec.hgb_qtymulai1bonus01 <> 0
+                AND rec.hgb_qtymulai2bonus01 = 0
+               )
+         THEN
+            v_qtybl1 := rec.hgb_qtymulai1bonus01 * v_fracbonus;
+
+            IF v_qtypb >= v_qtybl1
+            THEN
+               v_klpt := TRUNC (v_qtypb / v_qtybl1);
+
+               IF ((MOD (v_qtypb, v_qtybl1) / v_qtybl1) * 100) >= 50
+               THEN
+                  v_qtybl1 := (v_klpt * v_qtybl1) + v_qtybl1;
+               ELSE
+                  v_qtybl1 := (v_klpt * v_qtybl1);
+               END IF;
+            ELSE
+               IF ((v_qtypb / v_qtybl1) * 100) < 50
+               THEN
+                  v_message := 'QTY ORDER < QTY YG DPT BNS 1';
+               END IF;
+            END IF;
+
+            v_bonus1 :=
+                 TRUNC (v_qtybl1 / (rec.hgb_qtymulai1bonus01 * v_fracbonus))
+               * rec.hgb_qty1bonus01;
+         ELSE
+            CASE
+               --** Bonus I Level 6 **--
+            WHEN     (v_qtypb >= (rec.hgb_qtymulai6bonus01 * v_fracbonus))
+                 AND rec.hgb_qtymulai6bonus01 <> 0
+               THEN
+                  v_qtybl1 := rec.hgb_qtymulai6bonus01 * v_fracbonus;
+                  v_bonus1 := rec.hgb_qty6bonus01 * v_fracbonus;
+               --** Bonus I Level 5 **--
+            WHEN     (v_qtypb >= rec.hgb_qtymulai5bonus01 * v_fracbonus)
+                 AND rec.hgb_qtymulai5bonus01 <> 0
+               THEN
+                  IF       (v_qtypb / rec.hgb_qtymulai6bonus01 * v_fracbonus
+                           )
+                         * 100 >= 50
+                     AND rec.hgb_qtymulai6bonus01 <> 0
+                  THEN
+                     v_qtybl1 := rec.hgb_qtymulai6bonus01 * v_fracbonus;
+                     v_bonus1 := rec.hgb_qty6bonus01 * v_fracbonus;
+                  ELSE
+                     v_qtybl1 := rec.hgb_qtymulai5bonus01 * v_fracbonus;
+                     v_bonus1 := rec.hgb_qty5bonus01 * v_fracbonus;
+                  END IF;
+               --** Bonus I Level 4 **--
+            WHEN     (v_qtypb >= rec.hgb_qtymulai4bonus01 * v_fracbonus)
+                 AND rec.hgb_qtymulai4bonus01 <> 0
+               THEN
+                  IF       (v_qtypb / rec.hgb_qtymulai5bonus01 * v_fracbonus
+                           )
+                         * 100 >= 50
+                     AND rec.hgb_qtymulai5bonus01 <> 0
+                  THEN
+                     v_qtybl1 := rec.hgb_qtymulai5bonus01 * v_fracbonus;
+                     v_bonus1 := rec.hgb_qty5bonus01 * v_fracbonus;
+                  ELSE
+                     v_qtybl1 := rec.hgb_qtymulai4bonus01 * v_fracbonus;
+                     v_bonus1 := rec.hgb_qty4bonus01 * v_fracbonus;
+                  END IF;
+               --** Bonus I Level 3 **--
+            WHEN     (v_qtypb >= rec.hgb_qtymulai3bonus01 * v_fracbonus)
+                 AND rec.hgb_qtymulai3bonus01 <> 0
+               THEN
+                  IF       (v_qtypb / rec.hgb_qtymulai4bonus01 * v_fracbonus
+                           )
+                         * 100 >= 50
+                     AND rec.hgb_qtymulai4bonus01 <> 0
+                  THEN
+                     v_qtybl1 := rec.hgb_qtymulai4bonus01 * v_fracbonus;
+                     v_bonus1 := rec.hgb_qty4bonus01 * v_fracbonus;
+                  ELSE
+                     v_qtybl1 := rec.hgb_qtymulai3bonus01 * v_fracbonus;
+                     v_bonus1 := rec.hgb_qty3bonus01 * v_fracbonus;
+                  END IF;
+               --** Bonus I Level 2 **--
+            WHEN     (v_qtypb >= rec.hgb_qtymulai2bonus01 * v_fracbonus)
+                 AND rec.hgb_qtymulai2bonus01 <> 0
+               THEN
+                  IF       (v_qtypb / rec.hgb_qtymulai3bonus01 * v_fracbonus
+                           )
+                         * 100 >= 50
+                     AND rec.hgb_qtymulai3bonus01 <> 0
+                  THEN
+                     v_qtybl1 := rec.hgb_qtymulai3bonus01 * v_fracbonus;
+                     v_bonus1 := rec.hgb_qty3bonus01 * v_fracbonus;
+                  ELSE
+                     v_qtybl1 := rec.hgb_qtymulai2bonus01 * v_fracbonus;
+                     v_bonus1 := rec.hgb_qty2bonus01 * v_fracbonus;
+                  END IF;
+               --** Bonus I Level 1 **--
+            WHEN     (v_qtypb >= rec.hgb_qtymulai1bonus01 * v_fracbonus)
+                 AND rec.hgb_qtymulai1bonus01 <> 0
+               THEN
+                  IF rec.hgb_qtymulai2bonus01 = 0
+                  THEN
+                     v_qtybl1 := rec.hgb_qtymulai1bonus01 * v_fracbonus;
+                     v_bonus1 := rec.hgb_qty1bonus01 * v_fracbonus;
+                  ELSE
+                     IF       (v_qtypb / (rec.hgb_qtymulai2bonus01
+                               * v_fracbonus)
+                              )
+                            * 100 >= 50
+                        AND rec.hgb_qtymulai2bonus01 <> 0
+                     THEN
+                        v_qtybl1 := rec.hgb_qtymulai2bonus01 * v_fracbonus;
+                        v_bonus1 := rec.hgb_qty2bonus01 * v_fracbonus;
+                     ELSE
+                        v_qtybl1 := rec.hgb_qtymulai1bonus01 * v_fracbonus;
+                        v_bonus1 := rec.hgb_qty1bonus01 * v_fracbonus;
+                     END IF;
+                  END IF;
+               ELSE
+                  IF rec.hgb_qtymulai1bonus01 <> 0
+                  THEN
+                     v_qtybl1 := rec.hgb_qtymulai1bonus01 * v_fracbonus;
+                     v_bonus1 := rec.hgb_qty1bonus01 * v_fracbonus;
+                     v_message := 'QTY ORDER < QTY YG DPT BNS 1';
+                  ELSE
+                     v_qtybl1 := 0;
+                     v_bonus1 := 0;
+                     v_message := 'PLU TIDAK ADA BONUS 1';
+                  END IF;
+            END CASE;
+         END IF;
+      ELSE
+         v_qtybl1 := 0;
+         v_bonus1 := 0;
+         v_message := 'PLU TIDAK ADA BONUS';
+      END IF;
+
+      ---** Bonus II **---
+      IF (    rec.hgb_tglmulaibonus02 <= v_tanggal
+          AND rec.hgb_tglakhirbonus02 >= v_tanggal
+          AND rec.hgb_tglmulaibonus02 IS NOT NULL
+         )
+      THEN
+         IF    rec.hgb_flagkelipatanbonus02 = 'Y'
+            OR (    NVL (rec.hgb_flagkelipatanbonus02, ' ') = ' '
+                AND rec.hgb_qtymulai1bonus02 <> 0
+                AND rec.hgb_qtymulai2bonus02 = 0
+               )
+         THEN
+            --** Bonus II Berlaku Kelipatan **--
+            v_qtybl2 := rec.hgb_qtymulai1bonus02 * v_fracbonus;
+
+            IF v_qtypb >= v_qtybl2
+            THEN
+               v_klpt := TRUNC (v_qtypb / v_qtybl2);
+
+               IF ((MOD (v_qtypb, v_qtybl2) / v_qtybl2) * 100) >= 50
+               THEN
+                  v_qtybl2 := (v_klpt * v_qtybl2) + v_qtybl2;
+               ELSE
+                  v_qtybl2 := (v_klpt * v_qtybl2);
+               END IF;
+            ELSE
+               IF ((v_qtypb / v_qtybl2) * 100) < 50
+               THEN
+                  v_message := 'QTY ORDER < QTY YG DPT BNS 2';
+               END IF;
+            END IF;
+
+            v_bonus2 :=
+                 TRUNC (v_qtybl2 / (rec.hgb_qtymulai1bonus02 * v_fracbonus))
+               * rec.hgb_qty1bonus02;
+         ELSE
+            CASE
+               --** Bonus II Level 3 **--
+            WHEN     (v_qtypb >= rec.hgb_qtymulai3bonus02 * v_fracbonus)
+                 AND rec.hgb_qtymulai3bonus02 <> 0
+               THEN
+                  v_qtybl2 := rec.hgb_qtymulai3bonus02 * v_fracbonus;
+                  v_bonus2 := rec.hgb_qty3bonus02 * v_fracbonus;
+               --** Bonus II Level 2 **--
+            WHEN     (v_qtypb >= rec.hgb_qtymulai2bonus02 * v_fracbonus)
+                 AND rec.hgb_qtymulai2bonus02 <> 0
+               THEN
+                  IF       (v_qtypb / rec.hgb_qtymulai3bonus02 * v_fracbonus
+                           )
+                         * 100 >= 50
+                     AND rec.hgb_qtymulai3bonus02 <> 0
+                  THEN
+                     v_qtybl2 := rec.hgb_qtymulai3bonus02 * v_fracbonus;
+                     v_bonus2 := rec.hgb_qty3bonus02 * v_fracbonus;
+                  ELSE
+                     v_qtybl2 := rec.hgb_qtymulai2bonus02 * v_fracbonus;
+                     v_bonus2 := rec.hgb_qty2bonus02 * v_fracbonus;
+                  END IF;
+               --** Bonus II Level 1 **--
+            WHEN     (v_qtypb >= rec.hgb_qtymulai1bonus02 * v_fracbonus)
+                 AND rec.hgb_qtymulai1bonus02 <> 0
+               THEN
+                  IF       (v_qtypb
+                            / (rec.hgb_qtymulai2bonus02 * v_fracbonus)
+                           )
+                         * 100 >= 50
+                     AND rec.hgb_qtymulai2bonus02 <> 0
+                  THEN
+                     v_qtybl2 := rec.hgb_qtymulai2bonus02 * v_fracbonus;
+                     v_bonus2 := rec.hgb_qty2bonus02 * v_fracbonus;
+                  ELSE
+                     v_qtybl2 := rec.hgb_qtymulai1bonus02 * v_fracbonus;
+                     v_bonus2 := rec.hgb_qty1bonus02 * v_fracbonus;
+                  END IF;
+               ELSE
+                  IF rec.hgb_qtymulai1bonus02 <> 0
+                  THEN
+                     v_qtybl2 := rec.hgb_qtymulai1bonus02 * v_fracbonus;
+                     v_bonus2 := rec.hgb_qty1bonus02 * v_fracbonus;
+                     v_message := 'QTY ORDER < QTY YG DPT BNS 2';
+                  ELSE
+                     v_qtybl2 := 0;
+                     v_bonus2 := 0;
+                     v_message := 'PLU TIDAK ADA BONUS 2';
+                  END IF;
+            END CASE;
+         END IF;
+      END IF;
+
+      IF v_qtybl1 >= v_qtybl2
+      THEN
+         v_qtypb := v_qtybl1;
+      ELSE
+         v_qtypb := v_qtybl2;
+      END IF;
+
+      --** Hitung Nilai Pajak **--
+      v_ppn := rec.hgb_ppn;
+      v_ppnbm := rec.hgb_ppnbm;
+      v_ppnbtl := rec.hgb_ppnbotol;
+      v_lok := 'TRUE';
+   END LOOP;
+EXCEPTION
+   WHEN OTHERS
+   THEN
+      v_message := 'Silahkan hubungi IT Support';
+END;
+/

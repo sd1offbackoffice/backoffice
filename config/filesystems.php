@@ -66,6 +66,18 @@ return [
             'root'   => '../storage/receipts_backup/',
         ],
 
+        // Kingsley
+        'signature' => [
+            'driver' => 'local',
+            'root'   => '../storage/signature/',
+        ],
+
+        // Kingsley
+        'names' => [
+            'driver' => 'local',
+            'root'   => '../storage/names/',
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

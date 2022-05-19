@@ -44,7 +44,7 @@ class pembatalanController extends Controller
 			              prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac satuan, prd_frac,
 										(nvl(mstd_qty,0) + nvl(mstd_qtybonus1,0)) qty,  mstd_hrgsatuan, mstd_gross, mstd_nopo, mstd_tglpo,
 										sup_kodesupplier||' - '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_pkp, sup_top,
-										(((mstd_gross - nvl(mstd_discrph,0) +  nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) * prd_frac)  / (nvl(mstd_qty,0) + nvl(mstd_qtybonus1,0)) ) as hpp,
+										(((mstd_gross - nvl(mstd_discrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_dis4cr,0) + nvl(mstd_ppnbtlrph,0)) * prd_frac)  / (nvl(mstd_qty,0)) ) as hpp,
 										(mstd_gross - nvl(mstd_discrph,0) +  nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) as ppntot
 									from tbtr_mstran_d, tbmaster_prodmast, tbmaster_supplier
 									where mstd_nodoc='$noDoc'

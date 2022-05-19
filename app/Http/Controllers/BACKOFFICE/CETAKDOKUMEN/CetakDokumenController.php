@@ -13,6 +13,7 @@ use Mockery\Exception;
 use PDF;
 use Yajra\DataTables\DataTables;
 use File;
+use Illuminate\Support\Facades\File as FacadesFile;
 
 class CetakDokumenController extends Controller
 {
@@ -20,6 +21,44 @@ class CetakDokumenController extends Controller
     {
 
         return view('BACKOFFICE.CETAKDOKUMEN.cetak-dokumen');
+    }
+
+    public function saveSignature(Request $request){        
+        $message = "";
+        $status = "";
+        $id = uniqid();
+        try {
+            $path = 'signature_expedition/';
+            if (!FacadesFile::exists(storage_path($path))) {
+                FacadesFile::makeDirectory(storage_path($path), 0755, true, true);
+            }
+            $img = $this->dataURLtoImage($request->signed);
+            $file = storage_path($path. $id . '.' . $img['image_type']);
+            file_put_contents($file, $img['image_base64']);
+            $message = "Signature Successfully Saved!";
+            $status = "SUCCESS";
+        } catch (Exception $e) {
+            $message = $e->getMessage();
+            $status = "FAILED";
+        }        
+
+        return response()->json([
+            'status' => $status,
+            'message' => $message,
+            'data' => [
+                'signatureId' => $id,
+                'signedBy' => $request->signedBy,                
+            ]
+        ]);
+    }
+
+    public function dataURLtoImage($value)
+    {
+        $image_parts = explode(";base64,", $value);
+        $image_type_aux = explode("image/", $image_parts[0]);
+        $image_type = $image_type_aux[1];
+        $image_base64 = base64_decode($image_parts[1]);
+        return compact(['image_base64', 'image_type']);
     }
 
     public function showData(Request $request)
@@ -645,6 +684,9 @@ class CetakDokumenController extends Controller
         $jabatan1 = $request->jbt1;
         $jabatan2 = $request->jbt2;
         $data = $request->data;
+
+        $signatureId = $request->signatureId;
+        $signedBy = $request->signedBy;
 
         $nodocs = [];
         $tgldocs = [];
@@ -1453,7 +1495,7 @@ class CetakDokumenController extends Controller
 
             $temp = substr($temp, 0, strlen($temp) - 1);
             if (isset($temp)) {
-                array_push($file, Self::PRINT_DOC(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2));
+                array_push($file, Self::PRINT_DOC(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2, $signatureId, $signedBy));
 
                 if ($nrfp == 1) {
                     if (isset($nofp)) {
@@ -1874,7 +1916,7 @@ class CetakDokumenController extends Controller
                 $temp = substr($temp, 0, strlen($temp) - 1);
 
                 if ($temp != '') {
-                    array_push($file, Self::PRINT_DOC(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2));
+                    array_push($file, Self::PRINT_DOC(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2, $signatureId, $signedBy));
                     if ($lap == 'L') {
                         if ($reprint == '0') {
                             foreach ($nodocs as $nodoc) {
@@ -1913,8 +1955,8 @@ class CetakDokumenController extends Controller
         return $result;
     }
 
-    public function PRINT_DOC(string $KodeIGR, string $NoDoc, string $TypeDoc, string $TypeLap, string $JNSKERTAS, string $REPRINT, string $tgl1, string $tgl2)
-    {
+    public function PRINT_DOC(string $KodeIGR, string $NoDoc, string $TypeDoc, string $TypeLap, string $JNSKERTAS, string $REPRINT, string $tgl1, string $tgl2, string $signatureId, string $signedBy)
+    {        
         $data1 = '';
         $data2 = '';
         $filename = '';
@@ -2153,7 +2195,9 @@ class CetakDokumenController extends Controller
                 'data1' => $data1,
                 'data2' => $data2,
                 'tgl1' => $tgl1,
-                'tgl2' => $tgl2
+                'tgl2' => $tgl2,
+                'signatureId' => $signatureId,
+                'signedBy' => $signedBy
             ];
 
             $dompdf = new PDF();

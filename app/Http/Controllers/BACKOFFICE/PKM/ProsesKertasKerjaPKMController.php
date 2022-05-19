@@ -55,12 +55,12 @@ class ProsesKertasKerjaPKMController extends Controller
                    TO_CHAR(TO_DATE('01' || pkm_periodeproses, 'ddMMyyyy'), 'MON yy') bulan,
                    CASE
                        WHEN pkm_modify_by IS NULL
-                           THEN to_char(pkm_create_dt, 'dd/mm/yyyyy') || ' - ' || pkm_create_by
-                       ELSE to_char(pkm_modify_dt, 'dd/mm/yyyyy') || ' - ' || pkm_modify_by
+                           THEN to_char(pkm_create_dt, 'dd/mm/yyyy') || ' - ' || pkm_create_by
+                       ELSE to_char(pkm_modify_dt, 'dd/mm/yyyy') || ' - ' || pkm_modify_by
                    END proses,
                    CASE
                        WHEN pkm_adjust_by IS NOT NULL
-                           THEN to_char(pkm_adjust_dt, 'dd/mm/yyyyy') || ' - ' || pkm_adjust_by
+                           THEN to_char(pkm_adjust_dt, 'dd/mm/yyyy') || ' - ' || pkm_adjust_by
                    END adjust
               FROM tbmaster_kkpkm, tbmaster_prodmast, tbmaster_supplier
              WHERE pkm_kodeigr = '".Session::get('kdigr')."'

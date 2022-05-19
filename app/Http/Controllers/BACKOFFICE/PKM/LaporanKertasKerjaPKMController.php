@@ -161,6 +161,7 @@ class LaporanKertasKerjaPKMController extends Controller
 
         $ket_monitoring = '';
         $monitoringplu = '';
+        $supplier = '';
         $pilih = '';
         $jenispkm = '';
         $filename = '';
@@ -172,16 +173,16 @@ class LaporanKertasKerjaPKMController extends Controller
         } else {
             $ket_monitoring = '';
         }
-
-
-        $supplier = " AND pkm_kodesupplier BETWEEN NVL ('" . $sup1 . "', '0000000') AND NVL ('" . $sup2 . "', 'ZZZZZZ') ";
+        if($sup1 != ''){
+            $supplier = " AND pkm_kodesupplier BETWEEN NVL ('" . $sup1 . "', '0000000') AND NVL ('" . $sup2 . "', 'ZZZZZZ') ";
+        }
 
         if ($tag == 'P') {
             $pilih = " AND prd_kodetag in ('" . $tag1 . "','" . $tag2 . "','" . $tag3 . "','" . $tag4 . "','" . $tag5 . "')";
         }
 
         if ($item == '1') {
-            $jenispkm = 'AND exists (select prc_pluigr from tbmaster_prodcrm where prc_pluigr=pkm_prdcd)';
+            $jenispkm = ' AND exists (select prc_pluigr from tbmaster_prodcrm where prc_pluigr=pkm_prdcd)';
             $ket_jenispkm = 'PKM item OMI/IDM';
         } else {
             $ket_jenispkm = 'PKM item Nasional';
@@ -217,8 +218,6 @@ class LaporanKertasKerjaPKMController extends Controller
                         THEN GDL_QTY                                 /*PKMG_NILAIGONDOLA*/
                     ELSE 0
                 END PKMEXIST,
-
-                -------
                 CASE
                     WHEN ROUND (PKM_QTYAVERAGE, 1) = 0
                         THEN PKM_PKMT + CASE
@@ -333,8 +332,7 @@ class LaporanKertasKerjaPKMController extends Controller
             " . $supplier . "
             " . $pilih . "
             " . $jenispkm . "
-ORDER BY        FTPRDE,FTKDIV, FTDEPT, FTKATB");
-
+        ORDER BY FTPRDE,FTKDIV, FTDEPT, FTKATB");
 
         }
         else if ($urut == '2') {

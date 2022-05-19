@@ -1006,6 +1006,7 @@
                                 let gross = dd.trbo_gross == null ? '' : dd.trbo_gross;
                                 let discper = dd.discper == null ? '' : dd.discper;
                                 let discrp = dd.trbo_discrph == null ? '' : dd.trbo_discrph;
+                                let persen_ppn = dd.trbo_persenppn == null ? '' : dd.trbo_persenppn;
                                 let ppn = dd.trbo_ppnrph == null ? '' : dd.trbo_ppnrph;
                                 let faktur = dd.trbo_istype == null ? '' : dd.trbo_istype;
                                 let pajakno = dd.trbo_inv == null ? '' : dd.trbo_inv;
@@ -1028,6 +1029,7 @@
                                 '<td><input disabled class="form-control gross" type="text" value="' + convertRupiah(gross) + '"></td>' +
                                 '<td><input disabled class="form-control persendisc" type="text" value="' + discper + '"></td>' +
                                 '<td><input disabled class="form-control discrph" type="text" value="' + convertRupiah(discrp) + '"></td>' +
+                                '<td><input disabled class="form-control persen_ppn" type="text" value="' + persen_ppn + '"></td>' +
                                 '<td><input disabled class="form-control ppn" type="text" value="' + convertRupiah(ppn) + '"></td>' +
                                 '<td><input disabled class="form-control istype" type="text" value="' + faktur + '"></td>' +
                                 '<td><input disabled class="form-control invno" type="text" value="' + pajakno + '"></td>' +
@@ -1043,7 +1045,7 @@
                             });
                             tot_total = tot_gross - tot_potongan + tot_ppn;
 
-                            $('#gross').val(convertRupiah2(Math_round(tot_gross)));
+                            $('#gross').val(convertRupiah(Math_round(tot_gross)));
                             $('#potongan').val(convertRupiah(tot_potongan));
                             $('#ppn').val(convertRupiah(tot_ppn));
                             $('#total').val(convertRupiah(tot_total));
@@ -1346,7 +1348,7 @@
                                         $('.ctn-header-' + rh).val(ctn);
                                         $('.pcs-header-' + rh).val(pcs);
                                     }
-
+                                    
                                     if (model == '*TAMBAH*' || model == '* KOREKSI *') {
                                         proses(plu, ctn, frac, pcs, rh);
                                         // proses(plu, ((ctn * frac) + pcs), rh);
@@ -1493,8 +1495,8 @@
                                 '<td><input disabled class="form-control qtypcs" type="text" value="' + dd.qtypcs + '"></td>' +
                                 '<td><input disabled class="form-control gross" type="text" value="' + convertRupiah(dd.trbo_gross) + '"></td>' +
                                 '<td><input disabled class="form-control persendisc" type="text" value="' + dd.discper + '"></td>' +
-                                '<td><input disabled class="form-control discrph" type="text" value="' + dd.trbo_discrph + '"></td>' +
-                                '<td><input disabled class="form-control persen_ppn" type="text" value="' + convertRupiah(dd.persen_ppn) + '"></td>' +
+                                '<td><input disabled class="form-control discrph" type="text" value="' + convertRupiah(dd.trbo_discrph) + '"></td>' +
+                                '<td><input disabled class="form-control persen_ppn" type="text" value="' + dd.persen_ppn + '"></td>' +
                                 '<td><input disabled class="form-control ppn" type="text" value="' + convertRupiah(dd.trbo_ppnrph) + '"></td>' +
                                 '<td><input disabled class="form-control istype" type="text" value="' + dd.trbo_istype + '"></td>' +
                                 '<td><input disabled class="form-control invno" type="text" value="' + dd.trbo_inv + '"></td>' +
@@ -1503,9 +1505,9 @@
                                 '<td><input disabled class="form-control keterangan" type="text" value="' + dd.trbo_keterangan + '"></td>' +
                                 '</tr>');
 
-                            tot_gross += dd.trbo_gross;
-                            tot_potongan += dd.trbo_discrph;
-                            tot_ppn += dd.trbo_ppnrph;
+                            tot_gross += parseFloat(dd.trbo_gross);
+                            tot_potongan += parseFloat(dd.trbo_discrph);
+                            tot_ppn += parseFloat(dd.trbo_ppnrph);
                         });
 
                         row++;
@@ -1542,10 +1544,10 @@
                         //     tot_ppn += ppn;
                         //     i++;
                         // });
-                        // console.log(tot_gross);
-                        // console.log(tot_potongan);
-                        // console.log(tot_ppn);
-                        tot_total = tot_gross - tot_potongan + tot_ppn;
+                        console.log(tot_gross);
+                        console.log(tot_potongan);
+                        console.log(tot_ppn);
+                        tot_total = parseFloat(tot_gross) - parseFloat(tot_potongan) + parseFloat(tot_ppn);
                         $('#gross').val(convertRupiah(tot_gross));
                         $('#potongan').val(convertRupiah(tot_potongan));
                         $('#ppn').val(convertRupiah(tot_ppn));
@@ -1735,45 +1737,45 @@
                             getDataUsulan();
                         });
 
-                        let model = $('#txtModel').val();
-                        $.ajax({
-                                type: "POST",
-                                url: "{{ url('/bo/transaksi/pengeluaran/input/save') }}",
-                                async: false,
-                                data: {
-                                    // datas: datas,
-                                    nodoc: nodoc,
-                                    tgldoc: tgldoc,
-                                    model: model,
-                                    kdsup: kdsup,
-                                    datas_detail: datas_detail
-                                },
-                                beforeSend: function () {
-                                    $('#modal-loader').modal('show');
-                                },
-                                success: function (response) {
-                                    console.log(response);
-                                    $('#modal-loader').modal('hide');
-                                    swal({
-                                        title: response.status,
-                                        text: response.message,
-                                        icon: response.status
-                                    }).then(() => {
-                                        window.location.reload();
-                                    });
+                        // let model = $('#txtModel').val();
+                        // $.ajax({
+                        //         type: "POST",
+                        //         url: "{{ url('/bo/transaksi/pengeluaran/input/save') }}",
+                        //         async: false,
+                        //         data: {
+                        //             // datas: datas,
+                        //             nodoc: nodoc,
+                        //             tgldoc: tgldoc,
+                        //             model: model,
+                        //             kdsup: kdsup,
+                        //             datas_detail: datas_detail
+                        //         },
+                        //         beforeSend: function () {
+                        //             $('#modal-loader').modal('show');
+                        //         },
+                        //         success: function (response) {
+                        //             console.log(response);
+                        //             $('#modal-loader').modal('hide');
+                        //             swal({
+                        //                 title: response.status,
+                        //                 text: response.message,
+                        //                 icon: response.status
+                        //             }).then(() => {
+                        //                 window.location.reload();
+                        //             });
 
-                                },
-                                error: function (error) {
-                                    $('#modal-loader').modal('hide');
-                                    // handle error
-                                    swal({
-                                        title: 'Gagal!',
-                                        text: 'Data gagal disimpan!',
-                                        icon: 'error'
-                                    }).then(() => {
-                                    });
-                                }
-                            });
+                        //         },
+                        //         error: function (error) {
+                        //             $('#modal-loader').modal('hide');
+                        //             // handle error
+                        //             swal({
+                        //                 title: 'Gagal!',
+                        //                 text: 'Data gagal disimpan!',
+                        //                 icon: 'error'
+                        //             }).then(() => {
+                        //             });
+                        //         }
+                        //     });
                     }, error: function (error) {
                         console.log(error);
                     }

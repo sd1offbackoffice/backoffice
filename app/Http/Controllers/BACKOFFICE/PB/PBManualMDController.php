@@ -199,6 +199,7 @@ class PBManualMDController extends Controller
             ->whereDate('ppb_tglawal','=',Carbon::createFromFormat('d/m/Y',$tgl1))
             ->whereDate('ppb_tglakhir','=',Carbon::createFromFormat('d/m/Y',$tgl2))
             ->whereRaw("nvl(ppb_flag, '0') <> '1'")
+            ->orderBy('ppb_prdcd')
             ->get();
 
         return view('BACKOFFICE.PB.pb-list-pdf',compact(['perusahaan','data','tgl1','tgl2']));
@@ -261,16 +262,18 @@ class PBManualMDController extends Controller
                pdm_pkmt,
                pdm_saldoakhir,
                pdm_nodraft,
-               pdm_create_dt,
+               to_char(pdm_create_dt,'dd/mm/yyyy') pdm_create_dt,
                (pdm_qtypb + pdm_saldoakhir) qty_input,
                pdm_qtypb,
                pdm_create_by,
                phm_nopb,
-               phm_tglpb,
+               to_char(phm_tglpb,'dd/mm/yyyy') phm_tglpb,
                phm_approval")
             ->whereDate('phm_create_dt','>=',Carbon::createFromFormat('d/m/Y',$tgl1))
             ->whereDate('phm_create_dt','<=',Carbon::createFromFormat('d/m/Y',$tgl2))
             ->whereRaw("nvl(phm_recordid, '0') = '2'")
+            ->orderBy('pdm_prdcd')
+            ->orderBy('pdm_nodraft')
             ->get();
 
 //        dd($data);
@@ -309,6 +312,9 @@ class PBManualMDController extends Controller
             ->join('tbmaster_supplier','sup_kodesupplier','=','pdm_kodesupplier')
             ->leftJoin('tbmaster_maxpalet','mpt_prdcd','=','pdm_prdcd')
             ->join('tbmaster_hargabeli','hgb_prdcd','=','pdm_prdcd')
+            ->leftJoin('tbmaster_prodcrm',function($join){
+                $join->on('prc_pluigr','=','pdm_prdcd');
+            })
             ->selectRaw("
                 pdm_prdcd,
                 prd_minorder,
@@ -360,32 +366,81 @@ class PBManualMDController extends Controller
                 hgb_qty1bonus02,
                 hgb_qty2bonus02,
                 hgb_qty3bonus02,
-                hgb_jenisbonus
-            ")
+                hgb_jenisbonus,
+                prc_group,
+                prd_flagbkp1 bkp,
+                pdm_kodetag,
+                pdm_kodedivisi,
+                pdm_kodedivisipo,
+                pdm_kodedepartement,
+                pdm_kodekategoribrg,
+                pdm_kodesupplier,
+                pdm_nourut,
+                pdm_qtypb,
+                pdm_kodetag,
+                pdm_qtybpb,
+                hgb_hrgbeli * case when prd_unit = 'KG' then 1 else prd_frac end pdm_hrgsatuan,
+                pdm_persendisc1,
+                pdm_rphdisc1,
+                pdm_flagdisc1,
+                pdm_persendisc2,
+                pdm_rphdisc2,
+                pdm_flagdisc2,
+                pdm_bonuspo1,
+                pdm_bonuspo2,
+                pdm_bonusbpb1,
+                pdm_bonusbpb2,
+                pdm_gross,
+                pdm_rphttldisc,
+                pdm_ppn,
+                pdm_ppnbm,
+                pdm_ppnbotol,
+                pdm_top,
+                pdm_ostpb,
+                pdm_ostpo,
+                pdm_pkmt,
+                pdm_saldoakhir")
+            ->where('prd_kodeigr','=',Session::get('kdigr'))
             ->where('pdm_nodraft','=',$no)
             ->where('hgb_tipe','=','2')
             ->whereNull('hgb_recordid')
+//            ->whereIn('prc_group',['O','I'])
 //            ->where('pdm_prdcd','=','1323810')
+            ->orderBy('pdm_prdcd')
+            ->orderBy('prc_group')
             ->get();
 
+//        dd($detail);
+
+        $result = [];
+
+        $plu = null;
+        $temp = new \stdClass();
         foreach($detail as $d){
-            $d->omi = 'N';
-            $d->idm = 'N';
 
-            $omi = DB::connection(Session::get('connection'))
-                ->table('tbmaster_prodcrm')
-                ->where('prc_kodeigr','=',Session::get('kdigr'))
-                ->where('prc_pluigr','=',$d->pdm_prdcd)
-                ->whereIn('prc_group',['O','I'])
-                ->get();
+            if($plu != $d->pdm_prdcd){
+                if($plu != null)
+                    $result[] = $temp;
+                $plu = $d->pdm_prdcd;
+                $temp = $d;
+                $temp->idm = 'N';
+                $temp->omi = 'N';
 
-            foreach($omi as $o){
-                if($o->prc_group == 'O')
-                    $d->omi = 'Y';
-                if($o->prc_group == 'I')
-                    $d->idm = 'Y';
+                if($d->prc_group == 'I')
+                    $temp->idm = 'Y';
+                if($d->prc_group == 'O')
+                    $temp->omi = 'Y';
+            }
+            else{
+                if($d->prc_group == 'I')
+                    $temp->idm = 'Y';
+                if($d->prc_group == 'O')
+                    $temp->omi = 'Y';
             }
         }
+        $result[] = $temp;
+
+        $detail = $result;
 
         return response()->json(compact(['header','detail']), 200);
     }
@@ -540,9 +595,9 @@ class PBManualMDController extends Controller
             oci_bind_by_name($query, ':nama_supp',$data->sup_namasupplier,255);
             oci_bind_by_name($query, ':suppkp',$data->suppkp,255);
             oci_bind_by_name($query, ':hrg_jual',$data->prd_hrgjual,255);
-            oci_bind_by_name($query, ':isi_beli',$data->isi_beli,255);
+            oci_bind_by_name($query, ':isi_beli',$data->prd_isibeli,255);
             oci_bind_by_name($query, ':pdm_saldoakhir',$data->pdm_saldoakhir,255);
-            oci_bind_by_name($query, ':v_minor',$data->v_minor,255);
+            oci_bind_by_name($query, ':v_minor',$data->prd_minorder,255);
             oci_bind_by_name($query, ':pdm_pkmt',$data->pdm_pkmt,255);
             oci_bind_by_name($query, ':pdm_persendisc1',$data->pdm_persendisc1,255);
             oci_bind_by_name($query, ':pdm_rphdisc1',$data->pdm_rphdisc1,255);
@@ -571,7 +626,8 @@ class PBManualMDController extends Controller
                         'prd_kodedepartement',
                         'prd_kodekategoribarang',
                         'prd_ppn',
-                        'mpt_maxqty'
+                        'mpt_maxqty',
+                        'prd_kodetag'
                     )
                     ->where('prd_kodeigr','=',Session::get('kdigr'))
                     ->where('prd_prdcd','=',$plu)
@@ -580,9 +636,10 @@ class PBManualMDController extends Controller
                 $data->pdm_kodedivisi = $temp->prd_kodedivisi;
                 $data->pdm_kodedivisipo = $temp->prd_kodedivisipo;
                 $data->pdm_kodedepartement = $temp->prd_kodedepartement;
-                $data->pdm_kodekategoribarang = $temp->prd_kodekategoribarang;
-                $data->maxpalet = $temp->mpt_maxqty;
+                $data->pdm_kodekategoribrg = $temp->prd_kodekategoribarang;
+                $data->mpt_maxqty = $temp->mpt_maxqty;
                 $data->prd_ppn = $temp->prd_ppn;
+                $data->pdm_kodetag = $temp->prd_kodetag;
 
                 $cek = DB::connection(Session::get('connection'))
                     ->table('tbmaster_supplier')
@@ -662,20 +719,503 @@ class PBManualMDController extends Controller
                 }
                 else $data->pdm_fdxrev = null;
 
+                $connect = loginController::getConnectionProcedure();
+
+                $query = oci_parse($connect, "BEGIN sp_igr_bo_pb_cek_bonus_migrasi(
+                            '".$data->pdm_prdcd."',
+                            '".$data->sup_kodesupplier."',
+                            trunc (sysdate),
+                            ".$data->prd_frac.",
+                            :pdm_qtypb,
+                            :pdm_bonuspo1,
+                            :pdm_bonuspo2,
+                            :pdm_ppn,
+                            :pdm_ppnbm,
+                            :pdm_ppnbotol,
+                            :v_oke,
+                            :v_message); END;");
+
+//                oci_bind_by_name($query, ':pdm_prdcd',$data->pdm_prdcd,255);
+//                oci_bind_by_name($query, ':pdm_kodesupplier',$data->sup_kodesupplier,255);
+//                oci_bind_by_name($query, ':frac',$data->prd_frac,255);
+                oci_bind_by_name($query, ':pdm_qtypb',$data->pdm_qtypbx,255);
+                oci_bind_by_name($query, ':pdm_bonuspo1',$data->pdm_bonuspo1,255);
+                oci_bind_by_name($query, ':pdm_bonuspo2',$data->pdm_bonuspo2,255);
+                oci_bind_by_name($query, ':pdm_ppn',$data->pdm_ppnx,255);
+                oci_bind_by_name($query, ':pdm_ppnbm',$data->pdm_ppnbmx,255);
+                oci_bind_by_name($query, ':pdm_ppnbotol',$data->pdm_ppnbotolx,255);
+                oci_bind_by_name($query, ':v_oke',$data->v_oke,255);
+                oci_bind_by_name($query, ':v_message',$data->v_message,255);
+
+                oci_execute($query);
+
+                if($data->v_oke != 'TRUE'){
+                    return response()->json([
+                        'message' => $data->v_message
+                    ], 500);
+                }
+
                 return response()->json($data,200);
             }
             else{
                 $data->pdm_prdcd = '';
                 $data->prd_hrgjual = '';
-                $data->isi_beli = '';
+                $data->prd_isibeli = '';
                 $data->pdm_saldoakhir = '';
                 $data->omi = '';
+                $data->idm = '';
                 $data->pdm_hrgsatuan = '';
 
                 return response()->json([
                     'message' => $data->v_message
                 ], 500);
             }
+        }
+    }
+
+    public function saveDraft(Request $request){
+        try{
+            DB::connection(Session::get('connection'))->beginTransaction();
+
+            $isNewDraft = $request->isNewDraft;
+            $draftNo = $request->draftNo;
+            $draftDate = $request->draftDate;
+            $draftInfo = $request->draftInfo;
+            $draftDetail = $request->draftDetail;
+
+            if($isNewDraft == 'true'){
+                $connect = loginController::getConnectionProcedure();
+
+                $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('" . Session::get('kdigr') . "','PBM','Nomor Permintaan Barang Manual','P' || to_char(sysdate,'yyMM'),4,true); END;");
+                oci_bind_by_name($query, ':ret', $draftNo, 32);
+                oci_execute($query);
+            }
+            else{
+                DB::connection(Session::get('connection'))
+                    ->table('tbtr_pbm_h')
+                    ->where('phm_kodeigr','=',Session::get('kdigr'))
+                    ->where('phm_nodraft','=',$draftNo)
+                    ->delete();
+
+                DB::connection(Session::get('connection'))
+                    ->table('tbtr_pbm_d')
+                    ->where('pdm_kodeigr','=',Session::get('kdigr'))
+                    ->where('pdm_nodraft','=',$draftNo)
+                    ->delete();
+            }
+
+            $total = new \stdClass();
+            $total->qtypb = 0;
+            $total->gross = 0;
+            $total->ppn = 0;
+            $total->ppnbm = 0;
+            $total->ppnbmbotol = 0;
+            $total->pdm_bonuspo1 = 0;
+            $total->pdm_bonuspo2 = 0;
+
+            foreach($draftDetail as $index => $d){
+                $total->qtypb += $d['pdm_qtypb'];
+                $total->gross += $d['pdm_gross'];
+                $total->ppn += $d['pdm_ppn'];
+                $total->ppnbm += $d['pdm_ppnbm'];
+                $total->ppnbmbotol += $d['pdm_ppnbotol'];
+                $total->pdm_bonuspo1 += $d['pdm_bonuspo1'];
+                $total->pdm_bonuspo2 += $d['pdm_bonuspo2'];
+
+                DB::connection(Session::get('connection'))
+                    ->table('tbtr_pbm_d')
+                    ->insert([
+                        'pdm_kodeigr' => Session::get('kdigr'),
+                        'pdm_nodraft' => $draftNo,
+                        'pdm_prdcd' => $d['pdm_prdcd'],
+                        'pdm_kodedivisi' => $d['pdm_kodedivisi'],
+                        'pdm_kodedivisipo' => $d['pdm_kodedivisipo'],
+                        'pdm_kodedepartement' => $d['pdm_kodedepartement'],
+                        'pdm_kodekategoribrg' => $d['pdm_kodekategoribrg'],
+                        'pdm_kodesupplier' => $d['sup_kodesupplier'],
+                        'pdm_nourut' => $index + 1,
+                        'pdm_qtypb' => $d['pdm_qtypb'],
+                        'pdm_kodetag' => $d['pdm_kodetag'],
+                        'pdm_qtybpb' => 0,
+                        'pdm_hrgsatuan' => $d['pdm_hrgsatuan'],
+                        'pdm_persendisc1' => $d['pdm_persendisc1'],
+                        'pdm_rphdisc1' => $d['pdm_rphdisc1'],
+                        'pdm_flagdisc1' => $d['pdm_flagdisc1'],
+                        'pdm_persendisc2' => $d['pdm_persendisc2'],
+                        'pdm_rphdisc2' => $d['pdm_rphdisc2'],
+                        'pdm_flagdisc2' => $d['pdm_flagdisc2'],
+                        'pdm_bonuspo1' => $d['pdm_bonuspo1'] ? $d['pdm_bonuspo1'] : 0,
+                        'pdm_bonuspo2' => $d['pdm_bonuspo2'] ? $d['pdm_bonuspo2'] : 0,
+                        'pdm_bonusbpb1' => 0,
+                        'pdm_bonusbpb2' => 0,
+                        'pdm_gross' => round($d['pdm_gross'],2),
+                        'pdm_rphttldisc' => 0,
+                        'pdm_ppn' => round($d['pdm_ppn'],2),
+                        'pdm_ppnbm' => $d['pdm_ppnbm'],
+                        'pdm_ppnbotol' => $d['pdm_ppnbotol'],
+                        'pdm_top' => $d['pdm_top'],
+                        'pdm_ostpb' => 0,
+                        'pdm_ostpo' => 0,
+                        'pdm_pkmt' => $d['pdm_pkmt'],
+                        'pdm_saldoakhir' => $d['pdm_saldoakhir'],
+                        'pdm_create_by' => Session::get('usid'),
+                        'pdm_create_dt' => Carbon::now()->format('Y-m-d'),
+                        'pdm_modify_by' => Session::get('usid'),
+                        'pdm_modify_dt' => Carbon::now()->format('Y-m-d')
+                    ]);
+            }
+
+            DB::connection(Session::get('connection'))
+                ->table('tbtr_pbm_h')
+                ->insert([
+                    'phm_kodeigr' => Session::get('kdigr'),
+                    'phm_recordid' => '',
+                    'phm_nodraft' => $draftNo,
+                    'phm_tgldraft' => Carbon::now()->format('Y/m/d'),
+                    'phm_flagdoc' => '0',
+                    'phm_qtypb' => $total->qtypb,
+                    'phm_qtybpb' => 0,
+                    'phm_bonuspo1' => $total->pdm_bonuspo1,
+                    'phm_bonuspo2' => $total->pdm_bonuspo2,
+                    'phm_bonusbpb1' => 0,
+                    'phm_bonusbpb2' => 0,
+                    'phm_gross' => $total->gross,
+                    'phm_rphttldisc' => 0,
+                    'phm_ppn' => $total->ppn,
+                    'phm_ppnbm' => $total->ppnbm,
+                    'phm_ppnbotol' => $total->ppnbmbotol,
+                    'phm_keteranganpb' => $draftInfo,
+                    'phm_tgltransfer' => null,
+                    'phm_create_by' => Session::get('usid'),
+                    'phm_create_dt' => Carbon::now(),
+                    'phm_modify_by' => Session::get('usid'),
+                    'phm_modify_dt' => Carbon::now()
+                ]);
+
+            DB::connection(Session::get('connection'))->commit();
+
+            return response()->json([
+                'message' => 'Draft dengan nomor '.$draftNo.' berhasil disimpan!'
+            ], 200);
+        }
+        catch (\Exception $e){
+            DB::connection(Session::get('connection'))->rollBack();
+
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function checkProcessDraft(Request $request){
+        $draftNo = $request->draftNo;
+
+        $temp = DB::connection(Session::get('connection'))
+            ->table('tbtr_pbm_h')
+            ->select(
+                'phm_flagdoc',
+                'phm_recordid'
+            )
+            ->where('phm_nodraft','=',$draftNo)
+            ->first();
+
+        if($temp){
+            if($temp->phm_flagdoc == '2'){
+                return response()->json([
+                    'message' => 'Nomor Draft PB sudah menjadi PB Manual!'
+                ], 500);
+            }
+
+            if($temp->phm_recordid == '1'){
+                return response()->json([
+                    'message' => 'Nomor Draft PB sudah dihapus!'
+                ], 500);
+            }
+
+            return response()->json([
+                'message' => 'OK'
+            ], 200);
+        }
+    }
+
+    public function sendOTP(Request $request){
+        try{
+            $auth = $request->auth;
+            $paramCekPKM = $request->paramCekPKM;
+            $draftNo = $request->draftNo;
+            $draftDate = $request->draftDate;
+
+//            dd($paramCekPKM);
+
+            $temp = DB::connection(Session::get('connection'))
+                ->table('tbmaster_user')
+                ->whereRaw("nvl(recordid,'0') <> '1'")
+                ->whereRaw("NVL (TO_NUMBER (SUBSTR (jabatan, 1, 1)), 0) = ".$paramCekPKM)
+                ->first();
+
+            if(!$temp){
+                return response()->json([
+                    'message' => 'User dengan '.$auth.' tidak terdaftar!'
+                ], 500);
+            }
+
+            $temp = DB::connection(Session::get('connection'))
+                ->table('tbmaster_user')
+                ->whereRaw("nvl(recordid,'0') <> '1'")
+                ->whereRaw("NVL (TO_NUMBER (SUBSTR (jabatan, 1, 1)), 0) = ".$paramCekPKM)
+                ->whereNotNull('email')
+                ->first();
+
+            if(!$temp){
+                return response()->json([
+                    'message' => 'User dengan '.$auth.' belum didaftarkan emailnya!'
+                ], 500);
+            }
+
+            $temp = DB::connection(Session::get('connection'))
+                ->table('tbmaster_user')
+                ->select('email')
+                ->where('kodeigr','=',Session::get('kdigr'))
+                ->whereRaw("nvl(recordid,'0') <> '1'")
+                ->where('userid','=',Session::get('usid'))
+                ->first();
+
+            if($temp){
+                if(in_array($temp->email,['',' ',null])){
+                    return response()->json([
+                        'message' => 'User pembuat belum didaftarkan emailnya!'
+                    ], 500);
+                }
+                else{
+                    $connect = loginController::getConnectionProcedure();
+
+                    $query = oci_parse($connect, "BEGIN sp_pbmanual_kirim_otp_migrasi(
+                                '".$draftNo."',
+                                '".$draftDate."',
+                                '".$paramCekPKM."',
+                                :lok,
+                                :v_message); END;");
+                    oci_bind_by_name($query, ':lok', $lok, 32);
+                    oci_bind_by_name($query, ':v_message', $v_message, 32);
+                    oci_execute($query);
+
+                    if($lok == 'FALSE'){
+                        return response()->json([
+                            'message' => 'OTP dan data Draft PB tidak dapat di email - '.$v_message
+                        ], 500);
+                    }
+                    else{
+                        return response()->json([
+                            'message' => 'OTP dan data Draft PB sudah di email ke user terkait!'
+                        ], 200);
+                    }
+                }
+            }
+            else{
+                return response()->json([
+                    'message' => 'User pembuat tidak ada!'
+                ], 500);
+            }
+        }
+        catch(\Exception $e){
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function processDraft(Request $request){
+        try{
+            $draftNo = $request->draftNo;
+            $draftDate = $request->draftDate;
+            $otp = $request->otp;
+            $paramCekPKM = $request->paramCekPKM;
+            $userauth = strtoupper(substr($otp,-3));
+
+            DB::connection(Session::get('connection'))->beginTransaction();
+
+            $connect = loginController::getConnectionProcedure();
+
+            $query = oci_parse($connect, "BEGIN sp_pbmanual_cek_otp_migrasi(
+                                '".$draftNo."',
+                                '".$draftDate."',
+                                '".$otp."',
+                                :lok,
+                                :v_message); END;");
+            oci_bind_by_name($query, ':lok', $lok, 32);
+            oci_bind_by_name($query, ':v_message', $v_message, 32);
+            oci_execute($query);
+
+            if($lok == 'TRUE'){
+                $temp = DB::connection(Session::get('connection'))
+                    ->table('tbmaster_user')
+                    ->where('userid','=',$userauth)
+                    ->whereRaw("NVL (TO_NUMBER (SUBSTR (jabatan, 1, 1)), 0) = ".$paramCekPKM)
+                    ->first();
+
+                if(!$temp){
+                    return response()->json([
+                        'message' => 'User approval tidak sesuai / tidak ditemukan!'
+                    ], 500);
+                }
+                else{
+                    $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor(
+                        '" . Session::get('kdigr') . "',
+                        'PB',
+                        'Nomor Permintaan Barang',
+                        '" . Session::get('kdigr') . "' || to_char(sysdate,'yyMM'),
+                        3,TRUE); END;");
+                    oci_bind_by_name($query, ':ret', $noPB, 32);
+                    oci_execute($query);
+
+                    DB::connection(Session::get('connection'))
+                        ->table('tbtr_pbm_h')
+                        ->where('phm_nodraft','=',$draftNo)
+                        ->update([
+                            'phm_flagdoc' => '2',
+                            'phm_recordid' => '2',
+                            'phm_nopb' => $noPB,
+                            'phm_tglpb' => Carbon::now(),
+                            'phm_tgltransfer' => Carbon::now(),
+                            'phm_approval' => $userauth,
+                            'phm_modify_by' => Session::get('usid'),
+                            'phm_modify_dt' => Carbon::now()
+                        ]);
+
+                    DB::connection(Session::get('connection'))
+                        ->table('tbtr_pbm_d')
+                        ->where('pdm_nodraft','=',$draftNo)
+                        ->update([
+                            'pdm_recordid' => '2',
+                            'pdm_modify_by' => Session::get('usid'),
+                            'pdm_modify_dt' => Carbon::now()
+                        ]);
+
+                    $header = DB::connection(Session::get('connection'))
+                        ->table('tbtr_pbm_h')
+                        ->where('phm_nodraft','=',$draftNo)
+                        ->first();
+
+                    DB::connection(Session::get('connection'))
+                        ->table('tbtr_pb_h')
+                        ->insert([
+                            'PBH_KODEIGR' => $header->phm_kodeigr,
+                            'PBH_NOPB' => $noPB,
+                            'PBH_TGLPB' => Carbon::now(),
+                            'PBH_TIPEPB' => 'R',
+                            'PBH_JENISPB' => null,
+                            'PBH_FLAGDOC' => '0',
+                            'PBH_QTYPB' => $header->phm_qtypb,
+                            'PBH_QTYBPB' => $header->phm_qtybpb,
+                            'PBH_BONUSPO1' => $header->phm_bonuspo1,
+                            'PBH_BONUSPO2' => $header->phm_bonuspo2,
+                            'PBH_BONUSBPB1' => $header->phm_bonusbpb1,
+                            'PBH_BONUSBPB2' => $header->phm_bonusbpb2,
+                            'PBH_GROSS' => $header->phm_gross,
+                            'PBH_RPHTTLDISC' => $header->phm_rphttldisc,
+                            'PBH_PPN' => $header->phm_ppn,
+                            'PBH_PPNBM' => $header->phm_ppnbm,
+                            'PBH_PPNBOTOL' => $header->phm_ppnbotol,
+                            'PBH_KETERANGANPB' => $header->phm_keteranganpb,
+                            'PBH_CREATE_BY' => Session::get('usid'),
+                            'PBH_CREATE_DT' => Carbon::now(),
+                    ]);
+
+                    $detail = DB::connection(Session::get('connection'))
+                        ->table('tbtr_pbm_d')
+                        ->where('pdm_nodraft','=',$draftNo)
+                        ->get();
+
+                    foreach($detail as $d){
+                        DB::connection(Session::get('connection'))
+                            ->table('tbtr_pb_d')
+                            ->insert([
+                                'pbd_kodeigr' => $d->pdm_kodeigr,
+                                'pbd_nopb' => $noPB,
+                                'pbd_prdcd' => $d->pdm_prdcd,
+                                'pbd_kodedivisi' => $d->pdm_kodedivisi,
+                                'pbd_kodedivisipo' => $d->pdm_kodedivisipo,
+                                'pbd_kodedepartement' => $d->pdm_kodedepartement,
+                                'pbd_kodekategoribrg' => $d->pdm_kodekategoribrg,
+                                'pbd_kodesupplier' => $d->pdm_kodesupplier,
+                                'pbd_nourut' => $d->pdm_nourut,
+                                'pbd_qtypb' => $d->pdm_qtypb,
+                                'pbd_kodetag' => $d->pdm_kodetag,
+                                'pbd_qtybpb' => $d->pdm_qtybpb,
+                                'pbd_hrgsatuan' => $d->pdm_hrgsatuan,
+                                'pbd_persendisc1' => $d->pdm_persendisc1,
+                                'pbd_rphdisc1' => $d->pdm_rphdisc1,
+                                'pbd_flagdisc1' => $d->pdm_flagdisc1,
+                                'pbd_persendisc2' => $d->pdm_persendisc2,
+                                'pbd_rphdisc2' => $d->pdm_rphdisc2,
+                                'pbd_flagdisc2' => $d->pdm_flagdisc2,
+                                'pbd_persendisc2ii' => $d->pdm_persendisc2ii,
+                                'pbd_rphdisc2ii' => $d->pdm_rphdisc2ii,
+                                'pbd_persendisc2iii' => $d->pdm_persendisc2iii,
+                                'pbd_rphdisc2iii' => $d->pdm_rphdisc2iii,
+                                'pbd_bonuspo1' => $d->pdm_bonuspo1,
+                                'pbd_bonuspo2' => $d->pdm_bonuspo2,
+                                'pbd_bonusbpb1' => $d->pdm_bonusbpb1,
+                                'pbd_bonusbpb2' => $d->pdm_bonusbpb2,
+                                'pbd_gross' => $d->pdm_gross,
+                                'pbd_rphttldisc' => $d->pdm_rphttldisc,
+                                'pbd_ppn' => $d->pdm_ppn,
+                                'pbd_ppnbm' => $d->pdm_ppnbm,
+                                'pbd_ppnbotol' => $d->pdm_ppnbotol,
+                                'pbd_top' => $d->pdm_top,
+                                'pbd_nopo' => $d->pdm_nopo,
+                                'pbd_ostpb' => $d->pdm_ostpb,
+                                'pbd_ostpo' => $d->pdm_ostpo,
+                                'pbd_pkmt' => $d->pdm_pkmt,
+                                'pbd_saldoakhir' => $d->pdm_saldoakhir,
+                                'pbd_fdxrev' => $d->pdm_fdxrev,
+                                'pbd_flaggudangpusat' => $d->pdm_flaggudangpusat,
+                                'pbd_create_by' => Session::get('usid'),
+                                'pbd_create_dt' => Carbon::now()
+                            ]);
+                    }
+
+                    DB::connection(Session::get('connection'))->commit();
+
+                    $responses = [];
+                    $responses[] = [
+                        'message' => 'Draft PB sudah menjadi PB Manual nomor '.$noPB,
+                        'status' => 'success'
+                    ];
+
+                    $query = oci_parse($connect, "BEGIN sp_kirimdatapb_migrasi('".$draftNo."',:lok,:v_message); END;");
+                    oci_bind_by_name($query, ':lok', $lok, 32);
+                    oci_bind_by_name($query, ':v_message', $v_message, 255);
+                    oci_execute($query);
+
+                    if($lok == 'FALSE'){
+                        $responses[] = [
+                            'message' => 'Data Draft PB tidak dapat di email - '.$v_message,
+                            'status' => 'error'
+                        ];
+                    }
+                    else{
+                        $responses[] = [
+                            'message' => 'Data Draft PB sudah di email!',
+                            'status' => 'success'
+                        ];
+                    }
+
+                    return response()->json($responses, 200);
+                }
+            }
+            else{
+                return response()->json([
+                    'message' => $v_message
+                ], 500);
+            }
+        }
+        catch (\Exception $e){
+            DB::connection(Session::get('connection'))->rollBack();
+
+            return response()->json([
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 }

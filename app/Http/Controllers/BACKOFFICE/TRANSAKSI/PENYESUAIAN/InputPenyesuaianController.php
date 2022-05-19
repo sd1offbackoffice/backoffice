@@ -83,6 +83,21 @@ class InputPenyesuaianController extends Controller
 
     public function plu_select(Request $request){
         $keterangan = '';
+        $barang = null;
+        $kemasan = null;
+        $tag = null;
+        $bandrol = null;
+        $bkp = null;
+        $lastcost = null;
+        $avgcost = null;
+        $persediaan = null;
+        $persediaan2 = null;
+        $hrgsatuan = null;
+        $qty = null;
+        $qtyk = null;
+        $subtotal = null;
+        $keterangan = null;
+        $unit = null;
 
         $cekPLU = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
             ->select('prd_prdcd')
@@ -117,7 +132,7 @@ class InputPenyesuaianController extends Controller
                 ->where('st_lokasi',$tipebarang)
                 ->first();
 
-            if(!$cekStock){
+            if(!$cekStock && $totalitem == 0){
                 $title = 'PLU TIDAK TERDAFTAR DI MASTER STOCK!';
                 return compact(['title']);
             }
