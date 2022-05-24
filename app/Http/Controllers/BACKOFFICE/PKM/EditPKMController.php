@@ -365,7 +365,9 @@ class EditPKMController extends Controller
                 fclose($handle);
             }
 
-//            dd($noUsulan);
+            DB::connection(Session::get('connection'))->table('tbtr_usulanpkm')
+            ->where('upkm_nousulan',$noUsulan)
+            ->delete();
 
             foreach($data as $d){
                 $plu = DB::connection(Session::get('connection'))
@@ -686,6 +688,7 @@ class EditPKMController extends Controller
 
         $header = NULL;
         $data = array();
+       
         try {
             if (($handle = fopen($filename, 'r')) !== FALSE) {
                 while (($row = fgetcsv($handle, 1000, '|', '#', '/')) !== FALSE) {
@@ -743,12 +746,12 @@ class EditPKMController extends Controller
                 ->delete();
 
             foreach($data as $d){
-                DB::connection(Session::get('connection'))
+                $test_insert = DB::connection(Session::get('connection'))
                     ->table('tbtemp_pkmbaru_migrasi')
                     ->insert([
                         'kodeigr' => $d['KODEIGR'],
                         'nousulan' => $d['NOUSULAN'],
-                        'tglusulan' => $d['TGLUSULAN'],
+                        'tglusulan' => DB::raw("TO_DATE('" . $d['TGLUSULAN'] . "','dd/mm/yyyy')"),
                         'prdcd' => $d['PRDCD'],
                         'mpkm' => $d['MPKM'],
                         'pkm' => $d['PKM'],
@@ -756,12 +759,13 @@ class EditPKMController extends Controller
                         'mplus_o' => $d['MPLUS_O'],
                         'pkmt' => $d['PKMT'],
                         'create_by' => $d['CREATE_BY'],
-                        'create_dt' => $d['CREATE_DT']
+                        'create_dt' => DB::raw("TO_DATE('" . $d['CREATE_DT'] . "','dd/mm/yyyy')")
                     ]);
             }
 
+
             $c = loginController::getConnectionProcedure();
-            $sql = "BEGIN sp_transfer_pkmprodbaru_mig('" . Session::get('kdigr') . "','".Session::get('usid')."',:nousulan,:err_txt); END;";
+            $sql = "BEGIN sp_transfer_usulanpkm('" . Session::get('kdigr') . "','".Session::get('usid')."',:nousulan,:err_txt); END;";
             $s = oci_parse($c, $sql);
             oci_bind_by_name($s, ':err_txt', $err_txt, 200);
             oci_bind_by_name($s, ':nousulan', $nousulan, 200);

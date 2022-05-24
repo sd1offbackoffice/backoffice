@@ -1338,12 +1338,12 @@
                     $('#modal-loader').modal('show');
                 },
                 success: (result) => {
+                    console.log(result);
                     $('#modal-loader').modal('hide');
                     next();
                     if (result.kode == 1) {
                         tempDataPLU = result.data;
                         setValue(result.data);
-
                     } else {
                         swal({
                             icon: 'warning',
@@ -1585,7 +1585,11 @@
     }
 
     function setValue(data) {
-        i_plu.val(data.i_prdcd);
+        if (data.i_prdcd != '' || data.i_prdcd != null) {
+            i_plu.val(data.i_prdcd);
+        } else {
+            i_plu.val(data.st_prdcd);
+        }
         i_deskripsi.val(data.i_barang);
         i_kemasan.val(data.i_kemasan);
         i_tag.val(data.i_tag);
@@ -1693,7 +1697,12 @@
 
     function setValueFromTempDataSave(data) {
         console.log(data);
-        i_plu.val(data.trbo_prdcd);
+
+        try {
+            i_plu.val(data.trbo_prdcd);
+        } catch (e) {
+            i_plu.val(data.trbo_prdcd);
+        };
         i_deskripsi.val(data.barang);
         i_kemasan.val(data.kemasan ?? '/' + data.trbo_frac);
         i_tag.val(data.trbo_kodetag);
@@ -2142,8 +2151,23 @@
                         text: result.msg,
                         timer: 2000
                     });
+                } else {
+                    let data = result.data;
+                    console.log(data);
+                    tempDataPLU = data;
+                    setValue(data, prdcd);
+                    setTimeout(function() {
+                        i_hrgbeli.focus();
+                        if (jenisPenerimaan == 1) {
+                            i_bonus1.focus();
+                        }
+                    }, 500);
+                    swal({
+                        icon: 'warning',
+                        text: result.msg,
+                        timer: 1000
+                    });
                 }
-
             },
             error: function(err) {
                 $('#modal-loader').modal('hide');

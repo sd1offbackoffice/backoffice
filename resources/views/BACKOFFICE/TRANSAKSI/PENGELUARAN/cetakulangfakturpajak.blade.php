@@ -123,6 +123,8 @@
         });
 
         function showDataNPB1(value) {
+            $('#tableModalNPB1').DataTable().destroy();
+
             ajaxSetup();
             let tableModal = $('#tableModalNPB1').DataTable({
                 // "ajax": '{{ url('bo/transaksi/pengeluaran/cetak-ulang-faktur-pajak/lov-search1') }}',
@@ -163,6 +165,8 @@
         }
 
         function showDataNPB2(value) {
+            $('#tableModalNPB2').DataTable().destroy();
+            
             ajaxSetup();
             let tableModal = $('#tableModalNPB2').DataTable({
                 // "ajax": '{{ url('bo/transaksi/pengeluaran/cetak-ulang-faktur-pajak/lov-search2') }}',
@@ -195,7 +199,7 @@
 
         $('#tableModalNPB1 tbody').on('click', '.modalRow', function () {
             // $('#npb1').val('');
-            let table = $('#tableModalNPB1').DataTable();
+            let table = $('#tableModalNPB1').DataTable();            
             let selectedNPB1 = table.row(this).data().msth_nodoc;
             $('#npb1').val(selectedNPB1);
             
@@ -208,6 +212,7 @@
         $('#tableModalNPB2 tbody').on('click', '.modalRow', function () {
             // $('#npb1').val('');
             let table = $('#tableModalNPB2').DataTable();
+            table.destroy();
             let selectedNPB2 = table.row(this).data().msth_nodoc;
             $('#npb2').val(selectedNPB2);
 

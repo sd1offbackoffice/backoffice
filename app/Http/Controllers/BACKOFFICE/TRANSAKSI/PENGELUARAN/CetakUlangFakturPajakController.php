@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\DataTables;
+use PDF;
+
 
 class CetakUlangFakturPajakController extends Controller
 {
@@ -148,8 +150,21 @@ class CetakUlangFakturPajakController extends Controller
 
         // dd($data);
 
-    return view('BACKOFFICE.TRANSAKSI.PENGELUARAN.cetakulangfakturpajak_pdf', compact('npb1', 'npb2', 'perusahaan', 'data', 'ttd', 'role1', 'role2'));
+//    return view('BACKOFFICE.TRANSAKSI.PENGELUARAN.cetakulangfakturpajak_pdf', compact('npb1', 'npb2', 'perusahaan', 'data', 'ttd', 'role1', 'role2'));
 //        return view('BACKOFFICE.CETAKDOKUMEN.ctk-rtrpjk-pdf', compact('npb1', 'npb2', 'perusahaan', 'data', 'ttd', 'role1', 'role2'));
+        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENGELUARAN.cetakulangfakturpajak_pdf', compact('npb1', 'npb2', 'perusahaan', 'data', 'ttd', 'role1', 'role2'));
+
+        error_reporting(E_ALL ^ E_DEPRECATED);
+
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf ->get_canvas();
+        $canvas->page_text(507, 100, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+
+        $dompdf = $pdf;
+
+        return $dompdf->stream('CETAK ULANG FAKTUR PAJAK.pdf');
 
     }
 }

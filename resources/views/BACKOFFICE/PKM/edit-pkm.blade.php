@@ -259,7 +259,7 @@
                             <fieldset class="card border-secondary ml-2 mr-2 mt-0">
                                 <div class="card-body">
                                     <div class="row form-group">
-                                        <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">No. Usulan</label>
+                                        <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">No Dok</label>
                                         <div class="col-sm-2">
                                             <input type="text" class="form-control" id="p_noUsulan" autocomplete="off" disabled>
                                         </div>
@@ -514,6 +514,7 @@
 
             getLovUsulan();
             getLovPKMBaru();
+            getLovPlu();
         });
 
         function getLovUsulan(){
@@ -815,8 +816,19 @@
 
         function hapusItem(i){
             status = $('#u_status').val();
+            // if(status === '* TAMBAH *' || status === '* EDIT *'){
+            //     $(`.row-${i}`).remove();
+            // }
             if(status === '* TAMBAH *' || status === '* EDIT *'){
-                $(`.row-${i}`).remove();
+                $('#table_daftar').DataTable().destroy();
+                $('#table_daftar tbody .row-'+i).remove();
+                $('#table_daftar').DataTable({
+                    "scrollY": "40vh",
+                    "paging" : false,
+                    "sort": false,
+                    "bInfo": false,
+                    "searching": false
+                });
             }
         }
 
@@ -891,6 +903,7 @@
 
                             $('#u_noUsulan').val(response.nousulan);
                             $('#u_tglUsulan').val(response.tglusulan);
+                            $('#u_status').val('* TAMBAH *').css({'text-align': 'center'});
 
                             tambahItem();
 
@@ -917,9 +930,11 @@
                 isChanged = true;
 
                 temp = data['row-'+index];
-
+                console.log(temp);
                 minpkm = parseInt(temp.pkm_mindisplay) + parseInt(temp.pkm_minorder);
 
+                console.log(parseInt(temp.pkm_mindisplay));
+                console.log(parseInt(temp.pkm_minorder));
                 row = $('.row-'+currentRow);
 
                 if(row.find('.pkmusulan').val() < minpkm){
@@ -958,6 +973,7 @@
         }
 
         function sendUsulan(){
+            console.log(isChanged);
             if(isChanged){
                 swal({
                     title: 'Harap tekan tombol SIMPAN terlebih dahulu!',
@@ -1056,7 +1072,7 @@
                         },
                         success: function (response) {
                             $('#modal-loader').modal('hide');
-
+                            isChanged = false;
                             swal({
                                 title: response.message,
                                 icon: 'success'
@@ -1502,7 +1518,7 @@
                                     icon: 'error',
                                 }).then(() => {
                                     $('#modal-loader').modal('hide');
-                                    $('#a_fileApproval').vavl('');
+                                    $('#a_fileApproval').val('');
                                     $('#a_directoryFile').val('');
                                 });
                             }

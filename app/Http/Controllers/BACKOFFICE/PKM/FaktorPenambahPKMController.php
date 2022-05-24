@@ -44,7 +44,7 @@ class FaktorPenambahPKMController extends Controller
 
     public function insertPerjanjian(Request $request)
     {
-        $kodeigr = Session::get('kdigr');
+        $kodeigr = '44';
         $usid = Session::get('usid');
 
         $check_prodmast = DB::connection('simckl')->table('tbmaster_prodmast')
@@ -233,7 +233,7 @@ class FaktorPenambahPKMController extends Controller
     public function updateNPLUS(Request $request)
     {
         $usid = Session::get('usid');
-        $kodeigr = Session::get('kodeigr');
+        $kodeigr = '44';
         $update_nplus = $request->update_nplus;
 
         foreach($update_nplus as $un)
@@ -247,6 +247,7 @@ class FaktorPenambahPKMController extends Controller
             gdl_qty")
             ->where('gdl_noperjanjiansewa',$un['no_perjanjian'])
             ->where('gdl_prdcd',$un['plu_n'])
+            ->where('gdl_kodedisplay',$un['kode_display'])
             ->get();
 
             $count_gondola = count($select_gondola);
@@ -356,7 +357,6 @@ class FaktorPenambahPKMController extends Controller
                     ->get();
 
                     $ftngdla = $calculate_qty_gondola[0]->gdl_qty;
-
                     $update_gondola = DB::connection('simckl')
                     ->update("UPDATE TBTR_PKMGONDOLA
                     SET PKMG_NILAIPKMG = '".$pkmt."' + '".$ftngdla."',
@@ -683,12 +683,18 @@ class FaktorPenambahPKMController extends Controller
 
     public function getDataDetail(Request $request)
     {
-        $data = DB::connection('simckl')
-        ->select("SELECT prd_prdcd, prd_deskripsipanjang, pkm_pkmt, pkm_mpkm
-        FROM tbmaster_prodmast, tbmaster_kkpkm
-        WHERE prd_prdcd = pkm_prdcd(+)
-        AND prd_prdcd = '".$request->pkmp_prdcd."'
-        ");
+        $data = DB::connection('simckl')->table('tbmaster_prodmast')
+        ->select('prd_prdcd', 'prd_deskripsipanjang', 'pkm_pkmt', 'pkm_mpkm')
+        ->leftJoin('tbmaster_kkpkm','prd_prdcd','pkm_prdcd')
+        ->where('prd_prdcd',$request->pkmp_prdcd)
+        ->get();
+        // ->select("SELECT prd_prdcd, prd_deskripsipanjang, pkm_pkmt, pkm_mpkm
+        // FROM tbmaster_prodmast, tbmaster_kkpkm
+        // WHERE prd_prdcd = pkm_prdcd(+)
+        // AND prd_prdcd = '".$request->pkmp_prdcd."'
+        // ");
+
+        // dd($data);
 
         return response()->json($data);
     }
@@ -773,7 +779,7 @@ class FaktorPenambahPKMController extends Controller
                 ], 500);
             }
             else{
-                $kodeigr = Session::get('kdigr');
+                $kodeigr = '44';
                 $usid = Session::get('usid');
 
                 $insert_pkmplus = DB::connection('simckl')

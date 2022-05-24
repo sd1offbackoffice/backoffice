@@ -2,7 +2,12 @@
 <project version="4">
   <component name="SshConfigs">
     <configs>
-      <sshConfig authType="PASSWORD" host="192.168.237.220" id="453408ec-c817-4dbd-bf75-59d5c1214566" port="22" nameFormat="DESCRIPTIVE" username="root" />
+      <sshConfig authType="PASSWORD" host="192.168.237.220" id="453408ec-c817-4dbd-bf75-59d5c1214566" port="22" customName="igrsmg" nameFormat="CUSTOM" username="root">
+        <option name="customName" value="igrsmg" />
+      </sshConfig>
+      <sshConfig authType="PASSWORD" host="192.168.247.200" id="437f14ab-e89d-467d-94c3-4c53355398eb" port="22" customName="igrbdl" nameFormat="CUSTOM" username="root">
+        <option name="customName" value="igrbdl" />
+      </sshConfig>
     </configs>
   </component>
 </project>

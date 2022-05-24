@@ -44,6 +44,10 @@ class inputSignatureController extends Controller
             $file3 = storage_path($path . 'clerk.' . $img3['image_type']);
             file_put_contents($file3, $img3['image_base64']);
 
+            $img4 = $this->dataURLtoImage($request->signed4);
+            $file4 = storage_path($path . 'ljm.' . $img4['image_type']);
+            file_put_contents($file4, $img4['image_base64']);
+
             $root = "names/";
             File::deleteDirectory(storage_path($root), 0755, true, true);
             if (!File::exists(storage_path($root))) {
@@ -54,6 +58,9 @@ class inputSignatureController extends Controller
 
             $fileclerk = storage_path($root . 'clerk.txt');
             file_put_contents($fileclerk, $request->signclerk);
+
+            $fileljm = storage_path($root . 'ljm.txt');
+            file_put_contents($fileljm, $request->signljm);
 
             $kodeigr = Session::get('kdigr');
             $result = DB::connection(Session::get('connection'))->select(

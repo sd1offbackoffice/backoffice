@@ -86,7 +86,9 @@
                                         </button>
                                     </div>
                                     <div class="col-sm-4">
-                                        <button class="col btn btn-success printBtn" onclick="printWithSignature()">CETAK</button>
+                                        <button class="col btn btn-success printBtn" onclick="printWithSignature()">
+                                            CETAK
+                                        </button>
                                         {{-- <button class="col btn btn-success printBtn" onclick="cetak()">CETAK</button> --}}
                                     </div>
                                 </div>
@@ -99,7 +101,8 @@
         </div>
     </div>
 
-    <div class="modal fade" id="m_signature" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="m_signature" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -130,7 +133,7 @@
                                     <div id="sig2" hidden></div>
                                     <div id="sig3" hidden></div>
                                 </div>
-                                <br />
+                                <br/>
                                 <textarea id="signature64" name="signed" style="display: none"></textarea>
                                 <textarea id="signature64_2" name="signed" style="display: none" hidden></textarea>
                                 <textarea id="signature64_3" name="signed" style="display: none" hidden></textarea>
@@ -139,16 +142,16 @@
                         <div class="row">
                             <div class="col-5"></div>
                             <div class="col">
-                                <button id="clear" class="btn btn-danger btn-lg">Clear</button>
+                                <button id="clearSig" class="btn btn-danger btn-lg">Clear</button>
                                 <span class="space"></span>
                                 <button id="finalPrintBtn" class="btn btn-success btn-lg">Save</button>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <label for="">Save -> Enter</label>
+                        <label for="">Save</label>
                         <label for="">/</label>
-                        <label for="">Clear -> Space</label>
+                        <label for="">Clear</label>
                     </div>
                 </div>
             </div>
@@ -263,6 +266,7 @@
     <script>
         nomor = '';
         checked = [];
+        let countSignature = 0;
         $(document).ready(function () {
             $('.tanggal').datepicker({
                 "dateFormat": "dd/mm/yy",
@@ -273,6 +277,7 @@
             cekMenu();
             showData();
         });
+
         $('#tableDocument').DataTable();
         $('#dokumen,#laporan,#jenisKertas,#reprint,#tgl1,#tgl2').on('change', function () {
             cekTanggal();
@@ -380,6 +385,7 @@
             val = $(this).val();
             if ($(this).prop('checked') == true) {
                 checked.push(val);
+                console.log(checked);
             } else {
                 const index = checked.indexOf(val);
                 if (index > -1) {
@@ -388,7 +394,20 @@
             }
         });
 
-        function printWithSignature(){
+        // function findKodeSupplier(nodoc) {
+        //     ajaxSetup();
+        //     $.ajax({
+        //         type: "get",
+        //         url: "url",
+        //         data: "data",
+        //         dataType: "dataType",
+        //         success: function (response) {
+                    
+        //         }
+        //     });
+        // }
+
+        function printWithSignature() {
             $('#m_signature').modal({
                 backdrop: 'static',
                 keyboard: false
@@ -397,10 +416,10 @@
             let sig = $('#sig').signature({
                 syncField: '#signature64',
                 syncFormat: 'PNG'
-            });            
-            
-            $('#finalPrintBtn').click(function (e) { 
-                
+            });
+
+            $('#finalPrintBtn').click(function (e) {
+
                 if ($('#nama_personil').val() == null || $('#nama_personil').val() == '') {
                     swal({
                         icon: 'info',
@@ -419,23 +438,31 @@
                             signed: $('#signature64').val(),
                             signedBy: $('#nama_personil').val()
                         },
-                        beforeSend: function() {
+                        beforeSend: function () {
                             $('#modal-loader').modal('show');
                         },
                         success: function (response) {
                             $('#modal-loader').modal('hide');
                             $('#m_signature').modal('hide');
                             
+
                             console.log(response);
 
                             let signatureId = response.data.signatureId
                             let signedBy = response.data.signedBy
 
+                            sig.signature('clear');
                             cetak(signatureId, signedBy)                            
                         }
                     });
                 }
-                
+
+            });
+
+            $('#clearSig').click(function (e) {
+                e.preventDefault();
+                sig.signature('clear');
+                $("#signature64").val('');
             });
         }
 
@@ -522,6 +549,7 @@
                         $('#modal-loader').modal('hide');
                         $('#pdf').empty();
                         console.log(result);
+
                         buttons = '';
                         if (result) {
 
@@ -530,13 +558,15 @@
                             }
 
                         }
-                        showData();
+
                         if (result.message) {
                             swal({
                                 title: result.message,
                                 icon: result.status
                             });
-                        }                    }, error: function (err) {
+                        }
+                        // window.location.reload();
+                    }, error: function (err) {
                         $('#modal-loader').modal('hide');
                         errorHandlingforAjax(err);
                     }

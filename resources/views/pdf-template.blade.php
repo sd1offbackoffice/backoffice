@@ -6,28 +6,30 @@
 <body>
 
 <header>
-    <div style="float:left; margin-top: 0px; line-height: 8px !important;">
-        <p>
-            {{ $perusahaan->prs_namaperusahaan }}
-        </p>
-        <p>
-            {{ $perusahaan->prs_namacabang }}
-        </p>
-        @yield('header_left')
-    </div>
-    <div style="float:right; margin-top: 0px; line-height: 8px !important;">
-        <p>
-            Tgl. Cetak : {{ date("d/m/Y") }}
-        </p>
-        <p>
-            Jam Cetak : {{ date('H:i:s') }}
-        </p>
-        <p>
-            <i>User ID</i> : {{ Session::get('usid') }}
-        </p>
-        <p>
-            Hal. :
-        </p>
+{{--    <div style="float:left; margin-top: 0px; line-height: 8px !important;">--}}
+{{--        <p>--}}
+{{--            {{ $perusahaan->prs_namaperusahaan }}--}}
+{{--        </p>--}}
+{{--        <p>--}}
+{{--            {{ $perusahaan->prs_namacabang }}--}}
+{{--        </p>--}}
+{{--        @yield('header_left')--}}
+{{--    </div>--}}
+    <div style="margin-top: 0px; line-height: 3px !important;">
+
+
+{{--        <p>--}}
+{{--            Tgl. Cetak : {{ date("d/m/Y") }}--}}
+{{--        </p>--}}
+{{--        <p>--}}
+{{--            Jam Cetak : {{ date('H:i:s') }}--}}
+{{--        </p>--}}
+{{--        <p>--}}
+{{--            <i>User ID</i> : {{ Session::get('usid') }}--}}
+{{--        </p>--}}
+{{--        <p>--}}
+{{--            Hal. :--}}
+{{--        </p>--}}
         @yield('header_right')
     </div>
     <div style="float: center">
@@ -37,6 +39,7 @@
         <p style="text-align: center;margin: 0;padding: 0">
             @yield('subtitle',date("d/m/Y"))
         </p>
+
     </div>
 {{--    <div class="center" style="clear:both">--}}
 {{--        @yield('header_optional')--}}
@@ -51,11 +54,13 @@
     @else
         @yield('content')
     @endif
+
+
 </main>
 
-<footer>
-    <p class="right" style="font-size: @yield('table_font_size','10px')">@yield('footer','** Akhir dari laporan **')</p>
-</footer>
+{{--<footer>--}}
+{{--    <p class="right" style="font-size: @yield('table_font_size','10px')">@yield('footer','** Akhir dari laporan **')</p>--}}
+{{--</footer>--}}
 
 <br>
 </body>
@@ -87,12 +92,12 @@
     tbody {
         display: table-row-group;
         vertical-align: middle;
-        border-color: inherit;
+        border-color: pink;
     }
     tr {
         display: table-row;
         vertical-align: inherit;
-        border-color: inherit;
+        border-color: pink;
     }
     td {
         display: table-cell;
@@ -104,8 +109,8 @@
         text-align: center;
     }
     tfoot{
-        border-top: 1px solid black;
-        border-bottom: 1px solid black;
+        border-top: 1px solid pink;
+        border-bottom: 1px solid pink;
     }
 
     .keterangan{
@@ -193,12 +198,12 @@
     }
 
     .border-top td{
-        border-top: 1px solid black;
+        border-top: 1px solid pink;
     }
 
     .top-bottom{
-        border-top: 1px solid black;
-        border-bottom: 1px solid black;
+        border-top: 1px solid pink;
+        border-bottom: 1px solid pink;
     }
 
     .nowrap{
@@ -208,7 +213,9 @@
     .overline{
         text-decoration: overline;
     }
-
+    .pagebreak {
+        page-break-before: always;
+    }
     @yield('custom_style')
 </style>
 </html>

@@ -16,7 +16,18 @@ class ReorderPBGOController extends Controller
     //
 
     public function index(){
-        return view('BACKOFFICE.ReorderPBGO');
+        $data = DB::connection(Session::get('connection'))
+            ->table('temp_go')
+            ->selectRaw("isi_toko, to_char(per_awal_reorder,'dd/mm/yyyy') per_awal_reorder, to_char(per_akhir_reorder,'dd/mm/yyyy') per_akhir_reorder")
+            ->where('kodeigr','=',Session::get('kdigr'))
+            ->first();
+
+        if(($data->isi_toko != 'Y') || (Carbon::now() < Carbon::createFromFormat('d/m/Y',$data->per_awal_reorder) || Carbon::now() > Carbon::createFromFormat('d/m/Y',$data->per_akhir_reorder))){
+            $message = 'Program tidak bisa dijalankan, sudah lewat masa GO!';
+        }
+        else $message = null;
+
+        return view('BACKOFFICE.ReorderPBGO')->with(compact('message'));
     }
 
     public function proses_goOld(){

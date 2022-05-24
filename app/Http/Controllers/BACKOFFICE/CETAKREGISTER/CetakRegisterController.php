@@ -177,7 +177,7 @@ class CetakRegisterController extends Controller
         $title = 'Register Bukti Penerimaan Barang';
 
 //        return view('BACKOFFICE.CETAKREGISTER.regterima-pdf',compact(['perusahaan','data','pkp','npkp','pembelian','lain','total','tgl1','tgl2']));
-
+        set_time_limit(0);
 
         //excel
         $subtitle = '';

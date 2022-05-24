@@ -86,6 +86,7 @@
                 </div>
                 <div style="margin-top: -10px">
                     <p style="margin-left: 55%;">{{ date("d-M-y  H:i:s") }}</p>
+                    <p style="margin-left: 55%;">Hal: {{$i + 1}}</p>
                     <table style="line-height: 8px !important;">
                         <tbody>
                             <tr>
@@ -95,11 +96,6 @@
                             <tr>
                                 <td>N.P.W.P</td>
                                 <td>: {{$datas[$i]->sup_npwp}}</td>
-                            </tr>
-                            <tr>
-                                <td>T.O.P</td>
-                                <td>: {{$datas[$i]->msth_cterm}} HARI</td>
-                                <td colspan="4">Hal: {{$i + 1}}</td>
                             </tr>
                             <tr>
                                 <td>No.SJ/F</td>

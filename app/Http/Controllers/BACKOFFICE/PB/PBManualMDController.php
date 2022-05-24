@@ -54,6 +54,52 @@ class PBManualMDController extends Controller
         return DataTables::of($produk)->make(true);
     }
 
+    public function getDraftProductList(Request $request){
+        $search = $request->plu;
+
+        if($search == ''){
+            $produk = DB::connection(Session::get('connection'))->table("tbmaster_prodmast")
+                ->join('tbmaster_produk_pb','ppb_prdcd','=','prd_prdcd')
+                ->select('prd_deskripsipanjang','prd_prdcd')
+                ->where('prd_kodeigr',Session::get('kdigr'))
+                ->whereRaw("substr(prd_prdcd,7,1) = '0'")
+                ->whereDate('ppb_tglawal','=',Carbon::now())
+                ->whereDate('ppb_tglakhir','=',Carbon::now())
+                ->whereRaw("nvl(ppb_flag, '0') <> '1'")
+                ->orderBy('prd_prdcd')
+                ->limit(100)
+                ->get();
+        }
+        else if(is_numeric($search)){
+            $produk = DB::connection(Session::get('connection'))->table("tbmaster_prodmast")
+                ->join('tbmaster_produk_pb','ppb_prdcd','=','prd_prdcd')
+                ->select('prd_deskripsipanjang','prd_prdcd')
+                ->where('prd_kodeigr',Session::get('kdigr'))
+                ->whereRaw("substr(prd_prdcd,7,1) = '0'")
+                ->whereDate('ppb_tglawal','=',Carbon::now())
+                ->whereDate('ppb_tglakhir','=',Carbon::now())
+                ->whereRaw("nvl(ppb_flag, '0') <> '1'")
+                ->where('prd_prdcd','like',"'%".$search."%'")
+                ->orderBy('prd_prdcd')
+                ->get();
+        }
+        else{
+            $produk = DB::connection(Session::get('connection'))->table("tbmaster_prodmast")
+                ->join('tbmaster_produk_pb','ppb_prdcd','=','prd_prdcd')
+                ->select('prd_deskripsipanjang','prd_prdcd')
+                ->where('prd_kodeigr',Session::get('kdigr'))
+                ->whereRaw("substr(prd_prdcd,7,1) = '0'")
+                ->whereDate('ppb_tglawal','=',Carbon::now())
+                ->whereDate('ppb_tglakhir','=',Carbon::now())
+                ->whereRaw("nvl(ppb_flag, '0') <> '1'")
+                ->where('prd_prdcd','like',"'%".$search."%'")
+                ->orderBy('prd_prdcd')
+                ->get();
+        }
+
+        return DataTables::of($produk)->make(true);
+    }
+
     public function getPBProduct(Request $request){
         $tgl1 = $request->tgl1;
         $tgl2 = $request->tgl2;
@@ -344,10 +390,10 @@ class PBManualMDController extends Controller
                 pdm_saldoakhir,
                 hgb_flagkelipatanbonus01,
                 hgb_flagkelipatanbonus02,
-                hgb_tglmulaibonus01,
-                hgb_tglakhirbonus01,
-                hgb_tglmulaibonus02,
-                hgb_tglakhirbonus01,
+                to_char(hgb_tglmulaibonus01,'dd/mm/yyyy') hgb_tglmulaibonus01,
+                to_char(hgb_tglakhirbonus01,'dd/mm/yyyy') hgb_tglakhirbonus01,
+                to_char(hgb_tglmulaibonus02,'dd/mm/yyyy') hgb_tglmulaibonus02,
+                to_char(hgb_tglakhirbonus01,'dd/mm/yyyy') hgb_tglakhirbonus01,
                 hgb_qtymulai1bonus01,
                 hgb_qtymulai2bonus01,
                 hgb_qtymulai3bonus01,
@@ -649,14 +695,16 @@ class PBManualMDController extends Controller
                     ->where('hgb_prdcd','=',$plu)
                     ->first();
 
+//                dd($cek);
+
                 if($cek){
                     $data->sup_minrph = $cek->sup_minrph;
                     $data->hgb_flagkelipatanbonus01 = $cek->hgb_flagkelipatanbonus01;
                     $data->hgb_flagkelipatanbonus02 = $cek->hgb_flagkelipatanbonus02;
-                    $data->hgb_tglmulaibonus01 = $cek->hgb_tglmulaibonus01;
-                    $data->hgb_tglakhirbonus01 = $cek->hgb_tglakhirbonus01;
-                    $data->hgb_tglmulaibonus02 = $cek->hgb_tglmulaibonus02;
-                    $data->hgb_tglakhirbonus01 = $cek->hgb_tglakhirbonus01;
+                    $data->hgb_tglmulaibonus01 = $cek->hgb_tglmulaibonus01 ? Carbon::createFromFormat('Y-m-d h:i:s',$cek->hgb_tglmulaibonus01)->format('d/m/Y') : null;
+                    $data->hgb_tglakhirbonus01 = $cek->hgb_tglakhirbonus01 ? Carbon::createFromFormat('Y-m-d h:i:s',$cek->hgb_tglakhirbonus01)->format('d/m/Y') : null;
+                    $data->hgb_tglmulaibonus02 = $cek->hgb_tglmulaibonus02 ? Carbon::createFromFormat('Y-m-d h:i:s',$cek->hgb_tglmulaibonus02)->format('d/m/Y') : null;
+                    $data->hgb_tglakhirbonus02 = $cek->hgb_tglakhirbonus02 ? Carbon::createFromFormat('Y-m-d h:i:s',$cek->hgb_tglakhirbonus02)->format('d/m/Y') : null;
                     $data->hgb_qtymulai1bonus01 = $cek->hgb_qtymulai1bonus01;
                     $data->hgb_qtymulai2bonus01 = $cek->hgb_qtymulai2bonus01;
                     $data->hgb_qtymulai3bonus01 = $cek->hgb_qtymulai3bonus01;
@@ -710,49 +758,18 @@ class PBManualMDController extends Controller
                     ->table('temp_go')
                     ->selectRaw("isi_toko isi, to_char(per_awal_pdisc_go,'dd/mm/yyyy') awal, to_char(per_akhir_pdisc_go,'dd/mm/yyyy') akhir")
                     ->where('kodeigr','=',Session::get('kdigr'))
+                    ->whereNotNull('per_awal_pdisc_go')
+                    ->whereNotNull('per_akhir_pdisc_go')
                     ->first();
 
-                if($temp->isi == 'Y'
-                    && Carbon::createFromFormat('d/m/Y',$temp->awal) <= Carbon::now()
-                    && Carbon::createFromFormat('d/m/Y',$temp->akhir) >= Carbon::now()){
-                    $data->pdm_fdxrev = 'T';
-                }
-                else $data->pdm_fdxrev = null;
+                $data->pdm_fdxrev = null;
 
-                $connect = loginController::getConnectionProcedure();
-
-                $query = oci_parse($connect, "BEGIN sp_igr_bo_pb_cek_bonus_migrasi(
-                            '".$data->pdm_prdcd."',
-                            '".$data->sup_kodesupplier."',
-                            trunc (sysdate),
-                            ".$data->prd_frac.",
-                            :pdm_qtypb,
-                            :pdm_bonuspo1,
-                            :pdm_bonuspo2,
-                            :pdm_ppn,
-                            :pdm_ppnbm,
-                            :pdm_ppnbotol,
-                            :v_oke,
-                            :v_message); END;");
-
-//                oci_bind_by_name($query, ':pdm_prdcd',$data->pdm_prdcd,255);
-//                oci_bind_by_name($query, ':pdm_kodesupplier',$data->sup_kodesupplier,255);
-//                oci_bind_by_name($query, ':frac',$data->prd_frac,255);
-                oci_bind_by_name($query, ':pdm_qtypb',$data->pdm_qtypbx,255);
-                oci_bind_by_name($query, ':pdm_bonuspo1',$data->pdm_bonuspo1,255);
-                oci_bind_by_name($query, ':pdm_bonuspo2',$data->pdm_bonuspo2,255);
-                oci_bind_by_name($query, ':pdm_ppn',$data->pdm_ppnx,255);
-                oci_bind_by_name($query, ':pdm_ppnbm',$data->pdm_ppnbmx,255);
-                oci_bind_by_name($query, ':pdm_ppnbotol',$data->pdm_ppnbotolx,255);
-                oci_bind_by_name($query, ':v_oke',$data->v_oke,255);
-                oci_bind_by_name($query, ':v_message',$data->v_message,255);
-
-                oci_execute($query);
-
-                if($data->v_oke != 'TRUE'){
-                    return response()->json([
-                        'message' => $data->v_message
-                    ], 500);
+                if($temp){
+                    if($temp->isi == 'Y'
+                        && Carbon::createFromFormat('d/m/Y',$temp->awal) <= Carbon::now()
+                        && Carbon::createFromFormat('d/m/Y',$temp->akhir) >= Carbon::now()){
+                        $data->pdm_fdxrev = 'T';
+                    }
                 }
 
                 return response()->json($data,200);
@@ -771,6 +788,46 @@ class PBManualMDController extends Controller
                 ], 500);
             }
         }
+    }
+
+    public function bonusCheck(Request $request){
+        $prdcd = $request->plu;
+        $kodesupplier = $request->kodesupplier;
+        $frac = $request->frac;
+
+
+        $data = new \stdClass();
+
+        $data->pdm_qtypb = $request->qtypb;
+
+        $connect = loginController::getConnectionProcedure();
+
+        $query = oci_parse($connect, "BEGIN sp_igr_bo_pb_cek_bonus_migrasi(
+                            '".$prdcd."',
+                            '".$kodesupplier."',
+                            trunc (sysdate),
+                            ".$frac.",
+                            :pdm_qtypb,
+                            :pdm_bonuspo1,
+                            :pdm_bonuspo2,
+                            :pdm_ppn,
+                            :pdm_ppnbm,
+                            :pdm_ppnbotol,
+                            :v_oke,
+                            :v_message); END;");
+
+        oci_bind_by_name($query, ':pdm_qtypb',$data->pdm_qtypb,255);
+        oci_bind_by_name($query, ':pdm_bonuspo1',$data->pdm_bonuspo1,255);
+        oci_bind_by_name($query, ':pdm_bonuspo2',$data->pdm_bonuspo2,255);
+        oci_bind_by_name($query, ':pdm_ppn',$data->pdm_ppn,255);
+        oci_bind_by_name($query, ':pdm_ppnbm',$data->pdm_ppnbm,255);
+        oci_bind_by_name($query, ':pdm_ppnbotol',$data->pdm_ppnbotol,255);
+        oci_bind_by_name($query, ':v_oke',$data->v_oke,255);
+        oci_bind_by_name($query, ':v_message',$data->v_message,255);
+
+        oci_execute($query);
+
+        return response()->json($data, 200);
     }
 
     public function saveDraft(Request $request){
@@ -1123,6 +1180,7 @@ class PBManualMDController extends Controller
 
                     $detail = DB::connection(Session::get('connection'))
                         ->table('tbtr_pbm_d')
+                        ->join('tbmaster_prodmast','prd_prdcd','=','pdm_prdcd')
                         ->where('pdm_nodraft','=',$draftNo)
                         ->get();
 
@@ -1171,7 +1229,8 @@ class PBManualMDController extends Controller
                                 'pbd_fdxrev' => $d->pdm_fdxrev,
                                 'pbd_flaggudangpusat' => $d->pdm_flaggudangpusat,
                                 'pbd_create_by' => Session::get('usid'),
-                                'pbd_create_dt' => Carbon::now()
+                                'pbd_create_dt' => Carbon::now(),
+                                'pbd_persenppn' => $d->prd_ppn
                             ]);
                     }
 

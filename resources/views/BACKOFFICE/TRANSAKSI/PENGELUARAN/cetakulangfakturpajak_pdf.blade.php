@@ -1,4 +1,5 @@
 @extends('BACKOFFICE.TRANSAKSI.PENGELUARAN.cetakulangfakturpajak-template')
+
 @section('table_font_size','7 px')
 
 @section('page_title')
@@ -14,7 +15,29 @@
 @endsection
 
 @section('content')
-    @foreach ($data as $d)
+    <style>
+
+        table.table-bordered {
+            border: 1px solid pink;
+        }
+        .border-pink {
+            border: 1px 1px 1px 1px solid pink;
+        }
+        .border-bottom-pink {
+            border-bottom: 1px solid pink;
+        }
+        .border-top-pink {
+            border-top: 1px solid pink;
+        }
+        .border-left-pink {
+            border-left: 1px solid pink;
+        }
+        .border-right-pink {
+            border-right: 1px solid pink;
+        }
+
+    </style>
+    @for ($i=0;$i<sizeof($data);$i++)
 
         @php
             $datetime = new DateTime();
@@ -23,177 +46,170 @@
             $temp_docno2 ='';
         @endphp
 
-    @php
-        $cf_fakturpjk = '';
-       $cf_nofak = '';
-       $f_1 = '';
-       $flag = '';
-       $faktur = '';
-       $cf_skp_sup = '';
-               $total = 0;
-               $no=1;
-               $nQty2 = floor($d->mstd_qty / $d->mstd_frac);
-               $nQtyK = fmod($d->mstd_qty, $d->mstd_frac);
+        @php
+            $cf_fakturpjk = '';
+           $cf_nofak = '';
+           $f_1 = '';
+           $flag = '';
+           $faktur = '';
+           $cf_skp_sup = '';
+                   $total = 0;
+                   $no=1;
+                   $nQty2 = floor($data[$i]->mstd_qty / $data[$i]->mstd_frac);
+                   $nQtyK = fmod($data[$i]->mstd_qty, $data[$i]->mstd_frac);
 
-               if ($d->mstd_unit == "KG") {
-                   $nQty = ((($nQty2) * $d->mstd_frac) + ($nQtyK)) / $d->mstd_frac;
-               } else {
-                   $nQty = (($nQty2) * $d->mstd_frac) + $nQtyK;
-               }
+                   if ($data[$i]->mstd_unit == "KG") {
+                       $nQty = ((($nQty2) * $data[$i]->mstd_frac) + ($nQtyK)) / $data[$i]->mstd_frac;
+                   } else {
+                       $nQty = (($nQty2) * $data[$i]->mstd_frac) + $nQtyK;
+                   }
 
-               $nGross = $d->mstd_gross - $d->mstd_discrph;
-               $nPrice = ($nGross / ($nQty2 * $d->mstd_frac + $nQtyK));
-
-
-     $cf_fakturpjk = $d->mstd_istype . '.' . $d->mstd_invno;
-    $cf_nofak = $d->prs_kodemto . '.' . substr($d->msth_tgldoc, 8, 2) . '.0' . $d->mstd_docno2 . $d->msth_flagdoc == 'T' ? '*' : '';
-    if ($d->sup_tglsk) {
-        $cf_skp_sup = $d->sup_nosk . ' Tanggal PKP : ' . date('d-M-y', strtotime(substr($d->sup_tglsk, 0, 10)));
-    } else {
-        $cf_skp_sup = $d->sup_nosk;
-    }
-    $f_1 = $d->sup_namanpwp ? $d->sup_namanpwp : $d->sup_namasupplier . " " . $d->sup_singkatansupplier;
-    $flag = $d->msth_flagdoc==1?'*':'';
-    $faktur = $d->prs_kodemto.'.' . substr($d->msth_tgldoc,9,2) . '.0'.$d->mstd_docno2.$flag;
-    @endphp
-
-    @if($temp_docno2!=$d->mstd_docno2)
+                   $nGross = $data[$i]->mstd_gross - $data[$i]->mstd_discrph;
+                   $nPrice = ($nGross / ($nQty2 * $data[$i]->mstd_frac + $nQtyK));
 
 
-{{--        <div style="display: flex; justify-content: end; margin-right: 80%">--}}
-{{--        <p>{{$d->mstd_istype.'.'.$d->mstd_invno}}</p>--}}
-{{--        </div>--}}
-<table>
-<thead>
-<h3 style="text-align:center;">NOTA RETUR</h3>
+         $cf_fakturpjk = $data[$i]->mstd_istype . '.' . $data[$i]->mstd_invno;
+        $cf_nofak = $data[$i]->prs_kodemto . '.' . substr($data[$i]->msth_tgldoc, 8, 2) . '.0' . $data[$i]->mstd_docno2 . $data[$i]->msth_flagdoc == 'T' ? '*' : '';
+        if ($data[$i]->sup_tglsk) {
+            $cf_skp_sup = $data[$i]->sup_nosk . ' Tanggal PKP : ' . date('d-M-y', strtotime(substr($data[$i]->sup_tglsk, 0, 10)));
+        } else {
+            $cf_skp_sup = $data[$i]->sup_nosk;
+        }
+        $f_1 = $data[$i]->sup_namanpwp ? $data[$i]->sup_namanpwp : $data[$i]->sup_namasupplier . " " . $data[$i]->sup_singkatansupplier;
+        $flag = $data[$i]->msth_flagdoc==1?'*':'';
+        $faktur = $data[$i]->prs_kodemto.'.' . substr($data[$i]->msth_tgldoc,9,2) . '.0'.$data[$i]->mstd_docno2.$flag;
+        @endphp
 
-<div style="display;  flex; justify-content: end; ">
-    <p style="margin-left: 70%">Nomor: {{ $d->mstd_docno2 }}</p>
-</div>
+        @if($temp_docno2!=$data[$i]->mstd_docno2)
+            @php
+                $temp_docno2 = $data[$i]->mstd_docno2;
+            @endphp
+            <div class="border-pink">
+            <table class="table">
+                <thead>
+                    <tr>
+                            <th class="border-top-pink" style="text-align:center;font-size:10px" colspan="7"><b>NOTA RETUR</b></th>
+                    </tr>
+                    <tr>
+                        <th colspan="5"></th>
+                        <th style="text-align:center;" colspan="1">
+                            Nomor: {{ $data[$i]->mstd_docno2 }}</th>
+                        <th colspan="1"></th>
+                    </tr>
+                    <tr>
+                        <th class="border-bottom-pink" style="text-align:center" colspan="7">Atas Faktur Pajak
+                            Nomor: {{$data[$i]->mstd_istype.'.'.$data[$i]->mstd_invno}} &nbsp;
+                            Tanggal: {{date('d-m-Y', strtotime(substr($data[$i]->mstd_date3, 0, 10)))}}</th>
+                    </tr>
+                    <tr>
+                        <th align="left" colspan="7" style="font-size:8px"><b>&nbsp; PEMBELI</b></th>
+                    </tr>
+                    <tr>
+                        <td align="left" colspan="2">&nbsp; Nama</td>
+                        <td align="left" colspan="5"><b>&nbsp; : {{ $data[$i]->prs_namaperusahaan }}</b></td>
+                    </tr>
+                    <tr>
+                        <td align="left" colspan="2">&nbsp; Alamat</td>
+                        <td align="left" colspan="5">&nbsp; : {{ $data[$i]->const_addr }}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid pink">
+                        <td align="left" style="border-bottom: 1px solid pink" colspan="2">&nbsp; N.P.W.P</td>
+                        <td align="left" colspan="5" style="border-bottom: 1px solid pink">&nbsp; : {{ $data[$i]->prs_npwp }}</td>
+                    </tr>
+                    <tr>
+                        <th align="left" colspan="7" style="font-size:8px"><b>&nbsp; KEPADA PENJUAL</b></th>
+                    </tr>
+                    <tr>
+                        <td align="left" colspan="2">&nbsp; Nama</td>
+                        <td align="left" colspan="5">&nbsp; : {{ $f_1 }}</td>
+                    </tr>
+                    <tr>
+                        <td align="left" colspan="2">&nbsp; Alamat</td>
+                        <td align="left" colspan="5">&nbsp; : {{ $data[$i]->addr_sup }}</td>
+                    </tr>
+                    <tr>
+                        <td align="left" colspan="2">&nbsp; N.P.W.P</td>
+                        <td align="left" colspan="5">&nbsp; : {{ $data[$i]->sup_npwp }}</td>
+                    </tr>
+                    <tr>
+                        <td align="left" colspan="2" style="border-bottom: 1px solid pink">&nbsp; No. Pengukuhan PKP</td>
+                        <td align="left" colspan="5" style="border-bottom: 1px solid pink">&nbsp; : {{ $cf_skp_sup }}</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid pink; border-top: 1px solid pink;">
+                        <th colspan="1" class="border-right-pink" scope="col">No.<br>Urut</th>
+                        <th colspan="3" class="border-right-pink" scope="col">Macam dan Jenis<br>Barang Kena Pajak</th>
+                        <th class="border-right-pink" scope="col">Kuantum</th>
+                        <th class="border-right-pink" scope="col">Harga Satuan Menurut<br>Faktur Pajak<br>(Rp.)</th>
+                        <th class="border-right-pink" scope="col">Harga BKP<br>yang dikembalikan<br>(Rp.)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @endif
 
-
-<div style="text-align: center; flex; justify-content: end; ">
-<p>Atas Faktur Pajak Nomor: {{$d->mstd_istype.'.'.$d->mstd_invno}} &nbsp; Tanggal: {{date('d-m-Y', strtotime(substr($d->mstd_date3, 0, 10)))}}</p>
-</div>
-
-
-</thead>
-</table>
-
-<table class="table1">
-    <h3>PEMBELI</h3>
-    <div>
-
-        <p>Nama : {{ $d->prs_namaperusahaan }}</p>
-        <p>Alamat : {{ $d->const_addr }}</p>
-        <p>N.P.W.P : {{ $d->prs_npwp }}</p>
-    </div>
-    <br>
-
-    <h3>KEPADA PENJUAL</h3>
-    <div>
-        <p>Nama : {{ $f_1 }} <br></p>
-        <p>Alamat: {{ $d->addr_sup }}<br></p>
-        <p >N.P.W.P : {{ $d->sup_npwp }}<br></p>
-        <p>No. Pengukuhan PKP : {{ $cf_skp_sup }}</p>
-    </div>
-
-    <br>
+                <tr>
+                    <th class="border-pink"  scope="row">{{ $no }}.</th>
+                    <td class="border-pink" colspan="3">{{ $data[$i]->prd_deskripsipanjang }}</td>
+                    <td class="border-pink" style="text-align:right; padding-right:10px;">{{ number_format($nQty, 0) }}</td>
+                    <td class="border-pink" style="text-align:right; padding-right:10px;">{{ number_format($nPrice, 0) }}</td>
+                    <td class="border-pink" style="text-align:right; padding-right:10px;">{{ number_format($nGross, 0) }}</td>
+                </tr>
+                @php
+                    $no++;
+                @endphp
+                @if(!isset($data[$i+1]->mstd_docno2) || ($temp_docno2!=$data[$i+1]->mstd_docno2 && isset($data[$i+1])) )
+                    @if($no<=17)
+                        @for($no ;$no<=17;$no++)
+                            <tr>
+                                <th class="border-pink"  scope="row">{{ $no }}.</th>
+                                <td class="border-pink" colspan="3"></td>
+                                <td class="border-pink" style="text-align:right; padding-right:10px;"></td>
+                                <td class="border-pink" style="text-align:right; padding-right:10px;"></td>
+                                <td class="border-pink" style="text-align:right; padding-right:10px;"></td>
+                            </tr>
+                        @endfor
+                    @endif
+                </tbody>
 
         @endif
-</table>
-    <br>
+                <tfoot>
+{{--                <table rules="all" class="border-pink" style="margin-top: 200px; ">--}}
+{{--                <table rules="all" class=" table border-pink"  scope="row" style="margin-top: 100px; border-bottom: 1px solid pink; border-top: 1px solid pink;">--}}
+                    <tr>
+                        <td colspan="6" class="border-pink" align="left">Jumlah Harga BKP yang dikembalikan</td>
+                        <td class="border-pink" align="right" style="padding-right:10px;"> {{ number_format($nGross, 0) }}</td>
+                    </tr>
 
-    <table class="table">
-        <thead>
-            <td>No. Urut</td>
-            <td>Nama Produk</td>
-            <td>Kuantum</td>
-            <td>Harga Satuan Menurut Faktur Pajak (Rp.)</td>
-            <td>Harga BKP yang dikembalikan (Rp.)</td>
-        </thead>
-        <tbody>
-        <tr>
-            <td>{{ $no }}</td>
-            <td>{{ $d->prd_deskripsipanjang }}</td>
-            <td>{{ number_format($nQty, 0) }}</td>
-            <td>{{ number_format($nPrice, 0) }}</td>
-            <td>{{ number_format($nGross, 0) }}</td>
-        </tr>
-        @php
-            $no++;
+                    <tr>
+                        <td colspan="6" class="border-pink" align="left">Pajak Pertambahan Nilai yang diminta kembali</td>
+                        <td class="border-pink"  align="right" style="padding-right:10px;">{{ number_format(floor($nGross * 0.1), 0) }}</td>
+                    </tr>
 
-        @endphp
-        </tbody>
-    </table>
-<br>
+                    <tr>
+                        <td colspan="6" class="border-pink" align="left">Pajak Penjualan Atas Barang Mewah yang diminta kembali</td>
+                        <td class="border-pink"  align="right" style="padding-right:10px;">{{ number_format(floor($nGross * 0), 0) }}</td>
+                    </tr>
+                </tfoot>
+                </table>
 
-<table class="table" style="margin-top: 100px">
+                <div class="row" style="text-align:right;">
+                    <p style="margin-right:2%;">{{ $data[$i]->prs_namawilayah }}, {{ date("d M Y") }}</p>
+                    <br>
+                    <img style="margin-right:2%;" width="60px" src="../storage/signature/ljm.png" alt="">
+                    <p style="margin-right:2%;"><u>{{ file_get_contents('../storage/names/ljm.txt') }}</u></p>
+                    <p style="margin-right:2%;">Logistik Mgr</p>
 
-    <tbody>
-    <td align="left">Jumlah Harga BKP yang dikembalikan</td>
-    <td> {{ number_format($nGross, 0) }}</td>
-    </tbody>
+                    <div class="row" style="text-align:left;">
+                        <p>NRB : {{ $data[$i]->msth_nodoc }}</p>
+                    </div>
+                </div>
+                <div style="text-align:left;  border-top: 1px solid pink; justify-content: end;">
 
-    <tbody>
-    <td align="left">Pajak Pertambahan Nilai yang diminta kembali</td>
-    <td>{{ number_format(floor($nGross * 0.1), 0) }}</td>
-    </tbody>
+                    <p>Lembar ke-1: Untuk Pengusaha Kena Pajak yang Menerbitkan Faktur Pajak.</p>
+                    <p>Lembar ke-2: Untuk Pembeli.</p>
 
-    <tbody>
-    <td align="left">Pajak Penjualan Atas Barang Mewah yang diminta kembali</td>
-    <td>{{ number_format(floor($nGross * 0), 0) }}</td>
-    </tbody>
+                </div>
+                <div class="pagebreak"></div>
 
-
-</table>
-
-
-
-
-
-
-
-{{--           <tr>{{ number_format($nGross, 0) }}</tr>--}}
-{{--            <tr>{{ number_format(floor($nGross * 0.1), 0) }}</tr>--}}
-
-
-
-{{--       <div class="row" style="margin-right:80%">Pajak Pertambahan Nilai yang diminta kembali</div>--}}
-{{--            <tr>{{ number_format(floor($nGross * 0.1), 0) }}</tr>--}}
-<br>
-<br>
-
-
-    <div style="text-align:right; justify-content: end;">
-        <div class="row">
-            <p>{{ $d->prs_namawilayah }}, {{ date("d M Y") }}</p>
-        </div>
-            <br>
-            <br>
-            <br>
-        <div style=" justify-content: end; margin-right: 5%">
-            <p>{{ $ttd }}</p>
-            <p>{{ $role1 }}</p>
-        </div>
-    </div>
-
-<div style="text-align:left; display: flex; justify-content: start;">
-    <div class="row">
-        <p>NRB : {{ $d->msth_nodoc }}</p>
-    </div>
-</div>
-
-
-<div style="text-align:left; justify-content: end;" >
-
-        <p>Lembar ke-1: Untuk Pengusaha Kena Pajak yang Menerbitkan Faktur Pajak.</p>
-        <p>Lembar ke-1: Untuk Pembeli.</p>
-
-</div>
-
-
-    <div class="pagebreak"></div>
-
-    @endforeach
+            </div>
+    @endfor
 @endsection

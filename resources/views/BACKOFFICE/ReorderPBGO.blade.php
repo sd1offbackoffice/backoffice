@@ -93,6 +93,14 @@
         var totalData = 0;
         var totalProcessed = 0;
 
+        @if($message)
+            $('#btn-reorder').prop('disabled',true);
+            swal({
+                title: '{{ $message }}',
+                icon: 'warning'
+            });
+        @endif
+
         $('#btn-reorder').on('click',function(){
             swal({
                 icon: 'warning',

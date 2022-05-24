@@ -71,7 +71,7 @@
                         </div>
                         <hr style="background-color: grey">
 
-                        <div class="form-group no-gutters row">
+                        {{-- <div class="form-group no-gutters row">
                             <label for="plu" class="col-sm-1 col-form-label">PLU</label>
                             <div class="col-sm-10 row">
                                 <div class="col-sm-2">
@@ -82,11 +82,47 @@
                                     <input type="text" class="form-control" id="nd_deskripsi" disabled>
                                 </div>
                             </div>
+                        </div> --}}
+
+                        <div class="row form-group no-gutters">
+                            <label for="plu" class="col-form-label">PLU</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control ml-4" id="nd_prdcd" disabled>
+                            </div>
+                                <label style="margin-left:40px;"><b> _ </b></label>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control ml-4" id="nd_deskripsi" disabled>
+                            </div>
                         </div>
 
                         <br>
 
-                        <div class="form-group no-gutters row">
+                        <div class="row form-group no-gutters">
+                            <label for="nd_mpkm" class="text-right col-form-label">MPKM</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control ml-2" name="nd_mpkm" id="nd_mpkm" disabled>
+                            </div>
+                            <label for="nd_mplus" class="col-form-label" style="margin-left:20px">M+</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control ml-2" name="nd_mplus" id="nd_mplus" disabled>
+                            </div>
+                            <label for="nd_pkmt" class="col-form-label" style="margin-left:20px">PKMT</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control ml-2" name="nd_pkmt" id="nd_pkmt" disabled>
+                            </div>
+                            <label for="nd_nilaigondola" class="col-form-label" style="margin-left:20px">QTY GONDOLA</label>
+                            <div class="col-sm-1">
+                                <input type="text" class="form-control" name="nd_nilaigondola" id="nd_nilaigondola" style="margin-left:10px" disabled>
+                            </div>
+                            <label for="nd_pkmg" class="col-form-label" style="margin-left:20px">PKMG</label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control ml-2" name="nd_pkmg" id="nd_pkmg" disabled>
+                            </div>
+
+
+                        </div>
+
+                        {{-- <div class="form-group no-gutters row">
                             <label for="nd_mpkm" class="col-sm-1 col-form-label">MPKM</label>
                             <div class="col-lg-10 row">
                                 <div class="col-sm-2">
@@ -110,7 +146,7 @@
                                     <input class="form-control" type="text" name="nd_pkmg" id="nd_pkmg" disabled>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <hr style="background-color: grey">
                         <div class="row">
                             <div class="col-sm-10">
@@ -449,7 +485,7 @@
                 ],
                 "paging": false,
                 "lengthChange": true,
-                "searching": false,
+                "searching": true,
                 "ordering": false,
                 "info": true,
                 "autoWidth": false,
@@ -473,8 +509,11 @@
                         $('.row-data-table-n').removeAttr('style').css({'cursor': 'pointer'});
                         $(this).css({"background-color": "#acacac", "color": "white"});
 
-                        showDetailN($(this).index());
-                        currentIndex = $(this).index();
+                        // showDetailN($(this).index());
+                        // currentIndex = $(this).index();
+                        showDetailN($(this).find('td:eq(2)').html());
+                        currentIndex = $(this).find('td:eq(2)').html();
+
                     });
 
                     $('.row-data-table-n:eq(0)').css({"background-color": "#acacac", "color": "white"});
@@ -518,7 +557,7 @@
                 ],
                 "paging": false,
                 "lengthChange": true,
-                "searching": false,
+                "searching": true,
                 "ordering": false,
                 "info": true,
                 "autoWidth": false,
@@ -542,8 +581,10 @@
                         $('.row-data-table-n').removeAttr('style').css({'cursor': 'pointer'});
                         $(this).css({"background-color": "#acacac", "color": "white"});
 
-                        showDetailN($(this).index());
-                        currentIndex = $(this).index();
+                        // showDetailN($(this).index());
+                        // currentIndex = $(this).index();
+                        showDetailN($(this).find('td:eq(2)').html());
+                        currentIndex = $(this).find('td:eq(2)').html();
                     });
 
                     $('.row-data-table-n:eq(0)').css({"background-color": "#acacac", "color": "white"});
@@ -609,25 +650,31 @@
                         $('.row-data-table-n').removeAttr('style').css({'cursor': 'pointer'});
                         $(this).css({"background-color": "#acacac", "color": "white"});
 
-                        showDetailN($(this).index());
-                        currentIndex = $(this).index();
+                        showDetailN($(this).find('td:eq(2)').html());
+                        currentIndex = $(this).find('td:eq(2)').html();
+                        // plu = $(this).find('td:eq(2)').html();
+                        // showDetailN($(this).index());
+                        // currentIndex = $(this).index();
                     });
 
                     $('.row-data-table-n:eq(0)').css({"background-color": "#acacac", "color": "white"});
                     showDetailN(0);
+
                 }
             });
         }
 
-        function showDetailN(index) {
-            dataN = arrDataTableN[index];
+        function showDetailN(currentIndex) {
+            // dataN = arrDataTableN[currentIndex];
+            dataN = currentIndex;
+            console.log(currentIndex);
 
             ajaxSetup();
             $.ajax({
                 url: '{{ route('get-data-detail-n')  }}',
                 type: 'get',
                 data: {
-                    n_prdcd: dataN.gdl_prdcd
+                    n_prdcd: dataN
                 },
                 success: function (response) {
                     $('#nd_prdcd').val(response.nd_prdcd);
@@ -957,21 +1004,20 @@
                         $('.row-data-table-m').removeAttr('style').css({'cursor': 'pointer'});
                         $(this).css({"background-color": "#acacac", "color": "white"});
 
-                        showDetail($(this).index());
-                        currentIndex = $(this).index();
+                        // showDetail($(this).index());
+                        // currentIndex = $(this).index();
+                        showDetail($(this).find('td:eq(1)').html());
+                        currentIndex = $(this).find('td:eq(1)').html();
                     });
 
                     $('.row-data-table-m:eq(0)').css({"background-color": "#acacac", "color": "white"});
-                    showDetail(0);
                 }
             });
         }
 
         function calculateMPLUS(value)
         {
-            console.log(value);
             total = $(this).find('#m_i'+value).val() + $(this).find('#m_o'+value).val();
-            // console.log(total);
         }
 
 
@@ -1016,15 +1062,16 @@
             });
         }
 
-        function showDetail(index) {
-            data = arrDataTableM[index];
+        function showDetail(currentIndex) {
+            // data = arrDataTableM[index];
+            data = currentIndex;
 
             ajaxSetup();
             $.ajax({
                 url: '{{ route('get-data-detail')  }}',
                 type: 'get',
                 data: {
-                    pkmp_prdcd: data.pkmp_prdcd
+                    pkmp_prdcd: data
                 },
                 success: function (response) {
                     $('#md_prdcd').val(response[0].prd_prdcd);

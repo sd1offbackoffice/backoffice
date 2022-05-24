@@ -514,6 +514,7 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::prefix('/manual-md')->group(function () {
                 Route::get('/', 'BACKOFFICE\PB\PBManualMDController@index');
                 Route::get('/get-product-list', 'BACKOFFICE\PB\PBManualMDController@getProductList');
+                Route::get('/get-draft-product-list', 'BACKOFFICE\PB\PBManualMDController@getDraftProductList');
                 Route::get('/get-pb-product', 'BACKOFFICE\PB\PBManualMDController@getPBProduct');
                 Route::get('/get-product-detail', 'BACKOFFICE\PB\PBManualMDController@getProductDetail');
                 Route::post('/save-pb-data', 'BACKOFFICE\PB\PBManualMDController@savePBData');
@@ -528,6 +529,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/check-process-draft', 'BACKOFFICE\PB\PBManualMDController@checkProcessDraft');
                 Route::post('/send-otp', 'BACKOFFICE\PB\PBManualMDController@sendOTP');
                 Route::post('/process-draft', 'BACKOFFICE\PB\PBManualMDController@processDraft');
+                Route::get('/bonus-check', 'BACKOFFICE\PB\PBManualMDController@bonusCheck');
             });
 
             /*Denni*/
@@ -777,6 +779,7 @@ Route::middleware(['CheckLogin'])->group(function () {
 
                     // Cesar
                     Route::post('/delete-first', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InputController@deleteFirst');
+                    Route::get('/check-usul-lebih', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InputController@checkUsulLebih');
                 });
                 Route::prefix('/inquery')->group(function () {
                     Route::get('/', 'BACKOFFICE\TRANSAKSI\PENGELUARAN\InqueryController@index');
@@ -1498,9 +1501,11 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::post('/cetak', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@cetak');
             Route::get('/print-doc', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@PRINT_DOC');
             Route::get('/download', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@downloadFile');
+            Route::get('/testpdf', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@testpdf');
 
             // Cesar
             Route::post('/save-signature', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@saveSignature');
+            // Route::get('/find-kodesupp', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@saveSignature')
         });
 
         /*Leo*/
@@ -1946,6 +1951,11 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/get-data', 'ADMINISTRATION\DevController@getData');
             Route::get('/save', 'ADMINISTRATION\DevController@save');
         });
+
+        Route::prefix('/migrate-data')->group(function () {
+            Route::get('/', 'ADMINISTRATION\MigrateDataController@index');
+            Route::post('/migrate', 'ADMINISTRATION\MigrateDataController@migrate');
+        });
     });
 
     Route::prefix('/fo')->group(function () {
@@ -2363,7 +2373,7 @@ Route::middleware(['CheckLogin'])->group(function () {
 
             Route::prefix('/register-ppr')->group(function () {
                 Route::get('/', 'OMI\LAPORAN\LaporanRegisterPPRController@index');
-                Route::get('/lov-nodoc', 'konversiOMI\LAPORAN\LaporanRegisterPPRController@lovNodoc');
+                Route::get('/lov-nodoc', 'OMI\LAPORAN\LaporanRegisterPPRController@lovNodoc');
                 Route::get('/cetak', 'OMI\LAPORAN\LaporanRegisterPPRController@cetak');
             });
             Route::prefix('/rekapitulasi-register-ppr')->group(function () {

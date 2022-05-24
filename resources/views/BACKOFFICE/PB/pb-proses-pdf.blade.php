@@ -59,12 +59,16 @@
             <tr>
                 @if($div == $d->pdm_kodedivisi && $dep == $d->pdm_kodedepartement && $kat == $d->pdm_kodekategoribrg)
                     <td class="left"></td>
+                    <td class="left"></td>
+                    <td class="left"></td>
+                    <td class="left"></td>
                 @else
                     <td class="left">{{ $no++ }}</td>
+                    <td class="center">{{ $d->pdm_kodedivisi }}</td>
+                    <td class="center">{{ $d->pdm_kodedepartement }}</td>
+                    <td class="center">{{ $d->pdm_kodekategoribrg }}</td>
                 @endif
-                <td class="center">{{ $div == $d->pdm_kodedivisi ? '' : $d->pdm_kodedivisi }}</td>
-                <td class="center">{{ $dep == $d->pdm_kodedepartement ? '' : $d->pdm_kodedepartement }}</td>
-                <td class="center">{{ $kat == $d->pdm_kodekategoribrg ? '' : $d->pdm_kodekategoribrg }}</td>
+
                 <td class="center">{{ $d->pdm_prdcd }}</td>
                 <td class="left">{{ $d->prd_deskripsipanjang }}</td>
                 <td class="left">{{ $d->sup_namasupplier }}</td>

@@ -3,7 +3,14 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="7338c9e7-6e65-463a-8e7d-9dd4cd1c3875" name="igrsmg" url="http://192.168.237.220:81/">
-        <fileTransfer rootFolder="/u01/web" accessType="SFTP" host="192.168.237.220" port="22" sshConfigId="453408ec-c817-4dbd-bf75-59d5c1214566" sshConfig="root@192.168.237.220:22 password">
+        <fileTransfer rootFolder="/u01/web" accessType="SFTP" host="192.168.237.220" port="22" sshConfigId="453408ec-c817-4dbd-bf75-59d5c1214566" sshConfig="igrsmg">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+      <webServer id="6c9f1833-3294-476a-9cc8-3a4ac5224263" name="igrbdl" url="http://192.168.247.200:81/">
+        <fileTransfer rootFolder="/u01/web" accessType="SFTP" host="192.168.247.200" port="22" sshConfigId="437f14ab-e89d-467d-94c3-4c53355398eb" sshConfig="igrbdl">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
           </advancedOptions>

@@ -655,7 +655,7 @@
             if(dep1 != ''){
                 //limit departemen berdasarkan divisi, tak perlu trigger fungsi change, karena bukan untuk tampilan
                 $('#minDep').val(div1);
-                $('#maxDep').val(div1);
+                $('#maxDep').val(div2);
                 if(checkDepExist(dep1) == false){
                     swal('', "Kode Departemen tidak terdaftar", 'warning');
                     return false;
@@ -663,7 +663,7 @@
             }
             if(dep2 != ''){
                 //limit departemen berdasarkan divisi, tak perlu trigger fungsi change, karena bukan untuk tampilan
-                $('#minDep').val(div2);
+                $('#minDep').val(div1);
                 $('#maxDep').val(div2);
                 if(checkDepExist(dep2) == false){
                     swal('', "Kode Departemen tidak terdaftar", 'warning');
@@ -673,7 +673,7 @@
             if(kat1 != ''){
                 //limit kategori berdasarkan departemen, tak perlu trigger fungsi change, karena bukan untuk tampilan
                 $('#minKat').val(dep1);
-                $('#maxKat').val(dep1);
+                $('#maxKat').val(dep2);
                 // $('#limitKat').val(dep1);
                 if(checkKatExist(kat1) == false){
                     swal('', "Kode Kategori tidak terdaftar", 'warning');
@@ -682,7 +682,7 @@
             }
             if(kat2 != ''){
                 //limit kategori berdasarkan departemen, tak perlu trigger fungsi change, karena bukan untuk tampilan
-                $('#minKat').val(dep2);
+                $('#minKat').val(dep1);
                 $('#maxKat').val(dep2);
                 // $('#limitKat').val(dep2);
                 if(checkKatExist(kat2) == false){

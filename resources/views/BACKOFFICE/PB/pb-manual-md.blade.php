@@ -99,28 +99,28 @@
                                             <thead class="thColor">
                                             <tr>
                                                 <th rowspan="2">PRDCD</th>
-                                                <th rowspan="2">MINOR QTY<br>in PCS</th>
-                                                <th rowspan="2">MINOR QTY<br>in CTN</th>
-                                                <th rowspan="2">MINOR RPH<br>PER SUPP</th>
-                                                <th rowspan="2">MAX<br>PALET</th>
-                                                <th rowspan="2">CTN</th>
-                                                <th rowspan="2">PCS</th>
-                                                <th rowspan="2">Hrg. Satuan</th>
-                                                <th colspan="2">DICS. I</th>
-                                                <th colspan="2">DICS. II</th>
-                                                <th rowspan="2">BNS 1</th>
-                                                <th rowspan="2">BNS 2</th>
-                                                <th rowspan="2">NILAI</th>
-                                                <th rowspan="2">PPN</th>
-                                                <th rowspan="2">PPNBM</th>
-                                                <th rowspan="2">BOTOL</th>
-                                                <th rowspan="2">TOTAL</th>
+                                                <th rowspan="2" class="text-right">MINOR QTY<br>in PCS</th>
+                                                <th rowspan="2" class="text-right">MINOR QTY<br>in CTN</th>
+                                                <th rowspan="2" class="text-right">MINOR RPH<br>PER SUPP</th>
+                                                <th rowspan="2" class="text-right">MAX<br>PALET</th>
+                                                <th rowspan="2" class="text-right">CTN</th>
+                                                <th rowspan="2" class="text-right">PCS</th>
+                                                <th rowspan="2" class="text-right">Hrg. Satuan</th>
+                                                <th colspan="2" class="text-right">DICS. I</th>
+                                                <th colspan="2" class="text-right">DICS. II</th>
+                                                <th rowspan="2" class="text-right">BNS 1</th>
+                                                <th rowspan="2" class="text-right">BNS 2</th>
+                                                <th rowspan="2" class="text-right">NILAI</th>
+                                                <th rowspan="2" class="text-right">PPN</th>
+                                                <th rowspan="2" class="text-right">PPNBM</th>
+                                                <th rowspan="2" class="text-right">BOTOL</th>
+                                                <th rowspan="2" class="text-right">TOTAL</th>
                                             </tr>
                                             <tr>
-                                                <th>RPH</th>
-                                                <th>%</th>
-                                                <th>RPH</th>
-                                                <th>%</th>
+                                                <th class="text-right">RPH</th>
+                                                <th class="text-right">%</th>
+                                                <th class="text-right">RPH</th>
+                                                <th class="text-right">%</th>
                                             </tr>
                                             </thead>
                                             <tbody id="">
@@ -237,6 +237,36 @@
                         <div class="row">
                             <div class="col lov">
                                 <table class="table table-striped table-bordered" id="productListTable">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th>Deskripsi</th>
+                                        <th>PLU</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="m_draftProductList" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">LOV PLU</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col lov">
+                                <table class="table table-striped table-bordered" id="draftProductListTable">
                                     <thead class="theadDataTables">
                                     <tr>
                                         <th>Deskripsi</th>
@@ -407,7 +437,7 @@
         var currentRow;
         var draftDetail = [];
         var paramCekPKM = 0;
-        var currentField = 'draft';
+        var currentField = 'master';
         var f_pkm;
         var isNewDraft;
 
@@ -424,6 +454,7 @@
             initPBDraftTable();
 
             getProductList('');
+            getDraftProductList('');
             getPBDraftList();
 
             $("#draftDate").val(formatDate('now'));
@@ -496,6 +527,67 @@
                     let val = $(this).val().toUpperCase();
 
                     getProductList(val);
+                }
+            });
+        }
+
+        function getDraftProductList(value){
+            if ($.fn.DataTable.isDataTable('#draftProductListTable')) {
+                $('#draftProductListTable').DataTable().destroy();
+                $("#draftProductListTable tbody [role='row']").remove();
+            }
+
+            if(!$.isNumeric(value)){
+                search = value.toUpperCase();
+            }
+            else search = value;
+
+            $('#draftProductListTable').DataTable({
+                "ajax": {
+                    'url' : '{{ url()->current() }}/get-draft-product-list',
+                    "data" : {
+                        'plu' : search
+                    },
+                },
+                "columns": [
+                    {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
+                    {data: 'prd_prdcd', name: 'prd_prdcd'},
+                ],
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+                "createdRow": function (row, data, dataIndex) {
+                    $(row).addClass('row-draft-plu');
+                },
+                "initComplete" : function(){
+                    $('#draftProductListTable_filter input').val(value).select();
+
+                    $(".row-draft-plu").off();
+
+                    $('.row-draft-plu').on('click', function (e) {
+                        $('#pb-draft-row-'+currentRow+' .plu').val($(this).find('td:eq(1)').html());
+
+                        key = jQuery.Event("keypress");
+                        key.which = 13;
+
+                        getDraftProductDetail(key, currentRow);
+
+                        $('#m_draftProductList').modal('hide');
+                    });
+                }
+            });
+
+            $('#draftProductListTable_filter input').val(value);
+
+            $('#draftProductListTable_filter input').off().on('keypress', function (e){
+                if (e.which === 13) {
+                    let val = $(this).val().toUpperCase();
+
+                    getDraftProductList(val);
                 }
             });
         }
@@ -648,6 +740,12 @@
             currentRow = row;
             $('#m_productList').modal('show');
             $('#productListTable_filter input').val('').select();
+        }
+
+        function showDraftProductList(row){
+            currentRow = row;
+            $('#m_draftProductList').modal('show');
+            $('#draftProductListTable_filter input').val('').select();
         }
 
         function getProductDetail(e, row){
@@ -851,7 +949,7 @@
                     <td>
                         <div class="buttonInside">
                             <input type="text" class="form-control plu" value="" autocomplete="off" onkeypress="getDraftProductDetail(event, ${row})" maxlength="8">
-                            <button type="button" class="btn btn-primary btn-lov p-0" onclick="showListProduct(${row})">
+                            <button type="button" class="btn btn-primary btn-lov p-0" onclick="showDraftProductList(${row})">
                                 <i class="fas fa-question"></i>
                             </button>
                         </div>
@@ -861,10 +959,10 @@
                     <td class="text-right minorrph"></td>
                     <td class="text-right maxpalet"></td>
                     <td>
-                        <input type="number" class="form-control text-right qtyctn" value="" autocomplete="off" onchange="checkQty(${row},'qtyctn')" onkeypress="checkQtyKey(event,${row},'qtyctn')">
+                        <input type="number" class="form-control text-right qtyctn" value="" autocomplete="off" onkeypress="checkQtyKey(event,${row},'qtyctn')">
                     </td>
                     <td>
-                        <input type="number" class="form-control text-right qtypcs" value="" autocomplete="off" onchange="checkQty(${row},'qtypcs')"  onkeypress="checkQtyKey(event,${row},'qtypcs')">
+                        <input type="number" class="form-control text-right qtypcs" value="" autocomplete="off" onkeypress="checkQtyKey(event,${row},'qtypcs')">
                     </td>
                     <td class="text-right hrgsatuan"></td>
                     <td class="text-right rphdisc1"></td>
@@ -887,7 +985,7 @@
                     <td>
                         <div class="buttonInside">
                             <input type="text" class="form-control plu" value="${data.pdm_prdcd}" autocomplete="off" onkeypress="getDraftProductDetail(event, ${row})" maxlength="8">
-                            <button type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_divisi" onclick="showListProduct(${row})">
+                            <button type="button" class="btn btn-primary btn-lov p-0" onclick="showDraftProductList(${row})">
                                 <i class="fas fa-question"></i>
                             </button>
                         </div>
@@ -897,16 +995,16 @@
                     <td class="text-right minorrph">${data.sup_minrph}</td>
                     <td class="text-right maxpalet">${nvl(data.mpt_maxqty,'')}</td>
                     <td>
-                        <input type="number" class="form-control text-right qtyctn" value="${parseInt(data.pdm_qtypb / data.prd_frac)}" autocomplete="off" onchange="checkQty(${row},'qtyctn')" onkeypress="checkQtyKey(event,${row},'qtyctn')">
+                        <input type="number" class="form-control text-right qtyctn" value="${parseInt(data.pdm_qtypb / data.prd_frac)}" autocomplete="off" onkeypress="checkQtyKey(event,${row},'qtyctn')">
                     </td>
                     <td>
-                        <input type="number" class="form-control text-right qtypcs" value="${data.pdm_qtypb % data.prd_frac}" autocomplete="off" onchange="checkQty(${row},'qtypcs')"  onkeypress="checkQtyKey(event,${row},'qtypcs')">
+                        <input type="number" class="form-control text-right qtypcs" value="${data.pdm_qtypb % data.prd_frac}" autocomplete="off" onkeypress="checkQtyKey(event,${row},'qtypcs')">
                     </td>
                     <td class="text-right hrgsatuan">${convertToRupiah2(Math.round(data.pdm_hrgsatuan))}</td>
                     <td class="text-right rphdisc1">${convertToRupiah2(Math.round(data.pdm_rphdisc1))}</td>
-                    <td class="text-right persendisc1">${convertToRupiah2(Math.round(data.pdm_persendisc1))}</td>
+                    <td class="text-right persendisc1">${parseFloat(data.pdm_persendisc1).toFixed(1)}</td>
                     <td class="text-right rphdisc2">${convertToRupiah2(Math.round(data.pdm_rphdisc2))}</td>
-                    <td class="text-right persendisc2">${convertToRupiah2(Math.round(data.pdm_persendisc2))}</td>
+                    <td class="text-right persendisc2">${parseFloat(data.pdm_persendisc2).toFixed(1)}</td>
                     <td class="text-right bonuspo1">${convertToRupiah2(Math.round(data.pdm_bonuspo1))}</td>
                     <td class="text-right bonuspo2">${convertToRupiah2(Math.round(data.pdm_bonuspo2))}</td>
                     <td class="text-right gross">${convertToRupiah2(Math.round(data.pdm_gross))}</td>
@@ -926,8 +1024,6 @@
                 if($(this).val())
                     getPBDraftDetail($(this).val());
                 else{
-                    $('#info').val('DRAFT PB MANUAL');
-
                     $.ajax({
                         url: '{{ url()->current() }}/new-pb-draft',
                         type: 'GET',
@@ -945,7 +1041,7 @@
 
                             isNewDraft = true;
 
-                            $('input').val('');
+                            $('#draft input').val('');
                             $('#draftNo').val(response.draftNo);
                             $('#draftDate').val(response.draftDate);
                             $('#draftInfo').select();
@@ -953,6 +1049,8 @@
                             destroyPBDraftTable();
                             $('#pbDraftTable tbody tr').remove();
                             initPBDraftTable();
+
+                            $('#info').val('DRAFT PB MANUAL');
 
                             addDraftRow(null,0);
 
@@ -1045,6 +1143,7 @@
                     }
 
                     showDetail(0);
+                    checkAuth();
                 },
                 error: function(error){
                     $('#modal-loader').modal('hide');
@@ -1094,7 +1193,7 @@
                 $('#bonus1date1').val(d.hgb_tglmulaibonus01);
                 $('#bonus1date2').val(d.hgb_tglakhirbonus01);
                 $('#bonus2date1').val(d.hgb_tglmulaibonus02);
-                $('#bonus2date2').val(d.hgb_tglakhirbonus01);
+                $('#bonus2date2').val(d.hgb_tglakhirbonus02);
 
                 $('#bonus1qtybeli1').val(nvl(d.hgb_qtymulai1bonus01,0));
                 $('#bonus1qtybeli2').val(nvl(d.hgb_qtymulai2bonus01,0));
@@ -1282,9 +1381,9 @@
             tr.find('.maxpalet').html(nvl(data.mpt_maxqty,''));
             tr.find('.hrgsatuan').html(convertToRupiah2(Math.round(data.pdm_hrgsatuan)));
             tr.find('.rphdisc1').html(convertToRupiah2(Math.round(data.pdm_rphdisc1)));
-            tr.find('.persendisc1').html(convertToRupiah2(Math.round(data.pdm_persendisc1)));
+            tr.find('.persendisc1').html(parseFloat(data.pdm_persendisc1).toFixed(1));
             tr.find('.rphdisc2').html(convertToRupiah2(Math.round(data.pdm_rphdisc2)));
-            tr.find('.persendisc2').html(convertToRupiah2(Math.round(data.pdm_persendisc2)));
+            tr.find('.persendisc2').html(parseFloat(data.pdm_persendisc2).toFixed(1));
             tr.find('.bonuspo1').html(convertToRupiah2(Math.round(data.pdm_bonuspo1)));
             tr.find('.bonuspo2').html(convertToRupiah2(Math.round(data.pdm_bonuspo2)));
             tr.find('.gross').html(convertToRupiah2(Math.round(data.pdm_gross)));
@@ -1305,10 +1404,15 @@
 
             tr = $('#pb-draft-row-'+row);
 
-            if(
-                (tr.find('.qtypcs').val() && tr.find('.qtypcs').val() < parseInt(tr.find('.minorpcs').html())) &&
-                tr.find('.qtyctn').val() && tr.find('.qtyctn').val() < parseInt(tr.find('.minorctn').html())
-            ){
+            // if(parseInt(tr.find('.qtypcs').val()) + (parseInt(tr.find('.qtyctn').val()) * draftDetail[row].prd_frac) <
+            //     parseInt(tr.find('.minorpcs').html()) + (parseInt(tr.find('.minorctn').html()) * draftDetail[row].prd_frac)
+            // ){
+            // if(
+            //     (parseInt(nvl(tr.find('.qtypcs').val(),0)) < parseInt(tr.find('.minorpcs').html())) &&
+            //     parseInt(nvl(tr.find('.qtyctn').val(),0)) < parseInt(tr.find('.minorctn').html())
+            // ){
+            if((parseInt(tr.find('.qtypcs').val()) + (parseInt(tr.find('.qtyctn').val()) * parseInt(draftDetail[row].prd_frac))
+                < nvl(nvl(data.prd_minorder,0),nvl(data.prd_isibeli,1)))){
             // if(false){
                 swal({
                     title: 'QTYB + QTYK < MINOR!',
@@ -1318,107 +1422,173 @@
                 });
             }
             else{
-                qtypcs = parseInt(nvl(tr.find('.qtypcs').val(),0));
-                qtyctn = parseInt(nvl(tr.find('.qtyctn').val(),0));
+                $.ajax({
+                    url: '{{ url()->current() }}/bonus-check',
+                    type: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    data: {
+                        plu: convertPlu($('#pb-draft-row-'+row).find('.plu').val()),
+                        frac: draftDetail[row].prd_frac,
+                        kodesupplier: draftDetail[row].sup_kodesupplier,
+                        qtypb: parseInt(nvl(tr.find('.qtypcs').val(),0)) + (parseInt(nvl(tr.find('.qtyctn').val(),0)) * draftDetail[row].prd_frac)
+                    },
+                    beforeSend: function(){
+                        $('#modal-loader').modal('show');
+                    },
+                    success: function (response) {
+                        $('#modal-loader').modal('hide');
 
-                qtyctn = qtyctn + parseInt(qtypcs / data.prd_frac);
-                qtypcs = qtypcs % data.prd_frac;
+                        if(response.v_oke == 'TRUE'){
+                            data.pdm_bonuspo1 = response.pdm_bonuspo1;
+                            data.pdm_bonuspo2 = response.pdm_bonuspo2;
 
-                tr.find('.qtyctn').val(qtyctn);
-                tr.find('.qtypcs').val(qtypcs);
+                            tr.find('.qtypcs').val(response.pdm_qtypb % draftDetail[row].prd_frac);
+                            tr.find('.qtyctn').val(response.pdm_qtypb / draftDetail[row].prd_frac);
 
-                if(nvl(data.pdm_recordid,9) != 2){
-                    if(tr.find('.qtyctn').val() < 0){
-                        console.log('b');
+                            tr.find('.bonuspo1').html(response.pdm_bonuspo1);
+                            tr.find('.bonuspo2').html(response.pdm_bonuspo2);
+
+                            qtypcs = parseInt(nvl(tr.find('.qtypcs').val(),0));
+                            qtyctn = parseInt(nvl(tr.find('.qtyctn').val(),0));
+
+                            qtyctn = qtyctn + parseInt(qtypcs / data.prd_frac);
+                            qtypcs = qtypcs % data.prd_frac;
+
+                            tr.find('.qtyctn').val(qtyctn);
+                            tr.find('.qtypcs').val(qtypcs);
+
+                            if(nvl(data.pdm_recordid,9) != 2){
+                                if(tr.find('.qtyctn').val() < 0){
+                                    swal({
+                                        title: 'Quantity Carton < 0',
+                                        icon: 'warning'
+                                    }).then(() => {
+                                        tr.find('.qtyctn').select();
+                                    });
+                                }
+                                else if(((qtyctn * parseInt(data.prd_frac)) + qtypcs) < 0 && (qtyctn + qtypcs) !== 0){
+                                    tr.find('.qtypcs').val(0);
+                                    tr.find('.qtyctn').val(0);
+                                }
+                                else{
+                                    data.pdm_qtypb = qtyctn * parseInt(data.prd_frac) + qtypcs;
+
+                                    data.pdm_gross = ((qtyctn * parseFloat(data.pdm_hrgsatuan)) + ((parseFloat(data.pdm_hrgsatuan) / parseInt(data.prd_frac)) * qtypcs));
+                                    tr.find('.gross').val(convertToRupiah2(Math.round(data.pdm_gross)));
+
+                                    if(nvl(parseInt(data.pdm_persendisc1),0) > 0){
+                                        // data.pdm_gross -= ((((data.pdm_gross * parseFloat(data.pdm_persendisc1)) / 100)));
+                                        data.pdm_gross *= (100 - parseFloat(data.pdm_persendisc1)) / 100;
+                                        tr.find('.gross').html(convertToRupiah2(Math.round(data.pdm_gross)));
+                                    }
+
+                                    if(nvl(parseInt(data.pdm_persendisc2),0) > 0){
+                                        //data.pdm_gross -= ((((data.pdm_gross * parseFloat(data.pdm_persendisc2)) / 100)));
+                                        data.pdm_gross *= (100 - parseFloat(data.pdm_persendisc2)) / 100;
+                                        tr.find('.gross').html(convertToRupiah2(Math.round(data.pdm_gross)));
+                                    }
+
+                                    if(data.bkp === 'Y'){
+                                        data.pdm_ppn = (parseFloat(data.pdm_gross) * parseFloat(nvl(data.prd_ppn,11))) / 100;
+                                        tr.find('.ppn').html(convertToRupiah2(Math.round(data.pdm_ppn)));
+                                    }
+                                    else{
+                                        data.pdm_ppn = 0;
+                                        tr.find('.ppn').html(convertToRupiah2(Math.round(data.pdm_ppn)));
+                                    }
+
+                                    tr.find('.gross').html(convertToRupiah2(Math.round(data.pdm_gross)));
+
+                                    tr.find('.total').html(convertToRupiah2(Math.round(data.pdm_gross) + Math.round(data.pdm_ppn) + Math.round(data.pdm_ppnbm) + Math.round(data.pdm_ppnbotol)));
+
+                                    checkAuth();
+
+                                    if(field == 'qtyctn'){
+                                        showDetail(row);
+                                        tr.find('.qtypcs').select();
+                                    }
+                                    else{
+                                        if(tr.find('.plu').val() == $('.pb-draft-row:eq(-1) .plu').val()){
+                                            r = $('.pb-draft-row').length;
+                                            addDraftRow(null,r);
+                                            showDetail(r);
+                                            $('#pb-draft-row-'+r).find('.plu').select();
+                                        }
+                                        else{
+                                            r = row+1;
+                                            $('#pb-draft-row-'+r).find('.plu').select();
+                                            showDetail(r);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else{
+                            swal({
+                                title: response.v_message,
+                                icon: 'error'
+                            }).then(() => {
+                                tr.find('.'+field).select();
+                            });
+                        }
+                    },
+                    error: function(error){
+                        $('#modal-loader').modal('hide');
+
                         swal({
-                            title: 'Quantity Carton < 0',
-                            icon: 'warning'
+                            title: error.responseJSON.message,
+                            icon: 'error'
                         }).then(() => {
-                            tr.find('.qtyctn').select();
+
                         });
                     }
-                    else if(((qtyctn * parseInt(data.prd_frac)) + qtypcs) < 0 && (qtyctn + qtypcs) !== 0){
-                        tr.find('.qtypcs').val(0);
-                        tr.find('.qtyctn').val(0);
-                    }
-                    else{
-                        data.pdm_qtypb = qtyctn * parseInt(data.prd_frac) + qtypcs;
+                });
+            }
+        }
 
-                        data.pdm_gross = ((qtyctn * parseFloat(data.pdm_hrgsatuan)) + ((parseFloat(data.pdm_hrgsatuan) / parseInt(data.prd_frac)) * qtypcs));
-                        tr.find('.gross').val(convertToRupiah2(Math.round(data.pdm_gross)));
+        function checkAuth(){
+            paramCekPKM = 0;
 
-                        console.log(data.pdm_gross);
+            for(i=0;i<draftDetail.length;i++){
+                data = draftDetail[i];
 
-                        if(nvl(parseInt(data.pdm_persendisc1),0) > 0){
-                            // data.pdm_gross -= ((((data.pdm_gross * parseFloat(data.pdm_persendisc1)) / 100)));
-                            data.pdm_gross *= (100 - parseInt(data.pdm_persendisc1)) / 100;
-                            tr.find('.gross').html(convertToRupiah2(Math.round(data.pdm_gross)));
-                        }
+                if(data.pdm_qtypb > (data.pdm_pkmt * 10))
+                    f_pkm = 1;
+                else if(data.pdm_qtypb > (data.pdm_pkmt * 5) && data.pdm_qtypb <= (data.pdm_pkmt * 10))
+                    f_pkm = 2;
+                else if(data.pdm_qtypb > (data.pdm_pkmt * 2) && data.pdm_qtypb <= (data.pdm_pkmt * 5))
+                    f_pkm = 3;
+                else if(data.pdm_qtypb <= (data.pdm_pkmt * 2))
+                    f_pkm = 4;
 
-                        console.log(data.pdm_gross);
+                console.log('f : ' + f_pkm);
 
-                        if(nvl(parseInt(data.pdm_persendisc2),0) > 0){
-                            //data.pdm_gross -= ((((data.pdm_gross * parseFloat(data.pdm_persendisc2)) / 100)));
-                            data.pdm_gross *= (100 - parseInt(data.pdm_persendisc2)) / 100;
-                            tr.find('.gross').html(convertToRupiah2(Math.round(data.pdm_gross)));
-                        }
+                if(paramCekPKM > f_pkm || paramCekPKM == 0)
+                    paramCekPKM = f_pkm;
 
-                        console.log(data.pdm_gross);
+                console.log('param : ' + paramCekPKM);
 
-                        if(data.bkp === 'Y'){
-                            data.pdm_ppn = (parseFloat(data.pdm_gross) * parseInt(nvl(data.prd_ppn,11))) / 100;
-                            tr.find('.ppn').html(convertToRupiah2(Math.round(data.pdm_ppn)));
-                        }
-                        else{
-                            data.pdm_ppn = 0;
-                            tr.find('.ppn').html(convertToRupiah2(Math.round(data.pdm_ppn)));
-                        }
-
-                        tr.find('.total').html(convertToRupiah2(parseInt(data.pdm_gross) + parseInt(data.pdm_ppn) + parseInt(data.pdm_ppnbm) + parseInt(data.pdm_ppnbotol)));
-
-                        if(data.pdm_qtypb > (data.pdm_pkmt * 10))
-                            f_pkm = 1;
-                        else if(data.pdm_qtypb > (data.pdm_pkmt * 5) && data.pdm_qtypb <= (data.pdm_pkmt * 10))
-                            f_pkm = 2;
-                        else if(data.pdm_qtypb > (data.pdm_pkmt * 2) && data.pdm_qtypb <= (data.pdm_pkmt * 5))
-                            f_pkm = 3;
-                        else if(data.pdm_qtypb <= (data.pdm_pkmt * 2))
-                            f_pkm = 4;
-
-                        if(paramCekPKM > f_pkm)
-                            paramCekPKM = f_pkm;
-
-                        switch(paramCekPKM){
-                            case 1 : $('#draftHighestAuth').val('Senior Manager');break;
-                            case 2 : $('#draftHighestAuth').val('Store Manager');break;
-                            case 3 : $('#draftHighestAuth').val('Store Operation Jr. Mgr / Mgr');break;
-                            default : $('#draftHighestAuth').val('Store Operation Jr. Mgr / Mgr');break;
-                        }
-
-                        if(field == 'qtyctn'){
-                            showDetail(row);
-                            tr.find('.qtypcs').select();
-                        }
-                        else{
-                            if(tr.find('.plu').val() == $('.pb-draft-row:eq(-1) .plu').val()){
-                                r = $('.pb-draft-row').length;
-                                addDraftRow(null,r);
-                                showDetail(r);
-                                $('#pb-draft-row-'+r).find('.plu').select();
-                            }
-                            else{
-                                r = row+1;
-                                $('#pb-draft-row-'+r).find('.plu').select();
-                                showDetail(r);
-                            }
-                        }
-                    }
+                switch(paramCekPKM){
+                    case 1 : $('#draftHighestAuth').val('Senior Manager');break;
+                    case 2 : $('#draftHighestAuth').val('Store Manager');break;
+                    case 3 : $('#draftHighestAuth').val('Store Operation Jr. Mgr / Mgr');break;
+                    default : $('#draftHighestAuth').val('Store Operation Jr. Spv / Spv');break;
                 }
             }
         }
 
         function saveDraft(){
-            if(draftDetail.length == 0){
+            tempDraft = [];
+
+            for(i=0;i<draftDetail.length;i++){
+                if(convertPlu($('#pb-draft-row-'+i).find('.plu').val()) != '0000000'){
+                    tempDraft.push(draftDetail[i]);
+                }
+            }
+
+            if(tempDraft.length == 0){
                 swal({
                     title: 'Tidak ada data yang akan disimpan!',
                     icon: 'error'
@@ -1445,7 +1615,7 @@
                                 draftNo : $('#draftNo').val(),
                                 draftDate : $('#draftDate').val(),
                                 draftInfo : $('#draftInfo').val(),
-                                draftDetail: draftDetail
+                                draftDetail: tempDraft
                             },
                             beforeSend: function(){
                                 $('#modal-loader').modal('show');

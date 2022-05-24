@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Dompdf\Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -55,8 +56,24 @@ class ExcelController extends Controller
         $sheet->setCellValue($maxColumn . '4', $keterangan);
         $sheet->getStyle('A1:' . $maxColumn . '4')->getFont()->setBold(true);
         $sheet->getStyle('A1');
-        $writer = new Xlsx($spreadsheet);
 
+//        for ($i=0;$i<7000;$i++){
+//            $sheet->setCellValue('A'.$i, $perusahaan->prs_namaperusahaan);
+//            $sheet->setCellValue('B'.$i, $perusahaan->prs_namaperusahaan);
+//            $sheet->setCellValue('C'.$i, $perusahaan->prs_namaperusahaan);
+//            $sheet->setCellValue('D'.$i, $perusahaan->prs_namaperusahaan);
+//            $sheet->setCellValue('E'.$i, $perusahaan->prs_namaperusahaan);
+//            $sheet->setCellValue('F'.$i, $perusahaan->prs_namaperusahaan);
+//            $sheet->setCellValue('G'.$i, $perusahaan->prs_namaperusahaan);
+//            $sheet->setCellValue('H'.$i, $perusahaan->prs_namaperusahaan);
+//            $sheet->setCellValue('I'.$i, $perusahaan->prs_namaperusahaan);
+//            $sheet->setCellValue('J'.$i, $perusahaan->prs_namaperusahaan);
+//            $sheet->setCellValue('K'.$i, $perusahaan->prs_namaperusahaan);
+//            $sheet->setCellValue('L'.$i, $perusahaan->prs_namaperusahaan);
+//        }
+
+
+        $writer = new Xlsx($spreadsheet);
         $writer->save(storage_path($filename));
     }
 }

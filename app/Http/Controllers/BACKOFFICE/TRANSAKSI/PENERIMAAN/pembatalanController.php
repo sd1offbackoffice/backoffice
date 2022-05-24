@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
-use PHPUnit\Exception;
+use Exception;
 use Yajra\DataTables\DataTables;
 
 class pembatalanController extends Controller
@@ -39,21 +39,18 @@ class pembatalanController extends Controller
         $kodeigr = Session::get('kdigr');
         $typeTrn    = $request->typeTrn;
 
-        $data = DB::connection(Session::get('connection'))->select("select mstd_nodoc, mstd_tgldoc, mstd_prdcd, mstd_nofaktur, mstd_tglfaktur,
-			              mstd_cterm, mstd_discrph, mstd_dis4cr, mstd_ppnbmrph, mstd_ppnbtlrph, mstd_ppnrph,
-			              prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac satuan, prd_frac,
-										(nvl(mstd_qty,0) + nvl(mstd_qtybonus1,0)) qty,  mstd_hrgsatuan, mstd_gross, mstd_nopo, mstd_tglpo,
-										sup_kodesupplier||' - '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_pkp, sup_top,
-										(((mstd_gross - nvl(mstd_discrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_dis4cr,0) + nvl(mstd_ppnbtlrph,0)) * prd_frac)  / (nvl(mstd_qty,0)) ) as hpp,
-										(mstd_gross - nvl(mstd_discrph,0) +  nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) as ppntot
-									from tbtr_mstran_d, tbmaster_prodmast, tbmaster_supplier
-									where mstd_nodoc='$noDoc'
-											and mstd_kodeigr= '$kodeigr'
-											and mstd_typetrn = '$typeTrn'
-											and prd_prdcd=mstd_prdcd
-											and prd_kodeigr=mstd_kodeigr
-											and sup_kodesupplier(+) = mstd_kodesupplier
-											and sup_kodeigr(+)=mstd_kodeigr");
+        $data = DB::connection(Session::get('connection'))->select(
+            "SELECT mstd_nodoc, mstd_tgldoc, mstd_prdcd, mstd_nofaktur, mstd_tglfaktur,
+			        mstd_cterm, mstd_discrph, mstd_dis4cr, mstd_ppnbmrph, mstd_ppnbtlrph, mstd_ppnrph, prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac satuan, prd_frac, (nvl(mstd_qty,0) + nvl(mstd_qtybonus1,0)) qty,  mstd_hrgsatuan, mstd_gross, mstd_nopo, mstd_tglpo,sup_kodesupplier||' - '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_pkp, sup_top, (((mstd_gross - nvl(mstd_discrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_dis4cr,0) + nvl(mstd_ppnbtlrph,0)) * prd_frac)  / (nvl(mstd_qty,0)) ) as hpp,(mstd_gross - nvl(mstd_discrph,0) +  nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) as ppntot
+		    FROM    tbtr_mstran_d, tbmaster_prodmast, tbmaster_supplier
+			WHERE   mstd_nodoc='$noDoc'
+			AND     mstd_kodeigr= '$kodeigr'
+			AND     mstd_typetrn = '$typeTrn'
+			AND     prd_prdcd=mstd_prdcd
+			AND     prd_kodeigr=mstd_kodeigr
+			AND     sup_kodesupplier(+) = mstd_kodesupplier
+			AND     sup_kodeigr(+)=mstd_kodeigr"
+        );
 
         return response()->json($data);
     }
@@ -83,18 +80,21 @@ class pembatalanController extends Controller
         if (!$noDoc) {
             return response()->json(['kode' => 0, 'msg' => "Nomor BPB Tidak Boleh Kosong !!", 'data' => '']);
         } else {
-            $detailBPB = DB::connection(Session::get('connection'))->select("SELECT msth_nodoc, trunc(msth_tgldoc) as msth_tgldoc
-                                            FROM tbtr_mstran_h
-                                           WHERE     msth_kodeigr = '$kodeigr'
-                                                 AND msth_typetrn = '$typeTrn'
-                                                 AND nvl(msth_recordid,' ')<>'1'
-                                                 and msth_nodoc = '$noDoc'
-                                        ORDER BY msth_tgldoc DESC");
-
-            $tempDate = date('Ym', strtotime($detailBPB[0]->msth_tgldoc));
+            try {
+                $detailBPB = DB::connection(Session::get('connection'))->select("SELECT msth_nodoc, trunc(msth_tgldoc) as msth_tgldoc
+                                FROM tbtr_mstran_h
+                            WHERE     msth_kodeigr = '$kodeigr'
+                                    AND msth_typetrn = '$typeTrn'
+                                    AND nvl(msth_recordid,' ')<>'1'
+                                    and msth_nodoc = '$noDoc'
+                            ORDER BY msth_tgldoc DESC");
+                $tempDate = date('Ym', strtotime($detailBPB[0]->msth_tgldoc));
+            } catch (Exception $e) {
+                return response()->json(['kode' => 0, 'msg' => "Terjadi Kesalahan, Transaksi sudah dibatalkan/ data tidak valid", 'data' => '']);
+            }
 
             if ($berjalan[0]->berjalan != $tempDate) {
-                return response()->json(['kode' => 0, 'msg' => "Transaksi Tidak Bisa Dibatalkan karena sudah closing/monthend", 'data' => '']);
+                return response()->json(['kode' => 0, 'msg' => "Transaksi Tidak Bisa Dibatalkan karena sudah closing/month end", 'data' => '']);
             } else {
                 //                Start from line 43
 

@@ -321,6 +321,7 @@ class InputController extends Controller
                     'TRBO_PPNRPH',
                     'TRBO_HRGSATUAN',
                     'TRBO_GROSS',
+                    'TRBO_PERSENPPN',
                     'TRBO_PPNRPH',
                     'TRBO_ISTYPE',
                     'TRBO_INVNO',
@@ -332,7 +333,6 @@ class InputController extends Controller
             ->orderBy('TRBO_PRDCD')
             ->distinct()
             ->get();
-
         $datas_detail = [];
         foreach ($dd as $d) {
             $data = (object)'';
@@ -343,16 +343,18 @@ class InputController extends Controller
             $data->satuan = $d->satuan;
             $data->bkp = $d->prd_flagbkp1;
             $data->trbo_posqty = $d->trbo_posqty;
-            $data->trbo_hrgsatuan = number_format((float)$d->trbo_hrgsatuan, 2, '.', '');;
+            $data->trbo_hrgsatuan = number_format((float)$d->trbo_hrgsatuan, 2, '.', '');
             // $data->trbo_hrgsatuan = $d->trbo_hrgsatuan;
             $data->qtyctn = floor($d->qty / $d->prd_frac);
             $data->qtypcs = $d->qty % $d->prd_frac;
-            $data->trbo_gross = number_format((float)$d->trbo_gross, 2, '.', '');;
+            $data->trbo_gross = number_format((float)$d->trbo_gross, 2, '.', '');
             // $data->trbo_gross = $d->trbo_gross;
-            $data->discper = round(($d->trbo_discrph / $d->trbo_gross) * 100);
+            $data->discper = number_format((float)(($d->trbo_discrph / $d->trbo_gross) * 100), 2, '.', '');
+            // $data->discper = round(($d->trbo_discrph / $d->trbo_gross) * 100);
             $data->trbo_discrph = $d->trbo_discrph;
-            $data->persen_ppn = $d->persenppn;
-            $data->trbo_ppnrph = $d->trbo_ppnrph;
+            $data->trbo_persenppn = $d->trbo_persenppn;
+            $data->trbo_ppnrph =number_format((float)$d->trbo_ppnrph, 2, '.', '');
+            // $data->trbo_ppnrph = $d->trbo_ppnrph;
             $data->trbo_istype = $d->trbo_istype;
             $data->trbo_inv = $d->trbo_invno;
             $data->trbo_tgl = date('d/m/Y', strtotime($d->trbo_tglinv));
@@ -468,20 +470,13 @@ class InputController extends Controller
     }
 
     public function getDataLovPLU()
-    {
-        // $kdsup = $request->kdsup;
-        // $result = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
-        //     ->select('prd_prdcd', 'prd_deskripsipanjang')
-        //     ->whereRaw("SUBSTR(PRD_PRDCD,7,1)='0'")
-        //     ->whereRaw("nvl(prd_recordid,'9')<>'1'")
-        //     // ->where('PRD_PLUSUPPLIER', '=', $kdsup)
-        //     ->orderBy('prd_prdcd')
-        //     ->get();
-        $result = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')                
+    {       
+        $result = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
+                    ->select('PRD_DESKRIPSIPANJANG', 'PRD_PRDCD')
                     ->join('TEMP_URUT_RETUR', 'PRD_PRDCD', '=', 'PRDCD')
                     ->orderBy('PRD_DESKRIPSIPANJANG')
-                    ->distinct()
-                    ->get();
+                    ->distinct()         
+                    ->get();                                       
 
         return Datatables::of($result)->make(true);
     }
@@ -875,7 +870,7 @@ class InputController extends Controller
 
 //            ---** hitung ppn ** ---
                     if ($pkp == 'Y' && $bkp == 'Y') {
-                        $ppn = $res2->persenppn;
+                        $ppn = $res2->persenppn;                        
                     } else {
                         $ppn = 0;
                     }
@@ -944,6 +939,7 @@ class InputController extends Controller
                 }
 
                 $trbo_ppnrph = (($trbo_gross - $trbo_discrph) * $ppn) / 100;
+                // dd($trbo_ppnrph);
 
                 $temp1 = 0;
                 if ($ke == $maxtrn) {
@@ -975,14 +971,18 @@ class InputController extends Controller
                     // $data->trbo_hrgsatuan = $trbo_hrgsatuan;
                     $data->qtyctn = $qtyctn;
                     $data->qtypcs = $qtypcs;
-                    $data->trbo_gross = number_format((float)round($trbo_gross, 2), 2, '.', '');
+                    $data->trbo_gross = number_format((float)$trbo_gross, 2, '.', '');
+                    // $data->trbo_gross = number_format((float)round($trbo_gross, 2), 2, '.', '');
                     // $data->trbo_gross = $trbo_gross;
-                    $data->discper = number_format((float)round($trbo_discper), 2, '.', '');
+                    $data->discper = number_format((float)$trbo_discper, 2, '.', '');
+                    // $data->discper = number_format((float)round($trbo_discper), 2, '.', '');
                     // $data->discper = $trbo_discper;
-                    $data->trbo_discrph = number_format((float)round($trbo_discrph, 1), 2, '.', '');
+                    $data->trbo_discrph = number_format((float)$trbo_discrph, 2, '.', '');
+                    // $data->trbo_discrph = number_format((float)round($trbo_discrph, 1), 2, '.', '');
                     // $data->trbo_discrph = $trbo_discrph;
                     $data->persen_ppn = $res2->persenppn;
-                    $data->trbo_ppnrph = number_format((float)round($trbo_ppnrph, 4), 2, '.', '');
+                    $data->trbo_ppnrph = number_format((float)$trbo_ppnrph, 2, '.', '');
+                    // $data->trbo_ppnrph = number_format((float)round($trbo_ppnrph, 4), 2, '.', '');
                     // $data->trbo_ppnrph = $trbo_ppnrph;
                     $data->trbo_istype = $trbo_istype;
                     $data->trbo_inv = $trbo_invno;
@@ -1297,6 +1297,32 @@ class InputController extends Controller
             $num = $num / 10;
         }
         return $sum;
+    }
+
+    public function checkUsulLebih(Request $request){
+        $plu = $request->plu;
+        $nodoc = $request->nodoc;
+
+        $usul_lebih = DB::connection(Session::get('connection'))->table('tbtr_usul_returlebih')
+                        ->where('usl_trbo_nodoc', '=', $nodoc)
+                        ->where('usl_prdcd', '=', $plu)
+                        ->get();
+        if ($usul_lebih) {
+            DB::connection(Session::get('connection'))->table('tbtr_usul_returlebih')
+                ->where('usl_trbo_nodoc', '=', $nodoc)
+                ->where('usl_prdcd', '=', $plu)
+                ->delete();
+
+            return response()->json([
+                'status' => 'SUCCESS',
+                'message' => 'Data PLU' . $plu . ' di table tbtr_usul_returlebih berhasil dihapus'
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'FAILED',
+                'message' => 'Tidak ada data PLU ' . $plu . ' tidak ada dalam table tbtr_usul_returlebih'
+            ]);
+        }        
     }
 
     public function cekOTP(Request $request)

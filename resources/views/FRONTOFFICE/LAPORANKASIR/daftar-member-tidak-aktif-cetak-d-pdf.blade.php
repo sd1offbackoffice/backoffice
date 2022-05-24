@@ -17,7 +17,6 @@
     Urut : {{$urut}}
 @endsection
 
-
 @section('content')
     <?php
         $total = 0;
@@ -38,8 +37,6 @@
         </thead>
         <tbody style="border-bottom: 2px solid black;">
         @for($i = 0 ; $i < sizeof($data); $i++)
-
-
             <tr>
                 <td class="right padding-right">{{ $data[$i]->cus_kodemember }}</td>
                 <td class="left">{{ $data[$i]->cus_nomorkartu }}</td>
@@ -59,13 +56,12 @@
             @php
                 $total++;
             @endphp
-
         @endfor
+            <tr>
+                <th class="left"> TOTAL</th>
+                <th class="left">: {{ number_format($total, 0, '.', ',') }} ANGGOTA</th>
+            </tr>
         <tfoot>
-        <tr>
-            <th class="left"> TOTAL</th>
-            <th class="left">: {{ number_format($total, 0, '.', ',') }} ANGGOTA</th>
-        </tr>
         </tfoot>
     </table>
 @endsection

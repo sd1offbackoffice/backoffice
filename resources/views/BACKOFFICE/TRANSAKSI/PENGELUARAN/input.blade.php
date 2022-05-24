@@ -739,7 +739,16 @@
                     $('.plu-header-1').focus();
                     getDataLovPlu(kdsup);
 
-                    if (response.message) {
+                    if (response.status != 'error') {
+                        namasupplier = response.result.sup_namasupplier;
+                        pkp = response.result.sup_pkp;
+
+                        $('#txtKdSupplier').val(kdsup);
+                        $('#txtNmSupplier').val(namasupplier);
+                        $('#txtPKP').val(pkp);
+                    }                    
+
+                    if (response.message) {                        
                         swal({
                             title: response.status,
                             text: response.message,
@@ -747,14 +756,14 @@
                         }).then(() => {
                         });
                     }
-                    else {
-                        namasupplier = response.result.sup_namasupplier;
-                        pkp = response.result.sup_pkp;
+                    // else {
+                    //     namasupplier = response.result.sup_namasupplier;
+                    //     pkp = response.result.sup_pkp;
 
-                        $('#txtKdSupplier').val(kdsup);
-                        $('#txtNmSupplier').val(namasupplier);
-                        $('#txtPKP').val(pkp);                        
-                    }
+                    //     $('#txtKdSupplier').val(kdsup);
+                    //     $('#txtNmSupplier').val(namasupplier);
+                    //     $('#txtPKP').val(pkp);                        
+                    // }
 
                 },
                 error: function (error) {
@@ -1038,18 +1047,18 @@
                                 '<td><input disabled class="form-control keterangan" type="text" value="' + keterangan + '"></td>' +
                                 '</tr>');
 
-                                i++;
+                                index++;
                                 tot_gross += parseFloat(gross);
                                 tot_potongan += parseFloat(discrp);
                                 tot_ppn += parseFloat(ppn);
                             });
-                            tot_total = tot_gross - tot_potongan + tot_ppn;
+                            tot_total = parseFloat(tot_gross) - parseFloat(tot_potongan) + parseFloat(tot_ppn);
 
-                            $('#gross').val(convertRupiah(Math_round(tot_gross)));
+                            $('#gross').val(convertRupiah(tot_gross));
                             $('#potongan').val(convertRupiah(tot_potongan));
                             $('#ppn').val(convertRupiah(tot_ppn));
                             $('#total').val(convertRupiah(tot_total));
-                            $('#total-item').val(convertRupiah(i - 1));
+                            $('#total-item').val(datas_detail.length);
 
                             // if
                             // $('.btn-delete-row-header').attr('disabled', true);
@@ -1089,9 +1098,28 @@
         $(document).on('click', '.btn-delete-row-header', function (e) {
             let current = $(this);
             let rh = current.attr('rowheader');
+            let nodoc = $('#txtNoDoc').val();
             let headerPlu = $(this).parents('tr').find('.plu-header').val()
             // let model = $('#txtModel').val();
             // console.log('headerPlu: ' + headerPlu);
+            ajaxSetup();
+            $.ajax({
+                type: "GET",
+                url: "{{ url('/bo/transaksi/pengeluaran/input/check-usul-lebih') }}",
+                data: {
+                    plu: headerPlu,
+                    nodoc: nodoc
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal('show');
+                },          
+                success: function (response) {
+                    $('#modal-loader').modal('hide');
+                    if (response.status == 'SUCCESS') {
+                        
+                    }
+                }
+            });
 
             datas_detail = datas_detail.filter(dd => dd.trbo_prdcd !== `${headerPlu}`)
             console.log(datas_detail);
@@ -1169,6 +1197,11 @@
                 let tgldoc = $('#dtTglDoc').val();
                 let kdsup = $('#txtKdSupplier').val();
                 let plu = $('.plu-header-' + rh).val();
+                // let keteranganHeader = $('.keterangan-header-' + rh).val();
+                // if (keteranganHeader == null || keteranganHeader == '') {
+                //     $('.keterangan-header-' + rh).focus();
+                //     return;
+                // }
 
                 let ctn = parseInt($('.ctn-header-' + rh).val());
                 // check if ctn is NaN
@@ -1342,17 +1375,24 @@
                                         pcs = qtyretur;
                                         $('.ctn-header-' + rh).val(ctn);
                                         $('.pcs-header-' + rh).val(pcs);
+
+                                        if (model == '*TAMBAH*' || model == '* KOREKSI *') {
+                                            proses(plu, ctn, frac, pcs, rh);
+                                            // proses(plu, ((ctn * frac) + pcs), rh);
+                                        }
                                     } else {
+                                        $('#modal-loader').modal('hide');
+
                                         ctn = 0;
                                         pcs = 0;
                                         $('.ctn-header-' + rh).val(ctn);
                                         $('.pcs-header-' + rh).val(pcs);
                                     }
                                     
-                                    if (model == '*TAMBAH*' || model == '* KOREKSI *') {
-                                        proses(plu, ctn, frac, pcs, rh);
-                                        // proses(plu, ((ctn * frac) + pcs), rh);
-                                    }
+                                    // if (model == '*TAMBAH*' || model == '* KOREKSI *') {
+                                    //     proses(plu, ctn, frac, pcs, rh);
+                                    //     // proses(plu, ((ctn * frac) + pcs), rh);
+                                    // }
                                 });
                             } else {
                                 ajaxSetup();
@@ -1510,43 +1550,8 @@
                             tot_ppn += parseFloat(dd.trbo_ppnrph);
                         });
 
-                        row++;
-                        // $('#body-table-header').append(
-                        //     '<tr class="row-header-' + row + '">' +
-                        //     '<td><button class="btn btn-block btn-danger btn-delete-row-header" rowheader="' + row + '"><i class="icon fas fa-times"></i></button></td>' +
-                        //     '<td class="buttonInside" style="width: 8%">' +
-                        //     '<input type="text" class="form-control plu-header-' + row + ' plu-header" rowheader="' + row + '">' +
-                        //     '<button type="button" class="btn btn-lov-plu btn-lov ml-3" rowheader="' + row + '" data-target="#m_lov_plu" data-toggle="modal">' +
-                        //     '<img src="../../../../public/image/icon/help.png" width="30px">' +
-                        //     '</button>' +
-                        //     '</td>' +
-                        //     '<td><input disabled class="form-control deskripsi-header-' + row + '" type="text"></td>' +
-                        //     '<td><input disabled class="form-control satuan-header satuan-header-' + row + '" type="text"></td>' +
-                        //     '<td><input disabled class="form-control bkp-header-' + row + '" type="text"></td>' +
-                        //     '<td><input disabled class="form-control stock-header-' + row + '" type="text"></td>' +
-                        //     '<td><input class="form-control ctn-header ctn-header-' + row + '" rowheader=' + row + ' type="text"></td>' +
-                        //     '<td><input class="form-control pcs-header pcs-header-' + row + '" rowheader=' + row + ' type="text"></td>' +
-                        //     '<td><input class="form-control keterangan-header keterangan-header-' + row + '" rowheader=' + row + ' type="text"></td>' +
-                        //     '</tr>');
-
-                        // let tot_gross = 0;
-                        // let tot_potongan = 0;
-                        // let tot_ppn = 0;
-                        // let tot_total = 0;
-                        // let i = 0;
-                        // $('#body-table-detail tr').each(function () {
-                        //     let gross = parseFloat($(this).find(".gross").val());
-                        //     let potongan = parseFloat($(this).find(".discrph").val());
-                        //     let ppn = parseFloat($(this).find(".ppn").val());
-
-                        //     tot_gross += gross;
-                        //     tot_potongan += potongan;
-                        //     tot_ppn += ppn;
-                        //     i++;
-                        // });
-                        console.log(tot_gross);
-                        console.log(tot_potongan);
-                        console.log(tot_ppn);
+                        row++;                        
+                        
                         tot_total = parseFloat(tot_gross) - parseFloat(tot_potongan) + parseFloat(tot_ppn);
                         $('#gross').val(convertRupiah(tot_gross));
                         $('#potongan').val(convertRupiah(tot_potongan));

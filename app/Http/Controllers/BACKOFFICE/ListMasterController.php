@@ -423,7 +423,6 @@ and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'|
 and pkm_prdcd(+) = prd_prdcd
 and pkm_kodeigr(+) = prd_kodeigr
 and prs_kodeigr(+) = prd_kodeigr
-and rownum<1000
 " . $p_orderby);
 
         $cf_nmargin = [];
@@ -438,13 +437,13 @@ and rownum<1000
 
             if ($nAcost > 0) {
                 if ($datas[$i]->prd_flagbkp1 == 'Y' && $datas[$i]->prd_flagbkp2 != 'P') {
-                    $cf_nmargin[$i] = isset($datas[$i]->prd_hrgjual) ? round((1 - $ppn * $nAcost / $datas[$i]->prd_hrgjual) * 100,2): 0;
+                    $cf_nmargin[$i] = isset($datas[$i]->prd_hrgjual) ? round((1 - $ppn * $nAcost / $datas[$i]->prd_hrgjual) * 100, 2) : 0;
 
                     //rumus disamaain dengan informasihistoryproduct berdasarkan UAT 22-03-2022 By Remus,Denni
 //                    $cf_nmargin[$i] = round((($datas[$i]->prd_hrgjual) / ($ppn * $nAcost) - 1) * 100, 2);
                     //sini
                 } else {
-                    $cf_nmargin[$i] = isset($datas[$i]->prd_hrgjual) ? round((1 - $nAcost / $datas[$i]->prd_hrgjual) * 100,2):0;
+                    $cf_nmargin[$i] = isset($datas[$i]->prd_hrgjual) ? round((1 - $nAcost / $datas[$i]->prd_hrgjual) * 100, 2) : 0;
                     //rumus disamaain dengan informasihistoryproduct berdasarkan UAT 22-03-2022 By Remus,Denni
 //                    $cf_nmargin[$i] = round((($datas[$i]->prd_hrgjual) / $nAcost - 1) * 100, 2);
                 }
@@ -453,24 +452,24 @@ and rownum<1000
             }
         }
 
-
+        set_time_limit(0);
 
         //PRINT
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         $title = 'DAFTAR PRODUK';
-        $filename = $title.'_'.Carbon::now()->format('dmY_His').'.xlsx';
-        $view='';
-        $subtitle='';
+        $filename = $title . '_' . Carbon::now()->format('dmY_His') . '.xlsx';
+        $view = '';
+        $subtitle = '';
         if ((int)$sort < 3) {
             //CETAK_DAFTARPRODUK (IGR_BO_DAFTARPRODUK.jsp)
             //excel
 
             $view = view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-produk-xlxs', ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
-                    'judul' => $judul, 'urut' => $p_urut, 'p_hpp' => $chp,
-                    'cf_nmargin' => $cf_nmargin])->render();
+                'judul' => $judul, 'urut' => $p_urut, 'p_hpp' => $chp,
+                'cf_nmargin' => $cf_nmargin])->render();
             $subtitle = '';
             $keterangan = $p_urut;
-            ExcelController::create($view,$filename,$title,$subtitle,$keterangan);
+            ExcelController::create($view, $filename, $title, $subtitle, $keterangan);
 
 //            return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-produk-pdf',
 //                ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
@@ -479,11 +478,11 @@ and rownum<1000
         } else {
             //CETAK_DAFTARPRDNAMA (IGR_BO_DAFTARPRDNM.jsp)
             $view = view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-produk-nama-xlxs', ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
-                    'judul' => $judul, 'urut' => $p_urut, 'p_hpp' => $chp,
-                    'cf_nmargin' => $cf_nmargin])->render();
+                'judul' => $judul, 'urut' => $p_urut, 'p_hpp' => $chp,
+                'cf_nmargin' => $cf_nmargin])->render();
             $subtitle = '';
             $keterangan = $p_urut;
-            ExcelController::create($view,$filename,$title,$subtitle,$keterangan);
+            ExcelController::create($view, $filename, $title, $subtitle, $keterangan);
 
 //            return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-produk-nama-pdf',
 //                ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
@@ -1729,9 +1728,10 @@ and kat_kodeigr= prd_kodeigr
 and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'||'$dep1'||'$kat1' and '$div2'||'$dep2'||'$kat2'
 and prs_kodeigr = prd_kodeigr"
             . $p_orderby);
-
         $cf_nmargin = [];
+
         for ($i = 0; $i < sizeof($datas); $i++) {
+
             $ppn = isset($datas[$i]->prd_ppn) ? 1 + ($datas[$i]->prd_ppn / 100) : 1.1;
             if ($datas[$i]->prd_unit == 'KG') {
                 $multiplier = 1;
@@ -1753,27 +1753,27 @@ and prs_kodeigr = prd_kodeigr"
             } else {
                 $divisor = 1;
             }
+
             $nAcost = (float)$datas[$i]->st_avgcost * $multiplier;
             if ($nAcost > 0) {
                 if ($datas[$i]->pkp == 'Y' && $datas[$i]->pkp2 != 'P') {
-                    $cf_nmargin[$i] = round((($hrgjual - ($ppn * $nAcost)) / $hrgjual) * 100,2);
+                    $cf_nmargin[$i] = round((($hrgjual - ($ppn * $nAcost)) / $hrgjual) * 100, 2);
 //                    $cf_nmargin[$i] = round((($hrgjual - ($ppn * $nAcost)) / $divisor) * 100, 2);
                 } else {
-                    $cf_nmargin[$i] = round((($hrgjual - $nAcost) / $hrgjual) * 100,2);
+                    $cf_nmargin[$i] = round((($hrgjual - $nAcost) / $hrgjual) * 100, 2);
 //                    $cf_nmargin[$i] = round((($hrgjual - $nAcost) / $divisor) * 100, 2);
                 }
             } else {
                 $cf_nmargin[$i] = 0;
             }
-            $cf_nmargin[$i].="%";
+            $cf_nmargin[$i] .= "%";
         }
 
+        //HARGA JUAL 0
 
-
-
-        //PRINT
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
-        //CETAK_DAFTARHRGBARU & CETAK_DAFTARHRGBARUNAMA (CETAK_DAFTARHRGBARU.jsp && CETAK_DAFTARHRGBARUNAMA.jsp)
+        //PRINT
+//        CETAK_DAFTARHRGBARU & CETAK_DAFTARHRGBARUNAMA (CETAK_DAFTARHRGBARU.jsp && CETAK_DAFTARHRGBARUNAMA.jsp)
         return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-harga-jual-baru-pdf',
             ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
                 'date1' => $sDate, 'date2' => $eDate, 'urut' => $urut, 'cf_nmargin' => $cf_nmargin, 'sort' => $sort]);
@@ -2060,9 +2060,17 @@ order by lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak, lks_nourut "
         $forbidden_tag = ['A', 'R', 'N', 'O', 'H', 'G', 'T', 'X', 'Z'];
         //PRINT
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
+        set_time_limit(0);
 
-        return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.master-display-pdf',
-            ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan, 'title' => $title, 'p_omi' => $omi, 'forbidden_tag' => $forbidden_tag]);
+//        return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.master-display-pdf',
+//            ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan, 'title' => $title, 'p_omi' => $omi, 'forbidden_tag' => $forbidden_tag]);
+
+        $filename = str_replace('/', '', $title) . '_' . Carbon::now()->format('dmY_His') . '.xlsx';
+        $subtitle = $perusahaan->prs_namawilayah;
+        $view = view('BACKOFFICE.LISTMASTERASSET.LAPORAN.master-display-xlxs', ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan, 'title' => $title, 'p_omi' => $omi, 'forbidden_tag' => $forbidden_tag])->render();
+        $keterangan = "";
+        ExcelController::create($view, $filename, $title, $subtitle, $keterangan);
+        return response()->download(storage_path($filename))->deleteFileAfterSend(true);
     }
 
     public function printMasterDisplayDDK(Request $request)
@@ -2183,17 +2191,28 @@ ORDER BY div_kodedivisi, dep_kodedepartement, kat_kodekategori, prd_prdcd, lks_n
 
 
         if ($p_omi == 1) {
-            $title = "** LIST MASTER DISPLAY /DIV/DEPT/KATB (ITEM OMI) **";
+            $title = "LIST MASTER DISPLAY /DIV/DEPT/KATB (ITEM OMI)";
         } else {
-            $title = "** LIST MASTER DISPLAY /DIV/DEPT/KATB **";
+            $title = "LIST MASTER DISPLAY /DIV/DEPT/KATB";
         }
         $forbidden_tag = ['A', 'R', 'N', 'O', 'H', 'G', 'T', 'X', 'Z'];
         //PRINT
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
-        return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.master-display-div-dep-kat-pdf',
-            ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
-                'title' => $title, 'p_omi' => $p_omi, 'forbidden_tag' => $forbidden_tag]);
+//        return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.master-display-div-dep-kat-pdf',
+//            ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
+//                'title' => $title, 'p_omi' => $p_omi, 'forbidden_tag' => $forbidden_tag]);
+        set_time_limit(0);
+
+        $filename = str_replace('/', '', $title) . '_' . Carbon::now()->format('dmY_His') . '.xlsx';
+        $subtitle = $perusahaan->prs_namawilayah;
+        $view = view('BACKOFFICE.LISTMASTERASSET.LAPORAN.master-display-div-dep-kat-xlxs', ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
+            'title' => $title, 'p_omi' => $p_omi, 'forbidden_tag' => $forbidden_tag])->render();
+        $keterangan = "";
+        ExcelController::create($view, $filename, $title, $subtitle, $keterangan);
+        return response()->download(storage_path($filename))->deleteFileAfterSend(true);
+
+
     }
 
     public function printDaftarMarginNegatifvsMCG(Request $request)
@@ -2325,14 +2344,25 @@ and sls_prdcd(+) = substr(prd_prdcd,0,6)||'0'
 and sls_kodeigr(+)= prd_kodeigr
 and (((prd_hrgjual- prd_lastcost) / case when nvl(prd_hrgjual,0)=0 then 1 else prd_hrgjual end) * 100 <0
 or ((prd_hrgjual - (nvl(st_avgcost,0) * case when prd_unit = 'KG' then 1 else prd_frac end))/ (case when nvl(prd_hrgjual,0)=0 then 1 else prd_hrgjual end)) * 100 < 0)
+and rownum<100
 " . $p_orderby);
 
 
         //PRINT
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
-        return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-margin-negatif-vs-mcg-pdf',
-            ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
-                'urut' => $p_urut, 'tag' => $ptag, 'sort' => $sort]);
+//        return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-margin-negatif-vs-mcg-pdf',
+//            ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
+//                'urut' => $p_urut, 'tag' => $ptag, 'sort' => $sort]);
+        set_time_limit(0);
+
+        $title = 'DAFTAR MARGIN NEGATIF';
+        $filename = str_replace('/', '', $title) . '_' . Carbon::now()->format('dmY_His') . '.xlsx';
+        $subtitle = $p_urut . '<br>' . 'Tag:' . $ptag;
+        $view = view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-margin-negatif-vs-mcg-xlxs', ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
+            'urut' => $p_urut, 'tag' => $ptag, 'sort' => $sort])->render();
+        $keterangan = "";
+        ExcelController::create($view, $filename, $title, $subtitle, $keterangan);
+        return response()->download(storage_path($filename))->deleteFileAfterSend(true);
     }
 
     public function printDaftarSupplierByHari(Request $request)

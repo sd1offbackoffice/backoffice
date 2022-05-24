@@ -45,6 +45,22 @@
                                 <tr>
                                     <div class="row align-items-center">
                                         <div class="col-3">
+                                            <label for="nama_personil4">LJM</label>
+                                        </div>
+                                        <div class="col-5">
+                                            <div class="input-group mb">
+                                                <input autocomplete="off" type="text" id="nama_personil4" class="form-control">
+                                                <button id="showUserBtn" class="btn btn btn-light" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="showUser(3)" placeholder="Mohon isi nama pejabat">&#x1F50E;</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </tr>
+                                <tr>
+                                    <br>
+                                </tr>
+                                <tr>
+                                    <div class="row align-items-center">
+                                        <div class="col-3">
                                             <label for="nama_personil2">KEPALA GUDANG</label>
                                         </div>
                                         <div class="col-5">
@@ -78,24 +94,35 @@
                     <div class="row">
                         <div class="col">
                             <div class="containername" style="text-align:center">
+                                <p><b>LJM</b></p>
+                            </div>
+                            <span class="space"></span>
+                            <div class="containersig" style="text-align:center">
+                                <div id="sig4"></div>
+                            </div>
+                            <span class="space"></span>
+                            <div class="containername" style="text-align:center">
                                 <p style="float: left"><b>KEPALA GUDANG</b></p>
                                 <p style="float: right"><b>ADMINISTRASI</b></p>
                             </div>
-                            <br>
+                            <span class="space"></span>
                             <div class="containersig" style="text-align:center">
                                 <div id="sig2"></div>
                                 <span class="space"></span>
                                 <div id="sig3"></div>
                             </div>
-                            <div class="containerbtn" style="text-align:center">
-                                <button id="clear" class="btn btn-danger btn-lg" style="float: left;">Clear Kepala Gudang</button>
-                                <button id="clear2" class="btn btn-danger btn-lg" style="float: right;">Clear Administrasi</button>
+                            <span class="space"></span>
+                            <div class="form-group row mb-0" style="margin-left: 25%">
+                                <button id="clear3" class="btn btn-danger btn-lg mr-3">Clear LJM</button>
+                                <button id="clear" class="btn btn-danger btn-lg mr-3">Clear Kepala Gudang</button>
+                                <button id="clear2" class="btn btn-danger btn-lg mr-3">Clear Administrasi</button>
                             </div>
-                            <div class="conatiner" style="margin-left: 35%; margin-top: 10%; max-width: 30%">
+                            <div class="container" style="margin-left: 35%; margin-top: 10%; max-width: 30%">
                                 <button id="save" class="btn btn-success btn-lg btn-block">Simpan</button>
                             </div>
                             <textarea id="signature64_2" name="signed" style="display: none; height: 100%"></textarea>
                             <textarea id="signature64_3" name="signed" style="display: none; height: 100%"></textarea>
+                            <textarea id="signature64_4" name="signed" style="display: none; height: 100%"></textarea>
                         </div>
                     </div>
                 </div>
@@ -166,17 +193,20 @@
 
     #sig canvas,
     #sig2 canvas,
-    #sig3 canvas {
+    #sig3 canvas,
+    #sig4 canvas {
         width: 100%;
         height: auto;
     }
 
     .modalRowNames1,
-    .modalRowNames2 {
+    .modalRowNames2,
+    .modalRowNames3 {
         cursor: pointer;
     }
 
     .modalRowNames1:hover,
+    .modalRowNames2:hover,
     .modalRowNames2:hover {
         background-color: #e9ecef;
     }
@@ -191,6 +221,7 @@
     let tableModalHelp = $('#tableModalHelp').DataTable();
     let nama_personil2 = $('#nama_personil2');
     let nama_personil3 = $('#nama_personil3');
+    let nama_personil4 = $('#nama_personil4');
     $(document).ready(function() {
         getAllData();
     })
@@ -198,6 +229,7 @@
         if (e.keyCode == 32) {
             $('#clear').click();
             $('#clear2').click();
+            $('#clear3').click();
         } else if (e.keyCode == 13) {
             $('#save').click();
         }
@@ -210,6 +242,10 @@
         syncField: '#signature64_3',
         syncFormat: 'PNG'
     });
+    var sig4 = $('#sig4').signature({
+        syncField: '#signature64_4',
+        syncFormat: 'PNG'
+    });
     $('#save').click(function(e) {
         swal({
             title: 'Peringatan',
@@ -220,8 +256,10 @@
             if (confirm) {
                 var dataURL2 = $('#sig2').signature('toDataURL', 'image/jpeg', 0.8);
                 var dataURL3 = $('#sig3').signature('toDataURL', 'image/jpeg', 0.8);
+                var dataURL4 = $('#sig4').signature('toDataURL', 'image/jpeg', 0.8);
                 var signsrclerk = $('#nama_personil2').val();
                 var signclerk = $('#nama_personil3').val();
+                var signljm = $('#nama_personil4').val();
                 ajaxSetup();
                 $.ajax({
                     type: "POST",
@@ -231,6 +269,9 @@
                         signed2: $('#signature64_2').val(),
                         sign3: dataURL3,
                         signed3: $('#signature64_3').val(),
+                        sign4: dataURL4,
+                        signed4: $('#signature64_4').val(),
+                        signljm: signljm,
                         signsrclerk: signsrclerk,
                         signclerk: signclerk
                     },
@@ -251,10 +292,6 @@
                                 icon: 'success'
                             }).then(function(ok) {
                                 window.location.reload();
-                                // $('#clear').click();
-                                // $('#modal-loader').modal('hide');
-                                // $('#m_signature').modal('hide');
-                                // getAllData();
                             });
                         }
                     },
@@ -284,6 +321,12 @@
         e.preventDefault();
         sig3.signature('clear');
         $("#signature64_3").val('');
+    });
+
+    $('#clear3').click(function(e) {
+        e.preventDefault();
+        sig4.signature('clear');
+        $("#signature64_4").val('');
     });
 
     function showModal() {
@@ -357,6 +400,15 @@
         modalHelp.modal('hide');
     });
 
+    $(document).on('click', '.modalRowNames3', function() {
+        let currentButton = $(this);
+        let userid = currentButton.children().first().text();
+        let userlevel = currentButton.children().first().next().text();
+        let username = currentButton.children().first().next().next().text();
+        nama_personil4.val(username);
+        modalHelp.modal('hide');
+    });
+
     function getAllData() {
         $.ajax({
             type: "GET",
@@ -366,7 +418,8 @@
             },
             success: function(response) {
                 var clerkname = response.name[0];
-                var srclerkname = response.name[1];
+                var srclerkname = response.name[2];
+                var ljmname = response.name[1];
                 $.ajax({
                     type: "GET",
                     url: '{{ url()->current() }}/get',
@@ -381,7 +434,20 @@
                         <table class="table table-borderless">
                             <tbody>
                                 <tr>
-                                    <td><img  src="../../../../storage/signature/` + response.data[1] + '?' + Math.random() + `"></td>
+                                    <td><img style="text-align: center;" src="../../../../storage/signature/` + response.data[1] + '?' + Math.random() + `"></td>
+                                </tr>
+                                <tr>
+                                    <td><p><b>` + ljmname + `</b></p></td>
+                                </tr>
+                                <tr>
+                                    <td><p><b>LJM</b></p></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="table table-borderless">
+                            <tbody>
+                                <tr>
+                                    <td><img  src="../../../../storage/signature/` + response.data[2] + '?' + Math.random() + `"></td>
                                     <td><img src="../../../../storage/signature/` + response.data[0] + '?' + Math.random() + `"></td>
                                 </tr>
                             </tbody>

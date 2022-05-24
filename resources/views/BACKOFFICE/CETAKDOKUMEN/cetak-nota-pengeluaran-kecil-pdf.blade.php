@@ -186,14 +186,37 @@
                         </thead>
                         <tbody>
                         <tr style="border-top: 1px solid black;border-bottom: 1px solid black;">
-                            <td class="left" colspan="3">&nbsp; DIBUAT <br><br><br></td>
-                            <td class="left" colspan="3">&nbsp; MENYETUJUI :</td>
-                            <td colspan="4"></td>
+                            <td class="left" colspan="3">
+                                &nbsp; DIBUAT                            
+                                <div>
+                                    <img style="max-width: 200px; max-height: 100px" src="../storage/signature/clerk.png" alt="">                                
+                                </div>
+                            </td>
+                            <td class="left" colspan="3">
+                                &nbsp; MENYETUJUI :
+                                <div>
+                                    <img style="max-width: 200px; max-height: 100px" src="../storage/signature/srclerk.png" alt="">                                
+                                </div>
+                            </td>
+                            <td colspan="4">
+                                <div>
+                                    <img style="max-width: 200px; max-height: 100px" src="../storage/signature_expedition/{{ $data['signatureId'] . '.png' }}" alt="">                                
+                                </div>
+                            </td>
                         </tr>
                         <tr>
-                            <td class="left" colspan="3">&nbsp; ADMINISTRASI</td>
-                            <td class="left" colspan="3">&nbsp; KEPALA GUDANG</td>
-                            <td class="left" colspan="4">&nbsp; SUPPLIER</td>
+                            <td class="left" colspan="3">
+                                &nbsp; ADMINISTRASI
+                                <p>{{ file_get_contents('../storage/names/clerk.txt') }}</p>
+                            </td>
+                            <td class="left" colspan="3">
+                                &nbsp; KEPALA GUDANG
+                                <p>{{ file_get_contents('../storage/names/srclerk.txt') }}</p>
+                            </td>
+                            <td class="left" colspan="4">
+                                &nbsp; SUPPLIER
+                                <p>{{ $data['signedBy'] }}</p>
+                            </td>
                         </tr>
                         </tbody>
                     </table>

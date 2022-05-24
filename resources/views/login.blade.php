@@ -248,7 +248,6 @@
                         }).then((value) => {
                             $('#modal-loader').modal('hide');
                             if (value) {
-                                clear();
                             }
                         });
                     } else if (response['userstatus'] == 'ADM') {
