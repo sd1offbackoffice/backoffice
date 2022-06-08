@@ -43,6 +43,9 @@
             $totalretur = 0;
             $totalrusak = 0;
             $totalall = 0;
+             $subtotalbaik = 0;
+            $subtotalretur = 0;
+            $subtotalrusak = 0;
         @endphp
         @foreach($data as $d)
             @if($temp != $d->msth_tgldoc)

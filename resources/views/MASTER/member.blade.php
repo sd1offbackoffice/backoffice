@@ -2897,12 +2897,13 @@
                         $('#cus_kodemember').val(value);
                     }
                     else {
-                        swal({
-                            title: 'Data ditemukan!',
-                            icon: 'success'
-                        }).then(function(){
-                            $('#modal-loader').modal('hide');
-                        })
+                        $('#modal-loader').modal('hide');
+                        // swal({
+                        //     title: 'Data ditemukan!',
+                        //     icon: 'success'
+                        // }).then(function(){
+                        //     $('#modal-loader').modal('hide');
+                        // })
 
                         ready();
 
@@ -3673,7 +3674,7 @@
         });
 
         $('#btn-aktif-nonaktif').on('click',function(){
-            if(member.cus_kodeigr != '22'){
+            if(member.cus_kodeigr != '{{Session::get('kdigr')}}'){
                 swal({
                     title: 'Data yang akan diproses tidak sesuai dengan cabang anda!',
                     icon: 'error'
@@ -3902,7 +3903,7 @@
         });
 
         $('#btn-hapus').on('click',function(){
-            if(member.cus_kodeigr != '22'){
+            if(member.cus_kodeigr != '{{Session::get('kdigr')}}'){
                 swal({
                     title: "Data yang akan diproses tidak sesuai dengan cabang anda!",
                     icon: "error"

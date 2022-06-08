@@ -107,7 +107,7 @@
                                         </button>
                                     </div>
                                     <div class="col">
-                                        <input type="text" class="form-control" id="dep2_nama" readonly>
+                                        <input type="text" class="fo-control" id="dep2_nama" readonly>
                                     </div>
                                 </div>
                                 <div class="row div1 div2 dep1 dep2">

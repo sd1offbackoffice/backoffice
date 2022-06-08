@@ -9,10 +9,10 @@
                 <fieldset class="card border-secondary">
                     <ul class="nav nav-tabs custom-color" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" id="btnTabUsulan" data-toggle="tab" href="#tabUsulan">USULAN</a>
+                            <a class="nav-link active" id="btnTabUsulan" data-toggle="tab" href="#tabUsulan" onclick="refreshTableApproval()">USULAN</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="btnTabApproval" data-toggle="tab" href="#tabApproval">APPROVAL</a>
+                            <a class="nav-link" id="btnTabApproval" data-toggle="tab" href="#tabApproval" onclick="refreshTableApproval()">APPROVAL</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="btnTabPKM" data-toggle="tab" href="#tabPKM">PKM PRODUK BARU</a>
@@ -475,6 +475,7 @@
         var dataApproval = [];
         var lovPKMBaru = [];
         var dataPKMBaru = [];
+        // var testing = '1,000';
 
         $(document).ready(function(){
             tgltrn = $('#tgltrn').datepicker({
@@ -651,11 +652,11 @@
                         row = $('.row-'+currentRow);
 
                         row.find('.prdcd').val(prdcd);
-                        row.find('.mpkmawal').val(response.pkm_mpkm);
+                        row.find('.mpkmawal').val(convertToRupiah2(response.pkm_mpkm));
                         if(response.pkm_adjust_by != null)
-                            row.find('.pkmadjustawal').val(response.pkm_pkm);
-                        row.find('.mplusawal').val(response.pkm_qtymplus);
-                        row.find('.pkmtawal').val(response.pkm_pkmt);
+                            row.find('.pkmadjustawal').val(convertToRupiah2(response.pkm_pkm));
+                        row.find('.mplusawal').val(convertToRupiah2(response.pkm_qtymplus));
+                        row.find('.pkmtawal').val(convertToRupiah2(response.pkm_pkmt));
                         row.find('.pkmusulan').select();
                     }
                 },
@@ -688,6 +689,7 @@
                 data.upkm_pkmt_edit = '';
                 data.upkm_keterangan = '';
             }
+            console.log(data,'ini data generateTableRow');
             row = `<tr class="row-data row-${rowIndex}" onmouseover="pointerIn(${rowIndex})">
                         <td><button class="btn btn-sm btn-danger" onclick="hapusItem(${rowIndex})"><i class="fas fa-trash"></i></button></td>
                         <td>
@@ -702,12 +704,13 @@
                         <td><input type="text" class="text-right form-control pkmadjustawal" value="${nvl(data.upkm_pkmadjust_awal, '')}" disabled></td>
                         <td><input type="text" class="text-right form-control mplusawal" value="${nvl(data.upkm_mplus_awal, '')}" disabled></td>
                         <td><input type="text" class="text-right form-control pkmtawal" value="${nvl(data.upkm_pkmt_awal, '')}" disabled></td>
-                        <td><input type="text" class="text-right form-control pkmusulan" value="${nvl(data.upkm_pkm_usulan, '')}" onkeypress="checkPKMUsulan(event,${rowIndex})" onblur="checkPKMUsulan(null,${rowIndex})"></td>
-                        <td><input type="text" class="text-right form-control mplususulan" value="${nvl(data.upkm_mplus_usulan, '')}"></td>
+                        <td><input type="text" class="text-right form-control pkmusulan" value="${nvl(convertToRupiah2(data.upkm_pkm_usulan, ''))}" onkeypress="checkPKMUsulan(event,${rowIndex})"></td>
+                        <td><input type="text" class="text-right form-control mplususulan" value="${nvl(convertToRupiah2(data.upkm_mplus_usulan, ''))}" onkeypress="convertRibuan(event,${rowIndex})"></td>
                         <td><input type="text" class="text-right form-control pkmedit" value="${nvl(data.upkm_pkm_edit, '')}" disabled></td>
                         <td><input type="text" class="text-right form-control mplusedit" value="${nvl(data.upkm_mplus_edit, '')}" disabled></td>
                         <td><input type="text" class="text-right form-control pkmtedit" value="${nvl(data.upkm_pkmt_edit, '')}" disabled></td>
                         <td><input type="text" class="text-left form-control keterangan" value="${nvl(data.upkm_keterangan, '')}" disabled></td>
+
                     </tr>`;
             return row;
         }
@@ -737,11 +740,11 @@
                     data = [];
 
                     for(i=0;i<response.length;i++) {
-                        rowIndex++;
-
-                        data['row-'+rowIndex] = response[i];
+                        data['row-'+i] = response[i];
 
                         $('#table_daftar tbody').append(generateTableRow(response[i]));
+
+                        rowIndex++;
                     }
 
                     tabel = $('#table_daftar').DataTable({
@@ -800,7 +803,6 @@
             }
 
             rowIndex++;
-
             $('#table_daftar tbody').append(generateTableRow(null));
 
             tabel = $('#table_daftar').DataTable({
@@ -810,6 +812,9 @@
                 "bInfo": false,
                 "searching": false
             });
+
+            // rowIndex++;
+            // console.log(rowIndex,'ini rowIndex');
             //
             // $('#table_daftar tbody tr').hover(pointerIn, pointerOut);
         }
@@ -882,6 +887,39 @@
             });
         }
 
+        function refreshTableApproval()
+        {
+            $('#a_directoryFile').val('');
+            $('#a_noUsulan').val('');
+            $('#a_tglUsulan').val('');
+            $('#a_deskripsi').val('');
+
+            if($.fn.DataTable.isDataTable('#a_tableApproval')){
+                $('#a_tableApproval').DataTable().destroy();
+                $("#a_tableApproval tbody tr").remove();
+            }
+
+            tabel = $('#a_tableApproval').DataTable({
+                // "scrollY": "40vh",
+                // "paging" : false,
+                // "sort": false,
+                // "bInfo": false,
+                // "searching": false,
+                // "responsive": true,
+                // "lengthChange": true,
+                // "autoWidth": false
+
+                "scrollY": "40vh",
+                "paging": false,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": false,
+                "info": true,
+                "autoWidth": true,
+                "responsive": true
+            });
+        }
+
         function getNewNoUsulan(){
             swal({
                 title: 'Ingin membuat nomor usulan baru?',
@@ -901,11 +939,28 @@
                         success: function (response) {
                             $('#modal-loader').modal('hide');
 
+                            if($.fn.DataTable.isDataTable('#table_daftar')){
+                                $('#table_daftar').DataTable().destroy();
+                                $("#table_daftar tbody tr").remove();
+                            }
+
+                            rowIndex = 0;
+                            data = [];
+
+                            $('#table_daftar tbody').append(generateTableRow(null));
+
+                            tabel = $('#table_daftar').DataTable({
+                                "scrollY": "40vh",
+                                "paging" : false,
+                                "sort": false,
+                                "bInfo": false,
+                                "searching": false
+                            });
+
+                            $('.btn-usulan').prop('disabled',false);
                             $('#u_noUsulan').val(response.nousulan);
                             $('#u_tglUsulan').val(response.tglusulan);
                             $('#u_status').val('* TAMBAH *').css({'text-align': 'center'});
-
-                            tambahItem();
 
                             isChanged = true;
                         },
@@ -925,19 +980,47 @@
             });
         }
 
+        function convertRibuan(e, row,rowIndex)
+        {
+            if(e.which == 13){
+                $('.mplususulan').each(function(){
+                    ribuan2 = parseInt($(this).val().replaceAll(',',''));
+
+                      if(ribuan2.toString().length > 3)
+                        {
+                            ribuan2 = convertToRupiah2(ribuan2);
+                        }
+                        $(this).val(ribuan2);
+                });
+                tambahItem();
+
+                $('.row-'+row + 1).find('.prdcd').focus();
+            }
+        }
+
         function checkPKMUsulan(e,index){
             if(e == null){
+                if(e.which == 13){
+                    $('.pkmusulan').each(function(){
+                        ribuan = parseInt($(this).val().replaceAll(',',''));
+
+                        if(ribuan.toString().length > 3)
+                        {
+                            ribuan = convertToRupiah2(ribuan);
+                        }
+                        $(this).val(ribuan);
+                    });
+                    $('.row-'+index).find('.mplususulan').focus();
+
+                }
+
                 isChanged = true;
 
                 temp = data['row-'+index];
-                console.log(temp);
                 minpkm = parseInt(temp.pkm_mindisplay) + parseInt(temp.pkm_minorder);
+                row = $('.row-'+index);
 
-                console.log(parseInt(temp.pkm_mindisplay));
-                console.log(parseInt(temp.pkm_minorder));
-                row = $('.row-'+currentRow);
-
-                if(row.find('.pkmusulan').val() < minpkm){
+                if(row.find('.pkmusulan').val() < minpkm && row.find('.pkmusulan').val() != ''){
                     swal({
                         title: 'Nilai PKM < MINDIS + MINOR ('+minpkm+')',
                         icon: 'warning'
@@ -950,15 +1033,27 @@
                 }
             }
             else if(e.which == 13){
+                $('.pkmusulan').each(function(){
+                    ribuan = parseInt($(this).val().replaceAll(',',''));
+
+                    if(ribuan.toString().length > 3)
+                    {
+                        ribuan = convertToRupiah2(ribuan);
+                    }
+                    $(this).val(ribuan);
+                });
+
+                $('.row-'+index).find('.mplususulan').focus();
+
                 isChanged = true;
 
                 temp = data['row-'+index];
 
                 minpkm = parseInt(temp.pkm_mindisplay) + parseInt(temp.pkm_minorder);
 
-                row = $('.row-'+currentRow);
+                row = $('.row-'+index);
 
-                if(row.find('.pkmusulan').val() < minpkm){
+                if(row.find('.pkmusulan').val() < minpkm  && row.find('.pkmusulan').val() != ''){
                     swal({
                         title: 'Nilai PKM < MINDIS + MINOR ('+minpkm+')',
                         icon: 'warning'
@@ -973,7 +1068,6 @@
         }
 
         function sendUsulan(){
-            console.log(isChanged);
             if(isChanged){
                 swal({
                     title: 'Harap tekan tombol SIMPAN terlebih dahulu!',
@@ -1011,6 +1105,8 @@
                                     icon: 'success'
                                 }).then(() => {
                                     $('#u_status').val('* USULAN SUDAH DIKIRIM *');
+                                    $('#u_namaFile').val('');
+                                    $('.btn-usulan').prop('disabled',true);
                                 });
                             },
                             error: function (error) {
@@ -1041,19 +1137,21 @@
                     arrData = [];
 
                     $('.row-data').each(function(){
-                        temp = {
-                            prdcd: $(this).find('.prdcd').val(),
-                            mpkmawal: $(this).find('.mpkmawal').val(),
-                            pkmadjustawal: $(this).find('.pkmadjustawal').val(),
-                            mplusawal: $(this).find('.mplusawal').val(),
-                            pkmtawal: $(this).find('.pkmtawal').val(),
-                            pkmusulan: $(this).find('.pkmusulan').val(),
-                            mplususulan: $(this).find('.mplususulan').val(),
-                            pkmedit: $(this).find('.pkmedit').val(),
-                            mplusedit: $(this).find('.mplusedit').val(),
-                        };
+                        if(convertPlu($(this).find('.prdcd').val()) != '0000000'){
+                            temp = {
+                                prdcd: $(this).find('.prdcd').val(),
+                                mpkmawal: parseInt($(this).find('.mpkmawal').val().replaceAll(',','')),
+                                pkmadjustawal: $(this).find('.pkmadjustawal').val() ? parseInt($(this).find('.pkmadjustawal').val().replaceAll(',','')) : '',
+                                mplusawal: parseInt($(this).find('.mplusawal').val().replaceAll(',','')),
+                                pkmtawal: parseInt($(this).find('.pkmtawal').val().replaceAll(',','')),
+                                pkmusulan: parseInt($(this).find('.pkmusulan').val().replaceAll(',','')),
+                                mplususulan: parseInt($(this).find('.mplususulan').val().replaceAll(',','')),
+                                pkmedit: $(this).find('.pkmedit').val(),
+                                mplusedit: $(this).find('.mplusedit').val(),
+                            };
 
-                        arrData.push(temp);
+                            arrData.push(temp);
+                        }
                     });
 
                     $.ajax({
@@ -1174,13 +1272,33 @@
                                 $('#modal-loader').modal('show');
                             },
                             success: function (response) {
-                                $('#modal-loader').modal('hide');
+                                if($.fn.DataTable.isDataTable('#table_daftar')){
+                                    $('#table_daftar').DataTable().destroy();
+                                    $('#table_daftar tbody tr').remove();
+                                }
 
+                                for(i=0;i<response.data_usulan.length;i++)
+                                {
+                                    $('#table_daftar tbody').append(generateTableRow(response.data_usulan[i]));
+                                    console.log(response.data_usulan[i],'ini response data usulan di upload file usulan');
+                                }
+                                tabel = $('#table_daftar').DataTable({
+                                    "scrollY": "40vh",
+                                    "paging" : false,
+                                    "sort": false,
+                                    "bInfo": false,
+                                    "searching": false
+                                });
+                                $('#modal-loader').modal('hide');
                                 swal({
                                     title: response.message,
                                     icon: 'success'
                                 }).then(() => {
-                                    getDataUsulan($('#u_noUsulan').val());
+                                    // getDataUsulan($('#u_noUsulan').val());
+
+                                    // console.log($('#table_daftar table tbody').append(generateTableRow(response.data_usulan[$i]));
+
+
                                 });
                             },
                             error: function (error) {
@@ -1191,7 +1309,7 @@
                                     icon: 'error',
                                 }).then(() => {
                                     $('#modal-loader').modal('hide');
-                                    $('#u_fileUsulan').vavl('');
+                                    $('#u_fileUsulan').val('');
                                     $('#u_namaFile').val('');
                                 });
                             }
@@ -1295,12 +1413,15 @@
                             },
                             success: function (response) {
                                 $('#modal-loader').modal('hide');
-
+                            
                                 swal({
                                     title: response.message,
                                     icon: 'success'
                                 }).then(() => {
-                                    getDataApproval();
+                                    window.open(`{{ url()->current() }}/print-usulan?nousulan=`+response.nousulan+`&tglusulan=`+response.tglusulan);
+                                    getDataApproval();        
+
+                                    // window.open(`{{ url()->current() }}/printPDF?prdcd=${$('#prdcd').val()}&upkm_mpkm_awal=${$('#upkm_mpkm_awal').val()}&upkm_pkmadjust_awal=${$('#upkm_pkmadjust_awal').val()}&upkm_mplus_awal=${$('#upkm_mplus_awal').val()}&upkm_pkmt_awal=${$('#upkm_pkmt_awal').val()}&upkm_pkm_edit=${$('#upkm_pkm_edit').val()}&upkm_mplus_edit=${$('#upkm_mplus_edit').val()}&upkm_keterangan=${$('#upkm_keterangan').val()}&pkm_mpkm=${$('#pkm_mpkm').val()}&pkm_qtymplus=${$('#pkm_qtymplus').val()}&pkm_pkmt=${$('#pkm_pkmt').val()}`, '_blank');
                                 });
                             },
                             error: function (error) {
@@ -1311,7 +1432,7 @@
                                     icon: 'error',
                                 }).then(() => {
                                     $('#modal-loader').modal('hide');
-                                    $('#a_fileApproval').vavl('');
+                                    $('#a_fileApproval').val('');
                                     $('#a_directoryFile').val('');
                                 });
                             }
@@ -1366,16 +1487,13 @@
                     $('.row-approval').on('mouseenter',function(){
                         $('.row-approval').removeAttr('style');
                         $(this).css({"background-color": "#acacac","color": "white"});
-                        $('#a_deskripsi').val(dataApproval[$(this).find('td:eq(0)').html()].prd_deskripsipanjang);
+                        $('#a_deskripsi').val(decodeHtml(dataApproval[$(this).find('td:eq(0)').html()].prd_deskripsipanjang));
                     });
-
-                    // $('.row-approval').on('mouseleave',function(){
-                    //     $('.row-approval').removeAttr('style');
-                    //     $('#a_deskripsi').val('');
-                    // });
                 }
             });
         }
+
+
 
         function getDataPKMBaru(nousulan){
             if(nousulan == null && $.inArray($('#p_findNoUsulan').val(), lovPKMBaru) == -1){
@@ -1415,13 +1533,14 @@
                     "responsive": true,
                     "scrollY" : "340px",
                     "createdRow": function (row, data, dataIndex) {
+                        console.log(data);
                         $(row).addClass('row-approval');
                         $(row).find('td:eq(0)').addClass('text-center');
-                        $(row).find('td:eq(1)').addClass('text-right');
-                        $(row).find('td:eq(2)').addClass('text-right');
-                        $(row).find('td:eq(3)').addClass('text-right');
-                        $(row).find('td:eq(4)').addClass('text-right');
-                        $(row).find('td:eq(5)').addClass('text-right');
+                        $(row).find('td:eq(1)').addClass('text-right').html(convertToRupiah2(data.pkmn_mpkm));
+                        $(row).find('td:eq(2)').addClass('text-right').html(convertToRupiah2(data.pkmn_pkm));
+                        $(row).find('td:eq(3)').addClass('text-right').html(convertToRupiah2(data.pkmn_mplus_i));
+                        $(row).find('td:eq(4)').addClass('text-right').html(convertToRupiah2(data.pkmn_mplus_o));
+                        $(row).find('td:eq(5)').addClass('text-right').html(convertToRupiah2(data.pkmn_pkmt));
                         $(row).find('td:eq(6)').addClass('text-center');
                         $(row).find('td:eq(7)').addClass('text-left');
 
@@ -1432,6 +1551,12 @@
                     },
                     "order" : [],
                     "initComplete" : function(){
+                        // $('.pkmn_mpkm').html(convertToRupiah2(data.pkmn_mpkm));
+                        // $('.pkmn_pkm').html(convertToRupiah2(data.pkmn_pkm));
+                        // $('.pkmn_mplus_i').html(convertToRupiah2(data.pkmn_mplus_i));
+                        // $('.pkmn_mplus_o').html(convertToRupiah2(data.pkmn_mplus_o));
+                        // $('.pkmn_pkmt').html(convertToRupiah2(data.pkmn_pkmt));
+
                         $('.row-approval').on('mouseenter',function(){
                             $('.row-approval').removeAttr('style');
                             $(this).css({"background-color": "#acacac","color": "white"});
@@ -1502,7 +1627,7 @@
                             },
                             success: function (response) {
                                 $('#modal-loader').modal('hide');
-
+                                console.log(response,'ini response PKM produk baru');
                                 swal({
                                     title: response.message,
                                     icon: 'success'

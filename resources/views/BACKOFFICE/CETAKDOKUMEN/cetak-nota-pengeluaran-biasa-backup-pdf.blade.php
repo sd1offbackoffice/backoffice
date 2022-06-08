@@ -11,7 +11,7 @@
 @endsection
 
 @section('subtitle')
-    
+
 @endsection
 
 @section('header_left')
@@ -19,6 +19,7 @@
         <tr>
             <td class="left">NPWP</td>
             <td class="left">: {{ $perusahaan->prs_npwp }}</td>
+
         </tr>
         <tr>
             <td class="left"><b> {{ $data['data1'][0]->status }} </b></td>

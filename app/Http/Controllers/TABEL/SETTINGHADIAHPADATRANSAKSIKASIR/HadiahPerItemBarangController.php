@@ -121,7 +121,7 @@ ORDER BY BERLAKU, ISD_PRDCD");
 
         $datas = DB::connection(Session::get('connection'))->select("SELECT prd_prdcd, PRD_DESKRIPSIPANJANG || '-' || PRD_UNIT || '/' || PRD_FRAC as deskripsi
           FROM TBMASTER_PRODMAST, TBMASTER_BARCODE
-         WHERE prd_kodeigr = '22'
+         WHERE prd_kodeigr = '".Session::get('kdigr')."'
            AND prd_prdcd = brc_prdcd(+)
            AND (prd_prdcd = TRIM ('$prd') OR brc_barcode = TRIM ('$prd'))");
 

@@ -39,7 +39,6 @@
         <p style="text-align: center;margin: 0;padding: 0">
             @yield('subtitle',date("d/m/Y"))
         </p>
-
     </div>
 {{--    <div class="center" style="clear:both">--}}
 {{--        @yield('header_optional')--}}
@@ -92,12 +91,12 @@
     tbody {
         display: table-row-group;
         vertical-align: middle;
-        border-color: pink;
+        border-color: black;
     }
     tr {
         display: table-row;
         vertical-align: inherit;
-        border-color: pink;
+        border-color: black;
     }
     td {
         display: table-cell;
@@ -109,8 +108,7 @@
         text-align: center;
     }
     tfoot{
-        border-top: 1px solid pink;
-        border-bottom: 1px solid pink;
+        border-top: 1px solid black;
     }
 
     .keterangan{
@@ -198,12 +196,12 @@
     }
 
     .border-top td{
-        border-top: 1px solid pink;
+        border-top: 1px solid black;
     }
 
     .top-bottom{
-        border-top: 1px solid pink;
-        border-bottom: 1px solid pink;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
     }
 
     .nowrap{

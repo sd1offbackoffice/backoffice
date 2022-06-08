@@ -41,44 +41,44 @@
         $st_div_potongan = 0;
         $st_div_disc = 0;
         $st_div_ppn = 0;
-        $st_div_gross = 0;
-        $st_div_bm = 0;
-        $st_div_btl = 0;
+        $st_div_gross = 0;                
         $st_div_tn = 0;
         $st_div_avg = 0;
+        $st_div_ppn_bebas = 0;
+        $st_div_ppn_dtp = 0;
 
         $st_dep_gross = 0;
         $st_dep_potongan = 0;
         $st_dep_disc = 0;
-        $st_dep_ppn = 0;
-        $st_dep_bm = 0;
-        $st_dep_btl = 0;
+        $st_dep_ppn = 0;                
         $st_dep_tn = 0;
         $st_dep_avg = 0;
+        $st_dep_ppn_bebas = 0;
+        $st_dep_ppn_dtp = 0;
 
         $st_kat_gross = 0;
         $st_kat_potongan = 0;
         $st_kat_disc = 0;
-        $st_kat_ppn = 0;
-        $st_kat_bm = 0;
-        $st_kat_btl = 0;
+        $st_kat_ppn = 0;                
         $st_kat_tn = 0;
         $st_kat_avg = 0;
+        $st_kat_ppn_bebas = 0;
+        $st_kat_ppn_dtp = 0;
 
         $sum_gross_bkp=0;
         $sum_gross_btkp=0;
         $sum_potongan_bkp=0;
         $sum_potongan_btkp=0;
         $sum_ppn_bkp=0;
-        $sum_ppn_btkp=0;
-        $sum_bm_bkp=0;
-        $sum_bm_btkp=0;
-        $sum_btl_bkp=0;
-        $sum_btl_btkp=0;
+        $sum_ppn_btkp=0;                                
         $sum_total_bkp=0;
         $sum_total_btkp=0;
         $sum_avg_bkp=0;
         $sum_avg_btkp=0;
+        $sum_ppn_bebas_bkp = 0;
+        $sum_ppn_bebas_btkp = 0;
+        $sum_ppn_dtp_bkp = 0;
+        $sum_ppn_dtp_btkp = 0;
     @endphp
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
@@ -92,8 +92,8 @@
             <th rowspan="2" class="right" style="vertical-align: middle;">GROSS</th>
             <th rowspan="2" class="right" style="vertical-align: middle;">POTONGAN</th>
             <th rowspan="2" class="right" style="vertical-align: middle;">PPN</th>
-            <th rowspan="2" class="right" style="vertical-align: middle;">PPN-BM</th>
-            <th rowspan="2" class="right" style="vertical-align: middle;">BOTOL</th>
+            <th rowspan="2" class="right" style="vertical-align: middle;">PPN DIBEBASKAN</th>
+            <th rowspan="2" class="right" style="vertical-align: middle;">PPN DTP</th>                        
             <th rowspan="2" class="right padding-right" style="vertical-align: middle;">TOTAL NILAI</th>
             <th rowspan="2" class="left" style="vertical-align: middle;">KETERANGAN</th>
             <th rowspan="2" class="right" style="vertical-align: middle;">LCOST</th>
@@ -110,7 +110,7 @@
         <tbody>
         @for($i=0;$i<count($data);$i++)
             @php
-                $data[$i]->nlcost = (($data[$i]->gross - $data[$i]->potongan + $data[$i]->bm + $data[$i]->btl) * $data[$i]->frac / ($data[$i]->ctn * $data[$i]->frac + $data[$i]->pcs + $data[$i]->bonus));
+            $data[$i]->nlcost = (($data[$i]->gross - $data[$i]->potongan + $data[$i]->bm + $data[$i]->btl) * $data[$i]->frac / ($data[$i]->ctn * $data[$i]->frac + $data[$i]->pcs + $data[$i]->bonus));                
             @endphp
             @if($tempdiv != $data[$i]->mstd_kodedivisi)
                 <tr>
@@ -144,9 +144,37 @@
                 <td class="right">{{ $data[$i]->pcs }}</td>
                 <td class="right">{{ number_format($data[$i]->gross,2) }}</td>
                 <td class="right">{{ number_format($data[$i]->potongan,2) }}</td>
-                <td class="right">{{ number_format($data[$i]->ppn,2) }}</td>
-                <td class="right">{{ number_format($data[$i]->bm,2) }}</td>
-                <td class="right">{{ number_format($data[$i]->btl,2) }}</td>
+                {{-- <td class="right">{{ number_format($data[$i]->ppn,2) }}</td> --}}
+                <td class="right">                    
+                    @php
+                        if ($data[$i]->prd_flagbkp1 == 'Y' && $data[$i]->prd_flagbkp2 == 'Y') {
+                            $ppn_rph = $data[$i]->ppn;
+                        } else {
+                            $ppn_rph = 0;
+                        }                        
+                    @endphp
+                    {{ number_format($ppn_rph,2) }}
+                </td>
+                <td class="right">                    
+                    @php
+                        if ($data[$i]->prd_flagbkp1 == 'Y' && $data[$i]->prd_flagbkp2 == 'P') {
+                            $ppn_bebas = $data[$i]->ppn;
+                        } else {
+                            $ppn_bebas = 0;
+                        }                        
+                    @endphp
+                    {{ number_format($ppn_bebas,2) }}
+                </td>
+                <td class="right">                    
+                    @php
+                        if ($data[$i]->prd_flagbkp1 == 'Y' && ($data[$i]->prd_flagbkp2 == 'W' || $data[$i]->prd_flagbkp2 == 'G')) {
+                            $ppn_dtp = $data[$i]->ppn;
+                        } else {
+                            $ppn_dtp = 0;
+                        }                        
+                    @endphp
+                    {{ number_format($ppn_dtp,2) }}
+                </td>                                
                 <td class="right padding-right">{{ number_format($data[$i]->total,2) }}</td>
                 <td class="left">{{ $data[$i]->mstd_keterangan }}</td>
                 <td class="right">{{ number_format($data[$i]->nlcost,2) }}</td>
@@ -156,43 +184,43 @@
             @php
                 $st_dep_gross += $data[$i]->gross;
                 $st_dep_potongan += $data[$i]->potongan;
-                $st_dep_ppn += $data[$i]->ppn;
-                $st_dep_bm += $data[$i]->bm;
-                $st_dep_btl += $data[$i]->btl;
+                $st_dep_ppn += $ppn_rph;                                
                 $st_dep_tn += $data[$i]->total;
                 $st_dep_avg += $data[$i]->acost;
+                $st_dep_ppn_bebas += $ppn_bebas;
+                $st_dep_ppn_dtp += $ppn_dtp;        
 
                 $st_div_gross += $data[$i]->gross;
                 $st_div_potongan += $data[$i]->potongan;
-                $st_div_ppn += $data[$i]->ppn;
-                $st_div_bm += $data[$i]->bm;
-                $st_div_btl += $data[$i]->btl;
+                $st_div_ppn += $ppn_rph;                                
                 $st_div_tn += $data[$i]->total;
                 $st_div_avg += $data[$i]->acost;
+                $st_div_ppn_bebas += $ppn_bebas;
+                $st_div_ppn_dtp += $ppn_dtp;
 
                 $st_kat_gross += $data[$i]->gross;
                 $st_kat_potongan += $data[$i]->potongan;
-                $st_kat_ppn += $data[$i]->ppn;
-                $st_kat_bm += $data[$i]->bm;
-                $st_kat_btl += $data[$i]->btl;
+                $st_kat_ppn += $ppn_rph;                                
                 $st_kat_tn += $data[$i]->total;
                 $st_kat_avg += $data[$i]->acost;
+                $st_kat_ppn_bebas += $ppn_bebas;
+                $st_kat_ppn_dtp += $ppn_dtp;
 
                 $sum_gross_bkp += $data[$i]->bkpgross;
                 $sum_potongan_bkp += $data[$i]->bkppot;
-                $sum_ppn_bkp += $data[$i]->bkpppn;
-                $sum_bm_bkp += $data[$i]->bkpbm;
-                $sum_btl_bkp += $data[$i]->bkpbtl;
+                $sum_ppn_bkp += $data[$i]->bkpppn;                                
                 $sum_total_bkp += $data[$i]->bkptotal;
                 $sum_avg_bkp += $data[$i]->bkpavg;
+                $sum_ppn_bebas_bkp += $ppn_bebas;
+                $sum_ppn_dtp_bkp += $ppn_dtp;
 
                 $sum_gross_btkp += $data[$i]->btkpgross;
                 $sum_potongan_btkp += $data[$i]->btkppot;
-                $sum_ppn_btkp += $data[$i]->btkpppn;
-                $sum_bm_btkp += $data[$i]->btkpbm;
-                $sum_btl_btkp += $data[$i]->btkpbtl;
+                $sum_ppn_btkp += $data[$i]->btkpppn;                                
                 $sum_total_btkp += $data[$i]->btkptotal;
                 $sum_avg_btkp += $data[$i]->btkpavg;
+                $sum_ppn_bebas_btkp += $ppn_bebas;
+                $sum_ppn_dtp_btkp += $ppn_dtp;
 
                 $tempdiv = $data[$i]->mstd_kodedivisi;
                 $tempdep = $data[$i]->mstd_kodedepartement;
@@ -204,9 +232,9 @@
                     <th class="left" colspan="7">{{ $data[$i]->mstd_kodekategoribrg }} - {{ $data[$i]->kat_namakategori }}</th>
                     <th class="right">{{ number_format($st_kat_gross,2) }}</th>
                     <th class="right">{{ number_format($st_kat_potongan,2) }}</th>
-                    <th class="right">{{ number_format($st_kat_ppn,2) }}</th>
-                    <th class="right">{{ number_format($st_kat_bm ,2) }}</th>
-                    <th class="right">{{ number_format($st_kat_btl,2) }}</th>
+                    <th class="right">{{ number_format($st_kat_ppn,2) }}</th>                    
+                    <th class="right">{{ number_format($st_kat_ppn_bebas,2) }}</th>
+                    <th class="right">{{ number_format($st_kat_ppn_dtp,2) }}</th>                                        
                     <th class="right padding-right">{{ number_format($st_kat_tn,2) }}</th>
                     <th class="right" colspan="3"></th>
                     <th class="right">{{ number_format($st_kat_avg,2) }}</th>
@@ -215,11 +243,11 @@
                     $skipdiv = false;
                     $st_kat_gross = 0;
                     $st_kat_potongan = 0;
-                    $st_kat_ppn = 0;
-                    $st_kat_bm = 0;
-                    $st_kat_btl = 0;
+                    $st_kat_ppn = 0;                                        
                     $st_kat_tn = 0;
                     $st_kat_avg = 0;
+                    $st_kat_ppn_bebas = 0;
+                    $st_kat_ppn_dtp = 0;
                 @endphp
             @endif
             @if( isset($data[$i+1]->mstd_kodedepartement) && $tempdep != $data[$i+1]->mstd_kodedepartement || !(isset($data[$i+1]->mstd_kodedepartement)) )
@@ -229,8 +257,8 @@
                     <th class="right">{{ number_format( $st_dep_gross,2) }}</th>
                     <th class="right">{{ number_format($st_dep_potongan,2) }}</th>
                     <th class="right">{{ number_format($st_dep_ppn,2) }}</th>
-                    <th class="right">{{ number_format($st_dep_bm ,2) }}</th>
-                    <th class="right">{{ number_format($st_dep_btl,2) }}</th>
+                    <th class="right">{{ number_format($st_dep_ppn_bebas,2) }}</th>
+                    <th class="right">{{ number_format($st_dep_ppn_dtp,2) }}</th>                                        
                     <th class="right padding-right">{{ number_format($st_dep_tn,2) }}</th>
                     <th class="right" colspan="3"></th>
                     <th class="right">{{ number_format($st_dep_avg,2) }}</th>
@@ -238,11 +266,11 @@
                 @php
                     $st_dep_gross = 0;
                     $st_dep_potongan = 0;
-                    $st_dep_ppn = 0;
-                    $st_dep_bm = 0;
-                    $st_dep_btl = 0;
+                    $st_dep_ppn = 0;                                        
                     $st_dep_tn = 0;
                     $st_dep_avg = 0;
+                    $st_dep_ppn_bebas = 0;
+                    $st_dep_ppn_dtp = 0;
                 @endphp
             @endif
             @if((isset($data[$i+1]->mstd_kodedivisi) && $tempdiv != $data[$i+1]->mstd_kodedivisi) || !(isset($data[$i+1]->mstd_kodedivisi)) )
@@ -252,8 +280,8 @@
                     <th class="right">{{ number_format( $st_div_gross,2) }}</th>
                     <th class="right">{{ number_format($st_div_potongan,2) }}</th>
                     <th class="right">{{ number_format($st_div_ppn,2) }}</th>
-                    <th class="right">{{ number_format($st_div_bm ,2) }}</th>
-                    <th class="right">{{ number_format($st_div_btl,2) }}</th>
+                    <th class="right">{{ number_format($st_div_ppn_bebas,2) }}</th>
+                    <th class="right">{{ number_format($st_div_ppn_dtp,2) }}</th>                                        
                     <th class="right">{{ number_format($st_div_tn,2) }}</th>
                     <th class="right" colspan="3"></th>
                     <th class="right">{{ number_format($st_div_avg,2) }}</th>
@@ -262,11 +290,11 @@
                     $skipdiv = false;
                     $st_div_gross = 0;
                     $st_div_potongan = 0;
-                    $st_div_ppn = 0;
-                    $st_div_bm = 0;
-                    $st_div_btl = 0;
+                    $st_div_ppn = 0;                                        
                     $st_div_tn = 0;
                     $st_div_avg = 0;
+                    $st_div_ppn_bebas = 0;
+                    $st_div_ppn_dtp = 0;
                 @endphp
             @endif
 
@@ -278,8 +306,8 @@
             <th class="right">{{ number_format($sum_gross_bkp ,2) }}</th>
             <th class="right">{{ number_format($sum_potongan_bkp ,2) }}</th>
             <th class="right">{{ number_format($sum_ppn_bkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_bm_bkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_btl_bkp ,2) }}</th>
+            <th class="right">{{ number_format($sum_ppn_bebas_bkp ,2) }}</th>
+            <th class="right">{{ number_format($sum_ppn_dtp_bkp ,2) }}</th>                        
             <th class="right">{{ number_format($sum_total_bkp ,2) }}</th>
             <th colspan="3"></th>
             <th class="right">{{ number_format($sum_avg_bkp ,2) }}</th>
@@ -289,8 +317,8 @@
             <th class="right">{{ number_format($sum_gross_btkp ,2) }}</th>
             <th class="right">{{ number_format($sum_potongan_btkp ,2) }}</th>
             <th class="right">{{ number_format($sum_ppn_btkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_bm_btkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_btl_btkp ,2) }}</th>
+            <th class="right">{{ number_format($sum_ppn_bebas_btkp ,2) }}</th>
+            <th class="right">{{ number_format($sum_ppn_dtp_btkp ,2) }}</th>                        
             <th class="right">{{ number_format($sum_total_btkp ,2) }}</th>
             <th colspan="3"></th>
             <th class="right">{{ number_format($sum_avg_btkp ,2) }}</th>
@@ -300,8 +328,8 @@
             <th class="right">{{ number_format($sum_gross_bkp+$sum_gross_btkp ,2) }}</th>
             <th class="right">{{ number_format($sum_potongan_bkp+$sum_potongan_btkp ,2) }}</th>
             <th class="right">{{ number_format($sum_ppn_bkp+$sum_ppn_btkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_bm_bkp+$sum_bm_btkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_btl_bkp+$sum_btl_btkp ,2) }}</th>
+            <th class="right">{{ number_format($sum_ppn_bebas_bkp+$sum_ppn_bebas_btkp ,2) }}</th>
+            <th class="right">{{ number_format($sum_ppn_dtp_bkp+$sum_ppn_dtp_btkp ,2) }}</th>                        
             <th class="right">{{ number_format($sum_total_bkp+$sum_total_btkp ,2) }}</th>
             <th colspan="3"></th>
             <th class="right">{{ number_format($sum_avg_bkp+$sum_avg_btkp ,2) }}</th>

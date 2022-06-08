@@ -24,8 +24,10 @@
                 <th></th>
                 <th></th>
                 <th></th>
-                <th>PLU</th>
                 <th></th>
+                <th></th>
+                <th></th>
+                <th>PLU</th>              
                 <th>Nama Barang</th>
                 <th></th>
                 <th></th>
@@ -33,12 +35,9 @@
                 <th></th>
                 <th></th>
                 <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
+                <th></th>                             
                 <th>Frac / Unit</th>
-                <th></th>
-                
+                <th></th>                
             </tr>
             <tr>
                 <th></th>
@@ -50,7 +49,9 @@
                 <th colspan="2" style="width: 5%">Dr. Kasir</th>
                 <th colspan="2">Penyesuaian</th>
                 <th colspan="2" style="width: 7%">Saldo Akhir</th>
-                <th style="width: 10.5%">Nama Event Prom</th>
+                <th></th>
+                <th></th>
+                <th colspan="2" style="width: 10.5%">Nama Event Prom</th>
                 <th></th>
                 {{-- <th colspan="3">Saldo Awal</th>
                 <th colspan="2">Dr. Supplier</th>

@@ -5,8 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class TestController extends Controller
-{
+class TestController extends Controller {
     public function menu(){
         $menus = DB::connection('igrsmg')->table('tbmaster_access_migrasi')
             ->where('acc_group', 'OMI')->get();

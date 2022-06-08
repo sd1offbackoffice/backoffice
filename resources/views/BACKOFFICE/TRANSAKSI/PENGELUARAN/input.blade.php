@@ -430,9 +430,11 @@
         let rowheader;
         let row = 1;
         let kdsup = '';
-        let arrDeletedPlu = []
+        // let arrDeletedPlu = []
         let datas_detail = []
         let datas_header = []
+        let datas_usulan = []
+        let usulReturKeterangan = []
 
         $(document).ready(function () {
             reset();
@@ -603,7 +605,7 @@
         $(document).on('click', '.row-lov-plu', function () {
             let currentButton = $(this);
             // let currRowHeader = $(this).attr('rowheader');
-            console.log(currentButton.children());
+            // console.log(currentButton.children());
             let plu = currentButton.children().first().text();
             $(`.plu-header-${rowheader}`).val(plu);
             getDataPLU(plu, rowheader);
@@ -1100,33 +1102,46 @@
             let rh = current.attr('rowheader');
             let nodoc = $('#txtNoDoc').val();
             let headerPlu = $(this).parents('tr').find('.plu-header').val()
-            // let model = $('#txtModel').val();
-            // console.log('headerPlu: ' + headerPlu);
-            ajaxSetup();
-            $.ajax({
-                type: "GET",
-                url: "{{ url('/bo/transaksi/pengeluaran/input/check-usul-lebih') }}",
-                data: {
-                    plu: headerPlu,
-                    nodoc: nodoc
-                },
-                beforeSend: function () {
-                    $('#modal-loader').modal('show');
-                },          
-                success: function (response) {
-                    $('#modal-loader').modal('hide');
-                    if (response.status == 'SUCCESS') {
-                        
+            let model = $('#txtModel').val();
+            
+            if (model != '* NOTA SUDAH DICETAK *') {
+                
+                // if ($('#body-table-usulan tr').length <= 1) {
+                //     $('#txt-usl-nodok').val('');
+                //     $('#txt-usl-status').val('');
+                //     $('#txt-usl-kode-supplier').val('');
+                //     $('#txt-usl-nama-supplier').val('');
+                //     $('#txt-usl-pkp').val('');
+                // }
+                
+                // $('#body-table-usulan tr').each(function () {
+                //     let usulReturPlu = $(this).find('.usl-prdcd').html();                                    
+                //     if (usulReturPlu == headerPlu) {
+                //         $(this).remove();
+                //     }
+                // });
+
+                ajaxSetup();
+                $.ajax({
+                    type: "GET",
+                    url: "{{ url('/bo/transaksi/pengeluaran/input/check-usul-lebih-plu') }}",
+                    data: {
+                        plu: headerPlu,
+                        nodoc: nodoc
+                    },
+                    beforeSend: function () {
+                        $('#modal-loader').modal('show');
+                    },          
+                    success: function (response) {
+                        $('#modal-loader').modal('hide');                                        
                     }
-                }
-            });
+                });               
+            }            
 
+            datas_header = datas_header.filter(dh => dh.h_plu !== `${headerPlu}`)
             datas_detail = datas_detail.filter(dd => dd.trbo_prdcd !== `${headerPlu}`)
-            console.log(datas_detail);
-
-            // if (model == '* KOREKSI *') {
-            //     arrDeletedPlu.push(headerPlu)
-            // }
+            console.log(datas_header);           
+            console.log(datas_detail);           
 
             $('#body-table-header tr').each(function () {
                 let plu = $(this).find('.plu-header').val();
@@ -1134,18 +1149,58 @@
                 if (plu == headerPlu) {
                     $(this).remove();
                 }
-            });
-
-            // $('.row-header-' + rh).empty();
-            // $('.row-detail-' + rh).empty();
-            // $(this).find('.plu-header');
+            });            
 
             $('#body-table-detail tr').each(function () {
-                let detailPlu = $(this).find('.plu').val();
-                if (detailPlu == headerPlu) {
-                    $(this).remove();
-                }
+                $(this).remove();
             });
+
+            // $('#body-table-detail tr').each(function () {
+            //     let detailPlu = $(this).find('.plu').val();
+            //     if (detailPlu == headerPlu) {
+            //         $(this).remove();
+            //     }
+            // });
+
+            let index = 0;
+            let tot_gross = 0;
+            let tot_potongan = 0;
+            let tot_ppn = 0;
+            datas_detail.forEach(function (dd) {
+                $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + (index+1) + '" deskripsi="' + dd.deskripsi + '">' +
+                    '<td><input disabled class="form-control plu" type="text" value="' + dd.trbo_prdcd + '"></td>' +
+                    '<td><input disabled class="form-control " type="text" value="' + dd.desk + '"></td>' +
+                    '<td><input disabled class="form-control satuan" type="text" value="' + dd.satuan + '"></td>' +
+                    '<td><input disabled class="form-control bkp" type="text" value="' + dd.bkp + '"></td>' +
+                    '<td><input disabled class="form-control posqty" type="text" value="' + dd.trbo_posqty + '"></td>' +
+                    '<td><input disabled class="form-control hargasatuan" type="text" value="' + convertRupiah(dd.trbo_hrgsatuan) + '"></td>' +
+                    '<td><input disabled class="form-control qtyctn" type="text" value="' + dd.qtyctn + '"></td>' +
+                    '<td><input disabled class="form-control qtypcs" type="text" value="' + dd.qtypcs + '"></td>' +
+                    '<td><input disabled class="form-control gross" type="text" value="' + convertRupiah(dd.trbo_gross) + '"></td>' +
+                    '<td><input disabled class="form-control persendisc" type="text" value="' + dd.discper + '"></td>' +
+                    '<td><input disabled class="form-control discrph" type="text" value="' + convertRupiah(dd.trbo_discrph) + '"></td>' +
+                    '<td><input disabled class="form-control persen_ppn" type="text" value="' + dd.trbo_persenppn + '"></td>' +
+                    '<td><input disabled class="form-control ppn" type="text" value="' + convertRupiah(dd.trbo_ppnrph) + '"></td>' +
+                    '<td><input disabled class="form-control istype" type="text" value="' + dd.trbo_istype + '"></td>' +
+                    '<td><input disabled class="form-control invno" type="text" value="' + dd.trbo_inv + '"></td>' +
+                    '<td><input disabled class="form-control tglinv" type="text" value="' + dd.trbo_tgl + '"></td>' +
+                    '<td><input disabled class="form-control noreff" type="text" value="' + dd.trbo_noreff + '"></td>' +
+                    '<td><input disabled class="form-control keterangan" type="text" value="' + dd.trbo_keterangan + '"></td>' +
+                    '</tr>');
+                
+                index++;
+                tot_gross += parseFloat(dd.trbo_gross);
+                tot_potongan += parseFloat(dd.trbo_discrph);
+                tot_ppn += parseFloat(dd.trbo_ppnrph);
+            });                               
+            
+            tot_total = parseFloat(tot_gross) - parseFloat(tot_potongan) + parseFloat(tot_ppn);
+            $('#gross').val(convertRupiah(tot_gross));
+            $('#potongan').val(convertRupiah(tot_potongan));
+            $('#ppn').val(convertRupiah(tot_ppn));
+            $('#total').val(convertRupiah(tot_total));
+            $('#total-item').val(datas_detail.length);
+            
         });
 
         $(document).on('keypress', '.ctn-header', function (e) {
@@ -1481,6 +1536,7 @@
             $('#body-table-detail tr').each(function () {
                 let detailPlu = $(this).find('.plu').val();
                 if (detailPlu == plu) {
+                    datas_header = datas_header.filter(dh => dh.h_plu !== `${plu}`)
                     datas_detail = datas_detail.filter(dd => dd.trbo_prdcd !== `${plu}`)
                     $(this).remove();
                 }
@@ -1505,13 +1561,38 @@
                     let detail = response.datas;
                     detail.forEach(i => {
                         datas_detail.push(i)
-                    });
-                    console.log(datas_detail);
+                    });                    
+                    
+                    let deskripsi = $(`.deskripsi-header-${rh}`).val();                    
+                    let satuan = $(`.satuan-header-${rh}`).val();
+                    let split_satuan = satuan.split('/')
+                    let bkp = $(`.bkp-header-${rh}`).val();
+                    let stock = $(`.stock-header-${rh}`).val();
                     let ctn = Math.floor(qtyretur / frac)
-                    let qtypcs = qtyretur % frac
+                    let qtypcs = qtyretur % frac    
+                    let keterangan = $(`.keterangan-header-${rh}`).val();                               
+                    if (keterangan == null) {
+                        keterangan = '';
+                    }
+                    
+                    let data = {};
+                    
+                    data.h_plu = plu;
+                    data.h_deskripsi = deskripsi;
+                    data.h_satuan = satuan;
+                    data.h_bkp = bkp;
+                    data.h_stock = stock;                    
+                    data.h_ctn = ctn;
+                    data.h_pcs = qtypcs;                                        
+                    data.h_ket = keterangan;                                        
+                    data.h_frac = split_satuan[1];
+                    datas_header.push(data);
+
+                    console.log(datas_header);
+                    console.log(datas_detail);
+
                     $(`.ctn-header-${rh}`).val(ctn);
                     $(`.pcs-header-${rh}`).val(qtypcs);
-
 
 
                     if (datas_detail.length > 0) {
@@ -1536,7 +1617,7 @@
                                 '<td><input disabled class="form-control gross" type="text" value="' + convertRupiah(dd.trbo_gross) + '"></td>' +
                                 '<td><input disabled class="form-control persendisc" type="text" value="' + dd.discper + '"></td>' +
                                 '<td><input disabled class="form-control discrph" type="text" value="' + convertRupiah(dd.trbo_discrph) + '"></td>' +
-                                '<td><input disabled class="form-control persen_ppn" type="text" value="' + dd.persen_ppn + '"></td>' +
+                                '<td><input disabled class="form-control persen_ppn" type="text" value="' + dd.trbo_persenppn + '"></td>' +
                                 '<td><input disabled class="form-control ppn" type="text" value="' + convertRupiah(dd.trbo_ppnrph) + '"></td>' +
                                 '<td><input disabled class="form-control istype" type="text" value="' + dd.trbo_istype + '"></td>' +
                                 '<td><input disabled class="form-control invno" type="text" value="' + dd.trbo_inv + '"></td>' +
@@ -1582,52 +1663,68 @@
                 let tgldoc = $('#dtTglDoc').val();
                 let kdsup = $('#txtKdSupplier').val();
                 let pkp = $('#txtPKP').val();
-                let datas = [];
+                // let datas = [];
 
+                // $('#body-table-usulan tr').each(function () {
+                //     let data = {};
+                //     data.prdcd = $(this).find(".usl-prdcd").val();
+                //     data.qty = $(this).find(".usl-qty").val();
+                //     datas.push(data);
+                // });
+
+                // let datah = [];
+                // $('#body-table-header tr').each(function () {
+                //     let data = {};
+
+                //     data.plu = $(this).find(".plu-header").val();
+                //     data.ctn = $(this).find(".ctn-header").val();
+                //     data.qty = $(this).find(".pcs-header").val();
+                //     satuan = $(this).find(".satuan-header").val();
+                //     split_satuan = satuan.split('/');
+                //     data.frac = split_satuan[1];
+                //     datah.push(data);
+                // });
+
+                // let datad = [];
+                // $('#body-table-detail tr').each(function () {
+                //     let data = {};
+
+                //     data.plu = $(this).find(".plu").val();
+                //     data.ctn = $(this).find(".qtyctn").val();
+                //     data.qty = $(this).find(".qtypcs").val();
+
+                //     data.noreff = $(this).find(".noreff").val();
+                //     data.istype = $(this).find(".istype").val();
+                //     data.invno = $(this).find(".invno").val();
+                //     data.tglinv = $(this).find(".tglinv").val();
+                //     data.kdsup = kdsup;
+                //     data.plu = $(this).find(".plu").val();
+                //     data.ctn = $(this).find(".qtyctn").val();
+                //     data.qty = $(this).find(".qtypcs").val();
+                //     data.hargasatuan = $(this).find(".hargasatuan").val();
+                //     data.persendisc = $(this).find(".persendisc").val();
+                //     data.gross = parseFloat($(this).find(".gross").val());
+                //     data.discrph = parseFloat($(this).find(".discrph").val());
+                //     data.ppnrph = parseFloat($(this).find(".ppn").val());
+                //     data.posqty = parseFloat($(this).find(".posqty").val());
+                //     data.keterangan = $(this).find(".keterangan").val();
+                //     datad.push(data);
+                // });                            
+                
                 $('#body-table-usulan tr').each(function () {
-                    let data = {};
-                    data.prdcd = $(this).find(".usl-prdcd").val();
-                    data.qty = $(this).find(".usl-qty").val();
-                    datas.push(data);
-                });
+                    let usulReturPlu = $(this).find('.usl-prdcd').html();
+                    // $('#body-table-header tr').each(function () {
+                    //     let headerPlu = $(this).find('.plu-header').val();
+                    //     if (headerPlu == usulReturPlu) {
+                    //         let keterangan = $(this).find('.keterangan-header');
 
-                let datah = [];
-                $('#body-table-header tr').each(function () {
-                    let data = {};
+                    //         let data = {}
 
-                    data.plu = $(this).find(".plu-header").val();
-                    data.ctn = $(this).find(".ctn-header").val();
-                    data.qty = $(this).find(".pcs-header").val();
-                    satuan = $(this).find(".satuan-header").val();
-                    split_satuan = satuan.split('/');
-                    data.frac = split_satuan[1];
-                    datah.push(data);
-                });
-
-                let datad = [];
-                $('#body-table-detail tr').each(function () {
-                    let data = {};
-
-                    data.plu = $(this).find(".plu").val();
-                    data.ctn = $(this).find(".qtyctn").val();
-                    data.qty = $(this).find(".qtypcs").val();
-
-                    data.noreff = $(this).find(".noreff").val();
-                    data.istype = $(this).find(".istype").val();
-                    data.invno = $(this).find(".invno").val();
-                    data.tglinv = $(this).find(".tglinv").val();
-                    data.kdsup = kdsup;
-                    data.plu = $(this).find(".plu").val();
-                    data.ctn = $(this).find(".qtyctn").val();
-                    data.qty = $(this).find(".qtypcs").val();
-                    data.hargasatuan = $(this).find(".hargasatuan").val();
-                    data.persendisc = $(this).find(".persendisc").val();
-                    data.gross = parseFloat($(this).find(".gross").val());
-                    data.discrph = parseFloat($(this).find(".discrph").val());
-                    data.ppnrph = parseFloat($(this).find(".ppn").val());
-                    data.posqty = parseFloat($(this).find(".posqty").val());
-                    data.keterangan = $(this).find(".keterangan").val();
-                    datad.push(data);
+                    //         data.
+                    //     }
+                    // });                                                      
+                    datas_detail = datas_detail.filter(dd => dd.trbo_prdcd !== `${usulReturPlu}`)
+                    
                 });
 
                 ajaxSetup();
@@ -1637,9 +1734,9 @@
                     async: false,
                     data: {
                         nodoc: nodoc,
-                        datas: datas,
-                        datah: datah,
-                        datad: datad,
+                        datas: datas_usulan,
+                        datah: datas_header,
+                        datad: datas_detail,
                         otp: otp,
                         kdsup: kdsup,
                         tgldoc: tgldoc,
@@ -1655,7 +1752,118 @@
                             $('#txt-usl-otp').val('');
                         }
                         else {
-                            // let datas_header = response.datah;
+                            datas_header = response.datah;
+                            let datad = response.datad;
+                            console.log(response.datah);
+                            console.log(response.datad);
+                            datad.forEach(data => {
+                                datas_detail.push(data);
+                            });                          
+
+                            $('#body-table-header tr').each(function () {                                
+                                $(this).remove();                                
+                            });            
+
+                            $('#body-table-detail tr').each(function () {
+                                $(this).remove();  
+                            });
+
+                            let index = 0;
+                            datas_header.forEach(dh => {
+                                let plu = dh.h_plu == null ? '' : dh.h_plu;
+                                let deskripsi = dh.h_deskripsi == null ? '' : dh.h_deskripsi;
+                                let satuan = dh.h_satuan == null ? '' : dh.h_satuan;
+                                let bkp = dh.h_bkp == null ? '' : dh.h_bkp;
+                                let stock = dh.h_stock == null ? '' : dh.h_stock;
+                                let ctn = dh.h_ctn == null ? '' : dh.h_ctn;
+                                let pcs = dh.h_pcs == null ? '' : dh.h_pcs;
+                                let ket = dh.h_ket == null ? '' : dh.h_ket;
+                                let frac = dh.h_frac == null ? '' : dh.h_frac;
+
+                                $('#body-table-header').append(
+                                `<tr class="row-header-${index+1}">` +
+                                    `<td><button class="btn btn-block btn-danger btn-delete-row-header" rowheader="${index+1}"><i class="icon fas fa-times"></i></button></td>` +
+                                    `<td class="buttonInside" style="width: 8%">` +
+                                        `<input type="text" class="form-control plu-header-${index+1} plu-header" rowheader="${index+1}" value="${dh.h_plu}">` +
+                                        `<button type="button" class="btn btn-lov-plu btn-lov ml-3" rowheader="${index+1}" data-target="#m_lov_plu" data-toggle="modal">` +
+                                        `<img src="../../../../public/image/icon/help.png" width="30px">` +
+                                        `</button>` +
+                                    `</td>` +
+                                    `<td><input disabled class="form-control deskripsi-header-${index+1}" type="text" value="${dh.h_deskripsi}"></td>` +
+                                    `<td><input disabled class="form-control satuan-header satuan-header-${index+1}" type="text" value="${dh.h_satuan}"></td>` +
+                                    `<td><input disabled class="form-control bkp-header-${index+1}" type="text" value="${dh.h_bkp}"></td>` +
+                                    `<td><input disabled class="form-control stock-header-${index+1}" type="text" value="${dh.h_stock}"></td>` +
+                                    `<td><input class="form-control ctn-header ctn-header-${index+1}" rowheader="${index+1}" type="text" value="${dh.h_ctn}"></td>` +
+                                    `<td><input class="form-control pcs-header pcs-header-${index+1}" rowheader="${index+1}" type="text" value="${dh.h_pcs}"></td>` +
+                                    `<td><input class="form-control keterangan-header keterangan-header-${index+1}" rowheader="${index+1}" type="text" value="${dh.h_ket}"></td>` +
+                                `</tr>`);     
+
+                                index++;                           
+                            });
+
+
+                            let tot_gross = 0;
+                            let tot_potongan = 0;
+                            let tot_ppn = 0;
+                            index = 0;
+                            datas_detail.forEach(dd => {
+                                let plu = dd.trbo_prdcd == null ? '' : dd.trbo_prdcd;
+                                let desk = dd.desk == null ? '' : dd.desk;
+                                let deskripsi = dd.deskripsi == null ? '' : dd.deskripsi;
+                                let satuan = dd.satuan == null ? '' : dd.satuan;
+                                let bkp = dd.bkp == null ? '' : dd.bkp;
+                                let stock = dd.trbo_posqty == null ? '' : dd.trbo_posqty;
+                                let hrgsatuan = dd.trbo_hrgsatuan == null ? '' : dd.trbo_hrgsatuan;
+                                let ctn = dd.qtyctn == null ? '' : dd.qtyctn;
+                                let pcs = dd.qtypcs == null ? '' : dd.qtypcs;
+                                let gross = dd.trbo_gross == null ? '' : dd.trbo_gross;
+                                let discper = dd.discper == null ? '' : dd.discper;
+                                let discrp = dd.trbo_discrph == null ? '' : dd.trbo_discrph;
+                                let persen_ppn = dd.trbo_persenppn == null ? '' : dd.trbo_persenppn;
+                                let ppn = dd.trbo_ppnrph == null ? '' : dd.trbo_ppnrph;
+                                let faktur = dd.trbo_istype == null ? '' : dd.trbo_istype;
+                                let pajakno = dd.trbo_inv == null ? '' : dd.trbo_inv;
+                                let tglfp = dd.trbo_tgl == null ? '' : dd.trbo_tgl;
+                                let noreffbtb = dd.trbo_noreff == null ? '' : dd.trbo_noreff;
+                                let keterangan = dd.keterangan == null ? '' : dd.keterangan;
+                                let pkp = dd.pkp == null ? '' : dd.pkp;
+                                let frac = dd.frac == null ? '' : dd.frac;
+                                let unit = dd.unit == null ? '' : dd.unit;
+
+                                $('#body-table-detail').append('<tr style="cursor:pointer;" class="row-detail row-detail-' + (index+1) + '" deskripsi="' + deskripsi + '">' +
+                                '<td><input disabled class="form-control plu" type="text" value="' + plu + '"></td>' +
+                                '<td><input disabled class="form-control " type="text" value="' + desk + '"></td>' +
+                                '<td><input disabled class="form-control satuan" type="text" value="' + satuan + '"></td>' +
+                                '<td><input disabled class="form-control bkp" type="text" value="' + bkp + '"></td>' +
+                                '<td><input disabled class="form-control posqty" type="text" value="' + stock + '"></td>' +
+                                '<td><input disabled class="form-control hargasatuan" type="text" value="' + convertRupiah(hrgsatuan) + '"></td>' +
+                                '<td><input disabled class="form-control qtyctn" type="text" value="' + convertRupiah(ctn) + '"></td>' +
+                                '<td><input disabled class="form-control qtypcs" type="text" value="' + convertRupiah(pcs) + '"></td>' +
+                                '<td><input disabled class="form-control gross" type="text" value="' + convertRupiah(gross) + '"></td>' +
+                                '<td><input disabled class="form-control persendisc" type="text" value="' + discper + '"></td>' +
+                                '<td><input disabled class="form-control discrph" type="text" value="' + convertRupiah(discrp) + '"></td>' +
+                                '<td><input disabled class="form-control persen_ppn" type="text" value="' + persen_ppn + '"></td>' +
+                                '<td><input disabled class="form-control ppn" type="text" value="' + convertRupiah(ppn) + '"></td>' +
+                                '<td><input disabled class="form-control istype" type="text" value="' + faktur + '"></td>' +
+                                '<td><input disabled class="form-control invno" type="text" value="' + pajakno + '"></td>' +
+                                '<td><input disabled class="form-control tglinv" type="text" value="' + tglfp + '"></td>' +
+                                '<td><input disabled class="form-control noreff" type="text" value="' + noreffbtb + '"></td>' +
+                                '<td><input disabled class="form-control keterangan" type="text" value="' + keterangan + '"></td>' +
+                                '</tr>');
+                                
+                                index++;
+                                tot_gross += parseFloat(dd.trbo_gross);
+                                tot_potongan += parseFloat(dd.trbo_discrph);
+                                tot_ppn += parseFloat(dd.trbo_ppnrph);
+                            });
+
+                            tot_total = parseFloat(tot_gross) - parseFloat(tot_potongan) + parseFloat(tot_ppn);
+                            $('#gross').val(convertRupiah(tot_gross));
+                            $('#potongan').val(convertRupiah(tot_potongan));
+                            $('#ppn').val(convertRupiah(tot_ppn));
+                            $('#total').val(convertRupiah(tot_total));
+                            $('#total-item').val(datas_detail.length);                          
+
                             // datas_header.forEach(function (dh) {
                             //     let plu = dh.h_plu == null ? '' : dh.h_plu;
                             //     let deskripsi = dh.h_deskripsi == null ? '' : dh.h_deskripsi;
@@ -1804,8 +2012,7 @@
                 }).then((yes) => {
                     if (yes) {
                         let nodoc = $('#txtNoDoc').val();
-                        let tgldoc = $('#dtTglDoc').val();
-                        console.log(tgldoc);
+                        let tgldoc = $('#dtTglDoc').val();                        
                         let kdsup = $('#txtKdSupplier').val();
                         let model = $('#txtModel').val();
 
@@ -1869,7 +2076,7 @@
                             url: "{{ url('/bo/transaksi/pengeluaran/input/save') }}",
                             data: {
                                 // datas: datas,
-                                arrDeletedPlu: arrDeletedPlu,
+                                // arrDeletedPlu: arrDeletedPlu,
                                 nodoc: nodoc,
                                 tgldoc: tgldoc,
                                 model: model,
@@ -1880,7 +2087,7 @@
                                 $('#modal-loader').modal('show');
                             },
                             success: function (response) {
-                                console.log(response);
+                                // console.log(response);
                                 $('#modal-loader').modal('hide');
                                 swal({
                                     title: response.status,
@@ -1922,6 +2129,17 @@
             let kdsup = $('#txtKdSupplier').val();
             let pkp = $('#txtPKP').val();
             let namasup = $('#txtNmSupplier').val();
+
+            $('#txt-usl-nodok').val('');
+            $('#txt-usl-status').val('');
+            $('#txt-usl-kode-supplier').val('');
+            $('#txt-usl-nama-supplier').val('');
+            $('#txt-usl-pkp').val('');
+            $('#body-table-usulan tr').each(function () {
+                $(this).remove();
+            });
+            datas_usulan = []
+
             ajaxSetup();
             $.ajax({
                 type: "POST",
@@ -1931,10 +2149,10 @@
                     kdsup: kdsup
                 },
                 beforeSend: function () {
-                    $('#modal-loader').modal('show');
+                    // $('#modal-loader').modal('show');
                 },
                 success: function (response) {
-                    $('#modal-loader').modal('hide');
+                    // $('#modal-loader').modal('hide');
                     if (response.message) {
 
                         swal({
@@ -1950,7 +2168,7 @@
                         $('#txt-usl-nama-supplier').val(namasup);
                         $('#txt-usl-kode-supplier').val(kdsup);
                         $('#txt-usl-status').val(response.dataUsulan[0].usl_status);
-                        $('#txt-usl-nodok').val(nodoc);
+                        $('#txt-usl-nodok').val(nodoc);                                                                       
 
                         for (let i = 0; i < response.dataUsulan.length; i++) {
                             $('#body-table-usulan').append('<tr class="table-sm">\n' +
@@ -1959,12 +2177,19 @@
                                 '                               <td class="small usl-qty">' + response.dataUsulan[i].usl_qty_sisaretur + '</td>\n' +
                                 '                               <td class="small usl-status">' + response.dataUsulan[i].usl_qty_retur + '</td>\n' +
                                 '                            </tr>')
+
+                            let data = {}
+                            data.prdcd = response.dataUsulan[i].usl_prdcd;
+                            data.qty = response.dataUsulan[i].usl_qty_sisaretur;
+                            datas_usulan.push(data);
                         }
+
+                        // console.log(datas_usulan);
                     }
 
                 },
                 error: function (error) {
-                    $('#modal-loader').modal('hide');
+                    // $('#modal-loader').modal('hide');
                     // handle error
                     swal({
                         title: 'Gagal!',
@@ -2008,10 +2233,10 @@
                     tgldoc: tgldoc
                 },
                 beforeSend: function () {
-                    $('#modal-loader').modal('show');
+                    // $('#modal-loader').modal('show');
                 },
                 success: function (response) {
-                    $('#modal-loader').modal('hide');
+                    // $('#modal-loader').modal('hide');
                     if (response.message) {
                         swal({
                             title: response.status,
@@ -2026,7 +2251,7 @@
 
                 },
                 error: function (error) {
-                    $('#modal-loader').modal('hide');
+                    // $('#modal-loader').modal('hide');
                     // handle error
                     swal({
                         title: 'Gagal!',

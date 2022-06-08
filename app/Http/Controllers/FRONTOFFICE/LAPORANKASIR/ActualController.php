@@ -33,6 +33,11 @@ class ActualController extends Controller
             $hppt = 0;
             $margint = 0;
             $pmargint = 0;
+            $nilait_tepung = 0;
+            $taxt_tepung = 0;
+            $nett_tepung = 0;
+            $hppt_tepung = 0;
+            $margint_tepung = 0;
 
             $totalCounter = DB::connection(Session::get('connection'))->select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, NVL(SUM(NET),0) NET,
 	NVL(SUM(HPP),0) HPP, NVL(SUM(MARGIN),0) MARGIN,
@@ -184,19 +189,8 @@ class ActualController extends Controller
 	AND SLS_KODEDIVISI <>  '5' AND SLS_KODEDEPARTEMENT NOT IN ('39', '40', '43')
 	AND SLS_FLAGBKP = 'G' ) A")[0];
 
-            $ppnMinyak->keterangan = 'TOTAL BRG PPN DIBYR PMERINTH (MINYAK)';
 
-            DB::connection(Session::get('connection'))->table('cetak_sums')
-                ->insert(json_decode(json_encode($ppnMinyak), true));
-
-            $nilait += $ppnMinyak->nilai;
-            $taxt += $ppnMinyak->tax;
-            $nett += $ppnMinyak->net;
-            $hppt += $ppnMinyak->hpp;
-            $margint += $ppnMinyak->margin;
-            $pmargint += $ppnMinyak->pmargin;
-
-            $ppnTepung = DB::connection(Session::get('connection'))->select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, (NVL(SUM(NET),0) - NVL(SUM(TAX),0)) NET,
+    $ppnTepung = DB::connection(Session::get('connection'))->select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, (NVL(SUM(NET),0) - NVL(SUM(TAX),0)) NET,
 	NVL(SUM(HPP),0) HPP, NVL(SUM(MARGIN),0) MARGIN,
 	CASE WHEN NVL(SUM(NET),0) <> 0 THEN ((NVL(SUM(MARGIN),0) * 100 ) / NVL(SUM(NET),0)) ELSE
 	CASE WHEN NVL(SUM(MARGIN),0) <> 0 THEN 100 ELSE 0 END END PMARGIN FROM (
@@ -204,12 +198,13 @@ class ActualController extends Controller
 	(SLS_NETOMI + SLS_NETNOMI + SLS_NETIDM) NET, (SLS_HPPOMI + SLS_HPPNOMI + SLS_HPPIDM) HPP,
 	(SLS_MARGINOMI + SLS_MARGINNOMI + SLS_MARGINIDM) MARGIN FROM TBTR_SUMSALES
 	WHERE SLS_KODEIGR = '".Session::get('kdigr')."' AND TRUNC(SLS_PERIODE) = to_date('".$tanggal."','dd/mm/yyyy') AND SLS_KODEDIVISI <>  '5' AND SLS_KODEDEPARTEMENT NOT IN ('39', '40', '43')
-	AND SLS_FLAGBKP = 'W' ) A")[0];
+	AND SLS_FLAGBKP IN ('W','G') ) A")[0];
 
-            $ppnTepung->keterangan = 'TOTAL BRG PPN DIBYR PMERINTH (TEPUNG)';
-
-            DB::connection(Session::get('connection'))->table('cetak_sums')
-                ->insert(json_decode(json_encode($ppnTepung), true));
+            // $nilait_tepung += $ppnTepung->nilai;
+            // $taxt_tepung += $ppnTepung->tax;
+            // $nett_tepung += $ppnTepung->net;
+            // $hppt_tepung += $ppnTepung->hpp;
+            // $margint_tepung += $ppnTepung->margin;
 
             $nilait += $ppnTepung->nilai;
             $taxt += $ppnTepung->tax;
@@ -217,11 +212,28 @@ class ActualController extends Controller
             $hppt += $ppnTepung->hpp;
             $margint += $ppnTepung->margin;
 
-            if($nett != 0)
-                $pmargint = ($margint * 100) / $nett;
-            else if($margint != 0)
-                $pmargint = 100;
-            else $pmargint = 0;
+            if($nett_tepung != 0)
+                $pmargint_tepung = ($margint_tepung * 100) / $nett_tepung;
+            else if($margint_tepung != 0)
+                $pmargint_tepung = 100;
+            else $pmargint_tepung = 0;
+
+            // dd($ppnTepung);
+
+            $ppnTepung->keterangan = 'TOTAL BARANG PPN DIBAYAR PEMERINTAH';
+
+            DB::connection(Session::get('connection'))->table('cetak_sums')
+                ->insert(json_decode(json_encode($ppnTepung), true));
+
+            // $nilait += ($ppnMinyak->nilai + $nilait_tepung);
+            // // dd($nilait += ($ppnMinyak->nilai + $nilait_tepung));
+            // $taxt += ($ppnMinyak->tax + $taxt_tepung);
+            // $nett += ($ppnMinyak->net + $nett_tepung);
+            // $hppt += ($ppnMinyak->hpp + $hppt_tepung);
+            // $margint += ($ppnMinyak->margin + $margint_tepung);
+            // $pmargint += ($ppnMinyak->pmargin + $pmargint_tepung);
+
+            // dd($nilait,$taxt,$nett,$hppt,$margint,$pmargint);
 
             $nilai40 = DB::connection(Session::get('connection'))->select("SELECT NVL(SUM(NILAI),0) NILAI, NVL(SUM(TAX),0) TAX, NVL(SUM(NET),0) NET,
 	NVL(SUM(HPP),0) HPP, NVL(SUM(MARGIN),0) MARGIN,
@@ -513,7 +525,7 @@ class ActualController extends Controller
 
             $sums = DB::connection(Session::get('connection'))->table('cetak_sums')->get();
 
-//        dd($data);
+    //    dd($sums);
 
             return view('FRONTOFFICE.LAPORANKASIR.ACTUAL.sales-pdf',compact(['perusahaan','data','sums','tanggal']));
         }
@@ -915,11 +927,16 @@ GROUP BY trpt_cus_kodemember, trpt_type, kasir,
 ORDER BY trpt_cus_kodemember");
 
         foreach($data as $d){
-            $d->stat = DB::connection(Session::get('connection'))->select("SELECT trjd_cashierstation FROM tbtr_jualdetail
+            $temp = DB::connection(Session::get('connection'))->selectOne("SELECT trjd_cashierstation FROM tbtr_jualdetail
               WHERE TRUNC(trjd_transactiondate) = TO_DATE('".$tanggal."','dd/mm/yyyy')
                 AND trjd_cus_kodemember = '".$d->trpt_cus_kodemember."'
                 AND trjd_kodeigr = '".Session::get('kdigr')."'
-              ORDER BY trjd_cashierstation")[0]->trjd_cashierstation;
+              ORDER BY trjd_cashierstation");
+
+            if($temp){
+                $d->stat = $temp->trjd_cashierstation;
+            }
+            else $d->stat = null;
         }
 
 //        dd($data);
@@ -927,6 +944,8 @@ ORDER BY trpt_cus_kodemember");
         $dompdf = new PDF();
 
         $title = 'Perincian Kredit - '.$tanggal;
+
+        return view('FRONTOFFICE.LAPORANKASIR.ACTUAL.kredit-pdf',compact(['perusahaan','data','tanggal']));
 
         if(count($data) == 0){
             $pdf = PDF::loadview('pdf-no-data', compact(['title']));

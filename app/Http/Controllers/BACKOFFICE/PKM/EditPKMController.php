@@ -200,7 +200,7 @@ class EditPKMController extends Controller
     public function sendUsulan(Request $request){
         $nousulan = $request->nousulan;
         $tglusulan = $request->tglusulan;
-
+        // dd($nousulan,$tglusulan );
         $c = loginController::getConnectionProcedure();
         $sql = "BEGIN sp_usulanpkm('" . Session::get('kdigr') . "','".$nousulan."',to_date('" . $tglusulan . "','dd/mm/yyyy'),:err_txt); END;";
         $s = oci_parse($c, $sql);
@@ -258,7 +258,8 @@ class EditPKMController extends Controller
                     ->first();
 
                 if(!$found){
-                    DB::connection(Session::get('connection'))
+
+                    $temp_data = DB::connection(Session::get('connection'))
                         ->table('tbtr_usulanpkm')
                         ->insert([
                             'upkm_kodeigr' => Session::get('kdigr'),
@@ -283,6 +284,7 @@ class EditPKMController extends Controller
                             'upkm_modify_by' => null,
                             'upkm_modify_dt' => null
                         ]);
+
                 }
                 else{
                     DB::connection(Session::get('connection'))
@@ -365,9 +367,11 @@ class EditPKMController extends Controller
                 fclose($handle);
             }
 
-            DB::connection(Session::get('connection'))->table('tbtr_usulanpkm')
-            ->where('upkm_nousulan',$noUsulan)
-            ->delete();
+            // DB::connection(Session::get('connection'))->table('tbtr_usulanpkm')
+            // ->where('upkm_nousulan',$noUsulan)
+            // ->delete();
+
+            $arrPLU = [];
 
             foreach($data as $d){
                 $plu = DB::connection(Session::get('connection'))
@@ -384,35 +388,35 @@ class EditPKMController extends Controller
                     $adjust = $plu->pkm_pkm;
                 else $adjust = null;
 
-                DB::connection(Session::get('connection'))
-                    ->table('tbtr_usulanpkm')
-                    ->insert([
-                        'upkm_kodeigr' => Session::get('kdigr'),
-                        'upkm_recordid' => null,
-                        'upkm_nousulan' => $noUsulan,
-                        'upkm_tglusulan' => Carbon::createFromFormat('d/m/Y',$tglUsulan),
-                        'upkm_prdcd' => $d['PRDCD'],
-                        'upkm_mpkm_awal' => $plu->pkm_mpkm,
-                        'upkm_pkmadjust_awal' => $adjust,
-                        'upkm_mplus_awal' => $plu->pkm_qtymplus,
-                        'upkm_pkmt_awal' => $plu->pkm_pkmt,
-                        'upkm_pkm_usulan' => $d['PKM_USULAN'],
-                        'upkm_mplus_usulan' => $d['MPLUS_USULAN'],
-                        'upkm_pkm_edit' => null,
-                        'upkm_mplus_edit' => null,
-                        'upkm_status' => 0,
-                        'upkm_approval' => null,
-                        'upkm_keterangan' => null,
-                        'upkm_tglproses' => null,
-                        'upkm_create_by' => Session::get('usid'),
-                        'upkm_create_dt' => Carbon::now(),
-                        'upkm_modify_by' => null,
-                        'upkm_modify_dt' => null
-                    ]);
+                $arrPLU[] = [
+                    'upkm_kodeigr' => Session::get('kdigr'),
+                    'upkm_recordid' => null,
+                    'upkm_nousulan' => $noUsulan,
+                    'upkm_tglusulan' => Carbon::createFromFormat('d/m/Y',$tglUsulan)->format('d/m/Y'),
+                    'upkm_prdcd' => $d['PRDCD'],
+                    'upkm_mpkm_awal' => $plu->pkm_mpkm,
+                    'upkm_pkmadjust_awal' => $adjust,
+                    'upkm_mplus_awal' => $plu->pkm_qtymplus,
+                    'upkm_pkmt_awal' => $plu->pkm_pkmt,
+                    'upkm_pkm_usulan' => $d['PKM_USULAN'],
+                    'upkm_mplus_usulan' => $d['MPLUS_USULAN'],
+                    'upkm_pkm_edit' => null,
+                    'upkm_mplus_edit' => null,
+                    'upkm_status' => 0,
+                    'upkm_approval' => null,
+                    'upkm_keterangan' => null,
+                    'upkm_tglproses' => null,
+                    'upkm_create_by' => Session::get('usid'),
+                    'upkm_create_dt' => Carbon::now()->format('d/m/Y'),
+                    'upkm_modify_by' => null,
+                    'upkm_modify_dt' => null
+                ];
+
             }
 
             return response()->json([
-                'message' => 'Berhasil menyimpan data usulan!'
+                'message' => 'Berhasil menyimpan data usulan!',
+                'data_usulan' => $arrPLU
             ], 200);
         }
         catch (\Exception $e) {
@@ -494,11 +498,12 @@ class EditPKMController extends Controller
                 prd_kodetag,
                 pkm_minorder,
                 pkm_mindisplay,
-                pkm_periode1,
+                -- TO_CHAR(pkm_periode1,'dd/MM/yyyy') AS pkm_periode1,
+                to_char(to_date(pkm_periode1,'mmyyyy'), 'mm-yyyy') pkm_periode1,
                 pkm_qty1,
-                pkm_periode2,
+                to_char(to_date(pkm_periode2,'mmyyyy'), 'mm-yyyy') pkm_periode2,
                 pkm_qty2,
-                pkm_periode3,
+                to_char(to_date(pkm_periode3,'mmyyyy'), 'mm-yyyy') pkm_periode3,
                 pkm_qty3,
                 pkm_leadtime,
                 slv_servicelevel_qty,
@@ -522,12 +527,21 @@ class EditPKMController extends Controller
                    AND upkm_prdcd = pkm_prdcd
                    AND upkm_prdcd = slv_prdcd(+)");
 
-//        dd($data);
 
         if(count($data) > 0){
             $periode1 = $data[0]->pkm_periode1;
             $periode2 = $data[0]->pkm_periode2;
             $periode3 = $data[0]->pkm_periode3;
+            // if($data[0]->upkm_tglproses == null)
+            // {
+            //     $data[0]->upkm_tglproses = $request->tglusulan;
+            //     $tglusulan =  $data[0]->upkm_tglproses;
+            // }
+            // else{
+            //     $tglusulan =  $data[0]->upkm_tglproses;
+                
+            // }
+            // dd($data,$tglusulan);
         }
         else{
             $periode1 = '-';
@@ -575,8 +589,7 @@ class EditPKMController extends Controller
                 fclose($handle);
             }
 
-            DB::connection(Session::get('connection'))
-                ->beginTransaction();
+//            DB::connection(Session::get('connection'))->beginTransaction();
 
             DB::connection(Session::get('connection'))
                 ->table('tbtemp_editpkm_migrasi')
@@ -624,24 +637,24 @@ class EditPKMController extends Controller
             }
 
             $c = loginController::getConnectionProcedure();
-            $sql = "BEGIN sp_transfer_usulanpkm_migrasi('" . Session::get('kdigr') . "','".Session::get('usid')."',:nousulan,:err_txt); END;";
+            $sql = "BEGIN sp_transfer_usulanpkm_new('" . Session::get('kdigr') . "','".Session::get('usid')."',:nousulan,:err_txt); END;";
             $s = oci_parse($c, $sql);
             oci_bind_by_name($s, ':err_txt', $err_txt, 200);
             oci_bind_by_name($s, ':nousulan', $nousulan, 200);
             oci_execute($s);
 
-            DB::connection(Session::get('connection'))
-                ->commit();
+//            DB::connection(Session::get('connection'))->commit();
+
+            // dd($nousulan);
 
             return response()->json([
                 'message' => 'Berhasil menyimpan data approval!',
-                'nousulan' => $nousulan,
+                'nousulan' => $data[0]['NO_USULAN'],
                 'tglusulan' => $data[0]['TGL_USULAN']
             ], 200);
         }
         catch (\Exception $e) {
-            DB::connection(Session::get('connection'))
-                ->rollBack();
+//            DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
                 'message' => 'Gagal menyimpan data approval!',
@@ -674,11 +687,20 @@ class EditPKMController extends Controller
     }
 
     public function getDataPKMBaru(Request $request){
+
+        // dd($request->all());
+        // $data = DB::connection(Session::get('connection'))
+        //     ->table('tbtr_usulanpkmbaru')
+        //     ->join('tbmaster_prodmast','prd_prdcd','=','pkmn_prdcd')
+        //     ->where('pkmn_nousulan','=',$request->nousulan)
+        //     ->get();
         $data = DB::connection(Session::get('connection'))
             ->table('tbtr_usulanpkmbaru')
             ->join('tbmaster_prodmast','prd_prdcd','=','pkmn_prdcd')
             ->where('pkmn_nousulan','=',$request->nousulan)
             ->get();
+
+        // dd($data);
 
         return DataTables::of($data)->make(true);
     }
@@ -688,7 +710,7 @@ class EditPKMController extends Controller
 
         $header = NULL;
         $data = array();
-       
+
         try {
             if (($handle = fopen($filename, 'r')) !== FALSE) {
                 while (($row = fgetcsv($handle, 1000, '|', '#', '/')) !== FALSE) {
@@ -726,11 +748,11 @@ class EditPKMController extends Controller
                 ->where('pkmn_nousulan','=',substr($filename->getClientOriginalName(),0,11))
                 ->first();
 
-//            if($temp){
-//                return response()->json([
-//                    'message' => 'File sudah pernah diproses!'
-//                ], 500);
-//            }
+           if($temp){
+               return response()->json([
+                   'message' => 'File sudah pernah diproses!'
+               ], 500);
+           }
 
             if(substr($filename->getClientOriginalName(),0,6) != 'PKMN'.Session::get('kdigr')){
                 return response()->json([
@@ -751,7 +773,7 @@ class EditPKMController extends Controller
                     ->insert([
                         'kodeigr' => $d['KODEIGR'],
                         'nousulan' => $d['NOUSULAN'],
-                        'tglusulan' => DB::raw("TO_DATE('" . $d['TGLUSULAN'] . "','dd/mm/yyyy')"),
+                        'tglusulan' => DB::raw("TO_DATE('" . $d['TGLUSULAN'] . "','dd-mm-yy')"),
                         'prdcd' => $d['PRDCD'],
                         'mpkm' => $d['MPKM'],
                         'pkm' => $d['PKM'],
@@ -759,13 +781,13 @@ class EditPKMController extends Controller
                         'mplus_o' => $d['MPLUS_O'],
                         'pkmt' => $d['PKMT'],
                         'create_by' => $d['CREATE_BY'],
-                        'create_dt' => DB::raw("TO_DATE('" . $d['CREATE_DT'] . "','dd/mm/yyyy')")
+                        'create_dt' => DB::raw("TO_DATE('" . $d['CREATE_DT'] . "','dd-mm-yy')")
                     ]);
             }
 
 
             $c = loginController::getConnectionProcedure();
-            $sql = "BEGIN sp_transfer_usulanpkm('" . Session::get('kdigr') . "','".Session::get('usid')."',:nousulan,:err_txt); END;";
+            $sql = "BEGIN sp_transfer_pkmprodbaru('" . Session::get('kdigr') . "','".Session::get('usid')."',:nousulan,:err_txt); END;";
             $s = oci_parse($c, $sql);
             oci_bind_by_name($s, ':err_txt', $err_txt, 200);
             oci_bind_by_name($s, ':nousulan', $nousulan, 200);
@@ -773,10 +795,12 @@ class EditPKMController extends Controller
 
             DB::connection(Session::get('connection'))
                 ->commit();
+            
+            // dd($data[0]['NOUSULAN'],$data[0]['TGLUSULAN']);
 
             return response()->json([
                 'message' => 'Berhasil menyimpan data approval!',
-                'nousulan' => $nousulan,
+                'nousulan' => $data[0]['NOUSULAN'],
                 'tglusulan' => $data[0]['TGLUSULAN']
             ], 200);
         }

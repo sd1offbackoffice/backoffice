@@ -66,7 +66,7 @@
                             <td>No.BPB</td>
                             <td>: {{$datas[$i]->msth_nodoc}}</td>
                             <td style="width: 15px"></td>
-                            <td style="text-align: right">{{$re_print}}</td>
+                            <td style="text-align: right"><?php echo $re_print ?></td>
                             <td style="width: 20px"></td>
                             <td>TANGGAL</td>
                             <td>
@@ -158,7 +158,7 @@
                 </tr>
             </thead>
             <tbody>
-                {{$tempTotalHrgBli = 0, $tempPotongan4 = 0, $tempPPNBtl = 0, $tempPPN = 0}}
+                {{$tempTotalHrgBli = 0, $tempPotongan4 = 0, $tempPPNBtl = 0, $tempPPN = 0, $tempPPNBebas = 0, $tempPPNPemerintah = 0}}
 
                 @for($j = $i ; $j < sizeof($datas); $j++) <tr>
                     <td style="width: 20px">{{$no = $no+1}}</td>
@@ -187,7 +187,9 @@
                     {{$tempTotalHrgBli = $tempTotalHrgBli + $datas[$j]->jumlah}}
                     {{$tempPotongan4 = $tempPotongan4 + $datas[$j]->disc4}}
                     {{$tempPPNBtl = $tempPPNBtl + $datas[$j]->mstd_ppnbtlrph}}
-                    {{$tempPPN = $tempPPN + $datas[$j]->mstd_ppnrph}}
+                    {{$tempPPN = $tempPPN + $datas[$j]->ppn}}
+                    {{$tempPPNBebas = $tempPPNBebas + $datas[$j]->ppn_bebas}}
+                    {{$tempPPNPemerintah = $tempPPNPemerintah + $datas[$j]->ppn_pemerintah}}
 
                     @if($j == sizeof($datas)-1 || $datas[$j]->msth_nodoc != $datas[$j+1]->msth_nodoc)
                     <tr>
@@ -211,12 +213,26 @@
                     <tr>
                         <td colspan="6"></td>
                         <td colspan="2"> TOTAL PPN</td>
-                        <td style="border-bottom: 1px black solid; text-align: right">{{number_format($tempPPN ,2,',','.')}}</td>
+                        <td style="text-align: right">{{number_format($tempPPN ,2,',','.')}}</td>
                     </tr>
+                    @if($tempPPNBebas > 0)
+                    <tr>
+                        <td colspan="6"></td>
+                        <td colspan="2"> TOTAL PPN BEBAS</td>
+                        <td style="text-align: right">{{number_format($tempPPNBebas ,2,',','.')}}</td>
+                    </tr>
+                    @endif
+                    @if($tempPPNPemerintah > 0)
+                    <tr>
+                        <td colspan="6"></td>
+                        <td colspan="2"> TOTAL PPN DITANGGUNG PEMERINTAH</td>
+                        <td style="text-align: right">{{number_format($tempPPNPemerintah ,2,',','.')}}</td>
+                    </tr>
+                    @endif
                     <tr>
                         <td colspan="6"></td>
                         <td colspan="2"> TOTAL SELURUHNYA</td>
-                        <td style="text-align: right"> {{number_format(($tempTotalHrgBli + $tempPPNBtl + $tempPPN - $tempPotongan4) ,2,',','.')}}</td>
+                        <td style="text-align: right"> {{number_format(($tempTotalHrgBli - $tempPotongan4 + $tempPPN) ,2,',','.')}}</td>
                     </tr>
             </tbody>
         </table>

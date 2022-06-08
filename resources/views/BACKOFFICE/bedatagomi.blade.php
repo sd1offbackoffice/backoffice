@@ -6,18 +6,17 @@
         <div class="row justify-content-center">
             <div class="col-md-9">
                 <fieldset class="card border-dark">
-                    
-                    
+
                     <div id="menu" class="subMenu card-body shadow-lg cardForm">
-                        
+
                         <fieldset class="card border-dark">
                            <legend class="w-auto ml-5">Laporan Perbedaan Tag IGR dan OMI</legend>
                             <br>
                             <div class="row">
                                 <label class="col-sm-3 text-right col-form-label">Per Tanggal</label>
-                                <div class="col-sm-2 buttonInside">  
+                                <div class="col-sm-2 buttonInside">
                                     <input disabled id="menu1daterangepicker" class="form-control" type="text">
-                                </div>   
+                                </div>
                             </div>
 
                             <br>
@@ -26,11 +25,11 @@
                                 <label class="col-sm-3 text-right col-form-label">Kode Tag IGR</label>
                                 <div class="col-sm-2 buttonInside">
                                     <input id="kodetagigr" class="form-control" type="text" onchange="validateTag()">
-                                </div>   
+                                </div>
                             </div>
-                            
+
                             <br>
-                            
+
                             <div class="row">
                                 <label class="col-sm-3 text-right col-form-label">Mulai Divisi</label>
                                 <div class="col-sm-2 buttonInside">
@@ -117,9 +116,9 @@
                             </div>
                             <br>
                         </fieldset>
-                        
+
                     </div>
-                    
+
                     <br>
                     <div class="d-flex justify-content-end">
                         <button id="Cetak" class="btn btn-success col-sm-3" type="button" onclick="cetak()">CETAK LAPORAN</button>
@@ -307,7 +306,7 @@
             $('#minKat').val($('#menu1Dep1Input').val());
             $('#maxKat').val($('#menu1Dep2Input').val()).change();
             // $('#limitKat').val($('#menu1Dep1Input').val()).change();
-            
+
             if($('#menu1Div1Input').val() == ''){
                 $('#menu1Div1Input').focus();
             }
@@ -447,7 +446,8 @@
                 if(index){
                     $('#menu1Dep2Desk').val(tableDepartemen.row(index-1).data()['dep_namadepartement'].replace(/&amp;/g, '&'));
 
-                    $('#menu1BtnKat1').prop("hidden",false);
+                        //   getModalKategori();             
+                           $('#menu1BtnKat1').prop("hidden",false);
                 }else{
                     swal('', "Kode Departement tidak terdaftar", 'warning');
                     $('#maxKat').val('').change();
@@ -472,7 +472,6 @@
                     $('#menu1BtnKat2').prop("hidden",false);
                 }else{
                     swal('', "Kode Kategori tidak terdaftar", 'warning');
-
                     $('#menu1Kat1Input').val('').change();
                 }
             }
@@ -628,7 +627,7 @@
             // }
             let dateA = date.substr(0,10);
             dateA = dateA.split('/').join('-');
-            
+
 
             //DIV & DEP & KAT
             let temp = '';
@@ -704,7 +703,7 @@
                     kat2 = temp;
                 }
             }
-            
+
 
             //PRINT
             window.open(`{{ url()->current() }}/print-beda-tag?div1=${div1}&div2=${div2}&dep1=${dep1}&dep2=${dep2}&kat1=${kat1}&kat2=${kat2}&tag=${tag}&date=${dateA}&sort=${sort}`, '_blank');
@@ -739,7 +738,7 @@
 
         function cetak(){
             swal({
-                title: 'Sort By', 
+                title: 'Sort By',
                 icon: "warning",
                 buttons: {
                     one: {
@@ -751,14 +750,14 @@
                     value: 2
                     }
                 },
-                
+
             /*
             * Only returns one value, because input is overridden by buttons
             * so you never get the input's value and the button's value
             * just the button's value.
             */
             }).then( value => {
-                switch (value) {                  
+                switch (value) {
                     case 1:
                         menu1Cetak(1)
                         break;
@@ -769,8 +768,8 @@
                     //     swal("test sort");
                 }
             });
-            
-        
+
+
         }
 
         // IMPORTANT!!! ### BUTUH CURSOR UNTUK MENDETEKSI TOMBOL MANA YANG MEMANGGIL! ###
@@ -819,7 +818,7 @@
                     //     return true;
                     // }
                 }
-                
+
                 return false;
             }
         );
@@ -929,7 +928,54 @@
             });
         }
         //MODAL KATEGORI
-        function getModalKategori(){
+
+        // function getModalKategori2(){
+
+        //     if ($.fn.DataTable.isDataTable('#tableModalKat')) {
+        //         $('#tableModalKat').DataTable().destroy();
+        //         $("#tableModalKat tbody [role='row']").remove();
+        //     }
+        //     tableKategori =  $('#tableModalKat').DataTable({
+        //         "ajax": {
+        //             'url' : '{{ url()->current().'/get-lov-kategori' }}',
+        //             "data" :{
+        //                 dep1 : $('#menu1Dep1Input').val(),
+        //                 dep2 : $('#menu1Dep2Input').val(),
+        //             },
+        //         },
+        //         "columns": [
+        //             {data: 'kat_namakategori', name: 'kat_namakategori'},
+        //             {data: 'kat_kodekategori', name: 'kat_kodekategori'},
+        //             {data: 'kat_kodedepartement', name: 'kat_kodedepartement'},
+        //         ],
+        //         "paging": true,
+        //         "lengthChange": true,
+        //         "searching": true,
+        //         "ordering": true,
+        //         "info": true,
+        //         "autoWidth": false,
+        //         "responsive": true,
+        //         "createdRow": function (row, data, dataIndex) {
+        //             $(row).addClass('modalRow');
+        //             $(row).addClass('modalKategori');
+        //         },
+        //         columnDefs : [
+        //         ],
+        //         "order": []
+        //         ,
+        //         "initComplete": function(data){
+                    
+        //             if($('#menu1Kat1Desk').val() == ''){
+        //                 $('#menu1Kat1Desk').val($(this).find('td:eq(0)').html());
+        //             }
+        //             else{
+        //                 $('#menu1Kat2Desk').val($(this).find('td:eq(0)').html());
+        //             }
+        //         }  
+        //     })     
+        // }
+
+     function getModalKategori(){
             tableKategori =  $('#tableModalKat').DataTable({
                 "ajax": {
                     'url' : '{{ url()->current().'/get-lov-kategori' }}',
@@ -957,14 +1003,14 @@
         }
 
 
-        //ONCLICK MODAL
+   //      //ONCLICK MODAL
         //ONCLICK DIVISI
         $(document).on('click', '.modalDivisi', function () {
             $('#divModal').modal('toggle');
             let currentButton = $(this);
 
             menu1Choose(currentButton);
-            
+
         });
         //ONCLICK DEPARTEMEN
         $(document).on('click', '.modalDepartemen', function () {
@@ -972,7 +1018,7 @@
             let currentButton = $(this);
 
             menu1Choose(currentButton);
-           
+
         });
         //ONCLICK KATEGORI
         $(document).on('click', '.modalKategori', function () {
@@ -980,7 +1026,7 @@
             let currentButton = $(this);
 
             menu1Choose(currentButton);
-           
+
         });
 
 
@@ -1020,12 +1066,17 @@
             let min = 0;
             let max = tableKategori.data().length;
 
-            if($('#minKat').val() != ''){
+
+           if($('#minKat').val() != ''){
                 min = parseInt( $('#minKat').val(), 10 );
             }
             if($('#maxKat').val() != ''){
-                max = parseInt( $('#maxKat').val(), 10 );
+                // max = parseInt( $('#maxKat').val(), 10 );
+                max = $('#maxKat').val();
             }
+
+            console.log(min);
+            console.log(max);
             for(i=0;i<tableKategori.data().length;i++){
                 if(tableKategori.row(i).data()['kat_kodedepartement'] >= min && tableKategori.row(i).data()['kat_kodedepartement'] <= max){
                     if(tableKategori.row(i).data()['kat_kodekategori'] == val){
@@ -1050,6 +1101,22 @@
             // }
             // return 0;
         }
+
+            // let limit = '';
+
+            // if($('#limitKat').val() != ''){
+            //     limit = $('#limitKat').val();
+            // }
+
+            // for(i=0;i<tableKategori.data().length;i++){
+            //     if(tableKategori.row(i).data()['kat_kodedepartement'] == limit || limit == ''){
+            //         if(tableKategori.row(i).data()['kat_kodekategori'] == val){
+            //             return i+1;
+            //         }
+            //     }
+            // }
+            // return 0;
+        
      
     </script>
 @endsection

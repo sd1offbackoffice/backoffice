@@ -56,7 +56,7 @@ class HargaBeliController extends Controller
 
         $tag = DB::connection(Session::get('connection'))->table('tbmaster_tag')
             ->select('*')
-            ->where('tag_kodeigr','=','22')
+            ->where('tag_kodeigr','=',Session::get('kdigr'))
             ->where('tag_kodetag','=',$produk->prd_kodetag)
             ->first();
 
@@ -67,13 +67,13 @@ class HargaBeliController extends Controller
 
         $supplier = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->select('*')
-            ->where('sup_kodeigr','=','22')
+            ->where('sup_kodeigr','=',Session::get('kdigr'))
             ->where('sup_kodesupplier','=',$hargabeli->hgb_kodesupplier)
             ->first();
 
         $hargabelibaru = DB::connection(Session::get('connection'))->table('tbmaster_hargabelibaru')
             ->select('*')
-            ->where('hgn_kodeigr','=','22')
+            ->where('hgn_kodeigr','=',Session::get('kdigr'))
             ->where('hgn_tipe','=',$hargabeli->hgb_tipe)
             ->where('hgn_prdcd','=',$hargabeli->hgb_prdcd)
             ->where('hgn_kodesupplier','=',$hargabeli->hgb_kodesupplier)

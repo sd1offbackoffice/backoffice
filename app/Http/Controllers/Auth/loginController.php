@@ -11,10 +11,9 @@ use Illuminate\Support\Facades\DB;
 
 class loginController extends Controller
 {
+    public const listCabang = [];
     public function __construct()
     {
-
-
         $this->listCabang = array(
 //            (object) array(
 //                'kodeigr' => '22',
@@ -99,7 +98,7 @@ class loginController extends Controller
                 'namacabang' => 'kemayoran',
                 'segment' => '234',
                 'kode' => 'kmy',
-                'dbHostProd' => '192.168.234.193',
+                'dbHostProd' => '192.168.234.191',
                 'dbHostSim' => '192.168.234.193',
                 'dbPass' => 'C4ptus4kmy!'
             ),
@@ -278,18 +277,18 @@ class loginController extends Controller
 
         $allcabang = true;
         $prs = 'Indogrosir HO';
-
+        $kodecabang ='';
         foreach ($this->listCabang as $c) {
             if ($c->segment == explode('.', $request->getHttpHost())[2]) {
                 $prs = 'Indogrosir ' . strtoupper($c->namacabang);
-
+                $kodecabang = $c->kodeigr;
                 $allcabang = false;
                 break;
             }
         }
 
         $cabang = $this->listCabang;
-        return view('login')->with(compact(['prs', 'cabang', 'allcabang']));
+        return view('login')->with(compact(['prs', 'cabang', 'allcabang','kodecabang']));
     }
 
     public function login(Request $request)
@@ -342,6 +341,7 @@ class loginController extends Controller
         Session::put('dbHostSim', $detailCabang->dbHostSim);
         Session::put('dbPort', '1521');
         Session::put('dbPass', $detailCabang->dbPass);
+        Session::put('specialUser',['DVX','SUP','DV1','DV2','DV3','DV4','DV5','DV6','SP1','SP2','SP3','ADM','JEF']);
 
 
         if ($request->username == 'RST' and strtoupper($request->password) == 'RST') {
@@ -586,8 +586,7 @@ class loginController extends Controller
     public static function getConnectionProcedure()
     {
         $simulasi = strtoupper(substr(Session::get('connection'), 0, 3)) == 'SIM';
-        return oci_connect(Session::get('connection'), $simulasi ? Session::get('connection') : Session::get('dbPass'), ($simulasi ? Session::get('dbHostSim') : Session::get('dbHostProd')) . ':' . Session::get('dbPort') . '/' . strtoupper(Session::get('connection')));
-    }
+        return oci_connect(Session::get('connection'), $simulasi ? Session::get('connection') : Session::get('dbPass'), ($simulasi ? Session::get('dbHostSim') : Session::get('dbHostProd')) . ':' . Session::get('dbPort') . '/' . strtoupper(DB::connection(Session::get('connection'))->getConfig()['database']));    }
 
     public static function getConnectionProcedureBDG()
     {
@@ -597,5 +596,9 @@ class loginController extends Controller
     public static function getConnectionProcedureCKL()
     {
         return oci_connect('SIMCKL', 'SIMCKL' , '192.168.249.193:1521/SIMCKL' );
+    }
+
+    public static function getListCabang(){
+        return self::listCabang;
     }
 }

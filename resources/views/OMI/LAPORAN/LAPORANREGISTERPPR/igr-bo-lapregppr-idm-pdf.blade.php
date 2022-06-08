@@ -28,6 +28,9 @@
             <th class="left">MEMBER</th>
             <th class="right">NILAI</th>
             <th class="right">PPN</th>
+            <th class="right">PPN DIBEBASKAN</th>
+            <th class="right">PPN DTP</th>
+
         </tr>
         </thead>
         <tbody>
@@ -48,6 +51,9 @@
                         <td class="left">{{ $d->member }}</td>
                         <td class="right">{{ number_format($d->trpt_netsales,0) }}</td>
                         <td class="right">{{ number_format($d->trpt_ppntaxvalue,0) }}</td>
+
+
+
                     </tr>
                 @else
                     <tr>
@@ -59,6 +65,31 @@
                         <td class="left">{{ $d->member }}</td>
                         <td class="right">{{ number_format($d->trpt_netsales,0) }}</td>
                         <td class="right">{{ number_format($d->trpt_ppntaxvalue,0) }}</td>
+
+
+{{--                        @if($d->prd_flagbkp1 == 'Y' )--}}
+{{--                            @if($d->prd_flagbkp2 == 'Y')--}}
+{{--                                <td align="right padding-right">{{ number_format($d->trpt_ppntaxvalue,2) }}</td>--}}
+{{--                                <td align="right padding-right">{{ number_format(0,2) }}</td>--}}
+{{--                                <td align="right padding-right">{{ number_format(0,2) }}</td>--}}
+{{--                            @elseif($d->prd_flagbkp2 == 'P')--}}
+{{--                                <td align="right padding-right">{{ number_format(0,2) }}</td>--}}
+{{--                                <td align="right padding-right">{{ number_format($d->trpt_ppntaxvalue,2) }}</td>--}}
+{{--                                <td align="right padding-right">{{ number_format(0,2) }}</td>--}}
+{{--                            @elseif($d->prd_flagbkp2 == 'G' || $d->prd_flagbkp2 == 'W')--}}
+{{--                                <td align="right padding-right">{{ number_format(0,2) }}</td>--}}
+{{--                                <td align="right padding-right">{{ number_format(0,2) }}</td>--}}
+{{--                                <td align="right padding-right">{{ number_format($d->trpt_ppntaxvalue,2) }}</td>--}}
+{{--                            @else--}}
+{{--                                <td align="right padding-right">{{ number_format($d->trpt_ppntaxvalue,2) }}</td>--}}
+{{--                                <td align="right padding-right">{{ number_format(0,2) }}</td>--}}
+{{--                                <td align="right padding-right">{{ number_format(0,2) }}</td>--}}
+{{--                            @endif--}}
+{{--                        @else--}}
+                            <td align="right padding-right">{{ number_format($d->trpt_ppntaxvalue,2) }}</td>
+                            <td align="right padding-right">{{ number_format(0,2) }}</td>
+                            <td align="right padding-right">{{ number_format(0,2) }}</td>
+{{--                        @endif--}}
                     </tr>
                 @endif
                 @php

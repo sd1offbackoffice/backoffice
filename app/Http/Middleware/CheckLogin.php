@@ -16,9 +16,9 @@ class CheckLogin
 
             $isChanged = false;
 
-            Session::put('menu', AccessController::getListMenu(Session::get('usid')));
+//            Session::put('menu', AccessController::getListMenu(Session::get('usid')));
 
-            if(!in_array(Session::get('usid'), ['DEV','SUP','DV1','DV2','DV3','SP1','SP2','SP3'])) {
+            if(!in_array(Session::get('usid'), Session::get('specialUser'))) {
                 if(!AccessController::isAccessible(\Request::getPathInfo())){
                     abort(403);
                 }

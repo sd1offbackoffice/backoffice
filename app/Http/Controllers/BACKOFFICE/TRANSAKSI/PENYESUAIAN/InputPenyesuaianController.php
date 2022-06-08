@@ -25,18 +25,6 @@ class InputPenyesuaianController extends Controller
             ->limit(100)
             ->get();
 
-//        Select
-//    PRD_DeskripsiPanjang, PRD_PRDCD, Prd_PLUSupplier, PRD_Barcode
-//From
-//    tbMaster_Prodmast, tbMaster_Stock
-//Where
-//    Substr(prd_prdcd,1,6)||'0'=st_prdcd(+)
-//    and st_kodeigr(+)=prd_kodeigr
-//    and st_lokasi(+)='01'
-//    and prd_kodeigr ='22'
-//    and substr(prd_prdcd,-1) = '0'
-//order by prd_prdcd
-
         $produk = DB::connection(Session::get('connection'))->table(DB::connection(Session::get('connection'))->raw("tbmaster_prodmast,tbmaster_stock"))
             ->select('prd_deskripsipanjang','prd_prdcd','prd_plusupplier','prd_barcode')
             ->whereRaw("st_prdcd(+) = SUBSTR (PRD_PRDCD, 1, 6) || '0'")

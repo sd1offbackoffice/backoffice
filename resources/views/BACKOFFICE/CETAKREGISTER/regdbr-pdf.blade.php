@@ -38,6 +38,7 @@
             $i = 1;
             $temp = '';
             $total = 0;
+            $subtotal = 0;
         @endphp
         @foreach($data as $d)
             @if($temp != $d->msth_tgldoc)

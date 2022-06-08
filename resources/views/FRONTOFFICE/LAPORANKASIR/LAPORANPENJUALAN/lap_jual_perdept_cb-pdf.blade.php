@@ -167,19 +167,19 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
             <td class="right">{{rupiah($cp_netax)}}</td>
         </tr>
         <tr>
-            <td colspan="2" class="right"><b>TOTAL BRG PPN DIBYR PMERINTH (MINYAK) :</b></td>
+            <td colspan="2" class="right"><b>TOTAL BARANG PPN DIBAYAR PEMERINTAH</b></td>
             <td class="right">{{rupiah($cp_nggross)}}</td>
             <td class="right">{{rupiah($cp_ngcsb)}}</td>
             <td class="right">{{rupiah($cp_ngnet)}}</td>
             <td class="right">{{rupiah($cp_ngtax)}}</td>
         </tr>
-        <tr>
+        {{-- <tr>
             <td colspan="2" class="right"><b>TOTAL BRG PPN DIBYR PMERINTH (TEPUNG) :</b></td>
             <td class="right">{{rupiah($cp_nrgross)}}</td>
             <td class="right">{{rupiah($cp_nrcsb)}}</td>
             <td class="right">{{rupiah($cp_nrnet)}}</td>
             <td class="right">{{rupiah($cp_nrtax)}}</td>
-        </tr>
+        </tr> --}}
         <tr>
             <td colspan="2" class="right"><b>TOTAL DEPARTEMEN 43 :</b></td>
             <td class="right">{{rupiah($cp_nfgross)}}</td>

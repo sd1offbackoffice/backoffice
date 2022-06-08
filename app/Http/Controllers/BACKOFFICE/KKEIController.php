@@ -21,7 +21,7 @@ class KKEIController extends Controller
 
     public function get_detail_produk(Request $request){
         $prdcd = $request->prdcd;
-        $kodeigr = '22';
+        $kodeigr = Session::get('kdigr');
         $periode = $request->periode;
 
         $data = array();
@@ -266,7 +266,7 @@ class KKEIController extends Controller
     }
 
     public function save(Request $request){
-        $kodeigr = '22';
+        $kodeigr = Session::get('kdigr');
         $kkeis = array();
         $prdcd = array();
 

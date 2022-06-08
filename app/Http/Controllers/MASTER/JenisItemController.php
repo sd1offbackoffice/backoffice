@@ -71,7 +71,7 @@ class JenisItemController extends Controller
                 'lks_maxplano',
                 'lks_maxdisplay')
             ->where('lks_prdcd', '=', $request->value)
-            ->where('lks_kodeigr', '=', '22')
+            ->where('lks_kodeigr', '=', Session::get('kdigr'))
             ->orderby('lks_koderak')->orderby('lks_kodesubrak')->orderby('lks_tiperak')->orderby('lks_shelvingrak')->orderby('lks_nourut')
             ->get();
 
@@ -143,7 +143,7 @@ class JenisItemController extends Controller
         $prodstock = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')->join('tbmaster_stock','prd_kodeigr','=','st_kodeigr')
             ->select('*')
             ->where('prd_prdcd', '=', $request->value)
-            ->where('prd_kodeigr', '=', "22")
+            ->where('prd_kodeigr', '=', Session::get('kdigr'))
             ->whereRaw('substr (tbmaster_stock.st_prdcd, 1, 6) = substr (tbmaster_prodmast.prd_prdcd, 1, 6)')
             ->where('st_lokasi', '=', "01")
             ->first();
@@ -183,7 +183,7 @@ class JenisItemController extends Controller
         })
             ->select('*')
             ->where('tpod_prdcd', '=', $request->value)
-            ->where('tpod_kodeigr', '=', '22')
+            ->where('tpod_kodeigr', '=', Session::get('kdigr'))
             ->whereRaw('NVL (TPOH_RECORDID, \'0\') NOT IN (\'2\', \'*\', \'1\')')
             ->whereRaw('trunc (tbtr_po_h.tpoh_tglpo + tbtr_po_h.tpoh_jwpb) >= trunc (to_date('.date("Ymd").',\'yyyymmdd\'))')
             ->orderby('tpoh_tglpo','desc')
@@ -199,7 +199,7 @@ class JenisItemController extends Controller
         $supplier = DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')->leftJoin('TBMASTER_SUPPLIER','MSTD_KODESUPPLIER','=','SUP_KODESUPPLIER')
             ->select('*')
             ->whereRaw('substr(mstd_prdcd, 1, 6) = substr(\''.$request->value.'\', 1, 6)')
-            ->where('mstd_kodeigr', '=', '22')
+            ->where('mstd_kodeigr', '=', Session::get('kdigr'))
             ->whereIn('mstd_typetrn', ['L', 'I', 'B'])
             ->whereRaw('NVL (MSTD_RECORDID, \'9\') != 1')
             ->orderBy('mstd_prdcd')
@@ -246,14 +246,14 @@ class JenisItemController extends Controller
 
             $TEMP = DB::connection(Session::get('connection'))->table('TBMASTER_LOKASI')
                 ->select('*')
-                ->where('LKS_KODEIGR', '=', '22')
+                ->where('LKS_KODEIGR', '=', Session::get('kdigr'))
                 ->where('LKS_PRDCD', '=', $request->prdcd)
                 ->where('LKS_JENISRAK', '=', 'S')
                 ->count();
 
             if ($this->ceknull($TEMP, 0) == 0) {
                 DB::connection(Session::get('connection'))->table('TBMASTER_LOKASI')
-                    ->where('LKS_KODEIGR', '22')
+                    ->where('LKS_KODEIGR', Session::get('kdigr'))
                     ->where('LKS_PRDCD', $request->prdcd)
                     ->whereRaw('NVL(LKS_JENISRAK, \'A\') IN(\'A\', \'D\', \'N\')')
                     ->update(['LKS_JENISRAK' => $request->jenisrak]);
@@ -266,7 +266,7 @@ class JenisItemController extends Controller
                 if ($this->ceknull($TEMP, 0) == 0) {
 
                     DB::connection(Session::get('connection'))->table('TBMASTER_PLUPLANO')->insert(
-                        ['PLN_KODEIGR' => '22', 'PLN_PRDCD' => $request->prdcd, 'PLN_JENISRAK' => $request->jenisrak, 'PLN_CREATE_BY' => 'WEB', 'PLN_CREATE_DT' => $date]
+                        ['PLN_KODEIGR' => Session::get('kdigr'), 'PLN_PRDCD' => $request->prdcd, 'PLN_JENISRAK' => $request->jenisrak, 'PLN_CREATE_BY' => 'WEB', 'PLN_CREATE_DT' => $date]
                     );
                     $message = 'Data Berhasil Tersimpan!';
                     $status = 'success';
@@ -288,7 +288,7 @@ class JenisItemController extends Controller
         }
         else{
             DB::connection(Session::get('connection'))->table('TBMASTER_LOKASI')
-                ->where('LKS_KODEIGR', '22')
+                ->where('LKS_KODEIGR', Session::get('kdigr'))
                 ->where('LKS_PRDCD', $request->prdcd)
                 ->whereRaw('NVL(LKS_JENISRAK, \'A\') IN(\'A\', \'D\', \'N\')')
                 ->update(['LKS_JENISRAK' => $request->jenisrak]);
@@ -301,7 +301,7 @@ class JenisItemController extends Controller
             if ($this->ceknull($TEMP, 0) == 0 ) {
 
                 DB::connection(Session::get('connection'))->table('TBMASTER_PLUPLANO')->insert(
-                    ['PLN_KODEIGR' => '22', 'PLN_PRDCD' => $request->prdcd, 'PLN_JENISRAK' => $request->jenisrak, 'PLN_CREATE_BY' => 'WEB', 'PLN_CREATE_DT' => $date]
+                    ['PLN_KODEIGR' => Session::get('kdigr'), 'PLN_PRDCD' => $request->prdcd, 'PLN_JENISRAK' => $request->jenisrak, 'PLN_CREATE_BY' => 'WEB', 'PLN_CREATE_DT' => $date]
                 );
                 $message = 'Data Berhasil Tersimpan!';
                 $status = 'success';

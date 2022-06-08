@@ -89,7 +89,7 @@ class SJASController extends Controller
             WHERE TRJD_KODEIGR = PRD_KODEIGR
             AND TRJD_PRDCD = PRD_PRDCD
             AND TRJD_KODEIGR = '".Session::get('kdigr')."'
-            AND TO_CHAR(TRJD_TRANSACTIONDATE,'dd/mm/yyyy') = '".$data->tglstruk."'
+            AND TRUNC(TRJD_TRANSACTIONDATE) = TO_DATE('".$data->tglstruk."','dd/mm/yyyy')
             AND TRJD_CASHIERSTATION = '".$data->station."'
             AND TRJD_CREATE_BY = '".$data->kasir."'
             AND TRJD_TRANSACTIONNO = '".$data->no."'

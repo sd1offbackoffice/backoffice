@@ -6,9 +6,12 @@ use App\AllModel;
 use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
+use PDF;
 
 class inputController extends Controller
 {
@@ -34,11 +37,11 @@ class inputController extends Controller
         $tipeTrn = $request->tipetrn;
 
         $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT TRBO_NODOC, TRBO_NOPO, TRBO_TGLREFF
-                                        FROM TBTR_BACKOFFICE
-                                       WHERE     TRBO_KODEIGR = '$kodeigr'
-                                             AND TRBO_TYPETRN = '$tipeTrn'
-                                             AND NVL (TRBO_NONOTA, 'AA') = 'AA'
-                                             AND NVL (TRBO_RECORDID, '0') <> '1'
+                                    FROM TBTR_BACKOFFICE
+                                    WHERE     TRBO_KODEIGR = '$kodeigr'
+                                    AND TRBO_TYPETRN = '$tipeTrn'
+                                    AND NVL (TRBO_NONOTA, 'AA') = 'AA'
+                                    AND NVL (TRBO_RECORDID, '0') <> '1'
                                     ORDER BY TRBO_TGLREFF DESC");
 
         return DataTables::of($data)->make(true);
@@ -52,8 +55,8 @@ class inputController extends Controller
         $kodeigr = Session::get('kdigr');
 
         $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp
-                                      FROM TBTR_BACKOFFICE
-                                     WHERE TRBO_KODEIGR = '$kodeigr' AND TRBO_NODOC = '$noDoc' AND TRBO_NOPO = NVL('$noPO', '123') AND NVL(TRBO_RECORDID, '0') <> 1");
+                                    FROM TBTR_BACKOFFICE
+                                    WHERE TRBO_KODEIGR = '$kodeigr' AND TRBO_NODOC = '$noDoc' AND TRBO_NOPO = NVL('$noPO', '123') AND NVL(TRBO_RECORDID, '0') <> 1");
 
         if ($temp[0]->temp == '0') {
             $msg = "Nomor Dokumen Ini Sudah Terdapat di TBTR_BACKOFFICE";
@@ -62,23 +65,23 @@ class inputController extends Controller
         }
 
         $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp
-                                      FROM TEMP_GO
-                                     WHERE KODEIGR = '$kodeigr'
-                                       AND ISI_TOKO = 'Y'
-                                       AND TRUNC (SYSDATE-30) BETWEEN TRUNC (PER_AWAL_REORDER) AND TRUNC (PER_AKHIR_REORDER)");
+                                    FROM TEMP_GO
+                                    WHERE KODEIGR = '$kodeigr'
+                                    AND ISI_TOKO = 'Y'
+                                    AND TRUNC (SYSDATE-30) BETWEEN TRUNC (PER_AWAL_REORDER) AND TRUNC (PER_AKHIR_REORDER)");
 
         $flagGO = ($temp[0]->temp != '0') ? 'Y' : 'N';
 
         $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (*), 0) as temp
-                                      FROM TBTR_BACKOFFICE
-                                     WHERE TRBO_NODOC = '$noDoc' AND TRBO_KODEIGR = '$kodeigr' AND TRBO_TYPETRN = 'L'");
+                                    FROM TBTR_BACKOFFICE
+                                    WHERE TRBO_NODOC = '$noDoc' AND TRBO_KODEIGR = '$kodeigr' AND TRBO_TYPETRN = 'L'");
 
         if ($temp[0]->temp != '0') {
             $recId = DB::connection(Session::get('connection'))->select("SELECT DISTINCT TRBO_RECORDID
-                                           FROM TBTR_BACKOFFICE
-                                          WHERE TRBO_NODOC = '$noDoc'
-                                            AND TRBO_KODEIGR = '$kodeigr'
-                                            AND TRBO_TYPETRN = 'L'");
+                                    FROM TBTR_BACKOFFICE
+                                    WHERE TRBO_NODOC = '$noDoc'
+                                    AND TRBO_KODEIGR = '$kodeigr'
+                                    AND TRBO_TYPETRN = 'L'");
 
             if ($recId) {
                 if ($recId[0]->trbo_recordid == '2') {
@@ -95,14 +98,13 @@ class inputController extends Controller
 
         $data = DB::connection(Session::get('connection'))->select("SELECT a.*, b.prd_deskripsipanjang as barang, b.prd_unit, b.prd_frac as trbo_frac, b.prd_kodetag as trbo_kodetag, nvl(b.prd_flagbkp1, ' ') as trbo_bkp, c.sup_namasupplier,
                                     c.sup_pkp ,a.trbo_qty / b.prd_frac as qty, ( a.trbo_rphdisc1 + a.trbo_rphdisc2 + a.trbo_rphdisc2ii + a.trbo_rphdisc2iii + a.trbo_rphdisc3 + a.trbo_rphdisc4) as total_disc
-                                      FROM tbtr_backoffice a
-                                           LEFT JOIN tbmaster_prodmast b ON a.trbo_prdcd = b.prd_prdcd AND a.trbo_kodeigr = b.prd_kodeigr
-                                           LEFT JOIN tbmaster_supplier c ON a.trbo_kodesupplier = c.sup_kodesupplier and a.trbo_kodeigr = c.sup_kodeigr
-                                             WHERE trbo_kodeigr = '$kodeigr'
-                                               AND trbo_typetrn = '$typeTrn'
-                                               AND trbo_nodoc = '$noDoc'
-                                               AND NVL (prd_deskripsipanjang, 'FLAG') <> 'FLAG'
-                                               ");
+                                    FROM tbtr_backoffice a
+                                    LEFT JOIN tbmaster_prodmast b ON a.trbo_prdcd = b.prd_prdcd AND a.trbo_kodeigr = b.prd_kodeigr
+                                    LEFT JOIN tbmaster_supplier c ON a.trbo_kodesupplier = c.sup_kodesupplier and a.trbo_kodeigr = c.sup_kodeigr
+                                    WHERE trbo_kodeigr = '$kodeigr'
+                                    AND trbo_typetrn = '$typeTrn'
+                                    AND trbo_nodoc = '$noDoc'
+                                    AND NVL (prd_deskripsipanjang, 'FLAG') <> 'FLAG'");
 
 
         if (!$data) {
@@ -134,248 +136,467 @@ class inputController extends Controller
         return response()->json($result);
     }
 
-    public function showPO()
+    public function downloadNPD()
     {
+
+        // sp_proses_trf_rte_npd (p_sukses, hasil);
+        return response()->json(['kode' => 0, 'msg' => 'Data NPD sudah di tarik !!']);
+    }
+
+    public function showPO(Request $request)
+    {
+        if ($request->rte == 'Y') {
+            $kodeigr = Session::get('kdigr');
+            $data = DB::connection(Session::get('connection'))->select("SELECT tpoh_nopo,
+                                    tpoh_tglpo,
+                                    tpoh_kodesupplier,
+                                    sup_namasupplier
+                                    FROM (SELECT    tpoh_nopo,
+                                                    tpoh_tglpo,
+                                                    TRUNC (tpoh_tglpo) + NVL (tpoh_jwpb, 0) tgl,
+                                                    tpoh_kodesupplier,
+                                                    sup_namasupplier
+                                    FROM tbtr_po_h, tbmaster_supplier
+                                    WHERE     tpoh_kodeigr = '$kodeigr'
+                                    AND NVL (tpoh_recordid, '0') != '2'
+                                    AND sup_kodesupplier = tpoh_kodesupplier
+                                    AND sup_kodeigr = tpoh_kodeigr
+                                    AND NVL (TRIM (tpoh_recordid), '0') != '2'
+                                    AND NVL (TRIM (tpoh_recordid), '0') != '1')
+                                    WHERE tgl > SYSDATE");
+
+            return DataTables::of($data)->make(true);
+        } else {
+            $kodeigr = Session::get('kdigr');
+            $data = DB::connection(Session::get('connection'))->select("SELECT tpoh_nopo,
+                                        tpoh_tglpo,
+                                        tpoh_kodesupplier,
+                                        sup_namasupplier
+                                        FROM (SELECT    tpoh_nopo,
+                                                        tpoh_tglpo,
+                                                        TRUNC (tpoh_tglpo) + NVL (tpoh_jwpb, 0) tgl,
+                                                        tpoh_kodesupplier,
+                                                        sup_namasupplier
+                                        FROM tbtr_po_h, tbmaster_supplier
+                                        WHERE     tpoh_kodeigr = '$kodeigr'
+                                        AND NVL (tpoh_recordid, '0') != '2'
+                                        AND sup_kodesupplier = tpoh_kodesupplier
+                                        AND sup_kodeigr = tpoh_kodeigr
+                                        AND NVL (TRIM (tpoh_recordid), '0') != '2'
+                                        AND NVL (TRIM (tpoh_recordid), '0') != '1')
+                                        WHERE tgl > SYSDATE");
+
+            return DataTables::of($data)->make(true);
+        }
+    }
+
+    public function otorisasi(Request $request)
+    {
+        $otoUser = strtoupper($request->otoUser);
+        $otoPass = strtoupper($request->otoPass);
+        $noPO = strtoupper($request->noPO);
         $kodeigr = Session::get('kdigr');
 
-        $data = DB::connection(Session::get('connection'))->select("SELECT tpoh_nopo,
-                                           tpoh_tglpo,
-                                           tpoh_kodesupplier,
-                                           sup_namasupplier
-                                      FROM (SELECT tpoh_nopo,
-                                                   tpoh_tglpo,
-                                                   TRUNC (tpoh_tglpo) + NVL (tpoh_jwpb, 0) tgl,
-                                                   tpoh_kodesupplier,
-                                                   sup_namasupplier
-                                              FROM tbtr_po_h, tbmaster_supplier
-                                             WHERE     tpoh_kodeigr = '$kodeigr'
-                                                   AND NVL (tpoh_recordid, '0') != '2'
-                                                   AND sup_kodesupplier = tpoh_kodesupplier
-                                                   AND sup_kodeigr = tpoh_kodeigr
-                                                   AND NVL (TRIM (tpoh_recordid), '0') != '2'
-                                                   AND NVL (TRIM (tpoh_recordid), '0') != '1')
-                                     WHERE tgl > SYSDATE");
+        $user = DB::connection(Session::get('connection'))->select("SELECT USERID
+        FROM  TBMASTER_USER
+        WHERE USERID = '$otoUser'");
+        if (!isset($user)) {
+            return response()->json(['kode' => 0, 'msg' => 'User tidak ditemukan']);
+        } else {
+            $username = $user[0]->userid;
+            $pass = DB::connection(Session::get('connection'))->select("SELECT USERID, USERPASSWORD
+            FROM  TBMASTER_USER
+            WHERE USERID = '$username'
+            AND   USERPASSWORD = '$otoPass'");
+            if (!isset($pass)) {
+                return response()->json(['kode' => 0, 'msg' => 'User tidak ditemukan']);
+            } else {
+                $result = DB::connection(Session::get('connection'))->select("SELECT USERLEVEL
+                FROM  TBMASTER_USER
+                WHERE USERID = '$otoUser'
+                AND   USERPASSWORD = '$otoPass'");
 
-        return DataTables::of($data)->make(true);
+                if ($result[0]->userlevel == 1) {
+                    try {
+                        DB::connection(Session::get('connection'))->table('tbtr_po_d')
+                            ->where('tpod_kodeigr', $kodeigr)->where('tpod_nopo', $noPO)
+                            ->update(['tpod_recordid' => 2]);
+
+                        DB::connection(Session::get('connection'))->table('tbtr_po_h')
+                            ->where('tpoh_nopo', $noPO)
+                            ->update(['tpoh_recordid' => 2]);
+
+                        return response()->json(['kode' => 0, 'msg' => 'Otorisasi Sukses']);
+                    } catch (Exception $e) {
+                        return response()->json(['kode' => 1, 'msg' => $e]);
+                    }
+                } else {
+                    return response()->json(['kode' => 1, 'msg' => 'Kode Otorisasi MGR Tidak Terdaftar !!']);
+                }
+            }
+        }
+    }
+
+    public function printGagalBPB(Request $request)
+    {
+        $url = $request->url;
+        $nopo = $request->po;
+        $nobtb = $request->btbno;
+        $kodeigr = Session::get('kdigr');
+
+        $data = DB::connection(Session::get('connection'))->select("SELECT
+        tpoh_kodesupplier AS code,
+        sup_namasupplier AS sup_name
+        FROM (SELECT    tpoh_nopo,
+                        tpoh_tglpo,
+                        TRUNC (tpoh_tglpo) + NVL (tpoh_jwpb, 0) tgl,
+                        tpoh_kodesupplier,
+                        sup_namasupplier
+        FROM tbtr_po_h, tbmaster_supplier
+        WHERE     tpoh_kodeigr = '$kodeigr'
+        AND     tpoh_nopo = '$nopo'
+        AND NVL (tpoh_recordid, '0') != '2'
+        AND sup_kodesupplier = tpoh_kodesupplier
+        AND sup_kodeigr = tpoh_kodeigr
+        AND NVL (TRIM (tpoh_recordid), '0') != '2'
+        AND NVL (TRIM (tpoh_recordid), '0') != '1')
+        WHERE tgl > SYSDATE");
+
+        $tokoigr = DB::connection(Session::get('connection'))->select("SELECT
+        cab_namacabang AS toko
+        FROM tbmaster_cabang
+        WHERE cab_kodecabang = '$kodeigr'");
+
+        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.' . $url, ['noBTB' => $nobtb, 'code' => $data[0]->code, 'name' => $data[0]->sup_name, 'date' => Carbon::now()->format('Ymd'), 'kodeigr' => $kodeigr, 'toko' => $tokoigr[0]->toko]);
+        $pdf->output();
+        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $canvas = $dompdf->get_canvas();
+        $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+
+        return $pdf->stream($url . '.PDF');
     }
 
     public function choosePO(Request $request)
     {
+        $simpanData = 'Y';
+        $batal = 'N';
+        $rte = $request->rte ? $request->rte : 'N';
+        $bread = 'N';
+        if ($rte == 'Y') {
+            $bpb = 'N';
+        } else {
+            $bpb = 'Y';
+        }
+        $temp = 0;
+        $temp1 = 0;
+        $temp2 = 0;
+        $recid = '';
+        $wkpo = 0;
+        $tglpo = Carbon::now()->format('Ymd');
+        $sysdate = Carbon::now()->format('Ymd');
+        $awalgo = '';
+        $akhirgo = '';
+        $lotorisasi = false;
+        $flaggo = 'N';
         $typeTrn = $request->typeTrn;
         $noPO = $request->noPo;
         $kodeigr = Session::get('kdigr');
-        $recid = '';
-        $awalgo = '';
-        $akhirgo = '';
-        $lotorisasi = '';
-        $flaggo = 'N';
-
-        $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp
-                                      FROM TEMP_GO
-                                     WHERE KODEIGR = '$kodeigr' AND ISI_TOKO = 'Y'
-                                       AND TRUNC (SYSDATE) BETWEEN TRUNC (PER_AWAL_REORDER) AND TRUNC (PER_AKHIR_REORDER)");
-
-        if ($temp[0]->temp > 0) {
-            $flaggo = 'Y';
-        }
 
         $temp1 = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp1
-                                      FROM TBTR_BACKOFFICE
-                                     WHERE     TRBO_KODEIGR = '$kodeigr'
-                                           AND TRBO_NOPO = NVL ('$noPO', '123')
-                                           AND NVL (TRBO_RECORDID, '0') <> 1");
+                FROM  TBTR_BACKOFFICE
+                WHERE TRBO_KODEIGR = '$kodeigr'
+                AND   TRBO_NOPO = NVL ('$noPO', '123')
+                AND   NVL (TRBO_RECORDID, '0') <> 1");
 
         $temp2 = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp2
-                                      FROM TBTR_MSTRAN_D
-                                     WHERE     MSTD_KODEIGR = '$kodeigr'
-                                           AND MSTD_NOPO = NVL ('$noPO', '123')
-                                           AND MSTD_TYPETRN = 'B'
-                                           AND NVL (MSTD_RECORDID, '0') <> 1");
+                FROM  TBTR_MSTRAN_D
+                WHERE MSTD_KODEIGR = '$kodeigr'
+                AND   MSTD_NOPO = NVL ('$noPO', '123')
+                AND   MSTD_TYPETRN = 'B'
+                AND   NVL (MSTD_RECORDID, '0') <> 1");
 
-        if ($temp1[0]->temp1 > 0 || $temp2[0]->temp2 > 0) {
+        if ($temp1[0]->temp1 != 0 || $temp2[0]->temp2 != 0) {
             $msg = "Nomor Dokumen Ini Sudah Terdapat di TBTR_BACKOFFICE / TBTR_MSTRAN_D";
 
             return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
+        } else {
+            if ($noPO == null || $noPO == '') {
+                $msg = "Nomor PO Kosong";
+
+                return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
+            } else {
+                if ($rte == 'Y') {
+                    $batal = 'N';
+                    $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp
+                        FROM  TBHISTORY_NPD_RTE
+                        WHERE docno = '$noPO'");
+                    if ($temp[0]->temp == 0) {
+                        $msg = "No NPD Tidak Ada, Berita Acara Gagal Proses akan dikirimkan ke email EDP !!";
+                        $batal = 'N';
+                        $connect = loginController::getConnectionProcedure();
+                        try {
+                            $query = oci_parse($connect, "BEGIN SP_MAIL_BAG('$noPO'");
+                            oci_execute($query);
+                        } catch (Exception $e) {
+                            return response()->json(['kode' => 0, 'msg' => $e, 'data' => '']);
+                        }
+                        return response()->json(['kode' => 3, 'url' => 'IGR_BO_GAGAL_BPB', 'nopo' => $noPO]);
+                    }
+                    $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp
+                                FROM  TBHISTORY_NPD_RTE
+                                WHERE docno = '$noPO'
+                                AND NVL (TRIM (no_bpb, '0') = '0'");
+
+                    if ($temp[0]->temp == 0) {
+                        $msg = "No NPD Tidak Terdaftar / Kuantitas NPD sudah dipenuhi";
+
+                        $batal = 'N';
+                        return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
+                    } else {
+                        $this->checkPO($flaggo, $typeTrn, $noPO, $kodeigr, $rte);
+                    }
+                    // } else if ($bread == 'Y') {
+                    //     $batal = 'Y';
+                    //     $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp
+                    //                 FROM  tbtr_mbgi
+                    //                 WHERE mbg_nosj  = '$noPO'
+                    //                 AND NVL (TRIM (mbg_nobpb, '0') = '0'");
+                    //     if ($temp[0]->temp == 0) {
+                    //         $msg = "No MBGI Tidak Terdaftar / Kuantitas MBGI sudah dipenuhi";
+
+                    //         $batal = 'N';
+                    //         return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
+                    //     } else {
+                    //         $this->checkPO($flaggo, $typeTrn, $noPO, $kodeigr, $rte);
+                    //     }
+                } else if ($bpb == 'Y') {
+                    $batal = 'Y';
+                    $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp
+                                FROM  TBTR_PO_H
+                                WHERE TPOH_NOPO = '$noPO'
+                                AND TPOH_KODEIGR = '$kodeigr'
+                                AND NVL (TRIM (TPOH_RECORDID), '0') != '2'
+                                AND NVL (TRIM (TPOH_RECORDID), '0') != '1'");
+                    if ($temp[0]->temp == 0) {
+                        $msg = "No PO Tidak Terdaftar / Kuantitas PO sudah dipenuhi";
+                        $batal = 'N';
+                        return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
+                    } else {
+                        //penambahan untuk penerimaan GO
+                        if ($flaggo == 'Y') {
+                            $temp = DB::connection(Session::get('connection'))->select("SELECT PER_AWAL_REORDER AS AWALGO, PER_AKHIR_REORDER AS AKHIRGO
+                                    FROM  TEMP_GO
+                                    WHERE KODEIGR = '$kodeigr'
+                                    AND   ISI_TOKO = 'Y'
+                                    AND   TRUNC (SYSDATE) BETWEEN TRUNC (PER_AWAL_REORDER) AND TRUNC (PER_AKHIR_REORDER)");
+
+                            $awalgo = $temp[0]->awalgo;
+                            $akhirgo = $temp[0]->akhirgo;
+
+                            $temp1 = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) AS temp1
+                                    FROM  TBTR_PO_D
+                                    WHERE TBTR_PO_D = '$noPO'
+                                    AND   TBTR_PO_D = '$kodeigr'
+                                    AND   NVL (TRIM (TPOD_QTYPB), 0) = 0
+                                    AND   NVL (TRIM (TPOD_RECORDID), '0') != '1'");
+                            if ($temp1[0]->temp1 == 0) {
+                                $msg = "Kuantitas PO sudah dipenuhi Semua";
+                                $batal = 'N';
+                                return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
+                            } else {
+                                if ($recid == 'X') {
+                                    $msg = "PO Sedang Dipakai di DCP";
+                                    $batal = 'N';
+                                    return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
+                                    /* front end
+                                    SET_ITEM_PROPERTY ('KD_SUPPLIER',
+                                                    ENABLED,
+                                                    PROPERTY_FALSE);
+                                    SET_ITEM_PROPERTY ('NO_FAKTUR',
+                                                    ENABLED,
+                                                    PROPERTY_FALSE);
+                                    SET_ITEM_PROPERTY ('TGL_FAKTUR',
+                                                    ENABLED,
+                                                    PROPERTY_FALSE);
+                                    SET_ITEM_PROPERTY ('I_PRDCD',
+                                                    ENABLED,
+                                                    PROPERTY_FALSE);
+                                    :NO_PO := NULL;
+                                    */
+                                } else {
+                                    $temp = DB::connection(Session::get('connection'))->select("SELECT TPOH_TGLPO as TGLPO, TPOH_JWPB as WKPO,
+                                    FROM  TBTR_PO_H
+                                        WHERE TPOH_NOPO  = '$noPO'
+                                        AND   TPOH_KODEIGR  = '$kodeigr'");
+
+                                    $tglpo = date_create($temp[0]->tglpo);
+                                    $wkpo = $temp[0]->wkpo . " days";
+                                    date_add($tglpo, date_interval_create_from_date_string($wkpo));
+                                    $sysdate = date_create($sysdate);
+                                    date_sub($sysdate, date_interval_create_from_date_string("1 day"));
+
+                                    if (!(($tglpo >= $awalgo) && ($tglpo <= $akhirgo))) {
+                                        $msg = "Umur P.O. untuk GO sudah melampaui Tanggal hari ini";
+                                        $lotorisasi = true;
+
+                                        return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
+                                    } else {
+                                        $diff = date_diff(date_create($temp[0]->tglpo), date_create($sysdate));
+
+                                        if ($diff->d > 7) {
+                                            $msg = "Tanggal P.O. sudah melampaui 1 minggu";
+                                            $lotorisasi = true;
+
+                                            return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
+                                        }
+                                    }
+
+                                    if ($lotorisasi == true) {
+                                        $msg = "Show Lotorisasi";
+
+                                        return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
+                                    } else {
+                                        $this->checkPO($flaggo, $typeTrn, $noPO, $kodeigr, $rte);
+                                    }
+                                }
+                            }
+                        } else { //else flaggo
+                            $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (TPOH_RECORDID, 0) AS RECID, TPOH_TGLPO AS TGLPO, TPOH_JWPB AS WKPO
+                            FROM TBTR_PO_H
+                                WHERE TPOH_NOPO = '$noPO'
+                                AND  TPOH_KODEIGR = '$kodeigr'");
+
+                            if ($temp[0]->recid == 2) {
+                                $msg = "Kuantitas PO sudah dipenuhi";
+                                $batal = 'N';
+                                return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
+                            } else {
+                                if ($temp[0]->recid == 'X') {
+                                    $msg = "PO Sedang Dipakai di DCP";
+                                    $batal = 'N';
+                                    /* front end
+                                    SET_ITEM_PROPERTY ('KD_SUPPLIER',
+                                                    ENABLED,
+                                                    PROPERTY_FALSE);
+                                    SET_ITEM_PROPERTY ('NO_FAKTUR',
+                                                    ENABLED,
+                                                    PROPERTY_FALSE);
+                                    SET_ITEM_PROPERTY ('TGL_FAKTUR',
+                                                    ENABLED,
+                                                    PROPERTY_FALSE);
+                                    SET_ITEM_PROPERTY ('I_PRDCD',
+                                                    ENABLED,
+                                                    PROPERTY_FALSE);
+                                    */
+                                    return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
+                                } else {
+                                    $tglpo = date_create($temp[0]->tglpo);
+                                    $wkpo = $temp[0]->wkpo . " days";
+                                    date_add($tglpo, date_interval_create_from_date_string($wkpo));
+                                    $sysdate = date_create($sysdate);
+                                    date_sub($sysdate, date_interval_create_from_date_string("1 day"));
+
+                                    if ($tglpo < $sysdate) {
+                                        $msg = "Umur P.O. sudah melampaui Tanggal hari ini";
+                                        $lotorisasi = true;
+                                    } else {
+                                        $tglpo = date_create($temp[0]->tglpo);
+                                        $diff = date_diff($tglpo, $sysdate);
+
+                                        if ($diff->d > 7) {
+                                            $msg = "Tanggal P.O. sudah melampaui 1 minggu";
+                                            $lotorisasi = true;
+                                        }
+                                    }
+
+                                    if ($lotorisasi == true) {
+                                        $data = "Lotorisasi";
+
+                                        return response()->json(['kode' => 0, 'msg' => $msg, 'data' => $data]);
+                                    } else {
+                                        return $this->checkPO($flaggo, $typeTrn, $noPO, $kodeigr, $rte);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
+    }
 
-        $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp
-                                      FROM TBTR_PO_H
-                                     WHERE     TPOH_NOPO = '$noPO'
-                                           AND TPOH_KODEIGR = '$kodeigr'
-                                           AND NVL (TRIM (TPOH_RECORDID), '0') != '2'
-                                           AND NVL (TRIM (TPOH_RECORDID), '0') != '1'");
+    public function checkPO($flaggo, $typeTrn, $noPO, $kodeigr, $rte)
+    {
+        if ($rte == 'Y') {
+            $bpb = 'N';
+        } else {
+            $bpb = 'Y';
+        }
+        $temp = 0;
+        $recid = '';
 
-        if ($temp[0]->temp == 0) {
-            $msg = "No PO Tidak Terdaftar / Kuantitas PO sudah dipenuhi";
-
+        if ($typeTrn == 'L' && $noPO != null) {
+            $msg = "Nomor PO tidak boleh diisi";
             return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
         }
 
-        //        $flaggo = 'Y';
+        if ($bpb == 'Y') {
+            if ($flaggo == 'Y') {
+                $temp = DB::connection(Session::get('connection'))->select("SELECT tpoh_tglpo as tglpo, tpoh_jwpb as wkpo, NVL (TRIM(tpoh_recordid), '0') recid
+                                                    FROM tbtr_po_h
+                                                    WHERE tpoh_nopo = '$noPO' AND tpoh_kodeigr = '$kodeigr'");
 
-        if ($flaggo == 'Y') {
-            $temp = DB::connection(Session::get('connection'))->select("SELECT PER_AWAL_REORDER AS AWALGO, PER_AKHIR_REORDER AS AKHIRGO
-                                      FROM TEMP_GO
-                                     WHERE     KODEIGR = '$kodeigr'
-                                           AND ISI_TOKO = 'Y'
-                                           AND TRUNC (SYSDATE) BETWEEN TRUNC (PER_AWAL_REORDER)
-                                                                   AND TRUNC (PER_AKHIR_REORDER)");
-
-            if ($temp) {
-                $awalgo = $temp[0]->awalgo;
-                $akhirgo = $temp[0]->akhirgo;
-            }
-
-            $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp
-                                      FROM TBTR_PO_D
-                                     WHERE     TPOD_NOPO = '$noPO'
-                                           AND TPOD_KODEIGR = '$kodeigr'
-                                           AND NVL (TRIM (TPOD_QTYPB), 0) = 0
-                                           AND NVL (TRIM (TPOD_RECORDID), '0') != '1'");
-
-            if ($temp[0]->temp == 0) {
-                $msg = "Kuantitas PO sudah dipenuhi Semua";
-
-                return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
-            }
-
-            if ($recid == 'X') {
-                $msg = "PO Sedang Dipakai di DCP";
-
-                return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
-            }
-
-            $temp = DB::connection(Session::get('connection'))->select("SELECT TPOH_TGLPO as TGLPO, TPOH_JWPB as WKPO, TPOH_TGLPO + TPOH_JWPB as tgl
-                       FROM TBTR_PO_H
-                      WHERE     TPOH_NOPO = '$noPO'
-                            AND TPOH_KODEIGR = '$kodeigr'");
-
-            if ($temp) {
-                $msg = '';
-                if ($temp[0]->tgl <= $awalgo && $temp[0]->tgl >= $akhirgo) {
-                    $msg = "Umur P.O. untuk GO sudah melampaui Tanggal hari ini";
-                    $lotorisasi = 1;
-                } else {
-                    $diff = date_diff(date_create($temp[0]->tglpo), date_create());
-                    if ($diff->d > 7) {
-                        $msg = "Tanggal P.O. sudah melampaui 1 minggu";
-                        $lotorisasi = 1;
-                    }
+                if (!$temp) {
+                    $msg = "No PO Tidak Terdaftar / Kuantitas PO sudah dipenuhi";
+                    return (['kode' => 0, 'msg' => $msg, 'data' => '']);
                 }
-            }
-
-            if ($lotorisasi == 1) {
-                return response()->json(['kode' => 2, 'msg' => $msg, 'data' => '']);
             } else {
-                $checkPO = $this->checkPO($flaggo, $typeTrn, $noPO, $kodeigr);
-                return response()->json(['kode' => $checkPO['kode'], 'msg' => $checkPO['msg'], 'data' => $checkPO['data']]);
-            }
-        } else {
-            //-------------- ELSE DARI FLAGGO
-            $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (tpoh_flagcmo, 'N') as flagcmo
-                                         FROM tbtr_po_h
-                                        WHERE tpoh_nopo = '$noPO'");
+                $temp = DB::connection(Session::get('connection'))->select("SELECT tpoh_tglpo, tpoh_jwpb, NVL (TRIM(tpoh_recordid), '0') as recid
+                                                    FROM tbtr_po_h
+                                                    WHERE tpoh_nopo = '$noPO' 
+                                                    AND tpoh_kodeigr = '$kodeigr'
+                                                    AND NVL (TRIM(tpoh_recordid), '0') != '2'");
 
-            if ($temp[0]->flagcmo == 'Y') {
-                $temp1 = DB::connection(Session::get('connection'))->select("SELECT tpoh_tglkirimbrg as tglkirim
-                                               FROM tbtr_po_h
-                                              WHERE     tpoh_nopo = '$noPO'
-                                                    AND tpoh_kodeigr = '$kodeigr'");
-
-                if ($temp1) {
-                    $diff = date_diff(date_create($temp1[0]->tglkirim), date_create());
-                    if ($diff->d != 0) {
-                        $msg = "PO Commit Order Harus Sesuai dengan Tgl Kirim barang" . substr($temp1[0]->tglkirim, 0, 10);
-                        return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
-                    }
-                } else {
+                if (!$temp) {
                     $msg = "No PO Tidak Terdaftar / Kuantitas PO sudah dipenuhi";
                     return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
                 }
-            }
-
-            $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (TPOH_RECORDID, 0) as recid, TPOH_TGLPO, TPOH_JWPB, CASE WHEN (TPOH_TGLPO + TPOH_JWPB) < sysdate - 1 THEN 0 ELSE 1 END as cond1, CASE WHEN (TPOH_TGLPO - sysdate) > 7 THEN 0 ELSE 1 END as cond2
-                                            FROM TBTR_PO_H
-                                           WHERE     TPOH_NOPO = '$noPO'
-                                                 AND TPOH_KODEIGR = '$kodeigr'");
-
-            if ($temp[0]->recid == '2') {
-                $msg = "Kuantitas PO sudah dipenuhi";
-                return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
-            } else if ($temp[0]->recid == 'X') {
-                $msg = "PO Sedang Dipakai di DCP";
-                return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
-            } else {
-                if ($temp[0]->cond1 == '0') {
-                    $msg = "Umur P.O. sudah melampaui Tanggal hari ini";
-                    $lotorisasi = 1;
-                } else {
-                    if ($temp[0]->cond2 == '0') {
-                        $msg = "Tanggal P.O. sudah melampaui 1 minggu";
-                        $lotorisasi = 1;
-                    }
-                }
-                if ($lotorisasi == 1) {
-                    return response()->json(['kode' => 2, 'msg' => $msg, 'data' => '']);
-                } else {
-                    $checkPO = $this->checkPO($flaggo, $typeTrn, $noPO, $kodeigr);
-                    return response()->json(['kode' => $checkPO['kode'], 'msg' => $checkPO['msg'], 'data' => $checkPO['data']]);
-                }
-            }
-        }
-
-        return response()->json(['kode' => 0, 'msg' => "Something's Error", 'data' => '']);
-    }
-
-    public function checkPO($flaggo, $typeTrn, $noPO, $kodeigr)
-    {
-        if ($typeTrn == 'L' && $noPO > 0) {
-            $msg = "Nomor PO tidak boleh diisi";
-            return (['kode' => 0, 'msg' => $msg, 'data' => '']);
-        }
-
-        if ($flaggo == 'Y') {
-            $temp = DB::connection(Session::get('connection'))->select("SELECT tpoh_tglpo as tglpo, tpoh_jwpb as wkpo, NVL (TRIM(tpoh_recordid), '0') recid
-                                                  FROM tbtr_po_h
-                                                 WHERE tpoh_nopo = '$noPO' AND tpoh_kodeigr = '$kodeigr'");
-
-            if (!$temp) {
-                $msg = "No PO Tidak Terdaftar / Kuantitas PO sudah dipenuhi";
-                return (['kode' => 0, 'msg' => $msg, 'data' => '']);
-            } else {
                 $recid = $temp[0]->recid;
-            }
-        } else {
-            $temp = DB::connection(Session::get('connection'))->select("SELECT tpoh_tglpo, tpoh_jwpb, NVL (TRIM(tpoh_recordid), '0') recid
-                                                  FROM tbtr_po_h
-                                                 WHERE tpoh_nopo = '$noPO' AND tpoh_kodeigr = '$kodeigr'
-                                                       AND NVL (TRIM(tpoh_recordid), '0') != '2'");
 
-            if (!$temp) {
-                $msg = "No PO Tidak Terdaftar / Kuantitas PO sudah dipenuhi";
-                return (['kode' => 0, 'msg' => $msg, 'data' => '']);
-            } else {
-                $recid = $temp[0]->recid;
-            }
-
-            if ($recid == '2') {
-                $msg = "Kuantitas PO sudah dipenuhi";
-                return (['kode' => 0, 'msg' => $msg, 'data' => '']);
+                if ($recid == '2') {
+                    $msg = "Kuantitas PO sudah dipenuhi";
+                    return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
+                }
+                $temp = DB::connection(Session::get('connection'))->select("SELECT tpoh_nopo, tpoh_tglpo, tpoh_kodesupplier, sup_namasupplier, sup_singkatansupplier, tpoh_top, sup_pkp
+                FROM tbtr_po_h, tbmaster_supplier
+                WHERE tpoh_nopo = '$noPO'
+                AND tpoh_kodeigr = '$kodeigr'
+                AND sup_kodesupplier = tpoh_kodesupplier
+                AND sup_kodeigr = tpoh_kodeigr");
+                return response()->json(['kode' => 1, 'msg' => '', 'data' => $temp[0]]);
             }
         }
 
-        $temp = DB::connection(Session::get('connection'))->select("SELECT tpoh_nopo, tpoh_tglpo, tpoh_kodesupplier, sup_namasupplier, sup_singkatansupplier, tpoh_top, sup_pkp
-                                              FROM tbtr_po_h, tbmaster_supplier
-                                             WHERE tpoh_nopo = '$noPO'
-                                               AND tpoh_kodeigr = '$kodeigr'
-                                               AND sup_kodesupplier = tpoh_kodesupplier
-                                               AND sup_kodeigr = tpoh_kodeigr");
+        if ($rte == 'Y') {
+            $poh = DB::connection(Session::get('connection'))->select("SELECT docno, tanggal1, kirim, sup_namasupplier,sup_singkatansupplier, sup_pkp
+                FROM TBHISTORY_NPD_RTE, tbmaster_supplier
+                WHERE docno = '$noPO'
+                AND sup_kodesupplier = kirim
+                AND sup_kodeigr = SUBSTR (toko, 3, 2)");
 
+            return response()->json(['kode' => 1, 'msg' => '', 'data' => $poh[0]]);
+            // foreach ($poh as $val) {
+            //     $noPO = $val->docno;
+            //     $tglpo = $val->tanggal1;
+            //     $kd_supplier = $val->kirim;
+            //     $supplier = $val->sup_namasupplier ? $val->sup_namasupplier : $val->sup_singkatansupplier;
+            //     $pkp = $val->sup_pkp;
+            // }
+        }
         //        ------------------ Update RecID menjadi 2, di komen karena di browser gk bisa update otomatis ke null ketika page ditutup
         //                DB::connection(Session::get('connection'))->table('tbtr_po_h')->where('tpoh_nopo', $noPO)->update(['tpoh_recordid' => 2]);
         //                DB::connection(Session::get('connection'))->table('tbtr_po_d')->where('tpod_nopo', $noPO)->update(['tpod_recordid' => 2]);
-
-        return (['kode' => 1, 'msg' => '', 'data' => $temp]);
     }
 
     public function showSupplier()
@@ -479,6 +700,7 @@ class inputController extends Controller
         $noPo = $request->noPo;
         $supplier = $request->supplier;
         $tempData = $request->tempData;
+        $rte = $request->rte;
         $kodeigr = Session::get('kdigr');
 
         $this->tempDataSave = $tempData;
@@ -486,14 +708,14 @@ class inputController extends Controller
         $this->param_cek = 'Y';
 
         $temp1 = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp1
-                                      FROM TBTR_BACKOFFICE
-                                     WHERE TRBO_KODEIGR = '$kodeigr' AND TRBO_NODOC = '$noDoc' AND TRBO_NOPO = NVL('$noPo', '123') AND TRBO_PRDCD = '$prdcd'
-                                         AND NVL(TRBO_RECORDID, '0') <> 1");
+                                    FROM TBTR_BACKOFFICE
+                                    WHERE TRBO_KODEIGR = '$kodeigr' AND TRBO_NODOC = '$noDoc' AND TRBO_NOPO = NVL('$noPo', '123') AND TRBO_PRDCD = '$prdcd'
+                                    AND NVL(TRBO_RECORDID, '0') <> 1");
 
         $temp2 = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp2
-                                      FROM TBTR_MSTRAN_D
-                                     WHERE MSTD_KODEIGR = '$kodeigr' AND MSTD_NOPO = NVL('$noPo', '123') AND MSTD_TYPETRN = 'B'
-                                      AND MSTD_PRDCD = '$prdcd' AND NVL(MSTD_RECORDID, '0') <> 1");
+                                    FROM TBTR_MSTRAN_D
+                                    WHERE MSTD_KODEIGR = '$kodeigr' AND MSTD_NOPO = NVL('$noPo', '123') AND MSTD_TYPETRN = 'B'
+                                    AND MSTD_PRDCD = '$prdcd' AND NVL(MSTD_RECORDID, '0') <> 1");
 
         if ($temp2[0]->temp2 != '0') {
             $msg = "PLU Sudah di BTB !!";
@@ -503,8 +725,8 @@ class inputController extends Controller
 
         if ($noPo != '' || $noPo) {
             $temp = DB::connection(Session::get('connection'))->select(" SELECT NVL (TPOH_RECORDID, 0) as recid
-                                          FROM TBTR_PO_H
-                                         WHERE TPOH_NOPO = '$noPo' AND TPOH_KODEIGR = '$kodeigr'");
+                                    FROM TBTR_PO_H
+                                    WHERE TPOH_NOPO = '$noPo' AND TPOH_KODEIGR = '$kodeigr'");
 
             if ($temp[0]->recid == 'X') {
                 $msg = "PO Sedang Dipakai di DCP";
@@ -649,54 +871,53 @@ class inputController extends Controller
     public function query1($supplier, $prdcd, $kodeigr)
     {
         $data = DB::connection(Session::get('connection'))->select("SELECT prd_kodeigr as i_kodeigr,
-                                           prd_kodedivisi as i_kodedivisi,
-                                           prd_kodedepartement as i_kodedepartement,
-                                           prd_kodekategoribarang as i_kodekategoribrg,
-                                           st_avgcost as i_acost,
-                                           prd_lastcost as i_lcost,
-                                           prd_deskripsipanjang as i_barang,
-                                           prd_frac as i_frac,
-                                           prd_flagbkp1 || '/' || prd_flagbkp2 as i_bkp,
-                                           prd_unit as i_unit,
-                                           prd_kodetag as i_tag,
-                                           sup_pkp as i_pkp,
-                                           prd_ppn as i_ppn_persen,
-                                           hgb_hrgbeli as v_hrgbeli,
-                                           hgb_persendisc01 as i_persendis1,
-                                           hgb_rphdisc01 as i_rphdisc1,
-                                           hgb_persendisc02 as i_persendis2,
-                                           hgb_rphdisc02 as i_rphdisc2,
-                                           hgb_persendisc02ii as i_persendis2a,
-                                           hgb_rphdisc02ii as i_rphdisc2a,
-                                           hgb_persendisc02iii as i_persendis2b,
-                                           hgb_rphdisc02iii as i_rphdisc2b,
-                                           hgb_persendisc03 as i_persendis3,
-                                           hgb_rphdisc03 as i_rphdisc3,
-                                           hgb_persendisc04 as i_persendis4,
-                                           hgb_rphdisc04 as i_rphdisc4,
-                                           prd_lastcost as v_lastcost,
-                                           prd_kategoritoko as kttk,
-                                           prd_flagbandrol as i_bandrol,
-                                           prd_kodecabang as kcab,
-                                           NVL(prd_flagbarangordertoko, 'v') as fmfbot,
-                                           NVL(tag_tidakbolehorder, 'v') as ftftbo,
-                                           st_prdcd as st_prdcd,
-                                           st_saldoakhir as st_saldoakhir,
-                                           prd_prdcd as i_prdcd
-                                     FROM tbmaster_prodmast, tbmaster_stock, tbmaster_supplier, tbmaster_hargabeli, tbmaster_tag
-                                     WHERE prd_prdcd = '$prdcd'
-                                       AND prd_kodeigr = '$kodeigr'
-                                       AND st_prdcd(+) = prd_prdcd
-                                       AND st_kodeigr(+) = prd_kodeigr
-                                       AND st_lokasi(+) = '01'
-                                       AND sup_kodesupplier(+) = '$supplier'
-                                       AND sup_kodeigr(+) = prd_kodeigr
-                                       AND hgb_prdcd = prd_prdcd
-                                       AND hgb_kodeigr = prd_kodeigr
-                                       AND hgb_tipe = '2'
-                                       AND tag_kodetag(+) = prd_kodetag
-                                       AND tag_kodeigr(+) = prd_kodeigr");
-
+                                        prd_kodedivisi as i_kodedivisi,
+                                        prd_kodedepartement as i_kodedepartement,
+                                        prd_kodekategoribarang as i_kodekategoribrg,
+                                        st_avgcost as i_acost,
+                                        prd_lastcost as i_lcost,
+                                        prd_deskripsipanjang as i_barang,
+                                        prd_frac as i_frac,
+                                        prd_flagbkp1 || '/' || prd_flagbkp2 as i_bkp,
+                                        prd_unit as i_unit,
+                                        prd_kodetag as i_tag,
+                                        sup_pkp as i_pkp,
+                                        prd_ppn as i_ppn_persen,
+                                        hgb_hrgbeli as v_hrgbeli,
+                                        hgb_persendisc01 as i_persendis1,
+                                        hgb_rphdisc01 as i_rphdisc1,
+                                        hgb_persendisc02 as i_persendis2,
+                                        hgb_rphdisc02 as i_rphdisc2,
+                                        hgb_persendisc02ii as i_persendis2a,
+                                        hgb_rphdisc02ii as i_rphdisc2a,
+                                        hgb_persendisc02iii as i_persendis2b,
+                                        hgb_rphdisc02iii as i_rphdisc2b,
+                                        hgb_persendisc03 as i_persendis3,
+                                        hgb_rphdisc03 as i_rphdisc3,
+                                        hgb_persendisc04 as i_persendis4,
+                                        hgb_rphdisc04 as i_rphdisc4,
+                                        prd_lastcost as v_lastcost,
+                                        prd_kategoritoko as kttk,
+                                        prd_flagbandrol as i_bandrol,
+                                        prd_kodecabang as kcab,
+                                        NVL(prd_flagbarangordertoko, 'v') as fmfbot,
+                                        NVL(tag_tidakbolehorder, 'v') as ftftbo,
+                                        st_prdcd as st_prdcd,
+                                        st_saldoakhir as st_saldoakhir,
+                                        prd_prdcd as i_prdcd
+                                    FROM tbmaster_prodmast, tbmaster_stock, tbmaster_supplier, tbmaster_hargabeli, tbmaster_tag
+                                    WHERE prd_prdcd = '$prdcd'
+                                    AND prd_kodeigr = '$kodeigr'
+                                    AND st_prdcd(+) = prd_prdcd
+                                    AND st_kodeigr(+) = prd_kodeigr
+                                    AND st_lokasi(+) = '01'
+                                    AND sup_kodesupplier(+) = '$supplier'
+                                    AND sup_kodeigr(+) = prd_kodeigr
+                                    AND hgb_prdcd = prd_prdcd
+                                    AND hgb_kodeigr = prd_kodeigr
+                                    AND hgb_tipe = '2'
+                                    AND tag_kodetag(+) = prd_kodetag
+                                    AND tag_kodeigr(+) = prd_kodeigr");
         return $data;
     }
 
@@ -784,70 +1005,70 @@ class inputController extends Controller
     public function query2($noPo, $kodeigr, $prdcd)
     {
         $data = DB::connection(Session::get('connection'))->select(" SELECT   tpod_kodeigr,
-                                             tpod_recordid,
-                                             tpod_nopo,
-                                             tpod_tglpo,
-                                             tpod_kodedivisi,
-                                             tpod_kodedepartemen,
-                                             tpod_kategoribarang,
-                                             tpod_prdcd,
-                                             tpod_persenppn,
-                                             NVL(tpod_qtypo, 0) qty_po,
-                                             tpod_hrgsatuan,
-                                             prd_frac tpod_satuanbeli,
-                                             tpod_isibeli,
-                                             NVL(tpod_persentasedisc1, 0) tpod_persentasedisc1,
-                                             NVL(tpod_rphdisc1, 0) tpod_rphdisc1,
-                                             tpod_flagdisc1,
-                                             NVL(tpod_persentasedisc2, 0) tpod_persentasedisc2,
-                                             NVL(tpod_rphdisc2, 0) tpod_rphdisc2,
-                                             tpod_flagdisc2,
-                                             NVL(tpod_persentasedisc2ii, 0) tpod_persentasedisc2ii,
-                                             NVL(tpod_rphdisc2ii, 0) tpod_rphdisc2ii,
-                                             NVL(tpod_persentasedisc2iii, 0) tpod_persentasedisc2iii,
-                                             NVL(tpod_rphdisc2iii, 0) tpod_rphdisc2iii,
-                                             NVL(tpod_persentasedisc3, 0) tpod_persentasedisc3,
-                                             NVL(tpod_rphdisc3, 0) tpod_rphdisc3,
-                                             tpod_flagdisc3,
-                                             tpod_flagdisc4,
-                                             tpod_jenispb,
-                                             NVL(tpod_bonuspo1, 0) bonus1,
-                                             NVL(tpod_bonuspo2, 0) bonus2,
-                                             NVL(tpod_gross, 0) gross,
-                                             NVL(tpod_rphttldisc, 0) tpod_rphttldisc,
-                                             NVL(tpod_ppn, 0) tpod_ppn,
-                                             NVL(tpod_ppnbm, 0) tpod_ppnbm,
-                                             NVL(tpod_ppnbotol, 0) tpod_ppnbotol,
-                                             NVL(tpod_persentasedisc4cashdisc, 0) dis4cp,
-                                             NVL(tpod_rphdisc4, 0) dis4rp,
-                                             NVL(tpod_persentasedisc4df, 0) dis4jp,
-                                             NVL(tpod_rphdisc4cash, 0) dis4cr,
-                                             NVL(tpod_rphdisc4retur, 0) dis4rr,
-                                             NVL(tpod_rphdisc4df, 0) dis4jr,
-                                             tpod_keterangan,
-                                             prd_deskripsipanjang,
-                                             prd_isibeli,
-                                             prd_frac,
-                                             prd_flagbkp1,
-                                             prd_flagbkp2,
-                                             prd_unit,
-                                             prd_lastcost,
-                                             prd_kodetag,
-                                             st_avgcost,
-                                             st_lastcost,
-                                             sup_pkp,
-                                             prd_flagbandrol
+                                            tpod_recordid,
+                                            tpod_nopo,
+                                            tpod_tglpo,
+                                            tpod_kodedivisi,
+                                            tpod_kodedepartemen,
+                                            tpod_kategoribarang,
+                                            tpod_prdcd,
+                                            tpod_persenppn,
+                                            NVL(tpod_qtypo, 0) qty_po,
+                                            tpod_hrgsatuan,
+                                            prd_frac tpod_satuanbeli,
+                                            tpod_isibeli,
+                                            NVL(tpod_persentasedisc1, 0) tpod_persentasedisc1,
+                                            NVL(tpod_rphdisc1, 0) tpod_rphdisc1,
+                                            tpod_flagdisc1,
+                                            NVL(tpod_persentasedisc2, 0) tpod_persentasedisc2,
+                                            NVL(tpod_rphdisc2, 0) tpod_rphdisc2,
+                                            tpod_flagdisc2,
+                                            NVL(tpod_persentasedisc2ii, 0) tpod_persentasedisc2ii,
+                                            NVL(tpod_rphdisc2ii, 0) tpod_rphdisc2ii,
+                                            NVL(tpod_persentasedisc2iii, 0) tpod_persentasedisc2iii,
+                                            NVL(tpod_rphdisc2iii, 0) tpod_rphdisc2iii,
+                                            NVL(tpod_persentasedisc3, 0) tpod_persentasedisc3,
+                                            NVL(tpod_rphdisc3, 0) tpod_rphdisc3,
+                                            tpod_flagdisc3,
+                                            tpod_flagdisc4,
+                                            tpod_jenispb,
+                                            NVL(tpod_bonuspo1, 0) bonus1,
+                                            NVL(tpod_bonuspo2, 0) bonus2,
+                                            NVL(tpod_gross, 0) gross,
+                                            NVL(tpod_rphttldisc, 0) tpod_rphttldisc,
+                                            NVL(tpod_ppn, 0) tpod_ppn,
+                                            NVL(tpod_ppnbm, 0) tpod_ppnbm,
+                                            NVL(tpod_ppnbotol, 0) tpod_ppnbotol,
+                                            NVL(tpod_persentasedisc4cashdisc, 0) dis4cp,
+                                            NVL(tpod_rphdisc4, 0) dis4rp,
+                                            NVL(tpod_persentasedisc4df, 0) dis4jp,
+                                            NVL(tpod_rphdisc4cash, 0) dis4cr,
+                                            NVL(tpod_rphdisc4retur, 0) dis4rr,
+                                            NVL(tpod_rphdisc4df, 0) dis4jr,
+                                            tpod_keterangan,
+                                            prd_deskripsipanjang,
+                                            prd_isibeli,
+                                            prd_frac,
+                                            prd_flagbkp1,
+                                            prd_flagbkp2,
+                                            prd_unit,
+                                            prd_lastcost,
+                                            prd_kodetag,
+                                            st_avgcost,
+                                            st_lastcost,
+                                            sup_pkp,
+                                            prd_flagbandrol
                                         FROM tbtr_po_d aa, tbmaster_prodmast bb, tbmaster_stock, tbmaster_supplier
-                                       WHERE tpod_nopo = '$noPo'
-                                         AND tpod_kodeigr = '$kodeigr'
-                                         AND tpod_prdcd = '$prdcd'
-                                         AND bb.prd_prdcd = aa.tpod_prdcd
-                                         AND bb.prd_kodeigr = aa.tpod_kodeigr
-                                         AND st_prdcd(+) = aa.tpod_prdcd
-                                         AND st_kodeigr(+) = aa.tpod_kodeigr
-                                         AND st_lokasi(+) = '01'
-                                         AND sup_kodesupplier = ( SELECT * FROM (SELECT hgb_kodesupplier FROM TBMASTER_HARGABELI WHERE hgb_kodeigr = '$kodeigr' AND hgb_prdcd = '$prdcd' ORDER BY hgb_tipe) a WHERE ROWNUM = 1)
-                                         AND sup_kodeigr = '$kodeigr'
+                                        WHERE tpod_nopo = '$noPo'
+                                        AND tpod_kodeigr = '$kodeigr'
+                                        AND tpod_prdcd = '$prdcd'
+                                        AND bb.prd_prdcd = aa.tpod_prdcd
+                                        AND bb.prd_kodeigr = aa.tpod_kodeigr
+                                        AND st_prdcd(+) = aa.tpod_prdcd
+                                        AND st_kodeigr(+) = aa.tpod_kodeigr
+                                        AND st_lokasi(+) = '01'
+                                        AND sup_kodesupplier = ( SELECT * FROM (SELECT hgb_kodesupplier FROM TBMASTER_HARGABELI WHERE hgb_kodeigr = '$kodeigr' AND hgb_prdcd = '$prdcd' ORDER BY hgb_tipe) a WHERE ROWNUM = 1)
+                                        AND sup_kodeigr = '$kodeigr'
                                     ORDER BY tpod_prdcd");
         return $data;
     }
@@ -939,7 +1160,6 @@ class inputController extends Controller
             $lhigh = false; //---------------------
 
             if ($noPo && $data->tpod_prdcd) {
-                // dd($getDataPlu);
                 if ($data->prd_unit != 'KG') {
                     if (round(($getDataPlu->i_hrgbeli / $data->tpod_isibeli)) > round($data->tpod_hrgsatuan)) {
                         $lhigh = true;
@@ -1090,8 +1310,6 @@ class inputController extends Controller
                 $this->param_error = 0;
                 return (['kode' => 2, 'msg' => "Jml Qty Tidak Boleh < 0", 'data' => '']);
             }
-
-            //            dd([$getDataPlu->i_qty * $data->tpod_isibeli + $getDataPlu->i_qtyk, $data->tpod_qtypo, $data, $getDataPlu]);
 
             if ($noPo && $getDataPlu->i_prdcd) {
                 if (($getDataPlu->i_qty * $data->tpod_isibeli + $getDataPlu->i_qtyk) > $data->tpod_qtypo) {
@@ -1486,92 +1704,91 @@ class inputController extends Controller
     public function query3($prdcd, $kodeigr, $supplier, $noPo)
     {
         $data = DB::connection(Session::get('connection'))->select("SELECT prd_prdcd,
-                                     prd_lastcost,
-                                     prd_unit,
-                                     prd_flagbkp1,
-                                     prd_flagbkp2,
-                                     prd_kategoritoko,
-                                     prd_kodecabang,
-                                     prd_kodetag,
-                                     prd_flagbarangordertoko,
-                                     prd_kodedivisi,
-                                     prd_frac,
-                                     st_avgcost,
-                                     st_prdcd,
-                                     st_saldoakhir,
-                                     hgb_kodesupplier,
-                                     hgb_prdcd,
-                                     hgb_hrgbeli,
-                                     hgb_tglmulaibonus01,
-                                     hgb_tglakhirbonus01,
-                                     hgb_flagkelipatanbonus01,
-                                     hgb_qtymulai1bonus01,
-                                     hgb_qty1bonus01,
-                                     hgb_qtymulai2bonus01,
-                                     hgb_qtymulai3bonus01,
-                                     hgb_qty2bonus01,
-                                     hgb_qtymulai4bonus01,
-                                     hgb_qty3bonus01,
-                                     hgb_qtymulai5bonus01,
-                                     hgb_qty4bonus01,
-                                     hgb_qtymulai6bonus01,
-                                     hgb_qty5bonus01,
-                                     hgb_qty6bonus01,
-                                     hgb_tglmulaibonus02,
-                                     hgb_tglakhirbonus02,
-                                     hgb_flagkelipatanbonus02,
-                                     hgb_qtymulai1bonus02,
-                                     hgb_qty1bonus02,
-                                     hgb_qtymulai2bonus02,
-                                     hgb_qtymulai3bonus02,
-                                     hgb_qty2bonus02,
-                                     hgb_qty3bonus02,
-                                     hgb_ppnbotol,
-                                     hgb_ppnbm,
-                                     tag_tidakbolehorder,
-                                     sup_pkp,
-                                     tpod_qtypo,
-                                     tpod_prdcd,
-                                     tpod_isibeli,
-                                     tpod_hrgsatuan,
-                                     tpod_rphttldisc,
-                                     tpod_gross,
-                                     tpod_ppnbm,
-                                     tpod_ppnbotol,
-                                     tpod_rphdisc1,
-                                     tpod_rphdisc2,
-                                     tpod_rphdisc2ii,
-                                     tpod_rphdisc2iii,
-                                     tpod_rphdisc3,
-                                     tpod_rphdisc4,
-                                     tpod_rphdisc4df,
-                                     tpod_rphdisc4cash,
-                                     tpod_rphdisc4retur,
-                                     prs_toleransihrg
-                                FROM TBMASTER_PRODMAST prdo,
-                                     TBMASTER_STOCK stck,
-                                     TBMASTER_SUPPLIER supp,
-                                     TBMASTER_HARGABELI harga,
-                                     TBMASTER_TAG mtag,
-                                     TBTR_PO_D pod,
-                                     TBMASTER_PERUSAHAAN persh
-                               WHERE     prdo.prd_prdcd = '$prdcd'
-                                     AND prdo.prd_kodeigr = '$kodeigr'
-                                     AND stck.st_prdcd(+) = prd_prdcd
-                                     AND stck.st_kodeigr(+) = prd_kodeigr
-                                     AND stck.st_lokasi(+) = '01'
-                                     AND supp.sup_kodesupplier(+) = '$supplier'
-                                     AND supp.sup_kodeigr(+) = '$kodeigr'
-                                     AND harga.hgb_prdcd(+) = prd_prdcd
-                                     AND harga.hgb_kodeigr(+) = prd_kodeigr
-                                     AND harga.hgb_tipe(+) = '2'
-                                     AND mtag.tag_kodetag(+) = prd_kodetag
-                                     AND mtag.tag_kodeigr(+) = prd_kodeigr
-                                     AND pod.tpod_prdcd(+) = prd_prdcd
-                                     AND pod.tpod_nopo(+) = '$noPo'
-                                     AND pod.tpod_kodeigr(+) = prd_kodeigr
-                                     AND persh.prs_kodeigr = prd_kodeigr");
-
+                                    prd_lastcost,
+                                    prd_unit,
+                                    prd_flagbkp1,
+                                    prd_flagbkp2,
+                                    prd_kategoritoko,
+                                    prd_kodecabang,
+                                    prd_kodetag,
+                                    prd_flagbarangordertoko,
+                                    prd_kodedivisi,
+                                    prd_frac,
+                                    st_avgcost,
+                                    st_prdcd,
+                                    st_saldoakhir,
+                                    hgb_kodesupplier,
+                                    hgb_prdcd,
+                                    hgb_hrgbeli,
+                                    hgb_tglmulaibonus01,
+                                    hgb_tglakhirbonus01,
+                                    hgb_flagkelipatanbonus01,
+                                    hgb_qtymulai1bonus01,
+                                    hgb_qty1bonus01,
+                                    hgb_qtymulai2bonus01,
+                                    hgb_qtymulai3bonus01,
+                                    hgb_qty2bonus01,
+                                    hgb_qtymulai4bonus01,
+                                    hgb_qty3bonus01,
+                                    hgb_qtymulai5bonus01,
+                                    hgb_qty4bonus01,
+                                    hgb_qtymulai6bonus01,
+                                    hgb_qty5bonus01,
+                                    hgb_qty6bonus01,
+                                    hgb_tglmulaibonus02,
+                                    hgb_tglakhirbonus02,
+                                    hgb_flagkelipatanbonus02,
+                                    hgb_qtymulai1bonus02,
+                                    hgb_qty1bonus02,
+                                    hgb_qtymulai2bonus02,
+                                    hgb_qtymulai3bonus02,
+                                    hgb_qty2bonus02,
+                                    hgb_qty3bonus02,
+                                    hgb_ppnbotol,
+                                    hgb_ppnbm,
+                                    tag_tidakbolehorder,
+                                    sup_pkp,
+                                    tpod_qtypo,
+                                    tpod_prdcd,
+                                    tpod_isibeli,
+                                    tpod_hrgsatuan,
+                                    tpod_rphttldisc,
+                                    tpod_gross,
+                                    tpod_ppnbm,
+                                    tpod_ppnbotol,
+                                    tpod_rphdisc1,
+                                    tpod_rphdisc2,
+                                    tpod_rphdisc2ii,
+                                    tpod_rphdisc2iii,
+                                    tpod_rphdisc3,
+                                    tpod_rphdisc4,
+                                    tpod_rphdisc4df,
+                                    tpod_rphdisc4cash,
+                                    tpod_rphdisc4retur,
+                                    prs_toleransihrg
+                                FROM    TBMASTER_PRODMAST prdo,
+                                        TBMASTER_STOCK stck,
+                                        TBMASTER_SUPPLIER supp,
+                                        TBMASTER_HARGABELI harga,
+                                        TBMASTER_TAG mtag,
+                                        TBTR_PO_D pod,
+                                        TBMASTER_PERUSAHAAN persh
+                                WHERE   prdo.prd_prdcd = '$prdcd'
+                                    AND prdo.prd_kodeigr = '$kodeigr'
+                                    AND stck.st_prdcd(+) = prd_prdcd
+                                    AND stck.st_kodeigr(+) = prd_kodeigr
+                                    AND stck.st_lokasi(+) = '01'
+                                    AND supp.sup_kodesupplier(+) = '$supplier'
+                                    AND supp.sup_kodeigr(+) = '$kodeigr'
+                                    AND harga.hgb_prdcd(+) = prd_prdcd
+                                    AND harga.hgb_kodeigr(+) = prd_kodeigr
+                                    AND harga.hgb_tipe(+) = '2'
+                                    AND mtag.tag_kodetag(+) = prd_kodetag
+                                    AND mtag.tag_kodeigr(+) = prd_kodeigr
+                                    AND pod.tpod_prdcd(+) = prd_prdcd
+                                    AND pod.tpod_nopo(+) = '$noPo'
+                                    AND pod.tpod_kodeigr(+) = prd_kodeigr
+                                    AND persh.prs_kodeigr = prd_kodeigr");
         return $data;
     }
 
@@ -1586,16 +1803,12 @@ class inputController extends Controller
         $kodeigr    = Session::get('kdigr');
         $tempDataPlu = $request->tempDataPLU;
         $this->getDataPlu = (object) $tempDataPlu;
-
-
         $this->getDataPlu->i_hrgbeli = $hrgbeli;
         $this->getDataPlu->i_qty = $qty;
         $this->getDataPlu->i_qtyk = $qtyk;
         $msg        = '';
         $kode       = 0;
-
         $chkGets    = $this->chkGets(2, $prdcd, $kodeigr, $supplier, $noPo);
-
         if ($chkGets['kode'] == 2) {
             if ($this->param_error == 0) {
                 $msg = $chkGets['msg'];
@@ -1731,7 +1944,6 @@ class inputController extends Controller
                 }
             }
         }
-
         if ($noPo) {
             $checkBtb   = DB::connection(Session::get('connection'))->table('tbtr_backoffice')->where('trbo_nodoc', $noBtb)->get()->toArray();
 
@@ -2167,7 +2379,7 @@ class inputController extends Controller
         $kodeigr    = Session::get('kdigr');
         $help       = new AllModel();
         $date       = $help->getDate();
-        $noPo   = $request->noPo;
+        $noPo       = $request->noPO;
 
         $IP = str_replace('.', '0', SUBSTR(Session::get('ip'), -3));
         $connect = loginController::getConnectionProcedure();

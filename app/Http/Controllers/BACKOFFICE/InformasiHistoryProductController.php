@@ -4,7 +4,8 @@ namespace App\Http\Controllers\BACKOFFICE;
 
 use Carbon\Traits\Date;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\NotIn;
 use phpDocumentor\Reflection\Types\Integer;
@@ -44,7 +45,7 @@ class InformasiHistoryProductController extends Controller
         $tglpromo = '';
         $jampromo = '';
         $showpromo = false;
-
+        $dsi = 0;$to = 0;
         if (ord(substr($cprdcd, 1, 1)) < 48 or ord(substr($cprdcd, 1, 1)) > 57) {
             $lCek = 2;
         } else if (strlen(trim($cprdcd)) > 7) {
@@ -394,8 +395,8 @@ class InformasiHistoryProductController extends Controller
                             $marlcost = (1 - (($sj[$i]->st_lastcost * $sj[$i]->frac) / $nfmjual)) * 100;
                             $maracost = (1 - (($sj[$i]->st_lcost * $sj[$i]->frac) / $nfmjual)) * 100;
                         } else {
-                            $marlcost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)):1.1) * (($sj[$i]->st_lastcost * $sj[$i]->frac)) / $nfmjual) * 100;
-                            $maracost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)):1.1) * (($sj[$i]->st_lcost * $sj[$i]->frac)) / $nfmjual) * 100;
+                            $marlcost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)) : 1.1) * (($sj[$i]->st_lastcost * $sj[$i]->frac)) / $nfmjual) * 100;
+                            $maracost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)) : 1.1) * (($sj[$i]->st_lcost * $sj[$i]->frac)) / $nfmjual) * 100;
 
                         }
                     } else {
@@ -417,8 +418,8 @@ class InformasiHistoryProductController extends Controller
                             $marlcost = (1 - ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
                             $maracost = (1 - ($sj[$i]->st_lcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
                         } else {
-                            $marlcost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)):1.1) * ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
-                            $maracost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)):1.1) * ($sj[$i]->st_lcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                            $marlcost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)) : 1.1) * ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                            $maracost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)) : 1.1) * ($sj[$i]->st_lcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
                             //rumus ini
 
                         }
@@ -435,8 +436,8 @@ class InformasiHistoryProductController extends Controller
                             $marlcost = (1 - ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
                             $maracost = (1 - ($sj[$i]->st_lcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
                         } else {
-                            $marlcost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)):1.1) * ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
-                            $maracost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)):1.1) * ($sj[$i]->st_lcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                            $marlcost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)) : 1.1) * ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
+                            $maracost = (1 - (isset($sj[$i]->prd_ppn) ? (1 + ($sj[$i]->prd_ppn / 100)) : 1.1) * ($sj[$i]->st_lcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
                         }
                     } else {
                         $marlcost = (1 - ($sj[$i]->st_lastcost * $sj[$i]->frac) / $sj[$i]->price_a) * 100;
@@ -532,10 +533,11 @@ class InformasiHistoryProductController extends Controller
             $VAVG = $VAVG + (int)$trendsales['sls_qty_' . $X1];
         }
         $TEMP = date('m');
+
         $prodstock = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')->join('tbmaster_stock', 'prd_kodeigr', '=', 'st_kodeigr')
             ->select('*')
             ->where('prd_prdcd', '=', $request->value)
-            ->where('prd_kodeigr', '=', "22")
+            ->where('prd_kodeigr', '=', Session::get('kdigr'))
             ->whereRaw('substr (tbmaster_stock.st_prdcd, 1, 6) = substr (tbmaster_prodmast.prd_prdcd, 1, 6)')
             ->where('st_lokasi', '=', "01")
             ->first();
@@ -576,10 +578,9 @@ class InformasiHistoryProductController extends Controller
             ->get();
 
         $gdl = 0;
-
         for ($i = 0; $i < sizeof($gdltemp); $i++) {
             $gdl = $gdltemp[$i]->gdl_qty;
-            $prd_gdl = date('d/m/y', $gdltemp[$i]->gdl_tglawal) . ' s/d ' . date('d/m/y', $gdltemp[$i]->gdl_tglakhir);
+            $prd_gdl = date('d/m/y', strtotime(substr($gdltemp[$i]->gdl_tglawal, 0, 10))) . ' s/d ' . date('d/m/y', strtotime(substr($gdltemp[$i]->gdl_tglakhir, 0, 10)));
             break;
         }
 
@@ -587,7 +588,7 @@ class InformasiHistoryProductController extends Controller
         $stock = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')->join('tbmaster_stock', 'prd_kodeigr', '=', 'st_kodeigr')
             ->select('*')
             ->where('prd_prdcd', '=', $request->value)
-            ->where('prd_kodeigr', '=', "22")
+            ->where('prd_kodeigr', '=', Session::get('kdigr'))
             ->whereRaw('substr (tbmaster_stock.st_prdcd, 1, 6) = substr (tbmaster_prodmast.prd_prdcd, 1, 6)')
             ->orderBy('st_lokasi')
             ->get();
@@ -760,7 +761,7 @@ class InformasiHistoryProductController extends Controller
 
         $prs = DB::connection(Session::get('connection'))->table('TBMASTER_PERUSAHAAN')
             ->select('*')
-            ->where('PRS_KODEIGR', '=', '22')
+            ->where('PRS_KODEIGR', '=', Session::get('kdigr'))
             ->first();
 
         $content = "";
@@ -816,7 +817,7 @@ class InformasiHistoryProductController extends Controller
 
         $prs = DB::connection(Session::get('connection'))->table('TBMASTER_PERUSAHAAN')
             ->select('*')
-            ->where('PRS_KODEIGR', '=', '22')
+            ->where('PRS_KODEIGR', '=', Session::get('kdigr'))
             ->first();
 
         $content = "";
@@ -1128,7 +1129,7 @@ class InformasiHistoryProductController extends Controller
         $detailsales['avgomi'] = $avgomi;
         $detailsales['avgmrh'] = $avgmrh;
         $detailsales['avgidm'] = $avgidm;
-        return compact([ 'detailsales']);
+        return compact(['detailsales']);
     }
 
     public function getPenerimaan(Request $request)
@@ -1138,7 +1139,7 @@ class InformasiHistoryProductController extends Controller
             ->leftJoin('TBMASTER_SUPPLIER', 'MSTD_KODESUPPLIER', '=', 'SUP_KODESUPPLIER')
             ->select('*')
             ->whereRaw('substr(mstd_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
-            ->where('mstd_kodeigr', '=', '22')
+            ->where('mstd_kodeigr', '=', Session::get('kdigr'))
             ->whereIn('mstd_typetrn', ['L', 'I', 'B'])
             ->whereRaw('NVL (MSTD_RECORDID, \'9\') != 1')
             ->orderBy('mstd_prdcd')
@@ -1169,7 +1170,7 @@ class InformasiHistoryProductController extends Controller
                 $supplier[$i]->trm_hpp = ($supplier[$i]->mstd_gross - ($supplier[$i]->mstd_discrph + $supplier[$i]->mstd_ppnbmrph + $supplier[$i]->mstd_ppnbtlrph)) / ($supplier[$i]->mstd_qty / $supplier[$i]->mstd_frac) / $supplier[$i]->mstd_frac;
             }
         }
-        return compact([ 'supplier']);
+        return compact(['supplier']);
     }
 
     public function getPB(Request $request)
@@ -1402,10 +1403,11 @@ class InformasiHistoryProductController extends Controller
                 array_push($permintaan, $dataPenerimaan);
             }
         }
-        return compact([ 'permintaan']);
+        return compact(['permintaan']);
     }
 
-    public function getHargaBeli(Request $request){
+    public function getHargaBeli(Request $request)
+    {
         $hargabeli = DB::connection(Session::get('connection'))->table('tbmaster_hargabeli')
             ->join('tbmaster_prodmast', 'prd_prdcd', '=', 'hgb_prdcd')
             ->join('tbmaster_supplier', 'sup_kodesupplier', '=', 'hgb_kodesupplier')
@@ -1600,7 +1602,7 @@ class InformasiHistoryProductController extends Controller
             $hb_bnslipat = $hargabeli[$i]->fmklpt;
             $hb_periodbns = '';
             if (Self::ceknull($hargabeli[$i]->fmbntm, "") != "") {
-                $hb_periodbns = date("d-M-Y",strtotime(substr($hargabeli[$i]->fmbntm,0,10))) . ' s/d ' . date("d-M-Y",strtotime(substr($hargabeli[$i]->fmbnta,0,10)));
+                $hb_periodbns = date("d-M-Y", strtotime(substr($hargabeli[$i]->fmbntm, 0, 10))) . ' s/d ' . date("d-M-Y", strtotime(substr($hargabeli[$i]->fmbnta, 0, 10)));
             }
 
             $hb_qtybeli1 = 0;
@@ -1630,7 +1632,7 @@ class InformasiHistoryProductController extends Controller
                 $hb_qty2bns1 = Self::ceknull($hargabeli[$i]->hgb_qty1bonus02, 0) * $hargabeli[$i]->frac;
                 $hb_qty2bns2 = Self::ceknull($hargabeli[$i]->hgb_qty2bonus02, 0) * $hargabeli[$i]->frac;
                 $hb_qty2bns3 = Self::ceknull($hargabeli[$i]->hgb_qty3bonus02, 0) * $hargabeli[$i]->frac;
-            }else {
+            } else {
                 $hb_qtybeli1 = Self::ceknull($hargabeli[$i]->fmqbl1, 0);
                 $hb_qtybeli2 = Self::ceknull($hargabeli[$i]->fmqbl2, 0);
                 $hb_qtybeli3 = Self::ceknull($hargabeli[$i]->fmqbl3, 0);
@@ -1714,11 +1716,12 @@ class InformasiHistoryProductController extends Controller
             $hargabeli[$i]->hb_qty2bns2 = $hb_qty2bns2;
             $hargabeli[$i]->hb_qty2bns3 = $hb_qty2bns3;
         }
-        return compact([ 'hargabeli']);
+        return compact(['hargabeli']);
 
     }
 
-    public function getStockCarton(Request $request){
+    public function getStockCarton(Request $request)
+    {
         //STOCK CARTON
         $flagreset = DB::connection(Session::get('connection'))->table('tbmaster_setting_so')
             ->selectRaw('nvl(mso_flagreset, \'N\')')
@@ -1822,14 +1825,15 @@ class InformasiHistoryProductController extends Controller
         $stockcarton['STC_rsk'] = 'Rusak';
         $stockcarton['STC_CT3'] = $qb_rus;
         $stockcarton['STC_PCS3'] = $qc_rus;
-        return compact([ 'stockcarton']);
+        return compact(['stockcarton']);
 
     }
 
-    public function getSO(Request $request){
+    public function getSO(Request $request)
+    {
         $temp = DB::connection(Session::get('connection'))->table('tbtr_ba_stockopname')
             ->selectRaw('distinct sop_tglso')
-            ->where('sop_kodeigr', '=', '22')
+            ->where('sop_kodeigr', '=', Session::get('kdigr'))
             ->orderBy('sop_tglso', 'desc')
             ->get();
 
@@ -1876,7 +1880,7 @@ class InformasiHistoryProductController extends Controller
 
         $adjustso = DB::connection(Session::get('connection'))->table('TBTR_ADJUSTSO')
             ->select('*')
-            ->where('adj_kodeigr', '=', '22')
+            ->where('adj_kodeigr', '=', Session::get('kdigr'))
             ->where('adj_lokasi', '=', '01')
             ->whereRaw('substr(adj_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
             ->whereRaw('adj_tglso = to_date(\'' . $so_tgl . '\',\'yyyy-mm-dd\')')
@@ -1885,14 +1889,14 @@ class InformasiHistoryProductController extends Controller
 
         $resetsoic = DB::connection(Session::get('connection'))->table('TBTR_RESET_SOIC')
             ->select('*')
-            ->where('rso_kodeigr', '=', '22')
+            ->where('rso_kodeigr', '=', Session::get('kdigr'))
             ->where('rso_lokasi', '=', '01')
             ->whereRaw('substr(rso_prdcd, 1, 6) = substr(\'' . $request->value . '\', 1, 6)')
             ->whereRaw('to_char(rso_tglso, \'yyyyMM\') = to_char(sysdate, \'yyyyMM\')')
             ->orderBy('rso_tglso')
             ->orderBy('rso_kodeso')
             ->get();
-        return compact([ 'so_tgl','so', 'adjustso', 'resetsoic']);
+        return compact(['so_tgl', 'so', 'adjustso', 'resetsoic']);
 
     }
 

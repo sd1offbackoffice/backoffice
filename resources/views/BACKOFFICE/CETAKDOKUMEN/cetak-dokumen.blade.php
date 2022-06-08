@@ -4,7 +4,7 @@
 
 @section('content')
 
-    <div class="container" id="main_view">
+    <div class="cfontainer" id="main_view">
         <div class="row">
             <div class="offset-1 col-sm-10">
                 <fieldset class="card border-secondary">
@@ -101,12 +101,58 @@
         </div>
     </div>
 
+    <div class="modal fade" id="m_signature_supplier" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5>Tanda Tangan per Supplier</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="container">                                                
+                        <div class="row">
+                            <div class="col lov">
+                                <div class="card-body p-0 tableFixedHeader">
+                                    <table class="table table-striped table-bordered"
+                                        id="table-detail">
+                                        <thead class="theadDataTables">
+                                        <tr class="table-sm text-center">
+                                            <th class="text-center small">NAMA SUPPLIER</th>
+                                            <th class="text-center small">KODE SUPPLIER</th>
+                                            <th class="text-center small">AKSI</th>                                            
+                                        </tr>
+                                        </thead>
+                                        <tbody id="body-table-supplier">                                        
+                                        </tbody>                                      
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
+                                    class="icon fas fa-times"></i> CANCEL
+                            </button>
+                        </div>
+                        <div class="col-sm-5">
+                            <button type="button" class="btn btn-success" id="btnCetak" data-dismiss="modal"> CETAK
+                            </button>
+                        </div>                     
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="modal fade" id="m_signature" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Sign Here : </h5>
+                    <h5 class="modal-title"></h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -144,15 +190,10 @@
                             <div class="col">
                                 <button id="clearSig" class="btn btn-danger btn-lg">Clear</button>
                                 <span class="space"></span>
-                                <button id="finalPrintBtn" class="btn btn-success btn-lg">Save</button>
+                                <button id="saveSignatureBtn" class="btn btn-success btn-lg saveSignatureBtn">Save</button>
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <label for="">Save</label>
-                        <label for="">/</label>
-                        <label for="">Clear</label>
-                    </div>
+                    </div>                    
                 </div>
             </div>
         </div>
@@ -266,8 +307,18 @@
     <script>
         nomor = '';
         checked = [];
-        let countSignature = 0;
-        $(document).ready(function () {
+        let arrSuppSig = [];
+        let arrSupp = [];
+        let nodocs = []
+        let nama_supplier = ''
+        let sup_kodesupplier = ''
+        let sig = $('#sig').signature({
+            syncField: '#signature64',
+            syncFormat: 'PNG'
+        });  
+        
+        $(document).ready(function () {            
+
             $('.tanggal').datepicker({
                 "dateFormat": "dd/mm/yy",
             });
@@ -276,6 +327,7 @@
             cekTanggal();
             cekMenu();
             showData();
+            // indexSignature = 0;
         });
 
         $('#tableDocument').DataTable();
@@ -367,104 +419,221 @@
                 if (index < 10) {
                     $(this).prop('checked', bool);
                     val = $(this).val();
+                    // console.log(val);
+                    let splitedVal = val.split('x');
+                    let nodoc = splitedVal[0];                    
                     const index = checked.indexOf(val);
                     if (bool) {
                         if (index > -1) {
                         } else {
                             checked.push(val);
+                            nodocs.push(nodoc);
+                            console.log(checked);
+                            console.log(nodocs);
                         }
                     } else {
                         if (index > -1) {
                             checked.splice(index, 1);
+                            nodocs.splice(index, 1);
+                            console.log(checked);
+                            console.log(nodocs);
                         }
                     }
                 }
             });
         });
-        $(document).on('change', '.cekbox', function () {
+
+        $(document).on('change', '.cekbox', function () {        
             val = $(this).val();
+            // console.log(val);
+            let splitedVal = val.split('x');
+            let nodoc = splitedVal[0];          
             if ($(this).prop('checked') == true) {
                 checked.push(val);
+                nodocs.push(nodoc);
                 console.log(checked);
+                console.log(nodocs);
             } else {
                 const index = checked.indexOf(val);
                 if (index > -1) {
                     checked.splice(index, 1);
+                    nodocs.splice(index, 1);                    
+                    console.log(checked);
+                    console.log(nodocs);
                 }
             }
-        });
+        });        
 
-        // function findKodeSupplier(nodoc) {
-        //     ajaxSetup();
-        //     $.ajax({
-        //         type: "get",
-        //         url: "url",
-        //         data: "data",
-        //         dataType: "dataType",
-        //         success: function (response) {
-                    
-        //         }
-        //     });
-        // }
-
-        function printWithSignature() {
-            $('#m_signature').modal({
-                backdrop: 'static',
-                keyboard: false
+        function getSupplierData(){
+            arrSupp = [];
+            $('#body-table-supplier tr').each(function (index, element) {
+                $(this).remove();
             });
 
-            let sig = $('#sig').signature({
-                syncField: '#signature64',
-                syncFormat: 'PNG'
-            });
+            
+            if (checked.length == 0) {
+                swal({
+                    icon: 'info',
+                    title: 'Nomor Dokumen',
+                    text: 'Mohon pilih nomor dokumen yang ingin dicetak',
+                    timer: 2000                  
+                });
+            } else {
+                $('#m_signature_supplier').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+                ajaxSetup();
+                $.ajax({
+                    type: "get",
+                    async: false,
+                    url: "{{ url()->current() }}/get-data-supplier-by-nodoc",
+                    data: {
+                        nodocs: nodocs
+                    },
+                    beforeSend: function () {
+                        $('#modal-loader').modal('show');
+                    },           
+                    success: function (response) {
+                        $('#modal-loader').modal('hide');                    
+                        response.data.forEach(data => {
+                            arrSupp.push(data)
+                        })                        
+                        arrSupp.forEach(data => {                            
+                            $('#body-table-supplier').append('<tr class="table-sm">\n' +
+                            '                               <td class="small nama_supplier">' + data.nama_supplier + '</td>\n' +
+                            '                               <td class="small sup_kodesupplier">' + data.sup_kodesupplier + '</td>\n' +
+                            '                               <td class="small action"><button type="button" class="btn btn-primary btnSignature" id="btnSignature">TANDA TANGAN</button></td>\n' +                                
+                            '                            </tr>')                                   
+                        });                                                                                       
+                    }
+                });
+            }                        
+        }
+        
+        $(document).on('click', '#btnSignature', function () {
+            // console.log(this);            
+            nama_supplier = $(this).parents('tr').find('.nama_supplier').html()
+            sup_kodesupplier = $(this).parents('tr').find('.sup_kodesupplier').html()
 
-            $('#finalPrintBtn').click(function (e) {
-
-                if ($('#nama_personil').val() == null || $('#nama_personil').val() == '') {
-                    swal({
-                        icon: 'info',
-                        title: 'Nama Kosong',
-                        text: 'Harap mengisi nama personil expedisi!',
-                        timer: 2000
-                    });
-                } else {
-                    let dataUrl = $('#sig').signature('toDataURL', 'image/jpeg', 0.8)
-                    ajaxSetup()
-                    $.ajax({
-                        type: "POST",
-                        url: "{{ url()->current() }}/save-signature",
-                        data: {
-                            sign: dataUrl,
-                            signed: $('#signature64').val(),
-                            signedBy: $('#nama_personil').val()
-                        },
-                        beforeSend: function () {
-                            $('#modal-loader').modal('show');
-                        },
-                        success: function (response) {
-                            $('#modal-loader').modal('hide');
-                            $('#m_signature').modal('hide');
-                            
-
-                            console.log(response);
-
-                            let signatureId = response.data.signatureId
-                            let signedBy = response.data.signedBy
-
-                            sig.signature('clear');
-                            cetak(signatureId, signedBy)                            
-                        }
-                    });
+            let found = false;
+            for (let i = 0; i < arrSuppSig.length; i++) {
+                if (arrSuppSig[i].sup_kodesupplier == sup_kodesupplier) {
+                    found = true
+                    break;
                 }
+            }
+            if (found == false) {
+                openSignature(nama_supplier, sup_kodesupplier)                
+            } else {
+                swal({
+                    icon: 'info',
+                    title: 'Tanda Tangan',
+                    text: 'Tanda Tangan untuk supplier ini sudah ada',
+                    timer: 2000                  
+                });
+            }            
+        });        
 
-            });
+        function openSignature(nama_supplier, sup_kodesupplier){
+            $('#m_signature .modal-title').html('')
+            $('#nama_personil').val('')             
+            $('#m_signature .modal-title').html(`${nama_supplier} - ${sup_kodesupplier}`);
+            // $('#m_signature .modal-title').html(`${arrSupp[indexSignature].nama_supplier} - ${arrSupp[indexSignature].sup_kodesupplier}`);
+            // $('#m_signature').modal({
+            //     backdrop: 'static',
+            //     keyboard: false
+            // });
+            $('#m_signature').modal('show');
+
+            // let sig = $('#sig').signature({
+            //     syncField: '#signature64',
+            //     syncFormat: 'PNG'
+            // });            
 
             $('#clearSig').click(function (e) {
                 e.preventDefault();
                 sig.signature('clear');
                 $("#signature64").val('');
-            });
+            }); 
         }
+
+        $(document).on('click', '#saveSignatureBtn', function () {
+            // let sig = $('#sig').signature({
+            //     syncField: '#signature64',
+            //     syncFormat: 'PNG'
+            // }); 
+
+            if ($('#nama_personil').val() == null || $('#nama_personil').val() == '' || $('#signature64').val() == null || $('#signature64').val() == '') {
+                swal({
+                    icon: 'info',
+                    title: 'Data Tanda Tangan Kosong',
+                    text: 'Harap mengisi nama personil dan tanda tangan!',
+                    timer: 2000
+                });
+            } else {
+                let dataUrl = $('#sig').signature('toDataURL', 'image/jpeg', 0.8)
+                ajaxSetup()
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url()->current() }}/save-signature",
+                    async: false,
+                    data: {
+                        sign: dataUrl,
+                        signed: $('#signature64').val(),
+                        signedBy: $('#nama_personil').val()
+                    },
+                    beforeSend: function () {
+                        $('#modal-loader').modal('show');
+                    },
+                    success: function (response) {
+                        $('#modal-loader').modal('hide');
+                        $('#m_signature').modal('hide');                                
+
+                        let signatureId = response.data.signatureId
+                        let signedBy = response.data.signedBy
+                        let data = {}
+
+                        data.nama_supplier = nama_supplier
+                        data.sup_kodesupplier = sup_kodesupplier
+                        data.signatureId = signatureId
+                        data.signedBy = signedBy
+                        arrSuppSig.push(data)
+
+                        $('#body-table-supplier tr').each(function (index, element) {
+                            let kdsup = $(this).find('.sup_kodesupplier').html();
+                            if (kdsup == sup_kodesupplier) {
+                                $(this).find('.action').empty()
+                                $(this).find('.action').html('<p class="text-success">SUDAH TANDA TANGAN</p>')
+                                // console.log($(this).find('.action').html());
+                            }
+                        });
+                        
+                        console.log(arrSuppSig);
+                        sig.signature('clear');
+                        nama_supplier = ''
+                        sup_kodesupplier = ''                                                                         
+                    }
+                });                    
+            }
+        });
+
+        function printWithSignature() {            
+            getSupplierData();                                
+        }
+
+        $(document).on('click', '#btnCetak', function () {            
+            if (arrSupp.length != arrSuppSig.length) {
+                swal({
+                    icon: 'info',
+                    title: 'Tanda Tangan Kosong',
+                    text: 'Harap mengisi tanda tangan pada dokumen yang telah dipilih!',
+                    timer: 2000
+                });
+            } else {
+                cetak();
+            }
+        });
 
         function cetakEFaktur() {
             if ($('#dokumen').val() != 'K' && $('#laporan').val() != 'N') {
@@ -502,6 +671,7 @@
                     }, error: function (err) {
                         $('#modal-loader').modal('hide');
                         errorHandlingforAjax(err)
+
                     }
                 })
             } else {
@@ -521,7 +691,7 @@
             }
         }
 
-        function cetak(signatureId, signedBy) {
+        function cetak() {
             if (checked.length != 0) {
                 ajaxSetup();
                 $.ajax({
@@ -539,8 +709,7 @@
                         tgl2: $('#tgl2').val(),
                         kertas: $('#kertas').val(),
                         data: checked,
-                        signatureId: signatureId,
-                        signedBy: signedBy
+                        arrSuppSig: arrSuppSig
                     },
                     beforeSend: function () {
                         $('#modal-loader').modal({backdrop: 'static', keyboard: false});

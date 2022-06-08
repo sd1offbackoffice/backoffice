@@ -12,7 +12,7 @@ class KirimKKEIController extends Controller
     //
 
     public function index(){
-        $kodeigr = '22';
+        $kodeigr = Session::get('kdigr');
 
         $kkei = DB::connection(Session::get('connection'))->table('temp_kkei')
             ->select('kke_periode')

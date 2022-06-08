@@ -155,7 +155,7 @@ class AccessController extends Controller
             self::insertBaseMenu();
         }
 
-        if(in_array(Session::get('usid'), ['ADM','DEV','SUP','DV1','DV2','DV3','SP1','SP2','SP3','JEF'])){
+        if(in_array(Session::get('usid'), Session::get('specialUser'))){
 //        if(Session::get('usid') == 'ADM' || Session::get('usid') == 'JEF'){
 //            $listMenu = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
 //                ->join('tbmaster_useraccess_migrasi','uac_acc_id','=','acc_id')
@@ -181,7 +181,7 @@ class AccessController extends Controller
                 ->orderBy('acc_name')
                 ->get();
         }
-        else if(in_array(Session::get('usid'), ['DEV','SUP','DV1','DV2','DV3','DV4','DV5','DV6'])){
+        else if(in_array(Session::get('usid'), Session::get('specialUser'))){
             $listMenu = DB::connection(Session::get('connection'))->table('tbmaster_access_migrasi')
                 ->selectRaw("acc_id, acc_group, acc_subgroup1, acc_subgroup2, acc_subgroup3, acc_name, acc_url")
                 ->orderBy('acc_group')
@@ -260,7 +260,7 @@ class AccessController extends Controller
                 'acc_level' => 2,
                 'acc_url' => '/administration/menu',
                 'acc_id' => 'A000',
-                'acc_create_by' => 'DEV',
+                'acc_create_by' => 'DVX',
                 'acc_create_dt' => Carbon::now(),
                 'acc_status' => 0,
                 'acc_order' => null
@@ -277,7 +277,7 @@ class AccessController extends Controller
                 'acc_level' => 2,
                 'acc_url' => '/administration/user',
                 'acc_id' => 'A001',
-                'acc_create_by' => 'DEV',
+                'acc_create_by' => 'DVX',
                 'acc_create_dt' => Carbon::now(),
                 'acc_status' => 0,
                 'acc_order' => null
@@ -294,7 +294,7 @@ class AccessController extends Controller
                 'acc_level' => 2,
                 'acc_url' => '/administration/access',
                 'acc_id' => 'A002',
-                'acc_create_by' => 'DEV',
+                'acc_create_by' => 'DVX',
                 'acc_create_dt' => Carbon::now(),
                 'acc_status' => 0,
                 'acc_order' => null
@@ -311,7 +311,7 @@ class AccessController extends Controller
                 'acc_level' => 2,
                 'acc_url' => '/administration/dev',
                 'acc_id' => 'A003',
-                'acc_create_by' => 'DEV',
+                'acc_create_by' => 'DVX',
                 'acc_create_dt' => Carbon::now(),
                 'acc_status' => 0,
                 'acc_order' => null

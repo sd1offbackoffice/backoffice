@@ -126,7 +126,7 @@ class CetakPenyesuaianController extends Controller
                                 'REPRINT'
                             ELSE ''
                             END AS REP")
-                    ->where('trbo_kodeigr','=','22')
+                    ->where('trbo_kodeigr','=',Session::get('kdigr'))
                     ->whereRaw("NVL(trbo_recordid,'0') <> '1'")
                     ->whereIn('trbo_nodoc',$nodoc)
                     ->orderBy('trbo_nodoc')

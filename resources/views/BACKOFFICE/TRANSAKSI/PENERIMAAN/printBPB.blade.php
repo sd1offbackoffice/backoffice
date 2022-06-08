@@ -478,6 +478,7 @@
                                 $('#modal-loader').modal('show');
                             },
                             success: (response) => {
+                                console.log(response)
                                 $('#modal-loader').modal('hide');
                                 if (response['kode'] == 0) {
                                     swal('', response['message'], 'error');
@@ -487,8 +488,9 @@
                                     swal('', response['message'], 'info');
                                 }
                             },
-                            error: () => {
+                            error: (error) => {
                                 $('#modal-loader').modal('hide');
+                                console.log(error)
                             }
                         });
                     }
@@ -500,7 +502,7 @@
             ftpModal.modal();
         }
 
-        function fxcetakData(startDate, endDate, type, size, checked, typeTrn, document) {
+        function fxcetakData(startDate, endDate, type, size, checked, typeTrn, document, flag) {
             $.ajax({
                 method: 'POST',
                 url: currUrl + 'cetakdata',
@@ -511,7 +513,8 @@
                     size: size,
                     checked: checked,
                     typeTrn: typeTrn,
-                    document: document
+                    document: document,
+                    flag: flag
                 },
                 beforeSend: () => {
                     $('#modal-loader').modal('show');
@@ -566,7 +569,7 @@
                                                     $('#m_signature').modal('hide');
                                                     data_nota = result.data;
                                                     split_nota = data_nota.split(",");
-                                                    window.open(currUrl + 'viewreport/' + checked + '/' + split_nota[0] + '/' + result.nota + '/' + response.data);
+                                                    // window.open(currUrl + 'viewreport/' + checked + '/' + split_nota[0] + '/' + result.nota + '/' + response.data);
                                                     window.open(currUrl + 'viewreport/' + checked + '/' + split_nota[1] + '/' + result.nota + '/' + response.data);
                                                     if (result.lokasi == 1 && checked == 0) {
                                                         window.open(currUrl + 'viewreport/' + checked + '/' + 'lokasi' + '/' + documentTemp + '/' + result.lokasi);
@@ -646,11 +649,287 @@
                             fxcetakData(startDate, endDate, type, size, checked, typeTrn, document);
                         }
                     });
+                    if (checked == 0) {
+                        swal({
+                            title: 'Peringatan',
+                            text: 'Anda akan mencetak beberapa dokumen dengan tanda tangan supplier yang sama, apakah anda yakin?',
+                            icon: 'warning',
+                            buttons: {
+                                cancel: {
+                                    text: "Batal",
+                                    value: 'batal',
+                                    visible: true
+                                },
+                                confirm: {
+                                    text: "Oke",
+                                    value: 'oke',
+                                    visible: true
+                                },
+                            },
+                        }).then((result) => {
+                            if (result == 'oke') {
+                                ajaxSetup();
+                                $.ajax({
+                                    type: "GET",
+                                    url: currUrl + 'check-flag',
+                                    data: {
+                                        document: document
+                                    },
+                                    beforeSend: function() {
+                                        $('#modal-loader').modal('show');
+                                    },
+                                    success: function(response) {
+                                        var lastcost = [];
+                                        var avgcost = [];
+                                        var plu = [];
+                                        for (j = 0; j <= response.length; j++) {
+                                            for (i = 0; i <= response[0].length; i++) {
+                                                try {
+                                                    if (response[j][i]) {
+                                                        if (response[j][i].prd_lastcost == 0) {
+                                                            plu.push(response[j][i].prd_prdcd);
+                                                            lastcost.push(response[j][i].prd_lastcost)
+                                                        }
+                                                        if (response[j][i].prd_avgcost != 0) {
+                                                            avgcost.push(response[j][i].prd_avgcost)
+                                                        }
+                                                    }
+                                                } catch (error) {
+                                                    console.log('skip')
+                                                }
+                                            }
+                                        }
+                                        if (lastcost.length > 0) {
+                                            if (avgcost.length > 0) {
+                                                swal({
+                                                    title: 'Peringatan',
+                                                    text: 'PLU ' + plu.toString() + ' Avg Cost <> 0, Lakukan Update PKM ?',
+                                                    icon: 'warning',
+                                                    buttons: {
+                                                        cancel: {
+                                                            text: "Batal",
+                                                            value: 'batal',
+                                                            visible: true
+                                                        },
+                                                        confirm: {
+                                                            text: "Oke",
+                                                            value: 'oke',
+                                                            visible: true
+                                                        },
+                                                    },
+                                                }).then((result) => {
+                                                    if (result == 'oke') {
+                                                        var flag = 1;
+                                                        $.ajax({
+                                                            type: "GET",
+                                                            url: currUrl + 'update-flag',
+                                                            data: {
+                                                                flag: flag
+                                                            },
+                                                            beforeSend: function() {
+                                                                $('#modal-loader').modal('show');
+                                                            },
+                                                            success: function(response) {
+                                                                fxcetakData(startDate, endDate, type, size, checked, typeTrn, document, flag);
+                                                            },
+                                                            error: function(error) {
+                                                                $('#modal-loader').modal('hide');
+                                                                swal({
+                                                                    title: error.message,
+                                                                    icon: 'error',
+                                                                }).then(() => {
+                                                                    $('#modal-loader').modal('hide');
+                                                                });
+                                                            },
+                                                        });
+                                                    }
+                                                    fxcetakData(startDate, endDate, type, size, checked, typeTrn, document, 0);
+                                                });
+                                            } else {
+                                                var flag = 1;
+                                                $.ajax({
+                                                    type: "GET",
+                                                    url: currUrl + 'update-flag',
+                                                    data: {
+                                                        flag: flag
+                                                    },
+                                                    beforeSend: function() {
+                                                        $('#modal-loader').modal('show');
+                                                    },
+                                                    success: function(response) {
+                                                        fxcetakData(startDate, endDate, type, size, checked, typeTrn, document, flag);
+                                                    },
+                                                    error: function(error) {
+                                                        $('#modal-loader').modal('hide');
+                                                        swal({
+                                                            title: error.message,
+                                                            icon: 'error',
+                                                        }).then(() => {
+                                                            $('#modal-loader').modal('hide');
+                                                        });
+                                                    },
+                                                });
+                                            }
+                                        } else {
+                                            var flag = 0;
+                                            $.ajax({
+                                                type: "GET",
+                                                url: currUrl + 'update-flag',
+                                                data: {
+                                                    flag: flag
+                                                },
+                                                beforeSend: function() {
+                                                    $('#modal-loader').modal('show');
+                                                },
+                                                success: function(response) {
+                                                    fxcetakData(startDate, endDate, type, size, checked, typeTrn, document, flag);
+                                                },
+                                                error: function(error) {
+                                                    $('#modal-loader').modal('hide');
+                                                    swal({
+                                                        title: error.message,
+                                                        icon: 'error',
+                                                    }).then(() => {
+                                                        $('#modal-loader').modal('hide');
+                                                    });
+                                                },
+                                            });
+                                        }
+                                    },
+                                    error: function(error) {
+                                        $('#modal-loader').modal('hide');
+                                        swal({
+                                            title: error.message,
+                                            icon: 'error',
+                                        }).then(() => {
+                                            $('#modal-loader').modal('hide');
+                                        });
+                                    },
+                                })
+                            }
+                        });
+                    }
                 } else {
-                    fxcetakData(startDate, endDate, type, size, checked, typeTrn, document);
+                    fxcetakData(startDate, endDate, type, size, checked, typeTrn, document, 0);
                 }
             } else {
-                fxcetakData(startDate, endDate, type, size, checked, typeTrn, document);
+                if (type == 2) {
+                    if (checked == 0) {
+                        ajaxSetup();
+                        $.ajax({
+                            type: "GET",
+                            url: currUrl + 'check-flag',
+                            data: {
+                                document: document
+                            },
+                            beforeSend: function() {
+                                $('#modal-loader').modal('show');
+                            },
+                            success: function(response) {
+                                var lastcost = [];
+                                var avgcost = [];
+                                for (i = 0; i < response[0].length; i++) {
+                                    if (response[0][i].prd_lastcost == 0) {
+                                        lastcost.push(response[0][i].prd_lastcost)
+                                    }
+                                    if (response[0][i].prd_avgcost != 0) {
+                                        avgcost.push(response[0][i].prd_avgcost)
+                                    }
+                                    console.log(response[0][i])
+                                }
+                                console.log(lastcost.length, avgcost.length)
+                                if (lastcost.length > 0) {
+                                    if (avgcost.length > 0) {
+                                        swal({
+                                            title: 'Peringatan',
+                                            text: 'PLU ' + response[0][0].prd_prdcd + ' Avg Cost <> 0, Lakukan Update PKM ?',
+                                            icon: 'warning',
+                                            buttons: {
+                                                cancel: {
+                                                    text: "Batal",
+                                                    value: 'batal',
+                                                    visible: true
+                                                },
+                                                confirm: {
+                                                    text: "Oke",
+                                                    value: 'oke',
+                                                    visible: true
+                                                },
+                                            },
+                                        }).then((result) => {
+                                            if (result == 'oke') {
+                                                var flag = 1;
+                                                $.ajax({
+                                                    type: "GET",
+                                                    url: currUrl + 'update-flag',
+                                                    data: {
+                                                        flag: flag
+                                                    },
+                                                    beforeSend: function() {
+                                                        $('#modal-loader').modal('show');
+                                                    },
+                                                    success: function(response) {
+                                                        fxcetakData(startDate, endDate, type, size, checked, typeTrn, document, flag);
+                                                    },
+                                                    error: function(error) {
+                                                        $('#modal-loader').modal('hide');
+                                                        swal({
+                                                            title: error.message,
+                                                            icon: 'error',
+                                                        }).then(() => {
+                                                            $('#modal-loader').modal('hide');
+                                                        });
+                                                    },
+                                                });
+                                            } else {
+                                                fxcetakData(startDate, endDate, type, size, checked, typeTrn, document, 0);
+                                            }
+                                        });
+                                    } else {
+                                        var flag = 1;
+                                        $.ajax({
+                                            type: "GET",
+                                            url: currUrl + 'update-flag',
+                                            data: {
+                                                flag: flag
+                                            },
+                                            beforeSend: function() {
+                                                $('#modal-loader').modal('show');
+                                            },
+                                            success: function(response) {
+                                                fxcetakData(startDate, endDate, type, size, checked, typeTrn, document, flag);
+                                            },
+                                            error: function(error) {
+                                                $('#modal-loader').modal('hide');
+                                                swal({
+                                                    title: error.message,
+                                                    icon: 'error',
+                                                }).then(() => {
+                                                    $('#modal-loader').modal('hide');
+                                                });
+                                            },
+                                        });
+                                    }
+                                } else {
+                                    fxcetakData(startDate, endDate, type, size, checked, typeTrn, document, 0);
+                                }
+                            },
+                            error: function(error) {
+                                $('#modal-loader').modal('hide');
+                                swal({
+                                    title: error.message,
+                                    icon: 'error',
+                                }).then(() => {
+                                    $('#modal-loader').modal('hide');
+                                });
+                            },
+                        })
+                    } else {
+                        fxcetakData(startDate, endDate, type, size, checked, typeTrn, document, 0);
+                    }
+                } else {
+                    fxcetakData(startDate, endDate, type, size, checked, typeTrn, document, 0);
+                }
             }
         }
 

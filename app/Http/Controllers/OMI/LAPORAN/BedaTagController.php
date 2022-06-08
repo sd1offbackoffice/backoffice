@@ -50,7 +50,7 @@ class BedaTagController extends Controller
         return Datatables::of($datas)->make(true);
     }
 
-    public function getLovKategori()
+    public function getLovKategori2()
     {
         $kodeigr = Session::get('kdigr');
 
@@ -61,6 +61,27 @@ class BedaTagController extends Controller
             ->where('kat_kodeigr', '=', $kodeigr)
             ->orderByRaw("kat_kodedepartement, kat_kodekategori")
             ->get();
+
+        return Datatables::of($datas)->make(true);
+    }
+
+    public function getLovKategori(Request $request)
+    {
+        $kodeigr = Session::get('kdigr');
+        // $dep1   = $request->dep1;
+        // $dep2   = $request->dep2;
+        // dd($dep2);
+
+        $datas = DB::connection(Session::get('connection'))->table('tbmaster_kategori')
+            ->selectRaw('kat_namakategori')
+            ->selectRaw('kat_kodekategori')
+            ->selectRaw('kat_kodedepartement')
+            ->where('kat_kodeigr', '=', $kodeigr)
+            // ->whereBetween('kat_kodekategori', [$dep1,$dep2])
+            ->orderByRaw("kat_kodedepartement, kat_kodekategori")
+            ->get();
+
+            
 
         return Datatables::of($datas)->make(true);
     }

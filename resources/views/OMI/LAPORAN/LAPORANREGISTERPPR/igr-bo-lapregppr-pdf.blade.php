@@ -26,8 +26,11 @@
             <th width="10%" class="left padding-right">NO. NOTA RETUR</th>
             <th width="5%" class="right padding-right">ITEM</th>
             <th width="10%" class="left padding-right">MEMBER</th>
-            <th width="5%" class="right">NILAI</th>
+            <th width="5%" class="right padding-right">NILAI</th>
             <th width="5%" class="right padding-right">PPN</th>
+            <th width="5%" class="right padding-right">PPN DIBEBASKAN</th>
+            <th width="5%" class="right padding-right">PPN DTP</th>
+
             <th width="10%" class="left padding-right">NPWP</th>
             <th width="10%" class="left">NO. REFERENSI</th>
         </tr>
@@ -48,8 +51,32 @@
                     <td class="left padding-right">{{ $d->cp_nonota }}</td>
                     <td class="right padding-right">{{ $d->item }}</td>
                     <td class="left padding-right">{{ $d->rom_member }}-{{ $d->cus_namamember }}</td>
-                    <td class="right">{{ number_format($d->harga,0) }}</td>
-                    <td class="right padding-right">{{ number_format($d->ppn,0) }}</td>
+                    <td class="right padding-right">{{ number_format($d->harga,0) }}</td>
+                    {{-- <td class="right padding-right">{{ number_format($d->ppn,0) }}</td> --}}
+                    @if($d->prd_flagbkp1 == 'Y' )
+                        @if($d->prd_flagbkp2 == 'Y')
+                            <td class="right padding-right">{{ number_format($d->ppn,2) }}</td>
+                            <td class="right padding-right">{{ number_format(0,2) }}</td>
+                            <td class="right padding-right">{{ number_format(0,2) }}</td>
+                        @elseif($d->prd_flagbkp2 == 'P')
+                            <td class="right padding-right">{{ number_format(0,2) }}</td>
+                            <td class="right padding-right">{{ number_format($d->ppn,2) }}</td>
+                            <td class="right padding-right">{{ number_format(0,2) }}</td>
+                        @elseif($d->prd_flagbkp2 == 'G' || $d->prd_flagbkp2 == 'W')
+                            <td class="right padding-right">{{ number_format(0,2) }}</td>
+                            <td class="right padding-right" >{{ number_format(0,2) }}</td>
+                            <td class="right padding-right">{{ number_format($d->ppn,2) }}</td>
+                        @else
+                            <td class="right padding-right">{{ number_format($d->ppn,2) }}</td>
+                            <td class="right padding-right">{{ number_format(0,2) }}</td>
+                            <td class="right padding-right">{{ number_format(0,2) }}</td>
+                        @endif
+                    @else
+                        <td class="right padding-right">{{ number_format($d->ppn,2) }}</td>
+                        <td class="right padding-right">{{ number_format(0,2) }}</td>
+                        <td class="right padding-right">{{ number_format(0,2) }}</td>
+                    @endif
+
                     <td class="left padding-right">{{ $d->cus_npwp }}</td>
                     <td class="left">{{ $d->cp_reffp }}</td>
                 </tr>
@@ -61,8 +88,33 @@
                         <td class="left padding-right">{{ $d->cp_nonota }}</td>
                         <td class="right padding-right">{{ $d->item }}</td>
                         <td class="left padding-right">{{ $d->rom_member }}-{{ $d->cus_namamember }}</td>
-                        <td class="right">{{ number_format($d->harga,0) }}</td>
-                        <td class="right padding-right">{{ number_format($d->ppn,0) }}</td>
+                        <td class="right padding-right">{{ number_format($d->harga,0) }}</td>
+                        {{-- <td class="right padding-right">{{ number_format($d->ppn,0) }}</td> --}}
+
+                        @if($d->prd_flagbkp1 == 'Y' )
+                            @if($d->prd_flagbkp2 == 'Y')
+                                <td class="right padding-right">{{ number_format($d->ppn,2) }}</td>
+                                <td class="right padding-right">{{ number_format(0,2) }}</td>
+                                <td class="right padding-right">{{ number_format(0,2) }}</td>
+                            @elseif($d->prd_flagbkp2 == 'P')
+                                <td class="right padding-right">{{ number_format(0,2) }}</td>
+                                <td class="right padding-right">{{ number_format($d->ppn,2) }}</td>
+                                <td class="right padding-right">{{ number_format(0,2) }}</td>
+                            @elseif($d->prd_flagbkp2 == 'G' || $d->prd_flagbkp2 == 'W')
+                                <td class="right padding-right">{{ number_format(0,2) }}</td>
+                                <td class="right padding-right">{{ number_format(0,2) }}</td>
+                                <td class="right padding-right" >{{ number_format($d->ppn,2) }}</td>
+                            @else
+                                <td class="right padding-right">{{ number_format($d->ppn,2) }}</td>
+                                <td class="right padding-right">{{ number_format(0,2) }}</td>
+                                <td class="right padding-right">{{ number_format(0,2) }}</td>
+                            @endif
+                        @else
+                            <td class="right padding-right">{{ number_format($d->ppn,2) }}</td>
+                            <td class="right padding-right">{{ number_format(0,2) }}</td>
+                            <td class="right padding-right">{{ number_format(0,2) }}</td>
+                        @endif
+
                         <td class="left padding-right">{{ $d->cus_npwp }}</td>
                         <td class="left">{{ $d->cp_reffp }}</td>
                     </tr>
@@ -78,14 +130,12 @@
                 <td colspan="12">TIDAK ADA DATA</td>
             </tr>
         @endif
-        </tbody>
-        <tfoot>
         <tr>
-            <td colspan="7" align="right">TOTAL</td>
-            <td class="right">{{ number_format($total_nilai,0) }}</td>
-            <td class="right">{{ number_format($total_ppn,0) }}</td>
+            <td colspan="6" align="right">TOTAL</td>
+            <td class="right padding-right">{{ number_format($total_nilai,0) }}</td>
+            <td class="right padding-right">{{ number_format($total_ppn,0) }}</td>
             <td colspan="2"></td>
         </tr>
-        </tfoot>
+        </tbody>
     </table>
 @endsection

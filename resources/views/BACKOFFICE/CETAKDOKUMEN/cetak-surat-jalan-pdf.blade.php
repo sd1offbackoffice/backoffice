@@ -7,186 +7,186 @@
 @endsection
 
 @section('title')
-    SURAT JALAN <br>{{ strtoupper($data['data1'][0]->judul) }}
+
 @endsection
+@section('subtitle')
 
-
-@section('header_left')
-    <table>
-        <tr>
-            <td class="left">NPWP</td>
-            <td class="left">: {{ $perusahaan->prs_npwp }}</td>
-        </tr>
-        <tr>
-            <td class="left"><b> {{ $data['data1'][0]->status }} </b></td>
-        </tr>
-        <tr>
-            <td class="left">NOMOR</td>
-            <td class="left">: {{ $data['data1'][0]->msth_nodoc }}</td>
-            <td class="left">TGL NPB</td>
-            <td class="left">: {{ substr($data['data1'][0]->msth_tgldoc,0,10) }}</td>
-        </tr>
-        @php
-            $i=0;
-        @endphp
-        @foreach($data['data2'] as $d)
-            @if($i == 0)
-                <tr>
-                    <td class="left">FAKTUR PAJAK</td>
-                    <td class="left">: {{$d->nofp }}</td>
-                    <td class="left">TGL FP</td>
-                    <td class="left">: {{ substr($d->mstd_date3,0,10) }}</td>
-                </tr>
-            @else
-                <tr>
-                    <td class="left"></td>
-                    <td class="left">: {{$d->nofp }}</td>
-                    <td class="left"></td>
-                    <td class="left">: {{ substr($d->mstd_date3,0,10) }}</td>
-                </tr>
-            @endif
-            @php
-                $i++;
-            @endphp
-        @endforeach
-
-    </table>
 @endsection
-@section('header_right')
-    <table>
-        <tr>
-            <td class="left">SUPPLIER</td>
-            <td class="left">: {{ $data['data1'][0]->msth_kodesupplier }}</td>
-        </tr>
-        <tr>
-            <td class="left">NPWP</td>
-            <td class="left">: {{ $data['data1'][0]->sup_npwp }}</td>
-        </tr>
-        <tr>
-            <td class="left">ALAMAT</td>
-            <td class="left">: {{ $data['data1'][0]->sup_alamatsupplier1 }}</td>
-        </tr>
-        <tr>
-            <td class="left"></td>
-            <td class="left">: {{ $data['data1'][0]->sup_alamatsupplier2 }}</td>
-        </tr>
-        <tr>
-            <td class="left"></td>
-            <td class="left">: {{ $data['data1'][0]->sup_kotasupplier3 }}</td>
-        </tr>
-        <tr>
-            <td class="left">TELP</td>
-            <td class="left">: {{ $data['data1'][0]->sup_telpsupplier }}</td>
-        </tr>
-        <tr>
-            <td class="left">CP</td>
-            <td class="left">: {{ $data['data1'][0]->sup_contactperson }}</td>
-        </tr>
-    </table>
-    @if($i < 5)
-        @php
-            $i =5;
-        @endphp
-    @endif
-@endsection
-
 
 @section('content')
-    @for($j=0; $j<$i; $j++ )
-        <br>
-    @endfor
-    <table class="table">
-        <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
-            <tr>
-                <th class="tengah right padding-right" rowspan="2">NO</th>            
-                <th class="tengah left" rowspan="2">NAMA BARANG</th>
-                <th class="tengah left" rowspan="2">SATUAN</th>
-                <th class="tengah right" colspan="2">KUANTITAS</th>            
-                <th class="tengah left" rowspan="2">KETERANGAN</th>
-            </tr>
-            <tr>
-                <th class="right">BESAR</th>
-                <th class="right">KECIL</th>
-            </tr>
-            </thead>
-            <tbody>
+    @php
+        $temp_nodoc='';
+    @endphp
+    @for($i = 0;$i<sizeof($data['data1']);$i++)
+        @if($temp_nodoc != $data['data1'][$i]->msth_nodoc)
             @php
-                $gross = 0;
-                $potongan = 0;
-                $ppn = 0;
-                $total = 0;
-                $i=1;
+                $temp_nodoc = $data['data1'][$i]->msth_nodoc;
             @endphp
-
-            @if(isset($data['data1']))
-                @foreach($data['data1'] as $d)
-                    <tr>
-                        <td class="right padding-right" >{{ $i }}</td>                    
-                        <td class="left" >{{ $d->prd_deskripsipanjang}}</td>
-                        <td class="left" >{{ $d->mstd_unit }}/{{ $d->mstd_frac }}</td>
-                        <td class="right">{{ $d->ctn }}</td>
-                        <td class="right">{{ $d->pcs }}</td>                    
-                        <td class="left">{{ $d->mstd_keterangan }}</td>
-                    </tr>
-                    @php
-                        $i++;
-                        $total += $d->total;
-                        $gross += $d->mstd_gross;
-                        $potongan += $d->mstd_discrph;
-                        $ppn += $d->mstd_ppnrph;
-                    @endphp
-                @endforeach
-            @else
+            <table>
+                <thead>
                 <tr>
-                    <td colspan="10">TIDAK ADA DATA</td>
+                    <th class="left" colspan="2" style="vertical-align: bottom">{{ $data['data1'][$i]->prs_namaperusahaan }}</th>
+                    <th class="left" colspan="11" style="font-size: 14px;text-align: center"> SURAT JALAN </th>
+                    <td class="left" colspan="3" style="vertical-align: bottom"> Kepada : </td>
                 </tr>
-            @endif
-        </tbody>
+                <tr>
+                    <td class="left" colspan="2">{{ $data['data1'][$i]->prs_namacabang }}</td>
+                    <td class="left" colspan="11" style="text-align: center"> {{$data['data1'][0]->judul}} </td>
+                    <td class="left" colspan="3">{{ $data['data1'][$i]->namas }}</td>
+                </tr>
+                <tr>
+                    <td class="left" colspan="13"></td>
+                    <td class="left" colspan="3">{{ $data['data1'][$i]->sup_alamatsupplier1 }}</td>
+                </tr>
+                <tr>
+                    <td class="left" colspan="13">Referensi NRB :</td>
+                    <td class="left" colspan="3">{{ $data['data1'][$i]->sup_alamatsupplier2 }} - {{ $data['data1'][$i]->sup_kotasupplier3 }}</td>
+                </tr>
+                <tr>
+                    <td class="left" colspan="13">No. {{ $data['data1'][$i]->mstd_noref3 }} {{date('d-m-Y', strtotime(substr($data['data1'][$i]->msth_tgldoc, 0, 10)))}} </td>
+                    <td class="left" colspan="3">Telepon: {{ $data['data1'][$i]->sup_telpsupplier }}</td>
+                </tr>
+                <tr>
+                    <td class="left" colspan="16">&nbsp;</td>
+                </tr>
+                <tr>
+                    <th style="border-top: 1px solid black;border-right: 1px solid black;border-left: 1px solid black;border-bottom: 1px solid black" class="tengah left" rowspan="2">NO.</th>
+                    <th style="border-top: 1px solid black;border-right: 1px solid black;border-left: 1px solid black;border-bottom: 1px solid black" class="tengah left" rowspan="2" colspan="11">NAMA BARANG</th>
+                    <th style="border-top: 1px solid black;border-right: 1px solid black;border-left: 1px solid black;border-bottom: 1px solid black" class="tengah left" rowspan="2">SATUAN</th>
+                    <th style="border-top: 1px solid black;border-right: 1px solid black;border-left: 1px solid black;border-bottom: 1px solid black" class="tengah center" colspan="2">KUANTITAS</th>
+                    <th style="border-top: 1px solid black;border-right: 1px solid black;border-left: 1px solid black;border-bottom: 1px solid black" class="tengah left pl-2" rowspan="2">&nbsp;KETERANGAN</th>
+                </tr>
+                <tr>
+                    <th style="border-top: 1px solid black;border-right: 1px solid black;border-left: 1px solid black;border-bottom: 1px solid black" class="right">BESAR</th>
+                    <th style="border-top: 1px solid black;border-right: 1px solid black;border-left: 1px solid black;border-bottom: 1px solid black" class="right">KECIL</th>
+                </tr>
+                </thead>
+                @php
+                    $gross = 0;
+                    $potongan = 0;
+                    $ppn = 0;
+                    $total = 0;
+                    $no=1;
+                @endphp
+                <tbody>
 
-        <tfoot>            
-            <tr>
-                <td colspan="10">
-                    <table class="table" border="1">
-                        <thead>
-                        </thead>
-                        <tbody>
-                        <tr style="border-top: 1px solid black;border-bottom: 1px solid black;">
-                            <td class="left" colspan="3">
-                                &nbsp; DIBUAT                            
-                                <div>
-                                    <img style="max-width: 200px; max-height: 100px" src="../storage/signature/clerk.png" alt="">                                
-                                </div>                        
-                            </td>
-                            <td class="left" colspan="3">
-                                &nbsp; MENYETUJUI :
-                                <div>
-                                    <img style="max-width: 200px; max-height: 100px" src="../storage/signature/srclerk.png" alt="">                                
-                                </div>
-                            </td>
-                            <td colspan="4">
-                                <div>
-                                    <img style="max-width: 150px; max-height: 100px" src="../storage/signature_expedition/{{ $data['signatureId'] . '.png' }}" alt="">                                
-                                </div>
-                            </td>
-                        </tr>                    
-                        <tr>
-                            <td class="left" colspan="3">
-                                &nbsp; ADMINISTRASI
-                                <p>{{ file_get_contents('../storage/names/clerk.txt') }}</p>
-                            </td>
-                            <td class="left" colspan="3">
-                                &nbsp; KEPALA GUDANG
-                                <p>{{ file_get_contents('../storage/names/srclerk.txt') }}</p>
-                            </td>
-                            <td class="left" colspan="4">
-                                &nbsp; SUPPLIER
-                                <p>{{ $data['signedBy'] }}</p>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </tfoot>
-    </table>
+        @endif
+                <tr>
+                    <td></td>
+                    <td class="left" colspan="11">{{ $data['data1'][$i]->prd_deskripsipanjang}}</td>
+                    <td colspan="4"></td>
+                </tr>
+                <tr>
+                    <td style="border-bottom: 0.5px solid gray;" class="center" >{{ $no }}.</td>
+                    <td style="border-bottom: 0.5px solid gray;" class="left" colspan="11">{{ $data['data1'][$i]->mstd_prdcd}}</td>
+                    <td style="border-bottom: 0.5px solid gray;" class="left" >{{ $data['data1'][$i]->mstd_unit }}/{{ $data['data1'][$i]->mstd_frac }}</td>
+                    <td style="border-bottom: 0.5px solid gray;" class="right">{{ $data['data1'][$i]->ctn }}</td>
+                    <td style="border-bottom: 0.5px solid gray;" class="right">{{ $data['data1'][$i]->pcs }}</td>
+                    <td style="border-bottom: 0.5px solid gray;" class="left pl-2">&nbsp;{{ $data['data1'][$i]->mstd_keterangan }}</td>
+                </tr>
+                <tr>
+                    <td colspan="16">&nbsp;</td>
+                </tr>
+                @php
+                    $no++;
+                    $total += $data['data1'][$i]->total;
+                    $gross += $data['data1'][$i]->mstd_gross;
+                    $potongan += $data['data1'][$i]->mstd_discrph;
+                    $ppn += $data['data1'][$i]->mstd_ppnrph;
+                @endphp
+
+        @if(!isset($data['data1'][$i+1]) || (isset($data['data1'][$i+1]) && $temp_nodoc != $data['data1'][$i+1]->msth_nodoc))
+                </tbody>
+                <tfoot style="border-top: 1px solid black;">
+                <tr>
+                    <th style="text-align: left" colspan="16">Dikirim oleh:</th>
+                </tr>
+                <tr>
+                    <td colspan="16">{{$data['data1'][$i]->prs_namacabang}}</td>
+                </tr>
+                <tr>
+                    <td colspan="16">{{$data['data1'][$i]->prs_alamat1}} {{$data['data1'][$i]->prs_alamat3}}</td>
+                </tr>
+                <tr>
+                    <td colspan="16">Telepon : {{$data['data1'][$i]->prs_telepon}}</td>
+                </tr>
+                <tr>
+                    <td colspan="6"></td>
+                    <td colspan="6">Diserahkan,</td>
+                    <td colspan="2">Disetujui,</td>
+                    <td colspan="2">Diterima,</td>
+                </tr>
+                <tr>
+                    <td colspan="6"></td>
+                    <td colspan="6">
+                        <div>
+                            <img style="max-width: 100px; max-height: 50px" src="../storage/signature/clerk.png"
+                                alt="">
+                        </div>
+                        <p>{{ file_get_contents('../storage/names/clerk.txt') }}</p>
+                    </td>
+                    <td colspan="2">
+                        <div>
+                            <img style="max-width: 100px; max-height: 50px" src="../storage/signature/srclerk.png"
+                                alt="">
+                        </div>
+                        <p>{{ file_get_contents('../storage/names/srclerk.txt') }}</p>
+                    </td>
+                    <td colspan="2">
+                        @for ($j = 0; $j < sizeof($data['arrSuppSig']); $j++)
+                        @if ($data['data1'][$i]->msth_kodesupplier == $data['arrSuppSig'][$j]['sup_kodesupplier'])                            
+                            <div>
+                                <img style="max-width: 100px; max-height: 50px"
+                                    src="../storage/signature_expedition/{{ $data['arrSuppSig'][$j]['signatureId'] . '.png' }}" alt="">
+                            </div>
+                            <p>{{ strtoupper($data['arrSuppSig'][$j]['signedBy']) }}</p>                           
+                        @endif  
+                        @endfor
+                    </td>
+                </tr>
+                {{-- <tr>
+                    <td colspan="16">
+                        &nbsp;
+                        <div>
+                            <img style="max-width: 100px; max-height: 50px" src="../storage/signature/clerk.png"
+                                alt="">
+                        </div>
+                        <p>{{ file_get_contents('../storage/names/clerk.txt') }}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="16">
+                        &nbsp;
+                        <div>
+                            <img style="max-width: 100px; max-height: 50px" src="../storage/signature/srclerk.png"
+                                alt="">
+                        </div>
+                        <p>{{ file_get_contents('../storage/names/srclerk.txt') }}</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="16">
+                        &nbsp;
+                        @for ($j = 0; $j < sizeof($data['arrSuppSig']); $j++)
+                        @if ($data['data1'][$i]->msth_kodesupplier == $data['arrSuppSig'][$j]['sup_kodesupplier'])                            
+                            <div>
+                                <img style="max-width: 100px; max-height: 50px"
+                                    src="../storage/signature_expedition/{{ $data['arrSuppSig'][$j]['signatureId'] . '.png' }}" alt="">
+                            </div>
+                            <p>{{ strtoupper($data['arrSuppSig'][$j]['signedBy']) }}</p>                           
+                        @endif  
+                        @endfor
+                    </td>
+                </tr> --}}
+                <tr>
+                    <td colspan="6"></td>
+                    <td style="border-top: 1px solid black;" colspan="6">Adm. Gudang</td>
+                    <td style="border-top: 1px solid black;" colspan="2">Kepala Gudang</td>
+                    <td style="border-top: 1px solid black;" colspan="2">Expedisi / Supplier</td>
+                </tr>
+                </tfoot>
+            </table>
+            <div class="page-break"></div>
+        @endif
+    @endfor
 @endsection

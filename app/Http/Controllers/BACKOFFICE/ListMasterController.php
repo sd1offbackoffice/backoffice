@@ -1070,6 +1070,7 @@ where prd_kodeigr = '$kodeigr'
                 oci_bind_by_name($query, ':temp', $holder, 9999999);
                 oci_execute($query);
                 $avgsls[$i] = $holder;
+
             } else {
                 $avgsls[$i] = 0;
             }

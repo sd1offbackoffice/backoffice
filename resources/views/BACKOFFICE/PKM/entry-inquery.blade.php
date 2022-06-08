@@ -13,7 +13,7 @@
                         <div class="row form-group">
                             <label for="prdcd" class="col-sm-3 text-right col-form-label">PLU</label>
                             <div class="col-sm-2 buttonInside">
-                                <input type="text" class="form-control" id="prdcd" disabled>
+                                <input type="text" class="form-control" id="prdcd">
                                 <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_prdcd">
                                     <i class="fas fa-question"></i>
                                 </button>
@@ -32,7 +32,7 @@
                         <div class="row form-group">
                             <label for="prdcd" class="col-sm-3 text-right col-form-label">DIVISI</label>
                             <div class="col-sm-2 buttonInside">
-                                <input type="text" class="form-control" id="div_kode" disabled>
+                                <input type="text" class="form-control" id="div_kode" disabled value="1">
                                 <button id="btn_divisi" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_divisi">
                                     <i class="fas fa-question"></i>
                                 </button>
@@ -44,7 +44,7 @@
                         <div class="row form-group">
                             <label for="prdcd" class="col-sm-3 text-right col-form-label">DEPARTEMENT</label>
                             <div class="col-sm-2 buttonInside">
-                                <input type="text" class="form-control" id="dep_kode" disabled>
+                                <input type="text" class="form-control" id="dep_kode" disabled value="01">
                                 <button id="btn_departement" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_departement">
                                     <i class="fas fa-question"></i>
                                 </button>
@@ -56,7 +56,7 @@
                         <div class="row form-group">
                             <label for="prdcd" class="col-sm-3 text-right col-form-label">KATEGORI BARANG</label>
                             <div class="col-sm-2 buttonInside">
-                                <input type="text" class="form-control" id="kat_kode" disabled>
+                                <input type="text" class="form-control" id="kat_kode" disabled value="01">
                                 <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_kategori">
                                     <i class="fas fa-question"></i>
                                 </button>
@@ -70,9 +70,12 @@
                             <div class="col-sm-2">
                                 <select class="form-control" id="item" onchange="cekItem()">
                                     <option value="-" selected disabled>Pilih item</option>
-                                    <option value="1">1 - NASIONAL</option>
+                                    <option value="1" selected>1 - NASIONAL</option>
                                     <option value="2">2 - OMI / IDM</option>
                                 </select>
+                            </div>
+                            <div class="col-sm-2 pl-0 pr-0">
+                                <button type="button" class="btn btn-md btn btn-primary" id="btnItem" onclick="itemDetail()">CEK DETAIL</button>
                             </div>
                         </div>
                         <hr>
@@ -106,8 +109,16 @@
                             <div class="col-sm-3">
                                 <input type="text" class="mon form-control" id="mon" disabled>
                             </div>
-                            <div class="col"></div>
-                            <label for="desk" class="col-sm-3 text-right col-form-label">DSI KAT</label>
+                            <label for="desk" class="ndsi1 col-sm-2 text-right col-form-label" style="margin-left: 150px;">NDSI 1</label>
+                            <div class="col-sm-1">
+                                <input type="text" class="form-control" id="ndsi1" disabled>
+                            </div>
+                            <label for="desk" class="ndsi2 col-sm-2 text-right col-form-label" style="margin-left: -200px;">NDSI 2</label>
+                            <div class="col-sm-1">
+                                <input type="text" class="form-control" id="ndsi2" disabled>
+                            </div>
+                            {{-- <div class="col"></div> --}}
+                            <label for="desk" class="col-sm-3 text-right col-form-label" style="margin-left: -250px;">DSI KAT</label>
                             <div class="col-sm-1">
                                 <input type="text" class="form-control" id="dsikat" disabled>
                             </div>
@@ -506,6 +517,18 @@
             // getMonitoring();
         });
 
+        $('#prdcd').keypress(function (e) {
+            if (e.keyCode == 13) {
+                plu = $(this).val();
+                if (plu.length < 7) {
+                    plu = convertPlu($(this).val());
+                }
+                $(this).val(plu);
+                $('#prdcd').val(plu);
+                getDetail('prdcd');
+            }
+        });
+
         $('#m_prdcd').on('shown.bs.modal',function(){
             if(!$.fn.DataTable.isDataTable('#table_prdcd')){
                 getPRDCD();
@@ -542,7 +565,7 @@
 
                         $('#m_prdcd').modal('hide');
 
-                        getDetail('prdcd');
+                        // getDetail('prdcd');
                     });
                 }
             });
@@ -755,6 +778,21 @@
                 });
                 $('#item').val('-');
             }
+            // else{
+            //     getDetail('divdepkat');
+            // }
+        }
+
+        function itemDetail()
+        {
+            console.log($('#div_kode').val() == '' || $('#dept_kode').val() == '' || $('#kat_kode').val() == '' || $('#kat_kode').val() == '');
+            if($('#div_kode').val() == '' || $('#dept_kode').val() == '' || $('#kat_kode').val() == '' || $('#kat_kode').val() == '' )
+            {
+                swal({
+                    title : 'Kolom input divisi/departement/kategori/item tidak boleh kosong !',
+                    icon : 'warning'
+                });
+            }
             else{
                 getDetail('divdepkat');
             }
@@ -861,7 +899,7 @@
                         }
                     },
                     {data: 'pkm_pkm', render: function(data, type, full, meta){
-                            return '<input class="text-right row-pkm" onkeypress="changePKM(event, '+meta.row+')" style="width: 5vw" value="' + data + '">';
+                            return `<input class="text-right row-pkm" onkeypress="changePKM(event, ${meta.row})" style="width: 5vw" value="${convertToRupiah2(data)}">`;
                         }
                     },
                     {data: null, render: function(data){
@@ -909,10 +947,10 @@
                 },
                 "order" : [],
                 "initComplete": function(){
-                    {{--if('{{ Session::get('usertype') }}' == 'XXX'){--}}
-                        {{--$('.row-pkm').prop('disabled',true);--}}
-                    {{--}--}}
-                    {{--else $('.row-pkm').prop('disabled',false);--}}
+                    // {{--if('{{ Session::get('usertype') }}' == 'XXX'){--}}
+                    //     {{--$('.row-pkm').prop('disabled',true);--}}
+                    // {{--}--}}
+                    // {{--else $('.row-pkm').prop('disabled',false);--}}
 
                     $('.row-pkm').prop('disabled',false);
 
@@ -944,20 +982,20 @@
             $('#d_desk').val(decodeHtml(dataDetail[i].prd_deskripsipanjang));
             $('#d_unit').val(dataDetail[i].unit);
             $('#tag').val(dataDetail[i].prd_kodetag);
-            $('#min').val(dataDetail[i].min);
-            $('#dsi').val(dataDetail[i].dsi);
-            $('#top').val(dataDetail[i].jtopa);
-            $('#maxpalet').val(dataDetail[i].maxpalet);
+            $('#min').val(convertToRupiah2(dataDetail[i].min));
+            $('#dsi').val(convertToRupiah2(dataDetail[i].dsi));
+            $('#top').val(convertToRupiah2(dataDetail[i].jtopa));
+            $('#maxpalet').val(convertToRupiah2(dataDetail[i].maxpalet));
             $('#sup_kode').val(dataDetail[i].sup_kodesupplier);
             $('#sup_nama').val(decodeHtml(dataDetail[i].sup_namasupplier));
-            $('#mplus').val(dataDetail[i].mplus);
+            $('#mplus').val(convertToRupiah2(dataDetail[i].mplus));
             $('#omi').val(dataDetail[i].omi);
             $('#bln1').val(dataDetail[i].bln1);
             $('#bln2').val(dataDetail[i].bln2);
             $('#bln3').val(dataDetail[i].bln3);
-            $('#qty1').val(dataDetail[i].pkm_qty1);
-            $('#qty2').val(dataDetail[i].pkm_qty2);
-            $('#qty3').val(dataDetail[i].pkm_qty3);
+            $('#qty1').val(convertToRupiah2(dataDetail[i].pkm_qty1));
+            $('#qty2').val(convertToRupiah2(dataDetail[i].pkm_qty2));
+            $('#qty3').val(convertToRupiah2(dataDetail[i].pkm_qty3));
             $('#kettag').val(dataDetail[i].kettag);
             $('#ketnewplu').val(dataDetail[i].ketnewplu);
             if(dataDetail[i].ketnewplu != ''){
@@ -1042,12 +1080,14 @@
             for(i=0;i<dataDetail.length;i++){
                 // console.log($.inArray(dataDetail[i].prd_kodetag, tag));
                 if($.inArray(dataDetail[i].prd_kodetag, tag) == -1){
-                    acost = dataDetail[i].prd_avgcost / (dataDetail[i].prd_unit == 'KG' ? 1 : dataDetail[i].prd_frac);
+                    acost = parseInt(parseFloat(dataDetail[i].prd_avgcost) / (dataDetail[i].prd_unit == 'KG' ? 1 : parseInt(dataDetail[i].prd_frac)));
 
-                    ndsi1 += parseFloat(dataDetail[i].pkmx) * acost;
-                    ntop += parseFloat(dataDetail[i].jtopa) * acost;
-                    nmin_rp += parseFloat(dataDetail[i].min) * acost;
-                    nmid_rp += parseFloat(dataDetail[i].pkm_mindisplay) * acost;
+                    ndsi1 += parseFloat((dataDetail[i].pkmx) * acost);
+                    // console.log(parseFloat(dataDetail[0].pkmx),'INI PKMX');
+                    // console.log(acost,'INI ACOST');
+                    ntop += (parseFloat(dataDetail[i].jtopa) * acost);
+                    nmin_rp += (parseFloat(dataDetail[i].min) * acost);
+                    nmid_rp += (parseFloat(dataDetail[i].pkm_mindisplay) * acost);
                 }
 
                 ndsi2 += parseFloat(dataDetail[i].pkm_qtyaverage) * acost;
@@ -1055,8 +1095,12 @@
 
             }
 
-            console.log('ndsi1 : ' + ndsi1);
-            console.log('ndsi2 : ' + ndsi2);
+            // console.log('ndsi1 : ' + ndsi1);
+            // console.log('ndsi2 : ' + ndsi2);
+            // console.log(Math.floor(ndsi1/ndsi2));
+            // console.log(ntop/nrph1);
+            // console.log(nmid_rp/ndsi2);
+            // console.log(nmin_rp/ndsi2);
 
             $('#dsikat').val(ndsi2 === 0 ? 0 : Math.round(ndsi1/ndsi2));
             $('#topkat').val(nrph1 === 0 ? 0 : Math.round(ntop/nrph1));

@@ -41,15 +41,15 @@ class pembatalanController extends Controller
 
         $data = DB::connection(Session::get('connection'))->select(
             "SELECT mstd_nodoc, mstd_tgldoc, mstd_prdcd, mstd_nofaktur, mstd_tglfaktur,
-			        mstd_cterm, mstd_discrph, mstd_dis4cr, mstd_ppnbmrph, mstd_ppnbtlrph, mstd_ppnrph, prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac satuan, prd_frac, (nvl(mstd_qty,0) + nvl(mstd_qtybonus1,0)) qty,  mstd_hrgsatuan, mstd_gross, mstd_nopo, mstd_tglpo,sup_kodesupplier||' - '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_pkp, sup_top, (((mstd_gross - nvl(mstd_discrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_dis4cr,0) + nvl(mstd_ppnbtlrph,0)) * prd_frac)  / (nvl(mstd_qty,0)) ) as hpp,(mstd_gross - nvl(mstd_discrph,0) +  nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) as ppntot
+			        mstd_cterm, mstd_discrph, mstd_dis4cr, mstd_ppnbmrph, mstd_ppnbtlrph, mstd_ppnrph, prd_deskripsipanjang barang, mstd_unit||'/'||mstd_frac satuan, prd_frac, (nvl(mstd_qty,0) + nvl(mstd_qtybonus1,0)) qty,  mstd_hrgsatuan, mstd_gross, mstd_nopo, mstd_tglpo,sup_kodesupplier||' - '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_pkp, sup_top, (((mstd_gross - nvl(mstd_discrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_dis4cr,0) + nvl(mstd_ppnbtlrph,0)) * prd_frac)  / (nvl(mstd_qty,0)) ) as hpp,(mstd_gross - nvl(mstd_discrph,0) +  nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) as ppntot, mstd_recordid
 		    FROM    tbtr_mstran_d, tbmaster_prodmast, tbmaster_supplier
-			WHERE   mstd_nodoc='$noDoc'
-			AND     mstd_kodeigr= '$kodeigr'
+			WHERE   mstd_nodoc ='$noDoc'
+			AND     mstd_kodeigr = '$kodeigr'
 			AND     mstd_typetrn = '$typeTrn'
-			AND     prd_prdcd=mstd_prdcd
-			AND     prd_kodeigr=mstd_kodeigr
+			AND     prd_prdcd = mstd_prdcd
+			AND     prd_kodeigr = mstd_kodeigr
 			AND     sup_kodesupplier(+) = mstd_kodesupplier
-			AND     sup_kodeigr(+)=mstd_kodeigr"
+			AND     sup_kodeigr(+) = mstd_kodeigr"
         );
 
         return response()->json($data);

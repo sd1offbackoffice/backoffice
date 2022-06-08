@@ -32,42 +32,42 @@
 <script src={{asset('/js/script.js')}}></script>
 <script src={{asset('/js/sweetalert.js')}}></script>
 
-<title>{{$prs}}</title>
+<title>{{strtoupper($prs)}}</title>
 <div class="limiter">
-    <div class="container-fluid mt-5">
-        <div class="row justify-content-center">
-            <div class="col-sm-10">
-                <div class="card">
-                    <div class="card-body border-dark shadow-sm">
-                        <h4 class="text-dark">Rekomendasi 'Setting' Layar Untuk Menghasilkan Interface yang maximal</h4>
-                        <p>* Untuk ukuran layar 1920px * 1080px dapat menggunakan browser di ukuran 80%</p>
-                        <p>* Untuk ukuran layar 1360px * 768x dapat menggunakan browser di ukuran 67%</p>
-                        <br>
-                        <p>* Pada bagian "Scale and Layout' di 'Display Settings' dapat memilih ukuran 100% atau
-                            125% </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="container-fluid mt-2 mb-0">
-        <div class="row justify-content-center">
-            <div class="col-sm-10">
-                <div class="card">
-                    <div class="card-body border-dark shadow-sm">
-                        <h4 class="text-dark">Note Buat Developer</h4>
-                        <p class="text-danger">* sekarang kalo mau edit" menu bagian administration,
-                            login di prod dulu ya biar ga ketiban lg datanya, thank you @Leo @Denni @Jefri @Ryan @Michele</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+{{--    <div class="container-fluid mt-5">--}}
+{{--        <div class="row justify-content-center">--}}
+{{--            <div class="col-sm-10">--}}
+{{--                <div class="card">--}}
+{{--                    <div class="card-body border-dark shadow-sm">--}}
+{{--                        <h4 class="text-dark">Rekomendasi 'Setting' Layar Untuk Menghasilkan Interface yang maximal</h4>--}}
+{{--                        <p>* Untuk ukuran layar 1920px * 1080px dapat menggunakan browser di ukuran 80%</p>--}}
+{{--                        <p>* Untuk ukuran layar 1360px * 768x dapat menggunakan browser di ukuran 67%</p>--}}
+{{--                        <br>--}}
+{{--                        <p>* Pada bagian "Scale and Layout' di 'Display Settings' dapat memilih ukuran 100% atau--}}
+{{--                            125% </p>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
+{{--    <div class="container-fluid mt-2 mb-0">--}}
+{{--        <div class="row justify-content-center">--}}
+{{--            <div class="col-sm-10">--}}
+{{--                <div class="card">--}}
+{{--                    <div class="card-body border-dark shadow-sm">--}}
+{{--                        <h4 class="text-dark">Note Buat Developer</h4>--}}
+{{--                        <p class="text-danger">* sekarang kalo mau edit" menu bagian administration,--}}
+{{--                            login di prod dulu ya biar ga ketiban lg datanya, thank you @Leo @Denni @Jefri @Ryan @Michele</p>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
     <div class="container-login100">
         <div class="wrap-login100 p-l-85 p-r-85 p-t-40 p-b-40">
             {{--<form class="login100-form validate-form flex-sb flex-w">--}}
             <span class="login100-form-title p-b-32 text-center">
-						Login BACKOFFICE
+						Login BACKOFFICE {{$prs}}
             </span>
             @if($allcabang)
                 <span class="txt1 p-b-11">Cabang</span>
@@ -85,7 +85,9 @@
             <span class="txt1 p-b-11">Koneksi</span>
             <div class="wrap-input100 validate-input ">
                 <select class="input100" id="koneksi" data-validate="user" style="text-transform: uppercase;" required>
+{{--                    @if($kodecabang != '38')--}}
                     <option value="igr">PRODUCTION</option>
+{{--                    @endif--}}
                     <option value="sim" selected>SIMULASI</option>
                 </select>
                 <span class="focus-input100"></span>

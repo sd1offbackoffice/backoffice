@@ -224,22 +224,13 @@
             <td style="text-align: right; font-weight: bold;">{{percent($marginpersen['e'])}}</td>
         </tr>
         <tr>
-            <td colspan="2" style="text-align: right; font-weight: normal;">TOTAL BRG PPN DIBYR PMERINTH (MINYAK)</td>
+            <td colspan="2" style="text-align: right; font-weight: bold;">TOTAL BARANG PPN DIBAYAR PEMERINTAH</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($gross['g'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($tax['g'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($net['g'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($hpp['g'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($margin['g'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{percent($marginpersen['g'])}}</td>
-        </tr>
-        <tr>
-            <td colspan="2" style="text-align: right; font-weight: normal;">TOTAL BRG PPN DIBYR PMERINTH (TEPUNG)</td>
-            <td style="text-align: right; font-weight: bold;">{{rupiah($gross['r'])}}</td>
-            <td style="text-align: right; font-weight: bold;">{{rupiah($tax['r'])}}</td>
-            <td style="text-align: right; font-weight: bold;">{{rupiah($net['r'])}}</td>
-            <td style="text-align: right; font-weight: bold;">{{rupiah($hpp['r'])}}</td>
-            <td style="text-align: right; font-weight: bold;">{{rupiah($margin['r'])}}</td>
-            <td style="text-align: right; font-weight: bold;">{{percent($marginpersen['r'])}}</td>
         </tr>
         <tr>
             <td colspan="2" style="text-align: right; font-weight: bold;">TOTAL DEPARTEMEN 43</td>

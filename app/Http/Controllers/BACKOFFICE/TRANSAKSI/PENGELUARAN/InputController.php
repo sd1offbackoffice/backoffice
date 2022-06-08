@@ -43,10 +43,12 @@ class InputController extends Controller
             ->where('sup_kodeigr', '=', Session::get('kdigr'))
             ->orderBy('sup_namasupplier', 'asc')
             ->limit(100)
-            ->get();            
+            ->get();
 
         return Datatables::of($data)->make(true);
     }
+
+
 
     public function getNewNoTrn()
     {
@@ -135,8 +137,7 @@ class InputController extends Controller
             ->where('TRBO_TYPETRN', '=', 'K')
             ->orderBy('TRBO_SEQNO')
             ->distinct()
-            ->get();
-            // dd($datas);
+            ->get();            
 
         foreach ($datas as $p) {
             $model = '* KOREKSI *';
@@ -152,7 +153,6 @@ class InputController extends Controller
             $tglfps = date("d/m/Y", strtotime($p->trbo_tglinv));
             $flagdoc = $p->trbo_flagdoc;
             $nodoc = $p->trbo_nodoc;
-
         }
 
         if (Self::ceknull($flagdoc, '0') == '*') {
@@ -461,7 +461,7 @@ class InputController extends Controller
         }
 
         if ($message == '') {
-            $messasge = 'Successfully get Kode Supplier';       
+            $messasge = 'Successfully get Kode Supplier';
         }
         if ($status == '') {
             $status = 'SUCCESS';
@@ -470,13 +470,13 @@ class InputController extends Controller
     }
 
     public function getDataLovPLU()
-    {       
+    {
         $result = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
                     ->select('PRD_DESKRIPSIPANJANG', 'PRD_PRDCD')
                     ->join('TEMP_URUT_RETUR', 'PRD_PRDCD', '=', 'PRDCD')
                     ->orderBy('PRD_DESKRIPSIPANJANG')
-                    ->distinct()         
-                    ->get();                                       
+                    ->distinct()
+                    ->get();
 
         return Datatables::of($result)->make(true);
     }
@@ -851,13 +851,13 @@ class InputController extends Controller
                         ->where('prdcd', '=', $plu)
                         ->where('trn', '=', $ke)
                         ->first();
-                    
-                    $trbo_qty = $trbo_qty->qtyretur;                    
+
+                    $trbo_qty = $trbo_qty->qtyretur;
 
                     if ($unit == 'KG') {
                         $frac = 1;
                     }
-                    
+
                     $qtyctn = intval($trbo_qty / $frac);
                     $qtypcs = $trbo_qty % $frac;
 
@@ -870,7 +870,7 @@ class InputController extends Controller
 
 //            ---** hitung ppn ** ---
                     if ($pkp == 'Y' && $bkp == 'Y') {
-                        $ppn = $res2->persenppn;                        
+                        $ppn = $res2->persenppn;
                     } else {
                         $ppn = 0;
                     }
@@ -902,8 +902,8 @@ class InputController extends Controller
                         ->first();
 
                     $trbo_discrph = $trbo_discrph->discrph;
-                    
-                }                
+
+                }
 
                 // $temp1 = 0;
                 // if ($ke == $maxtrn) {
@@ -917,7 +917,7 @@ class InputController extends Controller
                 // }
                 // $qty = $qty - $temp1;
 
-//            VALIDATE_ITEM                                
+//            VALIDATE_ITEM
                 $trbo_qty = ($qtyctn * $frac) + $qtypcs;
                 $qtyctn = intval($trbo_qty / $frac);
                 $qtypcs = $trbo_qty % $frac;
@@ -980,7 +980,7 @@ class InputController extends Controller
                     $data->trbo_discrph = number_format((float)$trbo_discrph, 2, '.', '');
                     // $data->trbo_discrph = number_format((float)round($trbo_discrph, 1), 2, '.', '');
                     // $data->trbo_discrph = $trbo_discrph;
-                    $data->persen_ppn = $res2->persenppn;
+                    $data->trbo_persenppn = $res2->persenppn;
                     $data->trbo_ppnrph = number_format((float)$trbo_ppnrph, 2, '.', '');
                     // $data->trbo_ppnrph = number_format((float)round($trbo_ppnrph, 4), 2, '.', '');
                     // $data->trbo_ppnrph = $trbo_ppnrph;
@@ -988,13 +988,13 @@ class InputController extends Controller
                     $data->trbo_inv = $trbo_invno;
                     $data->trbo_tgl = $trbo_tglinv;
                     $data->trbo_noreff = $trbo_noreff;
-                   
+
                     if ($keterangan == null) {
                         $data->trbo_keterangan = '';
                         // $data->trbo_keterangan = $trbo['trbo_keterangan'];
                     } else {
                         $data->trbo_keterangan = $keterangan;
-                    }                   
+                    }
                     array_push($datas, $data);
                 }
                 if ($qty <= 0) {
@@ -1063,7 +1063,6 @@ class InputController extends Controller
             $data['tgldoc'] = DB::connection(Session::get('connection'))->raw("to_date('".$tgldoc."','dd/mm/yyyy')");
             $data['trbo_tgl'] = DB::connection(Session::get('connection'))->raw("to_date('".$data['trbo_tgl']."','dd/mm/yyyy')");
             $data['trbo_create_dt'] = DB::connection(Session::get('connection'))->raw("to_date('".$trbo_create_dt."','dd/mm/yyyy')");
-
             $tempFrac = explode("/", $data['satuan']);
             $data['frac'] = $tempFrac[1];
 
@@ -1127,7 +1126,7 @@ class InputController extends Controller
                     'trbo_persendisc1' => $data['discper'],
                     'trbo_gross' => $data['trbo_gross'],
                     'trbo_discrph' => $data['trbo_discrph'],
-                    'trbo_persenppn' => $data['persen_ppn'],
+                    'trbo_persenppn' => $data['trbo_persenppn'],
                     'trbo_ppnrph' => $data['trbo_ppnrph'],
                     'trbo_averagecost' => $avg_cost,
                     'trbo_posqty' => $data['trbo_posqty'],
@@ -1299,7 +1298,7 @@ class InputController extends Controller
         return $sum;
     }
 
-    public function checkUsulLebih(Request $request){
+    public function checkUsulLebihPLU(Request $request){
         $plu = $request->plu;
         $nodoc = $request->nodoc;
 
@@ -1312,17 +1311,30 @@ class InputController extends Controller
                 ->where('usl_trbo_nodoc', '=', $nodoc)
                 ->where('usl_prdcd', '=', $plu)
                 ->delete();
+        }
 
-            return response()->json([
-                'status' => 'SUCCESS',
-                'message' => 'Data PLU' . $plu . ' di table tbtr_usul_returlebih berhasil dihapus'
-            ]);
-        } else {
-            return response()->json([
-                'status' => 'FAILED',
-                'message' => 'Tidak ada data PLU ' . $plu . ' tidak ada dalam table tbtr_usul_returlebih'
-            ]);
-        }        
+        return response()->json([
+            'status' => 'SUCCESS',
+            'message' => 'Check Usul Lebih PLU Berhasil'
+        ]);
+    }
+
+    public function checkUsulLebihNoDoc(Request $request){
+        $nodoc = $request->nodoc;
+
+        $usul_lebih = DB::connection(Session::get('connection'))->table('tbtr_usul_returlebih')
+                        ->where('usl_trbo_nodoc', '=', $nodoc)
+                        ->get();
+        if ($usul_lebih) {
+            DB::connection(Session::get('connection'))->table('tbtr_usul_returlebih')
+                ->where('usl_trbo_nodoc', '=', $nodoc)
+                ->delete();
+        }
+
+        return response()->json([
+            'status' => 'SUCCESS',
+            'message' => 'Check Usul Lebih No Doc Berhasil'
+        ]);
     }
 
     public function cekOTP(Request $request)
@@ -1330,6 +1342,9 @@ class InputController extends Controller
         $datas = $request->datas;
         $datah = $request->datah;
         $datad = $request->datad;
+        if (!$datad || $datad == null) {
+            $datad = [];
+        }        
 
         // $trbo_kodeigr = Session::get('kdigr');
         // $trbo_typetrn = 'K';
@@ -1401,11 +1416,11 @@ class InputController extends Controller
             foreach ($usuls as $usul) {
 //                [[proses usulan]]
                 while (1) {
-                    if ($datah[$datahke]['plu'] == $usul->usl_prdcd){
-                        $datah[$datahke]['ctn'] = floor($usul->usl_qty_retur / $datah[$datahke]['frac']);
-                        $datah[$datahke]['pcs'] = $usul->usl_qty_retur % $datah[$datahke]['frac'];
+                    if ($datah[$datahke]['h_plu'] == $usul->usl_prdcd){
+                        $datah[$datahke]['h_ctn'] = floor($usul->usl_qty_retur / $datah[$datahke]['h_frac']);
+                        $datah[$datahke]['h_pcs'] = $usul->usl_qty_retur % $datah[$datahke]['h_frac'];
                     }
-                    if ($datah[$datahke]['plu'] == $usul->usl_prdcd) {
+                    if ($datah[$datahke]['h_plu'] == $usul->usl_prdcd) {
                         break;
                     }
                     $datahke++;
@@ -1417,27 +1432,48 @@ class InputController extends Controller
                 //     $lastrecord = sizeof($datad) - 1;
                 // }
 
-//                $j = 0;
-//                for ($i = 0; $i < sizeof($datad) ; $i++) {
-//                    for ($j = 0; $j < sizeof($datad) ; $j++) {
-//                        if ($datad[$j]['plu'] == $datah[$datahke]['plu']) {
-//                            array_splice($datad, $j, 1);
-//                        }
-//                        $datahke++;
-//                    }
-//                }
+                // $j = 0;
+                // for ($i = 0; $i < sizeof($datad) ; $i++) {
+                //     for ($j = 0; $j < sizeof($datad) ; $j++) {
+                //         if ($datad[$j]['trbo_prdcd'] == $datah[$datahke]['h_plu']) {
+                //             array_splice($datad, $j, 1);
+                //         }
+                //         $datahke++;
+                //     }
+                // }
 
-                // DB::connection(Session::get('connection'))->update('update temp_urut_retur set qtyretur = 0 where prdcd = ' . $datah[$i]->plu . ' or pluold = ' . $datah[$i]->plu . ' or exists (select 1 from tbtr_konversiplu where kvp_pluold = prdcd and kvp_plunew= ' . $datah[$i]->plu . ')');
+                DB::connection(Session::get('connection'))->update('update temp_urut_retur set qtyretur = 0 where prdcd = ' . $datah[$i]['h_plu'] . ' or pluold = ' . $datah[$i]['h_plu'] . ' or exists (select 1 from tbtr_konversiplu where kvp_pluold = prdcd and kvp_plunew= ' . $datah[$i]['h_plu'] . ')');
 
                 //====
 
                 $PLU = $usul->usl_prdcd;
 
                 $data_usuls = DB::connection(Session::get('connection'))->table('temp_usul_retur')
+                ->selectRaw("TRN,
+                            NODOC_BO,
+                            NODOC_BPB,
+                            ISTYPE,
+                            INVNO,
+                            to_char(TGLINV,'dd/mm/yyyy') TGLINV,
+                            KSUP,
+                            PRDCD,
+                            FRAC,
+                            HRGSATUAN,
+                            GROSS,
+                            DISRPHPERPCS,
+                            QTYBPB,
+                            QTYHRETUR,
+                            QTYRETUR")
                     ->where('prdcd', '=', $PLU)
                     ->orderBy('trn')
                     ->get();
+
                     // dd($data_usuls);
+                
+                // // delete plu on array before usulan retur
+                // if (($key = array_search($headerPlu, $array)) !== false) {
+                //     unset($array[$key]);
+                // }
 
                 foreach ($data_usuls as $data_usul) {
                     $data = (object)'';
@@ -1448,7 +1484,7 @@ class InputController extends Controller
                         $NO_BPB = 'zz';
                     }
 
-                    $data->prdcd = $PLU;
+                    $data->trbo_prdcd = $PLU;
 
                     $res = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
                         ->join('TBMASTER_STOCK', 'PRD_PRDCD', '=', 'ST_PRDCD')
@@ -1463,7 +1499,7 @@ class InputController extends Controller
                             'ST_AVGCOST',
                             'ST_SALDOAKHIR',
                             'HRGSATUAN',
-                            'QTYBPB'
+                            'QTYBPB',                            
                         )
                         ->where('ST_LOKASI', '=', '02')
                         ->where('PRD_PRDCD', '=', $PLU)
@@ -1474,7 +1510,7 @@ class InputController extends Controller
                     //     ->select("select prd_deskripsipanjang, prd_deskripsipendek, frac, prd_flagbkp1,prd_avgcost, prd_ppn, st_avgcost, nvl(st_saldoakhir, 0) st_saldoakhir, hrgsatuan, qtypb from tbmaster_prodmast, tbmaster_stock, temp_urut_retur where prd_prdcd = st_prdcd(+) and '02' =  st_lokasi(+) and prd_prdcd = " . $PLU . " and prd_prdcd = prdcd and nvl(nodoc_bpb, 'zz') = " . $NO_BPB);
 
                     $data->deskripsi = $res[0]->prd_deskripsipanjang;
-                    $data->desk = $res[0]->prd_deskripsipendek;
+                    $data->desk = $res[0]->prd_deskripsipendek;                    
                     $data->frac = $res[0]->frac;
                     $data->bkp = $res[0]->prd_flagbkp1;
                     $data->acostprd = $res[0]->prd_avgcost;
@@ -1484,7 +1520,8 @@ class InputController extends Controller
                     } else {
                         $data->trbo_posqty = 0;
                     }
-                    $data->trbo_hrgsatuan = $res[0]->hrgsatuan;
+                    $data->trbo_hrgsatuan = number_format((float)$res[0]->hrgsatuan, 2, '.', '');
+                    // $data->trbo_hrgsatuan = $res[0]->hrgsatuan;
                     $data->max_qty = $res[0]->qtybpb;
 //            --++Get Unit From mstran BTB
                     $temp = DB::connection(Session::get('connection'))->table('tbtr_mstran_btb')
@@ -1507,7 +1544,8 @@ class InputController extends Controller
 
                     $data->satuan = $data->unit . '/' . $data->frac;
                     $data->trbo_qty = $data_usul->qtyretur;
-                    $data->qtyctn = floor($data->trbo_qty / $data->frac);
+                    $data->qtyctn = intval($data->trbo_qty / $data->frac);
+                    // $data->qtyctn = floor($data->trbo_qty / $data->frac);
                     $data->qtypcs = $data->trbo_qty % $data->frac;
 
                     if ($data->acostst == '' || !isset($data->acostst) || $data->acostst == 0) {
@@ -1518,14 +1556,17 @@ class InputController extends Controller
 
 //            ---** Hitung PPN ** ---
                     if ($request->pkp == 'Y' AND $data->bkp == 'Y') {
-                        $data->ppn = $res[0]->prd_ppn;
+                        $data->trbo_persenppn = $res[0]->prd_ppn;
+                        // $data->ppn = $res[0]->prd_ppn;
                     } else {
-                        $data->ppn = 0;
+                        $data->trbo_persenppn = 0;
+                        // $data->ppn = 0;
                     }
 
                     $data->trbo_istype = $data_usul->istype;
-                    $data->trbo_invno = $data_usul->invno;
-                    $data->trbo_tglinv = $data_usul->tglinv;
+                    $data->trbo_inv = $data_usul->invno;
+                    // $trbo_tgl = DB::connection(Session::get('connection'))->raw("to_date('".$data_usul->tglinv."','dd/mm/yyyy')");                    
+                    $data->trbo_tgl = $data_usul->tglinv;
                     $data->max_qty = $data_usul->qtybpb;
                     $data->trbo_hrgsatuan = $data_usul->hrgsatuan;
                     $data->trbo_noreff = $data_usul->nodoc_bpb;
@@ -1537,8 +1578,26 @@ class InputController extends Controller
                         $status = 'error';
                     }
 
+                    $trbo_discrph = ($data_usul->disrphperpcs) * (($data->qtyctn * $data->frac) + $data->qtypcs);
+                    $data->trbo_discrph = number_format((float)$trbo_discrph, 2, '.', '');
 
-                    $data->trbo_discrph = ($data_usul->disrphperpcs) * (($data->qtyctn * $data->frac) + $data->qtypcs);
+                    $trbo_gross = ($data->qtyctn * $data->trbo_hrgsatuan) + (($data->trbo_hrgsatuan / $data->frac) * $data->qtypcs);
+                    $data->trbo_gross = number_format((float)$trbo_gross, 2, '.', '');
+
+                    $trbo_discper = ($data->trbo_discrph / $data->trbo_gross) * 100;
+                    $data->discper = number_format((float)$trbo_discper, 2, '.', '');
+                                        
+                    $trbo_ppnrph = (($data->trbo_gross - $data->trbo_discrph) * $data->trbo_persenppn) / 100;
+                    $data->trbo_ppnrph = number_format((float)$trbo_ppnrph, 2, '.', '');
+
+                    foreach ($datah as $dh) {
+                        if ($dh['h_plu'] == $data->trbo_prdcd) {
+                            if ($dh['h_ket'] == null) {
+                                $dh['h_ket'] == '';
+                            }
+                            $data->trbo_keterangan = $dh['h_ket'];
+                        }
+                    }
 
                     array_push($datad, $data);
                 }
@@ -1601,5 +1660,5 @@ class InputController extends Controller
             $status = 'error';
             return compact(['message', 'status']);
         }
-    }    
+    }
 }

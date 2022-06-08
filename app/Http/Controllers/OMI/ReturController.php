@@ -1997,7 +1997,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                 rom_member, to_char(rom_tgljatuhtempo,'dd/mm/yyyy') rom_tgljatuhtempo, rom_prdcd, prd_deskripsipanjang, prd_unit||'/'||prd_frac kemasan,
                 rom_qty, rom_qtyrealisasi, rom_avgcost, rom_ttlcost, cus_namamember, cus_npwp
             FROM TBTR_RETUROMI, TBMASTER_PRODMAST, TBMASTER_CUSTOMER
-            WHERE rom_kodeigr = '22'
+            WHERE rom_kodeigr = '".Session::get('kdigr')."'
             and rom_nodokumen = '".$request->nodoc."'
             and rom_tgldokumen = to_date('".$request->tgldoc."','dd/mm/yyyy')
             and prd_kodeigr = rom_kodeigr

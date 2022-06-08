@@ -370,11 +370,11 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         $net['g'] = 0;
         $hpp['g'] = 0;
         $margin['g'] = 0;
-        $gross['r'] = 0;
-        $tax['r'] = 0;
-        $net['r'] = 0;
-        $hpp['r'] = 0;
-        $margin['r'] = 0;
+        // $gross['r'] = 0;
+        // $tax['r'] = 0;
+        // $net['r'] = 0;
+        // $hpp['r'] = 0;
+        // $margin['r'] = 0;
         $gross['d'] = 0;
         $tax['d'] = 0;
         $net['d'] = 0;
@@ -402,19 +402,14 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
                         $net['b'] = $net['b'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                         $hpp['b'] = $hpp['b'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                         $margin['b'] = $margin['b'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
-                    } elseif ($rec[$i]->fdfbkp == 'G') {
+                    } elseif ($rec[$i]->fdfbkp == 'G' || $rec[$i]->fdfbkp == 'W') {
                         $gross['g'] = $gross['g'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
                         $tax['g'] = $tax['g'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
                         $net['g'] = $net['g'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                         $hpp['g'] = $hpp['g'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                         $margin['g'] = $margin['g'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
-                    } elseif ($rec[$i]->fdfbkp == 'W') {
-                        $gross['r'] = $gross['r'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
-                        $tax['r'] = $tax['r'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
-                        $net['r'] = $net['r'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
-                        $hpp['r'] = $hpp['r'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
-                        $margin['r'] = $margin['r'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
-                    } else {
+                    } 
+                    else {
                         if ($rec[$i]->cexp == 'Y') {
                             $gross['e'] = $gross['e'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
                             $tax['e'] = $tax['e'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
@@ -685,11 +680,6 @@ ORDER BY cdiv,cdept");
         $net['g'] = 0;
         $hpp['g'] = 0;
         $margin['g'] = 0;
-        $gross['r'] = 0;
-        $tax['r'] = 0;
-        $net['r'] = 0;
-        $hpp['r'] = 0;
-        $margin['r'] = 0;
         $gross['x'] = 0;
         $tax['x'] = 0;
         $net['x'] = 0;
@@ -743,11 +733,11 @@ ORDER BY cdiv,cdept");
                             $margin['g'] = $margin['g'] + $datas[$i]->nmargin;
                             break;
                         case 'W' :
-                            $gross['r'] = $gross['r'] + $datas[$i]->ngross;
-                            $tax['r'] = $tax['r'] + $datas[$i]->ntax;
-                            $net['r'] = $net['r'] + $datas[$i]->nnet;
-                            $hpp['r'] = $hpp['r'] + $datas[$i]->nhpp;
-                            $margin['r'] = $margin['r'] + $datas[$i]->nmargin;
+                            $gross['g'] = $gross['g'] + $datas[$i]->ngross;
+                            $tax['g'] = $tax['g'] + $datas[$i]->ntax;
+                            $net['g'] = $net['g'] + $datas[$i]->nnet;
+                            $hpp['g'] = $hpp['g'] + $datas[$i]->nhpp;
+                            $margin['g'] = $margin['g'] + $datas[$i]->nmargin;
                             break;
                         default :
                             if ($grosirA == 'T' && ($datas[$i]->cexp == 'T')) {
@@ -1772,11 +1762,11 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
                                     $hpp['g'] = $hpp['g'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                                     $margin['g'] = $margin['g'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
                                 } elseif ($rec[$i]->fdfbkp == 'W') {
-                                    $gross['r'] = $gross['r'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
-                                    $tax['r'] = $tax['r'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
-                                    $net['r'] = $net['r'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
-                                    $hpp['r'] = $hpp['r'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
-                                    $margin['r'] = $margin['r'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
+                                    $gross['g'] = $gross['g'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
+                                    $tax['g'] = $tax['g'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                                    $net['g'] = $net['g'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
+                                    $hpp['g'] = $hpp['g'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
+                                    $margin['g'] = $margin['g'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
                                 } else {
                                     if ($rec[$i]->cexp == 'Y') {
                                         $gross['e'] = $gross['e'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
@@ -2291,11 +2281,11 @@ ORDER BY FDKDIV, FDKDEP");
                         $hpp['g'] = $hpp['g'] + $rec[$i]->fdnhpp;
                         $margin['g'] = $margin['g'] + $rec[$i]->fdnmrgn;
                     } elseif ($rec[$i]->fdfbkp == 'W') {
-                        $gross['r'] = $gross['r'] + $rec[$i]->fdnamt;
-                        $tax['r'] = $tax['r'] + $rec[$i]->fdntax;
-                        $net['r'] = $net['r'] + $rec[$i]->fdnnet;
-                        $hpp['r'] = $hpp['r'] + $rec[$i]->fdnhpp;
-                        $margin['r'] = $margin['r'] + $rec[$i]->fdnmrgn;
+                        $gross['g'] = $gross['g'] + $rec[$i]->fdnamt;
+                        $tax['g'] = $tax['g'] + $rec[$i]->fdntax;
+                        $net['g'] = $net['g'] + $rec[$i]->fdnnet;
+                        $hpp['g'] = $hpp['g'] + $rec[$i]->fdnhpp;
+                        $margin['g'] = $margin['g'] + $rec[$i]->fdnmrgn;
                     } else {
                         if ($rec[$i]->fexpor == 'Y') {
                             $gross['e'] = $gross['e'] + $rec[$i]->fdnamt;
@@ -2518,10 +2508,10 @@ ORDER BY FDKDIV, FDKDEP");
                             $cp_ngtax += $data[$i]->ntax;
                             break;
                         case 'W':
-                            $cp_nrgross += $data[$i]->ngross;
-                            $cp_nrcsb += $data[$i]->ncsb;
-                            $cp_nrnet += $data[$i]->nnet;
-                            $cp_nrtax += $data[$i]->ntax;
+                            $cp_nggross += $data[$i]->ngross;
+                            $cp_ngcsb += $data[$i]->ncsb;
+                            $cp_ngnet += $data[$i]->nnet;
+                            $cp_ngtax += $data[$i]->ntax;
                             break;
                         default:
                             $cp_nxgross += $data[$i]->ngross;

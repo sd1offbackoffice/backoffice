@@ -114,73 +114,189 @@ class DaftarReturPembelianController extends Controller
         }
 
         if ($tipe === '1') {
-            $data = DB::connection(Session::get('connection'))
-                ->select("select mstd_kodedivisi, div_namadivisi,
-                mstd_kodedepartement, dep_namadepartement,
-                mstd_kodekategoribrg, kat_namakategori,
+        //     $data = DB::connection(Session::get('connection'))
+        //         ->select("select prd_flagbkp1, prd_flagbkp2, mstd_kodedivisi, div_namadivisi,
+        //         mstd_kodedepartement, dep_namadepartement,
+        //         mstd_kodekategoribrg, kat_namakategori,
+        //         prs_namaperusahaan, prs_namacabang,
+        //         sum(gross) gross, sum(mstd_pot) pot,
+        //         sum(mstd_ppn) ppn, sum(mstd_bm) bm, sum(mstd_btl) btl,
+        //         sum(total) total, sum(avg) avg
+        // from (select prd_flagbkp1, prd_flagbkp2, mstd_kodedivisi, div_namadivisi,
+        //         mstd_kodedepartement, dep_namadepartement,
+        //         mstd_kodekategoribrg, kat_namakategori,
+        //         CASE WHEN NVL(mstd_recordid,'9') = '1' THEN mstd_gross * -1 ELSE mstd_gross END gross,
+        // CASE WHEN NVL(mstd_recordid,'9') = '1' THEN
+        //                CASE WHEN mstd_unit = 'KG' THEN
+        //                      ((mstd_qty / 1000) * (mstd_avgcost / 1000)) * -1
+        //                ELSE
+        //                      (mstd_qty* (mstd_avgcost / mstd_frac)) * -1
+        //                END
+        //         ELSE
+        //         CASE WHEN mstd_unit = 'KG' THEN
+        //                      (mstd_qty / 1000) * (mstd_avgcost / 1000)
+        //                ELSE
+        //                      mstd_qty* (mstd_avgcost / mstd_frac)
+        //                END
+        //         END avg,
+        //         CASE WHEN NVL(mstd_recordid,'9') = '1' THEN nvl(mstd_discrph,0) * -1 ELSE nvl(mstd_discrph,0) END mstd_pot,
+        //         CASE WHEN NVL(mstd_recordid,'9') = '1' THEN nvl(mstd_ppnrph,0) * -1 ELSE nvl(mstd_ppnrph,0) END mstd_ppn,
+        //         CASE WHEN NVL(mstd_recordid,'9') = '1' THEN nvl(mstd_ppnbmrph,0) * -1 ELSE nvl(mstd_ppnbmrph,0) END mstd_bm,
+        //         CASE WHEN NVL(mstd_recordid,'9') = '1' THEN nvl(mstd_ppnbtlrph,0) * -1 ELSE nvl(mstd_ppnbtlrph,0) END mstd_btl,
+        //         CASE WHEN NVL(mstd_recordid,'9') = '1' THEN
+        //                (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) - (nvl(mstd_discrph,0)) * -1
+        //         ELSE
+        //                (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) - (nvl(mstd_discrph,0))
+        //         END total,
+        //         prs_namaperusahaan, prs_namacabang
+        //         from tbmaster_divisi, tbmaster_departement, tbmaster_kategori,
+        //         tbtr_mstran_h, tbtr_mstran_d, tbmaster_perusahaan, tbmaster_prodmast
+        //         where msth_typetrn='K'
+        //         and msth_kodeigr='" . Session::get('kdigr') . "'
+        //         and msth_tgldoc between TO_DATE('" . $tgl1 . "','dd/mm/yyyy') and TO_DATE('" . $tgl2 . "','dd/mm/yyyy')
+        //         and mstd_nodoc=msth_nodoc
+        //         and TRUNC(mstd_tgldoc) = TRUNC(msth_tgldoc)
+        //         ".$and_div."
+        //         ".$and_dep."
+        //         ".$and_kat."
+        //         and mstd_kodeigr=msth_kodeigr
+        //         and prd_prdcd(+)=mstd_prdcd
+        //         and NVL(mstd_recordid,'9') <> '1'
+        //         and prs_kodeigr=msth_kodeigr
+        //         and div_kodedivisi(+)=mstd_kodedivisi
+        //         and div_kodeigr(+) = mstd_kodeigr
+        //         and dep_kodedivisi (+)= mstd_kodedivisi
+        //         and dep_kodedepartement (+)= mstd_kodedepartement
+        //         and dep_kodeigr(+)=mstd_kodeigr
+        //         and kat_kodedepartement(+)=mstd_kodedepartement
+        //         and kat_kodekategori(+)=mstd_kodekategoribrg
+        //         and kat_kodeigr(+)=mstd_kodeigr
+        // )
+        // group by prd_flagbkp1, prd_flagbkp2, mstd_kodedivisi, div_namadivisi,
+        //         mstd_kodedepartement, dep_namadepartement,
+        //         mstd_kodekategoribrg, kat_namakategori,
+        //         prs_namaperusahaan, prs_namacabang
+        // order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg");
+
+        $data = DB::connection(Session::get('connection'))->select("select prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan,
+            kemasan, prs_namaperusahaan, prs_namacabang, mstd_bkp,
+            mstd_kodedivisi, div_namadivisi, frac,
+            mstd_kodedepartement, dep_namadepartement,
+            mstd_kodekategoribrg, kat_namakategori,
+            sum(bonus) bonus, sum(gross) gross, sum(potongan) potongan,
+            sum(bm) bm, sum(btl) btl, sum(ppn) ppn, sum(acost) acost, sum(ctn) ctn,  sum(pcs) pcs,
+            sum(total) total, sum(lcost) lcost, sum(avg) avg,
+            SUM(bkpgross) bkpgross,  SUM(btkpgross) btkpgross,SUM(bkppot) bkppot,
+            SUM(btkppot) btkppot,SUM(bkpppn) bkpppn, SUM(btkpppn) btkpppn,
+            SUM(bkpbm) bkpbm, SUM(btkpbm) btkpbm, SUM(bkpbtl) bkpbtl, SUM(btkpbtl) btkpbtl,
+            SUM(bkptotal) bkptotal, SUM(btkptotal) btkptotal, SUM(bkpavg) bkpavg, SUM(btkpavg) btkpavg
+        from (
+            select prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, mstd_prdcd plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, case when mstd_unit = 'KG' then mstd_avgcost / 1000 else mstd_avgcost end acost,
+                floor(mstd_qty/prd_frac) ctn, mod(mstd_qty,prd_frac) pcs, prd_unit||'/'||prd_frac kemasan, mstd_bkp, prd_frac frac,
                 prs_namaperusahaan, prs_namacabang,
-                sum(gross) gross, sum(mstd_pot) pot,
-                sum(mstd_ppn) ppn, sum(mstd_bm) bm, sum(mstd_btl) btl,
-                sum(total) total, sum(avg) avg
-        from (select mstd_kodedivisi, div_namadivisi,
+                mstd_kodedivisi, div_namadivisi,
                 mstd_kodedepartement, dep_namadepartement,
                 mstd_kodekategoribrg, kat_namakategori,
-                CASE WHEN NVL(mstd_recordid,'9') = '1' THEN mstd_gross * -1 ELSE mstd_gross END gross,
-        CASE WHEN NVL(mstd_recordid,'9') = '1' THEN
-                       CASE WHEN mstd_unit = 'KG' THEN
-                             ((mstd_qty / 1000) * (mstd_avgcost / 1000)) * -1
-                       ELSE
-                             (mstd_qty* (mstd_avgcost / mstd_frac)) * -1
-                       END
+                CASE WHEN nvl(mstd_recordid,'9') = '1' THEN (nvl(mstd_qtybonus1,0)+nvl(mstd_qtybonus2,0)) * -1
+                ELSE (nvl(mstd_qtybonus1,0)+nvl(mstd_qtybonus2,0))
+                END bonus,
+                CASE WHEN nvl(mstd_recordid,'9') = '1' THEN nvl(mstd_gross,0) * -1 ELSE nvl(mstd_gross,0) END gross,
+                CASE WHEN nvl(mstd_recordid,'9') = '1' THEN nvl(mstd_discrph,0) * -1 ELSE nvl(mstd_discrph,0) END potongan,
+                CASE WHEN nvl(mstd_recordid,'9') = '1' THEN nvl(mstd_ppnbmrph,0) * -1 ELSE nvl(mstd_ppnbmrph,0) END bm,
+                CASE WHEN nvl(mstd_recordid,'9') = '1' THEN nvl(mstd_ppnbtlrph,0) * -1 ELSE nvl(mstd_ppnbtlrph,0) END btl,
+                CASE WHEN nvl(mstd_recordid,'9') = '1' THEN nvl(mstd_ppnrph,0) * -1 ELSE nvl(mstd_ppnrph,0) END ppn,
+                CASE WHEN NVL(mstd_recordid,'9') = '1' THEN
+                        CASE WHEN mstd_unit = 'KG' THEN
+                              ((mstd_qty / 1000) * (mstd_avgcost / 1000)) * -1
+                        ELSE
+                              (mstd_qty* (mstd_avgcost / mstd_frac)) * -1
+                        END
                 ELSE
                 CASE WHEN mstd_unit = 'KG' THEN
-                             (mstd_qty / 1000) * (mstd_avgcost / 1000)
-                       ELSE
-                             mstd_qty* (mstd_avgcost / mstd_frac)
-                       END
+                            (mstd_qty / 1000) * (mstd_avgcost / 1000)
+                    ELSE
+                            mstd_qty* (mstd_avgcost / mstd_frac)
+                    END
                 END avg,
-                CASE WHEN NVL(mstd_recordid,'9') = '1' THEN nvl(mstd_discrph,0) * -1 ELSE nvl(mstd_discrph,0) END mstd_pot,
-                CASE WHEN NVL(mstd_recordid,'9') = '1' THEN nvl(mstd_ppnrph,0) * -1 ELSE nvl(mstd_ppnrph,0) END mstd_ppn,
-                CASE WHEN NVL(mstd_recordid,'9') = '1' THEN nvl(mstd_ppnbmrph,0) * -1 ELSE nvl(mstd_ppnbmrph,0) END mstd_bm,
-                CASE WHEN NVL(mstd_recordid,'9') = '1' THEN nvl(mstd_ppnbtlrph,0) * -1 ELSE nvl(mstd_ppnbtlrph,0) END mstd_btl,
-                CASE WHEN NVL(mstd_recordid,'9') = '1' THEN
-                       (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) - (nvl(mstd_discrph,0)) * -1
+                CASE WHEN nvl(mstd_recordid,'9') = '1' THEN
+                    (nvl(mstd_gross,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)+nvl(mstd_ppnrph,0))-(nvl(mstd_discrph,0)) * -1
                 ELSE
-                       (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) - (nvl(mstd_discrph,0))
+                    (nvl(mstd_gross,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)+nvl(mstd_ppnrph,0))-(nvl(mstd_discrph,0))
                 END total,
-                prs_namaperusahaan, prs_namacabang
-                from tbmaster_divisi, tbmaster_departement, tbmaster_kategori,
-                tbtr_mstran_h, tbtr_mstran_d, tbmaster_perusahaan
-                where msth_typetrn='K'
+                CASE WHEN nvl(mstd_recordid,'9') = '1' THEN
+                    CASE WHEN mstd_unit = 'KG' THEN
+                            ((mstd_qty / 1000) * (mstd_avgcost / 1000)) * -1
+                    ELSE
+                            (mstd_qty * (mstd_avgcost / mstd_frac)) * -1
+                    END
+                ELSE
+                        CASE WHEN mstd_unit = 'KG' THEN
+                            (mstd_qty / 1000) * (mstd_avgcost / 1000)
+                    ELSE
+                            mstd_qty * (mstd_avgcost / mstd_frac)
+                    END
+                END lcost,
+                CASE WHEN mstd_pkp = 'Y' THEN NVL(mstd_gross, 0) END bkpgross,
+                CASE WHEN mstd_pkp <> 'Y' THEN NVL(mstd_gross, 0) END btkpgross,
+                CASE WHEN mstd_pkp = 'Y' THEN
+                    CASE WHEN mstd_unit = 'KG' THEN
+                        (mstd_qty / 1000) * (mstd_avgcost / 1000)
+                    ELSE
+                        mstd_qty* (mstd_avgcost / mstd_frac)
+                    END
+                END bkpavg,
+                CASE WHEN mstd_pkp <> 'Y' THEN
+                    CASE WHEN mstd_unit = 'KG' THEN
+                        (mstd_qty / 1000) * (mstd_avgcost / 1000)
+                    ELSE
+                        mstd_qty* (mstd_avgcost / mstd_frac)
+                    END
+                END btkpavg,
+                CASE WHEN mstd_pkp = 'Y' THEN NVL(mstd_discrph,0) END bkppot,
+                CASE WHEN mstd_pkp <> 'Y' THEN NVL(mstd_discrph,0) END btkppot,
+                CASE WHEN mstd_pkp = 'Y' THEN NVL(mstd_ppnrph,0) END bkpppn,
+                CASE WHEN mstd_pkp <> 'Y' THEN NVL(mstd_ppnrph,0) END btkpppn,
+                CASE WHEN mstd_pkp = 'Y' THEN NVL(mstd_ppnbmrph,0) END bkpbm,
+                CASE WHEN mstd_pkp <> 'Y' THEN NVL(mstd_ppnbmrph,0) END btkpbm,
+                CASE WHEN mstd_pkp = 'Y' THEN NVL(mstd_ppnbtlrph,0) END bkpbtl,
+                CASE WHEN mstd_pkp <> 'Y' THEN NVL(mstd_ppnbtlrph,0) END btkpbtl,
+                CASE WHEN mstd_pkp = 'Y' THEN (NVL(mstd_gross,0 )+ NVL(mstd_ppnrph,0) + NVL(mstd_ppnbmrph,0) + NVL(mstd_ppnbtlrph,0)) - (NVL(mstd_discrph,0)) END bkptotal,
+                CASE WHEN mstd_pkp <> 'Y' THEN (NVL(mstd_gross,0 )+ NVL(mstd_ppnrph,0) + NVL(mstd_ppnbmrph,0) + NVL(mstd_ppnbtlrph,0)) - (NVL(mstd_discrph,0)) END btkptotal
+            from tbtr_mstran_h, tbtr_mstran_d, tbmaster_prodmast, tbmaster_perusahaan,
+            tbmaster_divisi, tbmaster_departement, tbmaster_kategori
+            where  msth_typetrn='K'
                 and msth_kodeigr='" . Session::get('kdigr') . "'
                 and msth_tgldoc between TO_DATE('" . $tgl1 . "','dd/mm/yyyy') and TO_DATE('" . $tgl2 . "','dd/mm/yyyy')
                 and mstd_nodoc=msth_nodoc
-                and TRUNC(mstd_tgldoc) = TRUNC(msth_tgldoc)
                 ".$and_div."
                 ".$and_dep."
                 ".$and_kat."
                 and mstd_kodeigr=msth_kodeigr
-                and NVL(mstd_recordid,'9') <> '1'
+                and prd_prdcd(+)=mstd_prdcd
+                and prd_kodeigr(+)=mstd_kodeigr
                 and prs_kodeigr=msth_kodeigr
                 and div_kodedivisi(+)=mstd_kodedivisi
                 and div_kodeigr(+) = mstd_kodeigr
                 and dep_kodedivisi (+)= mstd_kodedivisi
                 and dep_kodedepartement (+)= mstd_kodedepartement
                 and dep_kodeigr(+)=mstd_kodeigr
-                and kat_kodedepartement(+)=mstd_kodedepartement
+                and kat_kodedepartement(+)= mstd_kodedepartement
                 and kat_kodekategori(+)=mstd_kodekategoribrg
                 and kat_kodeigr(+)=mstd_kodeigr
-        )
-        group by mstd_kodedivisi, div_namadivisi,
-                mstd_kodedepartement, dep_namadepartement,
-                mstd_kodekategoribrg, kat_namakategori,
-                prs_namaperusahaan, prs_namacabang
-        order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg");
+            )
+        group by prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
+            kemasan, prs_namaperusahaan, prs_namacabang,
+            mstd_kodedivisi, div_namadivisi,mstd_bkp, frac,
+            mstd_kodedepartement, dep_namadepartement,
+            mstd_kodekategoribrg, kat_namakategori
+        order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg, msth_nodoc, plu");
+        
 
+            // return view('BACKOFFICE.LAPORAN.daftar-retur-pembelian-ringkasan-divdepkat-backup-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
             return view('BACKOFFICE.LAPORAN.daftar-retur-pembelian-ringkasan-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
         } else if ($tipe === '2') {
-            $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan,
+            $data = DB::connection(Session::get('connection'))->select("select prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan,
     kemasan, prs_namaperusahaan, prs_namacabang, mstd_bkp,
     mstd_kodedivisi, div_namadivisi, frac,
     mstd_kodedepartement, dep_namadepartement,
@@ -193,7 +309,7 @@ class DaftarReturPembelianController extends Controller
     SUM(bkpbm) bkpbm, SUM(btkpbm) btkpbm, SUM(bkpbtl) bkpbtl, SUM(btkpbtl) btkpbtl,
     SUM(bkptotal) bkptotal, SUM(btkptotal) btkptotal, SUM(bkpavg) bkpavg, SUM(btkpavg) btkpavg
 from (
-    select msth_nodoc, msth_tgldoc, mstd_prdcd plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, case when mstd_unit = 'KG' then mstd_avgcost / 1000 else mstd_avgcost end acost,
+    select prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, mstd_prdcd plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, case when mstd_unit = 'KG' then mstd_avgcost / 1000 else mstd_avgcost end acost,
         floor(mstd_qty/prd_frac) ctn, mod(mstd_qty,prd_frac) pcs, prd_unit||'/'||prd_frac kemasan, mstd_bkp, prd_frac frac,
         prs_namaperusahaan, prs_namacabang,
         mstd_kodedivisi, div_namadivisi,
@@ -273,7 +389,7 @@ from (
         and kat_kodekategori(+)=mstd_kodekategoribrg
         and kat_kodeigr(+)=mstd_kodeigr
        )
-group by msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
+group by prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
     kemasan, prs_namaperusahaan, prs_namacabang,
     mstd_kodedivisi, div_namadivisi,mstd_bkp, frac,
     mstd_kodedepartement, dep_namadepartement,
@@ -283,14 +399,14 @@ order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg, msth_nodoc
             return view('BACKOFFICE.LAPORAN.daftar-retur-pembelian-rincian-produk-per-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
         } else if ($tipe === '3') {
-            $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
+            $data = DB::connection(Session::get('connection'))->select("select prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
     kemasan, prs_namaperusahaan, prs_namacabang, mstd_bkp, frac,
     mstd_kodesupplier, sup_namasupplier,
     sum(bonus) bonus, sum(gross) gross, sum(potongan) potongan,
     sum(bm) bm, sum(btl) btl, sum(ppn) ppn,
     sum(total) total, sum(avgcost) avgcost, sum(ctn) ctn, sum(pcs) pcs
 from (
-    select msth_nodoc, msth_tgldoc, mstd_prdcd plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, case when mstd_unit = 'KG' then mstd_avgcost / 1000 else mstd_avgcost end acost, mstd_ocost lcost,
+    select prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, mstd_prdcd plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, case when mstd_unit = 'KG' then mstd_avgcost / 1000 else mstd_avgcost end acost, mstd_ocost lcost,
         floor(mstd_qty/prd_frac) ctn, mod(mstd_qty,prd_frac) pcs, prd_unit||'/'||prd_frac kemasan, mstd_bkp,  mstd_frac frac,
         prs_namaperusahaan, prs_namacabang, mstd_kodesupplier, sup_namasupplier,
         CASE WHEN NVL(mstd_recordid,'9') = '1' THEN (nvl(mstd_qtybonus1,0)+nvl(mstd_qtybonus2,0)) * -1 ELSE (nvl(mstd_qtybonus1,0)+nvl(mstd_qtybonus2,0)) END bonus,
@@ -331,7 +447,7 @@ from (
         and sup_kodesupplier(+)= mstd_kodesupplier
         and sup_kodeigr(+)=mstd_kodeigr
         )
-group by msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang,
+group by prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang,
     mstd_hrgsatuan, mstd_keterangan, acost, lcost, frac,
     mstd_kodesupplier, sup_namasupplier,
     kemasan, prs_namaperusahaan, prs_namacabang,mstd_bkp
@@ -339,14 +455,14 @@ order by mstd_kodesupplier, msth_nodoc, plu");
 
             return view('BACKOFFICE.LAPORAN.daftar-retur-pembelian-rincian-produk-per-supplier-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
         }else if ($tipe === '4') {
-            $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
+            $data = DB::connection(Session::get('connection'))->select("select prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
     ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, mstd_bkp,
     mstd_kodesupplier, sup_namasupplier,mstd_nodoc, mstd_tgldoc, frac,
     sum(bonus) bonus, sum(gross) gross, sum(potongan) potongan,
     sum(bm) bm, sum(btl) btl, sum(ppn) ppn,
     sum(total) total, sum(avgcost) avgcost
 from (
-    select msth_nodoc, msth_tgldoc, mstd_prdcd plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, case when mstd_unit = 'KG' then mstd_avgcost / 1000 else mstd_avgcost end acost, mstd_ocost lcost,
+    select prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, mstd_prdcd plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, case when mstd_unit = 'KG' then mstd_avgcost / 1000 else mstd_avgcost end acost, mstd_ocost lcost,
         floor(mstd_qty/prd_frac) ctn, mod(mstd_qty,prd_frac) pcs, prd_unit||'/'||prd_frac kemasan, mstd_bkp,  mstd_frac frac,
         prs_namaperusahaan, prs_namacabang, mstd_kodesupplier, sup_namasupplier, mstd_nodoc, mstd_tgldoc,
         CASE WHEN NVL(mstd_recordid,'9') = '1' THEN (nvl(mstd_qtybonus1,0)+nvl(mstd_qtybonus2,0)) * -1 ELSE (nvl(mstd_qtybonus1,0)+nvl(mstd_qtybonus2,0)) END bonus,
@@ -387,7 +503,7 @@ from (
         and sup_kodesupplier(+) = mstd_kodesupplier
         and sup_kodeigr(+)=mstd_kodeigr
         )
-group by msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang,
+group by prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, plu, prd_deskripsipanjang,
     mstd_hrgsatuan, mstd_keterangan, acost, lcost, frac,
     mstd_kodesupplier, sup_namasupplier,mstd_nodoc, mstd_tgldoc,
     ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang,mstd_bkp
@@ -396,12 +512,12 @@ order by mstd_kodesupplier, msth_nodoc, plu");
 
         }
         else if ($tipe === '5') {
-            $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc, noretur, tglretur,mstd_kodesupplier,
+            $data = DB::connection(Session::get('connection'))->select("select prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, noretur, tglretur,mstd_kodesupplier,
 supplier,prs_namaperusahaan, prs_namacabang,  mstd_bkp,
 sum(gross) gross, sum(potongan) potongan, sum(bm) bm, sum(btl) btl,
 sum(dpp) dpp, sum(ppn) ppn, sum(total) total, sum(avgcost) avgcost
 from (
-    select msth_nodoc, msth_tgldoc, mstd_kodesupplier,
+    select prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, mstd_kodesupplier,
     mstd_bkp, mstd_noref3 noretur, mstd_tgref3 tglretur,
     CASE WHEN nvl(mstd_recordid,'9') = '1' THEN nvl(mstd_gross,0) * -1 ELSE nvl(mstd_gross,0) END gross,
     CASE WHEN nvl(mstd_recordid,'9') = '1' THEN nvl(mstd_discrph,0) * -1 ELSE nvl(mstd_discrph,0) END potongan,
@@ -447,7 +563,7 @@ from (
     and prd_kodeigr(+)=mstd_kodeigr
     and prs_kodeigr=msth_kodeigr
 )
-group by msth_nodoc, msth_tgldoc, noretur, tglretur, mstd_kodesupplier,
+group by prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, noretur, tglretur, mstd_kodesupplier,
 supplier,prs_namaperusahaan, prs_namacabang, mstd_bkp
 order by mstd_kodesupplier, msth_nodoc");
 

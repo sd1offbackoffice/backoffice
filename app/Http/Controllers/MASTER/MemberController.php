@@ -671,7 +671,7 @@ class MemberController extends Controller
                 if(sizeof($oldQuisioner) == sizeof($request->arrdata)){
                     for($i=0;$i<sizeof($request->arrdata);$i++){
                         $quisioner = array(
-                            'fpm_kodeigr' => '22',
+                            'fpm_kodeigr' => Session::get('kdigr'),
                             'fpm_kodemember' => $request->arrdata[$i]['fpm_kodemember'],
                             'fpm_kodeprdcd' => $request->arrdata[$i]['fpm_kodeprdcd'],
                             'fpm_flagjual' => $request->arrdata[$i]['fpm_flagjual'],
@@ -693,7 +693,7 @@ class MemberController extends Controller
                     for($i=0;$i<sizeof($request->arrdata);$i++){
                         if($request->arrdata[$i]['fpm_kodeprdcd'] == $oldQuisioner[$j]->fpm_kodeprdcd){
                             $quisioner = array(
-                                'fpm_kodeigr' => '22',
+                                'fpm_kodeigr' => Session::get('kdigr'),
                                 'fpm_kodemember' => $request->arrdata[$i]['fpm_kodemember'],
                                 'fpm_kodeprdcd' => $request->arrdata[$i]['fpm_kodeprdcd'],
                                 'fpm_flagjual' => $request->arrdata[$i]['fpm_flagjual'],
@@ -709,7 +709,7 @@ class MemberController extends Controller
                         }
                         else{
                             $quisioner = array(
-                                'fpm_kodeigr' => '22',
+                                'fpm_kodeigr' => Session::get('kdigr'),
                                 'fpm_kodemember' => $request->arrdata[$i]['fpm_kodemember'],
                                 'fpm_kodeprdcd' => $request->arrdata[$i]['fpm_kodeprdcd'],
                                 'fpm_flagjual' => $request->arrdata[$i]['fpm_flagjual'],
@@ -731,7 +731,7 @@ class MemberController extends Controller
             else{
                 for($i=0;$i<sizeof($request->arrdata);$i++){
                     $quisioner = array(
-                        'fpm_kodeigr' => '22',
+                        'fpm_kodeigr' => Session::get('kdigr'),
                         'fpm_kodemember' => $request->arrdata[$i]['fpm_kodemember'],
                         'fpm_kodeprdcd' => $request->arrdata[$i]['fpm_kodeprdcd'],
                         'fpm_flagjual' => $request->arrdata[$i]['fpm_flagjual'],

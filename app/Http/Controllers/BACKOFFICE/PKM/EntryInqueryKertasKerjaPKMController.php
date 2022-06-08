@@ -288,7 +288,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
             }
 
             $d->nplus = $ftngdla;
-            $d->pkmx = $d->pkm_pkmt + $ftngdla;
+            $d->pkmx = floatval($d->pkm_pkmt) + floatval($ftngdla);
 
             $d->bln1 = $this->getNamaBulan(substr($d->pkm_periode1,0,2)).' '.substr($d->pkm_periode3,-4);
             $d->bln2 = $this->getNamaBulan(substr($d->pkm_periode2,0,2)).' '.substr($d->pkm_periode2,-4);
@@ -384,7 +384,7 @@ class EntryInqueryKertasKerjaPKMController extends Controller
             }
 
             $d->maxpalet = $d->mpt_maxqty;
-            $temp = $d->pkmx + ($d->min * 0.5);
+            $temp = $d->pkmx + (floatval($d->min) * 0.5);
 
             $d->maxd = intval($d->maxd);
 

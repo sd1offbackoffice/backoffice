@@ -79,7 +79,7 @@ class CetakUlangFakturPajakController extends Controller
                 AND mstd_nodoc = msth_nodoc
                 AND mstd_noref3 IS NOT NULL");
 
-            // return dd($datas);
+        // return dd($datas);
 
         if (!$datas) {
             return response()->json([
@@ -146,13 +146,14 @@ class CetakUlangFakturPajakController extends Controller
                     AND PRD_PRDCD = MSTD_PRDCD
                     AND NVL (PRD_FLAGBKP1, 'N') = 'Y'
                     AND PRD_KODEIGR = MSTD_KODEIGR
-            ORDER BY MSTD_SEQNO");
+            ORDER BY mstd_noref3 asc");
 
         // dd($data);
 
+
 //    return view('BACKOFFICE.TRANSAKSI.PENGELUARAN.cetakulangfakturpajak_pdf', compact('npb1', 'npb2', 'perusahaan', 'data', 'ttd', 'role1', 'role2'));
 //        return view('BACKOFFICE.CETAKDOKUMEN.ctk-rtrpjk-pdf', compact('npb1', 'npb2', 'perusahaan', 'data', 'ttd', 'role1', 'role2'));
-        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENGELUARAN.cetakulangfakturpajak_pdf', compact('npb1', 'npb2', 'perusahaan', 'data', 'ttd', 'role1', 'role2'));
+        $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENGELUARAN.cetakulangfakturpajak-new_pdf', compact('npb1', 'npb2', 'perusahaan', 'data', 'ttd', 'role1', 'role2'));
 
         error_reporting(E_ALL ^ E_DEPRECATED);
 
@@ -160,7 +161,7 @@ class CetakUlangFakturPajakController extends Controller
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
         $canvas = $dompdf ->get_canvas();
-        $canvas->page_text(507, 100, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
+        $canvas->page_text(507, 45, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
         $dompdf = $pdf;
 

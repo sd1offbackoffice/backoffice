@@ -101,9 +101,34 @@ class printBPBController extends Controller
         $ftp_user_pass = config('ftp.ftp_user_pass_sd6');
         $zipName = Session::get('kdigr') . '_' . date("dmY", strtotime($date)) . '.ZIP';
         $zipAddress = '../storage/receipts/' . $zipName;
+        $conn_id = ftp_connect($ftp_server);
+        ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+
+        //download files from handheld
         try {
-            $conn_id = ftp_connect($ftp_server);
-            ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+            $ftp_server_hh = config('database.connections.' . Session::get('connection') . '.host');
+            $ftp_user_name_hh = 'ftpigr';
+            $ftp_user_pass_hh = 'ftpigr';
+            $conn_id_hh = ftp_connect($ftp_server_hh);
+            $directory = '/u01/lhost/bpb_hh';
+            ftp_login($conn_id_hh, $ftp_user_name_hh, $ftp_user_pass_hh);
+            ftp_chdir($conn_id_hh, $directory);
+            $contents = ftp_nlist($conn_id_hh, ".");
+
+            foreach ($contents as $file) {
+                if (Storage::disk('receipts')->exists($file) == false) {
+                    $random = rand();
+                    fopen('../storage/receipts/' . $random . '.pdf', 'w+');
+                    ftp_get($conn_id_hh, '../storage/receipts/' . $random . '.pdf', '/u01/lhost/bpb_hh/' . $file);
+                    rename('../storage/receipts/' . $random . '.pdf', '../storage/receipts/' . $file);
+                    File::delete('../storage/receipts/' . $random . '.pdf');
+                }
+            }
+        } catch (Exception $e) {
+            $msg = $e;
+        }
+
+        try {
             $files = Storage::disk('receipts')->allFiles();
             if (count($files) > 0) {
                 if (Storage::disk('receipts')->exists($zipName) == false) {
@@ -118,8 +143,7 @@ class printBPBController extends Controller
                                 }
                             }
                             $zip->close();
-                            ftp_put($conn_id, '/opt/btbigr/' . $zipName, $zipAddress);
-                            //send to SD6
+                            ftp_put($conn_id, '/opt/btbigr/' . $zipName, $zipAddress); //send to SD6
                         } catch (Exception $e) {
                             $msg = 'Tidak ada file pada tanggal ' . $date . '!';
                             return response()->json(['kode' => 0, 'message' => $msg]);
@@ -136,7 +160,7 @@ class printBPBController extends Controller
                 $msg = 'File terkirim ke SD6';
                 File::delete($zipAddress); //delete zip file from storage
                 $this->deleteSigs(); //delete all ttd
-                $this->deleteFiles(); //delete all files
+                $this->deleteFiles($date); //delete all files
             } else {
                 $msg = 'Empty Record, nothing to transfer';
                 return response()->json(['kode' => 2, 'message' => $msg]);
@@ -146,6 +170,131 @@ class printBPBController extends Controller
             return response()->json(['kode' => 0, 'message' => $msg . $e]);
         }
         return response()->json(['kode' => 1, 'message' => $msg]);
+    }
+
+    public function kirimFtpCabang($area)
+    {
+        $cabang = strtolower($area);
+        $msg = '';
+        $ftp_server = config('database.connections.' . Session::get('connection') . '.host');
+        $ftp_user_name = 'ftpigr';
+        $ftp_user_pass = 'ftpigr';
+        $zipName = Session::get('kdigr') . '_' . date("dmY", strtotime(Carbon::now())) . '.ZIP';
+        $zipAddress = '../storage/receipts_backup/' . $zipName;
+        try {
+            $conn_id = ftp_connect($ftp_server);
+            ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+            $files = Storage::disk('receipts_backup')->allFiles();
+            if (count($files) > 0) {
+                if (Storage::disk('receipts_backup')->exists($zipName) == false) {
+                    $zip = new ZipArchive;
+                    if (true === ($zip->open($zipAddress, ZipArchive::CREATE | ZipArchive::OVERWRITE))) {
+                        foreach ($files as $file => $value) {
+                            $filePath = '../storage/receipts_backup/' . $value;
+                            $zip->addFile($filePath, $value);
+                        }
+                        $zip->close();
+                        ftp_put($conn_id, '/u01/lhost/bpb_backup/' . $zipName, $zipAddress);
+                        //send to Cabang
+                    } else {
+                        $msg = 'Proses kirim file gagal';
+                        return response()->json(['kode' => 0, 'message' => $msg]);
+                    }
+                } else {
+                    ftp_put($conn_id, '/u01/lhost/bpb_backup/' . $zipName, $zipAddress);
+                    //send to Cabang
+                }
+                $msg = 'File terkirim ke Cabang';
+                File::delete($zipAddress); //delete zip file from storage
+                // $this->deleteBackupFiles(); //delete all files
+            } else {
+                $msg = 'Empty Record, nothing to transfer';
+                return response()->json(['kode' => 2, 'message' => $msg]);
+            }
+        } catch (Exception $e) {
+            $msg = 'Proses kirim file gagal (error)';
+            return response()->json(['kode' => 0, 'message' => $msg . $e]);
+        }
+        return response()->json(['kode' => 1, 'message' => $msg]);
+    }
+
+    public function kirimServerCabang($path, $datas, $pdf, $report)
+    {
+        $area = $this->getArea();
+        $type = '';
+        if ($report == 'IGR_BO_CTBTBNOTA' || $report == 'IGR_BO_CTBTBNOTA_FULL') {
+            $type = 'BTB_';
+        } else {
+            $type = 'BTB_NON_HARGA_';
+        }
+
+        if (!File::exists(storage_path($path))) {
+            File::makeDirectory(storage_path($path), 0755, true, true);
+        }
+
+        for ($i = 0; $i < sizeof($datas); $i++) {
+            $content = $pdf->download()->getOriginalContent();
+            $id = $type . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
+            $file = storage_path($path . $id . '.PDF');
+            file_put_contents($file, $content);
+        }
+
+        $this->kirimFtpCabang($area);
+    }
+
+    public function checkFlagAlert(Request $request)
+    {
+        $document   = $request->document;
+        $kodeigr    = Session::get('kdigr');
+        $arr = [];
+        foreach ($document as $data) {
+            $record = DB::connection(Session::get('connection'))->select(
+                "SELECT NVL(PRD_AVGCOST, 0) PRD_AVGCOST, PRD_PRDCD, NVL(PRD_LASTCOST, 0) PRD_LASTCOST
+                    FROM TBTR_BACKOFFICE AA,
+                         TBMASTER_PRODMAST BB,
+                         TBMASTER_SUPPLIER CC,
+                         TBMASTER_STOCK DD,
+                         TBMASTER_LOKASI EE,
+                         TBTR_PO_D FF,
+                         TBTR_PO_H GG,
+                         tbmaster_stock_cab_anak hh
+                    WHERE     AA.TRBO_NODOC = '$data'
+                    AND (NVL (TRBO_QTY, 0)
+                        + NVL (TRBO_QTYBONUS1, 0)
+                        + NVL (TRBO_QTYBONUS2, 0)) <> 0
+                    AND BB.PRD_PRDCD = AA.TRBO_PRDCD
+                    AND BB.PRD_KODEIGR = '$kodeigr'
+                    AND CC.SUP_KODESUPPLIER(+) = AA.TRBO_KODESUPPLIER
+                    AND CC.SUP_KODEIGR(+) = AA.TRBO_KODEIGR
+                    AND DD.ST_PRDCD(+) = AA.TRBO_PRDCD
+                    AND DD.ST_KODEIGR(+) = AA.TRBO_KODEIGR
+                    AND DD.ST_LOKASI(+) = '01'
+                    AND EE.LKS_PRDCD(+) = AA.TRBO_PRDCD
+                    AND EE.LKS_KODEIGR(+) = AA.TRBO_KODEIGR
+                    AND SUBSTR (EE.LKS_KODERAK(+), 1, 1) = 'A'
+                    AND FF.TPOD_PRDCD(+) = AA.TRBO_PRDCD
+                    AND FF.TPOD_KODEIGR(+) = AA.TRBO_KODEIGR
+                    AND FF.TPOD_NOPO(+) = AA.TRBO_NOPO
+                    AND GG.TPOH_KODEIGR(+) = '$kodeigr'
+                    AND GG.TPOH_NOPO(+) = AA.TRBO_NOPO
+                    AND NVL (GG.TPOH_RECORDID, '0') <> '1'
+                    AND HH.STA_PRDCD(+) = AA.TRBO_PRDCD
+                    AND HH.STA_KODEIGR(+) = AA.TRBO_KODEIGR
+                    AND HH.STA_LOKASI(+) = '01'
+                    ORDER BY AA.TRBO_PRDCD"
+            );
+            array_push($arr, $record);
+        }
+        return $arr;
+    }
+
+    public function updateFlagAlert(Request $request)
+    {
+        if (isset($request->flag)) {
+            return $request->flag;
+        } else {
+            return 0;
+        }
     }
 
     public function cetakData(Request $request)
@@ -165,14 +314,14 @@ class printBPBController extends Controller
         $temp_nota = [];
         $model  = new AllModel();
         $conn   = $model->connectionProcedure();
-
+        $flag = $request->flag;
         if ($type == 1) {
             $v_print = $reprint;
             $is_list = 1;
         } else {
             if ($reprint == 0) {
                 foreach ($document as $data) {
-                    $updateData = $this->update_data($data, $kodeigr, $userid, $conn, $type, $trnType);
+                    $updateData = $this->update_data($data, $kodeigr, $userid, $conn, $type, $trnType, $flag);
                     if ($updateData != null) {
                         if ($updateData['kode'] == 0) {
                             return response()->json($updateData);
@@ -197,10 +346,10 @@ class printBPBController extends Controller
                 $temp_nota = $document;
             }
         }
-        if ($counter > 0) {
-            $this->print_lokasi($temp_lokasi, $type, $v_print);
-            $lokasi = 1;
-        }
+        // if ($counter > 0) {
+        //     $this->print_lokasi($temp_lokasi, $type, $v_print);
+        //     $lokasi = 1;
+        // }
 
         if ($document) {
             if ($type == 1 && $reprint == 0) {
@@ -218,296 +367,7 @@ class printBPBController extends Controller
         return response()->json(['kode' => 1, 'message' => 'Create Report Success', 'data' => $print_btb, 'lokasi' => $lokasi, 'nota' => $temp_nota, 'list' => $is_list]);
     }
 
-    public function SP_PKM_BPB($kodeigr, $sub_prdcd, $userId, $P_SUKSES, $P_ERROR)
-    {
-        $model  = new AllModel();
-        $conn   = $model->connectionProcedure();
-        $sysdatef = Carbon::now();
-        $DIMENSI = 0;
-        $MINORDER = 0;
-        $PKMM = 0;
-        $PKMT = 0;
-        $LEADTIME = 0;
-        $MIND = 0;
-        $MPKM = 0;
-        $N = 0;
-        $AVGSPD = 0;
-        $KSUP = '';
-        $ADA = oci_parse($conn, "SELECT COUNT (1)
-                                FROM tbmaster_kkpkm
-                                WHERE pkm_kodeigr = '$kodeigr' 
-                                AND pkm_prdcd = '$sub_prdcd'");
-        oci_execute($ADA);
-        $ADA_KEY = oci_fetch_array($ADA, OCI_ASSOC);
-        $keys = array_keys($ADA_KEY);
-
-        if ($ADA_KEY[$keys[0]] > 0) {
-            $P_SUKSES = 'Y';
-            return $ADA_KEY[$keys[0]];
-        } else {
-            $min_order =  oci_parse($conn, "SELECT PRD_MINORDER
-                                FROM TBMASTER_PRODMAST,
-                                    TBMASTER_KKPKM,
-                                    TBMASTER_PRODCRM,
-                                    TBMASTER_PKMPLUS
-                                WHERE   PRD_KODEIGR     = '$kodeigr'
-                                AND     PRD_PRDCD       = '$sub_prdcd'
-                                AND     PKM_KODEIGR(+)  = '$kodeigr'
-                                AND     PKM_PRDCD(+)    = '$sub_prdcd'
-                                AND     PRC_KODEIGR(+)  = '$kodeigr'
-                                AND     PRC_PLUIGR(+)   = '$sub_prdcd'
-                                AND     PRC_GROUP(+)    = 'O'
-                                AND     PKMP_KODEIGR(+) = '$kodeigr'
-                                AND     PKMP_PRDCD(+)   = '$sub_prdcd'");
-
-            oci_execute($min_order);
-            $min_order_KEY = oci_fetch_array($min_order, OCI_ASSOC);
-            $keys = array_keys($min_order_KEY);
-            if ($keys > 0) {
-                $MINORDER = $keys;
-            } else {
-                $isi_beli =  oci_parse($conn, "SELECT PRD_ISIBELI
-                                FROM TBMASTER_PRODMAST,
-                                    TBMASTER_KKPKM,
-                                    TBMASTER_PRODCRM,
-                                    TBMASTER_PKMPLUS
-                                WHERE   PRD_KODEIGR     = '$kodeigr'
-                                AND     PRD_PRDCD       = '$sub_prdcd'
-                                AND     PKM_KODEIGR(+)  = '$kodeigr'
-                                AND     PKM_PRDCD(+)    = '$sub_prdcd'
-                                AND     PRC_KODEIGR(+)  = '$kodeigr'
-                                AND     PRC_PLUIGR(+)   = '$sub_prdcd'
-                                AND     PRC_GROUP(+)    = 'O'
-                                AND     PKMP_KODEIGR(+) = '$kodeigr'
-                                AND     PKMP_PRDCD(+)   = '$sub_prdcd'");
-                oci_execute($isi_beli);
-                $isi_beli_KEY = oci_fetch_array($isi_beli, OCI_ASSOC);
-                $keys = array_keys($isi_beli_KEY);
-                if ($keys > 0) {
-                    $MINORDER = $keys;
-                }
-            }
-
-            $sp_pkm_bpb = oci_parse($conn, "SELECT PRD_PRDCD,
-                                    PRD_LASTCOST,
-                                    PRD_KODETAG,
-                                    PRD_KODECABANG,
-                                    PRD_KATEGORITOKO,
-                                    PRD_KODEDIVISI,
-                                    PRD_KODEDEPARTEMENT,
-                                    PRD_KODEKATEGORIBARANG,
-                                    PRD_TGLDAFTAR,
-                                    PRD_FLAGGUDANG
-                                    FROM TBMASTER_PRODMAST,
-                                        TBMASTER_KKPKM,
-                                        TBMASTER_PRODCRM,
-                                        TBMASTER_PKMPLUS
-                                    WHERE   PRD_KODEIGR     = '$kodeigr'
-                                    AND     PRD_PRDCD       = '$sub_prdcd'
-                                    AND     PKM_KODEIGR(+)  = '$kodeigr'
-                                    AND     PKM_PRDCD(+)    = '$sub_prdcd'
-                                    AND     PRC_KODEIGR(+)  = '$kodeigr'
-                                    AND     PRC_PLUIGR(+)   = '$sub_prdcd'
-                                    AND     PRC_GROUP(+)    = 'O'
-                                    AND     PKMP_KODEIGR(+) = '$kodeigr'
-                                    AND     PKMP_PRDCD(+)   = '$sub_prdcd'");
-            oci_execute($sp_pkm_bpb);
-            $sp_pkm_bpb_KEY = oci_fetch_array($sp_pkm_bpb, OCI_ASSOC);
-            foreach ($sp_pkm_bpb_KEY as $data => $value) {
-                $ADA = oci_parse($conn, "SELECT COUNT (1)
-                                FROM TBMASTER_LOKASI
-                                WHERE LKS_KODEIGR = '$kodeigr' 
-                                AND LKS_PRDCD = '$sub_prdcd'
-                                AND (LKS_KODERAK NOT LIKE 'X%'
-                                AND LKS_KODERAK NOT LIKE 'A%'
-                                AND LKS_KODERAK NOT LIKE 'G%')
-                                AND LKS_TIPERAK <> 'S'");
-                oci_execute($ADA);
-                $ADA_KEY = oci_fetch_array($ADA, OCI_ASSOC);
-                $keys = array_keys($ADA_KEY);
-                if ($ADA_KEY[$keys[0]] == 0) {
-                    $DIMENSI = 0;
-                } else {
-                    $LKS_TIRKIRIKANAN = 0;
-                    $LKS_TIRDEPANBELAKANG = 0;
-                    $LKS_TIRATASBAWAH = 0;
-                    $ADA = oci_parse($conn, "SELECT *
-                                FROM TBMASTER_LOKASI
-                                WHERE LKS_KODEIGR = '$kodeigr'
-                                AND LKS_PRDCD = '$sub_prdcd'
-                                AND (LKS_KODERAK NOT LIKE 'X%'
-                                AND LKS_KODERAK NOT LIKE 'A%'
-                                AND LKS_KODERAK NOT LIKE 'G%')
-                                AND LKS_TIPERAK <> 'S'");
-                    oci_execute($ADA);
-                    $ADA_KEY = oci_fetch_array($ADA, OCI_ASSOC);
-                    foreach ($ADA_KEY as $lks => $lksv) {
-                        if ($lks == 'LKS_TIRKIRIKANAN') {
-                            $LKS_TIRKIRIKANAN += $lksv;
-                        }
-                        if ($lks == 'LKS_TIRDEPANBELAKANG') {
-                            $LKS_TIRDEPANBELAKANG += $lksv;
-                        }
-                        if ($lks == 'LKS_TIRATASBAWAH') {
-                            $LKS_TIRATASBAWAH += $lksv;
-                        }
-                    }
-                    $NILAI = $LKS_TIRKIRIKANAN * $LKS_TIRDEPANBELAKANG * $LKS_TIRATASBAWAH;
-                    // $DIMENSI = DB::connection(Session::get('connection'))
-                    //     ->select("SELECT SUM (NILAI)
-                    //     FROM (SELECT LKS_PRDCD, (LKS_TIRKIRIKANAN * LKS_TIRDEPANBELAKANG * LKS_TIRATASBAWAH) NILAI
-                    //     FROM TBMASTER_LOKASI
-                    //     WHERE LKS_KODEIGR = $kodeigr 
-                    //     AND LKS_PRDCD = $sub_prdcd
-                    //     AND (LKS_KODERAK NOT LIKE 'X%'
-                    //     AND LKS_KODERAK NOT LIKE 'A%'
-                    //     AND LKS_KODERAK NOT LIKE 'G%')
-                    //     AND LKS_TIPERAK <> 'S';
-                    //     GROUP BY LKS_PRDCD");
-                    $DIMENSI = $NILAI;
-                }
-                $PRD_FLAGGUDANG = '999'; //init code boongan
-                if ($data == 'PRD_FLAGGUDANG') {
-                    $PRD_FLAGGUDANG = $value;
-                }
-                $arr = array('Y', 'P');
-
-                if (in_array($PRD_FLAGGUDANG, $arr)) {
-                    $ADA = DB::connection(Session::get('connection'))
-                        ->select("SELECT COUNT (1),
-                    FROM TBMASTER_MINIMUMORDER
-                    WHERE MIN_KODEIGR   = $kodeigr 
-                    AND   MIN_PRDCD     = $sub_prdcd");
-                    if ($ADA > 0) {
-                        $MINORDER = DB::connection(Session::get('connection'))
-                            ->select("SELECT MIN_MINORDER
-                            FROM TBMASTER_MINIMUMORDER
-                            WHERE MIN_KODEIGR   = $kodeigr 
-                            AND   MIN_PRDCD     = $sub_prdcd");
-                    }
-                }
-                $MINORDER = 0;
-            }
-            $arr = ['Y', 'P'];
-            $MIND = $DIMENSI;
-            if (in_array('N', $arr)) {
-                $LEADTIME = 15;
-            } else {
-                $PRD_FLAGGUDANG = '999'; //init code boongan
-                if ($data == 'PRD_FLAGGUDANG') {
-                    $PRD_FLAGGUDANG = $value;
-                }
-                $ADA = DB::connection(Session::get('connection'))
-                    ->select("SELECT COUNT (1),
-                        IF ($PRD_FLAGGUDANG = 'N' IN ('Y','P'))
-                        FROM (SELECT *
-                        FROM (SELECT HGB_KODESUPPLIER
-                        FROM TBMASTER_HARGABELI
-                        WHERE     HGB_KODEIGR = P_MEMKODEIGR
-                                AND HGB_PRDCD = P_PRDCD
-                        ORDER BY HGB_TIPE)
-                        WHERE ROWNUM = 1) A,
-                        TBMASTER_SUPPLIER
-                        WHERE     SUP_KODEIGR = $kodeigr
-                        AND       SUP_KODESUPPLIER = HGB_KODESUPPLIER");
-                if ($ADA == 0) {
-                    $LEADTIME = 1;
-                    $KSUP = '';
-                } else {
-                    $LEADTIME = DB::connection(Session::get('connection'))
-                        ->select("SELECT SUP_JANGKAWAKTUKIRIMBARANG
-                        FROM (SELECT *
-                        FROM (SELECT HGB_KODESUPPLIER
-                        FROM TBMASTER_HARGABELI
-                        WHERE     HGB_KODEIGR = P_MEMKODEIGR
-                                AND HGB_PRDCD = P_PRDCD
-                        ORDER BY HGB_TIPE)
-                        WHERE ROWNUM = 1) A,
-                        TBMASTER_SUPPLIER
-                        WHERE     SUP_KODEIGR = $kodeigr
-                        AND       SUP_KODESUPPLIER = HGB_KODESUPPLIER");
-
-                    $KSUP = DB::connection(Session::get('connection'))
-                        ->select("SELECT SUP_KODESUPPLIER
-                        FROM (SELECT *
-                        FROM (SELECT HGB_KODESUPPLIER
-                        FROM TBMASTER_HARGABELI
-                        WHERE     HGB_KODEIGR = P_MEMKODEIGR
-                                AND HGB_PRDCD = P_PRDCD
-                        ORDER BY HGB_TIPE)
-                        WHERE ROWNUM = 1) A,
-                        TBMASTER_SUPPLIER
-                        WHERE     SUP_KODEIGR = $kodeigr
-                        AND       SUP_KODESUPPLIER = HGB_KODESUPPLIER");
-                }
-                $N = 2;
-            }
-            $AVGSPD = 0;
-            $PKMM   = $MIND + $MINORDER;
-            $MPKM   = 0;
-
-            if ($PKMM <= ($MIND + $MINORDER) || (($PKMM > $MIND) && ($PKMM < ($MIND + $MINORDER)))) {
-                $MPKM = $MIND + $MINORDER;
-            } else if (($PKMM > $MIND) && ($PKMM > ($MIND + $MINORDER))) {
-                $MPKM = $PKMM;
-            }
-
-            $PKMT = $MPKM + $data->PKMP_QTYMINOR;
-
-            if ($data->PKM_PRDCD == '1234567') {
-                DB::connection(Session::get('connection'))->table('TBMASTER_KKPKM')->insert([
-                    "PKM_KODEIGR" => $kodeigr,
-                    "PKM_KODEDIVISI" => $data->prd_kodedivisi,
-                    "PKM_KODEDEPARTEMENT" => $data->prd_kodedepartement,
-                    "PKM_PERIODEPROSES" => Carbon::now()->format('My'),
-                    "PKM_KODEKATEGORIBARANG" => $data->prd_kodekategoribarang,
-                    "PKM_PRDCD" => $data->prd_prdcd,
-                    "PKM_KODESUPPLIER" => $KSUP,
-                    "PKM_MINDISPLAY" => $MIND,
-                    "PKM_MINORDER" => $MINORDER,
-                    "PKM_LEADTIME" => $LEADTIME,
-                    "PKM_KOEFISIEN" => $N,
-                    "PKM_PKM" => $PKMM,
-                    "PKM_PKMT" => $PKMT,
-                    "PKM_MPKM" => $MPKM,
-                    "PKM_CREATE_BY" => $userId,
-                    "PKM_CREATE_DT" => $sysdatef,
-                ]);
-            } else {
-                DB::connection(Session::get('connection'))->table('TBMASTER_KKPKM')
-                    ->where('PKM_KODEIGR', $kodeigr)
-                    ->where('PKM_PRDCD', $sub_prdcd)
-                    ->update([
-                        'PKM_PERIODEPROSES' => Carbon::now()->format('My'), 'PKM_KODESUPPLIER' => $KSUP,
-                        'PKM_MINDISPLAY' => $MIND,
-                        'PKM_MINORDER' => $MINORDER,
-                        'PKM_LEADTIME' => $LEADTIME,
-                        'PKM_KOEFISIEN' => $N,
-                        'PKM_PKM' => $PKMM,
-                        'PKM_PKMT' => $PKMT,
-                        'PKM_MPKM' => $MPKM,
-                        'PKM_MODIFY_BY' => $userId,
-                        'PKM_MODIFY_DT' => $sysdatef
-                    ]);
-
-                $gondola = DB::connection(Session::get('connection'))->table('TBTR_PKMGONDOLA')
-                    ->where('PKMG_KODEIGR', $kodeigr)
-                    ->where('PKMG_PRDCD', $sub_prdcd)
-                    ->get('PKMG_NILAIGONDOLA');
-
-                DB::connection(Session::get('connection'))->table('TBTR_PKMGONDOLA')
-                    ->where('PKMG_KODEIGR', $kodeigr)
-                    ->where('PKMG_PRDCD', $sub_prdcd)
-                    ->update([
-                        'PKMG_NILAIPKMG' => $gondola + $PKMT
-                    ]);
-            }
-            $P_SUKSES = 'Y';
-            return response()->json(['kode' => $P_SUKSES, 'msg' => 'Sukses']);
-        }
-    }
-
-    public function update_data($noDoc, $kodeigr, $userId, $conn, $type, $trnType)
+    public function update_data($noDoc, $kodeigr, $userId, $conn, $type, $trnType, $flag)
     {
         $a = '';
         $b = '';
@@ -553,7 +413,7 @@ class printBPBController extends Controller
             oci_execute($query);
             $no_btb = $result;
         }
-        $record = DB::connection(Session::get('connection'))->select("SELECT 
+        $record = DB::connection(Session::get('connection'))->select("SELECT
                     TRBO_PRDCD, TRBO_TYPETRN, TRBO_DIS4CR, ST_PRDCD, PRD_PRDCD, PRD_UNIT,
                     TRBO_DIS4JR, TRBO_DIS4RR, NVL(PRD_AVGCOST, 0) PRD_AVGCOST, ST_AVGCOST, PRD_FRAC, ST_SALDOAKHIR,
                     TRBO_GROSS, TRBO_DISCRPH, TRBO_PPNBMRPH, TRBO_PPNBTLRPH, NVL(TRBO_QTY, 0) TRBO_QTY,
@@ -677,59 +537,24 @@ class printBPBController extends Controller
             $c = $data->prd_lastcost;
             $d = $data->prd_avgcost;
             //seharusnya dipake buat sp_pkm_bpb, tapi knp harus di substr
-      
-            // if ($data->prd_lastcost == 0) {
-            //     if ($data->prd_avgcost != 0) {
-                    
-                if avgcost == 0 
-                if acost != 0 
-                    alert
-                    if alert=yes
-                        flagpkmbaru =yes
-                    else
-                        flagpkmbaru=no
-                    end if
-                else
-                    flagpkmbaru=yes
-                end if
-            else 
-                flagpkmbaru=no
-            end if
-            
-                    if ($flag_pkmbaru == 'yes') {
-                        $query = oci_parse($conn, "BEGIN SP_PKM_BPB (:IGR, :PRDCD, :USID, :PS, :PE); END;");
-                        oci_bind_by_name($query, ':IGR', $kodeigr);
-                        oci_bind_by_name($query, ':PRDCD', $data->trbo_prdcd);
-                        oci_bind_by_name($query, ':USID', $userId);
-                        oci_bind_by_name($query, ':PS', $a);
-                        oci_bind_by_name($query, ':PE', $b);
-                        oci_execute($query);
+            if ($flag == 1) {
+                $query = oci_parse($conn, "BEGIN SP_PKM_BPB (:IGR, :PRDCD, :USID, :PS, :PE); END;");
+                oci_bind_by_name($query, ':IGR', $kodeigr);
+                oci_bind_by_name($query, ':PRDCD', $data->trbo_prdcd);
+                oci_bind_by_name($query, ':USID', $userId);
+                oci_bind_by_name($query, ':PS', $a, 2);
+                oci_bind_by_name($query, ':PE', $b, 2);
+                oci_execute($query);
 
-                        // $this->SP_PKM_BPB($kodeigr, $data->trbo_prdcd, $userId, $P_SUKSES, $P_ERROR);
-                        DB::connection(Session::get('connection'))->table('TBMASTER_BARANGBARU')
-                            ->where('PLN_PRDCD', $data->trbo_prdcd)
-                            ->where('PLN_TGLBPB', '=', '')
-                            ->orWhereNull('PLN_TGLBPB')
-                            ->update(['PLN_TGLBPB' => $TODATEF]);
-                    }
-                // } else {
-                //     $query = oci_parse($conn, "BEGIN SP_PKM_BPB (:IGR, :PRDCD, :USID, :PS, :PE); END;");
-                //     oci_bind_by_name($query, ':IGR', $kodeigr);
-                //     oci_bind_by_name($query, ':PRDCD', $data->trbo_prdcd);
-                //     oci_bind_by_name($query, ':USID', $userId);
-                //     oci_bind_by_name($query, ':PS', $a);
-                //     oci_bind_by_name($query, ':PE', $b);
-                //     oci_execute($query);
-
-
-                //     // $this->SP_PKM_BPB($kodeigr, $data->trbo_prdcd, $userId, $P_SUKSES, $P_ERROR);
-                //     DB::connection(Session::get('connection'))->table('TBMASTER_BARANGBARU')
-                //         ->where('PLN_PRDCD', $data->trbo_prdcd)
-                //         ->where('PLN_TGLBPB', '=', '')
-                //         ->orWhereNull('PLN_TGLBPB')
-                //         ->update(['PLN_TGLBPB' => $TODATEF]);
-                // }
-            // }
+                // $this->SP_PKM_BPB($kodeigr, $data->trbo_prdcd, $userId, $P_SUKSES, $P_ERROR);
+                DB::connection(Session::get('connection'))->table('TBMASTER_BARANGBARU')
+                    ->where('PLN_PRDCD', $data->trbo_prdcd)
+                    ->where('PLN_TGLBPB', '=', '')
+                    ->orWhereNull('PLN_TGLBPB')
+                    ->update(['PLN_TGLBPB' => $TODATEF]);
+                $P_SUKSES = $a;
+                $P_ERROR = $b;
+            }
 
             $trbo_nopo = '';
             $unit = '';
@@ -1207,18 +1032,18 @@ class printBPBController extends Controller
                             + NVL (MSTD_PPNBTLRPH, 0)
                             + NVL (MSTD_PPNRPH, 0)
                             ) BALANCE,
-                        SUM(MSTD_PPNRPH) PPN, 
-                        SUM(MSTD_PPNBMRPH) PPNBM, 
-                        SUM(MSTD_PPNBTLRPH) PPNBTL, 
-                        SUM(MSTD_RPHDISC1) DISC1, 
-                        SUM(MSTD_RPHDISC2) DISC2, 
-                        SUM(MSTD_RPHDISC2II) DISC2II, 
-                        SUM(MSTD_RPHDISC2III) DISC2III, 
-                        SUM(MSTD_RPHDISC3) DISC3, 
-                        SUM(MSTD_RPHDISC4) DISC4, 
-                        SUM(MSTD_DIS4CR) DISC4CR, 
-                        SUM(MSTD_DIS4RR) DISC4RR, 
-                        SUM(MSTD_DIS4JR) DISC4JR, 
+                        SUM(MSTD_PPNRPH) PPN,
+                        SUM(MSTD_PPNBMRPH) PPNBM,
+                        SUM(MSTD_PPNBTLRPH) PPNBTL,
+                        SUM(MSTD_RPHDISC1) DISC1,
+                        SUM(MSTD_RPHDISC2) DISC2,
+                        SUM(MSTD_RPHDISC2II) DISC2II,
+                        SUM(MSTD_RPHDISC2III) DISC2III,
+                        SUM(MSTD_RPHDISC3) DISC3,
+                        SUM(MSTD_RPHDISC4) DISC4,
+                        SUM(MSTD_DIS4CR) DISC4CR,
+                        SUM(MSTD_DIS4RR) DISC4RR,
+                        SUM(MSTD_DIS4JR) DISC4JR,
                         MSTH_CTERM
                         FROM    TBTR_MSTRAN_D, TBMASTER_PRODMAST, TBTR_MSTRAN_H
                         WHERE   MSTD_NODOC      = '$no_btb'
@@ -1227,7 +1052,7 @@ class printBPBController extends Controller
                         AND     MSTH_NODOC      = '$no_btb'
                         AND     PRD_PRDCD       = MSTD_PRDCD
                         AND     PRD_KODEIGR     = MSTD_KODEIGR
-                        GROUP BY 
+                        GROUP BY
                             MSTD_KODESUPPLIER,
                             MSTD_CTERM,
                             MSTD_NOFAKTUR,
@@ -1274,10 +1099,9 @@ class printBPBController extends Controller
                     $P_SUKSES = 99;
                 }
             }
-            $P_SUKSES = 1;
+            $P_SUKSES = 'Y';
         }
-        dd($a, $b, $c, $d);
-        if ($P_SUKSES == 1 || $trnType == 'L') {
+        if ($P_SUKSES == 'Y' || $trnType == 'L') {
             return ['kode' => 1, 'msg' => 'Update Data 1 Sukses', 'nota' => $no_btb];
         } else {
             return ['kode' => $P_ERROR, 'msg' => 'Error ' . $P_SUKSES, 'nota' => $no_btb];
@@ -1334,9 +1158,9 @@ class printBPBController extends Controller
                     AND     st_lokasi       = '01'
                     AND     hgb_prdcd       = pcl_prdcd
                     AND     prd_prdcd       = pcl_prdcd
-                    ORDER BY 
-                            pcl_create_dt, pcl_prdcd, 
-                            pcl_kode, pcl_nodokumen, 
+                    ORDER BY
+                            pcl_create_dt, pcl_prdcd,
+                            pcl_kode, pcl_nodokumen,
                             pcl_kodecabang
                     ");
 
@@ -1572,32 +1396,22 @@ class printBPBController extends Controller
 
     public function print_lokasi($temp_lokasi, $type, $v_print)
     {
+        $kodeigr = Session::get('kdigr');
         $temp = $temp_lokasi[0][0];
-        $datas = DB::connection(Session::get('connection'))->select("SELECT trbo_prdcd,
-                                       SUBSTR (prd_deskripsipanjang, 1, 50) desc2,
-                                       prd_unit || '/' || prd_frac kemasan,
-                                       lks_koderak,
-                                       lks_kodesubrak,
-                                       lks_tiperak,
-                                       lks_shelvingrak,
-                                       FLOOR (trbo_qty / prd_frac) qty,
-                                       lks_koderak || lks_kodesubrak || lks_tiperak || lks_shelvingrak
-                                          keterangan,
-                                       MOD (trbo_qty, prd_frac) qtyk,
-                                       prs_namaperusahaan,
-                                       prs_namacabang,
-                                       prs_namawilayah
-                                  FROM tbtr_backoffice,
-                                       tbmaster_lokasi,
-                                       tbmaster_prodmast,
-                                       tbmaster_perusahaan
-                                 WHERE     prs_kodeigr = trbo_kodeigr
-                                       AND trbo_kodeigr = '22'
-                                       AND trbo_nodoc in '$temp'
-                                       AND lks_prdcd = trbo_prdcd
-                                       AND lks_kodeigr = trbo_kodeigr
-                                       AND prd_prdcd = trbo_prdcd
-                                       AND prd_kodeigr = trbo_kodeigr");
+        $datas = DB::connection(Session::get('connection'))->select(
+            "SELECT trbo_prdcd, SUBSTR (prd_deskripsipanjang, 1, 50) desc2, prd_unit || '/' || prd_frac kemasan, lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak, FLOOR (trbo_qty / prd_frac) qty, lks_koderak || lks_kodesubrak || lks_tiperak || lks_shelvingrak keterangan, MOD (trbo_qty, prd_frac) qtyk, prs_namaperusahaan, prs_namacabang, prs_namawilayah
+            FROM tbtr_backoffice,
+                tbmaster_lokasi,
+                tbmaster_prodmast,
+                tbmaster_perusahaan
+            WHERE     prs_kodeigr = trbo_kodeigr
+            AND trbo_kodeigr = '$kodeigr'
+            AND trbo_nodoc in '$temp'
+            AND lks_prdcd = trbo_prdcd
+            AND lks_kodeigr = trbo_kodeigr
+            AND prd_prdcd = trbo_prdcd
+            AND prd_kodeigr = trbo_kodeigr"
+        );
         // perlu di panggil ulang dari viewreport soalnya datas engga kebaca kalo cuma = '1'
         $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctklokasi', ['datas' => $datas]);
         $pdf->output();
@@ -1620,13 +1434,24 @@ class printBPBController extends Controller
         }
     }
 
-    public function deleteFiles()
+    public function deleteFiles($date)
     {
         $files = Storage::disk('receipts')->allFiles();
         if (count($files) > 0) {
             foreach ($files as $file => $value) {
                 $filePath = '../storage/receipts/' . $value;
                 File::delete($filePath);
+            }
+        }
+
+        $backup_files = Storage::disk('receipts_backup')->allFiles();
+        if (count($files) > 0) {
+            //delete files to free up space
+            foreach ($backup_files as $file => $value) {
+                if (substr($value, -12, -4) == date("Ymd", strtotime($date))) {
+                    $filePath = '../storage/receipts_backup/' . $value;
+                    File::delete($filePath); //delete file from storage
+                }
             }
         }
     }
@@ -1653,77 +1478,6 @@ class printBPBController extends Controller
         return $result[0]->cab_kodewilayah;
     }
 
-    public function kirimFtpCabang($area)
-    {
-        $cabang = strtolower($area);
-        $msg = '';
-        $ftp_server = config('database.connections.igr' . $cabang . '.host');
-        $ftp_user_name = 'ftpigr';
-        $ftp_user_pass = 'ftpigr';
-        $zipName = Session::get('kdigr') . '_' . date("dmY", strtotime(Carbon::now())) . '.ZIP';
-        $zipAddress = '../storage/receipts_backup/' . $zipName;
-        try {
-            $conn_id = ftp_connect($ftp_server);
-            ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
-            $files = Storage::disk('receipts_backup')->allFiles();
-            if (count($files) > 0) {
-                if (Storage::disk('receipts_backup')->exists($zipName) == false) {
-                    $zip = new ZipArchive;
-                    if (true === ($zip->open($zipAddress, ZipArchive::CREATE | ZipArchive::OVERWRITE))) {
-                        foreach ($files as $file => $value) {
-                            $filePath = '../storage/receipts_backup/' . $value;
-                            $zip->addFile($filePath, $value);
-                        }
-                        $zip->close();
-                        ftp_put($conn_id, '/u01/lhost/bpb_backup/' . $zipName, $zipAddress);
-                        //send to Cabang
-                    } else {
-                        $msg = 'Proses kirim file gagal';
-                        return response()->json(['kode' => 0, 'message' => $msg]);
-                    }
-                } else {
-                    ftp_put($conn_id, '/u01/lhost/bpb_backup/' . $zipName, $zipAddress);
-                    //send to Cabang
-                }
-
-                $msg = 'File terkirim ke Cabang';
-                File::delete($zipAddress); //delete zip file from storage
-                // $this->deleteBackupFiles(); //delete all files
-            } else {
-                $msg = 'Empty Record, nothing to transfer';
-                return response()->json(['kode' => 2, 'message' => $msg]);
-            }
-        } catch (Exception $e) {
-            $msg = 'Proses kirim file gagal (error)';
-            return response()->json(['kode' => 0, 'message' => $msg . $e]);
-        }
-        return response()->json(['kode' => 1, 'message' => $msg]);
-    }
-
-    public function kirimServerCabang($path, $datas, $pdf, $report)
-    {
-        $area = $this->getArea();
-        $type = '';
-        if ($report == 'IGR_BO_CTBTBNOTA' || $report == 'IGR_BO_CTBTBNOTA_FULL') {
-            $type = 'BTB_';
-        } else {
-            $type = 'BTB_NON_HARGA_';
-        }
-
-        if (!File::exists(storage_path($path))) {
-            File::makeDirectory(storage_path($path), 0755, true, true);
-        }
-
-        for ($i = 0; $i < sizeof($datas); $i++) {
-            $content = $pdf->download()->getOriginalContent();
-            $id = $type . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
-            $file = storage_path($path . $id . '.PDF');
-            file_put_contents($file, $content);
-        }
-
-        $this->kirimFtpCabang($area);
-    }
-
     public function viewReport(Request $request)
     {
         $signedBy = Session::get('signer');
@@ -1742,25 +1496,22 @@ class printBPBController extends Controller
 
         $document = substr($document, 0, -1);
         if ($report == 'IGR_BO_LISTBTB_FULL') {
-            $datas = DB::connection(Session::get('connection'))->select("select trbo_nodoc, TO_CHAR(trbo_tgldoc,'DD/MM/YY') trbo_tgldoc, trbo_nopo, TO_CHAR(trbo_tglpo,'DD/MM/YY') trbo_tglpo, trbo_nofaktur, TO_CHAR(trbo_tglfaktur,'DD/MM/YY') trbo_tglfaktur,
-                                        floor(trbo_qty/prd_frac) qty, mod(trbo_qty,prd_frac) qtyk, trbo_qtybonus1, trbo_qtybonus2, trbo_typetrn, trbo_qty, nvl(trbo_flagdoc,'0') flagdoc,
-                                        trbo_hrgsatuan, trbo_persendisc1, trbo_persendisc2 , trbo_persendisc2ii , trbo_persendisc2iii , trbo_persendisc3, trbo_persendisc4, trbo_gross, trbo_ppnrph,trbo_ppnbmrph,trbo_ppnbtlrph,
-                                        trbo_discrph, trbo_prdcd, trbo_rphdisc1, trbo_rphdisc2, trbo_rphdisc2ii, trbo_rphdisc2iii,  trbo_rphdisc3, trbo_rphdisc4,
-                                        prd_deskripsipanjang, prd_unit||'/'||prd_frac kemasan, prd_unit, prd_frac,
-                                        sup_kodesupplier||'-'||sup_namasupplier|| case when sup_singkatansupplier is not null then '/'||sup_singkatansupplier end supplier, sup_top,
-                                        prs_namaperusahaan, prs_namacabang, case when trbo_persendisc1 <> 0 then (trbo_persendisc1 * trbo_gross) / 100 else trbo_rphdisc1 end as ptg1, case when trbo_persendisc2 <> 0 then (trbo_persendisc2 * trbo_gross) / 100 else trbo_rphdisc2 end as ptg2,
-                                        (NVL(TRBO_Gross,0) - NVL(TRBO_DISCRPH,0) + NVL(TRBO_PPNRPH,0) + NVL(TRBO_PPNBmrpH,0) + NVL(TRBO_PPNBtlrpH,0)) as total
-                                            FROM tbtr_backoffice,
-                                                 tbmaster_prodmast,
-                                                 tbmaster_supplier,
-                                                 tbmaster_perusahaan
-                                           WHERE     trbo_kodeigr = :p_kodeigr
-                                                 AND prd_kodeigr = trbo_kodeigr
-                                                 AND prd_prdcd = trbo_prdcd
-                                                 AND prs_kodeigr = trbo_kodeigr
-                                                 AND sup_kodesupplier(+) = trbo_kodesupplier
-                                                 AND trbo_nodoc in ($document)
-                                        ORDER BY trbo_nodoc, trbo_prdcd", (['p_kodeigr' => $kodeigr]));
+            $datas = DB::connection(Session::get('connection'))->select(
+                "SELECT trbo_nodoc, TO_CHAR(trbo_tgldoc,'DD/MM/YY') trbo_tgldoc, trbo_nopo, TO_CHAR(trbo_tglpo,'DD/MM/YY') trbo_tglpo, trbo_nofaktur, TO_CHAR(trbo_tglfaktur,'DD/MM/YY') trbo_tglfaktur,
+                floor(trbo_qty/prd_frac) qty, mod(trbo_qty,prd_frac) qtyk, trbo_qtybonus1, trbo_qtybonus2, trbo_typetrn, trbo_qty, nvl(trbo_flagdoc,'0') flagdoc, trbo_hrgsatuan, trbo_persendisc1, trbo_persendisc2 , trbo_persendisc2ii , trbo_persendisc2iii , trbo_persendisc3, trbo_persendisc4, trbo_gross, trbo_ppnrph,trbo_ppnbmrph,trbo_ppnbtlrph, CASE WHEN prd_flagbkp1 = 'Y' AND prd_flagbkp2 = 'Y' THEN trbo_ppnrph ELSE 0 END AS ppn, CASE WHEN prd_flagbkp1 = 'Y' AND prd_flagbkp2 = 'P' THEN trbo_ppnrph ELSE 0 END AS ppn_bebas, CASE WHEN prd_flagbkp1 = 'Y' AND prd_flagbkp2 IN ('W','G') THEN trbo_ppnrph ELSE 0 END AS ppn_pemerintah, trbo_discrph, trbo_prdcd, trbo_rphdisc1, trbo_rphdisc2, trbo_rphdisc2ii, trbo_rphdisc2iii,  trbo_rphdisc3, trbo_rphdisc4,prd_deskripsipanjang, prd_unit||'/'||prd_frac kemasan, prd_unit, prd_frac, sup_kodesupplier||'-'||sup_namasupplier|| CASE WHEN sup_singkatansupplier IS NOT NULL THEN '/'||sup_singkatansupplier END supplier, sup_top, prs_namaperusahaan, prs_namacabang, CASE WHEN trbo_persendisc1 <> 0 THEN (trbo_persendisc1 * trbo_gross) / 100 ELSE trbo_rphdisc1 END AS ptg1, CASE WHEN trbo_persendisc2 <> 0 THEN (trbo_persendisc2 * trbo_gross) / 100 ELSE trbo_rphdisc2 END AS ptg2, (NVL(TRBO_Gross,0) - NVL(TRBO_DISCRPH,0) + NVL(TRBO_PPNRPH,0) + NVL(TRBO_PPNBmrpH,0) + NVL(TRBO_PPNBtlrpH,0)) as total
+                FROM tbtr_backoffice,
+                    tbmaster_prodmast,
+                    tbmaster_supplier,
+                    tbmaster_perusahaan
+                WHERE     trbo_kodeigr = :p_kodeigr
+                    AND prd_kodeigr = trbo_kodeigr
+                    AND prd_prdcd = trbo_prdcd
+                    AND prs_kodeigr = trbo_kodeigr
+                    AND sup_kodesupplier(+) = trbo_kodesupplier
+                    AND trbo_nodoc in ($document)
+                ORDER BY trbo_nodoc, trbo_prdcd",
+                (['p_kodeigr' => $kodeigr])
+            );
 
             $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_listbtb_full', ['datas' => $datas, 're_print' => $re_print]);
             $pdf->output();
@@ -1771,25 +1522,22 @@ class printBPBController extends Controller
 
             return $pdf->stream('igr_bo_listbtb_full.PDF');
         } else if ($report == 'IGR_BO_LISTBTB') {
-            $datas = DB::connection(Session::get('connection'))->select("select trbo_nodoc, TO_CHAR(trbo_tgldoc,'DD/MM/YY') trbo_tgldoc, trbo_nopo, TO_CHAR(trbo_tglpo,'DD/MM/YY') trbo_tglpo, trbo_nofaktur, TO_CHAR(trbo_tglfaktur,'DD/MM/YY') trbo_tglfaktur,
-                                        floor(trbo_qty/prd_frac) qty, mod(trbo_qty,prd_frac) qtyk, trbo_qtybonus1, trbo_qtybonus2, trbo_typetrn, trbo_qty, nvl(trbo_flagdoc,'0') flagdoc,
-                                        trbo_hrgsatuan, trbo_persendisc1, trbo_persendisc2 , trbo_persendisc2ii , trbo_persendisc2iii , trbo_persendisc3, trbo_persendisc4, trbo_gross, trbo_ppnrph,trbo_ppnbmrph,trbo_ppnbtlrph,
-                                        trbo_discrph, trbo_prdcd, trbo_rphdisc1, trbo_rphdisc2, trbo_rphdisc2ii, trbo_rphdisc2iii,  trbo_rphdisc3, trbo_rphdisc4,
-                                        prd_deskripsipanjang, prd_unit||'/'||prd_frac kemasan, prd_unit, prd_frac,
-                                        sup_kodesupplier||'-'||sup_namasupplier|| case when sup_singkatansupplier is not null then '/'||sup_singkatansupplier end supplier, sup_top,
-                                        prs_namaperusahaan, prs_namacabang, case when trbo_persendisc1 <> 0 then (trbo_persendisc1 * trbo_gross) / 100 else trbo_rphdisc1 end as ptg1, case when trbo_persendisc2 <> 0 then (trbo_persendisc2 * trbo_gross) / 100 else trbo_rphdisc2 end as ptg2,
-                                        (NVL(TRBO_Gross,0) - NVL(TRBO_DISCRPH,0) + NVL(TRBO_PPNRPH,0) + NVL(TRBO_PPNBmrpH,0) + NVL(TRBO_PPNBtlrpH,0)) as total
-                                            FROM tbtr_backoffice,
-                                                 tbmaster_prodmast,
-                                                 tbmaster_supplier,
-                                                 tbmaster_perusahaan
-                                           WHERE     trbo_kodeigr = :p_kodeigr
-                                                 AND prd_kodeigr = trbo_kodeigr
-                                                 AND prd_prdcd = trbo_prdcd
-                                                 AND prs_kodeigr = trbo_kodeigr
-                                                 AND sup_kodesupplier(+) = trbo_kodesupplier
-                                                 AND trbo_nodoc in ($document)
-                                        ORDER BY trbo_nodoc, trbo_prdcd", (['p_kodeigr' => $kodeigr]));
+            $datas = DB::connection(Session::get('connection'))->select(
+                "SELECT trbo_nodoc, TO_CHAR(trbo_tgldoc,'DD/MM/YY') trbo_tgldoc, trbo_nopo, TO_CHAR(trbo_tglpo,'DD/MM/YY') trbo_tglpo, trbo_nofaktur, TO_CHAR(trbo_tglfaktur,'DD/MM/YY') trbo_tglfaktur,
+                floor(trbo_qty/prd_frac) qty, mod(trbo_qty,prd_frac) qtyk, trbo_qtybonus1, trbo_qtybonus2, trbo_typetrn, trbo_qty, nvl(trbo_flagdoc,'0') flagdoc, trbo_hrgsatuan, trbo_persendisc1, trbo_persendisc2 , trbo_persendisc2ii , trbo_persendisc2iii , trbo_persendisc3, trbo_persendisc4, trbo_gross, trbo_ppnrph,trbo_ppnbmrph,trbo_ppnbtlrph, CASE WHEN prd_flagbkp1 = 'Y' AND prd_flagbkp2 = 'Y' THEN trbo_ppnrph ELSE 0 END AS ppn, CASE WHEN prd_flagbkp1 = 'Y' AND prd_flagbkp2 = 'P' THEN trbo_ppnrph ELSE 0 END AS ppn_bebas, CASE WHEN prd_flagbkp1 = 'Y' AND prd_flagbkp2 IN ('W','G') THEN trbo_ppnrph ELSE 0 END AS ppn_pemerintah, trbo_discrph, trbo_prdcd, trbo_rphdisc1, trbo_rphdisc2, trbo_rphdisc2ii, trbo_rphdisc2iii,  trbo_rphdisc3, trbo_rphdisc4,prd_deskripsipanjang, prd_unit||'/'||prd_frac kemasan, prd_unit, prd_frac, sup_kodesupplier||'-'||sup_namasupplier|| CASE WHEN sup_singkatansupplier IS NOT NULL THEN '/'||sup_singkatansupplier END supplier, sup_top, prs_namaperusahaan, prs_namacabang, CASE WHEN trbo_persendisc1 <> 0 THEN (trbo_persendisc1 * trbo_gross) / 100 ELSE trbo_rphdisc1 END AS ptg1, CASE WHEN trbo_persendisc2 <> 0 THEN (trbo_persendisc2 * trbo_gross) / 100 ELSE trbo_rphdisc2 END AS ptg2, (NVL(TRBO_Gross,0) - NVL(TRBO_DISCRPH,0) + NVL(TRBO_PPNRPH,0) + NVL(TRBO_PPNBmrpH,0) + NVL(TRBO_PPNBtlrpH,0)) as total
+                FROM tbtr_backoffice,
+                    tbmaster_prodmast,
+                    tbmaster_supplier,
+                    tbmaster_perusahaan
+                WHERE     trbo_kodeigr = :p_kodeigr
+                    AND prd_kodeigr = trbo_kodeigr
+                    AND prd_prdcd = trbo_prdcd
+                    AND prs_kodeigr = trbo_kodeigr
+                    AND sup_kodesupplier(+) = trbo_kodesupplier
+                    AND trbo_nodoc in ($document)
+                ORDER BY trbo_nodoc, trbo_prdcd",
+                (['p_kodeigr' => $kodeigr])
+            );
 
             if ($datas) {
                 foreach ($datas as $data) {
@@ -1812,30 +1560,23 @@ class printBPBController extends Controller
 
             return $pdf->stream('igr_bo_listbtb.PDF');
         } else if ($report == 'IGR_BO_CTBTBNOTA') {
-            $datas = DB::connection(Session::get('connection'))->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
-                                        prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
-                                        sup_kodesupplier||' '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_npwp, sup_alamatsupplier1 ||'   '||sup_alamatsupplier2 alamat_supplier,
-                                        sup_telpsupplier, sup_contactperson contact_person, sup_kotasupplier3,
-                                        mstd_prdcd||' '||prd_deskripsipanjang plu, mstd_unit||'/'||mstd_frac kemasan, floor(mstd_qty/mstd_frac) qty, mod(mstd_qty,mstd_frac) qtyk, mstd_typetrn,
-                                        mstd_hrgsatuan, mstd_ppnrph, mstd_ppnbmrph, mstd_ppnbtlrph, nvl(mstd_gross,0)- nvl(mstd_discrph,0)+nvl(mstd_dis4cr,0)+ nvl(mstd_dis4rr,0)+nvl(mstd_dis4jr,0) jumlah,
-                                        nvl(mstd_rphdisc1,0) as disc1,
-                                        (nvl(mstd_rphdisc2,0) + nvl(mstd_rphdisc2ii,0) + nvl(mstd_rphdisc2iii,0) ) as disc2,
-                                        nvl(mstd_rphdisc3,0) as disc3, nvl(mstd_qtybonus1,0) as bonus1, nvl(mstd_qtybonus2,0) as bonus2, nvl(mstd_keterangan,' ') as keterangan, (nvl(mstd_dis4cr,0) + nvl(mstd_dis4rr,0) + nvl(mstd_dis4jr,0)) as disc4,
-                                        case when mstd_typetrn = 'B' then '( PEMBELIAN )' else '( LAIN - LAIN )' end judul, '0' || '$kodeigr' || mstd_nodoc barcode
-                                        from tbtr_mstran_h, tbmaster_perusahaan, tbmaster_supplier, tbtr_mstran_d, tbmaster_prodmast, tbtr_backoffice
-                                        where msth_kodeigr='$kodeigr'
-                                        and prs_kodeigr=msth_kodeigr
-                                        and sup_kodesupplier(+)=msth_kodesupplier
-                                        and sup_kodeigr(+)=msth_kodeigr
-                                        and mstd_nodoc=msth_nodoc
-                                        and mstd_kodeigr=msth_kodeigr
-                                        and prd_kodeigr=msth_kodeigr
-                                        and prd_prdcd = mstd_prdcd
-                                        AND trbo_nonota(+) = mstd_nodoc
-                                        AND trbo_kodeigr(+) = mstd_kodeigr
-                                        and trbo_prdcd(+) = mstd_prdcd
-                                        and msth_nodoc in ($document)
-                                        order by msth_nodoc");
+            $datas = DB::connection(Session::get('connection'))->select(
+                "SELECT msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,sup_kodesupplier||' '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_npwp, sup_alamatsupplier1 ||'   '||sup_alamatsupplier2 alamat_supplier,sup_telpsupplier, sup_contactperson contact_person, sup_kotasupplier3,mstd_prdcd||' '||prd_deskripsipanjang plu, mstd_unit||'/'||mstd_frac kemasan, floor(mstd_qty/mstd_frac) qty, mod(mstd_qty,mstd_frac) qtyk, mstd_typetrn, mstd_hrgsatuan, mstd_ppnrph, CASE WHEN prd_flagbkp1 = 'Y' AND prd_flagbkp2 = 'Y' THEN mstd_ppnrph ELSE 0 END AS ppn, CASE WHEN prd_flagbkp1 = 'Y' AND prd_flagbkp2 = 'P' THEN mstd_ppnrph ELSE 0 END AS ppn_bebas, CASE WHEN prd_flagbkp1 = 'Y' AND prd_flagbkp2 IN ('W','G') THEN mstd_ppnrph ELSE 0 END AS ppn_pemerintah, mstd_ppnbmrph, mstd_ppnbtlrph, nvl(mstd_gross,0)- nvl(mstd_discrph,0) + nvl(mstd_dis4cr,0) + nvl(mstd_dis4rr,0) + nvl(mstd_dis4jr,0) jumlah,nvl(mstd_rphdisc1,0) AS disc1, (nvl(mstd_rphdisc2,0) + nvl(mstd_rphdisc2ii,0) + nvl(mstd_rphdisc2iii,0) ) AS disc2,nvl(mstd_rphdisc3,0) AS disc3, nvl(mstd_qtybonus1,0) AS bonus1, nvl(mstd_qtybonus2,0) AS bonus2, nvl(mstd_keterangan,' ') AS keterangan, (nvl(mstd_dis4cr,0) + nvl(mstd_dis4rr,0) + nvl(mstd_dis4jr,0)) AS disc4, CASE WHEN mstd_typetrn = 'B' THEN '( PEMBELIAN )' ELSE '( LAIN - LAIN )' END judul, '0' || '$kodeigr' || mstd_nodoc barcode
+                FROM tbtr_mstran_h, tbmaster_perusahaan, tbmaster_supplier, tbtr_mstran_d, tbmaster_prodmast, tbtr_backoffice
+                WHERE msth_kodeigr='$kodeigr'
+                    AND prs_kodeigr=msth_kodeigr
+                    AND sup_kodesupplier(+)=msth_kodesupplier
+                    AND sup_kodeigr(+)=msth_kodeigr
+                    AND mstd_nodoc=msth_nodoc
+                    AND mstd_kodeigr=msth_kodeigr
+                    AND prd_kodeigr=msth_kodeigr
+                    AND prd_prdcd = mstd_prdcd
+                    AND trbo_nonota(+) = mstd_nodoc
+                    AND trbo_kodeigr(+) = mstd_kodeigr
+                    AND trbo_prdcd(+) = mstd_prdcd
+                    AND msth_nodoc IN ($document)
+                ORDER BY msth_nodoc"
+            );
             $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota', ['datas' => $datas, 're_print' => $re_print, 'ttd' => $ttd])->setPaper('a5', 'potrait');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
@@ -1857,30 +1598,23 @@ class printBPBController extends Controller
 
             return $pdf->stream($id . '.PDF');
         } else if ($report == 'IGR_BO_CTBTBNOTA_FULL') {
-            $datas = DB::connection(Session::get('connection'))->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
-                                        prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
-                                        sup_kodesupplier||' '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_npwp, sup_alamatsupplier1 ||'   '||sup_alamatsupplier2 alamat_supplier,
-                                        sup_telpsupplier, sup_contactperson contact_person, sup_kotasupplier3,
-                                        mstd_prdcd||' '||prd_deskripsipanjang plu, mstd_unit||'/'||mstd_frac kemasan, floor(mstd_qty/mstd_frac) qty, mod(mstd_qty,mstd_frac) qtyk, mstd_typetrn,
-                                        mstd_hrgsatuan, mstd_ppnrph, mstd_ppnbmrph, mstd_ppnbtlrph, nvl(mstd_gross,0)- nvl(mstd_discrph,0)+nvl(mstd_dis4cr,0)+ nvl(mstd_dis4rr,0)+nvl(mstd_dis4jr,0) jumlah,
-                                        nvl(mstd_rphdisc1,0) as disc1,
-                                        (nvl(mstd_rphdisc2,0) + nvl(mstd_rphdisc2ii,0) + nvl(mstd_rphdisc2iii,0) ) as disc2,
-                                        nvl(mstd_rphdisc3,0) as disc3, nvl(mstd_qtybonus1,0) as bonus1, nvl(mstd_qtybonus2,0) as bonus2, nvl(mstd_keterangan,' ') as keterangan, (nvl(mstd_dis4cr,0) + nvl(mstd_dis4rr,0) + nvl(mstd_dis4jr,0)) as disc4,
-                                        case when mstd_typetrn = 'B' then '( PEMBELIAN )' else '( LAIN - LAIN )' end judul, '0' || '$kodeigr' || mstd_nodoc barcode
-                                        from tbtr_mstran_h, tbmaster_perusahaan, tbmaster_supplier, tbtr_mstran_d, tbmaster_prodmast, tbtr_backoffice
-                                        where msth_kodeigr='$kodeigr'
-                                        and prs_kodeigr=msth_kodeigr
-                                        and sup_kodesupplier(+)=msth_kodesupplier
-                                        and sup_kodeigr(+)=msth_kodeigr
-                                        and mstd_nodoc=msth_nodoc
-                                        and mstd_kodeigr=msth_kodeigr
-                                        and prd_kodeigr=msth_kodeigr
-                                        and prd_prdcd = mstd_prdcd
-                                        AND trbo_nonota(+) = mstd_nodoc
-                                        AND trbo_kodeigr(+) = mstd_kodeigr
-                                        and trbo_prdcd(+) = mstd_prdcd
-                                        and msth_nodoc in ($document)
-                                        order by msth_nodoc");
+            $datas = DB::connection(Session::get('connection'))->select(
+                "SELECT msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,sup_kodesupplier||' '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_npwp, sup_alamatsupplier1 ||'   '||sup_alamatsupplier2 alamat_supplier,sup_telpsupplier, sup_contactperson contact_person, sup_kotasupplier3,mstd_prdcd||' '||prd_deskripsipanjang plu, mstd_unit||'/'||mstd_frac kemasan, floor(mstd_qty/mstd_frac) qty, mod(mstd_qty,mstd_frac) qtyk, mstd_typetrn, mstd_hrgsatuan, mstd_ppnrph, CASE WHEN prd_flagbkp1 = 'Y' AND prd_flagbkp2 = 'Y' THEN mstd_ppnrph ELSE 0 END AS ppn, CASE WHEN prd_flagbkp1 = 'Y' AND prd_flagbkp2 = 'P' THEN mstd_ppnrph ELSE 0 END AS ppn_bebas, CASE WHEN prd_flagbkp1 = 'Y' AND prd_flagbkp2 IN ('W','G') THEN mstd_ppnrph ELSE 0 END AS ppn_pemerintah, mstd_ppnbmrph, mstd_ppnbtlrph, nvl(mstd_gross,0)- nvl(mstd_discrph,0) + nvl(mstd_dis4cr,0) + nvl(mstd_dis4rr,0) + nvl(mstd_dis4jr,0) jumlah,nvl(mstd_rphdisc1,0) AS disc1, (nvl(mstd_rphdisc2,0) + nvl(mstd_rphdisc2ii,0) + nvl(mstd_rphdisc2iii,0) ) AS disc2,nvl(mstd_rphdisc3,0) AS disc3, nvl(mstd_qtybonus1,0) AS bonus1, nvl(mstd_qtybonus2,0) AS bonus2, nvl(mstd_keterangan,' ') AS keterangan, (nvl(mstd_dis4cr,0) + nvl(mstd_dis4rr,0) + nvl(mstd_dis4jr,0)) AS disc4, CASE WHEN mstd_typetrn = 'B' THEN '( PEMBELIAN )' ELSE '( LAIN - LAIN )' END judul, '0' || '$kodeigr' || mstd_nodoc barcode
+                FROM tbtr_mstran_h, tbmaster_perusahaan, tbmaster_supplier, tbtr_mstran_d, tbmaster_prodmast, tbtr_backoffice
+                WHERE msth_kodeigr='$kodeigr'
+                    AND prs_kodeigr=msth_kodeigr
+                    AND sup_kodesupplier(+)=msth_kodesupplier
+                    AND sup_kodeigr(+)=msth_kodeigr
+                    AND mstd_nodoc=msth_nodoc
+                    AND mstd_kodeigr=msth_kodeigr
+                    AND prd_kodeigr=msth_kodeigr
+                    AND prd_prdcd = mstd_prdcd
+                    AND trbo_nonota(+) = mstd_nodoc
+                    AND trbo_kodeigr(+) = mstd_kodeigr
+                    AND trbo_prdcd(+) = mstd_prdcd
+                    AND msth_nodoc IN ($document)
+                ORDER BY msth_nodoc"
+            );
 
             $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota_full', ['datas' => $datas, 're_print' => $re_print, 'ttd' => $ttd])->setPaper('a4', 'potrait');
             $pdf->output();
@@ -1903,33 +1637,20 @@ class printBPBController extends Controller
 
             return $pdf->stream($id . '.PDF');
         } else if ($report == 'lokasi') {
-            $datas = DB::connection(Session::get('connection'))->select("SELECT trbo_prdcd,
-                                       SUBSTR (prd_deskripsipanjang, 1, 50) desc2,
-                                       prd_unit || '/' || prd_frac kemasan,
-                                       lks_koderak,
-                                       lks_kodesubrak,
-                                       lks_tiperak,
-                                       lks_shelvingrak,
-                                       FLOOR (trbo_qty / prd_frac) qty,
-                                       lks_koderak || lks_kodesubrak || lks_tiperak || lks_shelvingrak
-                                          keterangan,
-                                       MOD (trbo_qty, prd_frac) qtyk,
-                                       prs_namaperusahaan,
-                                       prs_namacabang,
-                                       prs_namawilayah
-                                  FROM tbtr_backoffice,
-                                       tbmaster_lokasi,
-                                       tbmaster_prodmast,
-                                       tbmaster_perusahaan
-                                 WHERE     prs_kodeigr = trbo_kodeigr
-                                       AND trbo_kodeigr = '22'
-                                       AND trbo_nodoc in ($document)
-                                       --AND TRBO_NOREFF IN ('01400388')
-                                       AND lks_prdcd = trbo_prdcd
-                                       AND lks_kodeigr = trbo_kodeigr
-                                       --and substr(lks_koderak,1,1) = 'a'
-                                       AND prd_prdcd = trbo_prdcd
-                                       AND prd_kodeigr = trbo_kodeigr");
+            $datas = DB::connection(Session::get('connection'))->select(
+                "SELECT trbo_prdcd, SUBSTR (prd_deskripsipanjang, 1, 50) desc2, prd_unit || '/' || prd_frac kemasan, lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak, FLOOR (trbo_qty / prd_frac) qty, lks_koderak || lks_kodesubrak || lks_tiperak || lks_shelvingrak keterangan, MOD (trbo_qty, prd_frac) qtyk, prs_namaperusahaan, prs_namacabang, prs_namawilayah
+                FROM tbtr_backoffice,
+                    tbmaster_lokasi,
+                    tbmaster_prodmast,
+                    tbmaster_perusahaan
+                WHERE     prs_kodeigr = trbo_kodeigr
+                AND trbo_kodeigr = '$kodeigr'
+                AND trbo_nodoc in ($document)
+                AND lks_prdcd = trbo_prdcd
+                AND lks_kodeigr = trbo_kodeigr
+                AND prd_prdcd = trbo_prdcd
+                AND prd_kodeigr = trbo_kodeigr"
+            );
 
             $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctklokasi', ['datas' => $datas]);
             $pdf->output();

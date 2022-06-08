@@ -130,7 +130,7 @@ class barangController extends Controller
             })
             ->select('*')
             ->where('prd_prdcd', '=', $kodeplu)
-            ->where('prd_kodeigr', '=', '22')
+            ->where('prd_kodeigr', '=', Session::get('kdigr'))
 //            ->where('prc_pluigr','=', $kodeplu)
             ->distinct()
             ->get();

@@ -12,7 +12,7 @@
                         <div class="row text-right">
                             <div class="col-sm-12">
                                 <div class="row form-group">
-                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">Mulai PLU</label>
+                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">PLU</label>
                                     <div class="col-sm-2 buttonInside">
                                         <input type="text" class="form-control text-left" id="plu">
                                         <button id="btn_lov" type="button" class="btn btn-primary btn-lov p-0" onclick="showModalLovPLU()">
@@ -53,7 +53,7 @@
                                         <input type="text" class="form-control" id="pkmt" disabled>
                                     </div>
                                     <button class="col-sm-2 mr-1 btn btn-primary" id="btnPrintAll" onclick="printAll()">PRINT ALL</button>
-                                    <button class="col-sm-2 mr-1 btn btn-secondary" id="btnUploadCSV" onclick="">UPLOAD CSV</button>
+{{--                                    <button class="col-sm-2 mr-1 btn btn-secondary" id="btnUploadCSV" onclick="">UPLOAD CSV</button>--}}
                                     <button class="col-sm-1 mr-1 btn btn-success" id="btnSave" onclick="save()">SAVE</button>
                                     <button class="col btn btn-danger" id="btnDelete" onclick="deleteData()">DELETE</button>
                                 </div>
@@ -465,19 +465,19 @@
         }
 
         $('#btnUploadCSV').on('click',function(){
-            swal({
-                title: 'Yakin upload nilai M Plus?',
-                icon: 'warning',
-                buttons: true,
-                dangerMode: true,
-            }).then((ok) => {
-                if(ok){
-                    $('#m_otorisasi').modal({backdrop: 'static', keyboard: false});
-                    $('#m_otorisasi input').val('');
-
-                    $('#i_username').focus();
-                }
-            });
+            // swal({
+            //     title: 'Yakin upload nilai M Plus?',
+            //     icon: 'warning',
+            //     buttons: true,
+            //     dangerMode: true,
+            // }).then((ok) => {
+            //     if(ok){
+            //         $('#m_otorisasi').modal({backdrop: 'static', keyboard: false});
+            //         $('#m_otorisasi input').val('');
+            //
+            //         $('#i_username').focus();
+            //     }
+            // });
         });
 
         $('#m_otorisasi').on('shown.bs.modal',function(){

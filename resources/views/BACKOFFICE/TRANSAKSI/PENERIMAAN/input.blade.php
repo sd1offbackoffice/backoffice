@@ -6,7 +6,7 @@
     <button onclick="topFunction()" id="myBtn" title="Go to top">&#9650;</button>
     <h4><span class="badge badge-dark" id="statusJenisPenerimaan"></span></h4>
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-6">
             <div class="card border-dark cardForm" id="left_col">
                 <div class="container">
                     <div class="row align-items-center">
@@ -71,7 +71,6 @@
                             <label for="po_date" class="col-form-label">Tgl. PO</label>
                         </div>
                         <div class="col-4">
-                            <!-- <input autocomplete="off" type="date" id="po_date" class="form-control" aria-describedby="po_date" disabled> -->
                             <input type="text" class="form-control nullPermission" id="po_date" placeholder="dd/mm/yyyy" disabled>
                         </div>
                     </div>
@@ -100,7 +99,6 @@
                             <label for="fracture_date" class="col-form-label">Tgl Faktur</label>
                         </div>
                         <div class="col-4">
-                            <!-- <input autocomplete="off" type="date" id="fracture_date" class="form-control" aria-describedby="factureDateAmt"> -->
                             <input type="text" class="form-control nullPermission" id="fracture_date" placeholder="dd/mm/yyyy">
                         </div>
                     </div>
@@ -176,6 +174,37 @@
                 </div>
             </div>
         </div>
+        <div class="col-sm-2">
+            <div class="card border-dark cardForm">
+                <span style="display: block; height: 95px;"></span>
+                <button class="btn btn-primary" id="downloadNPDBtn" onclick="downloadNPD()" disabled>Download NPD</button>
+                <span style="display: block; height: 20px;"></span>
+                <button class="btn btn-info" id="scanQRBtn" data-toggle="modal" data-target="#qrModal" disabled>Scan QR Code</button>
+                <span style="display: block; height: 95px;"></span>
+            </div>
+        </div>
+
+        <!-- QR Modal -->
+        <div class="modal fade" id="qrModal" tabindex="-1" role="dialog" aria-labelledby="qrModalTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="qrModalLongTitle">Scan QR Code</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Data disini
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                        <button type="button" class="btn btn-primary">Simpan</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- QR Modal -->
     </div>
     <div class="card border-dark cardForm" id="input_new_trn">
         <span class="space"></span>
@@ -189,7 +218,7 @@
                 <div class="col-2">
                     <div class="input-group mb">
                         <input autocomplete="off" type="text" id="i_plu" class="form-control" aria-describedby="pluAmt">
-                        <button id="showPLUBtn" class="btn btn btn-light" type="button" data-toggle="modal" data-target="#pluModal" onclick="showPLU()" disabled>&#x1F50E;</button>
+                        <button id="showPLUBtn" class="btn btn-light" type="button" data-toggle="modal" data-target="#pluModal" onclick="showPLU()" disabled>&#x1F50E;</button>
                     </div>
                 </div>
 
@@ -544,7 +573,7 @@
             </div>
             <br><br>
         </div>
-        <div id="badgeContainer" class="container" hidden>
+        <div id="badgeContainer" class="container">
             <div class="row">
                 <div class="col-sm">
                     <h4><span class="badge badge-primary">ALT + R - Rekam Record</span></h4>
@@ -644,11 +673,40 @@
                     <div class="col-sm">
                         <button type="button" id="lainlainBtn" class="btn btn-info btn-lg btn-block" onclick=setJenisPenerimaan(1) data-dismiss="modal">Lain-lain</button>
                     </div>
+                    <div class="col-sm">
+                        <button type="button" id="rteBtn" class="btn btn-warning btn-lg btn-block" onclick=setJenisPenerimaan(2) data-dismiss="modal">RTE</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal lotorisasi -->
+<button hidden id="lotorisasiBtn" type="button" class="btn btn-primary" data-toggle="modal" data-target="#lotorisasiModal">
+</button>
+
+<div class="modal fade" id="lotorisasiModal" tabindex="-1" role="dialog" aria-labelledby="lotorisasiModalTitle" aria-hidden="true" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <fieldset class="card border-dark">
+                    <legend class="w-auto ml-5">Otorisasi Penolakan PO</legend>
+                    <div class="form-group">
+                        <label for="otoUser">User</label>
+                        <input type="email" class="form-control" id="otoUser" aria-describedby="emailHelp">
+                    </div>
+                    <div class="form-group">
+                        <label for="otoPass">Password</label>
+                        <input type="password" class="form-control" id="otoPass">
+                    </div>
+                    <button type="button" onclick="otorisasi()" class="btn btn-primary">Submit</button>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     #myBtn {
         display: none;
@@ -826,6 +884,13 @@
     let viewListBtn = $('#viewListBtn');
     let saveRecBtn = $('#saveRecBtn');
     let i_ppn_persen = $('#i_ppn_persen');
+    let otoUser = $('#otoUser');
+    let otoPass = $('#otoPass');
+    let lotorisasiModal = $('#lotorisasiModal');
+    let downloadNPDBtn = $('#downloadNPDBtn');
+    let scanQRBtn = $('#scanQRBtn');
+    let rte = 'N';
+
     $(document).ready(function() {
         typeTrn = 'B'
         chooseTypeBtn.click();
@@ -841,6 +906,48 @@
             "dateFormat": "dd/mm/yy",
         });
     });
+
+    function otorisasi() {
+        ajaxSetup();
+        $.ajax({
+            url: '{{ url()->current() }}/otorisasi',
+            type: 'get',
+            data: {
+                otoUser: otoUser.val(),
+                otoPass: otoPass.val(),
+                noPO: po_number.val(),
+            },
+            success: function(result) {
+                if (result.kode == 0) {
+                    lotorisasiModal.modal('hide')
+                    swal({
+                        icon: 'success',
+                        title: 'Otorisasi Sukses',
+                        text: result.msg,
+                        timer: 2000
+                    });
+                } else {
+                    lotorisasiModal.modal('hide')
+                    swal({
+                        icon: 'warning',
+                        title: 'Otorisasi Gagal',
+                        text: result.msg,
+                        timer: 2000
+                    });
+                }
+            },
+            error: function(error) {
+                lotorisasiModal.modal('hide')
+                swal({
+                    icon: 'warning',
+                    title: 'Otorisasi Gagal',
+                    text: error,
+                    timer: 2000
+                });
+                console.log(error)
+            }
+        });
+    }
 
     function setJenisPenerimaan(flag) {
         if (flag == 1) {
@@ -858,9 +965,16 @@
             $('#statusJenisPenerimaan').text('Lain-lain');
             typeTrn = 'L';
             btb_number.focus();
-        } else {
+        } else if (flag == 0) {
             jenisPenerimaan = 0;
             $('#statusJenisPenerimaan').text('Pembelian');
+            btb_number.focus();
+        } else {
+            jenisPenerimaan = 2;
+            rte = 'Y';
+            downloadNPDBtn.removeAttr('disabled');
+            scanQRBtn.removeAttr('disabled');
+            $('#statusJenisPenerimaan').text('RTE');
             btb_number.focus();
         }
 
@@ -925,15 +1039,6 @@
                                     console.log(result);
                                     if (result.length > 0) {
                                         btb_number.val(result);
-                                        //cannot automate process, needs to manually press f4 to open datepicker bcs automation results to istrusted = 0
-                                        // btb_date.keypress(function(e) {
-                                        //     if (e.key === 'Enter') {
-                                        //         var key = jQuery.Event("keypress");
-                                        //         key.which = 115;
-                                        //         $("#btb_date").trigger(key);
-                                        //         console.log(key);
-                                        //     }
-                                        // });
                                         btb_date.focus();
                                         tempDataBTB = [];
                                         clearSecondField();
@@ -1011,6 +1116,33 @@
         } else {
             rekamData(1)
         }
+    }
+
+    function downloadNPD() {
+        ajaxSetup();
+        $.ajax({
+            url: '{{ url()->current() }}/download-npd',
+            type: 'get',
+            beforeSend: () => {
+                $('#modal-loader').modal('show');
+            },
+            success: (result) => {
+                $('#modal-loader').modal('hide');
+                console.log(result);
+                if (result.kode == 0) {
+                    swal({
+                        icon: 'warning',
+                        text: result.msg,
+                        timer: 2000
+                    });
+                }
+            },
+            error: (err) => {
+                $('#modal-loader').modal('hide');
+                console.log(err.responseJSON.message.substr(0, 100));
+                alertError(err.statusText, err.responseJSON.message);
+            }
+        });
     }
 
     function generateDataTable(data) {
@@ -1128,7 +1260,6 @@
         var d23_data = $('#d23' + plu);
         var d3_data = $('#d3' + plu);
         var d4_data = $('#d4' + plu);
-
         plu_data.html(i_plu.val());
         qty_data.html(parseInt(parseFloat(i_qty.val())));
         qtyk_data.html(parseInt(parseFloat(i_qtyk.val())));
@@ -1140,7 +1271,6 @@
         d23_data.html(convertToRupiah(parseInt(i_rphdisc2b.val())));
         d3_data.html(convertToRupiah(parseInt(i_rphdisc3.val())));
         d4_data.html(convertToRupiah(parseInt(i_rphdisc4.val())));
-
         var test1 = display_data.find("tr");
         tempDataTable = [];
         test1.each(function() {
@@ -1806,6 +1936,9 @@
             info: true,
             autoWidth: false,
             responsive: true,
+            data: {
+                rte: rte
+            },
             columns: [{
                     data: 'tpoh_nopo',
                     name: 'No PO'
@@ -1837,7 +1970,8 @@
             type: 'post',
             data: {
                 typeTrn: typeTrn,
-                noPo: noPo
+                noPo: noPo,
+                rte: rte
             },
             beforeSend: function() {
                 $('#modal-loader').modal('show');
@@ -1845,21 +1979,44 @@
             },
             success: function(result) {
                 $('#modal-loader').modal('hide');
+                var lotorisasi = result.data;
                 if (result.kode == 0) {
+                    modalHelp.modal('hide');
                     swal({
                         icon: 'warning',
                         text: result.msg,
-                        timer: 2000
+                        buttons: {
+                            confirm: {
+                                text: "Oke",
+                                value: 'oke',
+                                visible: true
+                            }
+                        }
+                    }).then((result) => {
+                        if (lotorisasi == 'Lotorisasi') {
+                            //lotorisasi
+                            $('#lotorisasiBtn').click();
+                        }
                     });
                     po_number.focus()
+
                 } else if (result.kode == 2) {
+                    modalHelp.modal('hide');
                     swal({
                         icon: 'warning',
                         text: result.msg,
                         timer: 2000
                     });
+                } else if (result.kode == 3) {
+                    console.log('test')
+                    var btbno = '';
+                    if (btb_number.val() != null || btb_number.val() != '') {
+                        btbno = btb_number.val();
+                    }
+                    var currUrl = '{{ url()->current() }}';
+                    window.open(currUrl + '/print-gagal-bpb/' + result.url + '/' + result.nopo + '/' + btbno);
                 } else {
-                    let data = result['data'][0];
+                    let data = result.data;
 
                     po_number.val(data.tpoh_nopo);
                     po_date.val(data.tpoh_tglpo.substr(0, 10));
@@ -2117,7 +2274,8 @@
                 noDoc: noDoc,
                 noPo: noPo,
                 supplier: supplier,
-                tempData: tempData
+                tempData: tempData,
+                rte: rte
             },
             beforeSend: function() {
                 $('#modal-loader').modal('show');

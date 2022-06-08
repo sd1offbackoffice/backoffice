@@ -789,7 +789,7 @@ class KonversiController extends Controller
             tbmaster_prodmast,
             tbmaster_cabang
         Where
-            msth_kodeigr='22'
+            msth_kodeigr='".Session::get('kdigr')."'
             and msth_typetrn = 'A'
             and mstd_nodoc=msth_nodoc
             and mstd_kodeigr=msth_kodeigr

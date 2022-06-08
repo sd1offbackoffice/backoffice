@@ -66,14 +66,14 @@ class CetakRegisterController extends Controller
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc, msth_cterm , msth_typetrn,to_char(msth_top,'dd/mm/yyyy') msth_top, status, sup_pkp,
+        $data = DB::connection(Session::get('connection'))->select("select prd_flagbkp1, prd_flagbkp2, msth_nodoc, to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc, msth_cterm , msth_typetrn,to_char(msth_top,'dd/mm/yyyy') msth_top, status, sup_pkp,
                     supplier,trunc(mstd_tgldoc) mstd_tgldoc,
                     sum(mstd_gross) gross, sum(discount) discount,
                     sum(ppn) mstd_ppnrph, sum(ppnbm) mstd_ppnbmrph, sum(btl) mstd_ppnbtlrph,
                     sum(total) total
                 from
                 (
-                select msth_nodoc, msth_tgldoc, msth_cterm , msth_typetrn, msth_tgldoc+msth_cterm msth_top,
+                select prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, msth_cterm , msth_typetrn, msth_tgldoc+msth_cterm msth_top,
                 case when msth_recordid = 1 then
                     'BATAL'
                 else
@@ -84,8 +84,9 @@ class CetakRegisterController extends Controller
                 nvl(mstd_gross,0) mstd_gross,nvl(mstd_discrph,0) discount,
                 nvl(mstd_ppnrph,0) ppn, nvl(mstd_ppnbmrph,0) ppnbm, nvl(mstd_ppnbtlrph,0) btl,
                 nvl(mstd_gross,0)-nvl(mstd_discrph,0)+(nvl(mstd_ppnrph,0)+nvl(mstd_ppnbmrph,0)+nvl(mstd_ppnbtlrph,0)) total
-                from tbtr_mstran_h, tbtr_mstran_d, tbmaster_supplier
+                from tbtr_mstran_h, tbtr_mstran_d, tbmaster_supplier, tbmaster_prodmast
                 where msth_kodeigr='".Session::get('kdigr')."'
+                    and prd_prdcd(+)=mstd_prdcd
                     and msth_typetrn = '".$register."'
                     and nvl(msth_recordid,'9') <> '1'
                     and mstd_kodeigr = msth_kodeigr
@@ -95,7 +96,7 @@ class CetakRegisterController extends Controller
                     and sup_kodeigr(+)=msth_kodeigr
                     and to_char(msth_tgldoc, 'yyyymmdd') between '".$t1."' and '".$t2."'
                 order by msth_nodoc, msth_tgldoc)
-                group by msth_nodoc, msth_tgldoc, msth_cterm , msth_typetrn, msth_top,status, sup_pkp,
+                group by prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, msth_cterm , msth_typetrn, msth_top,status, sup_pkp,
                     supplier,trunc(mstd_tgldoc)
                 order by msth_nodoc, msth_tgldoc");
 
@@ -105,57 +106,71 @@ class CetakRegisterController extends Controller
         $pkp->gross = 0;
         $pkp->potongan = 0;
         $pkp->ppn = 0;
-        $pkp->ppnbm = 0;
-        $pkp->botol = 0;
+        $pkp->ppn_bebas = 0;
+        $pkp->ppn_dtp = 0;                
         $pkp->total = 0;
 
         $npkp = new \stdClass();
         $npkp->gross = 0;
         $npkp->potongan = 0;
-        $npkp->ppn = 0;
-        $npkp->ppnbm = 0;
-        $npkp->botol = 0;
+        $npkp->ppn = 0;   
+        $npkp->ppn_bebas = 0;
+        $npkp->ppn_dtp = 0;             
         $npkp->total = 0;
 
         $pembelian  = new \stdClass();
         $pembelian->gross = 0;
         $pembelian->potongan = 0;
         $pembelian->ppn = 0;
-        $pembelian->ppnbm = 0;
-        $pembelian->botol = 0;
+        $pembelian->ppn_bebas = 0;
+        $pembelian->ppn_dtp = 0;                
         $pembelian->total = 0;
 
         $lain = new \stdClass();
         $lain->gross = 0;
         $lain->potongan = 0;
         $lain->ppn = 0;
-        $lain->ppnbm = 0;
-        $lain->botol = 0;
+        $lain->ppn_bebas = 0;
+        $lain->ppn_dtp = 0;                
         $lain->total = 0;
 
         $total = new \stdClass();
         $total->gross = 0;
         $total->potongan = 0;
         $total->ppn = 0;
-        $total->ppnbm = 0;
-        $total->botol = 0;
+        $total->ppn_bebas = 0;
+        $total->ppn_dtp = 0;                
         $total->total = 0;
 
         foreach($data as $d){
             if($d->sup_pkp == 'Y'){
                 $pkp->gross += $d->gross;
                 $pkp->potongan += $d->discount;
-                $pkp->ppn += $d->mstd_ppnrph;
-                $pkp->ppnbm += $d->mstd_ppnbmrph;
-                $pkp->botol += $d->mstd_ppnbtlrph;
+                // $pkp->ppn += $d->mstd_ppnrph;
+                if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'Y') {
+                    $pkp->ppn += $d->mstd_ppnrph;
+                }
+                if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'P') {                    
+                    $pkp->ppn_bebas += $d->mstd_ppnrph;
+                }
+                if ($d->prd_flagbkp1 == 'Y' && ($d->prd_flagbkp2 == 'W' || $d->prd_flagbkp2 == 'G')) {
+                    $pkp->ppn_dtp += $d->mstd_ppnrph;
+                }                       
                 $pkp->total += $d->total;
             }
             else{
                 $npkp->gross += $d->gross;
                 $npkp->potongan += $d->discount;
-                $npkp->ppn += $d->mstd_ppnrph;
-                $npkp->ppnbm += $d->mstd_ppnbmrph;
-                $npkp->botol += $d->mstd_ppnbtlrph;
+                // $npkp->ppn += $d->mstd_ppnrph;
+                if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'Y') {
+                    $npkp->ppn += $d->mstd_ppnrph;
+                }
+                if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'P') {                    
+                    $npkp->ppn_bebas += $d->mstd_ppnrph;
+                }
+                if ($d->prd_flagbkp1 == 'Y' && ($d->prd_flagbkp2 == 'W' || $d->prd_flagbkp2 == 'G')) {
+                    $npkp->ppn_dtp += $d->mstd_ppnrph;
+                }                                        
                 $npkp->total += $d->total;
             }
         }
@@ -163,8 +178,8 @@ class CetakRegisterController extends Controller
         $total->gross = $pkp->gross + $npkp->gross;
         $total->potongan = $pkp->potongan + $npkp->potongan;
         $total->ppn = $pkp->ppn + $npkp->ppn;
-        $total->ppnbm = $pkp->ppnbm + $npkp->ppnbm;
-        $total->botol = $pkp->botol + $npkp->botol;
+        $total->ppn_bebas = $pkp->ppn_bebas + $npkp->ppn_bebas;
+        $total->ppn_dtp = $pkp->ppn_dtp + $npkp->ppn_dtp;
         $total->total = $pkp->total + $npkp->total;
 
         if($register == 'B'){
@@ -195,10 +210,10 @@ class CetakRegisterController extends Controller
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
-        $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc, msth_cterm, msth_top,status, msth_nofaktur, to_char(msth_tglfaktur,'dd/mm/yyyy') msth_tglfaktur,supplier, sum(nvl(mstd_gross,0)) gross, mstd_pkp, mstd_typetrn,sum(nvl(discount,0)) discount, sum(nvl(ppn,0)) mstd_ppnrph, sum(nvl(ppnbm,0)) mstd_ppnbmrph, sum(nvl(btl,0)) mstd_ppnbtlrph, sum(nvl(total,0)) total
+        $data = DB::connection(Session::get('connection'))->select("select prd_flagbkp1, prd_flagbkp2, msth_nodoc, to_char(msth_tgldoc,'dd/mm/yyyy') msth_tgldoc, msth_cterm, msth_top,status, msth_nofaktur, to_char(msth_tglfaktur,'dd/mm/yyyy') msth_tglfaktur,supplier, sum(nvl(mstd_gross,0)) gross, mstd_pkp, mstd_typetrn,sum(nvl(discount,0)) discount, sum(nvl(ppn,0)) mstd_ppnrph, sum(nvl(ppnbm,0)) mstd_ppnbmrph, sum(nvl(btl,0)) mstd_ppnbtlrph, sum(nvl(total,0)) total
         from
         (
-        select msth_nodoc, msth_tgldoc, msth_cterm, msth_tgldoc+msth_cterm msth_top,
+        select prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, msth_cterm, msth_tgldoc+msth_cterm msth_top,
         case when msth_recordid = 1 then
             'BATAL'
         else
@@ -211,8 +226,9 @@ class CetakRegisterController extends Controller
         nvl(mstd_gross,0)-(nvl(mstd_discrph,0))+
                 (nvl(mstd_ppnrph,0)+nvl(mstd_ppnbmrph,0)+nvl(mstd_ppnbtlrph,0)) total
 
-        from tbtr_mstran_h, tbtr_mstran_d,tbmaster_supplier
+        from tbtr_mstran_h, tbtr_mstran_d,tbmaster_supplier, tbmaster_prodmast
         where msth_typetrn ='K'
+        and prd_prdcd(+)=mstd_prdcd
         and msth_kodeigr='".Session::get('kdigr')."'
         and mstd_nodoc=msth_nodoc
         and sup_kodesupplier(+)=msth_kodesupplier
@@ -220,65 +236,79 @@ class CetakRegisterController extends Controller
         and to_char(msth_tgldoc, 'yyyymmdd') between '".$t1."' and '".$t2."'
         order by msth_nodoc, msth_tgldoc
         )
-        group by msth_nodoc, msth_tgldoc, msth_cterm, msth_top,status,msth_nofaktur, msth_tglfaktur,
+        group by prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, msth_cterm, msth_top,status,msth_nofaktur, msth_tglfaktur,
             supplier,mstd_tgldoc, mstd_pkp, mstd_typetrn
-        order by msth_nodoc, msth_tgldoc");
+        order by msth_nodoc, msth_tgldoc");        
 
         $pkp = new \stdClass();
         $pkp->gross = 0;
         $pkp->potongan = 0;
         $pkp->ppn = 0;
-        $pkp->ppnbm = 0;
-        $pkp->botol = 0;
+        $pkp->ppn_bebas = 0;
+        $pkp->ppn_dtp = 0;                
         $pkp->total = 0;
 
         $npkp = new \stdClass();
         $npkp->gross = 0;
         $npkp->potongan = 0;
         $npkp->ppn = 0;
-        $npkp->ppnbm = 0;
-        $npkp->botol = 0;
+        $npkp->ppn_bebas = 0;
+        $npkp->ppn_dtp = 0;                
         $npkp->total = 0;
 
         $pembelian  = new \stdClass();
         $pembelian->gross = 0;
         $pembelian->potongan = 0;
         $pembelian->ppn = 0;
-        $pembelian->ppnbm = 0;
-        $pembelian->botol = 0;
+        $pembelian->ppn_bebas = 0;
+        $pembelian->ppn_dtp = 0;                
         $pembelian->total = 0;
 
         $lain = new \stdClass();
         $lain->gross = 0;
         $lain->potongan = 0;
         $lain->ppn = 0;
-        $lain->ppnbm = 0;
-        $lain->botol = 0;
+        $lain->ppn_bebas = 0;
+        $lain->ppn_dtp = 0;                
         $lain->total = 0;
 
         $total = new \stdClass();
         $total->gross = 0;
         $total->potongan = 0;
         $total->ppn = 0;
-        $total->ppnbm = 0;
-        $total->botol = 0;
+        $total->ppn_bebas = 0;
+        $total->ppn_dtp = 0;                
         $total->total = 0;
 
         foreach($data as $d){
             if($d->mstd_pkp == 'Y'){
                 $pkp->gross += $d->gross;
                 $pkp->potongan += $d->discount;
-                $pkp->ppn += $d->mstd_ppnrph;
-                $pkp->ppnbm += $d->mstd_ppnbmrph;
-                $pkp->botol += $d->mstd_ppnbtlrph;
+                // $pkp->ppn += $d->mstd_ppnrph;
+                if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'Y') {
+                    $pkp->ppn += $d->mstd_ppnrph;
+                }
+                if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'P') {                    
+                    $pkp->ppn_bebas += $d->mstd_ppnrph;
+                }
+                if ($d->prd_flagbkp1 == 'Y' && ($d->prd_flagbkp2 == 'W' || $d->prd_flagbkp2 == 'G')) {
+                    $pkp->ppn_dtp += $d->mstd_ppnrph;
+                }                                  
                 $pkp->total += $d->total;
             }
             else{
                 $npkp->gross += $d->gross;
                 $npkp->potongan += $d->discount;
-                $npkp->ppn += $d->mstd_ppnrph;
-                $npkp->ppnbm += $d->mstd_ppnbmrph;
-                $npkp->botol += $d->mstd_ppnbtlrph;
+                // $npkp->ppn += $d->mstd_ppnrph;
+                if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'Y') {
+                    $npkp->ppn += $d->mstd_ppnrph;
+                }
+                if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'P') {                    
+                    $npkp->ppn_bebas += $d->mstd_ppnrph;
+                }
+                if ($d->prd_flagbkp1 == 'Y' && ($d->prd_flagbkp2 == 'W' || $d->prd_flagbkp2 == 'G')) {
+                    $npkp->ppn_dtp += $d->mstd_ppnrph;
+                }                                
                 $npkp->total += $d->total;
             }
         }
@@ -286,8 +316,8 @@ class CetakRegisterController extends Controller
         $total->gross = $pkp->gross + $npkp->gross;
         $total->potongan = $pkp->potongan + $npkp->potongan;
         $total->ppn = $pkp->ppn + $npkp->ppn;
-        $total->ppnbm = $pkp->ppnbm + $npkp->ppnbm;
-        $total->botol = $pkp->botol + $npkp->botol;
+        $total->ppn_bebas = $pkp->ppn_bebas + $npkp->ppn_bebas;
+        $total->ppn_dtp = $pkp->ppn_dtp + $npkp->ppn_dtp;                
         $total->total = $pkp->total + $npkp->total;
 
         $pembelian = $total;

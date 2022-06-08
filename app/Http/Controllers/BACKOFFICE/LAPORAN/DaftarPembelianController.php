@@ -145,8 +145,8 @@ class DaftarPembelianController extends Controller
                 where mpl_kodeigr = '" . Session::get('kdigr') . "' and TRIM(mpl_kodemonitoring) = TRIM('" . $mtr . "'))";
             }
             $data = DB::connection(Session::get('connection'))->select("select mstd_kodedivisi, div_namadivisi,
-        mstd_kodedepartement, dep_namadepartement,
-        mstd_kodekategoribrg, kat_namakategori,
+        mstd_kodedepartement, dep_namadepartement, 
+        mstd_kodekategoribrg, kat_namakategori, prd_flagbkp1, prd_flagbkp2, prd_prdcd,
         prs_namaperusahaan, prs_namacabang, prs_namawilayah,
         sum(mstd_gross) gross, sum(mstd_discrph) pot, sum(disc4) disc4,
         sum(mstd_ppn) ppn, sum(mstd_bm) bm, sum(mstd_btl) btl,
@@ -158,8 +158,8 @@ class DaftarPembelianController extends Controller
         sum(BM_BKP) sum_bm_bkp, sum(BM_BTKP) sum_bm_btkp,
         sum(BTL_BKP) sum_btl_bkp, sum(BTL_BTKP) sum_btl_btkp,
         sum(TOTAL_BKP) sum_total_bkp, sum(TOTAL_BTKP) sum_total_btkp
-from (select mstd_kodedivisi, div_namadivisi,
-        mstd_kodedepartement, dep_namadepartement,
+from (select mstd_kodedivisi, div_namadivisi, prd_flagbkp1, prd_flagbkp2,
+        mstd_kodedepartement, dep_namadepartement, prd_prdcd,
         mstd_kodekategoribrg, kat_namakategori,
         CASE WHEN mstd_ppnrph <> 0 THEN
                 nvl(mstd_gross,0)
@@ -211,7 +211,7 @@ from (select mstd_kodedivisi, div_namadivisi,
         nvl(mstd_ppnrph,0) mstd_ppn, nvl(mstd_ppnbmrph,0) mstd_bm, nvl(mstd_ppnbtlrph,0) mstd_btl,
         (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) - nvl(mstd_discrph,0) total,
         prs_namaperusahaan, prs_namacabang, prs_namawilayah
-from tbtr_mstran_h, tbtr_mstran_d,tbmaster_divisi,
+from tbtr_mstran_h, tbtr_mstran_d,tbmaster_divisi, tbmaster_prodmast,
         tbmaster_departement,tbmaster_kategori, tbmaster_perusahaan
 where msth_typetrn='B'
         and msth_kodeigr = '" . Session::get('kdigr') . "'
@@ -220,6 +220,7 @@ where msth_typetrn='B'
         and nvl(mstd_recordid, '9') <> '1'
         " . $and_doc . "
         and prs_kodeigr = msth_kodeigr
+        and mstd_prdcd = prd_prdcd
         and div_kodedivisi(+) = mstd_kodedivisi
         and div_kodeigr(+) = mstd_kodeigr
         and dep_kodedivisi(+) = mstd_kodedivisi
@@ -233,15 +234,15 @@ where msth_typetrn='B'
         " . $and_dep . "
         " . $and_kat . "
         order by div_kodedivisi, dep_kodedepartement, kat_kodekategori)
-group by mstd_kodedivisi, div_namadivisi,
-        mstd_kodedepartement, dep_namadepartement,
+group by mstd_kodedivisi, div_namadivisi, prd_flagbkp1, prd_flagbkp2,
+        mstd_kodedepartement, dep_namadepartement, prd_prdcd,
         mstd_kodekategoribrg, kat_namakategori,
         prs_namaperusahaan, prs_namacabang, prs_namawilayah
 order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg");
-
             return view('BACKOFFICE.LAPORAN.daftar-pembelian-ringkasan-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
-        } else if ($tipe === '2') {
+        }
+        else if ($tipe === '2') {
             $and_sup = ' ';
             if (isset($mtr) && $mtr <> '') {
                 $and_sup = " and mstd_kodemonitoring in (select msu_kodemonitoring from tbtr_monitoringsupplier
@@ -252,7 +253,7 @@ order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg");
             }
             $data = DB::connection(Session::get('connection'))->select("select mstd_kodesupplier, sup_namasupplier,
         prs_namaperusahaan, prs_namacabang, prs_namawilayah,
-        sum(mstd_gross) gross, sum(mstd_pot) pot,
+        sum(mstd_gross) gross, sum(mstd_pot) pot, prd_flagbkp1, prd_flagbkp2, prd_prdcd,
         sum(mstd_ppn) ppn, sum(mstd_bm) bm, sum(mstd_btl) btl,
         sum(total) total,
         sum(GROSS_BKP) sum_gross_bkp, sum(GROSS_BTKP) sum_gross_btkp,
@@ -261,7 +262,7 @@ order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg");
         sum(BM_BKP) sum_bm_bkp, sum(BM_BTKP) sum_bm_btkp,
         sum(BTL_BKP) sum_btl_bkp, sum(BTL_BTKP) sum_btl_btkp,
         sum(TOTAL_BKP) sum_total_bkp, sum(TOTAL_BTKP) sum_total_btkp
-from (select mstd_kodesupplier, sup_namasupplier, nvl(mstd_avgcost,0)*nvl(mstd_qty,0) avg,
+from (select mstd_kodesupplier, prd_flagbkp1, prd_flagbkp2, prd_prdcd, sup_namasupplier, nvl(mstd_avgcost,0)*nvl(mstd_qty,0) avg,
         CASE WHEN mstd_ppnrph <> 0 THEN
                 nvl(mstd_gross,0)
         END GROSS_BKP,
@@ -304,25 +305,28 @@ from (select mstd_kodesupplier, sup_namasupplier, nvl(mstd_avgcost,0)*nvl(mstd_q
         nvl(mstd_ppnrph,0) mstd_ppn, nvl(mstd_ppnbmrph,0) mstd_bm, nvl(mstd_ppnbtlrph,0) mstd_btl,
         (nvl(mstd_gross,0 )+ nvl(mstd_ppnrph,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)) - (nvl(mstd_discrph,0)) total,
         prs_namaperusahaan, prs_namacabang, prs_namawilayah
-from tbtr_mstran_h, tbtr_mstran_d, tbmaster_perusahaan, tbmaster_supplier
+from tbtr_mstran_h, tbtr_mstran_d, tbmaster_perusahaan, tbmaster_supplier, tbmaster_prodmast
 where msth_typetrn='B'
         and msth_kodeigr='" . Session::get('kdigr') . "'
         " . $and_doc . "
         and nvl(msth_recordid, '9') <> '1'
         and mstd_kodeigr=msth_kodeigr
+        and mstd_prdcd = prd_prdcd
         and prs_kodeigr=msth_kodeigr
        " . $and_sup . "
         and sup_kodesupplier = mstd_kodesupplier
         and sup_kodeigr = mstd_kodeigr
         order by sup_kodesupplier)
-group by mstd_kodesupplier, sup_namasupplier,
+group by mstd_kodesupplier, sup_namasupplier, prd_flagbkp1, prd_flagbkp2, prd_prdcd,
         prs_namaperusahaan, prs_namacabang, prs_namawilayah
 order by mstd_kodesupplier");
 
             return view('BACKOFFICE.LAPORAN.daftar-pembelian-ringkasan-per-supplier-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
-        } else if ($tipe === '3') {
-            $data = DB::connection(Session::get('connection'))->select("select no_doc, tgl_doc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
+        //ada tambahan flagbkp1 dan 2
+        }
+        else if ($tipe === '3') {
+            $data = DB::connection(Session::get('connection'))->select("select no_doc, tgl_doc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost, prd_flagbkp1, prd_flagbkp2,
         sum(ctn) ctn, sum(pcs) pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
         mstd_kodedivisi, div_namadivisi,
         mstd_kodedepartement, dep_namadepartement,
@@ -347,7 +351,7 @@ from (select
          ELSE
                  msth_tglpo
          END tgl_doc,
-        mstd_prdcd plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, mstd_avgcost acost,
+        mstd_prdcd plu, prd_deskripsipanjang, prd_flagbkp1, prd_flagbkp2, mstd_hrgsatuan, mstd_keterangan, mstd_avgcost acost,
         (((nvl(mstd_gross,0)-nvl(mstd_discrph,0)+nvl(mstd_ppnbmrph,0)+nvl(mstd_ppnbtlrph,0)) * nvl(mstd_frac,0)) /
         ((nvl(mstd_qty,0)*nvl(mstd_frac,0))+(mod(mstd_qty,mstd_frac))+nvl(mstd_qtybonus1,0))) lcost,
         floor(mstd_qty/prd_frac) ctn, mod(mstd_qty,prd_frac) pcs, prd_unit||'/'||prd_frac kemasan,
@@ -422,6 +426,7 @@ where msth_typetrn='B'
         order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg, no_doc, tgl_doc)
 group by
         no_doc, tgl_doc,
+        prd_flagbkp1, prd_flagbkp2,
         plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
         ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
         mstd_kodedivisi, div_namadivisi,
@@ -441,8 +446,9 @@ order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg, no_doc, tg
 
 //            return view('BACKOFFICE.LAPORAN.daftar-pembelian-rincian-per-divdepkat-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
 
+        //ada tambah flagbkp1 dan flagbkp2
         } else if ($tipe === '4') {
-            $data = DB::connection(Session::get('connection'))->select("select no_doc, tgl_doc, msth_tglpo, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
+            $data = DB::connection(Session::get('connection'))->select("select no_doc, tgl_doc, msth_tglpo, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost, prd_flagbkp1, prd_flagbkp2,
         ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
         mstd_kodesupplier, sup_namasupplier,
         sum(bonus) bonus, sum(gross) gross, sum(potongan) potongan,
@@ -465,7 +471,7 @@ from (select
          ELSE
                  msth_tglpo
          END tgl_doc,
-        msth_tglpo, mstd_prdcd plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, mstd_avgcost acost,
+        msth_tglpo, mstd_prdcd plu, prd_flagbkp1, prd_flagbkp2, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, mstd_avgcost acost,
         (((nvl(mstd_gross,0)-nvl(mstd_discrph,0)+nvl(mstd_ppnbmrph,0)+nvl(mstd_ppnbtlrph,0)) * nvl(mstd_frac,0)) /
         ((nvl(mstd_qty,0)*nvl(mstd_frac,0))+(mod(mstd_qty,mstd_frac))+nvl(mstd_qtybonus1,0))) lcost,
         floor(mstd_qty/prd_frac) ctn, mod(mstd_qty,prd_frac) pcs, prd_unit||'/'||prd_frac kemasan,
@@ -529,7 +535,7 @@ from (select
         )
 group by no_doc, tgl_doc, msth_tglpo, plu, prd_deskripsipanjang,
     mstd_hrgsatuan, mstd_keterangan, acost, lcost,
-    mstd_kodesupplier, sup_namasupplier,
+    mstd_kodesupplier, sup_namasupplier,prd_flagbkp1, prd_flagbkp2,
     ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah
 order by mstd_kodesupplier, no_doc, tgl_doc");
             set_time_limit(0);
@@ -549,7 +555,7 @@ order by mstd_kodesupplier, no_doc, tgl_doc");
 
             $data = DB::connection(Session::get('connection'))
                 ->select("select no_doc, tgl_doc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
-        ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
+        ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah, prd_flagbkp1, prd_flagbkp2,
         mstd_kodedivisi, div_namadivisi,
         mstd_kodedepartement, dep_namadepartement,
         mstd_kodekategoribrg, kat_namakategori,
@@ -573,7 +579,7 @@ from (select
          ELSE
                  msth_tglpo
          END tgl_doc,
-        mstd_prdcd plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, mstd_avgcost acost, mstd_ocost lcost,
+        mstd_prdcd plu, prd_deskripsipanjang, prd_flagbkp1, prd_flagbkp2, mstd_hrgsatuan, mstd_keterangan, mstd_avgcost acost, mstd_ocost lcost,
         floor(mstd_qty/prd_frac) ctn, mod(mstd_qty,prd_frac) pcs, prd_unit||'/'||prd_frac kemasan,
         CASE WHEN mstd_ppnrph <> 0 THEN
                 nvl(mstd_gross,0)
@@ -644,7 +650,7 @@ where msth_typetrn = 'B'
         and kat_kodeigr(+) = mstd_kodeigr
          " . $and_kat . "
          order by tgl_doc)
-group by no_doc, tgl_doc, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
+group by no_doc, tgl_doc, plu, prd_deskripsipanjang, prd_flagbkp1, prd_flagbkp2, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
     ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
     mstd_kodedivisi, div_namadivisi,
     mstd_kodedepartement, dep_namadepartement,
@@ -664,7 +670,7 @@ order by mstd_kodedivisi,mstd_kodedepartement,mstd_kodekategoribrg,tgl_doc");
 
 
         } else if ($tipe === '6') {
-            $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
+            $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, plu, prd_deskripsipanjang, prd_flagbkp1, prd_flagbkp2, mstd_hrgsatuan, mstd_keterangan, acost, lcost,
         ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
         msth_kodesupplier, sup_namasupplier,mstd_nodoc, mstd_tgldoc,
         sum(bonus) bonus, sum(gross) gross, sum(potongan) potongan,
@@ -676,7 +682,7 @@ order by mstd_kodedivisi,mstd_kodedepartement,mstd_kodekategoribrg,tgl_doc");
         sum(BM_BKP) sum_bm_bkp, sum(BM_BTKP) sum_bm_btkp,
         sum(BTL_BKP) sum_btl_bkp, sum(BTL_BTKP) sum_btl_btkp,
         sum(TOTAL_BKP) sum_total_bkp, sum(TOTAL_BTKP) sum_total_btkp
-from (select msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, mstd_prdcd plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, mstd_avgcost acost,
+from (select msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, mstd_prdcd plu, prd_deskripsipanjang, mstd_hrgsatuan, mstd_keterangan, mstd_avgcost acost, prd_flagbkp1, prd_flagbkp2,
         (((nvl(mstd_gross,0)-nvl(mstd_discrph,0)+nvl(mstd_ppnbmrph,0)+nvl(mstd_ppnbtlrph,0)) * nvl(mstd_frac,0)) /
         ((nvl(mstd_qty,0)*nvl(mstd_frac,0))+(mod(mstd_qty,mstd_frac))+nvl(mstd_qtybonus1,0))) lcost,
         floor(mstd_qty/prd_frac) ctn, mod(mstd_qty,prd_frac) pcs, prd_unit||'/'||prd_frac kemasan,
@@ -739,7 +745,7 @@ from (select msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, mstd_prdcd plu, prd
         and sup_kodeigr=mstd_kodeigr
         " . $p_order . ")
 group by msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, plu, prd_deskripsipanjang,
-    mstd_hrgsatuan, mstd_keterangan, acost, lcost,
+    mstd_hrgsatuan, mstd_keterangan, acost, lcost, prd_flagbkp1, prd_flagbkp2,
     msth_kodesupplier, sup_namasupplier,mstd_nodoc, mstd_tgldoc,
     ctn, pcs, kemasan, prs_namaperusahaan, prs_namacabang, prs_namawilayah
 " . $p_order);
@@ -756,7 +762,7 @@ group by msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, plu, prd_deskripsipanja
             return response()->download(storage_path($filename))->deleteFileAfterSend(true);
 
         } else if ($tipe === '7') {
-            $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc,  top, jth_tempo, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur,
+            $data = DB::connection(Session::get('connection'))->select("select msth_nodoc, msth_tgldoc,  top, jth_tempo, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur,prd_flagbkp1, prd_flagbkp2, prd_prdcd,
         supplier,prs_namaperusahaan, prs_namacabang, prs_namawilayah, msth_kodesupplier,
         sum(gross) gross, sum(potongan) potongan, sum(bm) bm, sum(btl) btl,
         sum(dpp) dpp, sum(ppn) ppn, sum(total) total,
@@ -768,7 +774,7 @@ group by msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, plu, prd_deskripsipanja
         sum(DPP_BKP) sum_dpp_bkp, sum(DPP_BTKP) sum_dpp_btkp,
         sum(TOTAL_BKP) sum_total_bkp, sum(TOTAL_BTKP) sum_total_btkp
 from (select msth_nodoc, msth_tgldoc, msth_cterm top, msth_tgldoc+msth_cterm jth_tempo,
-        msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur,
+        msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, prd_flagbkp1, prd_flagbkp2, prd_prdcd,
         CASE WHEN mstd_ppnrph <> 0 THEN
                 nvl(mstd_gross,0)
         END GROSS_BKP,
@@ -819,18 +825,19 @@ from (select msth_nodoc, msth_tgldoc, msth_cterm top, msth_tgldoc+msth_cterm jth
         (nvl(mstd_gross,0) + nvl(mstd_ppnbmrph,0) + nvl(mstd_ppnbtlrph,0)+nvl(mstd_ppnrph,0))-nvl(mstd_discrph,0) total,
         sup_kodesupplier||' - '||sup_namasupplier supplier,
         prs_namaperusahaan, prs_namacabang, prs_namawilayah
-from tbtr_mstran_h, tbtr_mstran_d, tbmaster_supplier, tbmaster_perusahaan
+from tbtr_mstran_h, tbtr_mstran_d, tbmaster_supplier, tbmaster_perusahaan, tbmaster_prodmast
 where msth_kodeigr='" . Session::get('kdigr') . "'
         and msth_typetrn='B'
         and nvl(msth_recordid, '9') <> '1'
         " . $and_doc . "
         and mstd_kodeigr=msth_kodeigr
+        and mstd_prdcd = prd_prdcd
         and sup_kodesupplier = msth_kodesupplier
         and sup_kodeigr=msth_kodeigr
       " . $and_sup . "
         and prs_kodeigr=msth_kodeigr
        " . $p_order . ")
-group by msth_nodoc, msth_tgldoc,  top, jth_tempo, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur,
+group by msth_nodoc, msth_tgldoc, prd_flagbkp1, prd_flagbkp2, prd_prdcd,  top, jth_tempo, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, 
         supplier,prs_namaperusahaan, prs_namacabang, prs_namawilayah, msth_kodesupplier
 " . $p_order);
             set_time_limit(0);

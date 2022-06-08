@@ -55,7 +55,9 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                      0
                END,
             ppn)
-            ppn
+            ppn,
+            trjd_flagtax1,
+           trjd_flagtax2
     FROM (  SELECT tgl_struk,
                    customer,
                    station,
@@ -64,7 +66,9 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                    no_seri_fp,
                    tgl_fp,
                    TRUNC (SUM (DPP + DF + TTL_REFUND)) dpp,
-                   TRUNC (SUM (dpp + DF + TTL_REFUND) * (COALESCE(PRS_NILAIPPN, 0)/100)) ppn
+                   TRUNC (SUM (dpp + DF + TTL_REFUND) * (COALESCE(PRS_NILAIPPN, 0)/100)) ppn,
+                   trjd_flagtax1,
+                   trjd_flagtax2
               FROM tbmaster_perusahaan, (  SELECT a.*, NVL (b.nominal, 0) TTL_REFUND
                         FROM (  SELECT TRUNC (fkt_tglfaktur) tgl_struk,
                                        cus_kodemember || ' - ' || cus_namamember
@@ -138,7 +142,9 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                                           DF,
                                        FKT_KODEMEMBER,
                                        FKT_NOFAKTUR,
-                                       FKT_TGL
+                                       FKT_TGL,
+                                       trjd_flagtax1,
+                                       trjd_flagtax2
                                   FROM tbmaster_faktur,
                                        tbtr_jualdetail,
                                        tbmaster_customer,
@@ -156,7 +162,7 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                                             OR TRJD_ADMFEE > 0)
                                        AND cus_flagpkp = 'Y'
                                        AND trjd_transactiontype = 'S'
-                                       AND TRUNC (trjd_transactiondate) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy')
+                                       AND TRUNC (trjd_transactiondate) BETWEEN to_date('".$tgl1."','dd/mm/yyyy') AND to_date('".$tgl2."','dd/mm/yyyy')
                                        AND TRJD_PRDCD = PRD_PRDCD
                               GROUP BY fkt_tglfaktur,
                                        cus_kodemember,
@@ -170,7 +176,9 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                                        FKT_TGL,
                                        TRJD_CREATE_BY,
                                        TRJD_FLAGTAX1,
-                                       PRD_PPN) a
+                                       PRD_PPN,
+                                       trjd_flagtax1,
+                                        trjd_flagtax2) a
                              FULL JOIN
                              (  SELECT kdmember,
                                        nofaktur,
@@ -208,7 +216,7 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                                                AND (   trjd_noinvoice1 <> '0'
                                                     OR trjd_noinvoice2 <> '0')
                                                AND TRJD_NOMINALAMT > 0
-                                               AND TRUNC (jh_referencedate) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy')
+                                               AND TRUNC (jh_referencedate) BETWEEN to_date('".$tgl1."','dd/mm/yyyy') AND to_date('".$tgl2."','dd/mm/yyyy')
                                                AND JH_CUS_KODEMEMBER = CUS_KODEMEMBER
                                                AND JH_CUS_KODEMEMBER =
                                                       TRJD_CUS_KODEMEMBER
@@ -233,7 +241,9 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
                    struk_no,
                    no_seri_fp,
                    tgl_fp,
-                   prs_nilaippn) x,
+                   prs_nilaippn,
+                   trjd_flagtax1,
+                   trjd_flagtax2) x,
          tbmaster_perusahaan,
          TBTR_FAKTUR_HDR,
          tbtr_obi_h
@@ -245,7 +255,7 @@ class LaporanPercetakanFakturPajakStandarController extends Controller
          AND cashierid = obi_cashierid(+)
 ORDER BY tgl_struk, no_seri_fp");
 
-
+//        dd($data);
 
         $filename = 'igr-fo-cetak-fpstd';
 
@@ -253,30 +263,16 @@ ORDER BY tgl_struk, no_seri_fp");
             ->first();
 
         $date = Carbon::now();
-        $dompdf = new PDF();
 
-        $pdf = PDF::loadview('FRONTOFFICE.LAPORANPERCETAKANFAKTURPAJAKSTANDAR.' . $filename . '-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf->get_canvas();
-        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($filename . ' - ' . $date . '.pdf');
+        return view('FRONTOFFICE.LAPORANPERCETAKANFAKTURPAJAKSTANDAR.' . $filename . '-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
     }
 
     public function cetakMMNonPKP(Request $request)
     {
         $periode = $request->tgl;
-        $w = 545;
-        $h = 50.75;
 
-        $data = DB::connection(Session::get('connection'))->select("select prs_namaperusahaan,
+        $data = DB::connection(Session::get('connection'))
+            ->select("select prs_namaperusahaan,
          prs_namacabang, customer,
          nomor_faktur,
          tgl_faktur,
@@ -624,21 +620,8 @@ ORDER BY trjd_transactiondate, NOFAK");
             ->first();
 
         $date = Carbon::now();
-        $dompdf = new PDF();
 
-        $pdf = PDF::loadview('FRONTOFFICE.LAPORANPERCETAKANFAKTURPAJAKSTANDAR.' . $filename . '-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
-
-        error_reporting(E_ALL ^ E_DEPRECATED);
-
-        $pdf->output();
-        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-        $canvas = $dompdf->get_canvas();
-        $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream($filename . ' - ' . $date . '.pdf');
+        return view('FRONTOFFICE.LAPORANPERCETAKANFAKTURPAJAKSTANDAR.' . $filename . '-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));
     }
 
     public function cetakFreepassKlikIgr(Request $request)

@@ -600,7 +600,7 @@
                     <div class="row">
                         <div class="col">
                             <table class="table table-sm justify-content-md-center p-0 col-sm-12"
-                                   >
+                            >
                                 <thead class="theadDataTables">
                                 <tr>
                                     <th class="text-center small" style="border: 1px solid;border-bottom: 0px solid"
@@ -730,22 +730,23 @@
                         <label for="prod" class="col-sm-1 col-form-label text-right">Produk</label>
                         <input type="text" id="produk-penerimaan" class="form-control col-sm-6" disabled>
                     </div>
+                    <br>
                     <div class="row">
                         <div class="col">
-                            <div class="tableFixedHeader">
+                            <div class="sticky-table sticky-ltr-cells">
                                 <table class="table table-sm justify-content-md-center p-0 col-sm-12"
-                                      >
-                                    <thead class="theadDataTables">
-                                    <tr>
-                                        <th width="30%" class="text-center small">Supplier</th>
-                                        <th width="7%" class="text-center small">Qty BPB</th>
-                                        <th width="6%" class="text-center small">Bonus 1</th>
-                                        <th width="6%" class="text-center small">Bonus 2</th>
-                                        <th width="10%" class="text-center small">Dokumen</th>
-                                        <th width="13%" class="text-center small">Tanggal</th>
-                                        <th width="5%" class="text-center small">Top</th>
-                                        <th width="10%" class="text-center small">Last Cost (pcs)</th>
-                                        <th width="10%" class="text-center small">Avg Cost (pcs)</th>
+                                >
+                                    <thead>
+                                    <tr class="sticky-header">
+                                        <th width="30%" class="sticky-cell text-center small">Supplier</th>
+                                        <th width="7%" class="sticky-cell text-center small">Qty BPB</th>
+                                        <th width="6%" class="sticky-cell text-center small">Bonus 1</th>
+                                        <th width="6%" class="sticky-cell text-center small">Bonus 2</th>
+                                        <th width="10%" class="sticky-cell text-center small">Dokumen</th>
+                                        <th width="13%" class="sticky-cell text-center small">Tanggal</th>
+                                        <th width="5%" class="sticky-cell text-center small">Top</th>
+                                        <th width="10%" class="sticky-cell text-center small">Last Cost (pcs)</th>
+                                        <th width="10%" class="sticky-cell text-center small">Avg Cost (pcs)</th>
                                     </tr>
                                     </thead>
                                     <tbody id="table-penerimaan">
@@ -803,31 +804,31 @@
                 <div class="modal-body" style="height: 520px;">
                     <div class="row">
                         <div class="col">
-                            <div class="">
+                            <div class="sticky-table sticky-ltr-cells">
                                 <table class="table table-sm justify-content-md-center p-0 col-sm-12 fixed_header"
-                                       >
-                                    <thead class="theadDataTables">
-                                    <tr>
-                                        <th class="text-center"
+                                >
+                                    <thead class="text-center">
+                                    <tr class="sticky-header">
+                                        <th class="text-center sticky-cell"
                                             style="border: 1px solid;border-bottom: 0px solid;border-left: 0px solid"
                                             colspan="4" scope="colgroup">PB
                                         </th>
-                                        <th class="text-center" style="border: 1px solid;border-bottom: 0px solid"
+                                        <th class="text-center sticky-cell" style="border: 1px solid;border-bottom: 0px solid"
                                             colspan="2" scope="colgroup">PO
                                         </th>
-                                        <th class="text-center" style="border: 1px solid;border-bottom: 0px solid"
+                                        <th class="text-center sticky-cell" style="border: 1px solid;border-bottom: 0px solid"
                                             colspan="2" scope="colgroup">BPB
                                         </th>
                                     </tr>
-                                    <tr>
-                                        <th width="10%" class="text-center small">Dokumen</th>
-                                        <th width="10%" class="text-center small">Tanggal</th>
-                                        <th width="5%" class="text-center small">Qty</th>
-                                        <th width="15%" class="text-center small">Keterangan</th>
-                                        <th width="10%" class="text-center small">Dokumen</th>
-                                        <th width="10%" class="text-center small">Tanggal</th>
-                                        <th width="5%" class="text-center small">Qty</th>
-                                        <th width="15%" class="text-center small">Keterangan</th>
+                                    <tr class="sticky-header">
+                                        <th width="10%" class=" sticky-cell text-center small">Dokumen</th>
+                                        <th width="10%" class=" sticky-cell text-center small">Tanggal</th>
+                                        <th width="5%" class=" sticky-cell text-center small">Qty</th>
+                                        <th width="15%" class=" sticky-cell text-center small">Keterangan</th>
+                                        <th width="10%" class=" sticky-cell text-center small">Dokumen</th>
+                                        <th width="10%" class=" sticky-cell text-center small">Tanggal</th>
+                                        <th width="5%" class=" sticky-cell text-center small">Qty</th>
+                                        <th width="15%" class=" sticky-cell text-center small">Keterangan</th>
                                     </tr>
                                     </thead>
                                     <tbody id="table-pb">
@@ -887,7 +888,7 @@
                             <br>
                             <div class="row">
                                 <div class="col">
-                                    <table class="table table-sm justify-content-md-center col-sm-12 " >
+                                    <table class="table table-sm justify-content-md-center col-sm-12 ">
                                         <thead class="theadDataTables">
                                         <tr>
                                             <th width="10%" class="text-center small">Qty SO</th>
@@ -899,7 +900,7 @@
                                         </tr>
                                         </thead>
                                         <tbody id="table-so">
-                                        <tr class="p-0 baris" >
+                                        <tr class="p-0 baris">
                                             <td class="p-0">
                                                 <input type="text" class="form-control" disabled>
                                             </td>
@@ -1236,7 +1237,37 @@
         </div>
     </div>
 
-
+{{--    modal notif--}}
+    <div class="modal fade" id="m-notif" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" style="max-width: 80%"
+             role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                </div>
+                <div class="modal-body" style="height: 650px;">
+                    <div class="row">
+                        <div class="col">
+                            <div class="tableFixedHeader">
+                                <table class="table table-sm justify-content-md-center p-0 col-sm-12">
+                                    <thead class="theadDataTables">
+                                    <tr>
+                                        <th class="text-center small">Pesan</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="table-notif">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <style>
         .my-custom-scrollbar {
@@ -1409,7 +1440,9 @@
                             }).then((createData) => {
                             });
                         } else {
-                            notif(response.message, -1, response.message.length);
+                            if(response.message.length > 0  ){
+                                notif(response.message);
+                            }
                             $('#produk-penerimaan').val(response.produk['prd_deskripsipanjang'] + ' [' + response.produk['prd_prdcd'] + ']');
 
                             $('.baris').remove();
@@ -1553,7 +1586,7 @@
                             $('#mindisqty').val(convertToRupiah2(response['pkmt'].md_qty));
                             $('#mindisto').val(convertToRupiah2(response['pkmt'].md_to));
                             $('#mplus').val(convertToRupiah(nvl(response['pkmt'].mplus, 0)));
-                            $('#minory').val(response['pkmt'].minory!=''?convertToRupiah(response['pkmt'].minory):'');
+                            $('#minory').val(response['pkmt'].minory != '' ? convertToRupiah(response['pkmt'].minory) : '');
                             $('#suppterakhir').val(response['pkmt'].sup);
                             $('#hargabeli').val(convertToRupiah(response['pkmt'].hgb_hrgbeli));
                             /*FLAG*/
@@ -1759,16 +1792,20 @@
 
         var trlov = $('#table_lov tbody').html();
 
-        function notif(value, arr, leng) {
-            arr = arr + 1;
-            if (arr < leng) {
-                swal({
-                    title: value[arr],
-                    icon: 'info'
-                }).then((createData) => {
-                    notif(value, arr, leng);
-                });
+        function notif(value) {
+            $('#table-notif').empty();
+            for (var i = 0; i < value.length; i++) {
+                $('#table-notif').append(`
+                    <tr>
+                        <td>
+                            ` + value[i] + `
+                        </td>
+                    </tr>
+                `);
             }
+            $('#m-notif').modal('show');
+
+
         }
 
         $('#btn-hb-next').on('click', function () {

@@ -63,11 +63,11 @@ class LaporanRegisterPPRController extends Controller
             if (isset($nodoc2) && isset($nodoc1)) {
                 $and_doc = " and rom_nodokumen between '" . $nodoc1 . "' and '" . $nodoc2 . "'";
             }
-            $data = DB::connection(Session::get('connection'))->select("SELECT   ROM_NODOKUMEN, TGLDOK, ROM_NOREFERENSI, ROM_MEMBER, ROM_KODETOKO, CUS_NAMAMEMBER, CUS_NPWP,
+            $data = DB::connection(Session::get('connection'))->select("SELECT PRD_FLAGBKP1, PRD_FLAGBKP2,  ROM_NODOKUMEN, TGLDOK, ROM_NOREFERENSI, ROM_MEMBER, ROM_KODETOKO, CUS_NAMAMEMBER, CUS_NPWP,
          SUM (ROM_QTY) QTY, SUM (ROM_QTYTLR) QTYTLR, SUM (HRGSAT) HRGSAT, SUM (ROM_TTL) TOTAL,
          SUM (PPN) PPN, SUM (ITEM) ITEM, SUM (HARGA) HARGA, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG,
          PRS_NAMAWILAYAH
-    FROM (SELECT ROM_NODOKUMEN, TRUNC (ROM_TGLDOKUMEN) TGLDOK, lpad(to_char(ROM_NOREFERENSI),7,'0') ROM_NOREFERENSI, ROM_MEMBER,
+    FROM (SELECT PRD_FLAGBKP1, PRD_FLAGBKP2, ROM_NODOKUMEN, TRUNC (ROM_TGLDOKUMEN) TGLDOK, lpad(to_char(ROM_NOREFERENSI),7,'0') ROM_NOREFERENSI, ROM_MEMBER,
                  ROM_KODETOKO, CUS_NPWP, ROM_QTY, ROM_QTYTLR, CUS_NAMAMEMBER, 1 ITEM, PRD_UNIT,
                  ROM_TTL, CASE
                      WHEN PRD_UNIT = 'KG'
@@ -102,7 +102,9 @@ class LaporanRegisterPPRController extends Controller
              AND PRD_KODEIGR = ROM_KODEIGR
              AND PRD_PRDCD = ROM_PRDCD
              AND PRS_KODEIGR = ROM_KODEIGR)
-GROUP BY ROM_NODOKUMEN,
+GROUP BY PRD_FLAGBKP1,
+         PRD_FLAGBKP2,
+         ROM_NODOKUMEN,
          TGLDOK,
          ROM_NOREFERENSI,
          ROM_MEMBER,
@@ -125,17 +127,32 @@ ORDER BY TGLDOK, ROM_NODOKUMEN");
                 $and_doc = " and trpt_salesinvoiceno between '" . $nodoc1 . "' and '" . $nodoc2 . "'";
             }
             $data = DB::connection(Session::get('connection'))->select("SELECT trpt_salesinvoicedate, trpt_invoicetaxno, trpt_salesinvoiceno, trpt_cus_kodemember, trpt_netsales, trpt_ppntaxvalue,
-                        tko_kodeomi, tko_kodesbu, CUS_NAMAMEMBER, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH,
-                        (trpt_cus_kodemember  || ' - ' || CUS_NAMAMEMBER) member
-                        FROM tbtr_piutang, tbmaster_tokoigr, tbmaster_customer, tbmaster_perusahaan
-                        WHERE trpt_kodeigr = '" . Session::get('kdigr') . "'AND TRUNC(trpt_salesinvoicedate) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy') AND trpt_type = 'D'
-                        " . $and_doc . "
-                        AND tko_kodeigr = trpt_kodeigr
-                        AND tko_kodecustomer = trpt_cus_kodemember
-                        AND tko_kodesbu = 'I'
-                        AND CUS_KODEMEMBER(+) = trpt_cus_kodeMEMBER
-                        AND PRS_KODEIGR = trpt_KODEIGR
-                        order by trpt_salesinvoicedate, trpt_invoicetaxno, trpt_salesinvoiceno, trpt_cus_kodemember ");
+tko_kodeomi, tko_kodesbu, CUS_NAMAMEMBER, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH,
+(trpt_cus_kodemember  || ' - ' || CUS_NAMAMEMBER) member
+FROM tbtr_piutang, tbmaster_tokoigr, tbmaster_customer, tbmaster_perusahaan
+WHERE trpt_kodeigr = '" . Session::get('kdigr') . "' AND TRUNC(trpt_salesinvoicedate) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy') AND trpt_type = 'D'
+" . $and_doc . "
+AND tko_kodeigr = trpt_kodeigr
+AND tko_kodecustomer = trpt_cus_kodemember
+AND tko_kodesbu = 'I'
+AND CUS_KODEMEMBER(+) = trpt_cus_kodeMEMBER
+AND PRS_KODEIGR = trpt_KODEIGR
+order by trpt_salesinvoicedate, trpt_invoicetaxno, trpt_salesinvoiceno, trpt_cus_kodemember
+
+
+--SELECT prd_flagbkp1, prd_flagbkp2,trpt_salesinvoicedate, trpt_invoicetaxno, trpt_salesinvoiceno, trpt_cus_kodemember, trpt_netsales, trpt_ppntaxvalue,
+--                    tko_kodeomi, tko_kodesbu, CUS_NAMAMEMBER, PRS_NAMAPERUSAHAAN, PRS_NAMACABANG, PRS_NAMAWILAYAH,
+--                    (trpt_cus_kodemember  || ' - ' || CUS_NAMAMEMBER) member
+--                    FROM tbtr_piutang, tbmaster_tokoigr,tbmaster_prodmast, tbmaster_customer, tbmaster_perusahaan
+--                    WHERE trpt_kodeigr = '" . Session::get('kdigr') . "' AND TRUNC(trpt_salesinvoicedate) BETWEEN to_date('" . $tgl1 . "','dd/mm/yyyy') AND to_date('" . $tgl2 . "','dd/mm/yyyy') AND trpt_type = 'D'
+--                    " . $and_doc . "
+--                    AND tko_kodeigr = trpt_kodeigr
+--                    AND tko_kodecustomer = trpt_cus_kodemember
+--                    AND tko_kodesbu = 'I'
+--                    AND CUS_KODEMEMBER(+) = trpt_cus_kodeMEMBER
+--                    AND PRS_KODEIGR = trpt_KODEIGR
+--                    order by trpt_salesinvoicedate, trpt_invoicetaxno, trpt_salesinvoiceno, trpt_cus_kodemember
+                    ");
             for ($i = 0; $i < sizeof($data); $i++) {
                 $cf_item = Self::cf_item($data[$i]->trpt_invoicetaxno, $data[$i]->tko_kodeomi);
                 $data[$i]->cf_item = $cf_item;

@@ -215,21 +215,32 @@
                 $('#modal-loader').modal('hide');
 
                 if (result.length > 0) {
-                    $('#noBTB').val(result[0].mstd_nodoc);
-                    $('#namaSupplier').val(result[0].supplier);
-
-                    for (let i = 0; i < result.length; i++) {
-                        let tempQty = result[i]['qty'] / result[i]['prd_frac'];
-                        let qty = (!tempQty) ? 1 : tempQty;
-
+                    if (result[0].mstd_recordid == 1) {
+                        $('#modal-loader').modal('hide');
+                        alertError('Data Tidak Ada!', '');
+                        $('#noBTB').val('');
+                        $('#jmlItem').val('');
+                        $('#grantTotal').val('');
                         tableInquery.row.add(
-                            [result[i]['mstd_prdcd'], result[i]['barang'], result[i]['satuan'], qty, convertToRupiah(result[i]['hpp']), convertToRupiah(result[i]['ppntot'])]
+                            ['--', '--', '--', '--', '--', '--']
                         ).draw();
+                    } else {
+                        $('#noBTB').val(result[0].mstd_nodoc);
+                        $('#namaSupplier').val(result[0].supplier);
 
-                        grantTotal = parseInt(grantTotal) + parseInt(result[i]['ppntot']);
+                        for (let i = 0; i < result.length; i++) {
+                            let tempQty = result[i]['qty'] / result[i]['prd_frac'];
+                            let qty = (!tempQty) ? 1 : tempQty;
+
+                            tableInquery.row.add(
+                                [result[i]['mstd_prdcd'], result[i]['barang'], result[i]['satuan'], qty, convertToRupiah(result[i]['hpp']), convertToRupiah(result[i]['ppntot'])]
+                            ).draw();
+
+                            grantTotal = parseInt(grantTotal) + parseInt(result[i]['ppntot']);
+                        }
+
+                        $('#grantTotal').val(convertToRupiah(grantTotal));
                     }
-
-                    $('#grantTotal').val(convertToRupiah(grantTotal));
                 } else {
                     $('#modal-loader').modal('hide');
                     alertError('Data Tidak Ada!', '');

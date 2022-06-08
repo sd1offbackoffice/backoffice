@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE SP_REODER_GO_MIGRASI(
+CREATE OR REPLACE PROCEDURE SP_REORDER_GO_MIGRASI(
     P_USID IN VARCHAR2,
     p_status out varchar2,
     p_result out varchar2,
@@ -666,6 +666,7 @@ rphmina := 0;
 
     FOR PBMAST IN (SELECT *
                      FROM TEMP_PBPRINT
+                     LEFT JOIN TBMASTER_PRODMAST ON PRDCD = PRD_PRDCD
                     WHERE RECID IS NULL
                       AND TRUNC (TGL) = TRUNC (TGLTAKHIR)
                       AND DOCNO = NOPB
@@ -686,7 +687,7 @@ rphmina := 0;
                      PBD_RPHDISC2, PBD_FLAGDISC2, PBD_BONUSPO1, PBD_BONUSPO2,
                      PBD_GROSS, PBD_TOP, PBD_PPN, PBD_PPNBM, PBD_PPNBOTOL,
                      PBD_KODESUPPLIER, PBD_KODETAG, PBD_OSTPO, PBD_OSTPB, PBD_CREATE_DT,
-                     PBD_CREATE_BY, PBD_FDXREV
+                     PBD_CREATE_BY, PBD_FDXREV, PBD_PERSENPPN
                     )
              VALUES (P_KODEIGR, NOPB, PBMAST.PRDCD, PBMAST.DEPT, PBMAST.KATB,
                      PBMAST.DIV, NVL (PBMAST.DIVPO, NULL), PBMAST.QTY, FDNOURA, PBMAST.PRICE,
@@ -694,7 +695,7 @@ rphmina := 0;
                      PBMAST.DISCR2, NVL (PBMAST.FDISC2, NULL), PBMAST.BNSPO1, PBMAST.BNSPO2,
                      PBMAST.GROSS, PBMAST.CTERM, PBMAST.PPN, PBMAST.PPNBM, PBMAST.BOTOL,
                      PBMAST.SUPCO, NVL (PBMAST.PTAG, NULL), PBMAST.OUT_PO, PBMAST.OUT_PB, SYSDATE,
-                     P_USID, 'T'
+                     P_USID, 'T', PBMAST.PRD_PPN
                     );
 
         --COMMIT;

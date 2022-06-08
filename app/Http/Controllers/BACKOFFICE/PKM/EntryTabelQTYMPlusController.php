@@ -358,6 +358,8 @@ class EntryTabelQTYMPlusController extends Controller
         try{
             DB::connection(Session::get('connection'))->beginTransaction();
 
+            $qtyminor = 0;
+
             $user = DB::connection(Session::get('connection'))
                 ->table('tbmaster_user')
                 ->where('kodeigr','=',Session::get('kdigr'))
@@ -418,7 +420,7 @@ class EntryTabelQTYMPlusController extends Controller
                         $temp = DB::connection(Session::get('connection'))
                             ->table('tbmaster_pkmplus')
                             ->selectRaw("nvl(pkmp_qtyminor, 0) pkmp_qtyminor")
-                            ->where('pkmp_kodeigr','=',Session::get('connection'))
+                            ->where('pkmp_kodeigr','=',Session::get('kdigr'))
                             ->where('pkmp_prdcd','=',$d->mpl_plu)
                             ->first();
 

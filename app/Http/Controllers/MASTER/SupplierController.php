@@ -15,7 +15,7 @@ class SupplierController extends Controller
 
         $firstsupplier = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->select('sup_kodesupplier')
-            ->where('sup_kodeigr','=','22')
+            ->where('sup_kodeigr','=',Session::get('kdigr'))
             ->orderBy('sup_kodesupplier')
             ->first();
 

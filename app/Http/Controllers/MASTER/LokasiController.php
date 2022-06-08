@@ -22,16 +22,16 @@ class LokasiController extends Controller
             ->selectRaw('lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak')
 
             ->where('lks_koderak','LIKE', '%'.$search.'%')
-            ->where('lks_kodeigr','22')
+            ->where('lks_kodeigr',Session::get('kdigr'))
 
             ->orWhere('lks_kodesubrak','LIKE', '%'.$search.'%')
-            ->where('lks_kodeigr','22')
+            ->where('lks_kodeigr',Session::get('kdigr'))
 
             ->orWhere('lks_tiperak','LIKE', '%'.$search.'%')
-            ->where('lks_kodeigr','22')
+            ->where('lks_kodeigr',Session::get('kdigr'))
 
             ->orWhere('lks_shelvingrak','LIKE', '%'.$search.'%')
-            ->where('lks_kodeigr','22')
+            ->where('lks_kodeigr',Session::get('kdigr'))
 
             ->orderByRaw('lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak')
             ->distinct()
@@ -64,7 +64,7 @@ class LokasiController extends Controller
 
         $lokasi = DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
             ->selectRaw('lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak')
-            ->where('lks_kodeigr','22')
+            ->where('lks_kodeigr',Session::get('kdigr'))
             ->where('lks_koderak','like','%'.$request->koderak.'%')
             ->orderByRaw('lks_koderak, lks_kodesubrak, lks_tiperak, lks_shelvingrak')
             ->distinct()
@@ -91,7 +91,7 @@ class LokasiController extends Controller
                  NVL(PRD_DIMENSIPANJANG,0) as lks_dimensipanjangproduk,NVL(PRD_DIMENSILEBAR,0) as lks_dimensilebarproduk,NVL(PRD_DIMENSITINGGI,0) as lks_dimensitinggiproduk,NVL(PKM_PKMT,0) as pkm, lks_noid,
                  lks_tirkirikanan, lks_tirdepanbelakang, lks_tiratasbawah, lks_maxdisplay, lks_prdcd,
                  mpt_maxqty, lks_jenisrak, lks_minpct, lks_maxplano, lks_qty, lks_expdate, lks_delete, lks_depanbelakang, lks_atasbawah, lks_nourut")
-            ->where('lks_kodeigr','22')
+            ->where('lks_kodeigr',Session::get('kdigr'))
             ->where($request->data)
             ->orderBy('lks_nourut')
             ->get();
@@ -218,7 +218,7 @@ class LokasiController extends Controller
 
                     DB::connection(Session::get('connection'))->beginTransaction();
                     DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
-                        ->where('lks_kodeigr','22')
+                        ->where('lks_kodeigr',Session::get('kdigr'))
                         ->where('lks_koderak',$request->data['lks_koderak'])
                         ->where('lks_kodesubrak',$request->data['lks_kodesubrak'])
                         ->where('lks_tiperak',$request->data['lks_tiperak'])
@@ -243,7 +243,7 @@ class LokasiController extends Controller
                         ->selectRaw("PRD_DESKRIPSIPANJANG, TO_CHAR (PRD_FRAC) || '/' || PRD_UNIT AS SATUAN,
                            NVL (PRD_DIMENSIPANJANG, 0) as panjang, NVL (PRD_DIMENSILEBAR, 0) as lebar,
                            NVL (PRD_DIMENSITINGGI, 0) as tinggi, NVL (PKM_PKMT, 0) as pkm")
-                        ->where('prd_kodeigr','22')
+                        ->where('prd_kodeigr',Session::get('kdigr'))
                         ->where('prd_prdcd',$request->data['lks_prdcd'])
                         ->first();
 
@@ -271,7 +271,7 @@ class LokasiController extends Controller
 
                 DB::connection(Session::get('connection'))->beginTransaction();
                 DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
-                    ->where('lks_kodeigr','22')
+                    ->where('lks_kodeigr',Session::get('kdigr'))
                     ->where('lks_koderak',$request->data['lks_koderak'])
                     ->where('lks_kodesubrak',$request->data['lks_kodesubrak'])
                     ->where('lks_tiperak',$request->data['lks_tiperak'])
@@ -310,7 +310,7 @@ class LokasiController extends Controller
             else{
                 DB::connection(Session::get('connection'))->beginTransaction();
                 DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
-                    ->where('lks_kodeigr','22')
+                    ->where('lks_kodeigr',Session::get('kdigr'))
                     ->where('lks_koderak',$request->data['lks_koderak'])
                     ->where('lks_kodesubrak',$request->data['lks_kodesubrak'])
                     ->where('lks_tiperak',$request->data['lks_tiperak'])
@@ -357,7 +357,7 @@ class LokasiController extends Controller
 
         DB::connection(Session::get('connection'))->beginTransaction();
         DB::connection(Session::get('connection'))->table('tbmaster_lokasi')
-            ->where('lks_kodeigr','22')
+            ->where('lks_kodeigr',Session::get('kdigr'))
             ->where('lks_koderak',$request->data['lks_koderak'])
             ->where('lks_kodesubrak',$request->data['lks_kodesubrak'])
             ->where('lks_tiperak',$request->data['lks_tiperak'])
@@ -392,7 +392,7 @@ class LokasiController extends Controller
                 else {
                     DB::connection(Session::get('connection'))->table('tbtabel_dpd')
                         ->insert([
-                            'dpd_kodeigr' => '22',
+                            'dpd_kodeigr' => Session::get('kdigr'),
                             'dpd_noid' => $request->data['lks_noid'],
                             'dpd_koderak' => $request->data['lks_koderak'],
                             'dpd_kodesubrak' => $request->data['lks_kodesubrak'],
@@ -747,7 +747,7 @@ class LokasiController extends Controller
             }
             else{
                 $temp = [
-                    'dpd_kodeigr' => '22',
+                    'dpd_kodeigr' => Session::get('kdigr'),
                     'dpd_create_by' => Session::get('usid'),
                     'dpd_create_dt' => Carbon::now()
                 ];
