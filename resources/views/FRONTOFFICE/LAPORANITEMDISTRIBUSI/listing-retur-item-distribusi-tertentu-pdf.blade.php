@@ -11,7 +11,7 @@
 @endsection
 
 @section('subtitle')
-    Periode : 10 APRIL 2022
+    Periode : {{ $tgl1 }}
 @endsection
 
 @section('content')
@@ -33,33 +33,48 @@
         </tr>
         </thead>
         <tbody>
-        <tr>
-            <td class="right padding-right">1</td>
-            <td class="center">MM123456</td>
-            <td class="center">SPBD/KMY/13028</td>
-            <td class="center">75000</td>
-            <td class="center">SP123924</td>
-            <td class="center">75000</td>
-            <td class="center">0</td>
-        </tr>
-        <tr>
-            <th class="center" colspan="2">Total</th>
-            <th></th>
-            <th class="center">50000</th>
-            <th></th>
-            <th class="center">50000</th>
-            <th class="center">50000</th>
-        </tr>
+{{--        <tr>--}}
+{{--            <td class="right padding-right">1</td>--}}
+{{--            <td class="center">MM123456</td>--}}
+{{--            <td class="center">SPBD/KMY/13028</td>--}}
+{{--            <td class="center">75000</td>--}}
+{{--            <td class="center">SP123924</td>--}}
+{{--            <td class="center">75000</td>--}}
+{{--            <td class="center">0</td>--}}
+{{--        </tr>--}}
+
+        @php
+            $spbd = 0;
+            $usedSpbd = 0;
+            $selisih = 0;
+        @endphp
+        @foreach($data as $key => $d)
+            <tr>
+                <td class="right padding-right">{{ $key+1 }}</td>
+                <td class="center">{{ $d->vcrt_kodemember }}</td>
+                <td class="center">{{ $d->no_sp }}</td>
+                <td class="right">{{ number_format($d->vcrt_nominal) }}</td>
+                <td class="center">{{ $d->no_spbd == 'SPBD/KMY/' ? '' : $d->no_spbd }}</td>
+                <td class="right">{{ number_format($d->jh_voucheramt) }}</td>
+                <td class="right">{{ number_format($d->selisih) }}</td>
+            </tr>
+            @php
+                $spbd += $d->jh_voucheramt;
+                $usedSpbd += $d->vcrt_nominal;
+                $selisih += $d->selisih;
+            @endphp
+        @endforeach
+            <tr style="border-top: 1px solid black">
+                <td class="center" colspan="2">Total (Rp.)</td>
+                <td></td>
+                <td class="right">{{ number_format($usedSpbd) }}</td>
+                <td></td>
+                <td class="right">{{ number_format($spbd) }}</td>
+                <td class="right">{{ number_format($selisih) }}</td>
+            </tr>
         </tbody>
         <tfooter>
-            <tr>
-                <th colspan="10" class="left" style="font-style: italic">* Laporan atas pembelian item(s) distribusi tertentu selama periode
-                    penawaran
-                </th>
-            </tr>
-            <tr>
-                <th colspan="10" class="left" style="font-style: italic">** Berisi unit jual di Toko igr.</th>
-            </tr>
+
         </tfooter>
     </table>
 @endsection

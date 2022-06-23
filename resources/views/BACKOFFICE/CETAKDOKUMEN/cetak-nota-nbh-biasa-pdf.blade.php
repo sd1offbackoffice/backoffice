@@ -1,4 +1,5 @@
 @extends('pdf-template')
+{{-- @extends('html-template') --}}
 
 @section('table_font_size','7 px')
 

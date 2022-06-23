@@ -86,13 +86,10 @@
                             <label class="col-sm-3 text-right col-form-label pl-0">Tipe Monitoring</label>
                             <div class="col-sm-2 buttonInside pl-0">
                                 <select class="form-control" id="monitoring">
+                                    <option value="ALL" selected>ALL</option>
                                     @foreach($monitoring as $m)
-                                        <option value="{{ $m->mem_kodemonitoring == '' ? 'ALL' : $m->mem_kodemonitoring }}" @if($m->mem_kodemonitoring == '') selected @endif>
-                                            @if($m->mem_kodemonitoring == '')
-                                                ALL
-                                            @else
-                                                {{ $m->mem_kodemonitoring }} - {{ $m->mem_namamonitoring }}
-                                            @endif
+                                        <option value="{{ $m->mem_kodemonitoring }}">
+                                            {{ $m->mem_kodemonitoring }} - {{ $m->mem_namamonitoring }}
                                         </option>
                                     @endforeach
                                 </select>

@@ -38,26 +38,34 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
     $sub_potongan=0;
     $sub_dpp=0;
     $sub_ppn=0;
+    $sub_ppn_dtp=0;
+    $sub_ppn_bebas=0;
     $tot_gross=0;
     $tot_potongan=0;
     $tot_dpp=0;
     $tot_ppn=0;
-
+    $tot_ppn_dtp=0;
+    $tot_ppn_bebas=0;
     $tot_all_gross=0;
     $tot_all_potongan=0;
     $tot_all_dpp=0;
     $tot_all_ppn=0;
+    $tot_all_ppn_dtp=0;
+    $tot_all_ppn_bebas=0;
 
 @endphp
 
 @section('content')
-    <table class="table table-bordered table-responsive" style="border-collapse: collapse;" >
-        <thead style="border-top: 2px solid black;border-bottom: 2px solid black;" >
+    <table class="table table-bordered table-responsive" style="border-collapse: collapse;">
+        <thead style="border-top: 2px solid black;border-bottom: 2px solid black;">
         <tr>
             <th rowspan="2" colspan="2" class="left tengah">DEPARTEMEN</th>
             <th rowspan="2" class="right tengah">PENJUALAN KOTOR</th>
             <th rowspan="2" class="right tengah">POTONGAN</th>
             <th colspan="2" class="center tengah">-------PENYERAHAN-------</th>
+            <th rowspan="2" class="right tengah">BEBAS PPN</th>
+            <th rowspan="2" class="right tengah">PPN DTP</th>
+
         </tr>
         <tr>
             <th class="right">DPP</th>
@@ -70,19 +78,44 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
                 $sub_gross+=$data[$i]->ngross;
                 $sub_potongan+=$data[$i]->ncsb;
                 $sub_dpp+=$data[$i]->nnet;
-                $sub_ppn+=$data[$i]->ntax;
+                if($data[$i]->prd_flagbkp1 == 'Y' ){
+                    if($data[$i]->prd_flagbkp2 == 'Y'){
+                        $sub_ppn+=$data[$i]->ntax;
+                        $tot_ppn+=$data[$i]->ntax;
+                        $tot_all_ppn+=$data[$i]->ntax;
+                    }else if($data[$i]->prd_flagbkp2 == 'P'){
+                        $sub_ppn_bebas+=$data[$i]->ntax;
+                        $tot_ppn_bebas+=$data[$i]->ntax;
+                        $tot_all_ppn_bebas+=$data[$i]->ntax;
+                    }elseif($data[$i]->prd_flagbkp2 == 'G' || $data[$i]->prd_flagbkp2 == 'W'){
+                        $sub_ppn_dtp+=$data[$i]->ntax;
+                        $tot_ppn_dtp+=$data[$i]->ntax;
+                        $tot_all_ppn_dtp+=$data[$i]->ntax;
+                    }else{
+                        $sub_ppn+=$data[$i]->ntax;
+                        $tot_ppn+=$data[$i]->ntax;
+                        $tot_all_ppn+=$data[$i]->ntax;
+                    }
+                }else{
+                    $sub_ppn+=$data[$i]->ntax;
+                    $tot_ppn+=$data[$i]->ntax;
+                    $tot_all_ppn+=$data[$i]->ntax;
+                }
+
                 $tot_gross+=$data[$i]->ngross;
                 $tot_potongan+=$data[$i]->ncsb;
                 $tot_dpp+=$data[$i]->nnet;
-                $tot_ppn+=$data[$i]->ntax;
+
+
                 $tot_all_gross+=$data[$i]->ngross;
                 $tot_all_potongan+=$data[$i]->ncsb;
                 $tot_all_dpp+=$data[$i]->nnet;
-                $tot_all_ppn+=$data[$i]->ntax;
+
             @endphp
             @if($tempDiv != $data[$i]->div_namadivisi)
                 <tr>
-                    <td colspan="6" style="width: 20px; text-align: left"><b style="font-size: larger">{{$data[$i]->div_namadivisi}}</b> division
+                    <td colspan="6" style="width: 20px; text-align: left"><b
+                            style="font-size: larger">{{$data[$i]->div_namadivisi}}</b> division
                     </td>
                 </tr>
                 @php
@@ -90,14 +123,16 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
                 @endphp
             @endif
             @if(!isset($data[$i+1]->cdept) || ($tempDep != $data[$i+1]->cdept && isset($data[$i]->cdept)) )
-            <tr>
-                <td class="left">{{$data[$i]->cdept}}</td>
-                <td class="left">{{$data[$i]->dep_namadepartement}}</td>
-                <td class="right">{{rupiah($sub_gross)}}</td>
-                <td class="right">{{rupiah($sub_potongan)}}</td>
-                <td class="right">{{rupiah($sub_dpp)}}</td>
-                <td class="right">{{rupiah($sub_ppn)}}</td>
-            </tr>
+                <tr>
+                    <td class="left">{{$data[$i]->cdept}}</td>
+                    <td class="left">{{$data[$i]->dep_namadepartement}}</td>
+                    <td class="right">{{rupiah($sub_gross)}}</td>
+                    <td class="right">{{rupiah($sub_potongan)}}</td>
+                    <td class="right">{{rupiah($sub_dpp)}}</td>
+                    <td class="right">{{rupiah($sub_ppn)}}</td>
+                    <td class="right">{{rupiah($sub_ppn_bebas)}}</td>
+                    <td class="right">{{rupiah($sub_ppn_dtp)}}</td>
+                </tr>
                 @php
                     $tempDep=isset($data[$i+1]->cdept)?$data[$i+1]->cdept:'';
 
@@ -105,6 +140,8 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
                     $sub_potongan=0;
                     $sub_dpp=0;
                     $sub_ppn=0;
+                    $sub_ppn_bebas=0;
+                    $sub_ppn_dtp=0;
                 @endphp
             @endif
 
@@ -115,12 +152,16 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
                     <th class="right">{{rupiah($tot_potongan)}}</th>
                     <th class="right">{{rupiah($tot_dpp)}}</th>
                     <th class="right">{{rupiah($tot_ppn)}}</th>
+                    <th class="right">{{rupiah($tot_ppn_bebas)}}</th>
+                    <th class="right">{{rupiah($tot_ppn_dtp)}}</th>
                 </tr>
                 @php
                     $tot_gross = 0;
                     $tot_potongan = 0;
                     $tot_dpp = 0;
                     $tot_ppn = 0;
+                    $tot_ppn_bebas=0;
+                    $tot_ppn_dtp=0;
                 @endphp
             @endif
         @endfor
@@ -200,6 +241,8 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
             <td class="right">{{rupiah($tot_all_potongan)}}</td>
             <td class="right">{{rupiah($tot_all_dpp)}}</td>
             <td class="right">{{rupiah($tot_all_ppn)}}</td>
+            <td class="right">{{rupiah($tot_all_ppn_bebas)}}</td>
+            <td class="right">{{rupiah($tot_all_ppn_dtp)}}</td>
         </tr>
         </tbody>
     </table>

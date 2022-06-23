@@ -71,6 +71,10 @@
     <script>
         $(document).ready(function () {
             getAllData();
+
+            // var momentNow = moment();
+            // console.log(momentNow.format('DD-MM-YYYY'));
+            // console.log(momentNow.format('HH:mm:ss'));
         })
         $(document).keypress(function (e) {
             if (e.keyCode == 32) {

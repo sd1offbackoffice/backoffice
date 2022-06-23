@@ -12,7 +12,7 @@
                     <div class="card-body">
                         <div class="row justify-content-md-center">
                             <div class="col-sm-8 buttonInside">
-                                <input type="text" class="form-control" id="input" placeholder="..." value="">
+                                <input type="text" class="form-control" id="input" placeholder="..." value="" style="height: 40px">
                                 <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal"
                                         data-target="#m_plu">
                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
@@ -813,10 +813,12 @@
                                             style="border: 1px solid;border-bottom: 0px solid;border-left: 0px solid"
                                             colspan="4" scope="colgroup">PB
                                         </th>
-                                        <th class="text-center sticky-cell" style="border: 1px solid;border-bottom: 0px solid"
+                                        <th class="text-center sticky-cell"
+                                            style="border: 1px solid;border-bottom: 0px solid"
                                             colspan="2" scope="colgroup">PO
                                         </th>
-                                        <th class="text-center sticky-cell" style="border: 1px solid;border-bottom: 0px solid"
+                                        <th class="text-center sticky-cell"
+                                            style="border: 1px solid;border-bottom: 0px solid"
                                             colspan="2" scope="colgroup">BPB
                                         </th>
                                     </tr>
@@ -1237,7 +1239,7 @@
         </div>
     </div>
 
-{{--    modal notif--}}
+    {{--    modal notif--}}
     <div class="modal fade" id="m-notif" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" style="max-width: 80%"
@@ -1415,8 +1417,6 @@
                     errorHandlingforAjax(err)
                 }
             })
-
-
         }
 
         function get_data(value) {
@@ -1432,6 +1432,7 @@
                         $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                     },
                     success: function (response) {
+                        console.log(response)
                         if (response.length == 1) {
                             clearpage();
                             swal({
@@ -1440,8 +1441,11 @@
                             }).then((createData) => {
                             });
                         } else {
-                            if(response.message.length > 0  ){
-                                notif(response.message);
+                            if (response.message.length > 0) {
+                                if (response.stock[0].st_awal == 0 && response.stock[0].st_akhir == 0) {
+                                } else {
+                                    notif(response.message);
+                                }
                             }
                             $('#produk-penerimaan').val(response.produk['prd_deskripsipanjang'] + ' [' + response.produk['prd_prdcd'] + ']');
 
@@ -1838,6 +1842,7 @@
         $('#btn-keluar').on('click', function () {
             $('.page1').show();
             $('.page2').hide();
+            $('#input').focus();
         });
 
         function data_hargabeli(value) {

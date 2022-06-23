@@ -198,6 +198,9 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                  and psl_prdcd = pkm_prdcd ".$where."
             ORDER BY pkm_prdcd");
 
+            // and pkm_prdcd = '0222270'
+        // dd($data);
+
         foreach($data as $d){
             $ftltima = $d->sup_jangkawaktukirimbarang;
 
@@ -346,8 +349,8 @@ class EntryInqueryKertasKerjaPKMController extends Controller
             }
 
             $d->min = $txt_min;
-
-
+            // $d->min = 0;
+            // dd($txt_min);
 
             if($d->pkm_qtyaverage == 0){
                 $d->dsi = $d->pkm_qtyaverage;
@@ -373,7 +376,6 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                         FROM TBMASTER_PRODCRM
                         WHERE PRC_PLUIGR = '".$d->prd_prdcd."'
                         AND NVL (PRC_KODETAG, 'z') NOT IN ('A','R','N','O','H','X')");
-
                 if(count($temp) > 0){
                     $d->omi = 'Y';
                 }
@@ -383,10 +385,13 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                 $d->omi = '';
             }
 
-            $d->maxpalet = $d->mpt_maxqty;
-            $temp = $d->pkmx + (floatval($d->min) * 0.5);
 
+            $d->maxpalet = $d->mpt_maxqty;
+            
+            $temp = $d->pkmx + (floatval($d->min) * 0.5);
             $d->maxd = intval($d->maxd);
+            // $temp = $d->pkmx + ($d->min * 0.5);
+            // $d->maxd = $d->maxd;
 
             if($temp >= $d->maxd && $temp >= $d->maxpalet)
                 $d->slp = 'S';
@@ -394,19 +399,21 @@ class EntryInqueryKertasKerjaPKMController extends Controller
                 $d->slp = 'Sc';
             else if($temp < $d->maxd)
                 $d->slp = 'N';
-            else $d->slp = '';
+            else 
+                $d->slp = ' ';
 
+            // dd($d->slp);    
             $d->pkm_qtyaverage = number_format($d->pkm_qtyaverage,3);
 
-//            $d->acost = $d->prd_avgcost;
-//            $d->unit3 = $d->prd_unit;
-//            $d->frac = $d->prd_frac;
-//            $d->ndsi1 = 0;
-//            $d->ndsi2 = 0;
-//            $d->ntop = 0;
-//            $d->nmin_rp = 0;
-//            $d->nmid_rp = 0;
-//            $d->nrph1 = 0;
+           $d->acost = $d->prd_avgcost;
+           $d->unit3 = $d->prd_unit;
+           $d->frac = $d->prd_frac;
+           $d->ndsi1 = 0;
+           $d->ndsi2 = 0;
+           $d->ntop = 0;
+           $d->nmin_rp = 0;
+           $d->nmid_rp = 0;
+           $d->nrph1 = 0;
         }
 
         return DataTables::of($data)->make(true);
@@ -437,28 +444,28 @@ class EntryInqueryKertasKerjaPKMController extends Controller
         $usertype = Session::get('usertype');
         $data = new \stdClass();
 
-//        if($usertype == 'SM'){
-//            if($pkm > $mpkm * 10){
-//                return [
-//                    'status' => 'error',
-//                    'title' => 'Salah isian, PKM Toko tidak boleh lebih dari 10 x MPKM!'
-//                ];
-//            }
-//        }
-//        else if($usertype == 'SJM'){
-//            if($pkm > $mpkm * 5){
-//                return [
-//                    'status' => 'error',
-//                    'title' => 'Salah isian, PKM Toko tidak boleh lebih dari 5 x MPKM!'
-//                ];
-//            }
-//        }
-//        else{
-//            return [
-//                'status' => 'error',
-//                'title' => 'Anda tidak berhak mengubah nilai PKM!'
-//            ];
-//        }
+       if($usertype == 'SM'){
+           if($pkm > $mpkm * 10){
+               return [
+                   'status' => 'error',
+                   'title' => 'Salah isian, PKM Toko tidak boleh lebih dari 10 x MPKM!'
+               ];
+           }
+       }
+       else if($usertype == 'SJM'){
+           if($pkm > $mpkm * 5){
+               return [
+                   'status' => 'error',
+                   'title' => 'Salah isian, PKM Toko tidak boleh lebih dari 5 x MPKM!'
+               ];
+           }
+       }
+       else{
+           return [
+               'status' => 'error',
+               'title' => 'Anda tidak berhak mengubah nilai PKM!'
+           ];
+       }
 
         $recs = DB::connection(Session::get('connection'))->select("SELECT PRD_PRDCD,
                  PRD_KODEDIVISI,

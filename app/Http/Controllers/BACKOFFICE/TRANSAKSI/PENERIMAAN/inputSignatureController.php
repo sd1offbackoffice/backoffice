@@ -163,6 +163,43 @@ class inputSignatureController extends Controller
         return compact(['name']);
     }
 
+    public function otorisasi(Request $request)
+    {
+        $otoUser = strtoupper($request->otoUser);
+        $otoPass = strtoupper($request->otoPass);
+
+        $user = DB::connection(Session::get('connection'))->select("SELECT USERID
+        FROM  TBMASTER_USER
+        WHERE USERID = '$otoUser'");
+        if (!isset($user)) {
+            return response()->json(['kode' => 0, 'msg' => 'User tidak ditemukan']);
+        } else {
+            $username = $user[0]->userid;
+            $pass = DB::connection(Session::get('connection'))->select("SELECT USERID, USERPASSWORD
+            FROM  TBMASTER_USER
+            WHERE USERID = '$username'
+            AND   USERPASSWORD = '$otoPass'");
+            if (!isset($pass)) {
+                return response()->json(['kode' => 0, 'msg' => 'User tidak ditemukan']);
+            } else {
+                $result = DB::connection(Session::get('connection'))->select("SELECT USERLEVEL
+                FROM  TBMASTER_USER
+                WHERE USERID = '$otoUser'
+                AND   USERPASSWORD = '$otoPass'");
+
+                if ($result != null) {
+                    if ($result[0]->userlevel == 1) {
+                        return response()->json(['kode' => 0, 'msg' => 'Sukses']);
+                    } else {
+                        return response()->json(['kode' => 1, 'msg' => 'Kode Otorisasi MGR Tidak Terdaftar !!']);
+                    }
+                } else {
+                    return response()->json(['kode' => 1, 'msg' => 'Username/ Password salah']);
+                }
+            }
+        }
+    }
+
     public function showUser()
     {
         $records =  DB::connection(Session::get('connection'))->select("SELECT DISTINCT USERNAME, USERLEVEL, USERID

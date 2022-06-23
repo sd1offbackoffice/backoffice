@@ -16,6 +16,13 @@
           </advancedOptions>
         </fileTransfer>
       </webServer>
+      <webServer id="7995968e-c362-48bf-9fc2-cc63bcb614bb" name="igrckl" url="http://192.168.249.189:81/">
+        <fileTransfer rootFolder="/u01/web" accessType="SFTP" host="192.168.249.189" port="22" sshConfigId="38a4de3e-cdeb-4d1b-a290-396a96f560c8" sshConfig="igrckl">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>

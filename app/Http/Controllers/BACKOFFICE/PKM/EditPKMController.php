@@ -748,11 +748,13 @@ class EditPKMController extends Controller
                 ->where('pkmn_nousulan','=',substr($filename->getClientOriginalName(),0,11))
                 ->first();
 
-           if($temp){
-               return response()->json([
-                   'message' => 'File sudah pernah diproses!'
-               ], 500);
-           }
+            if($temp){
+                return response()->json([
+                    'message' => 'File sudah pernah diproses!'
+                ], 500);
+            }
+
+            
 
             if(substr($filename->getClientOriginalName(),0,6) != 'PKMN'.Session::get('kdigr')){
                 return response()->json([
@@ -761,19 +763,17 @@ class EditPKMController extends Controller
             }
 
             DB::connection(Session::get('connection'))
-                ->beginTransaction();
-
-            DB::connection(Session::get('connection'))
                 ->table('tbtemp_pkmbaru_migrasi')
                 ->delete();
-
+            
             foreach($data as $d){
                 $test_insert = DB::connection(Session::get('connection'))
                     ->table('tbtemp_pkmbaru_migrasi')
                     ->insert([
                         'kodeigr' => $d['KODEIGR'],
                         'nousulan' => $d['NOUSULAN'],
-                        'tglusulan' => DB::raw("TO_DATE('" . $d['TGLUSULAN'] . "','dd-mm-yy')"),
+                        // 'tglusulan' => DB::raw("TO_CHAR('" . $d['TGLUSULAN'] . "','dd-mm-yy')"),
+                        'tglusulan' => $d['TGLUSULAN'],
                         'prdcd' => $d['PRDCD'],
                         'mpkm' => $d['MPKM'],
                         'pkm' => $d['PKM'],
@@ -781,20 +781,20 @@ class EditPKMController extends Controller
                         'mplus_o' => $d['MPLUS_O'],
                         'pkmt' => $d['PKMT'],
                         'create_by' => $d['CREATE_BY'],
-                        'create_dt' => DB::raw("TO_DATE('" . $d['CREATE_DT'] . "','dd-mm-yy')")
+                        // 'create_dt' => DB::raw("TO_CHAR('" . $d['CREATE_DT'] . "','dd-mm-yy')")
+                        'create_dt' => $d['CREATE_DT']
                     ]);
             }
 
-
             $c = loginController::getConnectionProcedure();
-            $sql = "BEGIN sp_transfer_pkmprodbaru('" . Session::get('kdigr') . "','".Session::get('usid')."',:nousulan,:err_txt); END;";
+            $sql = "BEGIN sp_transfer_pkmprodbaru_new('" . Session::get('kdigr') . "','".Session::get('usid')."',:nousulan,:err_txt); END;";
             $s = oci_parse($c, $sql);
             oci_bind_by_name($s, ':err_txt', $err_txt, 200);
             oci_bind_by_name($s, ':nousulan', $nousulan, 200);
             oci_execute($s);
 
-            DB::connection(Session::get('connection'))
-                ->commit();
+            // DB::connection(Session::get('connection'))
+            //     ->commit();
             
             // dd($data[0]['NOUSULAN'],$data[0]['TGLUSULAN']);
 
@@ -805,8 +805,8 @@ class EditPKMController extends Controller
             ], 200);
         }
         catch (\Exception $e) {
-            DB::connection(Session::get('connection'))
-                ->rollBack();
+            // DB::connection(Session::get('connection'))
+            //     ->rollBack();
 
             return response()->json([
                 'message' => 'Gagal menyimpan data approval!',

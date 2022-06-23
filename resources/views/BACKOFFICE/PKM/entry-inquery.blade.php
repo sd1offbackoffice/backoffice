@@ -32,7 +32,8 @@
                         <div class="row form-group">
                             <label for="prdcd" class="col-sm-3 text-right col-form-label">DIVISI</label>
                             <div class="col-sm-2 buttonInside">
-                                <input type="text" class="form-control" id="div_kode" disabled value="1">
+                                <input type="text" class="form-control" id="div_kode" disabled>
+                                {{-- value="1" --}}
                                 <button id="btn_divisi" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_divisi">
                                     <i class="fas fa-question"></i>
                                 </button>
@@ -44,7 +45,8 @@
                         <div class="row form-group">
                             <label for="prdcd" class="col-sm-3 text-right col-form-label">DEPARTEMENT</label>
                             <div class="col-sm-2 buttonInside">
-                                <input type="text" class="form-control" id="dep_kode" disabled value="01">
+                                <input type="text" class="form-control" id="dep_kode" disabled>
+                                {{-- value="01" --}}
                                 <button id="btn_departement" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_departement">
                                     <i class="fas fa-question"></i>
                                 </button>
@@ -56,7 +58,8 @@
                         <div class="row form-group">
                             <label for="prdcd" class="col-sm-3 text-right col-form-label">KATEGORI BARANG</label>
                             <div class="col-sm-2 buttonInside">
-                                <input type="text" class="form-control" id="kat_kode" disabled value="01">
+                                <input type="text" class="form-control" id="kat_kode" disabled>
+                                {{-- value="01" --}}
                                 <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_kategori">
                                     <i class="fas fa-question"></i>
                                 </button>
@@ -70,7 +73,7 @@
                             <div class="col-sm-2">
                                 <select class="form-control" id="item" onchange="cekItem()">
                                     <option value="-" selected disabled>Pilih item</option>
-                                    <option value="1" selected>1 - NASIONAL</option>
+                                    <option value="1">1 - NASIONAL</option>
                                     <option value="2">2 - OMI / IDM</option>
                                 </select>
                             </div>
@@ -109,16 +112,8 @@
                             <div class="col-sm-3">
                                 <input type="text" class="mon form-control" id="mon" disabled>
                             </div>
-                            <label for="desk" class="ndsi1 col-sm-2 text-right col-form-label" style="margin-left: 150px;">NDSI 1</label>
-                            <div class="col-sm-1">
-                                <input type="text" class="form-control" id="ndsi1" disabled>
-                            </div>
-                            <label for="desk" class="ndsi2 col-sm-2 text-right col-form-label" style="margin-left: -200px;">NDSI 2</label>
-                            <div class="col-sm-1">
-                                <input type="text" class="form-control" id="ndsi2" disabled>
-                            </div>
-                            {{-- <div class="col"></div> --}}
-                            <label for="desk" class="col-sm-3 text-right col-form-label" style="margin-left: -250px;">DSI KAT</label>
+                            <div class="col"></div>
+                            <label for="desk" class="dsikat col-sm-3 text-right col-form-label">DSI KAT</label>
                             <div class="col-sm-1">
                                 <input type="text" class="form-control" id="dsikat" disabled>
                             </div>
@@ -168,6 +163,37 @@
                             <label for="desk" class="col-sm-2 text-right col-form-label">KETERANGAN</label>
                             <div class="col-sm-2">
                                 <input type="text" class="form-control" id="ketnewplu" disabled>
+                            </div>
+                        </div>
+                        <div class="row form-group d-flex justify-content-end">
+                            <label for="desk" class="ndsi1 text-right col-form-label">NDSI 1</label>
+                            <div class="col-sm-1">
+                                <input type="text" class="ndsi1 form-control" id="ndsi1" disabled>
+                            </div>
+                            {{-- <label for="" class="dividen col-form-label" style="margin-right: 15px;"><center>/</center></label> --}}
+                            <label for="desk" class="ndsi2 text-right col-form-label">NDSI 2</label>
+                            <div class="col-sm-1">
+                                <input type="text" class="ndsi2 form-control" id="ndsi2" disabled>
+                            </div>
+                            <label for="desk" class="ntop text-right col-form-label">NTOP</label>
+                            <div class="col-sm-1">
+                                <input type="text" class="ntop form-control" id="ntop" disabled>
+                            </div>
+                            {{-- <label for="desk" class="nrph1 text-right col-form-label">NRPH1</label>
+                            <div class="col-sm-1">
+                                <input type="text" class="nrph1 form-control" id="nrph1" disabled>
+                            </div> --}}
+                            <label for="desk" class="nrph1 text-right col-form-label">NRPH1</label>
+                            <div class="col-sm-1">
+                                <input type="text" class="nrph1 form-control" id="nrph1" disabled>
+                            </div>
+                            <label for="desk" class="nmid_rp text-right col-form-label">NMID RP</label>
+                            <div class="col-sm-1">
+                                <input type="text" class="nmid_rp form-control" id="nmid_rp" disabled>
+                            </div>
+                            <label for="desk" class="nmin_rp text-right col-form-label">NMIN RP</label>
+                            <div class="col-sm-1">
+                                <input type="text" class="nmin_rp form-control" id="nmin_rp" disabled>
                             </div>
                         </div>
                         <hr>
@@ -822,6 +848,12 @@
                 $('.kat').hide();
                 $('.div').hide();
                 $('.mon').hide();
+                // $('.ndsi1').hide();
+                // $('.ndsi2').hide();
+                // $('.ntop').hide();
+                // $('.nrph1').hide();
+                // $('.nmid_rp').hide();
+                // $('.nmin_rp').hide();
             }
             else if(type == 'divdepkat'){
                 $('#div').val($('#div_kode').val() + ' - ' + $('#div_nama').val());
@@ -851,6 +883,13 @@
                 $('.kat').hide();
                 $('.div').hide();
                 $('.mon').show();
+                // $('.ndsi1').hide();
+                // $('.ndsi2').hide();
+                // $('.dividen').hide();
+                // $('.ntop').hide();
+                // $('.nrph1').hide();
+                // $('.nmid_rp').hide();
+                // $('.nmin_rp').hide();
             }
 
             dataDetail = [];
@@ -1074,17 +1113,16 @@
             nmid_rp = 0;
             ndsi2 = 0;
             nrph1 = 0;
+            acost = 0;
 
             tag = ['N','H','O','X','A','G'];
 
             for(i=0;i<dataDetail.length;i++){
-                // console.log($.inArray(dataDetail[i].prd_kodetag, tag));
+              
                 if($.inArray(dataDetail[i].prd_kodetag, tag) == -1){
                     acost = parseInt(parseFloat(dataDetail[i].prd_avgcost) / (dataDetail[i].prd_unit == 'KG' ? 1 : parseInt(dataDetail[i].prd_frac)));
 
                     ndsi1 += parseFloat((dataDetail[i].pkmx) * acost);
-                    // console.log(parseFloat(dataDetail[0].pkmx),'INI PKMX');
-                    // console.log(acost,'INI ACOST');
                     ntop += (parseFloat(dataDetail[i].jtopa) * acost);
                     nmin_rp += (parseFloat(dataDetail[i].min) * acost);
                     nmid_rp += (parseFloat(dataDetail[i].pkm_mindisplay) * acost);
@@ -1102,6 +1140,12 @@
             // console.log(nmid_rp/ndsi2);
             // console.log(nmin_rp/ndsi2);
 
+            $('#ndsi1').val((ndsi1));
+            $('#ndsi2').val((ndsi2));
+            $('#ntop').val((ntop));
+            $('#nrph1').val((nrph1));
+            $('#nmid_rp').val((nmid_rp));
+            $('#nmin_rp').val((nmin_rp));
             $('#dsikat').val(ndsi2 === 0 ? 0 : Math.round(ndsi1/ndsi2));
             $('#topkat').val(nrph1 === 0 ? 0 : Math.round(ntop/nrph1));
             $('#mindis').val(ndsi2 === 0 ? 0 : Math.round(nmid_rp/ndsi2));

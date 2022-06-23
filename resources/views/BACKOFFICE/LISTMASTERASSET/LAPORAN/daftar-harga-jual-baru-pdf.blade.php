@@ -66,6 +66,7 @@
         </thead>
         <tbody style="text-align: center; vertical-align: middle">
         @for($i=0;$i<sizeof($data);$i++)
+            @if($data[$i]->prd_hrgjual !='' || $data[$i]->prd_hrgjual > 0 )
             @if($sort < 3)
                 @if($data[$i]->prd_kodedivisi != $divisi || $data[$i]->prd_kodedepartement != $departement || $data[$i]->prd_kodekategoribarang != $kategori)
                     @if($katProduk!=0)
@@ -141,6 +142,7 @@
                     $produkHolder = $data[$i]->prd_prdcd;
                 }
             @endphp
+            @endif
         @endfor
         @if($sort<3)
             <tr style="font-weight: bold; text-align: left">

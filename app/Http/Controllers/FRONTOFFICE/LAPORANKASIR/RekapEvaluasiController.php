@@ -264,84 +264,7 @@ class RekapEvaluasiController extends Controller
 
 //        dd($data);
 
-        $dompdf = new PDF();
-
-        if(count($data) == 0){
-            $title = 'EVALUASI LANGGANAN PER MEMBER '.$tgl1.' - '.$tgl2;
-
-            $pdf = PDF::loadview('pdf-no-data', compact(['title']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-        }
-        else{
-            $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.rekap-evaluasi-rekap-pdf',compact(['perusahaan','data','tgl1','tgl2','counter','total_kunj','total_rupiah','total_margin']));
-
-            error_reporting(E_ALL ^ E_DEPRECATED);
-
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            $canvas = $dompdf ->get_canvas();
-            $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-        }
-
-        $dompdf = $pdf;
-
-        return $dompdf->stream('Evaluasi per Member '.$tgl1.' - '.$tgl2.'.pdf');
-    }
-
-    public function printDsetail(){
-        // Include the main TCPDF library (search for installation path).
-        require_once('tcpdf_include.php');
-
-// create new PDF document
-        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
-// set document information
-        $pdf->SetCreator(PDF_CREATOR);
-        $pdf->SetAuthor('Our Code World');
-        $pdf->SetTitle('Example Write Html');
-
-// set default header data
-        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 006', PDF_HEADER_STRING);
-
-// set header and footer fonts
-        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-
-// set default monospaced font
-        $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
-// set margins
-        $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-        $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
-        $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-// set auto page breaks
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
-// set image scale factor
-        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-// add a page
-        $pdf->AddPage();
-
-        $html = '<h4>PDF Example</h4><br><p>Welcome to the Jungle</p>';
-
-        $pdf->writeHTML($html, true, false, true, false, '');
-// add a page
-        $pdf->AddPage();
-
-        $html = '<h1>Hey</h1>';
-// output the HTML content
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-// reset pointer to the last page
-        $pdf->lastPage();
-//Close and output PDF document
-        return $pdf->Output('example_006.pdf', 'I');
+        return view('FRONTOFFICE.LAPORANKASIR.rekap-evaluasi-rekap-pdf',compact(['perusahaan','data','tgl1','tgl2','counter','total_kunj','total_rupiah','total_margin']));
     }
 
     public function printDetail(Request $request){
@@ -393,6 +316,8 @@ class RekapEvaluasiController extends Controller
 
             $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
                 ->first();
+
+
 
             $data = DB::connection(Session::get('connection'))->select("SELECT out_namaoutlet, sub_namasuboutlet, cus_namamember fNama, subnumb,
 		   cus_kodeoutlet AS fOutlt, upper(cus_kodesuboutlet) AS fsoutl, cusNo AS fCusNo, wFreq AS fwFreq, fwSlip, fbmemb, fwProd, wAmt AS fwAmt,lCost AS flCost, (wamt-lcost) AS fGrsMargn
@@ -477,39 +402,7 @@ class RekapEvaluasiController extends Controller
  	  AND sub_kodesuboutlet (+) = UPPER(cus_kodesuboutlet)
  	".$where_suboutlet."
 	".$order);
-
-//            dd(response()->json($data));
-
-//            return view('FRONTOFFICE.LAPORANKASIR.rekap-evaluasi-detail-pdf',compact(['perusahaan','data','tgl1','tgl2']));
-
-            $dompdf = new PDF();
-
-            $title = 'Evaluasi per Member '.$tgl1.' - '.$tgl2;
-
-            if(count($data) == 0){
-                $pdf = PDF::loadview('pdf-no-data', compact(['title']));
-
-                error_reporting(E_ALL ^ E_DEPRECATED);
-
-                $pdf->output();
-                $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-            }
-            else{
-                return view('FRONTOFFICE.LAPORANKASIR.rekap-evaluasi-detail-pdf',compact(['perusahaan','data','tgl1','tgl2']));
-                $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.rekap-evaluasi-detail-pdf',compact(['perusahaan','data','tgl1','tgl2']));
-
-                error_reporting(E_ALL ^ E_DEPRECATED);
-
-                $pdf->output();
-                $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-                $canvas = $dompdf ->get_canvas();
-                $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-            }
-
-            $dompdf = $pdf;
-
-            return $dompdf->stream($title.'.pdf');
+            return view('FRONTOFFICE.LAPORANKASIR.rekap-evaluasi-detail-pdf',compact(['perusahaan','data','tgl1','tgl2']));
         }
         catch (\Exception $e){
             dd($e->getMessage());

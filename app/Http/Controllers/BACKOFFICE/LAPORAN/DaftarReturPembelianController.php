@@ -290,6 +290,7 @@ class DaftarReturPembelianController extends Controller
             mstd_kodedepartement, dep_namadepartement,
             mstd_kodekategoribrg, kat_namakategori
         order by mstd_kodedivisi, mstd_kodedepartement, mstd_kodekategoribrg, msth_nodoc, plu");
+        // dd($data);
         
 
             // return view('BACKOFFICE.LAPORAN.daftar-retur-pembelian-ringkasan-divdepkat-backup-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2']));

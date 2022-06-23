@@ -79,7 +79,7 @@
                                         </div>
                                         <div class="offset-1 col-sm-2">
                                             <button type="button" id="btnUsulanRetur" data-target="#m_usulan_retur"
-                                                    data-toggle="modal" class="btn btn-info"><i
+                                                    class="btn btn-info"><i
                                                     class="icon fas fa-upload"></i> Usulan Retur
                                             </button>
                                         </div>
@@ -128,13 +128,13 @@
                                 <thead class="theadDataTables">
                                 <tr class="table-sm text-center">
                                     <th width="7%" class="text-center small">PLU</th>
-                                    <th width="16%" class="text-center small">DESKRIPSI</th>
+                                    <th width="10%" class="text-center small">DESKRIPSI</th>
                                     <th width="6%" class="text-center small">SATUAN</th>
                                     <th width="3%" class="text-center small">BKP</th>
                                     <th width="4%" class="text-center small">STOCK</th>
                                     <th width="7%" class="text-center small">HRG.SATUAN (IN CTN)</th>
-                                    <th width="3%" class="text-center small">CTN</th>
-                                    <th width="3%" class="text-center small">PCS</th>
+                                    <th width="6%" class="text-center small">CTN</th>
+                                    <th width="6%" class="text-center small">PCS</th>
                                     <th width="7%" class="text-center small">GROSS</th>
                                     <th width="4%" class="text-center small">DISC %</th>
                                     <th width="7%" class="text-center small">DISC Rp</th>
@@ -302,7 +302,7 @@
     </div>
 
     <div class="modal fade" id="m_usulan_retur" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -1743,7 +1743,7 @@
                         pkp: pkp,
                     },
                     beforeSend: function () {
-                        $('#modal-loader').modal('show');
+                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                     },
                     success: function (response) {
                         $('#modal-loader').modal('hide');
@@ -1990,6 +1990,7 @@
                         //         }
                         //     });
                     }, error: function (error) {
+                        $('#modal-loader').modal('hide');
                         console.log(error);
                     }
                 });
@@ -2125,6 +2126,7 @@
         });
 
         function getDataUsulan() {
+            $('#m_usulan_retur').modal({backdrop: 'static', keyboard: false});
             let nodoc = $('#txtNoDoc').val();
             let kdsup = $('#txtKdSupplier').val();
             let pkp = $('#txtPKP').val();
@@ -2149,10 +2151,10 @@
                     kdsup: kdsup
                 },
                 beforeSend: function () {
-                    // $('#modal-loader').modal('show');
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function (response) {
-                    // $('#modal-loader').modal('hide');
+                    $('#modal-loader').modal('hide');
                     if (response.message) {
 
                         swal({
@@ -2233,15 +2235,15 @@
                     tgldoc: tgldoc
                 },
                 beforeSend: function () {
-                    // $('#modal-loader').modal('show');
+                    $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function (response) {
-                    // $('#modal-loader').modal('hide');
+                    $('#modal-loader').modal('hide');
                     if (response.message) {
                         swal({
                             title: response.status,
                             text: response.message,
-                            icon: response.status
+                            icon: response.status,                            
                         }).then(() => {
                         });
                     }
@@ -2251,7 +2253,7 @@
 
                 },
                 error: function (error) {
-                    // $('#modal-loader').modal('hide');
+                    $('#modal-loader').modal('hide');
                     // handle error
                     swal({
                         title: 'Gagal!',

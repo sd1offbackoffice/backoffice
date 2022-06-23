@@ -33,7 +33,8 @@ class strukperkasirController extends Controller
         $typeTransaksi = $request->type;
 
         if($typeTransaksi == 'S'){
-            $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah, TRUNC(jh_transactiondate) jh_transactiondate, jh_cashierstation, jh_cashierid||'-'||username jh_cashier, jh_transactionno, jh_transactionamt
+            $datas = DB::connection(Session::get('connection'))->select("
+            SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah, TRUNC(jh_transactiondate) jh_transactiondate, jh_cashierstation, jh_cashierid||'-'||username jh_cashier, jh_transactionno, jh_transactionamt
 FROM TBTR_JUALHEADER, TBMASTER_PERUSAHAAN, TBMASTER_USER
 WHERE jh_kodeigr = prs_kodeigr
   AND prs_kodeigr = '$kodeigr'

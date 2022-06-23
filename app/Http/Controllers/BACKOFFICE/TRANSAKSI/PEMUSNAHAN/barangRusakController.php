@@ -45,6 +45,16 @@ class barangRusakController extends Controller
         return Datatables::of($datas)->make(true);
     }
 
+    public function getKeterangan(){
+        $data = DB::connection(Session::get('connection'))
+        ->table('tbmaster_keteranganbarangrusak')
+        ->select('kbr_tipe','kbr_tipeid')
+        ->orderBy('kbr_tipeid')
+        ->get();
+        
+        return response()->json($data);
+    }
+
     public function getNewNmrTrn(){
         $kodeigr = Session::get('kdigr');
 

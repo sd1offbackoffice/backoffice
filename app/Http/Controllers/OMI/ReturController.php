@@ -1312,7 +1312,7 @@ class ReturController extends Controller
 
                                     $plujual = $plu->prd_prdcd;
                                     $hrgprd = $plu->prd_hrgjual;
-                                    $new_ppn = isset($rec->prd_ppn)?1 + ($rec->prd_ppn/100):1.1 ;
+                                    $new_ppn = (1+self::nvl($rec->rom_persenppn,10)/100) ;
 
                                     $seqno++;
                                     $step = 29;
@@ -1577,7 +1577,7 @@ class ReturController extends Controller
 
                     foreach($recs as $rec){
                         $step = 36;
-                        $new_ppn = isset($rec->prd_ppn)?1 + ($rec->prd_ppn/100):1.1 ;
+                        $new_ppn = (1+Self::nvl($rec->rom_persenppn,10)/100);
                         $rpretur = $rpretur + ($rec->rom_qty * $rec->rom_hrg);
 
                         if(self::nvl($rec->prd_flagbkp1, 'N') == 'Y'){
@@ -1944,9 +1944,9 @@ ORDER BY rom_nodokumen, rom_prdcd");
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
 
         $data = DB::connection(Session::get('connection'))->select("SELECT rom_noreferensi, to_char(rom_tglreferensi, 'dd/mm/yyyy') rom_tglreferensi, rom_kodetoko,
-                prc_pluomi, prd_deskripsipendek, prd_unit||'/'||prd_frac kemasan, rom_qty, rom_ttl, tko_namaomi, prd_ppn,
+                prc_pluomi, prd_deskripsipendek, prd_unit||'/'||prd_frac kemasan, rom_qty, rom_ttl, tko_namaomi, rom_persenppn,
                 CASE WHEN prd_flagbkp2 = 'Y' THEN
-                       rom_ttl / (1 + (prd_ppn/ 100) )
+                       rom_ttl / (1 + (nvl(rom_persenppn,10)/ 100) )
                 ELSE
                        rom_ttl
                 END nilai
@@ -2034,20 +2034,20 @@ ORDER BY rom_nodokumen, rom_prdcd");
         //perubahan ppn hen
         $data = DB::connection(Session::get('connection'))->select("SELECT rom_nodokumen, TRUNC(rom_tgldokumen) tgldok, rom_noreferensi, rom_tglreferensi, rom_nopo,
                 rom_member, rom_tgljatuhtempo, rom_prdcd, prd_deskripsipanjang, prd_unit||'/'||prd_frac kemasan,
-                rom_flagbkp, rom_flagbkp2, rom_qty, rom_qtyrealisasi, rom_hrg, rom_ttl, prd_ppn,
+                rom_flagbkp, rom_flagbkp2, rom_qty, rom_qtyrealisasi, rom_hrg, rom_ttl, rom_persenppn
                 cus_namamember, cus_alamatmember1|| ' ' || cus_alamatmember2 alamat,
                 CASE WHEN nvl(rom_flagbkp,'N') = 'Y' THEN
-                       hso_hrgsatuan1 / (1 + (prd_ppn/ 100) )
+                       hso_hrgsatuan1 / (1 + (nvl(rom_persenppn,10)/ 100) )
                 ELSE
                        hso_hrgsatuan1 / 1
                 END hrgsat1,
                 CASE WHEN nvl(rom_flagbkp,'N') = 'Y' THEN
-                       hso_hrgsatuan2 / (1 + (prd_ppn/ 100) )
+                       hso_hrgsatuan2 / (1 + (nvl(rom_persenppn,10)/ 100) )
                 ELSE
                        hso_hrgsatuan2 / 1
                 END hrgsat2,
                 CASE WHEN nvl(rom_flagbkp,'N') = 'Y' THEN
-                       hso_hrgsatuan3 / (1 + (prd_ppn/ 100) )
+                       hso_hrgsatuan3 / (1 + (nvl(rom_persenppn,10)/ 100) )
                 ELSE
                        hso_hrgsatuan3 / 1
                 END hrgsat3,
@@ -2138,16 +2138,16 @@ ORDER BY rom_nodokumen, rom_prdcd");
         $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT rom_nodokumen, TO_CHAR(rom_tgldokumen, 'dd/mm/yyyy') tgldokumen, rom_noreferensi, TO_CHAR(rom_tglreferensi,'dd/mm/yyyy') rom_tglreferensi,
                 rom_prdcd, prd_deskripsipanjang, prd_deskripsipendek, prd_unit||'/'||prd_frac kemasan, cus_kodemember,
                 cus_namamember,  rom_namadrive, rom_kodekasir, rom_station, rom_jenistransaksi, rom_qty, rom_qtyselisih,
-                rom_hrg, rom_ttl, trjd_discount, prd_prdcd, rom_flagbkp, rom_flagbkp2, prd_ppn,
+                rom_hrg, rom_ttl, trjd_discount, prd_prdcd, rom_flagbkp, rom_flagbkp2, rom_persenppn,
                 CASE WHEN nvl(rom_flagbkp,'N') <> 'Y' OR nvl(rom_flagbkp2,'N') IN('P','G','W') THEN
                        rom_ttl
                 ELSE
-                       rom_ttl / (1 + (prd_ppn/ 100) )
+                       rom_ttl / (1 + (nvl(rom_persenppn,10)/ 100) )
                 END Total,
                 CASE WHEN nvl(rom_flagbkp,'N') <> 'Y' OR nvl(rom_flagbkp2,'N') IN('P','G','W') THEN
                        0
                 ELSE
-                       rom_ttl - (rom_ttl / (1 + (prd_ppn/ 100) ) )
+                       rom_ttl - (rom_ttl / (1 + (nvl(rom_persenppn,10)/ 100) ) )
                 END Ppn
             FROM TBTR_RETUROMI, TBMASTER_PRODMAST, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
             WHERE rom_kodeigr = '".Session::get('kdigr')."'
@@ -2312,8 +2312,11 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                     TO_CHAR (ROM_TGLREFERENSI, 'dd/MM/yyyy') TANGGAL_RETUR,
                                     TO_NUMBER (TO_CHAR (ROM_TGLREFERENSI, 'MM')) MASA_PAJAK_RETUR,
                                     TO_NUMBER (TO_CHAR (ROM_TGLREFERENSI, 'yyyy')) TAHUN_PAJAK_RETUR,
-                                    (RPJ_NILAI / 1.1) NILAI_RETUR_DPP,
-                                    ((RPJ_NILAI / 1.1) * 0.1) NILAI_RETUR_PPN, 0 NILAI_RETUR_PPNBM
+                                    --(RPJ_NILAI / 1.1) NILAI_RETUR_DPP,
+                                    (RPJ_NILAI / ((1+nvl(rom_persenppn,10)/100))) NILAI_RETUR_DPP,
+                                    ((RPJ_NILAI / (1+nvl(rom_persenppn,10)/100)) * (nvl(rom_persenppn,10)/100) ) NILAI_RETUR_PPN,
+                                    --((RPJ_NILAI / 1.1) * 0.1) NILAI_RETUR_PPN,
+                                     0 NILAI_RETUR_PPNBM
                                FROM TBTR_RETUROMI,
                                     TBTR_RETUROMI_PAJAK,
                                     TBMASTER_CUSTOMER,
@@ -2353,7 +2356,6 @@ ORDER BY rom_nodokumen, rom_prdcd");
                           MASA_PAJAK_RETUR,
                           TAHUN_PAJAK_RETUR");
 
-//                    dd($data);
 
         $columnHeader = [
             'RK',
@@ -2922,7 +2924,8 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                TBMASTER_PRODMAST.PRD_FLAGBKP1,
                                                TBMASTER_PRODMAST.PRD_FLAGBKP2,
                                                TBMASTER_TOKOIGR.TKO_KODECUSTOMER,
-                                               TBMASTER_TOKOIGR.TKO_FLAGVB
+                                               TBMASTER_TOKOIGR.TKO_FLAGVB,
+                                               VNPPN
                                           FROM TEMP_RETUR_OMI,
                                                TBMASTER_PRODCRM,
                                                TBMASTER_PRODMAST,
@@ -2962,7 +2965,8 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                PRD_FLAGBKP1,
                                                PRD_FLAGBKP2,
                                                TKO_KODECUSTOMER,
-                                               TKO_FLAGVB");
+                                               TKO_FLAGVB,
+                                               VNPPN");
 
                                 foreach($recnos as $recno){
                                     if(in_array($recno->prd_flagbkp2, ['P','G','W','C','N'])){
@@ -2997,6 +3001,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                         ->where('rom_tglreferensi','=',$recno->bukti_tgl)
                                         ->where('rom_kodetoko','=',$recno->gudang)
                                         ->where('rom_prdcd','=',$recno->prd_prdcd)
+                                        ->where('rom_persenppn','=',$recno->vnppn)
                                         ->first();
 
                                     if(!$temp){
@@ -3016,6 +3021,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                 ->where('rpj_nodokumen','=',$nodoc)
                                                 ->whereRaw("TRUNC(rpj_tgldokumen) = TRUNC(SYSDATE)")
                                                 ->where('rpj_prdcd','=',$recno->prd_prdcd)
+                                                ->where('rpj_persenppn','=',$recno->vnppn)
                                                 ->first();
 
                                             if($temp){
@@ -3024,16 +3030,18 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                     ->where('rpj_nodokumen','=',$nodoc)
                                                     ->whereRaw("TRUNC(rpj_tgldokumen) = TRUNC(SYSDATE)")
                                                     ->where('rpj_prdcd','=',$recno->prd_prdcd)
+                                                    ->where('rpj_persenppn','=',$recno->vnppn)
                                                     ->delete();
                                             }
 
                                             $recpjks = DB::connection(Session::get('connection'))->select("SELECT BUKTI_NO, BUKTI_TGL, PRDCD, INVNO,
                                                           INV_DATE, PO_NO, PO_DATE, ISTYPE, KETER,
-                                                          NOSPH, TGLSPH, GROSS, PPN
+                                                          NOSPH, TGLSPH, GROSS, PPN, VNPPN
                                                      FROM TEMP_RETUR_OMI
                                                     WHERE BUKTI_NO = '".$rec->bukti_no."'
                                                       AND SESSID = '".$sesiproc."'
                                                       AND NAMAFILE = '".$namaFileR."'
+                                                      AND VNPPN = '".$recno->vnppn."'
                                                       AND PRDCD = '".$recno->prdcd."'");
 
                                             foreach($recpjks as $recpjk){
@@ -3062,7 +3070,8 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                         'rpj_referensitglfp' => $recpjk->po_date,
                                                         'rpj_nilai' => ($recpjk->gross + self::nvl($recpjk->ppn, 0)),
                                                         'rpj_create_by' => Session::get('usid'),
-                                                        'rpj_create_dt' => Carbon::now()
+                                                        'rpj_create_dt' => Carbon::now(),
+                                                        'rpj_persenppn' => $recpjk->vnppn
                                                     ]);
                                             }
 
@@ -3097,6 +3106,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                     'ROM_TTLNILAI' => 0,
                                                     'ROM_QTYTLR' => 0,
                                                     'ROM_REFERENSISTRUK' => 'VB',
+                                                    'ROM_PERSENPPN' => $recno->vnppn,
                                                 ]);
                                         }
                                         else{
@@ -3128,7 +3138,8 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                     'ROM_CREATE_DT' => Carbon::now(),
                                                     'ROM_HRGSATUAN' => 0,
                                                     'ROM_TTLNILAI' => 0,
-                                                    'ROM_QTYTLR' => 0
+                                                    'ROM_QTYTLR' => 0,
+                                                    'ROM_PERSENPPN' => $recno->vnppn
                                                 ]);
                                         }
                                     }
@@ -3151,12 +3162,11 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                        AND PRD_PRDCD = ROM_PRDCD");
 
                                 foreach($recs as $rec){
-                                    $new_ppn = isset($rec->prd_ppn)?1 + ($rec->prd_ppn/100):1.1;
                                     $rpretur = $rpretur + ($rec->rom_qty * $rec->rom_hrg);
 
                                     if(self::nvl($rec->prd_flagbkp1,'N') == 'Y'){
                                         if(in_array(self::nvl($rec->prd_flagbkp2,'N'), ['P','G','W'])){
-                                            $ppnretur = $ppnretur + round((($rec->rom_hrg - ($rec->rom_hrg / $new_ppn)) * $rec->rom_qty),0);
+                                            $ppnretur = $ppnretur + round((($rec->rom_hrg - ($rec->rom_hrg / 1+ self::nvl($rec->rom_persenppn,10)/100)) * $rec->rom_qty),0);
                                         }
                                     }
                                 }

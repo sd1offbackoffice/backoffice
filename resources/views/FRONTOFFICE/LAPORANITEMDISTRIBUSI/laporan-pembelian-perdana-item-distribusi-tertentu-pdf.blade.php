@@ -40,21 +40,40 @@
         </tr>
         </thead>
         <tbody>
+        @php
+            $no = 1;
+            $total = 0;
+            $tempKodeMember = 0;
+        @endphp
+        @for($i=0;$i<sizeof($data);$i++)
         <tr>
-            <td class="right padding-right">1</td>
-            <td class="left">MM123456</td>
-            <td class="center">ONL/AL/00001</td>
-            <td class="center">1-jan-22</td>
-            <td class="center">1283892</td>
-            <td class="left ">adamkdmkamdadka</td>
-            <td class="left ">Pcs</td>
-            <td class="right ">50</td>
-            <td class="right ">5000</td>
-            <td class="right">50000</td>
+            @if($tempKodeMember != $data[$i]->cus_kodemember)
+                <td class="right padding-right">{{$no}}.</td>
+                <td class="left">{{$data[$i]->cus_kodemember}}</td>
+                @php
+                    $no++;
+                    $tempKodeMember = $data[$i]->cus_kodemember;
+                @endphp
+            @else
+                <td class="right padding-right"></td>
+                <td class="left"></td>
+            @endif
+            <td class="center">{{$data[$i]->struk_penjualan}}</td>
+            <td class="center">{{ date('d-M-Y',strtotime(substr($data[$i]->transaction_date,0,10))) }}</td>
+            <td class="center">{{$data[$i]->trjd_prdcd}}</td>
+            <td class="left ">{{$data[$i]->prd_deskripsipendek}}</td>
+            <td class="center ">{{$data[$i]->prd_unit}}</td>
+            <td class="right ">{{$data[$i]->trjd_quantity}}</td>
+            <td class="right ">{{number_format($data[$i]->trjd_unitprice, 2, '.', ',')}}</td>
+            <td class="right">{{number_format($data[$i]->total, 2, '.', ',')}}</td>
         </tr>
-        <tr>
+        @php
+            $total += $data[$i]->total;
+        @endphp
+        @endfor
+        <tr style="border-top: 1px solid black;border-bottom: 1px solid black">
             <th class="center" colspan="9">Total</th>
-            <th class="right">50000</th>
+            <th class="right">{{number_format($total, 2, '.', ',')}}</th>
         </tr>
         </tbody>
         <tfooter>

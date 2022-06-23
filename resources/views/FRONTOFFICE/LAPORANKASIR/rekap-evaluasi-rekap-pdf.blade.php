@@ -1,4 +1,4 @@
-@extends('pdf-template')
+@extends('html-template')
 
 @section('page_title')
     Evaluasi Langganan Per Member {{ $tgl1 }} - {{ $tgl2 }}
@@ -20,6 +20,9 @@
 @endsection
 
 @section('content')
+    @if(sizeof($data)==0)
+        <h1>tidak ada data</h1>
+    @else
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
@@ -64,6 +67,7 @@
             $tot_cost_lain = 0;
             $tot_mbr_lain = 0;
         @endphp
+
         @foreach($data as $d)
             @if($d->otmemb != null)
                 @php
@@ -194,4 +198,5 @@
         {{--        </tr>--}}
         </tfoot>
     </table>
+    @endif
 @endsection

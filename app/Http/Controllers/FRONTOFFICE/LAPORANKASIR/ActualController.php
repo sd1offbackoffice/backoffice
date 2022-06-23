@@ -220,7 +220,7 @@ class ActualController extends Controller
 
             // dd($ppnTepung);
 
-            $ppnTepung->keterangan = 'TOTAL BARANG PPN DIBAYAR PEMERINTAH';
+            $ppnTepung->keterangan = 'TOTAL BARANG PPN DITANGGUNG PEMERINTAH';
 
             DB::connection(Session::get('connection'))->table('cetak_sums')
                 ->insert(json_decode(json_encode($ppnTepung), true));

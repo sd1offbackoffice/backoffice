@@ -103,43 +103,42 @@ class JenisItemController extends Controller
         $X1 = 0;
 
         $FMPBLNA = (int)$blnberjalan->prs_bulanberjalan;
-
-        if ($FMPBLNA - 1 < 1) {
-            $N = 12;
-            $VAVG = $VAVG + (int)$trendsales['sls_qty_12'];
-        } else {
-            $N = $FMPBLNA - 1;
-            if ($N < 10) {
-                $N = '0' . $N;
+        if (sizeof($trendsales) > 0) {
+            if ($FMPBLNA - 1 < 1) {
+                $N = 12;
+                $VAVG = $VAVG + (int)$trendsales['sls_qty_12'];
+            } else {
+                $N = $FMPBLNA - 1;
+                if ($N < 10) {
+                    $N = '0' . $N;
+                }
+                $VAVG = $VAVG + (int)$trendsales['sls_qty_' . $N];
             }
-            $VAVG = $VAVG + (int)$trendsales['sls_qty_' . $N];
-        }
 
-        if ($N - 1 < 1) {
-            $X = 12;
-            $VAVG  = $VAVG + (int)$trendsales['sls_qty_12'];
-        }
-        else{
-            $X = $N - 1;
-            if ($X < 10) {
-                $X = '0' . $X;
+            if ($N - 1 < 1) {
+                $X = 12;
+                $VAVG = $VAVG + (int)$trendsales['sls_qty_12'];
+            } else {
+                $X = $N - 1;
+                if ($X < 10) {
+                    $X = '0' . $X;
+                }
+                $VAVG = $VAVG + (int)$trendsales['sls_qty_' . $X];
             }
-            $VAVG = $VAVG + (int)$trendsales['sls_qty_' . $X];
-        }
 
-        if( $X - 1 < 1){
-            $X1 = 12;
-            $VAVG  = $VAVG + (int)$trendsales['sls_qty_12'];
-        }
-        else{
-            $X1 = $X - 1;
-            if ($X1 < 10) {
-                $X1 = '0' . $X1;
+            if ($X - 1 < 1) {
+                $X1 = 12;
+                $VAVG = $VAVG + (int)$trendsales['sls_qty_12'];
+            } else {
+                $X1 = $X - 1;
+                if ($X1 < 10) {
+                    $X1 = '0' . $X1;
+                }
+                $VAVG = $VAVG + (int)$trendsales['sls_qty_' . $X1];
             }
-            $VAVG = $VAVG + (int)$trendsales['sls_qty_' . $X1];
         }
 
-    $TEMP = date('m');
+        $TEMP = date('m');
         $prodstock = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')->join('tbmaster_stock','prd_kodeigr','=','st_kodeigr')
             ->select('*')
             ->where('prd_prdcd', '=', $request->value)
@@ -147,22 +146,24 @@ class JenisItemController extends Controller
             ->whereRaw('substr (tbmaster_stock.st_prdcd, 1, 6) = substr (tbmaster_prodmast.prd_prdcd, 1, 6)')
             ->where('st_lokasi', '=', "01")
             ->first();
-
-        if($prodstock->st_lokasi =='01'){
-            $prodstock->st = 'BK';
-        }
-        else if($prodstock->st_lokasi ='02'){
-            $prodstock->st = 'RT';
-        }
-        else{
-            $prodstock->st = 'RS';
-        }
-
-        $VUNIT = $prodstock->prd_unit;
-        $VSALES = $prodstock->st_sales;
-        $VLASTCOST = $prodstock->st_avgcost;
+        $VUNIT = '';
+        $VSALES = 0;
+        $VLASTCOST = 0;
         $VFRAC = 0;
+        if($prodstock) {
+            if ($prodstock->st_lokasi == '01') {
+                $prodstock->st = 'BK';
+            } else if ($prodstock->st_lokasi = '02') {
+                $prodstock->st = 'RT';
+            } else {
+                $prodstock->st = 'RS';
+            }
 
+            $VUNIT = $prodstock->prd_unit;
+            $VSALES = $prodstock->st_sales;
+            $VLASTCOST = $prodstock->st_avgcost;
+            $VFRAC = 0;
+        }
         if( $VUNIT == 'KG'){
             $VFRAC = 1000;
         }

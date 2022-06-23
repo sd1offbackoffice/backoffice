@@ -109,7 +109,7 @@
                     <h5>Tanda Tangan per Supplier</h5>
                 </div>
                 <div class="modal-body">
-                    <div class="container">                                                
+                    <div class="container">
                         <div class="row">
                             <div class="col lov">
                                 <div class="card-body p-0 tableFixedHeader">
@@ -119,11 +119,11 @@
                                         <tr class="table-sm text-center">
                                             <th class="text-center small">NAMA SUPPLIER</th>
                                             <th class="text-center small">KODE SUPPLIER</th>
-                                            <th class="text-center small">AKSI</th>                                            
+                                            <th class="text-center small">AKSI</th>
                                         </tr>
                                         </thead>
-                                        <tbody id="body-table-supplier">                                        
-                                        </tbody>                                      
+                                        <tbody id="body-table-supplier">
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -140,8 +140,8 @@
                         <div class="col-sm-5">
                             <button type="button" class="btn btn-success" id="btnCetak" data-dismiss="modal"> CETAK
                             </button>
-                        </div>                     
-                    </div>                    
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -193,7 +193,7 @@
                                 <button id="saveSignatureBtn" class="btn btn-success btn-lg saveSignatureBtn">Save</button>
                             </div>
                         </div>
-                    </div>                    
+                    </div>
                 </div>
             </div>
         </div>
@@ -315,9 +315,9 @@
         let sig = $('#sig').signature({
             syncField: '#signature64',
             syncFormat: 'PNG'
-        });  
-        
-        $(document).ready(function () {            
+        });
+
+        $(document).ready(function () {
 
             $('.tanggal').datepicker({
                 "dateFormat": "dd/mm/yy",
@@ -421,62 +421,62 @@
                     val = $(this).val();
                     // console.log(val);
                     let splitedVal = val.split('x');
-                    let nodoc = splitedVal[0];                    
+                    let nodoc = splitedVal[0];
                     const index = checked.indexOf(val);
                     if (bool) {
                         if (index > -1) {
                         } else {
                             checked.push(val);
                             nodocs.push(nodoc);
-                            console.log(checked);
-                            console.log(nodocs);
+                            // console.log(checked);
+                            // console.log(nodocs);
                         }
                     } else {
                         if (index > -1) {
                             checked.splice(index, 1);
                             nodocs.splice(index, 1);
-                            console.log(checked);
-                            console.log(nodocs);
+                            // console.log(checked);
+                            // console.log(nodocs);
                         }
                     }
                 }
             });
         });
 
-        $(document).on('change', '.cekbox', function () {        
+        $(document).on('change', '.cekbox', function () {
             val = $(this).val();
             // console.log(val);
             let splitedVal = val.split('x');
-            let nodoc = splitedVal[0];          
+            let nodoc = splitedVal[0];
             if ($(this).prop('checked') == true) {
                 checked.push(val);
                 nodocs.push(nodoc);
-                console.log(checked);
-                console.log(nodocs);
+                // console.log(checked);
+                // console.log(nodocs);
             } else {
                 const index = checked.indexOf(val);
                 if (index > -1) {
                     checked.splice(index, 1);
-                    nodocs.splice(index, 1);                    
-                    console.log(checked);
-                    console.log(nodocs);
+                    nodocs.splice(index, 1);
+                    // console.log(checked);
+                    // console.log(nodocs);
                 }
             }
-        });        
+        });
 
         function getSupplierData(){
             arrSupp = [];
             $('#body-table-supplier tr').each(function (index, element) {
                 $(this).remove();
             });
+            // console.log($('#reprint:checked').val());
 
-            
             if (checked.length == 0) {
                 swal({
                     icon: 'info',
                     title: 'Nomor Dokumen',
                     text: 'Mohon pilih nomor dokumen yang ingin dicetak',
-                    timer: 2000                  
+                    timer: 2000
                 });
             } else {
                 $('#m_signature_supplier').modal({
@@ -489,30 +489,31 @@
                     async: false,
                     url: "{{ url()->current() }}/get-data-supplier-by-nodoc",
                     data: {
-                        nodocs: nodocs
+                        nodocs: nodocs,
+                        reprint: $('#reprint:checked').val()
                     },
                     beforeSend: function () {
                         $('#modal-loader').modal('show');
-                    },           
+                    },
                     success: function (response) {
-                        $('#modal-loader').modal('hide');                    
+                        $('#modal-loader').modal('hide');
                         response.data.forEach(data => {
                             arrSupp.push(data)
-                        })                        
-                        arrSupp.forEach(data => {                            
+                        })
+                        arrSupp.forEach(data => {
                             $('#body-table-supplier').append('<tr class="table-sm">\n' +
                             '                               <td class="small nama_supplier">' + data.nama_supplier + '</td>\n' +
                             '                               <td class="small sup_kodesupplier">' + data.sup_kodesupplier + '</td>\n' +
-                            '                               <td class="small action"><button type="button" class="btn btn-primary btnSignature" id="btnSignature">TANDA TANGAN</button></td>\n' +                                
-                            '                            </tr>')                                   
-                        });                                                                                       
+                            '                               <td class="small action"><button type="button" class="btn btn-primary btnSignature" id="btnSignature">TANDA TANGAN</button></td>\n' +
+                            '                            </tr>')
+                        });
                     }
                 });
-            }                        
+            }
         }
-        
+
         $(document).on('click', '#btnSignature', function () {
-            // console.log(this);            
+            // console.log(this);
             nama_supplier = $(this).parents('tr').find('.nama_supplier').html()
             sup_kodesupplier = $(this).parents('tr').find('.sup_kodesupplier').html()
 
@@ -524,20 +525,20 @@
                 }
             }
             if (found == false) {
-                openSignature(nama_supplier, sup_kodesupplier)                
+                openSignature(nama_supplier, sup_kodesupplier)
             } else {
                 swal({
                     icon: 'info',
                     title: 'Tanda Tangan',
                     text: 'Tanda Tangan untuk supplier ini sudah ada',
-                    timer: 2000                  
+                    timer: 2000
                 });
-            }            
-        });        
+            }
+        });
 
         function openSignature(nama_supplier, sup_kodesupplier){
             $('#m_signature .modal-title').html('')
-            $('#nama_personil').val('')             
+            $('#nama_personil').val('')
             $('#m_signature .modal-title').html(`${nama_supplier} - ${sup_kodesupplier}`);
             // $('#m_signature .modal-title').html(`${arrSupp[indexSignature].nama_supplier} - ${arrSupp[indexSignature].sup_kodesupplier}`);
             // $('#m_signature').modal({
@@ -549,20 +550,20 @@
             // let sig = $('#sig').signature({
             //     syncField: '#signature64',
             //     syncFormat: 'PNG'
-            // });            
+            // });
 
             $('#clearSig').click(function (e) {
                 e.preventDefault();
                 sig.signature('clear');
                 $("#signature64").val('');
-            }); 
+            });
         }
 
         $(document).on('click', '#saveSignatureBtn', function () {
             // let sig = $('#sig').signature({
             //     syncField: '#signature64',
             //     syncFormat: 'PNG'
-            // }); 
+            // });
 
             if ($('#nama_personil').val() == null || $('#nama_personil').val() == '' || $('#signature64').val() == null || $('#signature64').val() == '') {
                 swal({
@@ -588,7 +589,7 @@
                     },
                     success: function (response) {
                         $('#modal-loader').modal('hide');
-                        $('#m_signature').modal('hide');                                
+                        $('#m_signature').modal('hide');
 
                         let signatureId = response.data.signatureId
                         let signedBy = response.data.signedBy
@@ -608,21 +609,26 @@
                                 // console.log($(this).find('.action').html());
                             }
                         });
-                        
+
                         console.log(arrSuppSig);
                         sig.signature('clear');
                         nama_supplier = ''
-                        sup_kodesupplier = ''                                                                         
+                        sup_kodesupplier = ''
                     }
-                });                    
+                });
             }
         });
 
-        function printWithSignature() {            
-            getSupplierData();                                
+        function printWithSignature() {
+            let reprint = $('#reprint:checked').val();
+            if (reprint == 'on') {
+                cetak()
+            } else {
+                getSupplierData();
+            }
         }
 
-        $(document).on('click', '#btnCetak', function () {            
+        $(document).on('click', '#btnCetak', function () {
             if (arrSupp.length != arrSuppSig.length) {
                 swal({
                     icon: 'info',
@@ -659,14 +665,14 @@
                     },
                     success: function (result) {
                         $('#modal-loader').modal('hide');
-                        console.log(result);
+                        // console.log(result);
                         if (result.status) {
                             swal({
                                 title: result.message,
                                 icon: result.status
                             });
                         } else {
-                            window.open('../' + result, '_blank');
+                            window.open('{{ url()->current() }}/downloadCSVeFaktur?filename=' + result, '_blank');
                         }
                     }, error: function (err) {
                         $('#modal-loader').modal('hide');

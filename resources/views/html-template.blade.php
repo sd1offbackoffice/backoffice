@@ -232,7 +232,7 @@
 
         /* @yield('custom_style') */
     </style>
-
+    
     {{-- <link rel="stylesheet" type="text/css" href="{{ asset('/css/bootstrap.min.css') }}"> --}}
 
     <script src={{asset('/js/jquery.js')}}></script>

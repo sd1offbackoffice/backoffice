@@ -598,6 +598,11 @@ class loginController extends Controller
         return oci_connect('SIMCKL', 'SIMCKL' , '192.168.249.193:1521/SIMCKL' );
     }
 
+    public static function getConnectionProcedureKMY()
+    {
+        return oci_connect('SIMKMY', 'SIMKMY' , '192.168.234.193:1521/SIMKMY' );
+    }
+
     public static function getListCabang(){
         return self::listCabang;
     }

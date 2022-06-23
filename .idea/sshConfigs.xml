@@ -8,6 +8,9 @@
       <sshConfig authType="PASSWORD" host="192.168.247.200" id="437f14ab-e89d-467d-94c3-4c53355398eb" port="22" customName="igrbdl" nameFormat="CUSTOM" username="root">
         <option name="customName" value="igrbdl" />
       </sshConfig>
+      <sshConfig authType="PASSWORD" host="192.168.249.189" id="38a4de3e-cdeb-4d1b-a290-396a96f560c8" port="22" customName="igrckl" nameFormat="CUSTOM" username="root">
+        <option name="customName" value="igrckl" />
+      </sshConfig>
     </configs>
   </component>
 </project>

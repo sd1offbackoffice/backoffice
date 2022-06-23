@@ -139,36 +139,25 @@ class inputController extends Controller
     public function downloadNPD()
     {
 
-        // sp_proses_trf_rte_npd (p_sukses, hasil);
-        return response()->json(['kode' => 0, 'msg' => 'Data NPD sudah di tarik !!']);
+        $connect = loginController::getConnectionProcedureKMY();
+
+        $query = oci_parse($connect, "BEGIN sp_proses_trf_rte_npd_php(:p_sukses, :p_result); END;");
+        oci_bind_by_name($query, ':p_sukses', $p_sukses, 32);
+        oci_bind_by_name($query, ':p_result', $hasil, 32);
+        oci_execute($query);
+
+        if ($p_sukses == 'N') {
+            return response()->json(['kode' => 1, 'msg' => $hasil, 'p_sukses' => $p_sukses]);
+        } else {
+            return response()->json(['kode' => 0, 'msg' => 'Data NPD sudah di tarik !!', 'p_sukses' => $p_sukses]);
+        }
     }
 
-    public function showPO(Request $request)
+    public function showPO()
     {
-        if ($request->rte == 'Y') {
-            $kodeigr = Session::get('kdigr');
-            $data = DB::connection(Session::get('connection'))->select("SELECT tpoh_nopo,
-                                    tpoh_tglpo,
-                                    tpoh_kodesupplier,
-                                    sup_namasupplier
-                                    FROM (SELECT    tpoh_nopo,
-                                                    tpoh_tglpo,
-                                                    TRUNC (tpoh_tglpo) + NVL (tpoh_jwpb, 0) tgl,
-                                                    tpoh_kodesupplier,
-                                                    sup_namasupplier
-                                    FROM tbtr_po_h, tbmaster_supplier
-                                    WHERE     tpoh_kodeigr = '$kodeigr'
-                                    AND NVL (tpoh_recordid, '0') != '2'
-                                    AND sup_kodesupplier = tpoh_kodesupplier
-                                    AND sup_kodeigr = tpoh_kodeigr
-                                    AND NVL (TRIM (tpoh_recordid), '0') != '2'
-                                    AND NVL (TRIM (tpoh_recordid), '0') != '1')
-                                    WHERE tgl > SYSDATE");
 
-            return DataTables::of($data)->make(true);
-        } else {
-            $kodeigr = Session::get('kdigr');
-            $data = DB::connection(Session::get('connection'))->select("SELECT tpoh_nopo,
+        $kodeigr = Session::get('kdigr');
+        $data = DB::connection(Session::get('connection'))->select("SELECT tpoh_nopo,
                                         tpoh_tglpo,
                                         tpoh_kodesupplier,
                                         sup_namasupplier
@@ -186,8 +175,19 @@ class inputController extends Controller
                                         AND NVL (TRIM (tpoh_recordid), '0') != '1')
                                         WHERE tgl > SYSDATE");
 
-            return DataTables::of($data)->make(true);
-        }
+        return DataTables::of($data)->make(true);
+    }
+
+    public function showNPD()
+    {
+        $data = DB::connection('simkmy')->select("SELECT DISTINCT docno,
+                                    pictgl,
+                                    kirim,
+                                    sup_namasupplier
+                                    FROM tbhistory_npd_rte, tbmaster_supplier
+                                    WHERE sup_kodesupplier = kirim");
+
+        return DataTables::of($data)->make(true);
     }
 
     public function otorisasi(Request $request)
@@ -328,7 +328,7 @@ class inputController extends Controller
             } else {
                 if ($rte == 'Y') {
                     $batal = 'N';
-                    $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp
+                    $temp = DB::connection('simkmy')->select("SELECT NVL (COUNT (1), 0) as temp
                         FROM  TBHISTORY_NPD_RTE
                         WHERE docno = '$noPO'");
                     if ($temp[0]->temp == 0) {
@@ -343,18 +343,17 @@ class inputController extends Controller
                         }
                         return response()->json(['kode' => 3, 'url' => 'IGR_BO_GAGAL_BPB', 'nopo' => $noPO]);
                     }
-                    $temp = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp
+                    $temp1 = DB::connection('simkmy')->select("SELECT NVL (COUNT (1), 0) as temp
                                 FROM  TBHISTORY_NPD_RTE
                                 WHERE docno = '$noPO'
-                                AND NVL (TRIM (no_bpb, '0') = '0'");
-
-                    if ($temp[0]->temp == 0) {
+                                AND NVL (TRIM (no_bpb), '0') = '0'");
+                    if ($temp1[0]->temp == 0) {
                         $msg = "No NPD Tidak Terdaftar / Kuantitas NPD sudah dipenuhi";
 
                         $batal = 'N';
                         return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
                     } else {
-                        $this->checkPO($flaggo, $typeTrn, $noPO, $kodeigr, $rte);
+                        return $this->checkPO($flaggo, $typeTrn, $noPO, $kodeigr, $rte);
                     }
                     // } else if ($bread == 'Y') {
                     //     $batal = 'Y';
@@ -457,7 +456,7 @@ class inputController extends Controller
 
                                         return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
                                     } else {
-                                        $this->checkPO($flaggo, $typeTrn, $noPO, $kodeigr, $rte);
+                                        return $this->checkPO($flaggo, $typeTrn, $noPO, $kodeigr, $rte);
                                     }
                                 }
                             }
@@ -541,6 +540,15 @@ class inputController extends Controller
             return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
         }
 
+        if ($rte == 'Y') {
+            $poh = DB::connection('simkmy')->select("SELECT docno, tanggal1, kirim, sup_namasupplier, sup_pkp
+                FROM TBHISTORY_NPD_RTE, tbmaster_supplier
+                WHERE docno = '$noPO'
+                AND sup_kodesupplier = kirim
+                AND sup_kodeigr = SUBSTR (toko, 3, 2)");
+            return response()->json(['kode' => 1, 'msg' => 'RTE', 'data' => $poh[0]]);
+        }
+
         if ($bpb == 'Y') {
             if ($flaggo == 'Y') {
                 $temp = DB::connection(Session::get('connection'))->select("SELECT tpoh_tglpo as tglpo, tpoh_jwpb as wkpo, NVL (TRIM(tpoh_recordid), '0') recid
@@ -554,7 +562,7 @@ class inputController extends Controller
             } else {
                 $temp = DB::connection(Session::get('connection'))->select("SELECT tpoh_tglpo, tpoh_jwpb, NVL (TRIM(tpoh_recordid), '0') as recid
                                                     FROM tbtr_po_h
-                                                    WHERE tpoh_nopo = '$noPO' 
+                                                    WHERE tpoh_nopo = '$noPO'
                                                     AND tpoh_kodeigr = '$kodeigr'
                                                     AND NVL (TRIM(tpoh_recordid), '0') != '2'");
 
@@ -574,25 +582,9 @@ class inputController extends Controller
                 AND tpoh_kodeigr = '$kodeigr'
                 AND sup_kodesupplier = tpoh_kodesupplier
                 AND sup_kodeigr = tpoh_kodeigr");
-                return response()->json(['kode' => 1, 'msg' => '', 'data' => $temp[0]]);
+
+                return response()->json(['kode' => 1, 'msg' => 'BPB', 'data' => $temp[0]]);
             }
-        }
-
-        if ($rte == 'Y') {
-            $poh = DB::connection(Session::get('connection'))->select("SELECT docno, tanggal1, kirim, sup_namasupplier,sup_singkatansupplier, sup_pkp
-                FROM TBHISTORY_NPD_RTE, tbmaster_supplier
-                WHERE docno = '$noPO'
-                AND sup_kodesupplier = kirim
-                AND sup_kodeigr = SUBSTR (toko, 3, 2)");
-
-            return response()->json(['kode' => 1, 'msg' => '', 'data' => $poh[0]]);
-            // foreach ($poh as $val) {
-            //     $noPO = $val->docno;
-            //     $tglpo = $val->tanggal1;
-            //     $kd_supplier = $val->kirim;
-            //     $supplier = $val->sup_namasupplier ? $val->sup_namasupplier : $val->sup_singkatansupplier;
-            //     $pkp = $val->sup_pkp;
-            // }
         }
         //        ------------------ Update RecID menjadi 2, di komen karena di browser gk bisa update otomatis ke null ketika page ditutup
         //                DB::connection(Session::get('connection'))->table('tbtr_po_h')->where('tpoh_nopo', $noPO)->update(['tpoh_recordid' => 2]);
@@ -606,6 +598,16 @@ class inputController extends Controller
         $data = DB::connection(Session::get('connection'))->select("select sup_namasupplier || '/' || sup_Singkatansupplier sup_namasupplier, sup_kodesupplier, sup_pkp, sup_top
                                     from tbmaster_supplier
                                     where sup_kodeigr='$kodeigr'");
+
+        return DataTables::of($data)->make(true);
+    }
+
+    public function showSupplierRTE()
+    {
+        $data = DB::connection('simkmy')->select("SELECT docno, tanggal1, kirim, sup_namasupplier, sup_kodesupplier, sup_pkp, sup_top
+        FROM TBHISTORY_NPD_RTE, tbmaster_supplier
+        WHERE sup_kodesupplier = kirim
+        AND sup_kodeigr = SUBSTR (toko, 3, 2)");
 
         return DataTables::of($data)->make(true);
     }
@@ -688,6 +690,11 @@ class inputController extends Controller
                 ->whereRaw("(prd_deskripsipanjang LIKE '%$value%' or prd_prdcd LIKE '%$value%')")
                 ->limit(100)
                 ->get()->toArray();
+        } else if ($typeLov == 'RTE') {
+            $data = DB::connection('simkmy')->select("SELECT docno, pictgl, kirim, prdcd, nama, prd_unit||'/'||prd_frac kemasan
+                                    FROM tbhistory_npd_rte, tbmaster_prodmast
+                                    WHERE prd_prdcd = prdcd
+                                    AND docno = '$noPo'");
         }
         return response()->json($data);
     }
@@ -703,88 +710,96 @@ class inputController extends Controller
         $rte = $request->rte;
         $kodeigr = Session::get('kdigr');
 
-        $this->tempDataSave = $tempData;
+        if ($rte == 'Y') {
+            $data = DB::connection('simkmy')->select("SELECT *
+                FROM tbhistory_npd_rte
+                WHERE prdcd = '$prdcd'
+                AND docno = '$noPo'");
+            return response()->json(['kode' => 0, 'msg' => 'Data RTE', 'data' => $data[0]]);
+        } else if ($rte == 'N') {
+            $this->tempDataSave = $tempData;
 
-        $this->param_cek = 'Y';
+            $this->param_cek = 'Y';
 
-        $temp1 = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp1
-                                    FROM TBTR_BACKOFFICE
-                                    WHERE TRBO_KODEIGR = '$kodeigr' AND TRBO_NODOC = '$noDoc' AND TRBO_NOPO = NVL('$noPo', '123') AND TRBO_PRDCD = '$prdcd'
-                                    AND NVL(TRBO_RECORDID, '0') <> 1");
+            $temp1 = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp1
+                                        FROM TBTR_BACKOFFICE
+                                        WHERE TRBO_KODEIGR = '$kodeigr' AND TRBO_NODOC = '$noDoc' AND TRBO_NOPO = NVL('$noPo', '123') AND TRBO_PRDCD = '$prdcd'
+                                        AND NVL(TRBO_RECORDID, '0') <> 1");
 
-        $temp2 = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp2
-                                    FROM TBTR_MSTRAN_D
-                                    WHERE MSTD_KODEIGR = '$kodeigr' AND MSTD_NOPO = NVL('$noPo', '123') AND MSTD_TYPETRN = 'B'
-                                    AND MSTD_PRDCD = '$prdcd' AND NVL(MSTD_RECORDID, '0') <> 1");
+            $temp2 = DB::connection(Session::get('connection'))->select("SELECT NVL (COUNT (1), 0) as temp2
+                                        FROM TBTR_MSTRAN_D
+                                        WHERE MSTD_KODEIGR = '$kodeigr' AND MSTD_NOPO = NVL('$noPo', '123') AND MSTD_TYPETRN = 'B'
+                                        AND MSTD_PRDCD = '$prdcd' AND NVL(MSTD_RECORDID, '0') <> 1");
 
-        if ($temp2[0]->temp2 != '0') {
-            $msg = "PLU Sudah di BTB !!";
-
-            return response()->json(['kode' => 2, 'msg' => $msg, 'data' => '']);
-        }
-
-        if ($noPo != '' || $noPo) {
-            $temp = DB::connection(Session::get('connection'))->select(" SELECT NVL (TPOH_RECORDID, 0) as recid
-                                    FROM TBTR_PO_H
-                                    WHERE TPOH_NOPO = '$noPo' AND TPOH_KODEIGR = '$kodeigr'");
-
-            if ($temp[0]->recid == 'X') {
-                $msg = "PO Sedang Dipakai di DCP";
+            if ($temp2[0]->temp2 != '0') {
+                $msg = "PLU Sudah di BTB !!";
 
                 return response()->json(['kode' => 2, 'msg' => $msg, 'data' => '']);
             }
-        }
 
-        //        CHECK PLU KE TEMP DATA YG UDH DI SAVE SEMENTARA
-        if ($tempData) {
-            for ($i = 0; $i < sizeof($tempData); $i++) {
-                if ($tempData[$i]['trbo_prdcd'] == $prdcd) {
-                    $msg = "PLU " . $prdcd . " Sudah Ada, Silakan Edit !!";
+            if ($noPo != '' || $noPo) {
+                $temp = DB::connection(Session::get('connection'))->select(" SELECT NVL (TPOH_RECORDID, 0) as recid
+                                        FROM TBTR_PO_H
+                                        WHERE TPOH_NOPO = '$noPo' AND TPOH_KODEIGR = '$kodeigr'");
 
-                    return response()->json(['kode' => 2, 'msg' => $msg, 'data' => $prdcd]);
+                if ($temp[0]->recid == 'X') {
+                    $msg = "PO Sedang Dipakai di DCP";
+
+                    return response()->json(['kode' => 2, 'msg' => $msg, 'data' => '']);
                 }
             }
-        }
 
-        if (!$noPo && $prdcd) {
-            if ($typeTrn != 'L') {
-                $I_FLAGDISC1 = 'K';
-                $I_FLAGDISC2 = 'K';
-                $I_FLAGDISC3 = 'K';
-                $I_FLAGDISC4 = 'K';
+            //        CHECK PLU KE TEMP DATA YG UDH DI SAVE SEMENTARA
+            if ($tempData) {
+                for ($i = 0; $i < sizeof($tempData); $i++) {
+                    if ($tempData[$i]['trbo_prdcd'] == $prdcd) {
+                        $msg = "PLU " . $prdcd . " Sudah Ada, Silakan Edit !!";
+
+                        return response()->json(['kode' => 2, 'msg' => $msg, 'data' => $prdcd]);
+                    }
+                }
+            }
+
+            if (!$noPo && $prdcd) {
+                if ($typeTrn != 'L') {
+                    $I_FLAGDISC1 = 'K';
+                    $I_FLAGDISC2 = 'K';
+                    $I_FLAGDISC3 = 'K';
+                    $I_FLAGDISC4 = 'K';
+                } else {
+                    $I_FLAGDISC1 = '';
+                    $I_FLAGDISC2 = '';
+                    $I_FLAGDISC3 = '';
+                    $I_FLAGDISC4 = '';
+                }
+
+                $getItemData = $this->getItemData($supplier, $prdcd, $kodeigr, $typeTrn, $noPo);
+
+                if ($getItemData[0] == '0') {
+                    $getItemData[2]->i_flagdisc1 = $I_FLAGDISC1;
+                    $getItemData[2]->i_flagdisc2 = $I_FLAGDISC2;
+                    $getItemData[2]->i_flagdisc3 = $I_FLAGDISC3;
+                    $getItemData[2]->i_flagdisc4 = $I_FLAGDISC4;
+
+                    $this->getDataPlu = $getItemData[2];
+                } else {
+                    return response()->json(['kode' => $getItemData[0], 'msg' => $getItemData[1], 'data' => $getItemData[2]]);
+                }
             } else {
-                $I_FLAGDISC1 = '';
-                $I_FLAGDISC2 = '';
-                $I_FLAGDISC3 = '';
-                $I_FLAGDISC4 = '';
+                //            Proses looping data dari tbtr_backoffice disini dipindahkan ke bagian JS, mengambil data dari tempData yg didapatkan dari chooseBTB()
+                //            Dalam proses looping ada pembuatan status 0 atau 1, disini otomatis menjadi 0 sehingga langung memanggil GET_PO_DETAIL
+                $getPODetail = $this->getPODetail($noPo, $kodeigr, $prdcd);
+                if ($getPODetail[0] == 2) {
+                    return response()->json(['kode' => $getPODetail[0], 'msg' => $getPODetail[1], 'data' => $getPODetail[2]]);
+                }
+
+                $this->getDataPlu = $getPODetail[2];
             }
 
-            $getItemData = $this->getItemData($supplier, $prdcd, $kodeigr, $typeTrn, $noPo);
+            $chkGets = $this->chkGets(1, $prdcd, $kodeigr, $supplier, $noPo);
 
-            if ($getItemData[0] == '0') {
-                $getItemData[2]->i_flagdisc1 = $I_FLAGDISC1;
-                $getItemData[2]->i_flagdisc2 = $I_FLAGDISC2;
-                $getItemData[2]->i_flagdisc3 = $I_FLAGDISC3;
-                $getItemData[2]->i_flagdisc4 = $I_FLAGDISC4;
-
-                $this->getDataPlu = $getItemData[2];
-            } else {
-                return response()->json(['kode' => $getItemData[0], 'msg' => $getItemData[1], 'data' => $getItemData[2]]);
-            }
-        } else {
-            //            Proses looping data dari tbtr_backoffice disini dipindahkan ke bagian JS, mengambil data dari tempData yg didapatkan dari chooseBTB()
-            //            Dalam proses looping ada pembuatan status 0 atau 1, disini otomatis menjadi 0 sehingga langung memanggil GET_PO_DETAIL
-            $getPODetail = $this->getPODetail($noPo, $kodeigr, $prdcd);
-            if ($getPODetail[0] == 2) {
-                return response()->json(['kode' => $getPODetail[0], 'msg' => $getPODetail[1], 'data' => $getPODetail[2]]);
-            }
-
-            $this->getDataPlu = $getPODetail[2];
+            return response()->json(['kode' => $chkGets['kode'], 'msg' => $chkGets['msg'], 'data' => $this->getDataPlu]);
         }
-
-        $chkGets = $this->chkGets(1, $prdcd, $kodeigr, $supplier, $noPo);
-
-        return response()->json(['kode' => $chkGets['kode'], 'msg' => $chkGets['msg'], 'data' => $this->getDataPlu]);
     }
 
     public function getItemData($supplier, $prdcd, $kodeigr, $typeTrn, $noPo)
@@ -1932,6 +1947,7 @@ class inputController extends Controller
         $prdcd  = $request->prdcd;
         $noBtb  = $request->noBTB;
         $noPo   = $request->noPo;
+        $rte = $request->rte;
         $kodeigr = Session::get('kdigr');
         $tempDataPlu = $request->tempDataPLU;
         $tempData    = $request->tempDataSave;
@@ -1964,7 +1980,76 @@ class inputController extends Controller
                 //            if (((int)$data->i_totalpo) - ((int)$data->grant_total) > 500){
                 //                return response()->json(['kode' => 0, 'msg' => "Selisih Total PO > 500 !!", 'data' => '']);
                 //            } // ----- Tidak dipakai karena tidak ada yg init i_totalpo dan grant_total
+                if ($rte == 'Y') {
+                    if ($this->param_rec == 0) {
+                        $temp = new \stdClass();
+                        $temp->trbo_prdcd       = $prdcd;
+                        $temp->trbo_kodetag     = '';
+                        $temp->trbo_bkp         = '';
+                        $temp->trbo_hrgsatuan   = $data->price;
+                        $temp->qty              = $data->qty;
+                        $temp->qtyk             = $data->sj_qty;
+                        $temp->trbo_qty         = $data->qty;
+                        $temp->trbo_qtybonus1   = 0;
+                        $temp->trbo_qtybonus2   = 0;
+                        $temp->trbo_persendisc1   = 0;
+                        $temp->trbo_rphdisc1   = 0;
+                        $temp->trbo_persendisc2 = 0;
+                        $temp->trbo_rphdisc2    = 0;
+                        $temp->trbo_persendisc2ii = 0;
+                        $temp->trbo_rphdisc2ii  = 0;
+                        $temp->trbo_persendisc2iii = 0;
+                        $temp->trbo_rphdisc2iii = 0;
+                        $temp->trbo_persendisc3 = 0;
+                        $temp->trbo_rphdisc3    = 0;
+                        $temp->trbo_persendisc4 = 0;
+                        $temp->trbo_rphdisc4    = 0;
+                        $temp->trbo_keterangan   = $data->nama_file;
+                        $temp->barang           = $data->nama;
+                        $temp->trbo_averagecost = $data->price;
+                        $temp->trbo_lcost       = $data->price;
+                        $temp->kemasan          = 'PCS';
+                        $temp->total_disc       = 0;
+                        $temp->total_rph        = $data->price;
+                        $temp->trbo_gross       = $data->gross;
+                        $temp->trbo_ppnrph      = $data->ppnrp;
+                        $temp->trbo_ppnbmrph    = 0;
+                        $temp->trbo_ppnbtlrph   = 0;
+                        $temp->trbo_kodeigr     = $kodeigr;
+                        $temp->trbo_kodedivisi  = $data->div;
+                        $temp->trbo_kodedepartement = '';
+                        $temp->trbo_kodekategoribrg = $data->rtype;
+                        $temp->trbo_unit        = '';
+                        $temp->trbo_frac        = '';
+                        $temp->item             = 1;
+                        $temp->trbo_flagdisc1   = '';
+                        $temp->trbo_flagdisc2   = '';
+                        $temp->trbo_flagdisc3   = '';
+                        $temp->trbo_flagdisc4   = '';
+                        $temp->trbo_discrph     = 0;
+                        $temp->trbo_dis4cp      = 0;
+                        $temp->trbo_dis4cr      = 0;
+                        $temp->trbo_dis4rp      = 0;
+                        $temp->trbo_dis4rr      = 0;
+                        $temp->trbo_dis4jp      = 0;
+                        $temp->trbo_dis4jr      = 0;
+                        $this->param_seqno      = $this->param_seqno + 1;
+                        $temp->trbo_seqno       = $this->param_seqno;
+                        $temp->trbo_furgnt      = '';
+                        $temp->trbo_oldcost     = '';
 
+                        array_push($this->tempDataSave, $temp);
+
+                        $qtypb = $data->qty + $data->sj_qty;
+                        DB::connection(Session::get('connection'))->table('tbtr_po_d')
+                            ->where('tpod_kodeigr', $kodeigr)->where('tpod_nopo', $noPo)->where('tpod_prdcd', $prdcd)
+                            ->update(['tpod_qtypb' => $qtypb, 'tpod_recordid' => 2]);
+
+                        DB::connection(Session::get('connection'))->table('tbtr_po_h')->where('tpoh_nopo', $noPo)->update(['tpoh_recordid' => 2]);
+
+                        return response()->json(['kode' => 1, 'msg' => "Rekam Data Berhasil", 'data' => $this->tempDataSave]);
+                    }
+                }
                 if ($data->i_qty * $data->i_frac + $data->i_qtyk > $data->qty_po) {
                     $data->i_qty = floor($data->qty_po / $data->tpod_isibeli);
                     $data->i_qtyk = $data->qty_po - ($data->i_qty * $data->tpod_isibeli);
@@ -2380,7 +2465,7 @@ class inputController extends Controller
         $help       = new AllModel();
         $date       = $help->getDate();
         $noPo       = $request->noPO;
-
+        $prdcd = $request->prdcd;
         $IP = str_replace('.', '0', SUBSTR(Session::get('ip'), -3));
         $connect = loginController::getConnectionProcedure();
 
@@ -2459,6 +2544,24 @@ class inputController extends Controller
                         "TRBO_CREATE_DT" => $date,
                         "TRBO_PERSENPPN" => $tax
                     ]);
+
+                    if ($prdcd == '1381070') {
+                        $query = oci_parse($connect, "BEGIN :no_krat := F_IGR_GET_NOMOR('$kodeigr', 'KRT', 'Nomor KRAT','K' || TO_CHAR (SYSDATE, 'yy'), 5, TRUE); END;");
+                        oci_bind_by_name($query, ':no_krat', $result, 32);
+                        oci_execute($query);
+                        DB::connection(Session::get('connection'))->table('tbtr_krat_igr')->insert([
+                            "krt_kodeigr" => $kodeigr,
+                            "krt_nosj" => $request->noPO,
+                            "krt_nobo" => $fixNoBTB,
+                            "krt_prdcd" => $prdcd,
+                            "krt_qty_bpb" => ($data->trbo_qty * $data->trbo_frac) + $data->qtyk,
+                            "krt_nodraft" => $result,
+                            "krt_qty_draft" => ($data->trbo_qty * $data->trbo_frac) + $data->qtyk,
+                            "krt_qty_saldo" => ($data->trbo_qty * $data->trbo_frac) + $data->qtyk,
+                            "krt_create_by" => $user,
+                            "krt_create_dt" => $date
+                        ]);
+                    }
                 }
             } else {
                 foreach ($tempdata as $temp) {
@@ -2531,21 +2634,53 @@ class inputController extends Controller
         }
     }
 
-    public function showPLULain()
+    // public function showPLULain()
+    // {
+    //     $kodeigr = Session::get('kdigr');
+    //     $data = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
+    //         ->select('PRD_PRDCD', 'PRD_DESKRIPSIPANJANG')
+    //         ->join('TBMASTER_STOCK', function ($join) {
+    //             $join->on('ST_PRDCD', 'PRD_PRDCD');
+    //             $join->on('ST_KODEIGR', 'PRD_KODEIGR');
+    //         })
+    //         ->where('ST_KODEIGR', $kodeigr)
+    //         ->where('ST_LOKASI', '01')
+    //         ->where('ST_SALDOAKHIR', '>', 0)
+    //         ->whereNotNull('ST_AVGCOST')
+    //         ->whereRaw("(PRD_KODETAG != 'T' AND PRD_KODETAG != 'G' AND PRD_KODETAG != 'Q')")
+    //         ->get()->toArray();
+    //     return response()->json($data);
+    // }
+
+    public function readQR(Request $request)
     {
-        $kodeigr = Session::get('kdigr');
-        $data = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
-            ->select('PRD_PRDCD', 'PRD_DESKRIPSIPANJANG')
-            ->join('TBMASTER_STOCK', function ($join) {
-                $join->on('ST_PRDCD', 'PRD_PRDCD');
-                $join->on('ST_KODEIGR', 'PRD_KODEIGR');
-            })
-            ->where('ST_KODEIGR', $kodeigr)
-            ->where('ST_LOKASI', '01')
-            ->where('ST_SALDOAKHIR', '>', 0)
-            ->whereNotNull('ST_AVGCOST')
-            ->whereRaw("(PRD_KODETAG != 'T' AND PRD_KODETAG != 'G' AND PRD_KODETAG != 'Q')")
-            ->get()->toArray();
-        return response()->json($data);
+        $header = $request->header;
+        $detail = $request->detail;
+
+        $length = strlen($header) / 2;
+        // Dim arr1 As Byte() = New Byte(length - 1) {}
+
+        // For i As Integer = 0 To length - 1
+        //     arr1(i) = Convert.ToByte(data.Substring(2 * i, 2), 16)
+        // Next
+        // Return arr1
+
+        $path = 'test/';
+        $file = storage_path($path .'test.csv');
+        $byte_array = unpack('C*', $header);
+        file_put_contents($file, $byte_array);
+        // if (ctype_xdigit($header) && strlen($header) % 2 == 0) {
+        //     $headerStr = hex2bin($header);
+        // } else {
+        //     $headerStr = 'not hexadecimal';
+        // }
+
+        // if (ctype_xdigit($detail) && strlen($detail) % 2 == 0) {
+        //     $detailStr = hex2bin($detail);
+        // } else {
+        //     $detailStr = 'not hexadecimal';
+        // }
+
+        // return response()->json(['header' => $headerStr, 'detail' => $detailStr]);
     }
 }

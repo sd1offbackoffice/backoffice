@@ -561,7 +561,9 @@
                     $('#i_pluplanogram').val(value);
                     $('#i_deskripsi').val(response['produk']['prd_deskripsipanjang']);
                     $('#i_unitfrac').val(response['produk']['prd_unit']+'/'+response['produk']['prd_frac']);
-                    $('#i_maxpalet').val(response['palet']['mpt_maxqty']);
+                    if(response['palet']) {
+                        $('#i_maxpalet').val(response['palet']['mpt_maxqty']);
+                    }
                     $('#sls_qty_01').val(convertToRupiah(response['trendsales']['sls_qty_01']));
                     $('#sls_qty_02').val(convertToRupiah(response['trendsales']['sls_qty_02']));
                     $('#sls_qty_03').val(convertToRupiah(response['trendsales']['sls_qty_03']));

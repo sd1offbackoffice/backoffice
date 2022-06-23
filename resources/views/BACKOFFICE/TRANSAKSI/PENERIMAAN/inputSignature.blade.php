@@ -7,7 +7,7 @@
             <div class="card border-dark">
                 <div class="card-body cardForm">
                     <div class="row justify-content-center">
-                        <button class="btn btn-primary row-sm-12 d-block" onclick="showModal()">Update Signature</button>
+                        <button class="btn btn-primary row-sm-12 d-block" onclick="showOtorisasi()">Update Signature</button>
                     </div>
                 </div>
             </div>
@@ -165,6 +165,30 @@
     </div>
 </div>
 <!-- Personil Modal -->
+
+<!-- Access Modal -->
+<div class="modal fade" id="lotorisasiModal" tabindex="-1" role="dialog" aria-labelledby="lotorisasiModalTitle" aria-hidden="true" data-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <legend class="w-auto ml-5">Otorisasi Ubah Tanda Tangan</legend>
+                <div class="form-group">
+                    <label for="otoUser">User</label>
+                    <input type="text" class="form-control" id="otoUser" aria-describedby="emailHelp" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="otoPass">Password</label>
+                    <input type="password" class="form-control" id="otoPass">
+                </div>
+                <div style="text-align: center;">
+                    <button type="button" onclick="otorisasi()" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Access Modal -->
+
 <style>
     .space {
         padding: 3rem;
@@ -222,17 +246,12 @@
     let nama_personil2 = $('#nama_personil2');
     let nama_personil3 = $('#nama_personil3');
     let nama_personil4 = $('#nama_personil4');
+    let otoUser = $('#otoUser');
+    let otoPass = $('#otoPass');
+    let lotorisasiModal = $('#lotorisasiModal');
+
     $(document).ready(function() {
         getAllData();
-    })
-    $(document).keypress(function(e) {
-        if (e.keyCode == 32) {
-            $('#clear').click();
-            $('#clear2').click();
-            $('#clear3').click();
-        } else if (e.keyCode == 13) {
-            $('#save').click();
-        }
     });
     var sig2 = $('#sig2').signature({
         syncField: '#signature64_2',
@@ -333,6 +352,54 @@
         $('#m_signature').modal({
             backdrop: 'static',
             keyboard: false
+        });
+    }
+
+    function showOtorisasi() {
+        $('#lotorisasiModal').modal({
+            keyboard: false
+        });
+    }
+
+    function otorisasi() {
+        ajaxSetup();
+        $.ajax({
+            url: '{{ url()->current() }}/otorisasi',
+            type: 'get',
+            data: {
+                otoUser: otoUser.val(),
+                otoPass: otoPass.val(),
+            },
+            success: function(result) {
+                if (result.kode == 0) {
+                    lotorisasiModal.modal('hide')
+                    swal({
+                        icon: 'success',
+                        title: 'Otorisasi Sukses',
+                        text: result.msg,
+                        timer: 2000
+                    });
+                    showModal();
+                } else {
+                    lotorisasiModal.modal('hide')
+                    swal({
+                        icon: 'warning',
+                        title: 'Otorisasi Gagal',
+                        text: result.msg,
+                        timer: 2000
+                    });
+                }
+            },
+            error: function(error) {
+                lotorisasiModal.modal('hide')
+                swal({
+                    icon: 'warning',
+                    title: 'Otorisasi Gagal',
+                    text: error,
+                    timer: 2000
+                });
+                console.log(error)
+            }
         });
     }
 

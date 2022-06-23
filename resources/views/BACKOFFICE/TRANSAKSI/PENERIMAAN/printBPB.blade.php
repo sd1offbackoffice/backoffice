@@ -569,7 +569,7 @@
                                                     $('#m_signature').modal('hide');
                                                     data_nota = result.data;
                                                     split_nota = data_nota.split(",");
-                                                    // window.open(currUrl + 'viewreport/' + checked + '/' + split_nota[0] + '/' + result.nota + '/' + response.data);
+                                                    // window.open(currUrl + 'viewreport/' + checked + '/' + split_nota[0] + '/' + result.nota + '/' + response.data); //NOTA HARGA
                                                     window.open(currUrl + 'viewreport/' + checked + '/' + split_nota[1] + '/' + result.nota + '/' + response.data);
                                                     if (result.lokasi == 1 && checked == 0) {
                                                         window.open(currUrl + 'viewreport/' + checked + '/' + 'lokasi' + '/' + documentTemp + '/' + result.lokasi);

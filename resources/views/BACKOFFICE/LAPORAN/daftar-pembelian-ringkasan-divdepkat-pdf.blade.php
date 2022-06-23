@@ -247,32 +247,32 @@
         <tfoot>
         <tr>
             <th class="left" colspan="2"><strong>TOTAL BKP</strong></th>
-            <th class="right">{{ number_format($sum_gross_bkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_potongan_bkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_disc4_bkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_ppn_bkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_bm_bkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_btl_bkp ,2) }}</th>
+            <th style="border-right: 1px solid black;" class="right">{{ number_format($sum_gross_bkp ,2) }}</th>
+            <th style="border-right: 1px solid black;" class="right">{{ number_format($sum_potongan_bkp ,2) }}</th>
+            <th style="border-right: 1px solid black;" class="right">{{ number_format($sum_disc4_bkp ,2) }}</th>
+            <th style="border-right: 1px solid black;" class="right">{{ number_format($sum_ppn_bkp ,2) }}</th>
+            <th style="border-right: 1px solid black;" class="right">{{ number_format($sum_bm_bkp ,2) }}</th>
+            <th style="border-right: 1px solid black;" class="right">{{ number_format($sum_btl_bkp ,2) }}</th>
             <th class="right">{{ number_format($sum_total_bkp ,2) }}</th>
         </tr>
         <tr>
             <th class="left" colspan="2"><strong>TOTAL BTKP</strong></th>
-            <th class="right">{{ number_format($sum_gross_btkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_potongan_btkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_disc4_btkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_ppn_btkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_bm_btkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_btl_btkp ,2) }}</th>
+            <th style="border-right: 1px solid black;" class="right">{{ number_format($sum_gross_btkp ,2) }}</th>
+            <th style="border-right: 1px solid black;" class="right">{{ number_format($sum_potongan_btkp ,2) }}</th>
+            <th style="border-right: 1px solid black;" class="right">{{ number_format($sum_disc4_btkp ,2) }}</th>
+            <th style="border-right: 1px solid black;" class="right">{{ number_format($sum_ppn_btkp ,2) }}</th>
+            <th style="border-right: 1px solid black;" class="right">{{ number_format($sum_bm_btkp ,2) }}</th>
+            <th style="border-right: 1px solid black;" class="right">{{ number_format($sum_btl_btkp ,2) }}</th>
             <th class="right">{{ number_format($sum_total_btkp ,2) }}</th>
         </tr>
         <tr>
             <th class="left" colspan="2"><strong>TOTAL SELURUHNYA</strong></th>
-            <th class="right">{{ number_format($sum_gross_bkp+$sum_gross_btkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_potongan_bkp+$sum_potongan_btkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_disc4_bkp+$sum_disc4_btkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_ppn_bkp+$sum_ppn_btkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_bm_bkp+$sum_bm_btkp ,2) }}</th>
-            <th class="right">{{ number_format($sum_btl_bkp+$sum_btl_btkp ,2) }}</th>
+            <th style="border-right: 1px solid black;" class="right">{{ number_format($sum_gross_bkp+$sum_gross_btkp ,2) }}</th>
+            <th style="border-right: 1px solid black;" class="right">{{ number_format($sum_potongan_bkp+$sum_potongan_btkp ,2) }}</th>
+            <th style="border-right: 1px solid black;" class="right">{{ number_format($sum_disc4_bkp+$sum_disc4_btkp ,2) }}</th>
+            <th style="border-right: 1px solid black;" class="right">{{ number_format($sum_ppn_bkp+$sum_ppn_btkp ,2) }}</th>
+            <th style="border-right: 1px solid black;" class="right">{{ number_format($sum_bm_bkp+$sum_bm_btkp ,2) }}</th>
+            <th style="border-right: 1px solid black;" class="right">{{ number_format($sum_btl_bkp+$sum_btl_btkp ,2) }}</th>
             <th class="right">{{ number_format($sum_total_bkp+$sum_total_btkp ,2) }}</th>
         </tr>
         </tfoot>

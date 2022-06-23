@@ -163,7 +163,9 @@
         <tr>
             <th class="tengah" rowspan="2"></th>
             <th class="right tengah" rowspan="2">PENJ KOTOR</th>
-            <th class="right tengah" rowspan="2">PAJAK</th>
+            <th class="right tengah" rowspan="2">PPN</th>
+{{--            <th class="right tengah" rowspan="2">PPN DIBEBASKAN</th>--}}
+{{--            <th class="right tengah" rowspan="2">PPN DTP</th>--}}
             <th class="right tengah" rowspan="2">PENJ BERSIH</th>
             <th class="right tengah" rowspan="2">H.P.P RATA2</th>
             <th colspan="2">----- MARGIN -----</th>

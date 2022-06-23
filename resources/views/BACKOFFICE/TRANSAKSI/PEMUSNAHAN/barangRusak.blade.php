@@ -45,12 +45,13 @@
                                             <th width="3%">X </th>
                                             <th width="10%">PLU</th>
                                             <th width="25%">Deskripsi</th>
-                                            <th width="5%">Satuan</th>
+                                            <th width="6%">Satuan</th>
                                             <th width="5%">CTN</th>
                                             <th width="5%">PCS</th>
                                             <th width="10%">Hrg. Satuan</th>
                                             <th width="12%">Total</th>
-                                            <th width="25%">Keterangan</th>
+                                            <th width="24%">Keterangan</th>
+                                            <th width="3%"><</th>
                                         </tr>
                                         </thead>
                                         <tbody id="tbody">
@@ -66,14 +67,22 @@
                                                     </button>
                                                 </td>
                                                 <td width="25%"><input disabled type="text"  class="form-control deskripsi"></td>
-                                                <td width="5%"><input disabled type="text" class="form-control satuan"></td>
+                                                <td width="6%"><input disabled type="text" class="form-control satuan"></td>
                                                 <td width="5%"><input type="text" class="form-control ctn text-right" id="{{$i}}" onchange="calculateQty(this.value, this.id, 1)"></td>
                                                 <td width="5%"><input type="text" class="form-control pcs text-right" id="{{$i}}" onchange="calculateQty(this.value, this.id, 2)"></td>
                                                 <td width="10%"><input disabled type="text" class="form-control harga text-right"></td>
                                                 <td width="12%"><input disabled type="text" class="form-control total text-right"></td>
-                                                <td width="25%"><input type="text" class="form-control keterangan"></td>
+                                                <td width="24%">
+                                                    <select onchange="changeKeterangan(this.id)" class="form-control add_keterangan keterangan" id="select-{{$i}}" name="add_keterangan">
+                                                        {{-- <option value="">...</option> --}}
+                                                    </select>
+                                                    <input style="display: none;" onchange="newKeterangan(this.value, this.id)" type="text" class="form-control text_keterangan keterangan" id="inputhidden-{{$i}}">
+                                                </td>
+                                                <td width="3%" class="text-center">
+                                                    <button style="display:none ;"class="btn btn-warning showdropdown" id="showdropdown-{{$i}}" style="width: 40px" onclick="showDropdown(this.id)"><</button>
+                                                </td>                                                
                                             </tr>
-                                        @endfor
+                                        @endfor 
                                         </tbody>
                                     </table>
                                 </div>
@@ -212,14 +221,86 @@
         var yyyy = today.getFullYear();
         today = dd + '/' + mm + '/' + yyyy;
 
+        var dataKtrgn ='';
+        var dataKtrgnLen = 0;
+
         $(document).ready(function (){
             $("#tgltrn").datepicker({
-                "dateFormat" : "dd/mm/yy",
+                "dateFormat" : "dd/mm/yy"
             });
             $('#tgltrn').val(today);
             getDataModalDocument('')
             getDataModalPlu('')
-        })
+
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/get-keterangan',
+                type: 'get',
+                success: function (data) {
+                    console.log(data)
+                    dataKtrgn += '<option value="">...</option>'
+                    for (i = 0; i< data.length; i++) {
+                        dataKtrgn += '<option value="'+data[i].kbr_tipe+'">'+data[i].kbr_tipe+'</option>';
+                        dataKtrgnLen++;
+                    }
+                    $('.add_keterangan').append(dataKtrgn);
+                    // console.log(dataKtrgn);
+                }, error: function (err) {
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
+                }
+            })
+
+        });
+
+        function changeKeterangan(index){
+            // let keterangan = $('.add_keterangan')[index].value ;
+            // $('.text_keterangan')[index].value = keterangan;
+            var no = index.split('-')[1];
+            $('#inputhidden-'+no).val($('#select-'+no).val()) ;
+            console.log(index,no)
+            console.log($('#'+index).val())
+            if($('#'+index).val() == 'Barang Rusak lain-lain'){ 
+                $('#inputhidden-'+no).show();
+                $('#select-'+no).hide();
+                $('#showdropdown-'+no).show();
+                $('#inputhidden-'+no).focus();
+            }
+            else{
+                $('#inputhidden'+no).hide()
+            }
+        }
+
+        function newKeterangan(value, index){
+            var no = index.split('-')[1];
+            dataKtrgn += '<option value="'+value+'">'+value+'</option>';
+            dataKtrgnLen++;
+            var oldVal = [];
+            for( i= 0 ; i<no ; i++){
+                oldVal[i] = $('#select-'+i).val();               
+            }
+            $('.add_keterangan').find('option').remove().end().append(dataKtrgn);
+            for( i= 0 ; i<no ; i++){
+                $('#select-'+i).val(oldVal[i]);
+            }
+            // dataKtrgn += '<option value="'+value+'">'+value+'</option>';
+            // $('.add_keterangan').find('option').remove().end().append(dataKtrgn);
+            $('#inputhidden-'+no).hide();
+            $('#select-'+no).val(value);
+            $('#select-'+no).show();
+            $('#showdropdown-'+no).hide();
+            
+        }
+
+        function showDropdown(index){
+            var no = index.split('-')[1];
+            console.log(index,no);
+            $('#inputhidden-'+no).hide();
+            $('#select-'+no).val('');
+            $('#select-'+no).show();
+            $('#showdropdown-'+no).hide();
+        }
 
         function  getDataModalDocument(val) {
             let tableModalDocument = $('#tableModalDocument').DataTable({
@@ -361,6 +442,7 @@
                             for (i = 0; i< 11; i++) {
                                 $('#tbody').append(tempTable(i));
                             }
+                            $('.add_keterangan').append(dataKtrgn);
                         } else {
                             $('#nmrtrn').val('')
                             $('#keterangan').val('')
@@ -401,13 +483,16 @@
                                                     <input disabled type="text" class="form-control plu" value="`+ result[i].st_prdcd +`">
                                                 </td>
                                                 <td width="25%"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipendek +`"></td>
-                                                <td width="5%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
+                                                <td width="6%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
                                                 <td width="5%"><input disabled type="text" class="form-control ctn text-right" value="`+ parseInt(cat) +`" id="`+ i +`" onchange="calculateQty(this.value,this.id,1)"></td>
                                                 <td width="5%"><input disabled type="text" class="form-control pcs text-right" value="`+ pcs +`" id="`+ i +`" onchange="calculateQty(this.value,this.id,2)"></td>
                                                 <td width="10%"><input disabled type="text" class="form-control harga text-right" value="`+ convertToRupiah(result[i].hrgsatuan )+`"></td>
                                                 <td width="12%"><input disabled type="text" class="form-control total text-right" value="`+ convertToRupiah(ttl) +`"></td>
-                                                <td width="25%"><input disabled type="text" class="form-control keterangan" value="Barang Rusak">
+                                                <td width="24%"><input disabled type="text" class="form-control keterangan" value="Barang Rusak">
                                                 </td>
+                                                <td width="3%" class="text-center">
+                                                    <button style="display:none ;"class="btn btn-warning showdropdown" id="showdropdown-{{$i}}" style="width: 40px" onclick="showDropdown(this.id)">T</button>
+                                                </td> 
                                             </tr>`
 
                             $('#tbody').append(temp);
@@ -445,6 +530,7 @@
                         for (i = 0; i< 11; i++) {
                             $('#tbody').append(tempTable());
                         }
+                        $('.add_keterangan').append(dataKtrgn);
                     } else {
                         $('#nmrtrn').val(result[0].rsk_nodoc);
                         $('#tgltrn').val(formatDate(result[0].rsk_tgldoc));
@@ -470,13 +556,16 @@
                                                     <input disabled type="text" class="form-control plu" value="`+ result[i].rsk_prdcd +`">
                                                 </td>
                                                 <td width="25%"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipendek +`"></td>
-                                                <td width="5%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
+                                                <td width="6%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
                                                 <td width="5%"><input disabled type="text" class="form-control ctn text-right" value="` + result[i].qty_ctn +`"></td>
                                                 <td width="5%"><input disabled type="text" class="form-control pcs text-right" value="` + result[i].qty_pcs +`"></td>
                                                 <td width="10%"><input disabled type="text" class="form-control harga text-right" value="`+ convertToRupiah(result[i].rsk_hrgsatuan )+`"></td>
                                                 <td width="12%"><input disabled type="text" class="form-control total text-right" value="`+ convertToRupiah(result[i].rsk_nilai) +`"></td>
-                                                <td width="25%"><input disabled type="text" class="form-control keterangan" value="`+ nvl(result[i].rsk_keterangan, ' ') +`">
+                                                <td width="24%"><input disabled type="text" class="form-control keterangan" value="`+ nvl(result[i].rsk_keterangan, ' ') +`">
                                                 </td>
+                                                <td width="3%" class="text-center">
+                                                    <button style="display:none ;"class="btn btn-warning showdropdown" id="showdropdown-{{$i}}" style="width: 40px" onclick="showDropdown(this.id)"><</button>
+                                                </td> 
                                             </tr>`
 
                                 $('#tbody').append(temp);
@@ -500,13 +589,16 @@
                                                     </button>
                                                 </td>
                                                 <td width="25%"><input disabled type="text"  class="form-control deskripsi" value="`+ result[i].prd_deskripsipendek +`"></td>
-                                                <td width="5%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
+                                                <td width="6%"><input disabled type="text" class="form-control satuan" value="`+ result[i].prd_unit +` / `+ result[i].prd_frac +`"></td>
                                                 <td width="5%"><input type="text" class="form-control ctn text-right" value="` + result[i].qty_ctn +`" id="`+ i +`" onchange="calculateQty(this.value,this.id,1)"></td>
                                                 <td width="5%"><input type="text" class="form-control pcs text-right" value="` + result[i].qty_pcs +`" id="`+ i +`" onchange="calculateQty(this.value,this.id,2)"></td>
                                                 <td width="10%"><input disabled type="text" class="form-control harga text-right" value="`+ convertToRupiah(result[i].rsk_hrgsatuan )+`"></td>
                                                 <td width="12%"><input disabled type="text" class="form-control total text-right" value="`+ convertToRupiah(result[i].rsk_nilai) +`"></td>
-                                                <td width="25%"><input type="text" class="form-control keterangan" value="`+ nvl(result[i].rsk_keterangan, ' ') +`">
+                                                <td width="24%"><input type="text" class="form-control keterangan" value="`+ nvl(result[i].rsk_keterangan, ' ') +`">
                                                 </td>
+                                                <td width="3%" class="text-center">
+                                                    <button style="display:none ;"class="btn btn-warning showdropdown" id="showdropdown-{{$i}}" style="width: 40px" onclick="showDropdown(this.id)"><</button>
+                                                </td> 
                                             </tr>`
 
                                 $('#tbody').append(temp);
@@ -825,6 +917,7 @@
             for (i = 0; i< 15; i++) {
                 $('#tbody').append(tempTable(i));
             }
+            $('.add_keterangan').append(dataKtrgn);
 
         //    Memperbaharui LOV Nomor TRN
             tempTrn = null;
@@ -844,13 +937,20 @@
                                                     </button>
                                                 </td>
                                                 <td width="25%"><input disabled type="text"  class="form-control deskripsi" value=""></td>
-                                                <td width="5%"><input disabled type="text" class="form-control satuan" value=""></td>
+                                                <td width="6%"><input disabled type="text" class="form-control satuan" value=""></td>
                                                 <td width="5%"><input type="text" class="form-control ctn text-right" value="" id="`+ index +`" onchange="calculateQty(this.value, this.id, 1)"></td>
                                                 <td width="5%"><input type="text" class="form-control pcs text-right" value="" id="`+ index +`" onchange="calculateQty(this.value, this.id, 2)"></td>
                                                 <td width="10%"><input disabled type="text" class="form-control harga text-right" value=""></td>
                                                 <td width="12%"><input disabled type="text" class="form-control total text-right" value=""></td>
-                                                <td width="25%"><input type="text" class="form-control keterangan" value=""></td>
+                                                <td width="24%">
+                                                    <select onchange="changeKeterangan(this.id)" class="form-control add_keterangan" id="select-`+ index +`" name="add_keterangan">
+                                                        
+                                                    </select>
+                                                    <input style="display: none;" onchange="newKeterangan(this.value, this.id)" type="text" id="inputhidden-`+ index +`" class="form-control keterangan">
                                                 </td>
+                                                <td width="3%" class="text-center">
+                                                    <button style="display:none ;"class="btn btn-warning showdropdown" id="showdropdown-`+ index +`" style="width: 40px" onclick="showDropdown(this.id)"><</button>
+                                                </td> 
                                             </tr>`
 
             return temptbl;
@@ -862,6 +962,7 @@
             let index = parseInt(temp,10)
 
             $('#tbody').append(tempTable(index))
+            $('.add_keterangan').append(dataKtrgn);
             // $('#tbody').append(tempTable(index+1))
         }
 

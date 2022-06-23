@@ -1727,7 +1727,8 @@ and kat_kodedepartement = dep_kodedepartement
 and kat_kodeigr= prd_kodeigr
 --&AND_KAT
 and prd_kodedivisi||prd_kodedepartement||prd_kodekategoribarang between '$div1'||'$dep1'||'$kat1' and '$div2'||'$dep2'||'$kat2'
-and prs_kodeigr = prd_kodeigr"
+and prs_kodeigr = prd_kodeigr
+and (prd_hrgjual is not null or prd_hrgjual >0)"
             . $p_orderby);
         $cf_nmargin = [];
 
@@ -1757,12 +1758,13 @@ and prs_kodeigr = prd_kodeigr"
 
             $nAcost = (float)$datas[$i]->st_avgcost * $multiplier;
             if ($nAcost > 0) {
+                //kalo harga jual 0 atau gaada dibagi 1
                 if ($datas[$i]->pkp == 'Y' && $datas[$i]->pkp2 != 'P') {
-                    $cf_nmargin[$i] = round((($hrgjual - ($ppn * $nAcost)) / $hrgjual) * 100, 2);
-//                    $cf_nmargin[$i] = round((($hrgjual - ($ppn * $nAcost)) / $divisor) * 100, 2);
+//                    $cf_nmargin[$i] = round((($hrgjual - ($ppn * $nAcost)) / $hrgjual) * 100, 2);
+                    $cf_nmargin[$i] = round((($hrgjual - ($ppn * $nAcost)) / $divisor) * 100, 2);
                 } else {
-                    $cf_nmargin[$i] = round((($hrgjual - $nAcost) / $hrgjual) * 100, 2);
-//                    $cf_nmargin[$i] = round((($hrgjual - $nAcost) / $divisor) * 100, 2);
+//                    $cf_nmargin[$i] = round((($hrgjual - $nAcost) / $hrgjual) * 100, 2);
+                    $cf_nmargin[$i] = round((($hrgjual - $nAcost) / $divisor) * 100, 2);
                 }
             } else {
                 $cf_nmargin[$i] = 0;

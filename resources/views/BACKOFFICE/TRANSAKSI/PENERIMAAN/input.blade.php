@@ -64,7 +64,7 @@
                         <div class="col-4">
                             <div class="input-group mb">
                                 <input autocomplete="off" type="text" id="po_number" class="form-control" aria-describedby="po_number">
-                                <button id="showPoBtn" class="btn btn btn-light" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="showPO()">&#x1F50E;</button>
+                                <button id="showPoBtn" class="btn btn btn-light" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="checkPO()">&#x1F50E;</button>
                             </div>
                         </div>
                         <div class="col-2">
@@ -81,7 +81,7 @@
                         <div class="col-4">
                             <div class="input-group mb">
                                 <input autocomplete="off" type="text" id="supplier_code" class="form-control" aria-describedby="supplierName">
-                                <button id="showSupplierBtn" class="btn btn btn-light" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="showSupplier()">&#x1F50E;</button>
+                                <button id="showSupplierBtn" class="btn btn btn-light" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="checkSupplier()">&#x1F50E;</button>
                             </div>
                         </div>
                         <div class="col-6">
@@ -195,11 +195,22 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        Data disini
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="header">Header</span>
+                            </div>
+                            <input type="text" id="qrHeader" class="form-control" aria-describedby="header">
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="detail">Detail</span>
+                            </div>
+                            <input type="text" id="qrDetail" class="form-control" aria-describedby="detail">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                        <button type="button" class="btn btn-primary">Simpan</button>
+                        <button type="button" class="btn btn-primary" onclick="scanQR()">Proses</button>
                     </div>
                 </div>
             </div>
@@ -890,6 +901,8 @@
     let downloadNPDBtn = $('#downloadNPDBtn');
     let scanQRBtn = $('#scanQRBtn');
     let rte = 'N';
+    let qrDetail = $('#qrDetail');
+    let qrHeader = $('#qrHeader');
 
     $(document).ready(function() {
         typeTrn = 'B'
@@ -972,6 +985,7 @@
         } else {
             jenisPenerimaan = 2;
             rte = 'Y';
+            console.log(rte)
             downloadNPDBtn.removeAttr('disabled');
             scanQRBtn.removeAttr('disabled');
             $('#statusJenisPenerimaan').text('RTE');
@@ -1715,6 +1729,53 @@
     }
 
     function setValue(data) {
+        if (jenisPenerimaan == 2) {
+            console.log(data.prdcd)
+            i_plu.val(data.prdcd);
+            i_deskripsi.val(data.nama);
+            i_kemasan.val('PCS');
+            i_tag.val('');
+            i_bkp.val('');
+            i_bandrol.val('');
+            i_hrgbeli.val(convertToRupiah(data.price));
+            i_lcost.val(convertToRupiah(data.price));
+            i_acost.val(convertToRupiah(data.price));
+            i_qty.val(data.qty);
+            i_qtyk.val(data.sj_qty);
+            i_isibeli.val(0);
+            i_bonus1.val(0);
+            i_bonus2.val(0);
+            i_gross.val(convertToRupiah(data.gross));
+            i_persendis1.val(convertToRupiah(0));
+            i_rphdisc1.val(convertToRupiah(0));
+            i_flagdisc1.val('');
+            i_disc1.val(convertToRupiah(0));
+            i_persendis2.val(convertToRupiah(0));
+            i_rphdisc2.val(convertToRupiah(0));
+            i_flagdisc2.val(0);
+            i_disc2.val(convertToRupiah(0));
+            i_persendis2a.val(convertToRupiah(0));
+            i_rphdisc2a.val(convertToRupiah(0));
+            i_disc2a.val(convertToRupiah(0));
+            i_persendis2b.val(convertToRupiah(0));
+            i_rphdisc2b.val(convertToRupiah(0));
+            i_disc2b.val(convertToRupiah(0));
+            i_persendis3.val(convertToRupiah(0));
+            i_rphdisc3.val(convertToRupiah(0));
+            i_flagdisc3.val('');
+            i_disc3.val(convertToRupiah(0));
+            i_persendis4.val(convertToRupiah((0)));
+            i_rphdisc4.val(convertToRupiah((0)));
+            i_flagdisc4.val('');
+            i_disc4.val(convertToRupiah((0)));
+            i_keterangan.val(data.nama_file);
+            i_ppn.val(convertToRupiah(data.ppnrp));
+            i_botol.val(convertToRupiah(0));
+            i_bm.val(convertToRupiah(0));
+            i_total.val(convertToRupiah(0));
+            i_ppn_persen.val(0);
+            return;
+        }
         if (data.i_prdcd != '' || data.i_prdcd != null) {
             i_plu.val(data.i_prdcd);
         } else {
@@ -1762,7 +1823,6 @@
         i_bm.val(convertToRupiah(data.i_bm));
         i_total.val(convertToRupiah(data.i_total));
         i_ppn_persen.val(data.i_ppn_persen);
-        console.log(data)
         if (jenisPenerimaan == 1) {
             if (!i_keterangan.val()) {
                 data.i_keterangan = '';
@@ -1847,7 +1907,6 @@
         i_bonus1.val(data.trbo_qtybonus1);
         i_bonus2.val(data.trbo_qtybonus2);
         i_gross.val(convertToRupiah(data.trbo_gross));
-
         i_persendis1.val(convertToRupiah(data.trbo_persendisc1));
         i_rphdisc1.val(convertToRupiah(data.trbo_rphdisc1));
         i_flagdisc1.val(data.trbo_flagdisc1);
@@ -1900,6 +1959,14 @@
         }
     }
 
+    function checkPO() {
+        if (rte == 'Y') {
+            showNPD();
+        } else {
+            showPO();
+        }
+    }
+
     function showPO() {
         if (!typeTrn || typeTrn === 'N') {
             startAlert();
@@ -1936,9 +2003,6 @@
             info: true,
             autoWidth: false,
             responsive: true,
-            data: {
-                rte: rte
-            },
             columns: [{
                     data: 'tpoh_nopo',
                     name: 'No PO'
@@ -1963,11 +2027,73 @@
         });
     }
 
+    function showNPD() {
+        if (!typeTrn || typeTrn === 'N') {
+            startAlert();
+
+            return false;
+        }
+
+        try {
+            modalHelp.modal('show');
+            modalHelpTitle.text("Dokumen NPD");
+            modalThName1.text('No Dokumen');
+            modalThName2.text('Tgl NPD');
+            modalThName3.text('Kode Supplier');
+            modalThName4.text('Nama Supplier');
+            modalThName3.show();
+            modalThName4.show();
+        } catch (e) {
+            console.log(e)
+            swal({
+                icon: 'info',
+                title: 'Data Kosong',
+                text: 'Data Tidak Ditemukan!',
+                timer: 2000
+            });
+        }
+        tableModalHelp.clear().destroy();
+
+        tableModalHelp = $('#tableModalHelp').DataTable({
+            ajax: 'http://172.20.28.17/BackOffice/public/bo/transaksi/penerimaan/input/shownpd/',
+            paging: true,
+            lengthChange: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            autoWidth: false,
+            responsive: true,
+            columns: [{
+                    data: 'docno',
+                    name: 'No Dokumen'
+                },
+                {
+                    data: 'pictgl',
+                    name: 'Tgl NPD'
+                },
+                {
+                    data: 'kirim',
+                    name: 'Kode Supplier'
+                },
+                {
+                    data: 'sup_namasupplier',
+                    name: 'Nama Supplier'
+                },
+            ],
+            createdRow: function(row, data, dataIndex) {
+                $(row).addClass('modalRowPO');
+            },
+            "order": []
+        });
+    }
+
+
     function choosePO(noPo) {
         ajaxSetup();
         $.ajax({
             url: '{{ url()->current() }}/choosepo',
             type: 'post',
+            dataType: 'json',
             data: {
                 typeTrn: typeTrn,
                 noPo: noPo,
@@ -1979,6 +2105,10 @@
             },
             success: function(result) {
                 $('#modal-loader').modal('hide');
+                console.log('======')
+                console.log(result)
+                console.log('======')
+
                 var lotorisasi = result.data;
                 if (result.kode == 0) {
                     modalHelp.modal('hide');
@@ -1999,7 +2129,6 @@
                         }
                     });
                     po_number.focus()
-
                 } else if (result.kode == 2) {
                     modalHelp.modal('hide');
                     swal({
@@ -2008,7 +2137,6 @@
                         timer: 2000
                     });
                 } else if (result.kode == 3) {
-                    console.log('test')
                     var btbno = '';
                     if (btb_number.val() != null || btb_number.val() != '') {
                         btbno = btb_number.val();
@@ -2017,18 +2145,32 @@
                     window.open(currUrl + '/print-gagal-bpb/' + result.url + '/' + result.nopo + '/' + btbno);
                 } else {
                     let data = result.data;
-
-                    po_number.val(data.tpoh_nopo);
-                    po_date.val(data.tpoh_tglpo.substr(0, 10));
-                    po_date.val(po_date.val().split('-').reverse().join('/'));
-                    supplier_code.val(data.tpoh_kodesupplier);
-                    supplier_name.val(data.sup_namasupplier);
-                    pkp_amt.val(data.sup_pkp);
-                    top_amt.val(data.tpoh_top);
-                    showPLUBtn.removeAttr('disabled')
-                    supplier_code.attr('disabled', true);
-                    $('.btnLOVSupplier').attr('disabled', true);
-                    fracture.focus();
+                    if (rte == 'Y') {
+                        console.log(data)
+                        po_number.val(data.docno);
+                        po_date.val((data.tanggal1).substr(0, 10));
+                        po_date.val(po_date.val().split('-').reverse().join('/'));
+                        supplier_code.val(data.kirim);
+                        supplier_name.val(data.sup_namasupplier);
+                        // pkp_amt.val(data.sup_pkp);
+                        // top_amt.val(data.tpoh_top);
+                        showPLUBtn.removeAttr('disabled')
+                        supplier_code.attr('disabled', true);
+                        $('.btnLOVSupplier').attr('disabled', true);
+                        fracture.focus();
+                    } else {
+                        po_number.val(data.tpoh_nopo);
+                        po_date.val(data.tpoh_tglpo.substr(0, 10));
+                        po_date.val(po_date.val().split('-').reverse().join('/'));
+                        supplier_code.val(data.tpoh_kodesupplier);
+                        supplier_name.val(data.sup_namasupplier);
+                        pkp_amt.val(data.sup_pkp);
+                        top_amt.val(data.tpoh_top);
+                        showPLUBtn.removeAttr('disabled')
+                        supplier_code.attr('disabled', true);
+                        $('.btnLOVSupplier').attr('disabled', true);
+                        fracture.focus();
+                    }
                 }
             },
             error: function(err) {
@@ -2041,6 +2183,57 @@
 
     }
 
+    function checkSupplier() {
+        if (rte == 'Y') {
+            showSupplierRTE();
+        } else {
+            showSupplier();
+        }
+    }
+
+    function showSupplierRTE() {
+        modalHelp.modal('show');
+        modalHelpTitle.text("Daftar Supplier");
+        modalThName1.text('Nama Supplier');
+        modalThName2.text('Kode Supplier');
+        modalThName3.text('PKP');
+        modalThName4.text('TOP');
+        modalThName3.show();
+        modalThName4.show();
+        tableModalHelp.clear().destroy();
+        tableModalHelp = $('#tableModalHelp').DataTable({
+            ajax: 'http://172.20.28.17/BackOffice/public/bo/transaksi/penerimaan/input/showsupplierrte',
+            paging: true,
+            lengthChange: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            autoWidth: false,
+            responsive: true,
+            columns: [{
+                    data: 'sup_namasupplier',
+                    name: 'Nama Supplier'
+                },
+                {
+                    data: 'sup_kodesupplier',
+                    name: 'Kode Supplier'
+                },
+                {
+                    data: 'sup_pkp',
+                    name: 'PKP'
+                },
+                {
+                    data: 'sup_top',
+                    name: 'TOP'
+                },
+            ],
+            createdRow: function(row, data, dataIndex) {
+                $(row).addClass('modalRowSupplier');
+            },
+            "order": []
+        });
+    }
+
     function showSupplier() {
         modalHelp.modal('show');
         modalHelpTitle.text("Daftar Supplier");
@@ -2050,9 +2243,7 @@
         modalThName4.text('TOP');
         modalThName3.show();
         modalThName4.show();
-
         tableModalHelp.clear().destroy();
-
         tableModalHelp = $('#tableModalHelp').DataTable({
             ajax: 'http://172.20.28.17/BackOffice/public/bo/transaksi/penerimaan/input/showsupplier',
             paging: true,
@@ -2084,7 +2275,6 @@
             },
             "order": []
         });
-
     }
 
     function chooseSupplier(kode, nama, val_pkp, top) {
@@ -2112,13 +2302,11 @@
             let supplier = supplier_code.val();
             let noPo = po_number.val();
             let typeLov = 'PLU';
-            console.log($('#tbodyModalHelpPLU').contents().length);
             headRowPLU.empty();
             headRowPLU.append(`
-                <th>PLU</th>    
+                <th>PLU</th>
                 <th style="min-width: 300px !important;">Barang</th>
             `)
-            console.log(typeLov);
             if ($('#tbodyModalHelpPLU').contents().length == 0) {
                 ajaxSetup();
                 $.ajax({
@@ -2142,13 +2330,60 @@
                             let value = result[i];
                             tbodyModalHelpPLU.append(`
                             <tr class="modalRowPLU" onclick="choosePLU('` + value.prd_prdcd + `')">
-                                <td>` + value.prd_prdcd + `</td>    
+                                <td>` + value.prd_prdcd + `</td>
                                 <td>` + value.prd_deskripsipanjang + `</td>
                             </tr>
                         `)
                         }
                         i_qty.val(0);
                         i_qty.val(0);
+                    },
+                    error: function(err) {
+                        $('#modal-loader').modal('hide');
+                        console.log(err.responseJSON.message.substr(0, 100));
+                        alertError(err.statusText, err.responseJSON.message);
+                    }
+                })
+            }
+        } else if (jenisPenerimaan == 2) {
+            let supplier = supplier_code.val();
+            let noPo = po_number.val();
+            let typeLov = 'RTE';
+            headRowPLU.empty();
+            headRowPLU.append(`
+                <th>No Dokumen</th>
+                <th>PLU</th>
+                <th style="min-width: 300px !important;">Barang</th>
+            `)
+            if ($('#tbodyModalHelpPLU').contents().length == 0) {
+                ajaxSetup();
+                $.ajax({
+                    url: '{{ url()->current() }}/showplu',
+                    type: 'post',
+                    data: {
+                        typeTrn: typeTrn,
+                        supplier: supplier,
+                        noPo: noPo,
+                        typeLov: typeLov
+                    },
+                    beforeSend: () => {
+                        $('#modal-loader').modal('show');
+                    },
+                    success: function(result) {
+                        $('#modal-loader').modal('hide');
+                        console.log(result)
+                        tbodyModalHelpPLU.empty();
+                        theadDataTables.empty();
+                        for (var i = 0; i < result.length; i++) {
+                            let value = result[i];
+                            tbodyModalHelpPLU.append(`
+                            <tr class="modalRowPLU" onclick="choosePLU('` + value.prdcd + `')">
+                                <td>` + value.docno + `</td>
+                                <td>` + value.prdcd + `</td>
+                                <td>` + value.nama + `</td>
+                            </tr>
+                        `)
+                        }
                     },
                     error: function(err) {
                         $('#modal-loader').modal('hide');
@@ -2261,7 +2496,6 @@
         let noDoc = btb_number.val();
         let noPo = po_number.val();
         let supplier = supplier_code.val();
-
         let tempData = (tempDataBTB.length < 1) ? tempDataSave : tempDataBTB;
 
         ajaxSetup();
@@ -2293,16 +2527,23 @@
                 i_keterangan.focus();
                 console.log(result);
                 if (result.kode == '0') {
-                    let data = result.data;
-                    console.log(data);
-                    tempDataPLU = data;
-                    setValue(data);
-                    setTimeout(function() {
-                        i_hrgbeli.focus();
-                        if (jenisPenerimaan == 1) {
-                            i_bonus1.focus();
-                        }
-                    }, 500);
+                    if (jenisPenerimaan == 2) {
+                        let data = result.data;
+                        console.log(data);
+                        tempDataPLU = data;
+                        setValue(data);
+                    } else {
+                        let data = result.data;
+                        console.log(data);
+                        tempDataPLU = data;
+                        setValue(data);
+                        setTimeout(function() {
+                            i_hrgbeli.focus();
+                            if (jenisPenerimaan == 1) {
+                                i_bonus1.focus();
+                            }
+                        }, 500);
+                    }
                 } else if (result.kode == '2') {
                     swal({
                         icon: 'warning',
@@ -2464,7 +2705,8 @@
                     noBTB: btb_number.val(),
                     noPo: po_number.val(),
                     tempDataPLU: tempDataPLU,
-                    tempDataSave: tempDataSave
+                    tempDataSave: tempDataSave,
+                    rte: rte
                 },
                 beforeSend: () => {
                     $('#modal-loader').modal('show');
@@ -2605,7 +2847,8 @@
                     noFaktur: fracture.val(),
                     tglFaktur: fracture_date.val().split('/').reverse().join('-'),
                     tempDataSave: tempDataSave,
-                    typeTrn: typeTrn
+                    typeTrn: typeTrn,
+                    prdcd: i_plu.val()
                 },
                 beforeSend: () => {
                     $('#modal-loader').modal('show');
@@ -2653,6 +2896,32 @@
                 rows[i].style.display = "none";
             }
         }
+    }
+
+    function scanQR() {
+        var header = qrHeader.val();
+        var detail = qrDetail.val();
+        ajaxSetup();
+        $.ajax({
+            url: '{{ url()->current() }}/readQR',
+            type: 'get',
+            data: {
+                header: header,
+                detail: detail
+            },
+            beforeSend: () => {
+                $('#modal-loader').modal('show');
+            },
+            success: (result) => {
+                $('#modal-loader').modal('hide');
+                console.log(result);
+            },
+            error: (err) => {
+                $('#modal-loader').modal('hide');
+                alertError(err.statusText, err.responseJSON.message);
+                console.log(err.responseJSON.message.substr(0, 100));
+            }
+        });
     }
 
     btb_date.keypress(function(e) {

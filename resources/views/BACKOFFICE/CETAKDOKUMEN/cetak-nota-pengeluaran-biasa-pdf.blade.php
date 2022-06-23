@@ -1,4 +1,5 @@
 @extends('pdf-template')
+{{-- @extends('html-template') --}}
 
 @section('table_font_size','7 px')
 
@@ -214,63 +215,69 @@
                         <td></td>
                         <td></td>
                     </tr>
-                    <tr>
-                        <td colspan="10">
-                            <table class="table" border="1">
-                                <thead>
-                                </thead>
-                                <tbody>
-                                <tr style="border-top: 1px solid black;border-bottom: 1px solid black;">
-                                    <td class="left" colspan="3">
-                                        &nbsp; DIBUAT
-                                        <div>
-                                            <img style="max-width: 200px; max-height: 100px" src="../storage/signature/clerk.png"
-                                                 alt="">
-                                        </div>
-                                    </td>
-                                    <td class="left" colspan="3">
-                                        &nbsp; MENYETUJUI :
-                                        <div>
-                                            <img style="max-width: 200px; max-height: 100px" src="../storage/signature/srclerk.png"
-                                                 alt="">
-                                        </div>
-                                    </td>                                    
-                                    @for ($j = 0; $j < sizeof($data['arrSuppSig']); $j++)
-                                    @if ($data['data1'][$i]->msth_kodesupplier == $data['arrSuppSig'][$j]['sup_kodesupplier'])
-                                        <td colspan="4">
+
+                    @if ($data['reprint'] == '0')
+                        <tr>
+                            <td colspan="10">
+                                <table class="table" border="1">
+                                    <thead>
+                                    </thead>
+                                    <tbody>
+                                    <tr style="border-top: 1px solid black;border-bottom: 1px solid black;">
+                                        <td class="left" colspan="3">
+                                            &nbsp; DIBUAT
                                             <div>
-                                                <img style="max-width: 200px; max-height: 100px"
-                                                    src="../storage/signature_expedition/{{ $data['arrSuppSig'][$j]['signatureId'] . '.png' }}" alt="">
+                                                <img style="max-width: 200px; max-height: 100px" src="../storage/signature/clerk.png"
+                                                    alt="">
                                             </div>
                                         </td>
-                                    @endif  
-                                    @endfor                                    
-                                </tr>
-                                <tr>
-                                    <td class="left" colspan="3">
-                                        &nbsp; ADMINISTRASI
-                                        <p>{{ file_get_contents('../storage/names/clerk.txt') }}</p>
-                                    </td>
-                                    <td class="left" colspan="3">
-                                        &nbsp; KEPALA GUDANG
-                                        <p>{{ file_get_contents('../storage/names/srclerk.txt') }}</p>
-                                    </td>
-                                    @for ($j = 0; $j < sizeof($data['arrSuppSig']); $j++)
-                                    @if ($data['data1'][$i]->msth_kodesupplier == $data['arrSuppSig'][$j]['sup_kodesupplier'])
-                                        <td class="left" colspan="4">
-                                            &nbsp; SUPPLIER
-                                            <p>{{ strtoupper($data['arrSuppSig'][$j]['signedBy']) }}</p>
+                                        <td class="left" colspan="3">
+                                            &nbsp; MENYETUJUI :
+                                            <div>
+                                                <img style="max-width: 200px; max-height: 100px" src="../storage/signature/srclerk.png"
+                                                    alt="">
+                                            </div>
+                                        </td>                                    
+                                        @for ($j = 0; $j < sizeof($data['arrSuppSig']); $j++)
+                                        @if ($data['data1'][$i]->msth_kodesupplier == $data['arrSuppSig'][$j]['sup_kodesupplier'])
+                                            <td colspan="4">
+                                                <div>
+                                                    <img style="max-width: 200px; max-height: 100px"
+                                                        src="../storage/signature_expedition/{{ $data['arrSuppSig'][$j]['signatureId'] . '.png' }}" alt="">
+                                                </div>
+                                            </td>
+                                        @endif  
+                                        @endfor                                    
+                                    </tr>
+                                    <tr>
+                                        <td class="left" colspan="3">
+                                            &nbsp; ADMINISTRASI
+                                            <p>{{ file_get_contents('../storage/names/clerk.txt') }}</p>
                                         </td>
-                                    @endif  
-                                    @endfor                                    
-                                </tr>
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
+                                        <td class="left" colspan="3">
+                                            &nbsp; KEPALA GUDANG
+                                            <p>{{ file_get_contents('../storage/names/srclerk.txt') }}</p>
+                                        </td>
+                                        @for ($j = 0; $j < sizeof($data['arrSuppSig']); $j++)
+                                        @if ($data['data1'][$i]->msth_kodesupplier == $data['arrSuppSig'][$j]['sup_kodesupplier'])
+                                            <td class="left" colspan="4">
+                                                &nbsp; SUPPLIER
+                                                <p>{{ strtoupper($data['arrSuppSig'][$j]['signedBy']) }}</p>
+                                            </td>
+                                        @endif  
+                                        @endfor                                    
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    @endif
+                    
                     </tfoot>
                     </table>
-            <div class="pagebreak"></div>
+                @if ($i != sizeof($data['data1'])-1)
+                    <div class="page-break"></div>
+                @endif
             @php
                 $showfooter = false;
             @endphp

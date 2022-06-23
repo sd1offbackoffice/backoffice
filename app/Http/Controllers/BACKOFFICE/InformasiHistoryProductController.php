@@ -45,7 +45,9 @@ class InformasiHistoryProductController extends Controller
         $tglpromo = '';
         $jampromo = '';
         $showpromo = false;
-        $dsi = 0;$to = 0;
+        $dsi = 0;
+        $to = 0;
+        $plu='';
         if (ord(substr($cprdcd, 1, 1)) < 48 or ord(substr($cprdcd, 1, 1)) > 57) {
             $lCek = 2;
         } else if (strlen(trim($cprdcd)) > 7) {
@@ -70,16 +72,18 @@ class InformasiHistoryProductController extends Controller
                 return $message;
             }
         } else {
-            $plu = DB::connection(Session::get('connection'))->table('tbmaster_barcode')->join('tbmaster_prodmast', 'brc_prdcd', '=', 'prd_prdcd')
+            $plu = DB::connection(Session::get('connection'))->table('tbmaster_barcode')
+                ->join('tbmaster_prodmast', 'brc_prdcd', '=', 'prd_prdcd')
                 ->selectRaw('distinct prd_prdcd, prd_deskripsipendek, brc_barcode')
                 ->where('brc_barcode', '=', $request->value)
                 ->first();
+
             if (is_null($plu)) {
                 array_push($message, 'Barcode Tidak Terdaftar !!');
                 return $message;
             }
         }
-
+        $plu->prd_prdcd = substr($plu->prd_prdcd, 0, 6).'0';
         $produk = DB::connection(Session::get('connection'))->table('TBMASTER_CABANG')->Join('TBMASTER_PRODMAST', function ($join) {
             $join->on('CAB_KODECABANG', '=', 'PRD_KODEIGR')->On('CAB_KODEIGR', '=', 'PRD_KODEIGR');
         })->leftJoin('TBMASTER_STOCK', function ($join) {
@@ -134,7 +138,7 @@ class InformasiHistoryProductController extends Controller
                    NVL (PRD_FLAGOMI, \'N\') OMI,
                    NVL (PRD_FLAGIDM, \'N\') IDM,
                    NVL (PRD_FLAGIGR, \'N\') IGR')
-            ->where('prd_prdcd', '=', $request->value)
+            ->where('prd_prdcd', '=', $plu->prd_prdcd)
             ->groupBy(DB::connection(Session::get('connection'))->raw('PRD_PRDCD,
                    PRD_DESKRIPSIPANJANG,
                    PRD_KODETAG,
@@ -233,11 +237,14 @@ class InformasiHistoryProductController extends Controller
             . $produk->kat_namakategori;
 
 
-        if (is_null($produk->cab_namacabang) and is_null($produk->prd_kategoritoko)) {
+        if (!isset($produk->cab_namacabang) && !isset($produk->prd_kategoritoko)) {
             array_push($message, 'PLU tsb sdh tidak aktif di Cabang ini,; kalau masih ada di rak harap ditarik');
         }
-        if (!is_null($produk->prmd_prdcd)) {
-            if (Carbon::now() >= $produk->prm_tglmulai and Carbon::now() <= $produk->prm_tglakhir) {
+//        dd(Carbon::today(),Carbon::createFromFormat('Y-m-d',substr($produk->prm_tglakhir, 0, 10)),Carbon::today()->lte(Carbon::createFromFormat('Y-m-d',substr($produk->prm_tglakhir, 0, 10)) ) );
+//        dd(Carbon::now()->lte(Carbon::now())  );
+
+        if (isset($produk->prmd_prdcd)) {
+            if (Carbon::today() >= Carbon::createFromFormat('Y-m-d', substr($produk->prm_tglmulai, 0, 10)) && Carbon::today() <= Carbon::createFromFormat('Y-m-d', substr($produk->prm_tglakhir, 0, 10))) {
                 $showpromo = true;
                 $tglpromo = date('d/m/y', strtotime(substr($produk->prm_tglmulai, 0, 10))) . ' s/d ' . date('d/m/y', strtotime(substr($produk->prm_tglakhir, 0, 10)));
                 if (!is_null($produk->prm_jammulai)) {
@@ -345,7 +352,7 @@ class InformasiHistoryProductController extends Controller
                                 MAX (PRMD_TGLAKHIR) FMTOTG,
                                 PRMD_JAMAWAL FMFRHR,
                                 PRMD_JAMAKHIR FMTOHR ')
-            ->whereRaw('SUBSTR (PRD_PRDCD, 1, 6) = SUBSTR (\'' . $request->value . '\', 1, 6)')
+            ->whereRaw('SUBSTR (PRD_PRDCD, 1, 6) = SUBSTR (\'' . $plu->prd_prdcd . '\', 1, 6)')
             ->groupBy(DB::connection(Session::get('connection'))->raw('PRD_PRDCD,
                         PRD_PPN,
                         PRD_MINJUAL,
@@ -485,7 +492,7 @@ class InformasiHistoryProductController extends Controller
         //trendsales
         $trendsales = DB::connection(Session::get('connection'))->table('TBTR_SALESBULANAN')
             ->select('*')
-            ->where('sls_prdcd', '=', $request->value)
+            ->where('sls_prdcd', '=', $plu->prd_prdcd)
             ->first();
         $trendsales = (array)$trendsales;
 
@@ -500,71 +507,77 @@ class InformasiHistoryProductController extends Controller
 
         $FMPBLNA = (int)$blnberjalan->prs_bulanberjalan;
 
-        if ($FMPBLNA - 1 < 1) {
-            $N = 12;
-            $VAVG = $VAVG + (int)$trendsales['sls_qty_12'];
-        } else {
-            $N = $FMPBLNA - 1;
-            if ($N < 10) {
-                $N = '0' . $N;
+        if (sizeof($trendsales) > 0) {
+            if ($FMPBLNA - 1 < 1) {
+                $N = 12;
+                $VAVG = $VAVG + (int)$trendsales['sls_qty_12'];
+            } else {
+                $N = $FMPBLNA - 1;
+                if ($N < 10) {
+                    $N = '0' . $N;
+                }
+                $VAVG = $VAVG + (int)$trendsales['sls_qty_' . $N];
             }
-            $VAVG = $VAVG + (int)$trendsales['sls_qty_' . $N];
-        }
 
-        if ($N - 1 < 1) {
-            $X = 12;
-            $VAVG = $VAVG + (int)$trendsales['sls_qty_12'];
-        } else {
-            $X = $N - 1;
-            if ($X < 10) {
-                $X = '0' . $X;
+            if ($N - 1 < 1) {
+                $X = 12;
+                $VAVG = $VAVG + (int)$trendsales['sls_qty_12'];
+            } else {
+                $X = $N - 1;
+                if ($X < 10) {
+                    $X = '0' . $X;
+                }
+                $VAVG = $VAVG + (int)$trendsales['sls_qty_' . $X];
             }
-            $VAVG = $VAVG + (int)$trendsales['sls_qty_' . $X];
-        }
 
-        if ($X - 1 < 1) {
-            $X1 = 12;
-            $VAVG = $VAVG + (int)$trendsales['sls_qty_12'];
-        } else {
-            $X1 = $X - 1;
-            if ($X1 < 10) {
-                $X1 = '0' . $X1;
+            if ($X - 1 < 1) {
+                $X1 = 12;
+                $VAVG = $VAVG + (int)$trendsales['sls_qty_12'];
+            } else {
+                $X1 = $X - 1;
+                if ($X1 < 10) {
+                    $X1 = '0' . $X1;
+                }
+                $VAVG = $VAVG + (int)$trendsales['sls_qty_' . $X1];
             }
-            $VAVG = $VAVG + (int)$trendsales['sls_qty_' . $X1];
         }
         $TEMP = date('m');
-
+        $VUNIT = '';
+        $VSALES = '';
+        $VLASTCOST = '';
+        $VFRAC = '';
         $prodstock = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')->join('tbmaster_stock', 'prd_kodeigr', '=', 'st_kodeigr')
             ->select('*')
-            ->where('prd_prdcd', '=', $request->value)
+            ->where('prd_prdcd', '=', $plu->prd_prdcd)
             ->where('prd_kodeigr', '=', Session::get('kdigr'))
             ->whereRaw('substr (tbmaster_stock.st_prdcd, 1, 6) = substr (tbmaster_prodmast.prd_prdcd, 1, 6)')
             ->where('st_lokasi', '=', "01")
             ->first();
+        if ($prodstock) {
+            if ($prodstock->st_lokasi == '01') {
+                $prodstock->st = 'BK';
+            } else if ($prodstock->st_lokasi == '02') {
+                $prodstock->st = 'RT';
+            } else {
+                $prodstock->st = 'RS';
+            }
 
-        if ($prodstock->st_lokasi == '01') {
-            $prodstock->st = 'BK';
-        } else if ($prodstock->st_lokasi == '02') {
-            $prodstock->st = 'RT';
-        } else {
-            $prodstock->st = 'RS';
+            $VUNIT = $prodstock->prd_unit;
+            $VSALES = $prodstock->st_sales;
+            $VLASTCOST = $prodstock->st_avgcost;
+            $VFRAC = 0;
+
+
+            if ($VUNIT == 'KG') {
+                $VFRAC = 1000;
+            } else {
+                $VFRAC = 1;
+            }
+
+
+            $trendsales['sls_qty_' . $TEMP] = $VSALES / $VFRAC;
+            $trendsales['sls_rph_' . $TEMP] = $VLASTCOST * ($VSALES / $VFRAC);
         }
-
-        $VUNIT = $prodstock->prd_unit;
-        $VSALES = $prodstock->st_sales;
-        $VLASTCOST = $prodstock->st_avgcost;
-        $VFRAC = 0;
-
-        if ($VUNIT == 'KG') {
-            $VFRAC = 1000;
-        } else {
-            $VFRAC = 1;
-        }
-
-
-        $trendsales['sls_qty_' . $TEMP] = $VSALES / $VFRAC;
-        $trendsales['sls_rph_' . $TEMP] = $VLASTCOST * ($VSALES / $VFRAC);
-
         if (!isset($VAVG) or $VAVG == 0 or is_null($VAVG)) {
             $VAVG = 0;
         }
@@ -572,7 +585,7 @@ class InformasiHistoryProductController extends Controller
 
         $gdltemp = DB::connection(Session::get('connection'))->table('tbtr_gondola')
             ->select('*')
-            ->whereRaw('substr(gdl_prdcd,1 ,6) = substr(\'' . $request->value . '\', 1, 6)')
+            ->whereRaw('substr(gdl_prdcd,1 ,6) = substr(\'' . $plu->prd_prdcd . '\', 1, 6)')
             ->whereRaw('gdl_tglawal <= trunc(sysdate)')
             ->whereRaw('trunc(sysdate) <= gdl_tglakhir')
             ->get();
@@ -587,7 +600,7 @@ class InformasiHistoryProductController extends Controller
         //stok
         $stock = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')->join('tbmaster_stock', 'prd_kodeigr', '=', 'st_kodeigr')
             ->select('*')
-            ->where('prd_prdcd', '=', $request->value)
+            ->where('prd_prdcd', '=', $plu->prd_prdcd)
             ->where('prd_kodeigr', '=', Session::get('kdigr'))
             ->whereRaw('substr (tbmaster_stock.st_prdcd, 1, 6) = substr (tbmaster_prodmast.prd_prdcd, 1, 6)')
             ->orderBy('st_lokasi')
@@ -635,7 +648,7 @@ class InformasiHistoryProductController extends Controller
             if ($stock[$i]->st_lokasi == '01') {
                 $qty_soic = DB::connection(Session::get('connection'))->table('tbtr_reset_soic')
                     ->selectRaw('sum(nvl(rso_qtyreset,0)) qty')
-                    ->whereRaw('substr(rso_prdcd,1 ,6) = substr(\'' . $request->value . '\', 1, 6)')
+                    ->whereRaw('substr(rso_prdcd,1 ,6) = substr(\'' . $plu->prd_prdcd . '\', 1, 6)')
                     ->whereRaw('to_char(rso_tglso, \'yyyyMM\') = to_char(sysdate, \'yyyyMM\')')
                     ->where('rso_lokasi', '=', '01')
                     ->first();
@@ -692,7 +705,7 @@ class InformasiHistoryProductController extends Controller
             ->join('tbmaster_supplier', 'hgb_kodesupplier', '=', 'sup_kodesupplier')
             ->join('tbmaster_prodmast', 'hgb_prdcd', '=', 'prd_prdcd')
             ->selectRaw('hgb_top, hgb_hrgbeli, sup_kodesupplier||\' - \'||sup_namasupplier sup,sup_top, prd_isibeli')
-            ->whereRaw('substr(hgb_prdcd,1 ,6) = substr(\'' . $request->value . '\', 1, 6)')
+            ->whereRaw('substr(hgb_prdcd,1 ,6) = substr(\'' . $plu->prd_prdcd . '\', 1, 6)')
             ->where('hgb_tipe', '=', '2')
             ->first();
 
@@ -704,6 +717,7 @@ class InformasiHistoryProductController extends Controller
 
         $pkmt->dsi = round($dsi);
         $pkmt->to = round($to);
+
         if ($pkmt->hgb_top > 0) {
             $pkmt->top = $pkmt->hgb_top;
         } else {
@@ -714,33 +728,42 @@ class InformasiHistoryProductController extends Controller
             ->leftJoin('tbmaster_pkmplus', 'pkmp_prdcd', '=', 'pkm_prdcd')
             ->leftJoin('tbmaster_minimumorder', 'min_prdcd', '=', 'pkm_prdcd')
             ->selectRaw('nvl(pkm_pkmt,0) vpkmt, nvl(pkm_mindisplay,0) vmindisplay, nvl(pkmp_qtyminor,0) vqtyminor, min_minorder vminor')
-            ->where('pkm_prdcd', '=', $request->value)
+            ->where('pkm_prdcd', '=', $plu->prd_prdcd)
             ->first();
+
+        $min_qty = $NMINOR;
+        $pkm_qty = 0;
+        $md_qty = 0;
+        $pkm_to = 0;
+        $min_to = 0;
+        $md_to = 0;
+        $mplus = 0;
+        $minory = 0;
         if (isset($kkpkm)) {
             $pkm_qty = $kkpkm->vpkmt;
-            $min_qty = $NMINOR;
-            $md_qty = $kkpkm->vmindisplay;
-            if (self::ceknull($AVGSALES, 0) > 0) {
-                $pkm_to = ($kkpkm->vpkmt / self::ceknull($AVGSALES, 0)) * 30;
-                $min_to = ($NMINOR / self::ceknull($AVGSALES, 0)) * 30;
-                $md_to = ($kkpkm->vmindisplay / self::ceknull($AVGSALES, 0)) * 30;
-            } else {
-                $pkm_to = ($kkpkm->vpkmt / 1) * 30;
-                $min_to = ($NMINOR / 1) * 30;
-                $md_to = ($kkpkm->vmindisplay / 1) * 30;
-            }
             $mplus = $kkpkm->vqtyminor;
             $minory = $kkpkm->vminor;
-
-            $pkmt->pkm_qty = round($pkm_qty);
-            $pkmt->min_qty = round($min_qty);
-            $pkmt->md_qty = round($md_qty);
-            $pkmt->pkm_to = round($pkm_to);
-            $pkmt->min_to = round($min_to);
-            $pkmt->md_to = round($md_to);
-            $pkmt->mplus = round($mplus);
-            $pkmt->minory = round($minory);
+            $md_qty = $kkpkm->vmindisplay;
         }
+        if (self::ceknull($AVGSALES, 0) > 0) {
+            if (isset($kkpkm)) $pkm_to = ($kkpkm->vpkmt / self::ceknull($AVGSALES, 0)) * 30;
+            $min_to = ($NMINOR / self::ceknull($AVGSALES, 0)) * 30;
+            if (isset($kkpkm)) $md_to = ($kkpkm->vmindisplay / self::ceknull($AVGSALES, 0)) * 30;
+        } else {
+            if (isset($kkpkm)) $pkm_to = ($kkpkm->vpkmt / 1) * 30;
+            $min_to = ($NMINOR / 1) * 30;
+            if (isset($kkpkm)) $md_to = ($kkpkm->vmindisplay / 1) * 30;
+        }
+
+
+        $pkmt->pkm_qty = round($pkm_qty);
+        $pkmt->min_qty = round($min_qty);
+        $pkmt->md_qty = round($md_qty);
+        $pkmt->pkm_to = round($pkm_to);
+        $pkmt->min_to = round($min_to);
+        $pkmt->md_to = round($md_to);
+        $pkmt->mplus = round($mplus);
+        $pkmt->minory = round($minory);
 
         return compact(['produk', 'sj', 'trendsales', 'prodstock', 'AVGSALES', 'FMPBLNA', 'stock', 'pkmt', 'ITEM', 'flag', 'gdl', 'showpromo', 'message']);
     }

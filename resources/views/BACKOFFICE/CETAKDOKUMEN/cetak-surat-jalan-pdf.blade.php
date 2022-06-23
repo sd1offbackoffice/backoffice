@@ -1,4 +1,5 @@
 @extends('pdf-template')
+{{-- @extends('html-template') --}}
 
 @section('table_font_size','7 px')
 
@@ -7,7 +8,7 @@
 @endsection
 
 @section('title')
-
+    SURAT JALAN <br>{{ strtoupper($data['data1'][0]->judul) }}
 @endsection
 @section('subtitle')
 
@@ -22,11 +23,12 @@
             @php
                 $temp_nodoc = $data['data1'][$i]->msth_nodoc;
             @endphp
-            <table>
+            <table class="table">
                 <thead>
                 <tr>
                     <th class="left" colspan="2" style="vertical-align: bottom">{{ $data['data1'][$i]->prs_namaperusahaan }}</th>
-                    <th class="left" colspan="11" style="font-size: 14px;text-align: center"> SURAT JALAN </th>
+                    {{-- <th class="left" colspan="11" style="font-size: 14px;text-align: center"> SURAT JALAN </th> --}}
+                    <th class="left" colspan="11" style="font-size: 14px;text-align: center"></th>
                     <td class="left" colspan="3" style="vertical-align: bottom"> Kepada : </td>
                 </tr>
                 <tr>
@@ -110,6 +112,8 @@
                 <tr>
                     <td colspan="16">Telepon : {{$data['data1'][$i]->prs_telepon}}</td>
                 </tr>
+
+                @if ($data['reprint'] == '0')
                 <tr>
                     <td colspan="6"></td>
                     <td colspan="6">Diserahkan,</td>
@@ -132,61 +136,31 @@
                         </div>
                         <p>{{ file_get_contents('../storage/names/srclerk.txt') }}</p>
                     </td>
-                    <td colspan="2">
+                    <td colspan="2">                        
                         @for ($j = 0; $j < sizeof($data['arrSuppSig']); $j++)
-                        @if ($data['data1'][$i]->msth_kodesupplier == $data['arrSuppSig'][$j]['sup_kodesupplier'])                            
-                            <div>
-                                <img style="max-width: 100px; max-height: 50px"
-                                    src="../storage/signature_expedition/{{ $data['arrSuppSig'][$j]['signatureId'] . '.png' }}" alt="">
-                            </div>
-                            <p>{{ strtoupper($data['arrSuppSig'][$j]['signedBy']) }}</p>                           
-                        @endif  
-                        @endfor
+                            @if ($data['data1'][$i]->msth_kodesupplier == $data['arrSuppSig'][$j]['sup_kodesupplier'])                            
+                                <div>
+                                    <img style="max-width: 100px; max-height: 50px"
+                                        src="../storage/signature_expedition/{{ $data['arrSuppSig'][$j]['signatureId'] . '.png' }}" alt="">
+                                </div>
+                                <p>{{ strtoupper($data['arrSuppSig'][$j]['signedBy']) }}</p>                           
+                            @endif  
+                        @endfor                                              
                     </td>
-                </tr>
-                {{-- <tr>
-                    <td colspan="16">
-                        &nbsp;
-                        <div>
-                            <img style="max-width: 100px; max-height: 50px" src="../storage/signature/clerk.png"
-                                alt="">
-                        </div>
-                        <p>{{ file_get_contents('../storage/names/clerk.txt') }}</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="16">
-                        &nbsp;
-                        <div>
-                            <img style="max-width: 100px; max-height: 50px" src="../storage/signature/srclerk.png"
-                                alt="">
-                        </div>
-                        <p>{{ file_get_contents('../storage/names/srclerk.txt') }}</p>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="16">
-                        &nbsp;
-                        @for ($j = 0; $j < sizeof($data['arrSuppSig']); $j++)
-                        @if ($data['data1'][$i]->msth_kodesupplier == $data['arrSuppSig'][$j]['sup_kodesupplier'])                            
-                            <div>
-                                <img style="max-width: 100px; max-height: 50px"
-                                    src="../storage/signature_expedition/{{ $data['arrSuppSig'][$j]['signatureId'] . '.png' }}" alt="">
-                            </div>
-                            <p>{{ strtoupper($data['arrSuppSig'][$j]['signedBy']) }}</p>                           
-                        @endif  
-                        @endfor
-                    </td>
-                </tr> --}}
+                </tr>               
                 <tr>
                     <td colspan="6"></td>
                     <td style="border-top: 1px solid black;" colspan="6">Adm. Gudang</td>
                     <td style="border-top: 1px solid black;" colspan="2">Kepala Gudang</td>
                     <td style="border-top: 1px solid black;" colspan="2">Expedisi / Supplier</td>
                 </tr>
+                @endif
+                
                 </tfoot>
             </table>
-            <div class="page-break"></div>
+            @if ($i != sizeof($data['data1'])-1)
+                <div class="page-break"></div>
+            @endif
         @endif
     @endfor
 @endsection

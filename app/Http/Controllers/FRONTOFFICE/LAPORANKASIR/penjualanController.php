@@ -100,21 +100,21 @@ class penjualanController extends Controller
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
 
         $datas = DB::connection(Session::get('connection'))->select("SELECT DISTINCT mpl_kodemonitoring, mpl_namamonitoring
-	FROM TBTR_SUMSALES, TBTR_MONITORINGPLU,
-	  (	SELECT sls_prdcd prdcd, 'T' cexp
-		FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
-		WHERE sls_prdcd = exp_prdcd
-		  AND trjd_recordid IS NULL
-		  AND trjd_prdcd = sls_prdcd
-		  AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
-		  AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-		  AND trjd_cus_kodemember = cus_kodemember (+)
-	 	  AND cus_jenismember = 'E'
-		)
-	WHERE TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-	  AND sls_prdcd = prdcd(+)
-	  AND sls_prdcd = mpl_prdcd
-	  ");
+   FROM TBTR_SUMSALES, TBTR_MONITORINGPLU,
+     (    SELECT sls_prdcd prdcd, 'T' cexp
+      FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
+      WHERE sls_prdcd = exp_prdcd
+        AND trjd_recordid IS NULL
+        AND trjd_prdcd = sls_prdcd
+        AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
+        AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+        AND trjd_cus_kodemember = cus_kodemember (+)
+        AND cus_jenismember = 'E'
+      )
+   WHERE TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+     AND sls_prdcd = prdcd(+)
+     AND sls_prdcd = mpl_prdcd
+     ");
 
         return Datatables::of($datas)->make(true);
     }
@@ -256,33 +256,33 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         //CALCULATE GRAND TOTAL
         if ($elek == 'Y') {
             $rec = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang,
-	   fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori,
-	   fdnamt,fdfnam,
+      fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori,
+      fdnamt,fdfnam,
      fdntax, fdftax,
      fdnnet, fdfnet,
      fdnhpp, fdfhpp,
      fdmrgn, fdfmgn,
      fdjqty, fdfbkp, cexp
 FROM TBMASTER_PERUSAHAAN, /*TBMASTER_PRODMAST,*/ TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_KATEGORI,
-(	SELECT sls_kodeigr kodeigr, sls_kodedivisi fdkdiv, sls_kodedepartement fdkdep, sls_kodekategoribrg fdkatb, sls_flagbkp fdfbkp,
-		   SUM(sls_QtyNOMI) fdjqty, SUM(sls_NilaiNOMI) fdnamt, SUM(sls_TaxNOMI) fdntax, SUM(sls_NetNOMI) fdnnet, SUM(sls_HppNOMI) fdnhpp,
-		   SUM(sls_MarginNOMI) fdmrgn, SUM(sls_NilaiOMI) fdfnam, SUM(sls_TaxOMI) fdftax, SUM(sls_NetOMI) fdfnet, SUM(sls_HppOMI) fdfhpp, SUM(sls_MarginOMI) fdfmgn,
-		   NVL(cexp,'F') cexp
-	FROM TBTR_SUMSALES,
-	  (	SELECT sls_prdcd prdcd, 'T' cexp
-		FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
-		WHERE sls_prdcd = exp_prdcd
-		  AND trjd_recordid IS NULL
-		  AND trjd_prdcd = sls_prdcd
-		  AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
-		  AND TRUNC(trjd_transactiondate) BETWEEN '1-oct-12' AND '10-oct-12'--:p_tgl1 and :p_tgl2 --
-		  AND trjd_cus_kodemember = cus_kodemember (+)
-	 	  AND cus_jenismember = 'E'
-		)
-	WHERE TRUNC(sls_periode) BETWEEN '1-oct-12' AND '10-oct-12'--:p_tgl1 and :p_tgl2 --'1-oct-12' AND '10-oct-12'
-	  AND sls_prdcd = prdcd(+)
-	GROUP BY sls_kodeigr, sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg,sls_flagbkp, NVL(cexp,'F')
-	ORDER BY sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg
+(  SELECT sls_kodeigr kodeigr, sls_kodedivisi fdkdiv, sls_kodedepartement fdkdep, sls_kodekategoribrg fdkatb, sls_flagbkp fdfbkp,
+         SUM(sls_QtyNOMI) fdjqty, SUM(sls_NilaiNOMI) fdnamt, SUM(sls_TaxNOMI) fdntax, SUM(sls_NetNOMI) fdnnet, SUM(sls_HppNOMI) fdnhpp,
+         SUM(sls_MarginNOMI) fdmrgn, SUM(sls_NilaiOMI) fdfnam, SUM(sls_TaxOMI) fdftax, SUM(sls_NetOMI) fdfnet, SUM(sls_HppOMI) fdfhpp, SUM(sls_MarginOMI) fdfmgn,
+         NVL(cexp,'F') cexp
+   FROM TBTR_SUMSALES,
+     (    SELECT sls_prdcd prdcd, 'T' cexp
+      FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
+      WHERE sls_prdcd = exp_prdcd
+        AND trjd_recordid IS NULL
+        AND trjd_prdcd = sls_prdcd
+        AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
+        AND TRUNC(trjd_transactiondate) BETWEEN '1-oct-12' AND '10-oct-12'--:p_tgl1 and :p_tgl2 --
+        AND trjd_cus_kodemember = cus_kodemember (+)
+        AND cus_jenismember = 'E'
+      )
+   WHERE TRUNC(sls_periode) BETWEEN '1-oct-12' AND '10-oct-12'--:p_tgl1 and :p_tgl2 --'1-oct-12' AND '10-oct-12'
+     AND sls_prdcd = prdcd(+)
+   GROUP BY sls_kodeigr, sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg,sls_flagbkp, NVL(cexp,'F')
+   ORDER BY sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg
 )
 WHERE prs_kodeigr = '$kodeigr'
   AND kodeigr = prs_kodeigr
@@ -295,29 +295,29 @@ WHERE prs_kodeigr = '$kodeigr'
 ORDER BY fdkdiv, fdkdep, fdkatb");
         } else {
             $rec = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang,
-	   fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdfbkp,
-	   fdjqty, fdnamt, fdntax, fdnnet, fdnhpp, fdmrgn,
-	   fdfqty, fdfnam, fdftax, fdfnet, fdfhpp, fdfmgn, cexp
+      fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdfbkp,
+      fdjqty, fdnamt, fdntax, fdnnet, fdnhpp, fdmrgn,
+      fdfqty, fdfnam, fdftax, fdfnet, fdfhpp, fdfmgn, cexp
 FROM TBMASTER_PERUSAHAAN, /*TBMASTER_PRODMAST,*/ TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_KATEGORI,
-(	SELECT sls_kodeigr kodeigr, sls_kodedivisi fdkdiv, sls_kodedepartement fdkdep, sls_kodekategoribrg fdkatb, sls_flagbkp fdfbkp,
-		   SUM(sls_QtyNOMI) fdjqty, SUM(sls_NilaiNOMI) fdnamt, SUM(sls_TaxNOMI) fdntax, SUM(sls_NetNOMI) fdnnet, SUM(sls_HppNOMI) fdnhpp, SUM(sls_MarginNOMI) fdmrgn,
-		   sum(sls_QtyOMI) fdfqty, SUM(sls_NilaiOMI) fdfnam, SUM(sls_TaxOMI) fdftax, SUM(sls_NetOMI) fdfnet, SUM(sls_HppOMI) fdfhpp, SUM(sls_MarginOMI) fdfmgn,
-		   NVL(cexp,'F') cexp
-	FROM TBTR_SUMSALES,
-	  (	SELECT sls_prdcd prdcd, 'T' cexp
-		FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
-		WHERE sls_prdcd = exp_prdcd
-		  AND trjd_recordid IS NULL
-		  AND trjd_prdcd = sls_prdcd
-		  AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
-		  AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-		  AND trjd_cus_kodemember = cus_kodemember (+)
-	 	  AND cus_jenismember = 'E'
-		)
-	WHERE TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-	  AND sls_prdcd = prdcd(+)
-	GROUP BY sls_kodeigr, sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg,sls_flagbkp, NVL(cexp,'F')
-	ORDER BY sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg
+(  SELECT sls_kodeigr kodeigr, sls_kodedivisi fdkdiv, sls_kodedepartement fdkdep, sls_kodekategoribrg fdkatb, sls_flagbkp fdfbkp,
+         SUM(sls_QtyNOMI) fdjqty, SUM(sls_NilaiNOMI) fdnamt, SUM(sls_TaxNOMI) fdntax, SUM(sls_NetNOMI) fdnnet, SUM(sls_HppNOMI) fdnhpp, SUM(sls_MarginNOMI) fdmrgn,
+         sum(sls_QtyOMI) fdfqty, SUM(sls_NilaiOMI) fdfnam, SUM(sls_TaxOMI) fdftax, SUM(sls_NetOMI) fdfnet, SUM(sls_HppOMI) fdfhpp, SUM(sls_MarginOMI) fdfmgn,
+         NVL(cexp,'F') cexp
+   FROM TBTR_SUMSALES,
+     (    SELECT sls_prdcd prdcd, 'T' cexp
+      FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
+      WHERE sls_prdcd = exp_prdcd
+        AND trjd_recordid IS NULL
+        AND trjd_prdcd = sls_prdcd
+        AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
+        AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+        AND trjd_cus_kodemember = cus_kodemember (+)
+        AND cus_jenismember = 'E'
+      )
+   WHERE TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+     AND sls_prdcd = prdcd(+)
+   GROUP BY sls_kodeigr, sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg,sls_flagbkp, NVL(cexp,'F')
+   ORDER BY sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg
 )
 WHERE prs_kodeigr = '$kodeigr'
   AND kodeigr = prs_kodeigr
@@ -408,7 +408,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
                         $net['g'] = $net['g'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                         $hpp['g'] = $hpp['g'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                         $margin['g'] = $margin['g'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
-                    } 
+                    }
                     else {
                         if ($rec[$i]->cexp == 'Y') {
                             $gross['e'] = $gross['e'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
@@ -519,15 +519,15 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
                 $marginpersen['g'] = 0;
             }
         }
-        if ($net['r'] != 0) {
-            $marginpersen['r'] = round(($margin['r']) * 100 / ($net['r']), 2);
-        } else {
-            if (($margin['r']) != 0) {
-                $marginpersen['r'] = 100;
-            } else {
-                $marginpersen['r'] = 0;
-            }
-        }
+        // if ($net['r'] != 0) {
+        //     $marginpersen['r'] = round(($margin['r']) * 100 / ($net['r']), 2);
+        // } else {
+        //     if (($margin['r']) != 0) {
+        //         $marginpersen['r'] = 100;
+        //     } else {
+        //         $marginpersen['r'] = 0;
+        //     }
+        // }
         if ($net['d'] != 0) {
             $marginpersen['d'] = round(($margin['d']) * 100 / ($net['d']), 2);
         } else {
@@ -597,6 +597,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         $export = $request->export; //P_CKSRX
         $grosirA = $request->grosira;
         $lst_print = $request->lst_print;
+        // dd($request->all());
         if ($lst_print == "INDOGROSIR ALL [IGR   (OMI/IDM)]") {
             $lst_print = "INDOGROSIR ALL [IGR + (OMI/IDM)]";
         }
@@ -647,6 +648,10 @@ WHERE prs_kodeigr = '$kodeigr'
   AND cStat = 'T'
 GROUP BY sls_kodeigr, prs_namaperusahaan, prs_namacabang, cdiv, div_namadivisi, cdept, dep_namadepartement, fdfbkp, cexp
 ORDER BY cdiv,cdept");
+
+// dd($datas);
+
+// -- AND SLS_FLAGBKP IN ('W','G','P')
 
 //        if(sizeof($datas) == 0){
 //            return "**DATA TIDAK ADA**";
@@ -701,15 +706,48 @@ ORDER BY cdiv,cdept");
         $hpp['f'] = 0;
         $margin['f'] = 0;
 
+        // dd(sizeof($datas),$datas);
+
         for ($i = 0; $i < sizeof($datas); $i++) {
             if (($datas[$i]->cdiv) != '5' && (($datas[$i]->cdept != '39') && ($datas[$i]->cdept != '40') && ($datas[$i]->cdept != '43'))) {
-                if ($datas[$i]->ntax != 0) {
+                if ($datas[$i]->ntax != 0 && $datas[$i]->fdfbkp != 'W' && $datas[$i]->fdfbkp !='G' && $datas[$i]->fdfbkp !='C' && $datas[$i]->fdfbkp !='P') {
                     $gross['p'] = $gross['p'] + $datas[$i]->ngross;
                     $tax['p'] = $tax['p'] + $datas[$i]->ntax;
                     $net['p'] = $net['p'] + $datas[$i]->nnet;
                     $hpp['p'] = $hpp['p'] + $datas[$i]->nhpp;
                     $margin['p'] = $margin['p'] + $datas[$i]->nmargin;
+                    // switch($datas[$i]->fdfbkp){
+                    //     case 'Y' : 
+                    //         $gross['y'] = $gross['y'] + $datas[$i]->ngross;
+                    //         $tax['y'] = $tax['y'] + $datas[$i]->ntax;
+                    //         $net['y'] = $net['y'] + $datas[$i]->nnet;
+                    //         $hpp['y'] = $hpp['y'] + $datas[$i]->nhpp;
+                    //         $margin['y'] = $margin['y'] + $datas[$i]->nmargin;
+                    //         break;
+                    //     case 'P' :
+                    //         $gross['p'] = $gross['p'] + $datas[$i]->ngross;
+                    //         $tax['p'] = $tax['p'] + $datas[$i]->ntax;
+                    //         $net['p'] = $net['p'] + $datas[$i]->nnet;
+                    //         $hpp['p'] = $hpp['p'] + $datas[$i]->nhpp;
+                    //         $margin['p'] = $margin['p'] + $datas[$i]->nmargin;
+                    //         break;
+                    //     case 'W' :
+                    //         $gross['z'] = $gross['z'] + $datas[$i]->ngross;
+                    //         $tax['z'] = $tax['z'] + $datas[$i]->ntax;
+                    //         $net['z'] = $net['z'] + $datas[$i]->nnet;
+                    //         $hpp['z'] = $hpp['z'] + $datas[$i]->nhpp;
+                    //         $margin['z'] = $margin['z'] + $datas[$i]->nmargin;
+                    //         break;
+                    //     case 'G' :
+                    //         $gross['z'] = $gross['z'] + $datas[$i]->ngross;
+                    //         $tax['z'] = $tax['z'] + $datas[$i]->ntax;
+                    //         $net['z'] = $net['z'] + $datas[$i]->nnet;
+                    //         $hpp['z'] = $hpp['z'] + $datas[$i]->nhpp;
+                    //         $margin['z'] = $margin['z'] + $datas[$i]->nmargin;
+                    //         break;
+                    // }
                 } else {
+                    // dd($datas[$i]->fdfbkp,'ini masuk else 1');
                     switch ($datas[$i]->fdfbkp) {
                         case 'C' :
                             $gross['k'] = $gross['k'] + $datas[$i]->ngross;
@@ -760,18 +798,21 @@ ORDER BY cdiv,cdept");
                     }
                 }
             } elseif (($datas[$i]->cdiv) == '5' && ($datas[$i]->cdept) == '39') {
+                // dd(($datas[$i]->cdiv) == '5' && ($datas[$i]->cdept) == '39','ini elseif 1');
                 $gross['c'] = $gross['c'] + $datas[$i]->ngross;
                 $tax['c'] = $tax['c'] + $datas[$i]->ntax;
                 $net['c'] = $net['c'] + $datas[$i]->nnet;
                 $hpp['c'] = $hpp['c'] + $datas[$i]->nhpp;
                 $margin['c'] = $margin['c'] + $datas[$i]->nmargin;
             } elseif (($datas[$i]->cdiv) == '5' && ($datas[$i]->cdept) == '40') {
+                // dd(($datas[$i]->cdiv) == '5' && ($datas[$i]->cdept) == '40','ini elseif 2');
                 $gross['d'] = $gross['d'] + $datas[$i]->ngross;
                 $tax['d'] = $tax['d'] + $datas[$i]->ntax;
                 $net['d'] = $net['d'] + $datas[$i]->nnet;
                 $hpp['d'] = $hpp['d'] + $datas[$i]->nhpp;
                 $margin['d'] = $margin['d'] + $datas[$i]->nmargin;
             } elseif (($datas[$i]->cdiv) == '5' && ($datas[$i]->cdept) == '43') {
+                // dd(($datas[$i]->cdiv) == '5' && ($datas[$i]->cdept) == '43','ini elseif 3');
                 $gross['f'] = $gross['f'] + $datas[$i]->ngross;
                 $tax['f'] = $tax['f'] + $datas[$i]->ntax;
                 $net['f'] = $net['f'] + $datas[$i]->nnet;
@@ -779,6 +820,8 @@ ORDER BY cdiv,cdept");
                 $margin['f'] = $margin['f'] + $datas[$i]->nmargin;
             }
         }
+        // dd($gross['p'],$tax['p'],$net['p'],$hpp['p'],$margin['p']);
+        // dd($gross['g'],$tax['g'],$net['g'],$hpp['g'],$margin['g']);
 
         //persentase margin
         if ($net['c'] != 0) {
@@ -853,15 +896,15 @@ ORDER BY cdiv,cdept");
                 $marginpersen['g'] = 0;
             }
         }
-        if ($net['r'] != 0) {
-            $marginpersen['r'] = round(($margin['r']) * 100 / ($net['r']), 2);
-        } else {
-            if (($margin['r']) != 0) {
-                $marginpersen['r'] = 100;
-            } else {
-                $marginpersen['r'] = 0;
-            }
-        }
+        // if ($net['r'] != 0) {
+        //     $marginpersen['r'] = round(($margin['r']) * 100 / ($net['r']), 2);
+        // } else {
+        //     if (($margin['r']) != 0) {
+        //         $marginpersen['r'] = 100;
+        //     } else {
+        //         $marginpersen['r'] = 0;
+        //     }
+        // }
         if ($net['d'] != 0) {
             $marginpersen['d'] = round(($margin['d']) * 100 / ($net['d']), 2);
         } else {
@@ -871,6 +914,8 @@ ORDER BY cdiv,cdept");
                 $marginpersen['d'] = 0;
             }
         }
+
+        // dd($gross['g'],$tax['g'],$net['g'],$hpp['g'],$margin['g'],$marginpersen['g']);
 
         //ULTIMATE GRAND TOTAL
         $gross['total'] = 0;
@@ -921,9 +966,11 @@ ORDER BY cdiv,cdept");
             }
         }
 
+        // dd($gross['g'],$tax['g'],$net['g'],$hpp['g'],$margin['g'],$marginpersen['g']);
+
         //MENGAMBIL ULANG DATA TANPA FDFBKP agar tidak group by fdfbkp yang menyebabkan nilai menjadi double,
         //fdfbkp sebelumnya diperlukan untuk menghitung total
-        $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, cdiv, div_namadivisi, cdept, dep_namadepartement, cexp,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, cdiv, div_namadivisi, cdept, dep_namadepartement, cexp, fdfbkp,
        CASE WHEN '$export' = 'Y' THEN 'LAPORAN PENJUALAN (EXPORT)' ELSE 'LAPORAN PENJUALAN' END title,
        SUM(fdnamt + CASE WHEN '$grosirA'='T' THEN fdfnam ELSE 0 END) nGross, --fdnamt+fdfnam
        CASE WHEN '$export' <> 'Y' THEN SUM( CASE WHEN '$export' <> 'Y' THEN fdntax END + CASE WHEN '$grosirA'='T' THEN fdftax ELSE 0 END  ) END nTax, --fdntax+fdftax
@@ -931,7 +978,7 @@ ORDER BY cdiv,cdept");
        SUM(fdnhpp + CASE WHEN '$grosirA'='T' THEN fdfhpp ELSE 0 END) nHpp, --fdnhpp+fdfhpp
        SUM(fdmrgn + CASE WHEN '$grosirA'='T' THEN fdfmgn ELSE 0 END) nMargin --fdmrgn+fdfmgn
 FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT,
-(    SELECT sls_kodeigr, sls_kodedivisi cdiv, sls_kodedepartement cdept,
+(    SELECT sls_kodeigr, sls_kodedivisi cdiv, sls_kodedepartement cdept, sls_flagbkp fdfbkp,
            (sls_NilaiNOMI) fdnamt,
            (sls_TaxNOMI) fdntax,
            (sls_NetNOMI) fdnnet,
@@ -962,8 +1009,10 @@ WHERE prs_kodeigr = '$kodeigr'
   AND cdiv = div_kodedivisi
   AND cdept = dep_kodedepartement
   AND cStat = 'T'
-GROUP BY sls_kodeigr, prs_namaperusahaan, prs_namacabang, cdiv, div_namadivisi, cdept, dep_namadepartement, cexp
+GROUP BY sls_kodeigr, prs_namaperusahaan, prs_namacabang, cdiv, div_namadivisi, cdept, dep_namadepartement, fdfbkp, cexp
 ORDER BY cdiv,cdept");
+
+// dd($gross['g'],$tax['g'],$net['g'],$hpp['g'],$margin['g'],$marginpersen['g']);
 
         $cf_nmargin = [];
         for ($i = 0; $i < sizeof($datas); $i++) {
@@ -986,7 +1035,7 @@ ORDER BY cdiv,cdept");
             ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan,
                 'keterangan' => $lst_print, 'cf_nmargin' => $cf_nmargin, 'periode' => $periode,
                 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp, 'margin' => $margin, 'marginpersen' => $marginpersen]);
-        $pdf->setPaper('A4', 'potrait');
+        $pdf->setPaper('A5', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
@@ -1025,65 +1074,65 @@ ORDER BY cdiv,cdept");
         }
 
         $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, omisbu, namasbu, omikod, namaomi, omidiv, div_namadivisi, dep_namadepartement, omidep,
-	   SUM(CASE WHEN fdtipe='S' THEN nNet    ELSE nNet*-1    END) ominet,
-	   SUM(CASE WHEN fdtipe='S' THEN nGross  ELSE nGross*-1  END) omiamt,
-	   SUM(CASE WHEN fdtipe='S' THEN nTax    ELSE nTax  *-1  END) omitax,
-	   SUM(CASE WHEN fdtipe='S' THEN nHpp    ELSE nHpp*-1    END) omihpp,
-	   SUM(CASE WHEN fdtipe='S' THEN nMargin ELSE nMargin*-1 END) omimrg
+      SUM(CASE WHEN fdtipe='S' THEN nNet    ELSE nNet*-1    END) ominet,
+      SUM(CASE WHEN fdtipe='S' THEN nGross  ELSE nGross*-1  END) omiamt,
+      SUM(CASE WHEN fdtipe='S' THEN nTax    ELSE nTax  *-1  END) omitax,
+      SUM(CASE WHEN fdtipe='S' THEN nHpp    ELSE nHpp*-1    END) omihpp,
+      SUM(CASE WHEN fdtipe='S' THEN nMargin ELSE nMargin*-1 END) omimrg
 FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT,
-(	SELECT kodeigr, omikod, namaomi, omisbu, namasbu, omimem, fdkdiv omidiv, fddiv omidep, cBkp, mark_up, fdtipe,
-		  CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
-	         0
-	      ELSE
-	         CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
-	           CASE WHEN cBkp = 'Y' THEN ((fdnamt*(1+(nvl(prd_ppn,10)/100)))-Fdnamt) ELSE 0 END
-	         ELSE
-	           CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END
-	         END
-	      END nTax,
-	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
-	         Fdnamt
-	      ELSE
-	         CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN
-	            Fdnamt
-	         ELSE
-	            Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END)
-	         END
-	      END nNet,
-	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
-	         CASE WHEN Mark_up IS NULL THEN ((5*Fdnamt)/100) ELSE ((Mark_up*Fdnamt)/100) END
-	      ELSE
-	         (CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN Fdnamt ELSE Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END) END) -
-			 ( Fdjqty/(CASE WHEN unit='KG'THEN 1000 ELSE 1 END)*Fdcost)
-	      END nMargin,
-	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
-	         Fdnamt - (CASE WHEN Mark_up IS NULL THEN ((5*Fdnamt)/100) ELSE ((Mark_up*Fdnamt)/100) END)
-	      ELSE
-	         (Fdjqty/(CASE WHEN unit='KG'THEN 1000 ELSE 1 END)*Fdcost)
-	      END nHpp,
-	      CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
-	         CASE WHEN cBkp = 'Y' THEN
-	            fdnamt*(1+(nvl(prd_ppn,10)/100))
-	         ELSE
-	            fdnamt
-	         END
-	      ELSE
-	         fdnamt
-	      END nGross
-	FROM
-	(	SELECT tko_kodeigr kodeigr, tko_kodeOMI omikod, tko_namaomi namaomi, tko_kodeSBU omisbu, tko_namasbu namasbu, trjd_cus_kodemember omimem, trjd_divisioncode fdkdiv, SUBSTR(trjd_division,1,2) fddiv,
-			   trjd_nominalamt fdnamt, trjd_baseprice fdcost, trjd_quantity fdjqty, prd_unit unit, prd_markUpStandard mark_up,
-			   trjd_transactiontype fdtipe, trjd_flagtax1 cBkp,
-			   CASE WHEN trjd_cus_kodemember NOT IN (SELECT cus_kodemember FROM TBMASTER_CUSTOMER) THEN 'T' ELSE cus_flagPKP END pjkO,
-			   prd_ppn
-		FROM TBMASTER_TOKOIGR, TBTR_JUALDETAIL, TBMASTER_CUSTOMER, TBMASTER_PRODMAST
-		WHERE trjd_cus_kodemember = tko_kodecustomer
-		  AND trjd_cus_kodemember = cus_kodemember
-		  AND trjd_prdcd = prd_prdcd and trjd_quantity > 0
-		  " . $p_sbu . " " . $p_khusus . " " . $p_omi . "
-		  AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-		  AND tko_kodeOMI NOT IN (SELECT tko_kodeOMI FROM TBMASTER_TOKOIGR WHERE tko_tipeOMI IN ('HR','HG'))
-	)
+(  SELECT kodeigr, omikod, namaomi, omisbu, namasbu, omimem, fdkdiv omidiv, fddiv omidep, cBkp, mark_up, fdtipe,
+        CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
+            0
+         ELSE
+            CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
+              CASE WHEN cBkp = 'Y' THEN ((fdnamt*(1+(nvl(prd_ppn,10)/100)))-Fdnamt) ELSE 0 END
+            ELSE
+              CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END
+            END
+         END nTax,
+         CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
+            Fdnamt
+         ELSE
+            CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN
+               Fdnamt
+            ELSE
+               Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END)
+            END
+         END nNet,
+         CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
+            CASE WHEN Mark_up IS NULL THEN ((5*Fdnamt)/100) ELSE ((Mark_up*Fdnamt)/100) END
+         ELSE
+            (CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN Fdnamt ELSE Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END) END) -
+          ( Fdjqty/(CASE WHEN unit='KG'THEN 1000 ELSE 1 END)*Fdcost)
+         END nMargin,
+         CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
+            Fdnamt - (CASE WHEN Mark_up IS NULL THEN ((5*Fdnamt)/100) ELSE ((Mark_up*Fdnamt)/100) END)
+         ELSE
+            (Fdjqty/(CASE WHEN unit='KG'THEN 1000 ELSE 1 END)*Fdcost)
+         END nHpp,
+         CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
+            CASE WHEN cBkp = 'Y' THEN
+               fdnamt*(1+(nvl(prd_ppn,10)/100))
+            ELSE
+               fdnamt
+            END
+         ELSE
+            fdnamt
+         END nGross
+   FROM
+   (  SELECT tko_kodeigr kodeigr, tko_kodeOMI omikod, tko_namaomi namaomi, tko_kodeSBU omisbu, tko_namasbu namasbu, trjd_cus_kodemember omimem, trjd_divisioncode fdkdiv, SUBSTR(trjd_division,1,2) fddiv,
+            trjd_nominalamt fdnamt, trjd_baseprice fdcost, trjd_quantity fdjqty, prd_unit unit, prd_markUpStandard mark_up,
+            trjd_transactiontype fdtipe, trjd_flagtax1 cBkp,
+            CASE WHEN trjd_cus_kodemember NOT IN (SELECT cus_kodemember FROM TBMASTER_CUSTOMER) THEN 'T' ELSE cus_flagPKP END pjkO,
+            prd_ppn
+      FROM TBMASTER_TOKOIGR, TBTR_JUALDETAIL, TBMASTER_CUSTOMER, TBMASTER_PRODMAST
+      WHERE trjd_cus_kodemember = tko_kodecustomer
+        AND trjd_cus_kodemember = cus_kodemember
+        AND trjd_prdcd = prd_prdcd and trjd_quantity > 0
+        " . $p_sbu . " " . $p_khusus . " " . $p_omi . "
+        AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+        AND tko_kodeOMI NOT IN (SELECT tko_kodeOMI FROM TBMASTER_TOKOIGR WHERE tko_tipeOMI IN ('HR','HG'))
+   )
 )
 WHERE prs_kodeigr = '$kodeigr'
   AND kodeigr = prs_kodeigr
@@ -1220,65 +1269,65 @@ ORDER BY omikod");
             $p_omi = "AND tko_kodeomi = '" . $request->p_omi . "'";
         }
         $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, div_namadivisi, dep_namadepartement, omisbu, namasbu, omidiv, omidep,
-	   SUM(CASE WHEN fdtipe='S' THEN nNet    ELSE nNet*-1    END) ominet,
-	   SUM(CASE WHEN fdtipe='S' THEN nGross  ELSE nGross*-1  END) omiamt,
-	   SUM(CASE WHEN fdtipe='S' THEN nTax    ELSE nTax  *-1  END) omitax,
-	   SUM(CASE WHEN fdtipe='S' THEN nHpp    ELSE nHpp*-1    END) omihpp,
-	   SUM(CASE WHEN fdtipe='S' THEN nMargin ELSE nMargin*-1 END) omimrg
+      SUM(CASE WHEN fdtipe='S' THEN nNet    ELSE nNet*-1    END) ominet,
+      SUM(CASE WHEN fdtipe='S' THEN nGross  ELSE nGross*-1  END) omiamt,
+      SUM(CASE WHEN fdtipe='S' THEN nTax    ELSE nTax  *-1  END) omitax,
+      SUM(CASE WHEN fdtipe='S' THEN nHpp    ELSE nHpp*-1    END) omihpp,
+      SUM(CASE WHEN fdtipe='S' THEN nMargin ELSE nMargin*-1 END) omimrg
 FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT,
-(	SELECT kodeigr, omikod, omisbu, omimem, fdkdiv omidiv, fddiv omidep, cBkp, mark_up, fdtipe, namasbu,
-		  CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
-	         0
-	      ELSE
-	         CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
-	           CASE WHEN cBkp = 'Y' THEN ((fdnamt*(1+(nvl(prd_ppn,10)/100)))-Fdnamt) ELSE 0 END
-	         ELSE
-	           CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END
-	         END
-	      END nTax,
-	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
-	         Fdnamt
-	      ELSE
-	         CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN
-	            Fdnamt
-	         ELSE
-	            Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END)
-	         END
-	      END nNet,
-	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
-	         CASE WHEN Mark_up IS NULL THEN ((5*Fdnamt)/100) ELSE ((Mark_up*Fdnamt)/100) END
-	      ELSE
-	         (CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN Fdnamt ELSE Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END) END) -
-			 ( Fdjqty/(CASE WHEN unit='KG'THEN 1000 ELSE 1 END)*Fdcost)
-	      END nMargin,
-	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
-	         Fdnamt - (CASE WHEN Mark_up IS NULL THEN ((5*Fdnamt)/100) ELSE ((Mark_up*Fdnamt)/100) END)
-	      ELSE
-	         (Fdjqty/(CASE WHEN unit='KG'THEN 1000 ELSE 1 END)*Fdcost)
-	      END nHpp,
-	      CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
-	         CASE WHEN cBkp = 'Y' THEN
-	            fdnamt*(1+(nvl(prd_ppn,10)/100))
-	         ELSE
-	            fdnamt
-	         END
-	      ELSE
-	         fdnamt
-	      END nGross
-	FROM
-	(	SELECT tko_kodeigr kodeigr, tko_kodeOMI omikod, tko_kodeSBU omisbu, tko_namasbu namasbu, trjd_cus_kodemember omimem, trjd_divisioncode fdkdiv, SUBSTR(trjd_division,1,2) fddiv,
-			   trjd_nominalamt fdnamt, trjd_baseprice fdcost, trjd_quantity fdjqty, prd_unit unit, prd_markUpStandard mark_up,
-			   trjd_transactiontype fdtipe, trjd_flagtax1 cBkp,
-			   CASE WHEN trjd_cus_kodemember NOT IN (SELECT cus_kodemember FROM TBMASTER_CUSTOMER) THEN 'T' ELSE cus_flagPKP END pjkO,
-			   prd_ppn
-		FROM TBMASTER_TOKOIGR, TBTR_JUALDETAIL, TBMASTER_CUSTOMER, TBMASTER_PRODMAST
-		WHERE trjd_cus_kodemember = tko_kodecustomer
-		  AND trjd_cus_kodemember = cus_kodemember
-		  AND trjd_prdcd = prd_prdcd
-		  " . $p_sbu . " " . $p_khusus . " " . $p_omi . "
-		  AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-		  AND tko_kodeOMI NOT IN (SELECT tko_kodeOMI FROM TBMASTER_TOKOIGR WHERE tko_tipeOMI IN ('HR','HG'))
-	)
+(  SELECT kodeigr, omikod, omisbu, omimem, fdkdiv omidiv, fddiv omidep, cBkp, mark_up, fdtipe, namasbu,
+        CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
+            0
+         ELSE
+            CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
+              CASE WHEN cBkp = 'Y' THEN ((fdnamt*(1+(nvl(prd_ppn,10)/100)))-Fdnamt) ELSE 0 END
+            ELSE
+              CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END
+            END
+         END nTax,
+         CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
+            Fdnamt
+         ELSE
+            CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN
+               Fdnamt
+            ELSE
+               Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END)
+            END
+         END nNet,
+         CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
+            CASE WHEN Mark_up IS NULL THEN ((5*Fdnamt)/100) ELSE ((Mark_up*Fdnamt)/100) END
+         ELSE
+            (CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN Fdnamt ELSE Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END) END) -
+          ( Fdjqty/(CASE WHEN unit='KG'THEN 1000 ELSE 1 END)*Fdcost)
+         END nMargin,
+         CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
+            Fdnamt - (CASE WHEN Mark_up IS NULL THEN ((5*Fdnamt)/100) ELSE ((Mark_up*Fdnamt)/100) END)
+         ELSE
+            (Fdjqty/(CASE WHEN unit='KG'THEN 1000 ELSE 1 END)*Fdcost)
+         END nHpp,
+         CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
+            CASE WHEN cBkp = 'Y' THEN
+               fdnamt*(1+(nvl(prd_ppn,10)/100))
+            ELSE
+               fdnamt
+            END
+         ELSE
+            fdnamt
+         END nGross
+   FROM
+   (  SELECT tko_kodeigr kodeigr, tko_kodeOMI omikod, tko_kodeSBU omisbu, tko_namasbu namasbu, trjd_cus_kodemember omimem, trjd_divisioncode fdkdiv, SUBSTR(trjd_division,1,2) fddiv,
+            trjd_nominalamt fdnamt, trjd_baseprice fdcost, trjd_quantity fdjqty, prd_unit unit, prd_markUpStandard mark_up,
+            trjd_transactiontype fdtipe, trjd_flagtax1 cBkp,
+            CASE WHEN trjd_cus_kodemember NOT IN (SELECT cus_kodemember FROM TBMASTER_CUSTOMER) THEN 'T' ELSE cus_flagPKP END pjkO,
+            prd_ppn
+      FROM TBMASTER_TOKOIGR, TBTR_JUALDETAIL, TBMASTER_CUSTOMER, TBMASTER_PRODMAST
+      WHERE trjd_cus_kodemember = tko_kodecustomer
+        AND trjd_cus_kodemember = cus_kodemember
+        AND trjd_prdcd = prd_prdcd
+        " . $p_sbu . " " . $p_khusus . " " . $p_omi . "
+        AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+        AND tko_kodeOMI NOT IN (SELECT tko_kodeOMI FROM TBMASTER_TOKOIGR WHERE tko_tipeOMI IN ('HR','HG'))
+   )
 )
 WHERE prs_kodeigr = '$kodeigr'
   AND kodeigr = prs_kodeigr
@@ -1359,65 +1408,65 @@ ORDER BY omidiv, omidep");
 
         if ($p_sbu == '') {
             $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, div_namadivisi, dep_namadepartement, omidiv, omidep,
-	   SUM(CASE WHEN fdtipe='S' THEN nNet    ELSE nNet*-1    END) ominet,
-	   SUM(CASE WHEN fdtipe='S' THEN nGross  ELSE nGross*-1  END) omiamt,
-	   SUM(CASE WHEN fdtipe='S' THEN nTax    ELSE nTax  *-1  END) omitax,
-	   SUM(CASE WHEN fdtipe='S' THEN nHpp    ELSE nHpp*-1    END) omihpp,
-	   SUM(CASE WHEN fdtipe='S' THEN nMargin ELSE nMargin*-1 END) omimrg
+      SUM(CASE WHEN fdtipe='S' THEN nNet    ELSE nNet*-1    END) ominet,
+      SUM(CASE WHEN fdtipe='S' THEN nGross  ELSE nGross*-1  END) omiamt,
+      SUM(CASE WHEN fdtipe='S' THEN nTax    ELSE nTax  *-1  END) omitax,
+      SUM(CASE WHEN fdtipe='S' THEN nHpp    ELSE nHpp*-1    END) omihpp,
+      SUM(CASE WHEN fdtipe='S' THEN nMargin ELSE nMargin*-1 END) omimrg
 FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT,
-(	SELECT kodeigr, omikod, omisbu, omimem, fdkdiv omidiv, fddiv omidep, cBkp, mark_up, fdtipe, namasbu,
-		  CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
-	         0
-	      ELSE
-	         CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
-	           CASE WHEN cBkp = 'Y' THEN ((fdnamt*(1+(nvl(prd_ppn,10)/100)))-Fdnamt) ELSE 0 END
-	         ELSE
-	           CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END
-	         END
-	      END nTax,
-	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
-	         Fdnamt
-	      ELSE
-	         CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN
-	            Fdnamt
-	         ELSE
-	            Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END)
-	         END
-	      END nNet,
-	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
-	         CASE WHEN Mark_up IS NULL THEN ((5*Fdnamt)/100) ELSE ((Mark_up*Fdnamt)/100) END
-	      ELSE
-	         (CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN Fdnamt ELSE Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END) END) -
-			 ( Fdjqty/(CASE WHEN unit='KG'THEN 1000 ELSE 1 END)*Fdcost)
-	      END nMargin,
-	      CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
-	         Fdnamt - (CASE WHEN Mark_up IS NULL THEN ((5*Fdnamt)/100) ELSE ((Mark_up*Fdnamt)/100) END)
-	      ELSE
-	         (Fdjqty/(CASE WHEN unit='KG'THEN 1000 ELSE 1 END)*Fdcost)
-	      END nHpp,
-	      CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
-	         CASE WHEN cBkp = 'Y' THEN
-	            fdnamt*(1+(nvl(prd_ppn,10)/100))
-	         ELSE
-	            fdnamt
-	         END
-	      ELSE
-	         fdnamt
-	      END nGross
-	FROM
-	(	SELECT tko_kodeigr kodeigr, tko_kodeOMI omikod, tko_kodeSBU omisbu, tko_namasbu namasbu, trjd_cus_kodemember omimem, trjd_divisioncode fdkdiv, SUBSTR(trjd_division,1,2) fddiv,
-			   trjd_nominalamt fdnamt, trjd_baseprice fdcost, trjd_quantity fdjqty, prd_unit unit, prd_markUpStandard mark_up,
-			   trjd_transactiontype fdtipe, trjd_flagtax1 cBkp,
-			   CASE WHEN trjd_cus_kodemember NOT IN (SELECT cus_kodemember FROM TBMASTER_CUSTOMER) THEN 'T' ELSE cus_flagPKP END pjkO,
-			   prd_ppn
-		FROM TBMASTER_TOKOIGR, TBTR_JUALDETAIL, TBMASTER_CUSTOMER, TBMASTER_PRODMAST
-		WHERE trjd_cus_kodemember = tko_kodecustomer
-		  AND trjd_cus_kodemember = cus_kodemember
-		  AND trjd_prdcd = prd_prdcd
-		  " . $p_sbu . " " . $p_khusus . " " . $p_omi . "
-		  AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-		  AND tko_kodeOMI NOT IN (SELECT tko_kodeOMI FROM TBMASTER_TOKOIGR WHERE tko_tipeOMI IN ('HR','HG'))
-	)
+(  SELECT kodeigr, omikod, omisbu, omimem, fdkdiv omidiv, fddiv omidep, cBkp, mark_up, fdtipe, namasbu,
+        CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
+            0
+         ELSE
+            CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
+              CASE WHEN cBkp = 'Y' THEN ((fdnamt*(1+(nvl(prd_ppn,10)/100)))-Fdnamt) ELSE 0 END
+            ELSE
+              CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END
+            END
+         END nTax,
+         CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
+            Fdnamt
+         ELSE
+            CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN
+               Fdnamt
+            ELSE
+               Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END)
+            END
+         END nNet,
+         CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
+            CASE WHEN Mark_up IS NULL THEN ((5*Fdnamt)/100) ELSE ((Mark_up*Fdnamt)/100) END
+         ELSE
+            (CASE WHEN  omisbu = 'O' OR omisbu = 'I' THEN Fdnamt ELSE Fdnamt-(CASE WHEN cBkp = 'Y' THEN (fdnamt-(Fdnamt/(1+(nvl(prd_ppn,10)/100)))) ELSE 0 END) END) -
+          ( Fdjqty/(CASE WHEN unit='KG'THEN 1000 ELSE 1 END)*Fdcost)
+         END nMargin,
+         CASE WHEN Fdkdiv = '5' AND fddiv = '39' THEN
+            Fdnamt - (CASE WHEN Mark_up IS NULL THEN ((5*Fdnamt)/100) ELSE ((Mark_up*Fdnamt)/100) END)
+         ELSE
+            (Fdjqty/(CASE WHEN unit='KG'THEN 1000 ELSE 1 END)*Fdcost)
+         END nHpp,
+         CASE WHEN omisbu = 'O' OR omisbu = 'I' THEN
+            CASE WHEN cBkp = 'Y' THEN
+               fdnamt*(1+(nvl(prd_ppn,10)/100))
+            ELSE
+               fdnamt
+            END
+         ELSE
+            fdnamt
+         END nGross
+   FROM
+   (  SELECT tko_kodeigr kodeigr, tko_kodeOMI omikod, tko_kodeSBU omisbu, tko_namasbu namasbu, trjd_cus_kodemember omimem, trjd_divisioncode fdkdiv, SUBSTR(trjd_division,1,2) fddiv,
+            trjd_nominalamt fdnamt, trjd_baseprice fdcost, trjd_quantity fdjqty, prd_unit unit, prd_markUpStandard mark_up,
+            trjd_transactiontype fdtipe, trjd_flagtax1 cBkp,
+            CASE WHEN trjd_cus_kodemember NOT IN (SELECT cus_kodemember FROM TBMASTER_CUSTOMER) THEN 'T' ELSE cus_flagPKP END pjkO,
+            prd_ppn
+      FROM TBMASTER_TOKOIGR, TBTR_JUALDETAIL, TBMASTER_CUSTOMER, TBMASTER_PRODMAST
+      WHERE trjd_cus_kodemember = tko_kodecustomer
+        AND trjd_cus_kodemember = cus_kodemember
+        AND trjd_prdcd = prd_prdcd
+        " . $p_sbu . " " . $p_khusus . " " . $p_omi . "
+        AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+        AND tko_kodeOMI NOT IN (SELECT tko_kodeOMI FROM TBMASTER_TOKOIGR WHERE tko_tipeOMI IN ('HR','HG'))
+   )
 )
 WHERE prs_kodeigr = '$kodeigr'
   AND kodeigr = prs_kodeigr
@@ -1439,6 +1488,8 @@ ORDER BY omidiv, omidep");
                 }
             }
         }
+        dd($gross,$tax,$net,$hpp,$margin,$marginpersen);
+
 //        //PRINT
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
@@ -1450,6 +1501,7 @@ ORDER BY omidiv, omidep");
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
 
         $canvas = $dompdf->get_canvas();
         $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 8, array(0, 0, 0));
@@ -1492,47 +1544,47 @@ ORDER BY omidiv, omidep");
 
         if ($pluall == 'N') {
             $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah,
-	   fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdkplu, prd_deskripsipanjang, fdksat||'/'||fdisis unit, fdfbkp,
-	   fdsat0, fdnam0, fdntr0,
-	   fdsat1, fdnam1, fdntr1,
-	   fdsat2, fdnam2, fdntr2,
-	   fdsat3, fdnam3, fdntr3,
-	   fdjqty, fdfqty, fdntrn, fdnamt, fdntax, fdnnet, fdnhpp,
-	   fdmrgn, fdfnam, fdftax, fdfnet, fdfhpp, fdfmgn, cexp,
-	   CASE WHEN fdksat = 'KG' THEN fdfqty/1000 ELSE fdfqty END + CASE WHEN fdksat = 'KG' THEN fdjqty/1000 ELSE fdjqty  END tot1,
-	   (fdnamt + fdfnam) tot2,
+      fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdkplu, prd_deskripsipanjang, fdksat||'/'||fdisis unit, fdfbkp,
+      fdsat0, fdnam0, fdntr0,
+      fdsat1, fdnam1, fdntr1,
+      fdsat2, fdnam2, fdntr2,
+      fdsat3, fdnam3, fdntr3,
+      fdjqty, fdfqty, fdntrn, fdnamt, fdntax, fdnnet, fdnhpp,
+      fdmrgn, fdfnam, fdftax, fdfnet, fdfhpp, fdfmgn, cexp,
+      CASE WHEN fdksat = 'KG' THEN fdfqty/1000 ELSE fdfqty END + CASE WHEN fdksat = 'KG' THEN fdjqty/1000 ELSE fdjqty  END tot1,
+      (fdnamt + fdfnam) tot2,
        (fdntax + fdftax) tot3,
        (fdnnet + fdfnet) tot4,
-	   (fdnhpp + fdfhpp) tot5,
-	   (fdmrgn + fdfmgn) tot6,
-	   CASE WHEN (fdnnet+fdfnet) <> 0 THEN  (((fdmrgn+fdfmgn)*100)/(fdnnet+fdfnet)) ELSE
-	      CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END nMarginp,
-	   PRD_KODETAG
+      (fdnhpp + fdfhpp) tot5,
+      (fdmrgn + fdfmgn) tot6,
+      CASE WHEN (fdnnet+fdfnet) <> 0 THEN  (((fdmrgn+fdfmgn)*100)/(fdnnet+fdfnet)) ELSE
+         CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END nMarginp,
+      PRD_KODETAG
 FROM TBMASTER_PERUSAHAAN, TBMASTER_PRODMAST, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_KATEGORI,
-(	SELECT sls_kodeigr, sls_kodedivisi fdkdiv, sls_kodedepartement fdkdep, sls_kodekategoribrg fdkatb, sls_prdcd fdkplu, sls_kodesatuan fdksat, sls_isisatuan fdisis, sls_flagbkp fdfbkp,
-		   SUM(sls_QtySat0) fdsat0, SUM(sls_NilaiSat0) fdnam0, SUM(sls_JmlSat0) fdntr0,
-		   SUM(sls_QtySat1) fdsat1, SUM(sls_NilaiSat1) fdnam1, SUM(sls_JmlSat1) fdntr1,
-		   SUM(sls_QtySat2) fdsat2, SUM(sls_NilaiSat2) fdnam2, SUM(sls_JmlSat2) fdntr2,
-		   SUM(sls_QtySat3) fdsat3, SUM(sls_NilaiSat3) fdnam3, SUM(sls_jmlSat3) fdntr3,
-		   SUM(sls_QtyNOMI) fdjqty, SUM(sls_QtyOMI) fdfqty, SUM(sls_NoTransaksi) fdntrn, SUM(sls_NilaiNOMI) fdnamt, SUM(sls_TaxNOMI) fdntax, SUM(sls_NetNOMI) fdnnet, SUM(sls_HppNOMI) fdnhpp,
-		   SUM(sls_MarginNOMI) fdmrgn, SUM(sls_NilaiOMI) fdfnam, SUM(sls_TaxOMI) fdftax, SUM(sls_NetOMI) fdfnet, SUM(sls_HppOMI) fdfhpp, SUM(sls_MarginOMI) fdfmgn,
-		   NVL(cexp,'F') cexp
-	FROM TBTR_SUMSALES, TBTR_MONITORINGPLU,
-	  (	SELECT sls_prdcd prdcd, 'T' cexp
-		FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
-		WHERE sls_prdcd = exp_prdcd
-		  AND trjd_recordid IS NULL
-		  AND trjd_prdcd = sls_prdcd
-		  AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
-		  AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-		  AND trjd_cus_kodemember = cus_kodemember (+)
-	 	  AND cus_jenismember = 'E'
-		)
-	WHERE TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-	  AND sls_prdcd = prdcd(+)
-	  AND sls_prdcd = mpl_prdcd
-	  AND translate(mpl_kodemonitoring,' ','_') = '$mon'
-	GROUP BY sls_kodeigr, sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg, sls_prdcd, sls_kodesatuan, sls_isisatuan, sls_flagbkp, NVL(cexp,'F')
+(  SELECT sls_kodeigr, sls_kodedivisi fdkdiv, sls_kodedepartement fdkdep, sls_kodekategoribrg fdkatb, sls_prdcd fdkplu, sls_kodesatuan fdksat, sls_isisatuan fdisis, sls_flagbkp fdfbkp,
+         SUM(sls_QtySat0) fdsat0, SUM(sls_NilaiSat0) fdnam0, SUM(sls_JmlSat0) fdntr0,
+         SUM(sls_QtySat1) fdsat1, SUM(sls_NilaiSat1) fdnam1, SUM(sls_JmlSat1) fdntr1,
+         SUM(sls_QtySat2) fdsat2, SUM(sls_NilaiSat2) fdnam2, SUM(sls_JmlSat2) fdntr2,
+         SUM(sls_QtySat3) fdsat3, SUM(sls_NilaiSat3) fdnam3, SUM(sls_jmlSat3) fdntr3,
+         SUM(sls_QtyNOMI) fdjqty, SUM(sls_QtyOMI) fdfqty, SUM(sls_NoTransaksi) fdntrn, SUM(sls_NilaiNOMI) fdnamt, SUM(sls_TaxNOMI) fdntax, SUM(sls_NetNOMI) fdnnet, SUM(sls_HppNOMI) fdnhpp,
+         SUM(sls_MarginNOMI) fdmrgn, SUM(sls_NilaiOMI) fdfnam, SUM(sls_TaxOMI) fdftax, SUM(sls_NetOMI) fdfnet, SUM(sls_HppOMI) fdfhpp, SUM(sls_MarginOMI) fdfmgn,
+         NVL(cexp,'F') cexp
+   FROM TBTR_SUMSALES, TBTR_MONITORINGPLU,
+     (    SELECT sls_prdcd prdcd, 'T' cexp
+      FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
+      WHERE sls_prdcd = exp_prdcd
+        AND trjd_recordid IS NULL
+        AND trjd_prdcd = sls_prdcd
+        AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
+        AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+        AND trjd_cus_kodemember = cus_kodemember (+)
+        AND cus_jenismember = 'E'
+      )
+   WHERE TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+     AND sls_prdcd = prdcd(+)
+     AND sls_prdcd = mpl_prdcd
+     AND translate(mpl_kodemonitoring,' ','_') = '$mon'
+   GROUP BY sls_kodeigr, sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg, sls_prdcd, sls_kodesatuan, sls_isisatuan, sls_flagbkp, NVL(cexp,'F')
 )
 WHERE prs_kodeigr = '$kodeigr'
   AND sls_kodeigr = prs_kodeigr
@@ -1545,49 +1597,49 @@ WHERE prs_kodeigr = '$kodeigr'
   --AND fdkdiv in ('" . $div . "')
   " . $p_div . " " . $p_dept . " " . $p_kat . "
   AND CASE WHEN (fdnnet+fdfnet) <> 0 THEN  (((fdmrgn+fdfmgn)*100)/(fdnnet+fdfnet)) ELSE
-	      CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END between " . $margin1 . " AND " . $margin2 . "
+         CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END between " . $margin1 . " AND " . $margin2 . "
 ORDER BY fdkdiv, fdkdep, fdkatb");
         } else { //jika pluall == Y maka masuk else
             $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah,
-	   fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdkplu, prd_deskripsipanjang, fdksat||'/'||fdisis unit, fdfbkp,
-	   fdsat0, fdnam0, fdntr0,
-	   fdsat1, fdnam1, fdntr1,
-	   fdsat2, fdnam2, fdntr2,
-	   fdsat3, fdnam3, fdntr3,
-	   fdjqty, fdfqty, fdntrn, fdnamt, fdntax, fdnnet, fdnhpp,
-	   fdmrgn, fdfnam, fdftax, fdfnet, fdfhpp, fdfmgn, cexp,
-	   CASE WHEN fdksat = 'KG' THEN fdfqty/1000 ELSE fdfqty END + CASE WHEN fdksat = 'KG' THEN fdjqty/1000 ELSE fdjqty  END tot1,
-	   (fdnamt + fdfnam) tot2,
+      fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdkplu, prd_deskripsipanjang, fdksat||'/'||fdisis unit, fdfbkp,
+      fdsat0, fdnam0, fdntr0,
+      fdsat1, fdnam1, fdntr1,
+      fdsat2, fdnam2, fdntr2,
+      fdsat3, fdnam3, fdntr3,
+      fdjqty, fdfqty, fdntrn, fdnamt, fdntax, fdnnet, fdnhpp,
+      fdmrgn, fdfnam, fdftax, fdfnet, fdfhpp, fdfmgn, cexp,
+      CASE WHEN fdksat = 'KG' THEN fdfqty/1000 ELSE fdfqty END + CASE WHEN fdksat = 'KG' THEN fdjqty/1000 ELSE fdjqty  END tot1,
+      (fdnamt + fdfnam) tot2,
        (fdntax + fdftax) tot3,
        (fdnnet + fdfnet) tot4,
-	   (fdnhpp + fdfhpp) tot5,
-	   (fdmrgn + fdfmgn) tot6,
-	   CASE WHEN (fdnnet+fdfnet) <> 0 THEN  (((fdmrgn+fdfmgn)*100)/(fdnnet+fdfnet)) ELSE
-	      CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END nMarginp,
-	   PRD_KODETAG
+      (fdnhpp + fdfhpp) tot5,
+      (fdmrgn + fdfmgn) tot6,
+      CASE WHEN (fdnnet+fdfnet) <> 0 THEN  (((fdmrgn+fdfmgn)*100)/(fdnnet+fdfnet)) ELSE
+         CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END nMarginp,
+      PRD_KODETAG
 FROM TBMASTER_PERUSAHAAN, TBMASTER_PRODMAST, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_KATEGORI,
-(	SELECT sls_kodeigr, sls_kodedivisi fdkdiv, sls_kodedepartement fdkdep, sls_kodekategoribrg fdkatb, sls_prdcd fdkplu, sls_kodesatuan fdksat, sls_isisatuan fdisis, sls_flagbkp fdfbkp,
-		   SUM(sls_QtySat0) fdsat0, SUM(sls_NilaiSat0) fdnam0, SUM(sls_JmlSat0) fdntr0,
-		   SUM(sls_QtySat1) fdsat1, SUM(sls_NilaiSat1) fdnam1, SUM(sls_JmlSat1) fdntr1,
-		   SUM(sls_QtySat2) fdsat2, SUM(sls_NilaiSat2) fdnam2, SUM(sls_JmlSat2) fdntr2,
-		   SUM(sls_QtySat3) fdsat3, SUM(sls_NilaiSat3) fdnam3, SUM(sls_jmlSat3) fdntr3,
-		   SUM(sls_QtyNOMI) fdjqty, SUM(sls_QtyOMI+sls_QtyIDM) fdfqty, SUM(sls_NoTransaksi) fdntrn, SUM(sls_NilaiNOMI) fdnamt, SUM(sls_TaxNOMI) fdntax, SUM(sls_NetNOMI) fdnnet, SUM(sls_HppNOMI) fdnhpp,
-		   SUM(sls_MarginNOMI) fdmrgn, SUM(sls_NilaiOMI+sls_NilaiIDM) fdfnam, SUM(sls_TaxOMI+sls_TaxIDM) fdftax, SUM(sls_NetOMI+sls_NetIDM) fdfnet, SUM(sls_HppOMI+sls_HppIDM) fdfhpp, SUM(sls_MarginOMI+sls_MarginIDM) fdfmgn,
-		   NVL(cexp,'F') cexp
-	FROM TBTR_SUMSALES,
-	  (	SELECT sls_prdcd prdcd, 'T' cexp
-		FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
-		WHERE sls_prdcd = exp_prdcd
-		  AND trjd_recordid IS NULL
-		  AND trjd_prdcd = sls_prdcd
-		  AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
-		  AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-		  AND trjd_cus_kodemember = cus_kodemember (+)
-	 	  AND cus_jenismember = 'E'
-		)
-	WHERE TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-	  AND sls_prdcd = prdcd(+)
-	GROUP BY sls_kodeigr, sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg, sls_prdcd, sls_kodesatuan, sls_isisatuan, sls_flagbkp, NVL(cexp,'F')
+(  SELECT sls_kodeigr, sls_kodedivisi fdkdiv, sls_kodedepartement fdkdep, sls_kodekategoribrg fdkatb, sls_prdcd fdkplu, sls_kodesatuan fdksat, sls_isisatuan fdisis, sls_flagbkp fdfbkp,
+         SUM(sls_QtySat0) fdsat0, SUM(sls_NilaiSat0) fdnam0, SUM(sls_JmlSat0) fdntr0,
+         SUM(sls_QtySat1) fdsat1, SUM(sls_NilaiSat1) fdnam1, SUM(sls_JmlSat1) fdntr1,
+         SUM(sls_QtySat2) fdsat2, SUM(sls_NilaiSat2) fdnam2, SUM(sls_JmlSat2) fdntr2,
+         SUM(sls_QtySat3) fdsat3, SUM(sls_NilaiSat3) fdnam3, SUM(sls_jmlSat3) fdntr3,
+         SUM(sls_QtyNOMI) fdjqty, SUM(sls_QtyOMI+sls_QtyIDM) fdfqty, SUM(sls_NoTransaksi) fdntrn, SUM(sls_NilaiNOMI) fdnamt, SUM(sls_TaxNOMI) fdntax, SUM(sls_NetNOMI) fdnnet, SUM(sls_HppNOMI) fdnhpp,
+         SUM(sls_MarginNOMI) fdmrgn, SUM(sls_NilaiOMI+sls_NilaiIDM) fdfnam, SUM(sls_TaxOMI+sls_TaxIDM) fdftax, SUM(sls_NetOMI+sls_NetIDM) fdfnet, SUM(sls_HppOMI+sls_HppIDM) fdfhpp, SUM(sls_MarginOMI+sls_MarginIDM) fdfmgn,
+         NVL(cexp,'F') cexp
+   FROM TBTR_SUMSALES,
+     (    SELECT sls_prdcd prdcd, 'T' cexp
+      FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
+      WHERE sls_prdcd = exp_prdcd
+        AND trjd_recordid IS NULL
+        AND trjd_prdcd = sls_prdcd
+        AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
+        AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+        AND trjd_cus_kodemember = cus_kodemember (+)
+        AND cus_jenismember = 'E'
+      )
+   WHERE TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+     AND sls_prdcd = prdcd(+)
+   GROUP BY sls_kodeigr, sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg, sls_prdcd, sls_kodesatuan, sls_isisatuan, sls_flagbkp, NVL(cexp,'F')
 )
 WHERE prs_kodeigr = '$kodeigr'
   AND sls_kodeigr = prs_kodeigr
@@ -1600,7 +1652,7 @@ WHERE prs_kodeigr = '$kodeigr'
   --AND fdkdiv in ('" . $div . "')
   " . $p_div . " " . $p_dept . " " . $p_kat . "
   AND CASE WHEN (fdnnet+fdfnet) <> 0 THEN  (((fdmrgn+fdfmgn)*100)/(fdnnet+fdfnet)) ELSE
-	      CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END between " . $margin1 . " AND " . $margin2 . "
+         CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END between " . $margin1 . " AND " . $margin2 . "
 ORDER BY fdkdiv, fdkdep, fdkatb");
         }
 
@@ -1623,47 +1675,47 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
 
         if ($pluall == 'N') {
             $rec = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah,
-	   fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdkplu, prd_deskripsipanjang, fdksat||'/'||fdisis unit, fdfbkp,
-	   fdsat0, fdnam0, fdntr0,
-	   fdsat1, fdnam1, fdntr1,
-	   fdsat2, fdnam2, fdntr2,
-	   fdsat3, fdnam3, fdntr3,
-	   fdjqty, fdfqty, fdntrn, fdnamt, fdntax, fdnnet, fdnhpp,
-	   fdmrgn, fdfnam, fdftax, fdfnet, fdfhpp, fdfmgn, cexp,
-	   CASE WHEN fdksat = 'KG' THEN fdfqty/1000 ELSE fdfqty END + CASE WHEN fdksat = 'KG' THEN fdjqty/1000 ELSE fdjqty  END tot1,
-	   (fdnamt + fdfnam) tot2,
+      fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdkplu, prd_deskripsipanjang, fdksat||'/'||fdisis unit, fdfbkp,
+      fdsat0, fdnam0, fdntr0,
+      fdsat1, fdnam1, fdntr1,
+      fdsat2, fdnam2, fdntr2,
+      fdsat3, fdnam3, fdntr3,
+      fdjqty, fdfqty, fdntrn, fdnamt, fdntax, fdnnet, fdnhpp,
+      fdmrgn, fdfnam, fdftax, fdfnet, fdfhpp, fdfmgn, cexp,
+      CASE WHEN fdksat = 'KG' THEN fdfqty/1000 ELSE fdfqty END + CASE WHEN fdksat = 'KG' THEN fdjqty/1000 ELSE fdjqty  END tot1,
+      (fdnamt + fdfnam) tot2,
      (fdntax + fdftax) tot3,
      (fdnnet + fdfnet) tot4,
-	   (fdnhpp + fdfhpp) tot5,
-	   (fdmrgn + fdfmgn) tot6,
-	   CASE WHEN (fdnnet+fdfnet) <> 0 THEN  (((fdmrgn+fdfmgn)*100)/(fdnnet+fdfnet)) ELSE
-	      CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END nMarginp,
-	   PRD_KODETAG
+      (fdnhpp + fdfhpp) tot5,
+      (fdmrgn + fdfmgn) tot6,
+      CASE WHEN (fdnnet+fdfnet) <> 0 THEN  (((fdmrgn+fdfmgn)*100)/(fdnnet+fdfnet)) ELSE
+         CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END nMarginp,
+      PRD_KODETAG
 FROM TBMASTER_PERUSAHAAN, TBMASTER_PRODMAST, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_KATEGORI,
-(	SELECT sls_kodeigr, sls_kodedivisi fdkdiv, sls_kodedepartement fdkdep, sls_kodekategoribrg fdkatb, sls_prdcd fdkplu, sls_kodesatuan fdksat, sls_isisatuan fdisis, sls_flagbkp fdfbkp,
-		   SUM(sls_QtySat0) fdsat0, SUM(sls_NilaiSat0) fdnam0, SUM(sls_JmlSat0) fdntr0,
-		   SUM(sls_QtySat1) fdsat1, SUM(sls_NilaiSat1) fdnam1, SUM(sls_JmlSat1) fdntr1,
-		   SUM(sls_QtySat2) fdsat2, SUM(sls_NilaiSat2) fdnam2, SUM(sls_JmlSat2) fdntr2,
-		   SUM(sls_QtySat3) fdsat3, SUM(sls_NilaiSat3) fdnam3, SUM(sls_jmlSat3) fdntr3,
-		   SUM(sls_QtyNOMI) fdjqty, SUM(sls_QtyOMI) fdfqty, SUM(sls_NoTransaksi) fdntrn, SUM(sls_NilaiNOMI) fdnamt, SUM(sls_TaxNOMI) fdntax, SUM(sls_NetNOMI) fdnnet, SUM(sls_HppNOMI) fdnhpp,
-		   SUM(sls_MarginNOMI) fdmrgn, SUM(sls_NilaiOMI) fdfnam, SUM(sls_TaxOMI) fdftax, SUM(sls_NetOMI) fdfnet, SUM(sls_HppOMI) fdfhpp, SUM(sls_MarginOMI) fdfmgn,
-		   NVL(cexp,'F') cexp
-	FROM TBTR_SUMSALES, TBTR_MONITORINGPLU,
-	  (	SELECT sls_prdcd prdcd, 'T' cexp
-		FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
-		WHERE sls_prdcd = exp_prdcd
-		  AND trjd_recordid IS NULL
-		  AND trjd_prdcd = sls_prdcd
-		  AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
-		  AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-		  AND trjd_cus_kodemember = cus_kodemember (+)
-	 	  AND cus_jenismember = 'E'
-		)
-	WHERE TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-	  AND sls_prdcd = prdcd(+)
-	  AND sls_prdcd = mpl_prdcd
-	  AND mpl_kodemonitoring = '$mon'
-	GROUP BY sls_kodeigr, sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg, sls_prdcd, sls_kodesatuan, sls_isisatuan, sls_flagbkp, NVL(cexp,'F')
+(  SELECT sls_kodeigr, sls_kodedivisi fdkdiv, sls_kodedepartement fdkdep, sls_kodekategoribrg fdkatb, sls_prdcd fdkplu, sls_kodesatuan fdksat, sls_isisatuan fdisis, sls_flagbkp fdfbkp,
+         SUM(sls_QtySat0) fdsat0, SUM(sls_NilaiSat0) fdnam0, SUM(sls_JmlSat0) fdntr0,
+         SUM(sls_QtySat1) fdsat1, SUM(sls_NilaiSat1) fdnam1, SUM(sls_JmlSat1) fdntr1,
+         SUM(sls_QtySat2) fdsat2, SUM(sls_NilaiSat2) fdnam2, SUM(sls_JmlSat2) fdntr2,
+         SUM(sls_QtySat3) fdsat3, SUM(sls_NilaiSat3) fdnam3, SUM(sls_jmlSat3) fdntr3,
+         SUM(sls_QtyNOMI) fdjqty, SUM(sls_QtyOMI) fdfqty, SUM(sls_NoTransaksi) fdntrn, SUM(sls_NilaiNOMI) fdnamt, SUM(sls_TaxNOMI) fdntax, SUM(sls_NetNOMI) fdnnet, SUM(sls_HppNOMI) fdnhpp,
+         SUM(sls_MarginNOMI) fdmrgn, SUM(sls_NilaiOMI) fdfnam, SUM(sls_TaxOMI) fdftax, SUM(sls_NetOMI) fdfnet, SUM(sls_HppOMI) fdfhpp, SUM(sls_MarginOMI) fdfmgn,
+         NVL(cexp,'F') cexp
+   FROM TBTR_SUMSALES, TBTR_MONITORINGPLU,
+     (    SELECT sls_prdcd prdcd, 'T' cexp
+      FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
+      WHERE sls_prdcd = exp_prdcd
+        AND trjd_recordid IS NULL
+        AND trjd_prdcd = sls_prdcd
+        AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
+        AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+        AND trjd_cus_kodemember = cus_kodemember (+)
+        AND cus_jenismember = 'E'
+      )
+   WHERE TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+     AND sls_prdcd = prdcd(+)
+     AND sls_prdcd = mpl_prdcd
+     AND mpl_kodemonitoring = '$mon'
+   GROUP BY sls_kodeigr, sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg, sls_prdcd, sls_kodesatuan, sls_isisatuan, sls_flagbkp, NVL(cexp,'F')
 )
 WHERE prs_kodeigr = '$kodeigr'
   AND sls_kodeigr = prs_kodeigr
@@ -1674,49 +1726,49 @@ WHERE prs_kodeigr = '$kodeigr'
   AND fdkdep = kat_kodedepartement (+)
   AND fdkatb = kat_kodekategori (+)
   AND CASE WHEN (fdnnet+fdfnet) <> 0 THEN  (((fdmrgn+fdfmgn)*100)/(fdnnet+fdfnet)) ELSE
-	    CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END between " . $margin1 . " AND " . $margin2 . "
+       CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END between " . $margin1 . " AND " . $margin2 . "
 ORDER BY fdkdiv, fdkdep, fdkatb");
         } else {
             $rec = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah,
-	   fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdkplu, prd_deskripsipanjang, fdksat||'/'||fdisis unit, fdfbkp,
-	   fdsat0, fdnam0, fdntr0,
-	   fdsat1, fdnam1, fdntr1,
-	   fdsat2, fdnam2, fdntr2,
-	   fdsat3, fdnam3, fdntr3,
-	   fdjqty, fdfqty, fdntrn, fdnamt, fdntax, fdnnet, fdnhpp,
-	   fdmrgn, fdfnam, fdftax, fdfnet, fdfhpp, fdfmgn, cexp,
-	   CASE WHEN fdksat = 'KG' THEN fdfqty/1000 ELSE fdfqty END + CASE WHEN fdksat = 'KG' THEN fdjqty/1000 ELSE fdjqty  END tot1,
-	   (fdnamt + fdfnam) tot2,
+      fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdkplu, prd_deskripsipanjang, fdksat||'/'||fdisis unit, fdfbkp,
+      fdsat0, fdnam0, fdntr0,
+      fdsat1, fdnam1, fdntr1,
+      fdsat2, fdnam2, fdntr2,
+      fdsat3, fdnam3, fdntr3,
+      fdjqty, fdfqty, fdntrn, fdnamt, fdntax, fdnnet, fdnhpp,
+      fdmrgn, fdfnam, fdftax, fdfnet, fdfhpp, fdfmgn, cexp,
+      CASE WHEN fdksat = 'KG' THEN fdfqty/1000 ELSE fdfqty END + CASE WHEN fdksat = 'KG' THEN fdjqty/1000 ELSE fdjqty  END tot1,
+      (fdnamt + fdfnam) tot2,
      (fdntax + fdftax) tot3,
      (fdnnet + fdfnet) tot4,
-	   (fdnhpp + fdfhpp) tot5,
-	   (fdmrgn + fdfmgn) tot6,
-	   CASE WHEN (fdnnet+fdfnet) <> 0 THEN  (((fdmrgn+fdfmgn)*100)/(fdnnet+fdfnet)) ELSE
-	      CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END nMarginp,
-	   PRD_KODETAG
+      (fdnhpp + fdfhpp) tot5,
+      (fdmrgn + fdfmgn) tot6,
+      CASE WHEN (fdnnet+fdfnet) <> 0 THEN  (((fdmrgn+fdfmgn)*100)/(fdnnet+fdfnet)) ELSE
+         CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END nMarginp,
+      PRD_KODETAG
 FROM TBMASTER_PERUSAHAAN, TBMASTER_PRODMAST, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_KATEGORI,
-(	SELECT sls_kodeigr, sls_kodedivisi fdkdiv, sls_kodedepartement fdkdep, sls_kodekategoribrg fdkatb, sls_prdcd fdkplu, sls_kodesatuan fdksat, sls_isisatuan fdisis, sls_flagbkp fdfbkp,
-		   SUM(sls_QtySat0) fdsat0, SUM(sls_NilaiSat0) fdnam0, SUM(sls_JmlSat0) fdntr0,
-		   SUM(sls_QtySat1) fdsat1, SUM(sls_NilaiSat1) fdnam1, SUM(sls_JmlSat1) fdntr1,
-		   SUM(sls_QtySat2) fdsat2, SUM(sls_NilaiSat2) fdnam2, SUM(sls_JmlSat2) fdntr2,
-		   SUM(sls_QtySat3) fdsat3, SUM(sls_NilaiSat3) fdnam3, SUM(sls_jmlSat3) fdntr3,
-		   SUM(sls_QtyNOMI) fdjqty, SUM(sls_QtyOMI) fdfqty, SUM(sls_NoTransaksi) fdntrn, SUM(sls_NilaiNOMI) fdnamt, SUM(sls_TaxNOMI) fdntax, SUM(sls_NetNOMI) fdnnet, SUM(sls_HppNOMI) fdnhpp,
-		   SUM(sls_MarginNOMI) fdmrgn, SUM(sls_NilaiOMI) fdfnam, SUM(sls_TaxOMI) fdftax, SUM(sls_NetOMI) fdfnet, SUM(sls_HppOMI) fdfhpp, SUM(sls_MarginOMI) fdfmgn,
-		   NVL(cexp,'F') cexp
-	FROM TBTR_SUMSALES,
-	  (	SELECT sls_prdcd prdcd, 'T' cexp
-		FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
-		WHERE sls_prdcd = exp_prdcd
-		  AND trjd_recordid IS NULL
-		  AND trjd_prdcd = sls_prdcd
-		  AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
-		  AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-		  AND trjd_cus_kodemember = cus_kodemember (+)
-	 	  AND cus_jenismember = 'E'
-		)
-	WHERE TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-	  AND sls_prdcd = prdcd(+)
-	GROUP BY sls_kodeigr, sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg, sls_prdcd, sls_kodesatuan, sls_isisatuan, sls_flagbkp, NVL(cexp,'F')
+(  SELECT sls_kodeigr, sls_kodedivisi fdkdiv, sls_kodedepartement fdkdep, sls_kodekategoribrg fdkatb, sls_prdcd fdkplu, sls_kodesatuan fdksat, sls_isisatuan fdisis, sls_flagbkp fdfbkp,
+         SUM(sls_QtySat0) fdsat0, SUM(sls_NilaiSat0) fdnam0, SUM(sls_JmlSat0) fdntr0,
+         SUM(sls_QtySat1) fdsat1, SUM(sls_NilaiSat1) fdnam1, SUM(sls_JmlSat1) fdntr1,
+         SUM(sls_QtySat2) fdsat2, SUM(sls_NilaiSat2) fdnam2, SUM(sls_JmlSat2) fdntr2,
+         SUM(sls_QtySat3) fdsat3, SUM(sls_NilaiSat3) fdnam3, SUM(sls_jmlSat3) fdntr3,
+         SUM(sls_QtyNOMI) fdjqty, SUM(sls_QtyOMI) fdfqty, SUM(sls_NoTransaksi) fdntrn, SUM(sls_NilaiNOMI) fdnamt, SUM(sls_TaxNOMI) fdntax, SUM(sls_NetNOMI) fdnnet, SUM(sls_HppNOMI) fdnhpp,
+         SUM(sls_MarginNOMI) fdmrgn, SUM(sls_NilaiOMI) fdfnam, SUM(sls_TaxOMI) fdftax, SUM(sls_NetOMI) fdfnet, SUM(sls_HppOMI) fdfhpp, SUM(sls_MarginOMI) fdfmgn,
+         NVL(cexp,'F') cexp
+   FROM TBTR_SUMSALES,
+     (    SELECT sls_prdcd prdcd, 'T' cexp
+      FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
+      WHERE sls_prdcd = exp_prdcd
+        AND trjd_recordid IS NULL
+        AND trjd_prdcd = sls_prdcd
+        AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
+        AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+        AND trjd_cus_kodemember = cus_kodemember (+)
+        AND cus_jenismember = 'E'
+      )
+   WHERE TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+     AND sls_prdcd = prdcd(+)
+   GROUP BY sls_kodeigr, sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg, sls_prdcd, sls_kodesatuan, sls_isisatuan, sls_flagbkp, NVL(cexp,'F')
 )
 WHERE prs_kodeigr = '$kodeigr'
   AND sls_kodeigr = prs_kodeigr
@@ -1727,7 +1779,7 @@ WHERE prs_kodeigr = '$kodeigr'
   AND fdkdep = kat_kodedepartement (+)
   AND fdkatb = kat_kodekategori (+)
   AND CASE WHEN (fdnnet+fdfnet) <> 0 THEN  (((fdmrgn+fdfmgn)*100)/(fdnnet+fdfnet)) ELSE
-	    CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END between " . $margin1 . " AND " . $margin2 . "
+       CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END between " . $margin1 . " AND " . $margin2 . "
 ORDER BY fdkdiv, fdkdep, fdkatb");
         }
 
@@ -1870,39 +1922,39 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         $ekspor = $request->ekspor;
 
         $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang,
-	   CASE WHEN '$ekspor' = 'Y' THEN 'LAPORAN PENJUALAN (EXPORT)' ELSE 'LAPORAN PENJUALAN' END title,
-	   sls_periode, hari,
-	   sls_nilai, sls_tax, sls_net, sls_hpp, sls_margin,
-	   CASE WHEN  sls_net <> 0 THEN  sls_margin * 100 / sls_net ELSE 100 END p_margin
+      CASE WHEN '$ekspor' = 'Y' THEN 'LAPORAN PENJUALAN (EXPORT)' ELSE 'LAPORAN PENJUALAN' END title,
+      sls_periode, hari,
+      sls_nilai, sls_tax, sls_net, sls_hpp, sls_margin,
+      CASE WHEN  sls_net <> 0 THEN  sls_margin * 100 / sls_net ELSE 100 END p_margin
 FROM TBMASTER_PERUSAHAAN,
-(	 SELECT sls_kodeigr, sls_periode,
-		   CASE WHEN TO_CHAR(sls_periode,'DY') = 'SUN' THEN 'MINGGU' ELSE
-		   CASE WHEN TO_CHAR(sls_periode,'DY') = 'MON' THEN 'SENIN'  ELSE
-		   CASE WHEN TO_CHAR(sls_periode,'DY') = 'TUE' THEN 'SELASA' ELSE
-		   CASE WHEN TO_CHAR(sls_periode,'DY') = 'WED' THEN 'RABU'	 ELSE
-		   CASE WHEN TO_CHAR(sls_periode,'DY') = 'THU' THEN 'KAMIS'  ELSE
-		   CASE WHEN TO_CHAR(sls_periode,'DY') = 'FRI' THEN 'JUMAT'  ELSE
-		   'SABTU' END END END END END END hari,
-		   SUM(sls_nilainomi+sls_nilaiomi+sls_nilaiidm) sls_nilai,
-		   SUM(sls_taxnomi+sls_taxomi+sls_taxidm) sls_tax,
-		   SUM(sls_netnomi+sls_netomi+sls_netidm) sls_net,
-		   SUM(sls_hppnomi+sls_hppomi+sls_hppidm) sls_hpp,
-		   SUM(sls_marginnomi+sls_marginomi+sls_marginidm) sls_margin, NVL(cexp,'T') cexp
-	FROM TBTR_SUMSALES, TBMASTER_PERUSAHAAN,
-	( 	 SELECT sls_prdcd prdcd, 'Y' cexp
-		 FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
-		 WHERE sls_prdcd = exp_prdcd
-		   AND trjd_recordid IS NULL
-		   AND trjd_prdcd = sls_prdcd
-		   AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
-		   AND TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-		   AND trjd_cus_kodemember = cus_kodemember (+)
-	 	   AND cus_jenismember = 'E'
-	)
-	WHERE sls_prdcd = prdcd(+)
-	   AND TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-	GROUP BY sls_kodeigr,sls_periode,cexp
-	)
+(   SELECT sls_kodeigr, sls_periode,
+         CASE WHEN TO_CHAR(sls_periode,'DY') = 'SUN' THEN 'MINGGU' ELSE
+         CASE WHEN TO_CHAR(sls_periode,'DY') = 'MON' THEN 'SENIN'  ELSE
+         CASE WHEN TO_CHAR(sls_periode,'DY') = 'TUE' THEN 'SELASA' ELSE
+         CASE WHEN TO_CHAR(sls_periode,'DY') = 'WED' THEN 'RABU'  ELSE
+         CASE WHEN TO_CHAR(sls_periode,'DY') = 'THU' THEN 'KAMIS'  ELSE
+         CASE WHEN TO_CHAR(sls_periode,'DY') = 'FRI' THEN 'JUMAT'  ELSE
+         'SABTU' END END END END END END hari,
+         SUM(sls_nilainomi+sls_nilaiomi+sls_nilaiidm) sls_nilai,
+         SUM(sls_taxnomi+sls_taxomi+sls_taxidm) sls_tax,
+         SUM(sls_netnomi+sls_netomi+sls_netidm) sls_net,
+         SUM(sls_hppnomi+sls_hppomi+sls_hppidm) sls_hpp,
+         SUM(sls_marginnomi+sls_marginomi+sls_marginidm) sls_margin, NVL(cexp,'T') cexp
+   FROM TBTR_SUMSALES, TBMASTER_PERUSAHAAN,
+   (   SELECT sls_prdcd prdcd, 'Y' cexp
+       FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
+       WHERE sls_prdcd = exp_prdcd
+         AND trjd_recordid IS NULL
+         AND trjd_prdcd = sls_prdcd
+         AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
+         AND TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+         AND trjd_cus_kodemember = cus_kodemember (+)
+         AND cus_jenismember = 'E'
+   )
+   WHERE sls_prdcd = prdcd(+)
+      AND TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+   GROUP BY sls_kodeigr,sls_periode,cexp
+   )
 WHERE prs_kodeigr = '$kodeigr'
   AND sls_kodeigr = prs_kodeigr
   AND cexp = '$ekspor'
@@ -2401,7 +2453,7 @@ ORDER BY FDKDIV, FDKDEP");
             $keterangan = 'OMI/IDM ONLY';
         }
         $data = DB::connection(Session::get('connection'))
-            ->select("select  prs_namaperusahaan, prs_namacabang, trim(lph_kodedivisi) cdiv, div_namadivisi,
+            ->select("select prd_flagbkp1, prd_flagbkp2, prs_namaperusahaan, prs_namacabang, trim(lph_kodedivisi) cdiv, div_namadivisi,
                         trim(lph_kodedepartement) cdept, dep_namadepartement, lph_flagbkp fdfbkp, lph_prdcd prdcd,
                          case when '" . $nlist . "' = '1' then lph_gross_igr+lph_gross_omi+lph_gross_idm
                               when '" . $nlist . "' = '2' then lph_gross_igr
@@ -2553,3 +2605,5 @@ ORDER BY FDKDIV, FDKDEP");
     }
 
 }
+
+

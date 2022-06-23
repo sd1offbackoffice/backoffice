@@ -9,6 +9,8 @@ class MailController extends Controller
 {
     public function send()
     {
+        //ini cara pake aja.............
+
         $objDemo = new \stdClass();
         $objDemo->demo_one = 'Demo One Value';
         $objDemo->demo_two = 'Demo Two Value';

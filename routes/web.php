@@ -82,6 +82,7 @@ Route::get('/testigr_bo_surat_penerimaan_barang', function () {
 
     return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_surat_penerimaan_barang');
 });
+
 Route::get('/login', 'Auth\loginController@index');
 Route::get('/logout', 'Auth\loginController@logout');
 Route::get('/logout-access', 'Auth\loginController@logoutAccess');
@@ -261,27 +262,6 @@ Route::post('/bo/transaksi/penerimaan/printbpb/viewdata', 'BACKOFFICE\TRANSAKSI\
 Route::post('/bo/transaksi/penerimaan/printbpb/cetakdata', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@cetakData')->middleware('CheckLogin');
 Route::get('/bo/transaksi/penerimaan/printbpb/viewreport/{reprint}/{report}/{noDoc}/{ttd}', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@viewReport')->middleware('CheckLogin');
 Route::get('/bo/transaksi/penerimaan/printbpb/viewreport/cetakLokasi', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@viewReport')->middleware('CheckLogin');
-
-// ------Kingsley------
-Route::prefix('/bo/transaksi/penerimaan/printbpb')->group(function () {
-    Route::post('/save', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@save')->middleware('CheckLogin');
-    Route::get('/get', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@getAllData')->middleware('CheckLogin');
-    Route::get('/kirimftp', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@kirimFtp')->middleware('CheckLogin');
-    Route::get('/users', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@showUser')->middleware('CheckLogin');
-    Route::get('/deleteSigs', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@deleteSigs')->middleware('CheckLogin');
-
-    Route::get('/check-flag', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@checkFlagAlert')->middleware('CheckLogin');
-    Route::get('/update-flag', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@updateFlagAlert')->middleware('CheckLogin');
-});
-
-Route::prefix('/bo/transaksi/penerimaan/ttd')->group(function () {
-    Route::get('/', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputSignatureController@index')->middleware('CheckLogin');
-    Route::post('/save', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputSignatureController@save')->middleware('CheckLogin');
-    Route::get('/get', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputSignatureController@getAllData')->middleware('CheckLogin');
-    Route::get('/users', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputSignatureController@showUser')->middleware('CheckLogin');
-    Route::get('/getName', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputSignatureController@getName')->middleware('CheckLogin');
-});
-// ------Kingsley------
 
 //BACKOFFICE-TRANSAKSI-PENERIMAAN-CETAK LAPORAN BPB
 Route::get('/bo/transaksi/penerimaan/cetakbpb/index', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\cetakBPBController@index')->middleware('CheckLogin');
@@ -751,6 +731,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::get('/', 'BACKOFFICE\TRANSAKSI\PEMUSNAHAN\barangRusakController@index');
                     Route::get('/getnmrtrn', 'BACKOFFICE\TRANSAKSI\PEMUSNAHAN\barangRusakController@getNmrTrn');
                     Route::get('/getplu', 'BACKOFFICE\TRANSAKSI\PEMUSNAHAN\barangRusakController@getPlu');
+                    Route::get('/get-keterangan', 'BACKOFFICE\TRANSAKSI\PEMUSNAHAN\barangRusakController@getKeterangan');
                     Route::post('/choosetrn', 'BACKOFFICE\TRANSAKSI\PEMUSNAHAN\barangRusakController@chooseTrn');
                     Route::post('/getnewnmrtrn', 'BACKOFFICE\TRANSAKSI\PEMUSNAHAN\barangRusakController@getNewNmrTrn');
                     Route::post('/chooseplu', 'BACKOFFICE\TRANSAKSI\PEMUSNAHAN\barangRusakController@choosePlu');
@@ -792,6 +773,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::get('/showpo',               'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@showPO');
                     Route::post('/choosepo',            'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@choosePO');
                     Route::get('/showsupplier',         'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@showSupplier');
+                    Route::get('/showsupplierrte',         'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@showSupplierRTE');
                     Route::post('/showplu',             'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@showPlu');
                     Route::post('/chooseplu',           'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@choosePlu');
                     Route::post('/changehargabeli',     'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@changeHargaBeli');
@@ -805,6 +787,54 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::post('/check-kode-supplier', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@checkKodeSupplier');
                     Route::get('/download-npd',         'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@downloadNPD');
                     Route::get('/print-gagal-bpb/{url}/{po}/{btbno}',      'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@printGagalBPB');
+                    Route::get('/shownpd',      'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@showNPD');
+                    Route::get('/readQR',      'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputController@readQR');
+                });
+
+                // ------Kingsley------
+                Route::prefix('/printbpb')->group(function () {
+                    Route::post('/save', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@save')->middleware('CheckLogin');
+                    Route::get('/get', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@getAllData')->middleware('CheckLogin');
+                    Route::get('/kirimftp', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@kirimFtp')->middleware('CheckLogin');
+                    Route::get('/users', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@showUser')->middleware('CheckLogin');
+                    Route::get('/deleteSigs', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@deleteSigs')->middleware('CheckLogin');
+
+                    Route::get('/check-flag', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@checkFlagAlert')->middleware('CheckLogin');
+                    Route::get('/update-flag', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\printBPBController@updateFlagAlert')->middleware('CheckLogin');
+                });
+
+                Route::prefix('/ttd')->group(function () {
+                    Route::get('/', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputSignatureController@index')->middleware('CheckLogin');
+                    Route::get('/get', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputSignatureController@getAllData')->middleware('CheckLogin');
+                    Route::get('/users', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputSignatureController@showUser')->middleware('CheckLogin');
+                    Route::post('/save', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputSignatureController@save')->middleware('CheckLogin');
+                    Route::get('/getName', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputSignatureController@getName')->middleware('CheckLogin');
+                    Route::get('/otorisasi', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputSignatureController@otorisasi')->middleware('CheckLogin');
+                });
+
+                Route::prefix('/data-rte')->group(function () {
+                    Route::get('/', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\NPDBKController@index')->middleware('CheckLogin');
+                    Route::get('/download', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\NPDBKController@download')->middleware('CheckLogin');
+                    Route::get('/upload', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\NPDBKController@upload')->middleware('CheckLogin');
+                });
+
+                Route::prefix('/util-bread')->group(function () {
+                    Route::get('/', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BreadController@index')->middleware('CheckLogin');
+                    Route::get('/upload', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BreadController@upload')->middleware('CheckLogin');
+                    Route::get('/cetak', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BreadController@cetak')->middleware('CheckLogin');
+                    Route::get('/process', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BreadController@process')->middleware('CheckLogin');
+                    Route::get('/check', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BreadController@check')->middleware('CheckLogin');
+                });
+                // ------Kingsley------
+
+                // Cesar
+                Route::prefix('/barcode-putih')->group(function () {
+                    Route::get('/', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@index');
+                    Route::get('/print-barcode', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@printBarcode');
+                    Route::get('/show-sjf-data', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@showSJFData');
+                    Route::get('/check-no-faktur', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@checkNoFaktur');
+                    Route::get('/check-plu-barcode', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@checkPluBarcode');
+                    Route::post('/send-email', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@sendEmail');
                 });
             });
 
@@ -1558,6 +1588,7 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@index');
             Route::get('/showData', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@showData');
             Route::post('/CSVeFaktur', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@CSVeFaktur');
+            Route::get('/downloadCSVeFaktur', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@donwloadCSVeFaktur');
             Route::post('/cetak', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@cetak');
             Route::get('/print-doc', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@PRINT_DOC');
             Route::get('/download', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@downloadFile');
@@ -1653,10 +1684,12 @@ Route::middleware(['CheckLogin'])->group(function () {
         Route::prefix('/master-barang-hadiah')->group(function () {
             Route::prefix('/barang-hadiah')->group(function () {
                 Route::get('/', 'BARANGHADIAH\MASTER\BarangHadiahController@index');
-                Route::get('/get-produk', 'BARANGHADIAH\MASTER\BarangHadiahController@getProduk');
-                Route::post('/get-data-produk', 'BARANGHADIAH\MASTER\BarangHadiahController@getDataProduk');
-                Route::get('/get-card-produk', 'BARANGHADIAH\MASTER\BarangHadiahController@getCardProduk');
+                Route::post('/get-barang-hadiah', 'BARANGHADIAH\MASTER\BarangHadiahController@getBarangHadiah');
+                Route::post('/insert-barang-hadiah', 'BARANGHADIAH\MASTER\BarangHadiahController@insertBarangHadiah');
                 Route::post('/convert-barang-dagangan', 'BARANGHADIAH\MASTER\BarangHadiahController@convertBarangDagangan');
+                Route::get('/get-table-hadiah', 'BARANGHADIAH\MASTER\BarangHadiahController@getTableHadiah');
+                Route::get('/get-modal-barang-dagangan', 'BARANGHADIAH\MASTER\BarangHadiahController@getModalBarangDagangan');
+                Route::post('/get-detail-barang-dagangan', 'BARANGHADIAH\MASTER\BarangHadiahController@getDetailBarangDagangan');
             });
         });
         Route::prefix('/laporan-barang-promosi')->group(function () {
