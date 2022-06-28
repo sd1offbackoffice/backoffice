@@ -84,13 +84,6 @@
       <path value="$PROJECT_DIR$/vendor/maennchen/zipstream-php" />
       <path value="$PROJECT_DIR$/vendor/ezyang/htmlpurifier" />
       <path value="$PROJECT_DIR$/vendor/picqer/php-barcode-generator" />
-      <path value="$PROJECT_DIR$/vendor/lynx39/lara-pdf-merger" />
-      <path value="$PROJECT_DIR$/vendor/setasign/fpdi" />
-      <path value="$PROJECT_DIR$/vendor/setasign/fpdf" />
-      <path value="$PROJECT_DIR$/vendor/webklex/laravel-pdfmerger" />
-      <path value="$PROJECT_DIR$/vendor/setasign/fpdi-fpdf" />
-      <path value="$PROJECT_DIR$/vendor/grofgraf/laravel-pdf-merger" />
-      <path value="$PROJECT_DIR$/vendor/twbs/bootstrap" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.3" />

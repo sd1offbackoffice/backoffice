@@ -139,10 +139,12 @@
         });
 
         $('#txtNoDoc').keypress(function (e) {
+            console.log('masuk');
             if (e.keyCode == 13) {
-                var no_npb = $(this).val();
-                getData(no_npb);
+                var no = $(this).val();
+                getData(no);
             }
+            return false;
         });
 
         $('#table_lov_nonpb').DataTable({

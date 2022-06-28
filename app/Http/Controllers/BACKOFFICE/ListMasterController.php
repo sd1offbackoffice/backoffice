@@ -469,7 +469,7 @@ and prs_kodeigr(+) = prd_kodeigr
                 'cf_nmargin' => $cf_nmargin])->render();
             $subtitle = '';
             $keterangan = $p_urut;
-            ExcelController::create($view, $filename, $title, $subtitle, $keterangan);
+            ExcelController::create($view, $filename, $title, $subtitle, $keterangan,6);
 
 //            return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-produk-pdf',
 //                ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
@@ -482,7 +482,7 @@ and prs_kodeigr(+) = prd_kodeigr
                 'cf_nmargin' => $cf_nmargin])->render();
             $subtitle = '';
             $keterangan = $p_urut;
-            ExcelController::create($view, $filename, $title, $subtitle, $keterangan);
+            ExcelController::create($view, $filename, $title, $subtitle, $keterangan,6);
 
 //            return view('BACKOFFICE.LISTMASTERASSET.LAPORAN.daftar-produk-nama-pdf',
 //                ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
@@ -2212,7 +2212,7 @@ ORDER BY div_kodedivisi, dep_kodedepartement, kat_kodekategori, prd_prdcd, lks_n
         $view = view('BACKOFFICE.LISTMASTERASSET.LAPORAN.master-display-div-dep-kat-xlxs', ['kodeigr' => $kodeigr, 'data' => $datas, 'perusahaan' => $perusahaan,
             'title' => $title, 'p_omi' => $p_omi, 'forbidden_tag' => $forbidden_tag])->render();
         $keterangan = "";
-        ExcelController::create($view, $filename, $title, $subtitle, $keterangan);
+        ExcelController::create($view, $filename, $title, $subtitle, $keterangan,6);
         return response()->download(storage_path($filename))->deleteFileAfterSend(true);
 
 

@@ -78,6 +78,12 @@ return [
             'root'   => '../storage/names/',
         ],
 
+        // Kingsley
+        'retur' => [
+            'driver' => 'local',
+            'root'   => '../storage/retur/',
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

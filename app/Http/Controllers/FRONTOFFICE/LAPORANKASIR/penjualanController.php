@@ -146,7 +146,7 @@ class penjualanController extends Controller
         }
         if ($elek == 'Y') {
             $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang,
-       fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori,
+       fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdfbkp,
        SUM(fdnamt + fdfnam) nGross,
        SUM(fdntax + fdftax) nTax,
        SUM(fdnnet + fdfnet) nNet,
@@ -188,10 +188,10 @@ WHERE prs_kodeigr = '$kodeigr'
   AND fdkdep = kat_kodedepartement (+)
   AND fdkatb = kat_kodekategori (+)
   AND ( fdkdiv in ('$div1','$div2','$div3') OR fdkdep in('$dept1','$dept2','$dept3','$dept4') )
-GROUP BY prs_namaperusahaan, prs_namacabang, fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori
+GROUP BY prs_namaperusahaan, prs_namacabang, fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdfbkp
 ORDER BY fdkdiv, fdkdep, fdkatb");
         } else {
-            $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang,
+            $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, fdfbkp,
        fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori,
        SUM(fdnamt + fdfnam) nGross,
        SUM(fdntax + fdftax) nTax,
@@ -234,7 +234,7 @@ WHERE prs_kodeigr = '$kodeigr'
   AND fdkdep = kat_kodedepartement (+)
   AND fdkatb = kat_kodekategori (+)
   AND ( ( fdkdep BETWEEN '$dept1' AND '$dept2' ) AND ( fdkdiv BETWEEN '$div1' AND '$div2' ) )
-GROUP BY prs_namaperusahaan, prs_namacabang, fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori
+GROUP BY prs_namaperusahaan, prs_namacabang, fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdfbkp
 ORDER BY fdkdiv, fdkdep, fdkatb");
         }
 
@@ -256,7 +256,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         //CALCULATE GRAND TOTAL
         if ($elek == 'Y') {
             $rec = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang,
-      fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori,
+      fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdfbkp,
       fdnamt,fdfnam,
      fdntax, fdftax,
      fdnnet, fdfnet,
@@ -519,15 +519,6 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
                 $marginpersen['g'] = 0;
             }
         }
-        // if ($net['r'] != 0) {
-        //     $marginpersen['r'] = round(($margin['r']) * 100 / ($net['r']), 2);
-        // } else {
-        //     if (($margin['r']) != 0) {
-        //         $marginpersen['r'] = 100;
-        //     } else {
-        //         $marginpersen['r'] = 0;
-        //     }
-        // }
         if ($net['d'] != 0) {
             $marginpersen['d'] = round(($margin['d']) * 100 / ($net['d']), 2);
         } else {
@@ -597,7 +588,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         $export = $request->export; //P_CKSRX
         $grosirA = $request->grosira;
         $lst_print = $request->lst_print;
-        // dd($request->all());
+
         if ($lst_print == "INDOGROSIR ALL [IGR   (OMI/IDM)]") {
             $lst_print = "INDOGROSIR ALL [IGR + (OMI/IDM)]";
         }
@@ -662,127 +653,157 @@ ORDER BY cdiv,cdept");
 
         $gross['k'] = 0;
         $tax['k'] = 0;
+        $freePPN['k'] = 0;
+        $ppnDTP['k'] = 0;
         $net['k'] = 0;
         $hpp['k'] = 0;
         $margin['k'] = 0;
         $gross['p'] = 0;
         $tax['p'] = 0;
+        $freePPN['p'] = 0;
+        $ppnDTP['p'] = 0;
         $net['p'] = 0;
         $hpp['p'] = 0;
         $margin['p'] = 0;
-        $gross['b'] = 0;
-        $tax['b'] = 0;
-        $net['b'] = 0;
-        $hpp['b'] = 0;
-        $margin['b'] = 0;
+        $gross['y'] = 0;
+        $tax['y'] = 0;
+        $freePPN['y'] = 0;
+        $ppnDTP['y'] = 0;
+        $net['y'] = 0;
+        $hpp['y'] = 0;
+        $margin['y'] = 0;
         $gross['c'] = 0;
         $tax['c'] = 0;
+        $freePPN['c'] = 0;
+        $ppnDTP['c'] = 0;
         $net['c'] = 0;
         $hpp['c'] = 0;
         $margin['c'] = 0;
         $gross['g'] = 0;
         $tax['g'] = 0;
+        $freePPN['g'] = 0;
+        $ppnDTP['g'] = 0;
         $net['g'] = 0;
         $hpp['g'] = 0;
         $margin['g'] = 0;
         $gross['x'] = 0;
         $tax['x'] = 0;
+        $freePPN['x'] = 0;
+        $ppnDTP['x'] = 0;
         $net['x'] = 0;
         $hpp['x'] = 0;
         $margin['x'] = 0;
         $gross['e'] = 0;
         $tax['e'] = 0;
+        $freePPN['e'] = 0;
+        $ppnDTP['e'] = 0;
         $net['e'] = 0;
         $hpp['e'] = 0;
         $margin['e'] = 0;
         $gross['d'] = 0;
         $tax['d'] = 0;
+        $freePPN['d'] = 0;
+        $ppnDTP['d'] = 0;
         $net['d'] = 0;
         $hpp['d'] = 0;
         $margin['d'] = 0;
         $gross['f'] = 0;
         $tax['f'] = 0;
+        $freePPN['f'] = 0;
+        $ppnDTP['f'] = 0;
         $net['f'] = 0;
         $hpp['f'] = 0;
         $margin['f'] = 0;
 
-        // dd(sizeof($datas),$datas);
-
         for ($i = 0; $i < sizeof($datas); $i++) {
             if (($datas[$i]->cdiv) != '5' && (($datas[$i]->cdept != '39') && ($datas[$i]->cdept != '40') && ($datas[$i]->cdept != '43'))) {
-                if ($datas[$i]->ntax != 0 && $datas[$i]->fdfbkp != 'W' && $datas[$i]->fdfbkp !='G' && $datas[$i]->fdfbkp !='C' && $datas[$i]->fdfbkp !='P') {
-                    $gross['p'] = $gross['p'] + $datas[$i]->ngross;
-                    $tax['p'] = $tax['p'] + $datas[$i]->ntax;
-                    $net['p'] = $net['p'] + $datas[$i]->nnet;
-                    $hpp['p'] = $hpp['p'] + $datas[$i]->nhpp;
-                    $margin['p'] = $margin['p'] + $datas[$i]->nmargin;
-                    // switch($datas[$i]->fdfbkp){
-                    //     case 'Y' : 
-                    //         $gross['y'] = $gross['y'] + $datas[$i]->ngross;
-                    //         $tax['y'] = $tax['y'] + $datas[$i]->ntax;
-                    //         $net['y'] = $net['y'] + $datas[$i]->nnet;
-                    //         $hpp['y'] = $hpp['y'] + $datas[$i]->nhpp;
-                    //         $margin['y'] = $margin['y'] + $datas[$i]->nmargin;
-                    //         break;
-                    //     case 'P' :
-                    //         $gross['p'] = $gross['p'] + $datas[$i]->ngross;
-                    //         $tax['p'] = $tax['p'] + $datas[$i]->ntax;
-                    //         $net['p'] = $net['p'] + $datas[$i]->nnet;
-                    //         $hpp['p'] = $hpp['p'] + $datas[$i]->nhpp;
-                    //         $margin['p'] = $margin['p'] + $datas[$i]->nmargin;
-                    //         break;
-                    //     case 'W' :
-                    //         $gross['z'] = $gross['z'] + $datas[$i]->ngross;
-                    //         $tax['z'] = $tax['z'] + $datas[$i]->ntax;
-                    //         $net['z'] = $net['z'] + $datas[$i]->nnet;
-                    //         $hpp['z'] = $hpp['z'] + $datas[$i]->nhpp;
-                    //         $margin['z'] = $margin['z'] + $datas[$i]->nmargin;
-                    //         break;
-                    //     case 'G' :
-                    //         $gross['z'] = $gross['z'] + $datas[$i]->ngross;
-                    //         $tax['z'] = $tax['z'] + $datas[$i]->ntax;
-                    //         $net['z'] = $net['z'] + $datas[$i]->nnet;
-                    //         $hpp['z'] = $hpp['z'] + $datas[$i]->nhpp;
-                    //         $margin['z'] = $margin['z'] + $datas[$i]->nmargin;
-                    //         break;
-                    // }
-                } else {
-                    // dd($datas[$i]->fdfbkp,'ini masuk else 1');
-                    switch ($datas[$i]->fdfbkp) {
-                        case 'C' :
-                            $gross['k'] = $gross['k'] + $datas[$i]->ngross;
-                            $tax['k'] = $tax['k'] + $datas[$i]->ntax;
-                            $net['k'] = $net['k'] + $datas[$i]->nnet;
-                            $hpp['k'] = $hpp['k'] + $datas[$i]->nhpp;
-                            $margin['k'] = $margin['k'] + $datas[$i]->nmargin;
+                // if ($datas[$i]->ntax != 0 && $datas[$i]->fdfbkp != 'W' && $datas[$i]->fdfbkp !='G' && $datas[$i]->fdfbkp !='C' && $datas[$i]->fdfbkp !='P') {
+                if ($datas[$i]->ntax != 0) {
+                    // $gross['p'] = $gross['p'] + $datas[$i]->ngross;
+                    // $tax['p'] = $tax['p'] + $datas[$i]->ntax;
+                    // $net['p'] = $net['p'] + $datas[$i]->nnet;
+                    // $hpp['p'] = $hpp['p'] + $datas[$i]->nhpp;
+                    // $margin['p'] = $margin['p'] + $datas[$i]->nmargin;
+                    switch($datas[$i]->fdfbkp){
+                        case 'Y' :
+                            $gross['y'] = $gross['y'] + $datas[$i]->ngross;
+                            $tax['y'] = $tax['y'] + $datas[$i]->ntax;
+                            $tax['y'] = $tax['y'] + $datas[$i]->ntax;
+                            $freePPN['y'] = $freePPN['y'] + 0;
+                            $ppnDTP['y'] = $ppnDTP['y'] + 0;
+                            $hpp['y'] = $hpp['y'] + $datas[$i]->nhpp;
+                            $margin['y'] = $margin['y'] + $datas[$i]->nmargin;
                             break;
                         case 'P' :
-                            $gross['b'] = $gross['b'] + $datas[$i]->ngross;
-                            $tax['b'] = $tax['b'] + $datas[$i]->ntax;
-                            $net['b'] = $net['b'] + $datas[$i]->nnet;
-                            $hpp['b'] = $hpp['b'] + $datas[$i]->nhpp;
-                            $margin['b'] = $margin['b'] + $datas[$i]->nmargin;
+                            $gross['p'] = $gross['p'] + $datas[$i]->ngross;
+                            $tax['p'] = $tax['p'] + 0;
+                            $freePPN['p'] = $freePPN['p'] + $datas[$i]->ntax;
+                            $ppnDTP['p'] = $ppnDTP['p'] + 0;
+                            $net['p'] = $net['p'] + $datas[$i]->nnet;
+                            $hpp['p'] = $hpp['p'] + $datas[$i]->nhpp;
+                            $margin['p'] = $margin['p'] + $datas[$i]->nmargin;
+                            break;
+                        case 'W' :
+                            $gross['g'] = $gross['g'] + $datas[$i]->ngross;
+                            $tax['g'] = $tax['g'] + 0;
+                            $freePPN['g'] = $freePPN['g'] + 0;
+                            $ppnDTP['g'] = $ppnDTP['g'] + $datas[$i]->ntax;
+                            $net['g'] = $net['g'] + $datas[$i]->nnet;
+                            $hpp['g'] = $hpp['g'] + $datas[$i]->nhpp;
+                            $margin['g'] = $margin['g'] + $datas[$i]->nmargin;
                             break;
                         case 'G' :
                             $gross['g'] = $gross['g'] + $datas[$i]->ngross;
                             $tax['g'] = $tax['g'] + $datas[$i]->ntax;
+                            $freePPN['g'] = $freePPN['g'] + 0;
+                            $ppnDTP['g'] = $ppnDTP['g'] + $datas[$i]->ntax;
                             $net['g'] = $net['g'] + $datas[$i]->nnet;
                             $hpp['g'] = $hpp['g'] + $datas[$i]->nhpp;
                             $margin['g'] = $margin['g'] + $datas[$i]->nmargin;
                             break;
-                        case 'W' :
-                            $gross['g'] = $gross['g'] + $datas[$i]->ngross;
-                            $tax['g'] = $tax['g'] + $datas[$i]->ntax;
-                            $net['g'] = $net['g'] + $datas[$i]->nnet;
-                            $hpp['g'] = $hpp['g'] + $datas[$i]->nhpp;
-                            $margin['g'] = $margin['g'] + $datas[$i]->nmargin;
+                    }
+                } else {
+                    switch ($datas[$i]->fdfbkp) {
+                        case 'C' :
+                            $gross['k'] = $gross['k'] + $datas[$i]->ngross;
+                            $tax['k'] = $tax['k'] + 0;
+                            $freePPN['k'] = $freePPN['k'] + 0;
+                            $ppnDTP['k'] = $ppnDTP['k'] + 0;
+                            $net['k'] = $net['k'] + $datas[$i]->nnet;
+                            $hpp['k'] = $hpp['k'] + $datas[$i]->nhpp;
+                            $margin['k'] = $margin['k'] + $datas[$i]->nmargin;
                             break;
+                        // case 'P' :
+                        //     $gross['b'] = $gross['b'] + $datas[$i]->ngross;
+                        //     $tax['b'] = $tax['b'] + $datas[$i]->ntax;
+                        //     $net['b'] = $net['b'] + $datas[$i]->nnet;
+                        //     $hpp['b'] = $hpp['b'] + $datas[$i]->nhpp;
+                        //     $margin['b'] = $margin['b'] + $datas[$i]->nmargin;
+                        //     break;
+                        // case 'G' :
+                        //     $gross['g'] = $gross['g'] + $datas[$i]->ngross;
+                        //     $tax['g'] = $tax['g'] + $datas[$i]->ntax;
+                        //     $net['g'] = $net['g'] + $datas[$i]->nnet;
+                        //     $hpp['g'] = $hpp['g'] + $datas[$i]->nhpp;
+                        //     $margin['g'] = $margin['g'] + $datas[$i]->nmargin;
+                        //     break;
+                        // case 'W' :
+                        //     $gross['g'] = $gross['g'] + $datas[$i]->ngross;
+                        //     $tax['g'] = $tax['g'] + $datas[$i]->ntax;
+                        //     $net['g'] = $net['g'] + $datas[$i]->nnet;
+                        //     $hpp['g'] = $hpp['g'] + $datas[$i]->nhpp;
+                        //     $margin['g'] = $margin['g'] + $datas[$i]->nmargin;
+                        //     break;
+                        // e itu barang export, untuk sekarang tidak ada barang export
+                        // x itu barang tidak kena pajak, maka tax pasti 0, jadi ppn,bebas ppn dan ppn dtp pasti 0
                         default :
                             if ($grosirA == 'T' && ($datas[$i]->cexp == 'T')) {
                                 $gross['e'] = $gross['e'] + $datas[$i]->ngross;
                                 if ($export != 'Y') {
                                     $tax['e'] = $tax['e'] + $datas[$i]->ntax;
                                 }
+                                $freePPN['e'] =  0;
+                                $ppnDTP['e'] = 0;
                                 $net['e'] = $net['e'] + $datas[$i]->nnet;
                                 $hpp['e'] = $hpp['e'] + $datas[$i]->nhpp;
                                 $margin['e'] = $margin['e'] + $datas[$i]->nmargin;
@@ -791,6 +812,8 @@ ORDER BY cdiv,cdept");
                                 if ($export != 'Y') {
                                     $tax['x'] = $tax['x'] + $datas[$i]->ntax;
                                 }
+                                $freePPN['x'] =  0;
+                                $ppnDTP['x'] = 0;
                                 $net['x'] = $net['x'] + $datas[$i]->nnet;
                                 $hpp['x'] = $hpp['x'] + $datas[$i]->nhpp;
                                 $margin['x'] = $margin['x'] + $datas[$i]->nmargin;
@@ -801,13 +824,32 @@ ORDER BY cdiv,cdept");
                 // dd(($datas[$i]->cdiv) == '5' && ($datas[$i]->cdept) == '39','ini elseif 1');
                 $gross['c'] = $gross['c'] + $datas[$i]->ngross;
                 $tax['c'] = $tax['c'] + $datas[$i]->ntax;
+                $freePPN['c'] = $freePPN['c'] + $datas[$i]->ntax;
+                $ppnDTP['c'] = $ppnDTP['c'] + $datas[$i]->ntax;
                 $net['c'] = $net['c'] + $datas[$i]->nnet;
                 $hpp['c'] = $hpp['c'] + $datas[$i]->nhpp;
                 $margin['c'] = $margin['c'] + $datas[$i]->nmargin;
             } elseif (($datas[$i]->cdiv) == '5' && ($datas[$i]->cdept) == '40') {
                 // dd(($datas[$i]->cdiv) == '5' && ($datas[$i]->cdept) == '40','ini elseif 2');
                 $gross['d'] = $gross['d'] + $datas[$i]->ngross;
-                $tax['d'] = $tax['d'] + $datas[$i]->ntax;
+                if($datas[$i]->fdfbkp == 'Y')
+                {
+                    $tax['d'] = $tax['d'] + $datas[$i]->ntax;
+                    $freePPN['d'] = $freePPN['d'] + 0;
+                    $ppnDTP['d'] = $ppnDTP['d'] + 0;
+                }
+                else if($datas[$i]->fdfbkp == 'P')
+                {
+                    $tax['d'] = $tax['d'] + 0;
+                    $freePPN['d'] = $freePPN['d'] + $datas[$i]->ntax;
+                    $ppnDTP['d'] = $ppnDTP['d'] + 0;
+                }
+                else
+                {
+                    $tax['d'] = $tax['d'] + 0;
+                    $freePPN['d'] = $freePPN['d'] + 0;
+                    $ppnDTP['d'] = $ppnDTP['d'] + $datas[$i]->ntax;
+                }
                 $net['d'] = $net['d'] + $datas[$i]->nnet;
                 $hpp['d'] = $hpp['d'] + $datas[$i]->nhpp;
                 $margin['d'] = $margin['d'] + $datas[$i]->nmargin;
@@ -815,13 +857,13 @@ ORDER BY cdiv,cdept");
                 // dd(($datas[$i]->cdiv) == '5' && ($datas[$i]->cdept) == '43','ini elseif 3');
                 $gross['f'] = $gross['f'] + $datas[$i]->ngross;
                 $tax['f'] = $tax['f'] + $datas[$i]->ntax;
+                $freePPN['f'] = $freePPN['f'] + $datas[$i]->ntax;
+                $ppnDTP['f'] = $ppnDTP['f'] + $datas[$i]->ntax;
                 $net['f'] = $net['f'] + $datas[$i]->nnet;
                 $hpp['f'] = $hpp['f'] + $datas[$i]->nhpp;
                 $margin['f'] = $margin['f'] + $datas[$i]->nmargin;
             }
         }
-        // dd($gross['p'],$tax['p'],$net['p'],$hpp['p'],$margin['p']);
-        // dd($gross['g'],$tax['g'],$net['g'],$hpp['g'],$margin['g']);
 
         //persentase margin
         if ($net['c'] != 0) {
@@ -842,13 +884,13 @@ ORDER BY cdiv,cdept");
                 $marginpersen['f'] = 0;
             }
         }
-        if ($net['p'] != 0) {
-            $marginpersen['p'] = round(($margin['p']) * 100 / ($net['p']), 2);
+        if ($net['y'] != 0) {
+            $marginpersen['y'] = round(($margin['y']) * 100 / ($net['y']), 2);
         } else {
-            if (($margin['p']) != 0) {
-                $marginpersen['p'] = 100;
+            if (($margin['y']) != 0) {
+                $marginpersen['y'] = 100;
             } else {
-                $marginpersen['p'] = 0;
+                $marginpersen['y'] = 0;
             }
         }
         if ($net['x'] != 0) {
@@ -869,13 +911,13 @@ ORDER BY cdiv,cdept");
                 $marginpersen['k'] = 0;
             }
         }
-        if ($net['b'] != 0) {
-            $marginpersen['b'] = round(($margin['b']) * 100 / ($net['b']), 2);
+        if ($net['p'] != 0) {
+            $marginpersen['p'] = round(($margin['p']) * 100 / ($net['p']), 2);
         } else {
-            if (($margin['b']) != 0) {
-                $marginpersen['b'] = 100;
+            if (($margin['p']) != 0) {
+                $marginpersen['p'] = 100;
             } else {
-                $marginpersen['b'] = 0;
+                $marginpersen['p'] = 0;
             }
         }
         if ($net['e'] != 0) {
@@ -896,15 +938,6 @@ ORDER BY cdiv,cdept");
                 $marginpersen['g'] = 0;
             }
         }
-        // if ($net['r'] != 0) {
-        //     $marginpersen['r'] = round(($margin['r']) * 100 / ($net['r']), 2);
-        // } else {
-        //     if (($margin['r']) != 0) {
-        //         $marginpersen['r'] = 100;
-        //     } else {
-        //         $marginpersen['r'] = 0;
-        //     }
-        // }
         if ($net['d'] != 0) {
             $marginpersen['d'] = round(($margin['d']) * 100 / ($net['d']), 2);
         } else {
@@ -920,18 +953,33 @@ ORDER BY cdiv,cdept");
         //ULTIMATE GRAND TOTAL
         $gross['total'] = 0;
         $tax['total'] = 0;
+        $freePPN['total'] = 0;
+        $ppnDTP['total'] = 0;
         $net['total'] = 0;
         $hpp['total'] = 0;
         $margin['total'] = 0;
         for ($i = 0; $i < sizeof($datas); $i++) {
             $gross['total'] = $gross['total'] + $datas[$i]->ngross;
-            $tax['total'] = $tax['total'] + $datas[$i]->ntax;
+            if($datas[$i]->fdfbkp == 'Y')
+            {
+                $tax['total'] = $tax['total'] + $datas[$i]->ntax;
+            }
+            else if($datas[$i]->fdfbkp == 'P')
+            {
+                $freePPN['total'] = $freePPN['total'] + $datas[$i]->ntax;
+            }
+            else
+            {
+                $ppnDTP['total'] = $ppnDTP['total'] + $datas[$i]->ntax;
+            }
             $net['total'] = $net['total'] + $datas[$i]->nnet;
             $hpp['total'] = $hpp['total'] + $datas[$i]->nhpp;
             $margin['total'] = $margin['total'] + $datas[$i]->nmargin;
         }
         $gross['total'] = round($gross['total'], 0);
         $tax['total'] = round($tax['total'], 0);
+        $freePPN['total'] = round($freePPN['total'], 0);
+        $ppnDTP['total'] = round($ppnDTP['total'], 0);
         $net['total'] = round($net['total'], 0);
         $hpp['total'] = round($hpp['total'], 0);
         $margin['total'] = round($margin['total'], 0);
@@ -1009,6 +1057,7 @@ WHERE prs_kodeigr = '$kodeigr'
   AND cdiv = div_kodedivisi
   AND cdept = dep_kodedepartement
   AND cStat = 'T'
+--   and div_kodedivisi = '1'
 GROUP BY sls_kodeigr, prs_namaperusahaan, prs_namacabang, cdiv, div_namadivisi, cdept, dep_namadepartement, fdfbkp, cexp
 ORDER BY cdiv,cdept");
 
@@ -1031,10 +1080,15 @@ ORDER BY cdiv,cdept");
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
-        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perdept-pdf',
+        // $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perdept-pdf',
+        //     ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan,
+        //         'keterangan' => $lst_print, 'cf_nmargin' => $cf_nmargin, 'periode' => $periode,
+        //         'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp, 'margin' => $margin, 'marginpersen' => $marginpersen]);
+        // $pdf->setPaper('A5', 'potrait');
+        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perdept-pdf-2',
             ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan,
                 'keterangan' => $lst_print, 'cf_nmargin' => $cf_nmargin, 'periode' => $periode,
-                'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp, 'margin' => $margin, 'marginpersen' => $marginpersen]);
+                'gross' => $gross, 'tax' => $tax, 'freePPN' => $freePPN, 'ppnDTP' => $ppnDTP, 'net' => $net, 'hpp' => $hpp, 'margin' => $margin, 'marginpersen' => $marginpersen]);
         $pdf->setPaper('A5', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
@@ -1042,7 +1096,8 @@ ORDER BY cdiv,cdept");
         $canvas = $dompdf->get_canvas();
         $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
-        return $pdf->stream('lap_jual_perdept.pdf');
+        // return $pdf->stream('lap_jual_perdept.pdf');
+        return $pdf->stream('lap_jual_perdept-pdf-2.pdf');
     }
 
     public function printDocumentDMenu2(Request $request)
@@ -1543,7 +1598,7 @@ ORDER BY omidiv, omidep");
         $pluall = $request->pluall;
 
         if ($pluall == 'N') {
-            $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah,
+            $datas = DB::connection(Session::get('connection'))->select("SELECT prd_flagbkp1, prd_flagbkp2, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
       fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdkplu, prd_deskripsipanjang, fdksat||'/'||fdisis unit, fdfbkp,
       fdsat0, fdnam0, fdntr0,
       fdsat1, fdnam1, fdntr1,
@@ -1561,7 +1616,7 @@ ORDER BY omidiv, omidep");
          CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END nMarginp,
       PRD_KODETAG
 FROM TBMASTER_PERUSAHAAN, TBMASTER_PRODMAST, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_KATEGORI,
-(  SELECT sls_kodeigr, sls_kodedivisi fdkdiv, sls_kodedepartement fdkdep, sls_kodekategoribrg fdkatb, sls_prdcd fdkplu, sls_kodesatuan fdksat, sls_isisatuan fdisis, sls_flagbkp fdfbkp,
+(  SELECT prd_flagbkp1, prd_flagbkp2, sls_kodeigr, sls_kodedivisi fdkdiv, sls_kodedepartement fdkdep, sls_kodekategoribrg fdkatb, sls_prdcd fdkplu, sls_kodesatuan fdksat, sls_isisatuan fdisis, sls_flagbkp fdfbkp,
          SUM(sls_QtySat0) fdsat0, SUM(sls_NilaiSat0) fdnam0, SUM(sls_JmlSat0) fdntr0,
          SUM(sls_QtySat1) fdsat1, SUM(sls_NilaiSat1) fdnam1, SUM(sls_JmlSat1) fdntr1,
          SUM(sls_QtySat2) fdsat2, SUM(sls_NilaiSat2) fdnam2, SUM(sls_JmlSat2) fdntr2,
@@ -1569,7 +1624,7 @@ FROM TBMASTER_PERUSAHAAN, TBMASTER_PRODMAST, TBMASTER_DIVISI, TBMASTER_DEPARTEME
          SUM(sls_QtyNOMI) fdjqty, SUM(sls_QtyOMI) fdfqty, SUM(sls_NoTransaksi) fdntrn, SUM(sls_NilaiNOMI) fdnamt, SUM(sls_TaxNOMI) fdntax, SUM(sls_NetNOMI) fdnnet, SUM(sls_HppNOMI) fdnhpp,
          SUM(sls_MarginNOMI) fdmrgn, SUM(sls_NilaiOMI) fdfnam, SUM(sls_TaxOMI) fdftax, SUM(sls_NetOMI) fdfnet, SUM(sls_HppOMI) fdfhpp, SUM(sls_MarginOMI) fdfmgn,
          NVL(cexp,'F') cexp
-   FROM TBTR_SUMSALES, TBTR_MONITORINGPLU,
+   FROM TBTR_SUMSALES, TBTR_MONITORINGPLU, TBMASTER_PRODMAST
      (    SELECT sls_prdcd prdcd, 'T' cexp
       FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
       WHERE sls_prdcd = exp_prdcd
@@ -1921,13 +1976,13 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
 
         $ekspor = $request->ekspor;
 
-        $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, fdfbkp,
       CASE WHEN '$ekspor' = 'Y' THEN 'LAPORAN PENJUALAN (EXPORT)' ELSE 'LAPORAN PENJUALAN' END title,
       sls_periode, hari,
       sls_nilai, sls_tax, sls_net, sls_hpp, sls_margin,
       CASE WHEN  sls_net <> 0 THEN  sls_margin * 100 / sls_net ELSE 100 END p_margin
 FROM TBMASTER_PERUSAHAAN,
-(   SELECT sls_kodeigr, sls_periode,
+(   SELECT sls_kodeigr, sls_periode, sls_flagbkp fdfbkp,
          CASE WHEN TO_CHAR(sls_periode,'DY') = 'SUN' THEN 'MINGGU' ELSE
          CASE WHEN TO_CHAR(sls_periode,'DY') = 'MON' THEN 'SENIN'  ELSE
          CASE WHEN TO_CHAR(sls_periode,'DY') = 'TUE' THEN 'SELASA' ELSE
@@ -1953,7 +2008,7 @@ FROM TBMASTER_PERUSAHAAN,
    )
    WHERE sls_prdcd = prdcd(+)
       AND TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-   GROUP BY sls_kodeigr,sls_periode,cexp
+   GROUP BY sls_kodeigr,sls_periode, fdfbkp, cexp
    )
 WHERE prs_kodeigr = '$kodeigr'
   AND sls_kodeigr = prs_kodeigr
@@ -2576,7 +2631,6 @@ ORDER BY FDKDIV, FDKDEP");
                             $cp_nenet += 0;
                             $cp_necsb += 0;
                             break;
-
                     }
                 }
             } else if ($data[$i]->cdiv == '5' and $data[$i]->cdept == '39') {
@@ -2605,5 +2659,3 @@ ORDER BY FDKDIV, FDKDEP");
     }
 
 }
-
-

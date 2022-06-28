@@ -1661,6 +1661,43 @@ class printBPBController extends Controller
 
             return $pdf->stream('igr_bo_ctklokasi.PDF');
         } else if ($report == 'IGR_BO_CTBTBNOTA_NONHARGA') {
+            $datas = DB::connection(Session::get('connection'))->select(
+                "SELECT msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,sup_kodesupplier||' '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_npwp, sup_alamatsupplier1 ||'   '||sup_alamatsupplier2 alamat_supplier,sup_telpsupplier, sup_contactperson contact_person, sup_kotasupplier3,mstd_prdcd||' '||prd_deskripsipanjang plu, mstd_unit||'/'||mstd_frac kemasan, floor(mstd_qty/mstd_frac) qty, mod(mstd_qty,mstd_frac) qtyk, mstd_typetrn, mstd_hrgsatuan, mstd_ppnrph, CASE WHEN prd_flagbkp1 = 'Y' AND prd_flagbkp2 = 'Y' THEN mstd_ppnrph ELSE 0 END AS ppn, CASE WHEN prd_flagbkp1 = 'Y' AND prd_flagbkp2 = 'P' THEN mstd_ppnrph ELSE 0 END AS ppn_bebas, CASE WHEN prd_flagbkp1 = 'Y' AND prd_flagbkp2 IN ('W','G') THEN mstd_ppnrph ELSE 0 END AS ppn_pemerintah, mstd_ppnbmrph, mstd_ppnbtlrph, nvl(mstd_gross,0)- nvl(mstd_discrph,0) + nvl(mstd_dis4cr,0) + nvl(mstd_dis4rr,0) + nvl(mstd_dis4jr,0) jumlah,nvl(mstd_rphdisc1,0) AS disc1, (nvl(mstd_rphdisc2,0) + nvl(mstd_rphdisc2ii,0) + nvl(mstd_rphdisc2iii,0) ) AS disc2,nvl(mstd_rphdisc3,0) AS disc3, nvl(mstd_qtybonus1,0) AS bonus1, nvl(mstd_qtybonus2,0) AS bonus2, nvl(mstd_keterangan,' ') AS keterangan, (nvl(mstd_dis4cr,0) + nvl(mstd_dis4rr,0) + nvl(mstd_dis4jr,0)) AS disc4, CASE WHEN mstd_typetrn = 'B' THEN '( PEMBELIAN )' ELSE '( LAIN - LAIN )' END judul, '0' || '$kodeigr' || mstd_nodoc barcode
+                FROM tbtr_mstran_h, tbmaster_perusahaan, tbmaster_supplier, tbtr_mstran_d, tbmaster_prodmast, tbtr_backoffice
+                WHERE msth_kodeigr='$kodeigr'
+                    AND prs_kodeigr=msth_kodeigr
+                    AND sup_kodesupplier(+)=msth_kodesupplier
+                    AND sup_kodeigr(+)=msth_kodeigr
+                    AND mstd_nodoc=msth_nodoc
+                    AND mstd_kodeigr=msth_kodeigr
+                    AND prd_kodeigr=msth_kodeigr
+                    AND prd_prdcd = mstd_prdcd
+                    AND trbo_nonota(+) = mstd_nodoc
+                    AND trbo_kodeigr(+) = mstd_kodeigr
+                    AND trbo_prdcd(+) = mstd_prdcd
+                    AND msth_nodoc IN ($document)
+                ORDER BY msth_nodoc"
+            );
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota', ['datas' => $datas, 're_print' => $re_print, 'ttd' => $ttd])->setPaper('a5', 'potrait');
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            $path = 'receipts/';
+            if (!File::exists(storage_path($path))) {
+                File::makeDirectory(storage_path($path), 0755, true, true);
+            }
+
+            for ($i = 0; $i < sizeof($datas); $i++) {
+                $content = $pdf->download()->getOriginalContent();
+                $id = 'BTB_' . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
+                $file = storage_path($path . $id . '.PDF');
+                file_put_contents($file, $content);
+            }
+
+            $path = 'receipts_backup/';
+            $this->kirimServerCabang($path, $datas, $pdf, $report);
+            // save nota harga
+
             $datas = DB::connection(Session::get('connection'))->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
             prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
             sup_kodesupplier||' '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_npwp, sup_alamatsupplier1 ||'   '||sup_alamatsupplier2 alamat_supplier,
@@ -1706,6 +1743,44 @@ class printBPBController extends Controller
 
             return $pdf->stream($id . '.PDF');
         } else if ($report == 'IGR_BO_CTBTBNOTA_NONHARGA_FULL') {
+            $datas = DB::connection(Session::get('connection'))->select(
+                "SELECT msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,sup_kodesupplier||' '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_npwp, sup_alamatsupplier1 ||'   '||sup_alamatsupplier2 alamat_supplier,sup_telpsupplier, sup_contactperson contact_person, sup_kotasupplier3,mstd_prdcd||' '||prd_deskripsipanjang plu, mstd_unit||'/'||mstd_frac kemasan, floor(mstd_qty/mstd_frac) qty, mod(mstd_qty,mstd_frac) qtyk, mstd_typetrn, mstd_hrgsatuan, mstd_ppnrph, CASE WHEN prd_flagbkp1 = 'Y' AND prd_flagbkp2 = 'Y' THEN mstd_ppnrph ELSE 0 END AS ppn, CASE WHEN prd_flagbkp1 = 'Y' AND prd_flagbkp2 = 'P' THEN mstd_ppnrph ELSE 0 END AS ppn_bebas, CASE WHEN prd_flagbkp1 = 'Y' AND prd_flagbkp2 IN ('W','G') THEN mstd_ppnrph ELSE 0 END AS ppn_pemerintah, mstd_ppnbmrph, mstd_ppnbtlrph, nvl(mstd_gross,0)- nvl(mstd_discrph,0) + nvl(mstd_dis4cr,0) + nvl(mstd_dis4rr,0) + nvl(mstd_dis4jr,0) jumlah,nvl(mstd_rphdisc1,0) AS disc1, (nvl(mstd_rphdisc2,0) + nvl(mstd_rphdisc2ii,0) + nvl(mstd_rphdisc2iii,0) ) AS disc2,nvl(mstd_rphdisc3,0) AS disc3, nvl(mstd_qtybonus1,0) AS bonus1, nvl(mstd_qtybonus2,0) AS bonus2, nvl(mstd_keterangan,' ') AS keterangan, (nvl(mstd_dis4cr,0) + nvl(mstd_dis4rr,0) + nvl(mstd_dis4jr,0)) AS disc4, CASE WHEN mstd_typetrn = 'B' THEN '( PEMBELIAN )' ELSE '( LAIN - LAIN )' END judul, '0' || '$kodeigr' || mstd_nodoc barcode
+                FROM tbtr_mstran_h, tbmaster_perusahaan, tbmaster_supplier, tbtr_mstran_d, tbmaster_prodmast, tbtr_backoffice
+                WHERE msth_kodeigr='$kodeigr'
+                    AND prs_kodeigr=msth_kodeigr
+                    AND sup_kodesupplier(+)=msth_kodesupplier
+                    AND sup_kodeigr(+)=msth_kodeigr
+                    AND mstd_nodoc=msth_nodoc
+                    AND mstd_kodeigr=msth_kodeigr
+                    AND prd_kodeigr=msth_kodeigr
+                    AND prd_prdcd = mstd_prdcd
+                    AND trbo_nonota(+) = mstd_nodoc
+                    AND trbo_kodeigr(+) = mstd_kodeigr
+                    AND trbo_prdcd(+) = mstd_prdcd
+                    AND msth_nodoc IN ($document)
+                ORDER BY msth_nodoc"
+            );
+
+            $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_ctbtbnota_full', ['datas' => $datas, 're_print' => $re_print, 'ttd' => $ttd])->setPaper('a4', 'potrait');
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            $path = 'receipts/';
+            if (!File::exists(storage_path($path))) {
+                File::makeDirectory(storage_path($path), 0755, true, true);
+            }
+
+            for ($i = 0; $i < sizeof($datas); $i++) {
+                $content = $pdf->download()->getOriginalContent();
+                $id = 'BTB_' . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
+                $file = storage_path($path . $id . '.PDF');
+                file_put_contents($file, $content);
+            }
+
+            $path = 'receipts_backup/';
+            $this->kirimServerCabang($path, $datas, $pdf, $report);
+            //save data
+
             $datas = DB::connection(Session::get('connection'))->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
             prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
             sup_kodesupplier||' '||sup_namasupplier || '/' || sup_singkatansupplier supplier, sup_npwp, sup_alamatsupplier1 ||'   '||sup_alamatsupplier2 alamat_supplier,

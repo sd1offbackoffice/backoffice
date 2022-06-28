@@ -146,32 +146,79 @@ class CetakRegisterController extends Controller
             if($d->sup_pkp == 'Y'){
                 $pkp->gross += $d->gross;
                 $pkp->potongan += $d->discount;
+                $ppn_rph = 0;
                 // $pkp->ppn += $d->mstd_ppnrph;
-                if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'Y') {
-                    $pkp->ppn += $d->mstd_ppnrph;
-                }
-                if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'P') {                    
-                    $pkp->ppn_bebas += $d->mstd_ppnrph;
-                }
-                if ($d->prd_flagbkp1 == 'Y' && ($d->prd_flagbkp2 == 'W' || $d->prd_flagbkp2 == 'G')) {
-                    $pkp->ppn_dtp += $d->mstd_ppnrph;
-                }                       
-                $pkp->total += $d->total;
+                // if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'Y') {
+                //     $pkp->ppn += $d->mstd_ppnrph;
+                // }
+                // if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'P') {                    
+                //     $pkp->ppn_bebas += $d->mstd_ppnrph;
+                // }
+                // if ($d->prd_flagbkp1 == 'Y' && ($d->prd_flagbkp2 == 'W' || $d->prd_flagbkp2 == 'G')) {
+                //     $pkp->ppn_dtp += $d->mstd_ppnrph;
+                // }
+                switch ($d->prd_flagbkp1) {
+                    case 'Y':
+                        switch ($d->prd_flagbkp2) {
+                            case 'Y':
+                                $pkp->ppn += $d->mstd_ppnrph;
+                                $ppn_rph = $d->mstd_ppnrph;
+                                break;
+                            case 'P':
+                                $pkp->ppn_bebas += $d->mstd_ppnrph;
+                                break;
+                            case 'W' || 'G':
+                                $pkp->ppn_dtp += $d->mstd_ppnrph;
+                                break;                            
+                            default:
+                                # code...
+                                break;
+                        }
+                        break;                    
+                    default:
+                        # code...
+                        break;
+                }                        
+                $pkp->total += ($d->gross - $d->discount + $ppn_rph);
+                // $pkp->total += $d->total;
             }
             else{
                 $npkp->gross += $d->gross;
                 $npkp->potongan += $d->discount;
+                $ppn_rph = 0;
                 // $npkp->ppn += $d->mstd_ppnrph;
-                if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'Y') {
-                    $npkp->ppn += $d->mstd_ppnrph;
-                }
-                if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'P') {                    
-                    $npkp->ppn_bebas += $d->mstd_ppnrph;
-                }
-                if ($d->prd_flagbkp1 == 'Y' && ($d->prd_flagbkp2 == 'W' || $d->prd_flagbkp2 == 'G')) {
-                    $npkp->ppn_dtp += $d->mstd_ppnrph;
-                }                                        
-                $npkp->total += $d->total;
+                // if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'Y') {
+                //     $npkp->ppn += $d->mstd_ppnrph;
+                // }
+                // if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'P') {                    
+                //     $npkp->ppn_bebas += $d->mstd_ppnrph;
+                // }
+                // if ($d->prd_flagbkp1 == 'Y' && ($d->prd_flagbkp2 == 'W' || $d->prd_flagbkp2 == 'G')) {
+                //     $npkp->ppn_dtp += $d->mstd_ppnrph;
+                // }     
+                switch ($d->prd_flagbkp1) {
+                    case 'Y':
+                        switch ($d->prd_flagbkp2) {
+                            case 'Y':
+                                $npkp->ppn += $d->mstd_ppnrph;
+                                $ppn_rph = $d->mstd_ppnrph;
+                                break;
+                            case 'P':
+                                $npkp->ppn_bebas += $d->mstd_ppnrph;
+                                break;
+                            case 'W' || 'G':
+                                $npkp->ppn_dtp += $d->mstd_ppnrph;
+                                break;                            
+                            default:
+                                # code...
+                                break;
+                        }
+                        break;                    
+                    default:
+                        # code...
+                        break;
+                }                                      
+                $npkp->total += ($d->gross - $d->discount + $ppn_rph);
             }
         }
 
@@ -223,8 +270,7 @@ class CetakRegisterController extends Controller
         sup_kodesupplier||'-'||sup_namasupplier supplier, msth_nofaktur, msth_tglfaktur,
         mstd_gross, mstd_pkp, mstd_typetrn,nvl(mstd_discrph,0) discount,
         nvl(mstd_ppnrph,0) ppn, nvl(mstd_ppnbmrph,0) ppnbm, nvl(mstd_ppnbtlrph,0) btl,
-        nvl(mstd_gross,0)-(nvl(mstd_discrph,0))+
-                (nvl(mstd_ppnrph,0)+nvl(mstd_ppnbmrph,0)+nvl(mstd_ppnbtlrph,0)) total
+        nvl(mstd_gross,0)-(nvl(mstd_discrph,0))+nvl(mstd_ppnrph,0) total
 
         from tbtr_mstran_h, tbtr_mstran_d,tbmaster_supplier, tbmaster_prodmast
         where msth_typetrn ='K'
@@ -280,36 +326,87 @@ class CetakRegisterController extends Controller
         $total->ppn_dtp = 0;                
         $total->total = 0;
 
-        foreach($data as $d){
+        foreach($data as $d){            
             if($d->mstd_pkp == 'Y'){
                 $pkp->gross += $d->gross;
                 $pkp->potongan += $d->discount;
                 // $pkp->ppn += $d->mstd_ppnrph;
-                if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'Y') {
-                    $pkp->ppn += $d->mstd_ppnrph;
-                }
-                if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'P') {                    
-                    $pkp->ppn_bebas += $d->mstd_ppnrph;
-                }
-                if ($d->prd_flagbkp1 == 'Y' && ($d->prd_flagbkp2 == 'W' || $d->prd_flagbkp2 == 'G')) {
-                    $pkp->ppn_dtp += $d->mstd_ppnrph;
-                }                                  
-                $pkp->total += $d->total;
+                $ppn_rph = 0;
+                
+                // if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'Y') {
+                //     $pkp->ppn += $d->mstd_ppnrph;
+                //     $ppn_rph = $d->mstd_ppnrph;
+                // } 
+                // if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'P') {                    
+                //     $pkp->ppn_bebas += $d->mstd_ppnrph;                    
+                // }
+                // if ($d->prd_flagbkp1 == 'Y' && ($d->prd_flagbkp2 == 'W' || $d->prd_flagbkp2 == 'G')) {
+                //     $pkp->ppn_dtp += $d->mstd_ppnrph;                
+                // }
+                switch ($d->prd_flagbkp1) {
+                    case 'Y':
+                        switch ($d->prd_flagbkp2) {
+                            case 'Y':
+                                $pkp->ppn += $d->mstd_ppnrph;
+                                $ppn_rph = $d->mstd_ppnrph;
+                                break;
+                            case 'P':
+                                $pkp->ppn_bebas += $d->mstd_ppnrph;
+                                break;
+                            case 'W' || 'G':
+                                $pkp->ppn_dtp += $d->mstd_ppnrph;
+                                break;                            
+                            default:
+                                # code...
+                                break;
+                        }
+                        break;                    
+                    default:
+                        # code...
+                        break;
+                }                                 
+                $pkp->total += ($d->gross - $d->discount + $ppn_rph);
+                // $pkp->total += $d->total;
             }
             else{
                 $npkp->gross += $d->gross;
                 $npkp->potongan += $d->discount;
                 // $npkp->ppn += $d->mstd_ppnrph;
-                if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'Y') {
-                    $npkp->ppn += $d->mstd_ppnrph;
-                }
-                if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'P') {                    
-                    $npkp->ppn_bebas += $d->mstd_ppnrph;
-                }
-                if ($d->prd_flagbkp1 == 'Y' && ($d->prd_flagbkp2 == 'W' || $d->prd_flagbkp2 == 'G')) {
-                    $npkp->ppn_dtp += $d->mstd_ppnrph;
-                }                                
-                $npkp->total += $d->total;
+                $ppn_rph = 0;
+                // if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'Y') {
+                //     $npkp->ppn += $d->mstd_ppnrph;
+                //     $ppn_rph = $d->mstd_ppnrph;
+                // }
+                // if ($d->prd_flagbkp1 == 'Y' && $d->prd_flagbkp2 == 'P') {                    
+                //     $npkp->ppn_bebas += $d->mstd_ppnrph;                   
+                // }
+                // if ($d->prd_flagbkp1 == 'Y' && ($d->prd_flagbkp2 == 'W' || $d->prd_flagbkp2 == 'G')) {
+                //     $npkp->ppn_dtp += $d->mstd_ppnrph;                   
+                // }
+                switch ($d->prd_flagbkp1) {
+                    case 'Y':
+                        switch ($d->prd_flagbkp2) {
+                            case 'Y':
+                                $npkp->ppn += $d->mstd_ppnrph;
+                                $ppn_rph = $d->mstd_ppnrph;
+                                break;
+                            case 'P':
+                                $npkp->ppn_bebas += $d->mstd_ppnrph;
+                                break;
+                            case 'W' || 'G':
+                                $npkp->ppn_dtp += $d->mstd_ppnrph;
+                                break;                            
+                            default:
+                                # code...
+                                break;
+                        }
+                        break;                    
+                    default:
+                        # code...
+                        break;
+                }                                 
+                $npkp->total += ($d->gross - $d->discount + $ppn_rph);
+                // $npkp->total += $d->total;
             }
         }
 

@@ -559,7 +559,7 @@ class CetakDokumenController extends Controller
             "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
             "Expires" => "0"
         ];
-        
+
         $file = fopen(storage_path($filename), 'w');
         fputcsv($file, $columnHeader, '|');
         foreach ($linebuffs as $linebuff) {
@@ -915,6 +915,7 @@ class CetakDokumenController extends Controller
                                  true); END;");
                             oci_bind_by_name($query, ':ret', $nodocbkp, 32);
                             oci_execute($query);
+                            $nodocbkp = Session::get('kdigr').$nodocbkp;
                         }
 
                         $tmp = DB::connection(Session::get('connection'))->select("SELECT COUNT(1) count
@@ -938,6 +939,8 @@ class CetakDokumenController extends Controller
                                  true); END;");
                             oci_bind_by_name($query, ':ret', $nodocbtkp, 32);
                             oci_execute($query);
+                            $nodocbtkp = Session::get('kdigr').$nodocbtkp;
+
 
                         }
                         $recs = DB::connection(Session::get('connection'))->select("SELECT DISTINCT TRBO_INVNO INVNO, TRBO_NOFAKTUR

@@ -101,7 +101,6 @@
 
                     for($j=$i-1;$j>($i-$counterDiv-1);$j--){
                         $grossTotal = $grossTotal + $data[$j]->ngross;
-                        $taxTotal = $taxTotal + $data[$j]->ntax;
                         if($data[$i]->fdfbkp == 'Y')
                         {
                             $taxTotal = $taxTotal + $data[$j]->ntax;
@@ -154,6 +153,37 @@
                     <td colspan="9" style="text-align: left; font-weight: bold;font-size: 15px;">{{$data[$i]->div_namadivisi}} Division</td>
                 </tr>
             @endif
+        @php
+            $temp_cdept = $data[$i]->cdept;
+            $tempDepartement = $data[$i]->dep_namadepartement;
+
+            $grossTotal_body = $grossTotal_body + $data[$i]->ngross;
+            if($data[$i]->fdfbkp == 'Y')
+            {
+                $taxTotal_body = $taxTotal_body + $data[$i]->ntax;
+            }
+            else if($data[$i]->fdfbkp == 'P')
+            {
+                $freePPNTotal_body = $freePPNTotal_body + $data[$i]->ntax;
+            }
+            else {
+                $ppnDTPTotal_body = $ppnDTPTotal_body + $data[$i]->ntax;
+            }
+            $netTotal_body = $netTotal_body + $data[$i]->nnet;
+            $hppTotal_body = $hppTotal_body + $data[$i]->nhpp;
+            $marginTotal_body = $marginTotal_body + $data[$i]->nmargin;
+
+            if($netTotal_body != 0){
+                $percentageTotal_body = $marginTotal_body*100/$netTotal_body;
+            }else{
+                if($marginTotal_body != 0){
+                    $percentageTotal_body = 100;
+                }else{
+                    $percentageTotal_body = "0.00";
+                }
+            }
+            $percentageTotal_body = round($percentageTotal_body, 2);
+       @endphp
         {{--BODY--}}
             {{-- KALAU DATA NEXT TIDAK NULL DAN NAMA DEPARTEMENT TIDAK SAMA DENGAN NAMA DEPARTEMENT YANG SELANJUTNYA --}}
             @if(isset($data[$i+1]) && ($tempDepartement != $data[$i+1]->dep_namadepartement) || !(isset($data[$i+1])) )
@@ -170,8 +200,6 @@
                     <td>{{percent($percentageTotal_body)}}</td>
                 </tr>
                 @php
-                    $temp_cdept = '';
-                    $tempDepartement = '';
                     $grossTotal_body = 0;
                     $taxTotal_body = 0;
                     $netTotal_body = 0;
@@ -182,48 +210,9 @@
                     $percentageTotal_body = 0;
                 @endphp
                 {{-- KALAU SAMA MAKA DITOTAL DAN KODE DEPARTEMENT DAN NAMA DEPARTEMENT DI SIMPAN DI VARIABLE --}}
-            @else
-                <?php
-                    $temp_cdept = $data[$i]->cdept;
-                    $tempDepartement = $data[$i]->dep_namadepartement;
-                    // $grossTotal_body = 0;
-                    // $taxTotal_body = 0;
-                    // $netTotal_body = 0;
-                    // $freePPNTotal_body = 0;
-                    // $ppnDTPTotal_body = 0;
-                    // $hppTotal_body = 0;
-                    // $marginTotal_body = 0;
-                    // $percentageTotal_body = 0;
-
-                    $grossTotal_body = $grossTotal_body + $data[$i]->ngross;
-                    $taxTotal_body = $taxTotal_body + $data[$i]->ntax;
-                    if($data[$i]->fdfbkp == 'Y')
-                    {
-                        $taxTotal_body = $taxTotal_body + $data[$i]->ntax;
-                    }
-                    else if($data[$i]->fdfbkp == 'P')
-                    {
-                        $freePPNTotal_body = $freePPNTotal_body + $data[$i]->ntax;
-                    }
-                    else {
-                        $ppnDTPTotal_body = $ppnDTPTotal_body + $data[$i]->ntax;
-                    }
-                    $netTotal_body = $netTotal_body + $data[$i]->nnet;
-                    $hppTotal_body = $hppTotal_body + $data[$i]->nhpp;
-                    $marginTotal_body = $marginTotal_body + $data[$i]->nmargin;
-
-                    if($netTotal_body != 0){
-                        $percentageTotal_body = $marginTotal_body*100/$netTotal_body;
-                    }else{
-                        if($marginTotal_body != 0){
-                            $percentageTotal_body = 100;
-                        }else{
-                            $percentageTotal_body = "0.00";
-                        }
-                    }
-                    $percentageTotal_body = round($percentageTotal_body, 2);
-                ?>
             @endif
+
+
             {{-- <tr>
                 content diantara food division hingga total division
                 <td style="width: 20px; text-align: left">{{$data[$i]->cdept}}</td>

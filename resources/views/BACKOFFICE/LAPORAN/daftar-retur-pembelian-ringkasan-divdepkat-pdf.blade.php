@@ -87,9 +87,9 @@ Tanggal : {{ $tgl1 }} - {{ $tgl2 }}
         </thead>
         <tbody>
         @for($i=0;$i<count($data);$i++)
-            @php
-            $data[$i]->nlcost = (($data[$i]->gross - $data[$i]->potongan + $data[$i]->bm + $data[$i]->btl) * $data[$i]->frac / ($data[$i]->ctn * $data[$i]->frac + $data[$i]->pcs + $data[$i]->bonus));
-            @endphp
+            {{-- @php
+            $data[$i]->nlcost = (($data[$i]->gross - $data[$i]->pot + $data[$i]->bm + $data[$i]->btl) * $data[$i]->frac / ($data[$i]->ctn * $data[$i]->frac + $data[$i]->pcs + $data[$i]->bonus));
+            @endphp --}}
             @if($tempdiv != $data[$i]->mstd_kodedivisi)
                 <tr>
                     <td class="left"><b>DIVISI</b></td>
@@ -103,127 +103,77 @@ Tanggal : {{ $tgl1 }} - {{ $tgl2 }}
                     <td class="left"><b>{{$data[$i]->mstd_kodedepartement}}
                             - {{$data[$i]->dep_namadepartement}}</b></td>
                 </tr>
-            @endif
-            {{-- @if($tempkat != $data[$i]->mstd_kodekategoribrg)
-                <tr>
-                    <td class="left">{{$data[$i]->mstd_kodekategoribrg}}</td>
-                    <td class="left" colspan="17">{{$data[$i]->kat_namakategori}}</td>
-                </tr>
-            @endif --}}
-            {{-- <tr>
-                <td class="left">{{ $data[$i]->msth_nodoc }}</td>
-                <td class="left">{{ date('d/m/Y',strtotime(substr($data[$i]->msth_tgldoc,0,10)))  }}</td>
-                <td class="left">{{ $data[$i]->plu }}</td>
-                <td class="left">{{ $data[$i]->prd_deskripsipanjang }}</td>
-                <td class="left">{{ $data[$i]->kemasan }}</td>
-                <td class="right">{{ number_format($data[$i]->mstd_hrgsatuan,2) }}</td>
-                <td class="right">{{ $data[$i]->ctn }}</td>
-                <td class="right">{{ $data[$i]->pcs }}</td>
-                <td class="right">{{ number_format($data[$i]->gross,2) }}</td>
-                <td class="right">{{ number_format($data[$i]->potongan,2) }}</td>
-                <td class="right">{{ number_format($data[$i]->ppn,2) }}</td>
-                <td class="right">
-                    @php
-                        if ($data[$i]->prd_flagbkp1 == 'Y' && $data[$i]->prd_flagbkp2 == 'Y') {
-                            $ppn_rph = $data[$i]->ppn;
-                        } else {
-                            $ppn_rph = 0;
-                        }
-                    @endphp
-                    {{ number_format($ppn_rph,2) }}
-                </td>
-                <td class="right">
-                    @php
-                        if ($data[$i]->prd_flagbkp1 == 'Y' && $data[$i]->prd_flagbkp2 == 'P') {
-                            $ppn_bebas = $data[$i]->ppn;
-                        } else {
-                            $ppn_bebas = 0;
-                        }
-                    @endphp
-                    {{ number_format($ppn_bebas,2) }}
-                </td>
-                <td class="right">
-                    @php
-                        if ($data[$i]->prd_flagbkp1 == 'Y' && ($data[$i]->prd_flagbkp2 == 'W' || $data[$i]->prd_flagbkp2 == 'G')) {
-                            $ppn_dtp = $data[$i]->ppn;
-                        } else {
-                            $ppn_dtp = 0;
-                        }
-                    @endphp
-                    {{ number_format($ppn_dtp,2) }}
-                </td>
-                <td class="right padding-right">{{ number_format($data[$i]->total,2) }}</td>
-                <td class="left">{{ $data[$i]->mstd_keterangan }}</td>
-                <td class="right">{{ number_format($data[$i]->nlcost,2) }}</td>
-                <td class="right">{{ number_format($data[$i]->avg,2) }}</td>
-                <td class="right">{{ number_format($data[$i]->lcost,2) }}</td>
-            </tr> --}}
+            @endif            
             @php
-                if ($data[$i]->prd_flagbkp1 == 'Y' && $data[$i]->prd_flagbkp2 == 'Y') {
-                    $ppn_rph = $data[$i]->ppn;
-                } else {
-                    $ppn_rph = 0;
-                }
-
-                if ($data[$i]->prd_flagbkp1 == 'Y' && $data[$i]->prd_flagbkp2 == 'P') {
-                    $ppn_bebas = $data[$i]->ppn;
-                } else {
-                    $ppn_bebas = 0;
-                }
-
-                if ($data[$i]->prd_flagbkp1 == 'Y' && ($data[$i]->prd_flagbkp2 == 'W' || $data[$i]->prd_flagbkp2 == 'G')) {
-                    $ppn_dtp = $data[$i]->ppn;
-                } else {
-                    $ppn_dtp = 0;
-                }
-
+            // switch ($data[$i]->prd_flagbkp1) {
+            //     case 'Y':
+            //         switch ($data[$i]->prd_flagbkp2) {
+            //             case 'Y':
+            //                 $data[$i]->ppn = $data[$i]->ppn;
+            //                 break;
+            //             case 'P':
+            //                 $data[$i]->bebas = $data[$i]->bebas;
+            //                 break;
+            //             case 'W' || case 'G':
+            //                 $data[$i]->dtp = $data[$i]->dtp;
+            //                 break;
+                        
+            //             default:
+            //                 # code...
+            //                 break;
+            //         }
+            //         break;
+                
+            //     default:
+            //         # code...
+            //         break;
+            // }               
                 $st_dep_gross += $data[$i]->gross;
-                $st_dep_pot += $data[$i]->potongan;
-                $st_dep_ppn += $ppn_rph;
+                $st_dep_pot += $data[$i]->pot;
+                $st_dep_ppn += $data[$i]->ppn;
                 $st_dep_tn += $data[$i]->total;
                 $st_dep_avg += $data[$i]->avg;
-                $st_dep_ppn_bebas += $ppn_bebas;
-                $st_dep_ppn_dtp += $ppn_dtp;
+                $st_dep_ppn_bebas += $data[$i]->bebas;
+                $st_dep_ppn_dtp += $data[$i]->dtp;
 
                 $st_div_gross += $data[$i]->gross;
-                $st_div_potongan += $data[$i]->potongan;
-                $st_div_ppn += $ppn_rph;
+                $st_div_potongan += $data[$i]->pot;
+                $st_div_ppn += $data[$i]->ppn;
                 $st_div_tn += $data[$i]->total;
                 $st_div_avg += $data[$i]->avg;
-                $st_div_ppn_bebas += $ppn_bebas;
-                $st_div_ppn_dtp += $ppn_dtp;
+                $st_div_ppn_bebas += $data[$i]->bebas;
+                $st_div_ppn_dtp += $data[$i]->dtp;
 
                 $st_kat_gross += $data[$i]->gross;
-                $st_kat_potongan += $data[$i]->potongan;
-                $st_kat_ppn += $ppn_rph;
+                $st_kat_potongan += $data[$i]->pot;
+                $st_kat_ppn += $data[$i]->ppn;
                 $st_kat_tn += $data[$i]->total;
                 $st_kat_avg += $data[$i]->avg;
-                $st_kat_ppn_bebas += $ppn_bebas;
-                $st_kat_ppn_dtp += $ppn_dtp;
+                $st_kat_ppn_bebas += $data[$i]->bebas;
+                $st_kat_ppn_dtp += $data[$i]->dtp;
 
                 $sum_gross_bkp += $data[$i]->bkpgross;
                 $sum_potongan_bkp += $data[$i]->bkppot;
                 $sum_ppn_bkp += $data[$i]->bkpppn;
                 $sum_total_bkp += $data[$i]->bkptotal;
                 $sum_avg_bkp += $data[$i]->bkpavg;
-                $sum_ppn_bebas_bkp += $ppn_bebas;
-                $sum_ppn_dtp_bkp += $ppn_dtp;
+                $sum_ppn_bebas_bkp += $data[$i]->bebas;
+                $sum_ppn_dtp_bkp += $data[$i]->dtp;
 
                 $sum_gross_btkp += $data[$i]->btkpgross;
                 $sum_potongan_btkp += $data[$i]->btkppot;
                 $sum_ppn_btkp += $data[$i]->btkpppn;
                 $sum_total_btkp += $data[$i]->btkptotal;
                 $sum_avg_btkp += $data[$i]->btkpavg;
-                $sum_ppn_bebas_btkp += $ppn_bebas;
-                $sum_ppn_dtp_btkp += $ppn_dtp;
+                $sum_ppn_bebas_btkp += $data[$i]->bebas;
+                $sum_ppn_dtp_btkp += $data[$i]->dtp;
 
                 $tempdiv = $data[$i]->mstd_kodedivisi;
                 $tempdep = $data[$i]->mstd_kodedepartement;
                 $tempkat = $data[$i]->mstd_kodekategoribrg;
             @endphp
             @if((isset($data[$i+1]->mstd_kodekategoribrg) && $tempkat != $data[$i+1]->mstd_kodekategoribrg) || !(isset($data[$i+1]->mstd_kodekategoribrg)) )
-                <tr>
-                    {{-- <th class="left">SUB TOTAL KATEGORI</th> --}}
+                <tr>                    
                     <td class="left">{{$data[$i]->mstd_kodekategoribrg}}</td>
                     <td class="left">{{$data[$i]->kat_namakategori}}</td>
                     <td class="right">{{ number_format($st_kat_gross,2) }}</td>

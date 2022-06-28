@@ -45,6 +45,8 @@
                 @endif
                 <th rowspan="2" style="width: 80px; text-align: right; vertical-align: middle;">PENJUALAN<br>KOTOR</th>
                 <th rowspan="2" style="width: 80px; text-align: right; vertical-align: middle;">PAJAK</th>
+                <th rowspan="2" style="width: 80px; text-align: right; vertical-align: middle;">BEBAS PPN</th>
+                <th rowspan="2" style="width: 80px; text-align: right; vertical-align: middle;">PPN DTP</th>
                 <th rowspan="2" style="width: 80px; text-align: right; vertical-align: middle;">PENJUALAN<br>BERSIH</th>
                 <th rowspan="2" style="width: 80px; text-align: right; vertical-align: middle;">H.P.P RATA2</th>
                 <th colspan="2" style="text-align: right; vertical-align: middle;">------MARGIN------</th>
@@ -175,7 +177,7 @@
                 $divisi = $data[$i]->fdkdiv;
                 ?>
                 <tr>
-                    <td colspan="9" style="text-align: left; font-weight: bold;font-size: 15px;">** DIVISI {{$data[$i]->fdkdiv}} - {{$data[$i]->div_namadivisi}}</td>
+                    <td colspan="11" style="text-align: left; font-weight: bold;font-size: 15px;">** DIVISI {{$data[$i]->fdkdiv}} - {{$data[$i]->div_namadivisi}}</td>
                 </tr>
             @endif
 
@@ -372,7 +374,7 @@
             <td style="text-align: right; font-weight: bold;">{{rupiah($margin['g'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{percent($marginpersen['g'])}}</td>
         </tr>
-        <tr>
+        {{-- <tr>
             <td colspan="2" style="text-align: right; font-weight: normal;">DIBYR PMRINTH</td>
             <td style="text-align: right; font-weight: bold;">(TEPUNG)</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($gross['r'])}}</td>
@@ -381,7 +383,7 @@
             <td style="text-align: right; font-weight: bold;">{{rupiah($hpp['r'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($margin['r'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{percent($marginpersen['r'])}}</td>
-        </tr>
+        </tr> --}}
         <tr>
             <td colspan="2" style="text-align: right; font-weight: bold;">TOTAL DEPARTEMEN 43</td>
             <td></td>

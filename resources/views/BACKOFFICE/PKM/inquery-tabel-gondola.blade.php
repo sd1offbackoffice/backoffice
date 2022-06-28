@@ -61,11 +61,11 @@
                                         <button class="col-sm-1 btn btn-primary" id="btn-next" onclick="changeDetail(true)">>></button>
                                     </div>
                                 </div>
-                                <div class="form-group row">
-                                    <div class="col-sm-12">
-                                        <button class="col-sm-2 btn btn-primary pl-0" id="btn-prev" onclick="divisiDetail('prev')">CETAK</button>
-                                    </div>
-                                </div>
+{{--                                <div class="form-group row">--}}
+{{--                                    <div class="col-sm-12">--}}
+{{--                                        <button class="col-sm-2 btn btn-primary pl-0" id="btn-prev" onclick="divisiDetail('prev')">CETAK</button>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
                             </div>
                         </div>
                     </div>

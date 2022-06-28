@@ -116,7 +116,7 @@ class CetakUlangFakturPajakController extends Controller
                         SUP_NAMASUPPLIER, SUP_SINGKATANSUPPLIER, SUP_NAMANPWP,
                         SUP_ALAMATNPWP1 || ' ' || SUP_ALAMATNPWP2 || ' ' || SUP_ALAMATNPWP3 ADDR_SUP, SUP_NPWP,
                         SUP_TGLSK, SUP_NOSK, PRS_KODEMTO, PRS_BULANBERJALAN, PRS_TAHUNBERJALAN, PRS_NONRB,
-                        PRS_NAMAPERUSAHAAN, PRS_NPWP, PRS_NAMAWILAYAH,
+                        PRS_NAMAPERUSAHAAN, PRS_NPWP, PRS_NAMAWILAYAH, PRD_PPN,
                         CONST_ADDR1 || ' ' || CONST_ADDR2 CONST_ADDR, PRD_DESKRIPSIPANJANG,
                         CASE
                             WHEN ".$p_print." = 0

@@ -55,6 +55,19 @@ class barangRusakController extends Controller
         return response()->json($data);
     }
 
+    public function newKeterangan(Request $request){
+        $value = $request->value;
+        $kode = $request->kode;
+        $userid = Session::get('usid');
+        $today  = date('Y-m-d H:i:s');
+
+        DB::connection(Session::get('connection'))->table('tbmaster_keteranganbarangrusak')
+        ->insert(['kbr_tipeid' => $kode,'kbr_tipe' => $value,'kbr_flagmanual' => 'Y' , 'kbr_create_by' => $userid, 'kbr_create_dt' => $today]);
+        
+        // return response()->json($data);
+        return response()->json(['kode' => 1, 'msg' => "Alasan Berhasil ditambahkan!"]);
+    }
+
     public function getNewNmrTrn(){
         $kodeigr = Session::get('kdigr');
 

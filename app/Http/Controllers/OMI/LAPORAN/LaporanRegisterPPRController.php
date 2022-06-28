@@ -122,7 +122,8 @@ ORDER BY TGLDOK, ROM_NODOKUMEN");
                 $data[$i]->cp_reffp = $cp_reffp;
             }
             $filename = 'igr-bo-lapregppr';
-        } else if ($tipe == 'IDM') {
+        }
+        else if ($tipe == 'IDM') {
             if (isset($nodoc2) && isset($nodoc1)) {
                 $and_doc = " and trpt_salesinvoiceno between '" . $nodoc1 . "' and '" . $nodoc2 . "'";
             }

@@ -338,7 +338,7 @@ class EntrySortirBarangController extends Controller
         DB::connection(Session::get('connection'))->table('tbtr_sortir_barang')->where('srt_nosortir', $noDoc)->whereNull('srt_flagdisc3')->update(['srt_flagdisc3' => 'P']);
         DB::connection(Session::get('connection'))->commit();
 
-        $perusahaan = DB::table("tbmaster_perusahaan")->first();
+        $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         return view('BACKOFFICE.TRANSAKSI.PERUBAHANSTATUS.entry-sortir-barang-laporan',
             ['data' => $datas, 'perusahaan' => $perusahaan]);
     }

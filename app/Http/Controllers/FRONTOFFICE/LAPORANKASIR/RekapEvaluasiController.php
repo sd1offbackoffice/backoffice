@@ -137,7 +137,7 @@ class RekapEvaluasiController extends Controller
         if($request->jenis_customer == 'MERAH')
             $where_jenis_cus = " AND cus_flagmemberkhusus = 'Y'";
         else if($request->jenis_customer == 'BIRU')
-            $where_jenis_cus = " AND cus_flagmemberkhusus <> 'Y'";
+            $where_jenis_cus = " AND nvl(cus_flagmemberkhusus,'N') <> 'Y'";
         else if($request->jenis_customer == 'ALL')
             $where_jenis_cus = " AND 1=1";
         else $where_jenis_cus = " AND cus_jenismember = '".$request->jenis_customer."'";

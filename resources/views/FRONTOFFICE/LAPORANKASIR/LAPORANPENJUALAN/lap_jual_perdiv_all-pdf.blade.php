@@ -42,6 +42,8 @@
             <td rowspan="3" style="width: 5%; border-right: 1px solid black">KWAN<br>TUM</td>
             <td rowspan="3" style="width: 8%; border-right: 1px solid black">PENJUALAN KOTOR</td>
             <td rowspan="3" style="width: 8%; border-right: 1px solid black">PAJAK</td>
+            <td rowspan="3" style="width: 8%; border-right: 1px solid black">PPN BEBAS</td>
+            <td rowspan="3" style="width: 8%; border-right: 1px solid black">PPN DTP</td>
             <td rowspan="3" style="width: 8%; border-right: 1px solid black">PENJUALAN BERSIH</td>
             <td rowspan="3" style="width: 8%; border-right: 1px solid black">HPP RATA-RATA</td>
             <td rowspan="3" colspan="2" style="border-right: 1px solid black">--MARGIN--</td>
@@ -152,6 +154,8 @@
                     <td>{{rupiah($sumKwantum['kat'])}}</td>
                     <td>{{rupiah($sumGross['kat'])}}</td>
                     <td>{{rupiah($sumTax['kat'])}}</td>
+                    <td>Ppn bebas</td>
+                    <td>ppn dtp</td>
                     <td>{{rupiah($sumNet['kat'])}}</td>
                     <td>{{rupiah($sumHpp['kat'])}}</td>
                     <td>{{rupiah($sumMargin['kat'])}}</td>

@@ -168,6 +168,7 @@
                 </tr>
                 @php
                     $totalGross+=$nGross;
+                    // $totalPPN+= $nGross * ($data[$i]->prd_ppn / 100);
                     $totalPPN+=$data[$i]->mstd_ppnrph;
                     $no++;
                 @endphp
@@ -193,7 +194,9 @@
                     <td colspan="6" class="border-pink" align="left">&nbsp; Pajak Pertambahan Nilai yang diminta kembali
                     </td>
                     <td class="border-pink" align="right"
-                        style="padding-right:10px;">{{ number_format(floor($totalPPN), 0) }}</td>
+                        style="padding-right:10px;">{{ number_format(floor($nGross * (10/100)), 0) }}</td>
+                    {{-- <td class="border-pink" align="right"
+                        style="padding-right:10px;">{{ number_format(floor($totalPPN), 0) }}</td> --}}
                 </tr>
 
                 <tr>

@@ -101,6 +101,8 @@
                 $titip += $d->titip;
                 $no++;
             @endphp
+
+
             <tr>
                 <td class="left">{{ $no }}</td>
                 <td class="left">{{ $d->kassa }}</td>
@@ -187,6 +189,8 @@
                 <td class="right">{{ number_format($s->nilai, 0, '.', ',') }}</td>
                 <td class="right">{{ number_format($s->tax, 0, '.', ',') }}</td>
                 <td class="right">{{ number_format($s->net, 0, '.', ',') }}</td>
+{{--                <td class="right">asdf</td>--}}
+{{--                <td class="right">asdf</td>--}}
                 <td class="right">{{ number_format($s->hpp, 0, '.', ',') }}</td>
                 <td class="right">{{ number_format($s->margin, 0, '.', ',') }}</td>
                 <td class="right">{{ number_format($s->pmargin, 2, '.', ',') }}%</td>

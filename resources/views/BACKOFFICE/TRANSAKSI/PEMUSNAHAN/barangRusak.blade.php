@@ -275,6 +275,23 @@
         function newKeterangan(value, index){
             var no = index.split('-')[1];
             dataKtrgn += '<option value="'+value+'">'+value+'</option>';
+            // dataKtrgnLen masukin ke kode -
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/new-keterangan',
+                type: 'post',
+                data: {
+                    kode : dataKtrgnLen,
+                    value : value
+                },
+                success: function (data) {
+                    console.log(data)
+                }, error: function (err) {
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0,100));
+                    alertError(err.statusText, err.responseJSON.message);
+                }
+            })
             dataKtrgnLen++;
             var oldVal = [];
             for( i= 0 ; i<no ; i++){
@@ -287,6 +304,7 @@
             // dataKtrgn += '<option value="'+value+'">'+value+'</option>';
             // $('.add_keterangan').find('option').remove().end().append(dataKtrgn);
             $('#inputhidden-'+no).hide();
+            $('#inputhidden-'+no).val(value);
             $('#select-'+no).val(value);
             $('#select-'+no).show();
             $('#showdropdown-'+no).hide();
@@ -803,7 +821,7 @@
                         focusToRow(i);
                         return false;
                     }
-                    datas.push({'plu': $('.plu')[i].value, 'qty' : qty, 'harga' : unconvertToRupiah($('.harga')[i].value), 'total' : unconvertToRupiah($('.total')[i].value), 'keterangan' : $('.keterangan')[i].value})
+                    datas.push({'plu': $('.plu')[i].value, 'qty' : qty, 'harga' : unconvertToRupiah($('.harga')[i].value), 'total' : unconvertToRupiah($('.total')[i].value), 'keterangan' : $('#inputhidden-'+i).val()})
                 }
             }
 
@@ -943,8 +961,7 @@
                                                 <td width="10%"><input disabled type="text" class="form-control harga text-right" value=""></td>
                                                 <td width="12%"><input disabled type="text" class="form-control total text-right" value=""></td>
                                                 <td width="24%">
-                                                    <select onchange="changeKeterangan(this.id)" class="form-control add_keterangan" id="select-`+ index +`" name="add_keterangan">
-                                                        
+                                                    <select onchange="changeKeterangan(this.id)" class="form-control add_keterangan" id="select-`+ index +`" name="add_keterangan">                                                   
                                                     </select>
                                                     <input style="display: none;" onchange="newKeterangan(this.value, this.id)" type="text" id="inputhidden-`+ index +`" class="form-control keterangan">
                                                 </td>

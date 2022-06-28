@@ -2105,10 +2105,6 @@
             },
             success: function(result) {
                 $('#modal-loader').modal('hide');
-                console.log('======')
-                console.log(result)
-                console.log('======')
-
                 var lotorisasi = result.data;
                 if (result.kode == 0) {
                     modalHelp.modal('hide');
@@ -2914,6 +2910,11 @@
             },
             success: (result) => {
                 $('#modal-loader').modal('hide');
+                swal(
+                    result.header,
+                    result.detail,
+                    'warning'
+                )
                 console.log(result);
             },
             error: (err) => {

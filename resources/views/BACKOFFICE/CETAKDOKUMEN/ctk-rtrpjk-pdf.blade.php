@@ -182,7 +182,8 @@
 
                     <tr>
                         <td colspan="6" class="border-pink" align="left">Pajak Pertambahan Nilai yang diminta kembali</td>
-                        <td class="border-pink"  align="right" style="padding-right:10px;">{{ number_format(floor($totalPPN * 0.1), 0) }}</td>
+                        <td class="border-pink"  align="right" style="padding-right:10px;">{{ number_format(floor($nGross * (10/100)), 0) }}</td>
+                        {{-- <td class="border-pink"  align="right" style="padding-right:10px;">{{ number_format(floor($totalPPN * 0.1), 0) }}</td> --}}
                     </tr>
 
                     <tr>

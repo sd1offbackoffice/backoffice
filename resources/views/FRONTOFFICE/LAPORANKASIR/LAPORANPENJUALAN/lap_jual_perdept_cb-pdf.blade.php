@@ -78,6 +78,7 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
                 $sub_gross+=$data[$i]->ngross;
                 $sub_potongan+=$data[$i]->ncsb;
                 $sub_dpp+=$data[$i]->nnet;
+
                 if($data[$i]->prd_flagbkp1 == 'Y' ){
                     if($data[$i]->prd_flagbkp2 == 'Y'){
                         $sub_ppn+=$data[$i]->ntax;

@@ -48,6 +48,7 @@ class InformasiHistoryProductController extends Controller
         $dsi = 0;
         $to = 0;
         $plu='';
+
         if (ord(substr($cprdcd, 1, 1)) < 48 or ord(substr($cprdcd, 1, 1)) > 57) {
             $lCek = 2;
         } else if (strlen(trim($cprdcd)) > 7) {
@@ -243,7 +244,7 @@ class InformasiHistoryProductController extends Controller
 //        dd(Carbon::today(),Carbon::createFromFormat('Y-m-d',substr($produk->prm_tglakhir, 0, 10)),Carbon::today()->lte(Carbon::createFromFormat('Y-m-d',substr($produk->prm_tglakhir, 0, 10)) ) );
 //        dd(Carbon::now()->lte(Carbon::now())  );
 
-        if (isset($produk->prmd_prdcd)) {
+        if (isset($produk->prmd_prdcd) && isset($produk->prm_tglmulai) && isset($produk->prm_tglakhir)) {
             if (Carbon::today() >= Carbon::createFromFormat('Y-m-d', substr($produk->prm_tglmulai, 0, 10)) && Carbon::today() <= Carbon::createFromFormat('Y-m-d', substr($produk->prm_tglakhir, 0, 10))) {
                 $showpromo = true;
                 $tglpromo = date('d/m/y', strtotime(substr($produk->prm_tglmulai, 0, 10))) . ' s/d ' . date('d/m/y', strtotime(substr($produk->prm_tglakhir, 0, 10)));
@@ -258,7 +259,9 @@ class InformasiHistoryProductController extends Controller
                     $hrgpromo = ($produk->prd_hrgjual - $produk->prmd_potonganrph);
                 }
             }
+
         }
+
         if (self::ceknull($produk->prd_minorder, 0) > 0) {
             $NMINOR = $produk->prd_minorder;
         } else {

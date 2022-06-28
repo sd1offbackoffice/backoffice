@@ -8,8 +8,11 @@
 
 namespace App\Http\Controllers\FRONTOFFICE;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -198,8 +201,14 @@ class formHJKController extends Controller
 
         $canvas = $dompdf ->get_canvas();
         $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-        return $pdf->stream('formHJK.pdf');
+        $filename = 'formHJK';
+        $filename = $filename.'_'.Carbon::now()->format('dmY_His').'.pdf';
+        $pdf->save(storage_path($filename));
+        return $filename;
+    }
+    public function downloadDocument(Request $request){
+        $filename = $request->filename;
+        return response()->download(storage_path($filename))->deleteFileAfterSend(true);
     }
 
 }

@@ -12,7 +12,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ExcelController extends Controller
 {
-    static function create($view, $filename, $title, $subtitle,$keterangan)
+    static function create($view, $filename, $title, $subtitle,$keterangan, $fixedRow = 7)
     {
         $password = 'rahasia';
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
@@ -20,7 +20,7 @@ class ExcelController extends Controller
             ->first();
         $reader = new \PhpOffice\PhpSpreadsheet\Reader\Html();
         $spreadsheet = $reader->loadFromString($view);
-        $spreadsheet->getActiveSheet()->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(1, 7);
+        $spreadsheet->getActiveSheet()->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(1, $fixedRow);
 
         $spreadsheet->getActiveSheet()->getProtection()->setSheet(true);
         $spreadsheet->getActiveSheet()->getProtection()->setPassword($password);

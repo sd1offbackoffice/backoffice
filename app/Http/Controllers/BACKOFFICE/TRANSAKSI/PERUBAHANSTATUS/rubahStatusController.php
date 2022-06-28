@@ -293,8 +293,9 @@ class rubahStatusController extends Controller
             $kodeigr = Session::get('kdigr');
             $flagretur = $this->flag_retur;
             $today  = Carbon::now();
+
             $tglDoc = DateTime::createFromFormat('d/m/Y',$request->tglDoc)->format('d/m/Y');
-            $tglSort = DateTime::createFromFormat('d/m/Y',$request->tglSort)->format('d/m/Y');
+            $tglSort = isset($request->tglSort)?DateTime::createFromFormat('d/m/Y',$request->tglSort)->format('d/m/Y'):'';
             $case = 0;
             $checker = DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')
                 ->selectRaw('MSTD_TGLDOC')

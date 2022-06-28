@@ -37,6 +37,8 @@
                 <th rowspan="2" style="width: 70px; text-align: left; vertical-align: middle">HARI</th>
                 <th rowspan="2" style="width: 120px; text-align: right; vertical-align: middle">PENJUALAN<br>KOTOR</th>
                 <th rowspan="2" style="width: 100px; text-align: right; vertical-align: middle">PAJAK</th>
+                <th rowspan="2" style="width: 100px; text-align: right; vertical-align: middle">BEBAS PPN</th>
+                <th rowspan="2" style="width: 100px; text-align: right; vertical-align: middle">PPN DTP</th>
                 <th rowspan="2" style="width: 120px; text-align: right; vertical-align: middle">PENJUALAN<br>BERSIH</th>
                 <th rowspan="2" style="width: 100px; text-align: right; vertical-align: middle">H.P.P RATA2</th>
                 <th colspan="2" style=" text-align: right; vertical-align: middle">---MARGIN---</th>
@@ -59,6 +61,10 @@
                 <td style="text-align: left">{{$data[$i]->hari}}</td>
                 <td>{{rupiah($data[$i]->sls_nilai)}}</td>
                 <td>{{rupiah($data[$i]->sls_tax)}}</td>
+
+                <td>bebas</td>
+                <td>dtp</td>
+
                 <td>{{rupiah($data[$i]->sls_net)}}</td>
                 <td>{{rupiah($data[$i]->sls_hpp)}}</td>
                 <td>{{rupiah($data[$i]->sls_margin)}}</td>

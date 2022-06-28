@@ -117,7 +117,8 @@
                     @endphp
                     {{ number_format(round($ppn_dtp), 0, '.', ',') }}
                 </td>                                
-                <td class="right">{{ number_format(round($d->total), 0, '.', ',') }}</td>
+                <td class="right">{{ number_format(round(($d->gross - $d->discount + $ppn_rph)), 0, '.', ',') }}</td>
+                {{-- <td class="right">{{ number_format(round($d->total), 0, '.', ',') }}</td> --}}
                 <td>{{ $d->status }}</td>
             </tr>
             @php
@@ -127,7 +128,8 @@
                 $submstd_ppnrph += $ppn_rph;
                 $submstd_ppnbebas += $ppn_bebas;
                 $submstd_ppndtp += $ppn_dtp;                                
-                $subtotal += $d->total;
+                $subtotal += ($d->gross - $d->discount + $ppn_rph);
+                // $subtotal += $d->total;
             @endphp
         @endforeach
             <tr>

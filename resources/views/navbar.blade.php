@@ -140,6 +140,8 @@
                                                             Acara Pemusnahan</a></li>
                                                     <li><a href="{{url("/bo/transaksi/pemusnahan/bapbatal/index")}}">Pembatalan
                                                             BA Pemusnahan</a></li>
+                                                    <li><a href="{{url("/bo/transaksi/pemusnahan/alasan-barang-rusak/index")}}">Master Alasan Barang 
+                                                            Rusak</a></li>
                                                     <li><a href="{{url("/bo/transaksi/pemusnahan/inquerybapb/index")}}">Inquery
                                                             BA Pemusnahan</a></li>
                                                 </ul>

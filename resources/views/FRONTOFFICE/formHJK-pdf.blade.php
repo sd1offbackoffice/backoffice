@@ -97,6 +97,9 @@
             <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
             <td class="line">Store Mgr. / Store Jr. Mgr.</td>
         </tr>
+        <tr>
+            <td colspan="7">*Qty. hasil deal dengan Member tertentu &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; KETERANGAN  : berlaku untuk satuan jual karton dan pcs.</td>
+        </tr>
     </table>
     <style>
         .line{
@@ -140,7 +143,5 @@
 {{--        </tr>--}}
 {{--        </tbody>--}}
 {{--    </table>--}}
-<br>
-    <p style="line-height: 0.1 !important;">*Qty. hasil deal dengan Member tertentu &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; KETERANGAN  : berlaku untuk satuan jual karton dan pcs.</p>
 
 @endsection

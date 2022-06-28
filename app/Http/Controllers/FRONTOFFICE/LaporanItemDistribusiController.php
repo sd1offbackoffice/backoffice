@@ -134,9 +134,9 @@ class LaporanItemDistribusiController extends Controller
             ->join('tbmaster_cabang','cab_kodecabang','=','vcrt_kodeigr')
             ->selectRaw("
                 vcrt_kodemember,
-                'SPBD/'||substr(cab_singkatancabang,-3)||'/'|| TO_CHAR(jh_transactiondate,'yyyymmdd')||jh_cashierid||jh_cashierstation||jh_transactionno no_spbd,
+                'SP/'|| TO_CHAR(jh_transactiondate,'yyyymmdd')||jh_cashierid||jh_cashierstation||jh_transactionno no_spbd,
                 jh_voucheramt,
-                'SP'||TO_CHAR(vcrt_transactiondate,'yyyymmdd')||vcrt_cashierid||vcrt_station||vcrt_transactionno no_sp,
+                'SPBD/'||substr(cab_singkatancabang,-3)||'/'||TO_CHAR(vcrt_transactiondate,'yyyymmdd')||vcrt_cashierid||vcrt_station||vcrt_transactionno no_sp,
                 vcrt_nominal,
                 nvl(vcrt_nominal,0) - nvl(jh_voucheramt,0) selisih
                 ")

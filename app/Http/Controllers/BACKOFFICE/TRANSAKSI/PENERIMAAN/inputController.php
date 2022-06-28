@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 use PDF;
+use ZipArchive;
 
 class inputController extends Controller
 {
@@ -2652,35 +2653,110 @@ class inputController extends Controller
     //     return response()->json($data);
     // }
 
+    public function get_string_between($string, $start, $end)
+    {
+        $string = ' ' . $string;
+        $ini = strpos($string, $start);
+        if ($ini == 0) return '';
+        $ini += strlen($start);
+        $len = strpos($string, $end, $ini) - $ini;
+        return substr($string, $ini, $len);
+    }
+
+    public function bin2bstr($input)
+    // Convert a binary expression (e.g., "100111") into a binary-string
+    {
+        if (!is_string($input)) return null; // Sanity check
+
+        // Pack into a string
+        return pack('H*', base_convert($input, 2, 16));
+    }
+
     public function readQR(Request $request)
     {
-        $header = $request->header;
-        $detail = $request->detail;
+        if (!(isset($request->header))) {
+            return response()->json(['kode' => 0, 'msg' => 'HEADER Kosong!', 'data' => '']);
+        }
 
-        $length = strlen($header) / 2;
-        // Dim arr1 As Byte() = New Byte(length - 1) {}
+        if (!(isset($request->detail))) {
+            return response()->json(['kode' => 0, 'msg' => 'DETAIL Kosong!', 'data' => '']);
+        }
 
-        // For i As Integer = 0 To length - 1
-        //     arr1(i) = Convert.ToByte(data.Substring(2 * i, 2), 16)
-        // Next
-        // Return arr1
+        $header = substr($request->header, 0, -1);
+        $detail = substr($request->detail, 0, -1);
 
         $path = 'test/';
-        $file = storage_path($path .'test.csv');
-        $byte_array = unpack('C*', $header);
-        file_put_contents($file, $byte_array);
-        // if (ctype_xdigit($header) && strlen($header) % 2 == 0) {
-        //     $headerStr = hex2bin($header);
+
+        //HEADER
+        $length_header = strlen($header) / 2;
+        $arr_head = array($length_header - 1);
+        for ($i = 0; $i <= $length_header - 1; $i++) {
+            $arr_head[$i] = intval(substr($header, 2 * $i, 2), 16);
+        }
+        $fp_head = fopen(storage_path($path . 'HEADER.zip'), 'wb+');
+
+        while (!empty($arr_head)) {
+            $byte1 = array_shift($arr_head);
+            $byte2 = array_shift($arr_head);
+            if (!$byte2) {
+                $byte2 = 0;
+            }
+            fwrite($fp_head, pack("n*", ($byte1 << 8) + $byte2));
+        }
+        fclose($fp_head);
+
+        //DETAIL
+        $length_detail = strlen($detail) / 2;
+        $arr_head = array($length_detail - 1);
+        for ($i = 0; $i <= $length_detail - 1; $i++) {
+            $arr_detail[$i] = intval(substr($detail, 2 * $i, 2), 16);
+        }
+        $fp_detail = fopen(storage_path($path . 'DETAIL.zip'), 'wb+');
+
+        while (!empty($arr_detail)) {
+            $byte1 = array_shift($arr_detail);
+            $byte2 = array_shift($arr_detail);
+            if (!$byte2) {
+                $byte2 = 0;
+            }
+            fwrite($fp_detail, pack("n*", ($byte1 << 8) + $byte2));
+        }
+        fclose($fp_detail);
+
+        //READ
+        // $zip = new ZipArchive;
+        // $open = $zip->open('DETAIL.zip');
+        // if ($open === TRUE) {
+        //     $hex_array_header = pack("H*", $header);
+        //     $zip->setPassword('PernahKejepit2XOuch!!');
+        //     $zip->extractTo($path);
+        //     $zip->getFromName('HEADER_' . $this->get_string_between($hex_array_header, 'HEADER_', '.CSV') . '.CSV');
+        //     $zip->close();
         // } else {
-        //     $headerStr = 'not hexadecimal';
+        //     $result = $open;
         // }
 
-        // if (ctype_xdigit($detail) && strlen($detail) % 2 == 0) {
-        //     $detailStr = hex2bin($detail);
-        // } else {
-        //     $detailStr = 'not hexadecimal';
-        // }
+        $hex_array_header = pack("H*", $header);
+        $name = 'HEADER_' . $this->get_string_between($hex_array_header, 'HEADER_', '.CSV') . '.CSV';
+        // $options = [
+        //     'zip' => [
+        //         'password' => 'PernahKejepit2XOuch!!'
+        //     ]
+        // ];
 
-        // return response()->json(['header' => $headerStr, 'detail' => $detailStr]);
+        // $context = stream_context_create($options);
+        // $result =  file_get_contents(storage_path($path . 'HEADER.zip') . '#' . $name, false, $context);
+
+        $zip = new ZipArchive;
+        if ($zip->open('HEADER.zip') !== TRUE) {
+            $result = 'failed';
+        }
+        if ($zip->locateName($name) !== FALSE) {
+            $result = 'File exists';
+        } else {
+            $result = 'File does not exist';
+        }
+
+        return response()->json(['header' => $arr_head, 'detail' => $result]);
     }
 }

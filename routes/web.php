@@ -44,6 +44,19 @@ Route::get('/testigr_bo_gagal_bpb', function () {
     return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_gagal_bpb');
 });
 
+Route::get('/testreturpembelian', function () {
+    $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_gagal_bpb');
+    $pdf->output();
+    $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+    $canvas = $dompdf->get_canvas();
+    $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+
+    return $pdf->stream('igr_bo_gagal_bpb.PDF');
+
+    return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_gagal_bpb');
+});
+
 Route::get('/testigr_bo_register_adjustment', function () {
     $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_register_adjustment');
     $pdf->output();
@@ -732,6 +745,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::get('/getnmrtrn', 'BACKOFFICE\TRANSAKSI\PEMUSNAHAN\barangRusakController@getNmrTrn');
                     Route::get('/getplu', 'BACKOFFICE\TRANSAKSI\PEMUSNAHAN\barangRusakController@getPlu');
                     Route::get('/get-keterangan', 'BACKOFFICE\TRANSAKSI\PEMUSNAHAN\barangRusakController@getKeterangan');
+                    Route::post('/new-keterangan', 'BACKOFFICE\TRANSAKSI\PEMUSNAHAN\barangRusakController@newKeterangan');
                     Route::post('/choosetrn', 'BACKOFFICE\TRANSAKSI\PEMUSNAHAN\barangRusakController@chooseTrn');
                     Route::post('/getnewnmrtrn', 'BACKOFFICE\TRANSAKSI\PEMUSNAHAN\barangRusakController@getNewNmrTrn');
                     Route::post('/chooseplu', 'BACKOFFICE\TRANSAKSI\PEMUSNAHAN\barangRusakController@choosePlu');
@@ -761,6 +775,10 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::get('/getnodoc', 'BACKOFFICE\TRANSAKSI\PEMUSNAHAN\pembatalanBAPemusnahanController@getDocument');
                     Route::post('/getdetaildoc', 'BACKOFFICE\TRANSAKSI\PEMUSNAHAN\pembatalanBAPemusnahanController@getDetailDocument');
                     Route::post('/deletedoc', 'BACKOFFICE\TRANSAKSI\PEMUSNAHAN\pembatalanBAPemusnahanController@deleteDocument');
+                });
+                // hen
+                Route::prefix('/alasan-barang-rusak')->group(function () {
+                    Route::get('/', 'BACKOFFICE\TRANSAKSI\PEMUSNAHAN\alasanBarangRusakController@index');
                 });
             });
 
@@ -821,9 +839,10 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::prefix('/util-bread')->group(function () {
                     Route::get('/', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BreadController@index')->middleware('CheckLogin');
                     Route::get('/upload', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BreadController@upload')->middleware('CheckLogin');
-                    Route::get('/cetak', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BreadController@cetak')->middleware('CheckLogin');
+                    Route::get('/cetak/{no}', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BreadController@cetak')->middleware('CheckLogin');
                     Route::get('/process', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BreadController@process')->middleware('CheckLogin');
                     Route::get('/check', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BreadController@check')->middleware('CheckLogin');
+                    Route::get('/show', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BreadController@show')->middleware('CheckLogin');
                 });
                 // ------Kingsley------
 
@@ -835,6 +854,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::get('/check-no-faktur', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@checkNoFaktur');
                     Route::get('/check-plu-barcode', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@checkPluBarcode');
                     Route::post('/send-email', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@sendEmail');
+                    Route::post('/total-price-barcode', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@totalPriceBarcode');
                 });
             });
 
@@ -2304,7 +2324,8 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::post('/getplu', 'FRONTOFFICE\formHJKController@GetPlu');
             Route::post('/chooseplu', 'FRONTOFFICE\formHJKController@ChoosePlu');
             Route::post('/calculatemargin', 'FRONTOFFICE\formHJKController@CalculateMargin');
-            Route::get('/printdocument', 'FRONTOFFICE\formHJKController@printDocument');
+            Route::post('/printdocument', 'FRONTOFFICE\formHJKController@printDocument');
+            Route::get('/downloadDocument', 'FRONTOFFICE\formHJKController@downloadDocument');
 
             Route::get('/datamodal', 'FRONTOFFICE\formHJKController@dataModal');
         });

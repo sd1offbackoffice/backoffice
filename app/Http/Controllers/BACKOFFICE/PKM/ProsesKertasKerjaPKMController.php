@@ -540,7 +540,7 @@ class ProsesKertasKerjaPKMController extends Controller
         $keterangan = '';
         $filename = str_replace('/','',$title).'_'.Carbon::now()->format('dmY_His').'.xlsx';
         $view = view('BACKOFFICE.PKM.status-storage-xlsx', compact(['perusahaan', 'datas']))->render();
-        ExcelController::create($view,$filename,$title,$subtitle,$keterangan);
+        ExcelController::create($view,$filename,$title,$subtitle,$keterangan,8);
         return response()->download(storage_path($filename))->deleteFileAfterSend(true);
     }
 

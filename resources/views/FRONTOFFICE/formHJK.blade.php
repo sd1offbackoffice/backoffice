@@ -554,7 +554,7 @@
             ajaxSetup();
             $.ajax({
                 url: '{{ url()->current() }}/printdocument',
-                type: 'get',
+                type: 'post',
                 data: {
                     dateA:dateA,
                     dateB:dateB,
@@ -564,7 +564,7 @@
                     $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                 },
                 success: function (w) {
-                    window.open(this.url,'_blank');
+                    window.open('{{ url()->current() }}/downloadDocument?filename='+w,'_blank');
                     $('#modal-loader').modal('hide');
                 }, error: function (e) {
                     console.log(e);
