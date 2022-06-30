@@ -23,40 +23,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fe5a705e-429e-4590-b22e-8b596c37d781" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/CETAKDOKUMEN/CetakDokumenController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/CETAKDOKUMEN/CetakDokumenController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/LAPORAN/DaftarPembelianController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/LAPORAN/DaftarPembelianController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/printBPBController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/printBPBController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/FRONTOFFICE/LAPORANKASIR/penjualanController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/FRONTOFFICE/LAPORANKASIR/penjualanController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKDOKUMEN/cetak-dokumen.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKDOKUMEN/cetak-dokumen.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/FRONTOFFICE/LAPORANITEMDISTRIBUSI/laporan-penyerahan-barang-dagangan-yang-ditukar-pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/FRONTOFFICE/LAPORANITEMDISTRIBUSI/laporan-penyerahan-barang-dagangan-yang-ditukar-pdf.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/receipts/BTB_2202200001_20220629.PDF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/receipts/BTB_2202200001_20220630.PDF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/receipts/BTB_2202200002_20220629.PDF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/receipts/BTB_2202200002_20220630.PDF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/receipts/BTB_2202200003_20220629.PDF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/receipts/BTB_2202200003_20220630.PDF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/receipts_backup/BTB_NON_HARGA_2202200001_20220629.PDF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/receipts_backup/BTB_NON_HARGA_2202200001_20220630.PDF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/receipts_backup/BTB_NON_HARGA_2202200002_20220629.PDF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/receipts_backup/BTB_NON_HARGA_2202200002_20220630.PDF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/receipts_backup/BTB_NON_HARGA_2202200003_20220629.PDF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/receipts_backup/BTB_NON_HARGA_2202200003_20220630.PDF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/reprint/REPRINT_NRB_2222204990_20220602.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/storage/reprint/REPRINT_NRB_2222204990_20220602.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/reprint/REPRINT_SJ_2222204990_20220602.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/storage/reprint/REPRINT_SJ_2222204990_20220602.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bad9e046727.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bbb7f192c4c.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bbbbc8be5a0.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bbbe1d97bfc.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bbbe5b31201.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bbbe7c2b1a1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bbbf1a81a78.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bbc64706d55.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bbe668d72f5.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bc235d023bd.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bd13134a709.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bd133e9cea3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bd13614d7e0.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -545,12 +514,12 @@
     </state>
     <state x="398" y="0" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1366.728/-1920.0.1920.1040@0.0.1366.728" timestamp="1654588024875" />
     <state x="560" y="130" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1920.1040@0.0.1920.1040" timestamp="1649667780160" />
-    <state x="297" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1652777451291">
+    <state x="297" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1656577671821">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="198" y="286" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1280.680@0.0.1280.680" timestamp="1649397147275" />
     <state x="297" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1652777451291" />
-    <state x="297" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1649730293734" />
+    <state x="297" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040@0.0.1920.1040" timestamp="1656577671821" />
     <state x="314" y="100" width="1055" height="924" key="find.popup" timestamp="1656494950941">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -580,7 +549,7 @@
     <state x="617" y="240" key="run.anything.popup/0.0.1920.1040/-1360.0.1360.728@0.0.1920.1040" timestamp="1653887770885" />
     <state x="617" y="240" key="run.anything.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1653883483097" />
     <state x="616" y="240" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1656063778393" />
-    <state x="42" y="208" width="1044" height="678" key="search.everywhere.popup" timestamp="1656575740168">
+    <state x="42" y="208" width="1044" height="678" key="search.everywhere.popup" timestamp="1656577971990">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="143" y="230" width="1204" height="678" key="search.everywhere.popup/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1649218684723" />
@@ -595,7 +564,7 @@
     <state x="143" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-1366.0.1366.728@0.0.1920.1040" timestamp="1652691082163" />
     <state x="773" y="203" width="945" height="679" key="search.everywhere.popup/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1654589814050" />
     <state x="143" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1653970530491" />
-    <state x="42" y="208" width="1044" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1656575740168" />
+    <state x="42" y="208" width="1044" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1656577971990" />
     <state x="2063" y="226" width="672" height="665" key="search.everywhere.popup/1920.0.1920.1020/0.0.1280.680@1920.0.1920.1020" timestamp="1648104976075" />
   </component>
   <component name="XDebuggerManager">
