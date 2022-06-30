@@ -72,12 +72,11 @@ Tanggal : {{ $tgl1 }}
             </tr>
         </tbody>
     </table>
-    <table>
-        <tfooter>
-            <tr>
-                <th colspan="10" class="left" style="border-top:1px solid black; font-style: italic">* Data yang disampaikan dalam laporan ini adalah untuk item(s) distribusi tertentu
-                </th>
-            </tr>
-        </tfooter>
-    </table>
+    @section('footer')
+    <div class="left" style="width:50%; font-weight: bold; font-style: italic">* Data yang disampaikan dalam laporan ini adalah untuk item(s) distribusi tertentu
+    </div>
+    <div class="right" style="">** Akhir dari laporan **</div>
+
+        
+    @endsection
 @endsection

@@ -735,9 +735,9 @@
                         if (result) {
 
                             for (i = 0; i < result.length; i++) {
-                                let splitedFilename = result[i].split('_')
-                                console.log(splitedFilename[0]);
-                                window.open(`{{ url()->current() }}/download?file=${result[i]}&type=${splitedFilename[0]}`, '_blank');
+                                // let splitedFilename = result[i].split('_')
+                                // console.log(splitedFilename[0]);
+                                window.open(`{{ url()->current() }}/download?file=${result[i]}`, '_blank');
                             }
 
                         }

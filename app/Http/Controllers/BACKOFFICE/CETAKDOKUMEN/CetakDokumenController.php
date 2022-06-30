@@ -2198,12 +2198,12 @@ class CetakDokumenController extends Controller
                 $nodocs .= $nodoc . '_';
             }          
             
-            if ($REPRINT == '1') {
-                $path = 'reprint/';
-                $filenames = 'REPRINT_SJ_' . $nodocs . $data1[0]->msth_tgldoc;
-            } else {
+            if ($REPRINT == '0') {                
                 $path = 'surat_jalan/';
                 $filenames = 'SJ_'. $nodocs . $data1[0]->msth_tgldoc;
+            } else {
+                $path = 'reprint/';
+                $filenames = 'REPRINT_SJ_' . $nodocs . $data1[0]->msth_tgldoc;
             }
 
             if (!FacadesFile::exists(storage_path($path))) {
@@ -2519,7 +2519,7 @@ class CetakDokumenController extends Controller
 
             $dompdf = $pdf;
             
-            if ($REPRINT == '1') {
+            if ($REPRINT != '0') {
                 $path = 'reprint/';
                 $filenames = 'REPRINT_' . $filenames;
             }
@@ -2646,32 +2646,24 @@ ORDER BY mstd_noref3 asc");
     public function downloadFile(Request $request)
     {
         $filesAndPaths = $request->file;
-        $type = $request->type;
-        
+        $splitedFilename = explode('_', $filesAndPaths);
 
-        // if ($type == 'NRB' || $type == 'NRP') {
-            
-        // }
-
-        switch ($type) {
+        switch ($splitedFilename[0]) {
             case 'NRB' || 'NRP':
                 $path = 'receipts/';
-                return response()->download(storage_path($path.$filesAndPaths.'.pdf'));
-                break;
-            
+                return response()->download(storage_path($path . $filesAndPaths));
+                break;            
             case 'SJ':
                 $path = 'surat_jalan/';
-                return response()->download(storage_path($path.$filesAndPaths.'.pdf'))->deleteFileAfterSend();
+                return response()->download(storage_path($path . $filesAndPaths))->deleteFileAfterSend();
                 break;
-
             case 'REPRINT':
                 $path = 'reprint/';
-                return response()->download(storage_path($path.$filesAndPaths.'.pdf'))->deleteFileAfterSend();
+                return response()->download(storage_path($path . $filesAndPaths))->deleteFileAfterSend();
                 break;            
         }
 
         // return response()->download(storage_path($path.$filesAndPaths))->deleteFileAfterSend();
-        // $data = $request->file;
-        // return view('BACKOFFICE.CETAKDOKUMEN.' . $data['filename'] . '-pdf', compact($data));
+       
     }
 }

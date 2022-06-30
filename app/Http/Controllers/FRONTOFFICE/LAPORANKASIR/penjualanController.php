@@ -1976,10 +1976,10 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
 
         $ekspor = $request->ekspor;
 
-        $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, fdfbkp,
+        $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang,
       CASE WHEN '$ekspor' = 'Y' THEN 'LAPORAN PENJUALAN (EXPORT)' ELSE 'LAPORAN PENJUALAN' END title,
       sls_periode, hari,
-      sls_nilai, sls_tax, sls_net, sls_hpp, sls_margin,
+      sls_nilai, sls_tax, sls_net, sls_hpp, sls_margin, fdfbkp,
       CASE WHEN  sls_net <> 0 THEN  sls_margin * 100 / sls_net ELSE 100 END p_margin
 FROM TBMASTER_PERUSAHAAN,
 (   SELECT sls_kodeigr, sls_periode, sls_flagbkp fdfbkp,
@@ -1996,7 +1996,7 @@ FROM TBMASTER_PERUSAHAAN,
          SUM(sls_hppnomi+sls_hppomi+sls_hppidm) sls_hpp,
          SUM(sls_marginnomi+sls_marginomi+sls_marginidm) sls_margin, NVL(cexp,'T') cexp
    FROM TBTR_SUMSALES, TBMASTER_PERUSAHAAN,
-   (   SELECT sls_prdcd prdcd, 'Y' cexp
+   (   SELECT sls_prdcd prdcd, 'Y' cexp, sls_flagbkp fdfbkp
        FROM TBTR_SUMSALES, TBMASTER_BARANGEXPORT, TBTR_JUALDETAIL, TBMASTER_CUSTOMER
        WHERE sls_prdcd = exp_prdcd
          AND trjd_recordid IS NULL
@@ -2008,7 +2008,7 @@ FROM TBMASTER_PERUSAHAAN,
    )
    WHERE sls_prdcd = prdcd(+)
       AND TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
-   GROUP BY sls_kodeigr,sls_periode, fdfbkp, cexp
+   GROUP BY sls_kodeigr,sls_periode, sls_flagbkp, cexp
    )
 WHERE prs_kodeigr = '$kodeigr'
   AND sls_kodeigr = prs_kodeigr

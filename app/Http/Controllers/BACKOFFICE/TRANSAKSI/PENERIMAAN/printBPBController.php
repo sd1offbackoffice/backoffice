@@ -1440,8 +1440,10 @@ class printBPBController extends Controller
         $files = Storage::disk('receipts')->allFiles();
         if (count($files) > 0) {
             foreach ($files as $file => $value) {
-                $filePath = '../storage/receipts/' . $value;
-                File::delete($filePath);
+                if (substr($value, -12, -4) == date("Ymd", strtotime($date))) {
+                    $filePath = '../storage/receipts/' . $value;
+                    File::delete($filePath); //delete file from storage
+                }
             }
         }
 

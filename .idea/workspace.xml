@@ -23,37 +23,40 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fe5a705e-429e-4590-b22e-8b596c37d781" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/public/image/icon/en.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/public/image/icon/id.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Cabang.php" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/CETAKDOKUMEN/CetakDokumenController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/CETAKDOKUMEN/CetakDokumenController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/LAPORAN/DaftarPembelianController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/LAPORAN/DaftarPembelianController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/LAPORAN/DaftarReturPembelianController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/LAPORAN/DaftarReturPembelianController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/PBOtomatisController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/PBOtomatisController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/PKM/FaktorPenambahPKMController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/PKM/FaktorPenambahPKMController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/inputController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/inputController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/printBPBController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/printBPBController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS/rubahStatusController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS/rubahStatusController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/utilityPBIGRController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/utilityPBIGRController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/MASTER/CabangController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/MASTER/CabangController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Kernel.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Kernel.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Middleware/Localization.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Middleware/Localization.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/app.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/filesystems.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/filesystems.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/FRONTOFFICE/LAPORANKASIR/penjualanController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/FRONTOFFICE/LAPORANKASIR/penjualanController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKDOKUMEN/cetak-dokumen.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKDOKUMEN/cetak-dokumen.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKDOKUMEN/cetak-surat-jalan-pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKDOKUMEN/cetak-surat-jalan-pdf.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKDOKUMEN/list-pengeluaran-pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKDOKUMEN/list-pengeluaran-pdf.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PENERIMAAN/input.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PENERIMAAN/input.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS/rubahStatus.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PERUBAHANSTATUS/rubahStatus.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/FRONTOFFICE/LAPORANITEMDISTRIBUSI/laporan-penyerahan-barang-dagangan-yang-ditukar-pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/FRONTOFFICE/LAPORANITEMDISTRIBUSI/laporan-penyerahan-barang-dagangan-yang-ditukar-pdf.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/FRONTOFFICE/LAPORANKASIR/LAPORANPENJUALAN/lap_jual_perkategory_t-pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/FRONTOFFICE/LAPORANKASIR/LAPORANPENJUALAN/lap_jual_perkategory_t-pdf.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/navbar.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/navbar.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/ctk-rtrpjk_2222204990.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/ctk-rtrpjk_2222204991.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/test/DETAIL.zip" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/test/HEADER.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/receipts/BTB_2202200001_20220629.PDF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/receipts/BTB_2202200001_20220630.PDF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/receipts/BTB_2202200002_20220629.PDF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/receipts/BTB_2202200002_20220630.PDF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/receipts/BTB_2202200003_20220629.PDF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/receipts/BTB_2202200003_20220630.PDF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/receipts_backup/BTB_NON_HARGA_2202200001_20220629.PDF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/receipts_backup/BTB_NON_HARGA_2202200001_20220630.PDF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/receipts_backup/BTB_NON_HARGA_2202200002_20220629.PDF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/receipts_backup/BTB_NON_HARGA_2202200002_20220630.PDF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/receipts_backup/BTB_NON_HARGA_2202200003_20220629.PDF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/receipts_backup/BTB_NON_HARGA_2202200003_20220630.PDF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/reprint/REPRINT_NRB_2222204990_20220602.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/storage/reprint/REPRINT_NRB_2222204990_20220602.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/reprint/REPRINT_SJ_2222204990_20220602.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/storage/reprint/REPRINT_SJ_2222204990_20220602.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bad9e046727.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bbb7f192c4c.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bbbbc8be5a0.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bbbe1d97bfc.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bbbe5b31201.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bbbe7c2b1a1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bbbf1a81a78.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bbc64706d55.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bbe668d72f5.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bc235d023bd.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bd13134a709.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bd133e9cea3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/signature_expedition/62bd13614d7e0.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -577,7 +580,7 @@
     <state x="617" y="240" key="run.anything.popup/0.0.1920.1040/-1360.0.1360.728@0.0.1920.1040" timestamp="1653887770885" />
     <state x="617" y="240" key="run.anything.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1653883483097" />
     <state x="616" y="240" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1656063778393" />
-    <state x="42" y="208" width="1044" height="678" key="search.everywhere.popup" timestamp="1656572896926">
+    <state x="42" y="208" width="1044" height="678" key="search.everywhere.popup" timestamp="1656575740168">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="143" y="230" width="1204" height="678" key="search.everywhere.popup/-1920.0.1536.832/0.0.1920.1040@0.0.1920.1040" timestamp="1649218684723" />
@@ -592,7 +595,7 @@
     <state x="143" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-1366.0.1366.728@0.0.1920.1040" timestamp="1652691082163" />
     <state x="773" y="203" width="945" height="679" key="search.everywhere.popup/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1654589814050" />
     <state x="143" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1653970530491" />
-    <state x="42" y="208" width="1044" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1656572896926" />
+    <state x="42" y="208" width="1044" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1656575740168" />
     <state x="2063" y="226" width="672" height="665" key="search.everywhere.popup/1920.0.1920.1020/0.0.1280.680@1920.0.1920.1020" timestamp="1648104976075" />
   </component>
   <component name="XDebuggerManager">

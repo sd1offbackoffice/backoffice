@@ -144,8 +144,9 @@ class DaftarPembelianController extends Controller
                 $and_plu = " and mstd_prdcd in (select mpl_prdcd from tbtr_monitoringplu
                 where mpl_kodeigr = '" . Session::get('kdigr') . "' and TRIM(mpl_kodemonitoring) = TRIM('" . $mtr . "'))";
             }
+
             $data = DB::connection(Session::get('connection'))->select("select mstd_kodedivisi, div_namadivisi,
-        mstd_kodedepartement, dep_namadepartement, 
+        mstd_kodedepartement, dep_namadepartement,
         mstd_kodekategoribrg, kat_namakategori, prd_flagbkp1, prd_flagbkp2, prd_prdcd,
         prs_namaperusahaan, prs_namacabang, prs_namawilayah,
         sum(mstd_gross) gross, sum(mstd_discrph) pot, sum(disc4) disc4,
@@ -182,7 +183,7 @@ from (select mstd_kodedivisi, div_namadivisi, prd_flagbkp1, prd_flagbkp2,
         CASE WHEN mstd_ppnrph <> 0 THEN
                 nvl(mstd_ppnrph,0)
         END PPN_BKP,
-        CASE WHEN mstd_ppnrph = 0 THEzN
+        CASE WHEN mstd_ppnrph = 0 THEN
                 nvl(mstd_ppnrph,0)
         END PPN_BTKP,
         CASE WHEN mstd_ppnrph <> 0 THEN
@@ -837,7 +838,7 @@ where msth_kodeigr='" . Session::get('kdigr') . "'
       " . $and_sup . "
         and prs_kodeigr=msth_kodeigr
        " . $p_order . ")
-group by msth_nodoc, msth_tgldoc, prd_flagbkp1, prd_flagbkp2, prd_prdcd,  top, jth_tempo, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, 
+group by msth_nodoc, msth_tgldoc, prd_flagbkp1, prd_flagbkp2, prd_prdcd,  top, jth_tempo, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur,
         supplier,prs_namaperusahaan, prs_namacabang, prs_namawilayah, msth_kodesupplier
 " . $p_order);
             set_time_limit(0);
