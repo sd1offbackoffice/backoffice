@@ -205,7 +205,20 @@ class rubahStatusController extends Controller
     public function chooseSrt(Request $request){
         $kode = $request->kode;
         $kodeigr= Session::get('kdigr');
-//        $datas = DB::connection(Session::get('connection'))->table('TBTR_SORTIR_BARANG')
+
+        //        cek flag P
+        $cekFlag = DB::connection(Session::get('connection'))
+            ->table('TBTR_SORTIR_BARANG')
+            ->select("SRT_FLAGDISC3","SRT_TGLSORTIR")
+            ->where('SRT_KODEIGR','=',$kodeigr)
+            ->where('SRT_TYPE','=','S')
+            ->where('SRT_NOSORTIR','=',$kode)
+            ->first();
+        if($cekFlag->srt_flagdisc3 == 'P'){
+            return response()->json(['status' => 'error', 'message' => 'Nomor Dokumen Sortir Telah Diproses !!']);
+        }
+
+//        $datas = DB::connection(Session::get('connection'))->table('TBTfakR_SORTIR_BARANG')
 //            ->selectRaw('SRT_NOSORTIR')
 //            ->selectRaw('SRT_TGLSORTIR')
 //            ->selectRaw('SRT_FLAGDISC3')
@@ -1043,6 +1056,7 @@ class rubahStatusController extends Controller
 ");
 
         DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')->where('MSTD_NODOC', $noDoc)->whereNull('mstd_flagdisc3')->update(['mstd_flagdisc3' => 'P']);
+
 
         $today  = date('d-m-Y H:i:s');
         $perusahaan = DB::table("tbmaster_perusahaan")->first();

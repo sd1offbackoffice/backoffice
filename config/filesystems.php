@@ -84,6 +84,12 @@ return [
             'root'   => '../storage/retur/',
         ],
 
+        // Kingsley
+        'qrcode' => [
+            'driver' => 'local',
+            'root'   => '../storage/qrcode/',
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

@@ -1615,11 +1615,14 @@ class CetakDokumenController extends Controller
                 }
             }
 
-
             $temp = substr($temp, 0, strlen($temp) - 1);
             if (isset($temp)) {
                 array_push($file, Self::PRINT_DOC(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2, $arrSuppSig));
-                array_push($file, Self::printSuratJalan(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2, $arrSuppSig));
+
+                if ($lap != 'L') {
+                    array_push($file, Self::printSuratJalan(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2, $arrSuppSig));
+                }
+
 
                 if ($nrfp == 1) {
                     if (isset($nofp)) {
@@ -2040,7 +2043,11 @@ class CetakDokumenController extends Controller
 
             if ($temp != '') {
                 array_push($file, Self::PRINT_DOC(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2, $arrSuppSig));
-                array_push($file, Self::printSuratJalan(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2, $arrSuppSig));
+
+                // if ($lap != 'L') {
+                //     array_push($file, Self::printSuratJalan(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2, $arrSuppSig));
+                // }
+
 
                 if ($lap == 'L') {
                     if ($reprint == '0') {
@@ -2087,68 +2094,12 @@ class CetakDokumenController extends Controller
         $filename = '';
         $cw = '';
         $ch = '';
-        if ($TypeLap == 'L') {
-            switch ($TypeDoc) {
-
-                case  'K' :
-
-                    $P_PN = " AND MSTH_NODOC IN (" . $NoDoc . ") AND MSTH_TYPETRN='K'";
-                    $data1 = DB::connection(Session::get('connection'))->select("SELECT msth_nodoc, msth_tgldoc,
-                                  CASE WHEN '" . $REPRINT . "' = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
-                                  mstd_prdcd, mstd_unit, mstd_frac, mstd_qty, mstd_hrgsatuan,
-                                  FLOOR(mstd_qty/mstd_frac) AS CTN, MOD(mstd_qty,mstd_frac) AS PCS, mstd_keterangan,
-                                  mstd_gross, mstd_discrph, mstd_ppnrph, (NVL(mstd_gross,0) - NVL(mstd_discrph,0) + NVL(mstd_ppnrph,0)) AS TOTAL, msth_kodesupplier, msth_istype || msth_invno nofp, msth_tglinv,
-                                  case when nvl(msth_kodesupplier,' ') <> ' ' then '( BARANG RETUR )' ELSE '( LAIN - LAIN )' end judul,prd_deskripsipanjang,
-                                  prs_namaperusahaan, prs_namacabang, prs_npwp, prs_alamat1, prs_alamat3, prs_telepon,
-                                 nvl(sup_namanpwp,sup_namasupplier || sup_singkatansupplier) namas, sup_npwp, NVL(SUP_ALAMATNPWP1,SUP_ALAMATSUPPLIER1) SUP_ALAMATSUPPLIER1,
-                                 NVL(SUP_ALAMATNPWP2,SUP_ALAMATSUPPLIER2) SUP_ALAMATSUPPLIER2,
-                                 NVL(SUP_ALAMATNPWP3,SUP_KOTASUPPLIER3) SUP_KOTASUPPLIER3, sup_telpsupplier, sup_contactperson, mstd_noref3
-                    FROM TBTR_MSTRAN_H, TBTR_MSTRAN_D, TBMASTER_PRODMAST, TBMASTER_PERUSAHAAN, TBMASTER_SUPPLIER
-                    WHERE MSTH_KODEIGR = '" . Session::get('kdigr') . "' AND
-                                   MSTH_KODEIGR = MSTD_KODEIGR AND MSTH_NODOC = MSTD_NODOC AND
-                                   MSTD_KODEIGR = PRD_KODEIGR AND MSTD_PRDCD = PRD_PRDCD AND
-                                   MSTH_KODEIGR = PRS_KODECABANG AND
-                                   MSTH_KODEIGR = SUP_KODEIGR(+) AND MSTH_KODESUPPLIER = SUP_KODESUPPLIER(+)
-                                    " . $P_PN . "
-                    ORDER BY MSTH_NODOC,MSTD_SEQNO");
-
-                    $data2 = DB::connection(Session::get('connection'))->select("select rownum, a.*
-                                        from
-                                        (SELECT DISTINCT MSTH_NODOC NODOC, MSTH_TGLDOC, MSTH_KODESUPPLIER, MSTD_ISTYPE || MSTD_INVNO NOFP,
-                                                        MSTD_DATE3
-                                                   FROM TBTR_MSTRAN_H,
-                                                        TBTR_MSTRAN_D,
-                                                        TBMASTER_PRODMAST,
-                                                        TBMASTER_PERUSAHAAN,
-                                                        TBMASTER_SUPPLIER
-                                                  WHERE MSTH_KODEIGR = '" . Session::get('kdigr') . "'
-                                                    AND MSTH_KODEIGR = MSTD_KODEIGR
-                                                    AND MSTH_NODOC = MSTD_NODOC
-                                                    AND MSTD_KODEIGR = PRD_KODEIGR
-                                                    AND MSTD_PRDCD = PRD_PRDCD
-                                                    AND MSTH_KODEIGR = PRS_KODECABANG
-                                                    AND MSTH_KODEIGR = SUP_KODEIGR(+)
-                                                    AND MSTH_KODESUPPLIER = SUP_KODESUPPLIER(+)
-                                                    " . $P_PN . "
-                                        ) a");
-                    if ($JNSKERTAS == 'B') {
-                        $cw = 510;
-                        $ch = 78;
-                        $filename = 'cetak-surat-jalan';
-                    } else {
-                        $cw = 510;
-                        $ch = 78;
-                        $filename = 'cetak-surat-jalan';
-                    }
-                    break;
-            }
+        if ($TypeLap == 'L') {            
         } else {
             switch ($TypeDoc) {
-
                 case  'K' :
-
                     $P_PN = " AND MSTH_NODOC IN (" . $NoDoc . ") AND MSTH_TYPETRN='K'";
-                    $data1 = DB::connection(Session::get('connection'))->select("SELECT msth_nodoc, msth_tgldoc,
+                    $data1 = DB::connection(Session::get('connection'))->select("SELECT msth_nodoc, to_char(msth_tgldoc,'yyyymmdd') msth_tgldoc,
                                   CASE WHEN '" . $REPRINT . "' = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
                                   mstd_prdcd, mstd_unit, mstd_frac, mstd_qty, mstd_hrgsatuan,
                                   FLOOR(mstd_qty/mstd_frac) AS CTN, MOD(mstd_qty,mstd_frac) AS PCS, mstd_keterangan,
@@ -2201,7 +2152,6 @@ class CetakDokumenController extends Controller
 
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
-        if (sizeof($data1) != 0) {
             $data = [
                 'data1' => $data1,
                 'data2' => $data2,
@@ -2226,17 +2176,49 @@ class CetakDokumenController extends Controller
             $canvas->page_text($cw, $ch, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
             $dompdf = $pdf;
-            $filenames = $filename . '.pdf';
+            // $filenames = $filename . '.pdf';
 
-            file_put_contents(storage_path($filenames), $pdf->output());
+            // $path = 'surat_jalan/';
+            // if (!FacadesFile::exists(storage_path($path))) {
+            //     FacadesFile::makeDirectory(storage_path($path), 0755, true, true);
+            // }
+            // $nodocs = '';
+            // $splitedNodoc = explode(',', $NoDoc);
+            // foreach ($splitedNodoc as $nodoc) {
+            //     $nodocs .= $nodoc . '_';
+            // }            
+            // $filenames = 'SJ_'. $nodocs . $data1[0]->msth_tgldoc;
+            // $file = storage_path($path . $filenames . '.pdf');            
+
+            // file_put_contents($file, $pdf->output());
+
+            $nodocs = '';
+            $splitedNodoc = explode(',', $NoDoc);
+            foreach ($splitedNodoc as $nodoc) {
+                $nodocs .= $nodoc . '_';
+            }          
+            
+            if ($REPRINT == '1') {
+                $path = 'reprint/';
+                $filenames = 'REPRINT_SJ_' . $nodocs . $data1[0]->msth_tgldoc;
+            } else {
+                $path = 'surat_jalan/';
+                $filenames = 'SJ_'. $nodocs . $data1[0]->msth_tgldoc;
+            }
+
+            if (!FacadesFile::exists(storage_path($path))) {
+                FacadesFile::makeDirectory(storage_path($path), 0755, true, true);
+            }                        
+                        
+            $file = storage_path($path . $filenames . '.pdf');            
+
+            file_put_contents($file, $pdf->output());
+            
             return $filenames;
             // return $data;
 
             // return view('BACKOFFICE.CETAKDOKUMEN.' . $filename . '-pdf', compact(['data', 'perusahaan']));
 
-        } else {
-            return "TIDAK ADA DATA!";
-        }
     }
 
     public function PRINT_DOC(string $KodeIGR, string $NoDoc, string $TypeDoc, string $TypeLap, string $JNSKERTAS, string $REPRINT, string $tgl1, string $tgl2, $arrSuppSig)
@@ -2291,6 +2273,14 @@ class CetakDokumenController extends Controller
                                                   AND sup_kodeigr(+) = trbo_kodeigr AND sup_kodesupplier(+) = trbo_kodesupplier
                                                   AND prs_kodeigr = trbo_kodeigr
                                     order by trbo_tglinv desc, trbo_istype desc, trbo_invno desc");
+
+                    $path = 'list_pengeluaran/';
+                    $nodocs = '';
+                    $splitedNodoc = explode(',', $NoDoc);
+                    foreach ($splitedNodoc as $nodoc) {
+                        $nodocs .= $nodoc . '_';
+                    }            
+                    $filenames = 'LIST-PENGELUARAN_'. $nodocs . $data1[0]->msth_tgldoc;
                     break;
                 case  'F' :      // Pemusnahan
                     $cw = 700;
@@ -2315,6 +2305,14 @@ class CetakDokumenController extends Controller
                                 AND prd_kodeigr = trbo_kodeigr AND prd_prdcd = trbo_prdcd
                                 AND prs_kodeigr = trbo_kodeigr
                                 ORDER BY TRBO_NODOC");
+
+                    $path = 'list_pemusnahan/';
+                    $nodocs = '';
+                    $splitedNodoc = explode(',', $NoDoc);
+                    foreach ($splitedNodoc as $nodoc) {
+                        $nodocs .= $nodoc . '_';
+                    }            
+                    $filenames = 'LIST-PEMUSNAHAN_'. $nodocs . $data1[0]->msth_tgldoc;
                     break;
                 case  'X' :      // Penyesuaian
                     null;
@@ -2341,7 +2339,13 @@ class CetakDokumenController extends Controller
                                                     AND prs_kodeigr = trbo_kodeigr
                                 ORDER BY TRBO_NODOC,TRBO_SEQNO");
 
-
+                    $path = 'list_barang-hilang/';
+                    $nodocs = '';
+                    $splitedNodoc = explode(',', $NoDoc);
+                    foreach ($splitedNodoc as $nodoc) {
+                        $nodocs .= $nodoc . '_';
+                    }            
+                    $filenames = 'LIST-BARANG-HILANG_'. $nodocs . $data1[0]->msth_tgldoc;
                     break;
                 case  'P' :      // Re-Packing
                     null;
@@ -2357,7 +2361,7 @@ class CetakDokumenController extends Controller
 
                 case  'K' :
                     $P_PN = " AND MSTH_NODOC IN (" . $NoDoc . ") AND MSTH_TYPETRN='K'";
-                    $data1 = DB::connection(Session::get('connection'))->select("SELECT msth_nodoc, msth_tgldoc,
+                    $data1 = DB::connection(Session::get('connection'))->select("SELECT msth_nodoc, to_char(msth_tgldoc,'yyyymmdd') msth_tgldoc,
                                   CASE WHEN '" . $REPRINT . "' = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
                                   mstd_prdcd, mstd_unit, mstd_frac, mstd_qty, mstd_hrgsatuan,
                                   FLOOR(mstd_qty/mstd_frac) AS CTN, MOD(mstd_qty,mstd_frac) AS PCS, mstd_keterangan,
@@ -2405,6 +2409,14 @@ class CetakDokumenController extends Controller
                         $ch = 77.5;
                         $filename = 'cetak-nota-pengeluaran-kecil';
                     }
+
+                    $path = 'receipts/';
+                    $nodocs = '';
+                    $splitedNodoc = explode(',', $NoDoc);
+                    foreach ($splitedNodoc as $nodoc) {
+                        $nodocs .= $nodoc . '_';
+                    }            
+                    $filenames = 'NRB_'. $nodocs . $data1[0]->msth_tgldoc;
                     break;
                 case  'H' :      // Barang Hilang
                     if ($JNSKERTAS == 'B') {
@@ -2468,13 +2480,20 @@ class CetakDokumenController extends Controller
                                     ORDER BY msth_NODOC,MSTD_SEQNO");
                         $filename = 'cetak-nota-nbh-kecil';
                     }
+
+                    $path = 'nbh/';
+                    $nodocs = '';
+                    $splitedNodoc = explode(',', $NoDoc);
+                    foreach ($splitedNodoc as $nodoc) {
+                        $nodocs .= $nodoc . '_';
+                    }            
+                    $filenames = 'NBH_'. $nodocs . $data1[0]->msth_tgldoc;
                     break;
             }
         }
 
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
-        if (sizeof($data1) != 0) {
             $data = [
                 'data1' => $data1,
                 'data2' => $data2,
@@ -2499,17 +2518,25 @@ class CetakDokumenController extends Controller
             $canvas->page_text($cw, $ch, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
             $dompdf = $pdf;
-            $filenames = $filename . '.pdf';
+            
+            if ($REPRINT == '1') {
+                $path = 'reprint/';
+                $filenames = 'REPRINT_' . $filenames;
+            }
 
-            file_put_contents(storage_path($filenames), $pdf->output());
+            if (!FacadesFile::exists(storage_path($path))) {
+                FacadesFile::makeDirectory(storage_path($path), 0755, true, true);
+            }                        
+                        
+            $file = storage_path($path . $filenames . '.pdf');            
+
+            file_put_contents($file, $pdf->output());
             return $filenames;
             // return $data;
 
             // return view('BACKOFFICE.CETAKDOKUMEN.' . $filename . '-pdf', compact(['data', 'perusahaan']));
 
-        } else {
-            return "TIDAK ADA DATA!";
-        }
+
 
     }
 
@@ -2519,7 +2546,10 @@ class CetakDokumenController extends Controller
         $filename = 'ctk-rtrpjk';
         $P_PN = "AND MSTH_NODOC IN (" . $nodoc . ") AND MSTH_TYPETRN='K'";
 
-        $data = DB::connection(Session::get('connection'))->select("SELECT   MSTH_NODOC, trunc(msth_tgldoc) msth_tgldoc, MSTH_KODESUPPLIER, MSTD_DOCNO2, MSTD_DATE3 ,
+        $data = DB::connection(Session::get('connection'))->select("SELECT MSTH_NODOC, 
+        --trunc(msth_tgldoc) msth_tgldoc,
+        to_char(msth_tgldoc,'yyyymmdd') msth_tgldoc,
+        MSTH_KODESUPPLIER, MSTD_DOCNO2, MSTD_DATE3 ,
          MSTD_DATE2 , PRD_PRDCD, MSTD_QTY, MSTD_UNIT, MSTD_FRAC, MSTD_GROSS,
          MSTD_DISCRPH, (MSTD_PPNRPH) MSTD_PPNRPH, MSTD_PKP, MSTH_ISTYPE, MSTH_INVNO, MSTH_FLAGDOC,
          SUP_NAMASUPPLIER, SUP_SINGKATANSUPPLIER, SUP_NAMANPWP,
@@ -2571,8 +2601,42 @@ ORDER BY mstd_noref3 asc");
             $canvas->page_text($cw, $ch, "HAL : {PAGE_NUM}", null, 7, array(0, 0, 0));
 
             $dompdf = $pdf;
-            $filenames = $filename . '_' . $nodoc . '.pdf';
-            file_put_contents(storage_path($filenames), $pdf->output());
+            // $filenames = $filename . '_' . $nodoc . '.pdf';
+            // $path = 'receipts/';
+            // if (!FacadesFile::exists(storage_path($path))) {
+            //     FacadesFile::makeDirectory(storage_path($path), 0755, true, true);
+            // }
+            // $nodocs = '';
+            // $splitedNodoc = explode(',', $nodoc);
+            // foreach ($splitedNodoc as $nodoc) {
+            //     $nodocs .= $nodoc . '_';
+            // }            
+            // $filenames = 'NRP_'. $nodocs . $data[0]->msth_tgldoc;
+            // $file = storage_path($path . $filenames . '.pdf');            
+
+            // file_put_contents($file, $pdf->output());
+
+            $nodocs = '';
+            $splitedNodoc = explode(',', $nodoc);
+            foreach ($splitedNodoc as $nodoc) {
+                $nodocs .= $nodoc . '_';
+            }          
+            
+            if ($reprint == '0') {                
+                $path = 'receipts/';
+                $filenames = 'NRP_'. $nodocs . $data[0]->msth_tgldoc;
+            } else {
+                $path = 'reprint/';
+                $filenames = 'REPRINT_NRP_' . $nodocs . $data[0]->msth_tgldoc;
+            }
+
+            if (!FacadesFile::exists(storage_path($path))) {
+                FacadesFile::makeDirectory(storage_path($path), 0755, true, true);
+            }                        
+                        
+            $file = storage_path($path . $filenames . '.pdf');            
+
+            file_put_contents($file, $pdf->output());
 
             return $filenames;
             // return view('BACKOFFICE.CETAKDOKUMEN.' . $filename . '-pdf', compact(['perusahaan', 'data', 'namattd', 'jabatan1', 'jabatan2']));
@@ -2582,8 +2646,31 @@ ORDER BY mstd_noref3 asc");
     public function downloadFile(Request $request)
     {
         $filesAndPaths = $request->file;
+        $type = $request->type;
+        
 
-        return response()->download(storage_path($filesAndPaths))->deleteFileAfterSend();
+        // if ($type == 'NRB' || $type == 'NRP') {
+            
+        // }
+
+        switch ($type) {
+            case 'NRB' || 'NRP':
+                $path = 'receipts/';
+                return response()->download(storage_path($path.$filesAndPaths.'.pdf'));
+                break;
+            
+            case 'SJ':
+                $path = 'surat_jalan/';
+                return response()->download(storage_path($path.$filesAndPaths.'.pdf'))->deleteFileAfterSend();
+                break;
+
+            case 'REPRINT':
+                $path = 'reprint/';
+                return response()->download(storage_path($path.$filesAndPaths.'.pdf'))->deleteFileAfterSend();
+                break;            
+        }
+
+        // return response()->download(storage_path($path.$filesAndPaths))->deleteFileAfterSend();
         // $data = $request->file;
         // return view('BACKOFFICE.CETAKDOKUMEN.' . $data['filename'] . '-pdf', compact($data));
     }

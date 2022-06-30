@@ -44,7 +44,7 @@ class FaktorPenambahPKMController extends Controller
 
     public function insertPerjanjian(Request $request)
     {
-        $kodeigr = '44';
+        $kodeigr = Session::get('kdigr');
         $usid = Session::get('usid');
 
         $check_prodmast = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')
@@ -233,7 +233,7 @@ class FaktorPenambahPKMController extends Controller
     public function updateNPLUS(Request $request)
     {
         $usid = Session::get('usid');
-        $kodeigr = '44';
+        $kodeigr = Session::get('kdigr');
         $update_nplus = $request->update_nplus;
 
         foreach($update_nplus as $un)
@@ -491,7 +491,7 @@ class FaktorPenambahPKMController extends Controller
     public function uploadNPLUS()
     {
         $userid = Session::get('usid');
-        $c = loginController::getConnectionProcedureCKL();
+        $c = loginController::getConnectionProcedure();
         $s = oci_parse($c, "BEGIN SP_UPLOAD_NPLUS_GO (:userid,:result); END;");
         oci_bind_by_name($s, ':userid',$userid) ;
         oci_bind_by_name($s, ':result', $result,1000);
@@ -779,7 +779,7 @@ class FaktorPenambahPKMController extends Controller
                 ], 500);
             }
             else{
-                $kodeigr = '44';
+                $kodeigr = Session::get('kdigr');
                 $usid = Session::get('usid');
 
                 $insert_pkmplus = DB::connection(Session::get('connection'))
@@ -973,7 +973,7 @@ class FaktorPenambahPKMController extends Controller
     public function uploadMPLUS()
     {
         $userid = Session::get('usid');
-        $c = loginController::getConnectionProcedureCKL();
+        $c = loginController::getConnectionProcedure();
         $s = oci_parse($c, "BEGIN SP_UPLOAD_MPLUS_GO (:userid,:result); END;");
         oci_bind_by_name($s, ':userid',$userid) ;
         oci_bind_by_name($s, ':result', $result,1000);

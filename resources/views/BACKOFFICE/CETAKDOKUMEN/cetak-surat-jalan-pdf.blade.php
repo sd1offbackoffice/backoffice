@@ -4,11 +4,11 @@
 @section('table_font_size','7 px')
 
 @section('page_title')
-    SURAT JALAN <br>{{ strtoupper($data['data1'][0]->judul) }}
+    SURAT JALAN 
 @endsection
 
 @section('title')
-    SURAT JALAN <br>{{ strtoupper($data['data1'][0]->judul) }}
+    SURAT JALAN 
 @endsection
 @section('subtitle')
 

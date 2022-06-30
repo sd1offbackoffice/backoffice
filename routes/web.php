@@ -96,6 +96,11 @@ Route::get('/testigr_bo_surat_penerimaan_barang', function () {
     return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_surat_penerimaan_barang');
 });
 
+Route::get('locale/{locale}',function ($locale){
+    \Session::put('locale',$locale);
+    return redirect()->back();
+});
+
 Route::get('/login', 'Auth\loginController@index');
 Route::get('/logout', 'Auth\loginController@logout');
 Route::get('/logout-access', 'Auth\loginController@logoutAccess');

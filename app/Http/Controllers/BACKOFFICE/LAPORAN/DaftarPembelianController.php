@@ -182,7 +182,7 @@ from (select mstd_kodedivisi, div_namadivisi, prd_flagbkp1, prd_flagbkp2,
         CASE WHEN mstd_ppnrph <> 0 THEN
                 nvl(mstd_ppnrph,0)
         END PPN_BKP,
-        CASE WHEN mstd_ppnrph = 0 THEN
+        CASE WHEN mstd_ppnrph = 0 THEzN
                 nvl(mstd_ppnrph,0)
         END PPN_BTKP,
         CASE WHEN mstd_ppnrph <> 0 THEN

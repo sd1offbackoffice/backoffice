@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\BACKOFFICE\TRANSAKSI\PENERIMAAN;
 
 use App\AllModel;
+use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -64,29 +65,29 @@ class printBPBController extends Controller
         $typeTrn = $request->typeTrn;
         if ($type == 1) {
             $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT trbo_nodoc as nodoc, trbo_tgldoc as tgldoc
-                                       FROM tbtr_backoffice
-                                      WHERE trbo_typetrn = '$typeTrn'
-                                        AND NVL (trbo_flagdoc, '0') = '$checked'
-                                        AND trbo_tgldoc BETWEEN ('$startDate') AND ('$endDate')
-                                        order by trbo_nodoc");
+                                    FROM tbtr_backoffice
+                                    WHERE trbo_typetrn = '$typeTrn'
+                                    AND NVL (trbo_flagdoc, '0') = '$checked'
+                                    AND trbo_tgldoc BETWEEN ('$startDate') AND ('$endDate')
+                                    order by trbo_nodoc");
             return response()->json($data);
         } else {
             if ($checked == 0) {
                 $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT trbo_nodoc as nodoc, trbo_tgldoc as tgldoc
-                                           FROM tbtr_backoffice
-                                          WHERE trbo_tgldoc BETWEEN ('$startDate') AND ('$endDate')
-                                            AND trbo_typetrn = '$typeTrn'
-                                            AND trbo_flagdoc != '*'
-                                            order by trbo_nodoc");
+                                    FROM tbtr_backoffice
+                                    WHERE trbo_tgldoc BETWEEN ('$startDate') AND ('$endDate')
+                                    AND trbo_typetrn = '$typeTrn'
+                                    AND trbo_flagdoc != '*'
+                                    order by trbo_nodoc");
 
                 return response()->json($data);
             } else {
                 $data = DB::connection(Session::get('connection'))->select("SELECT msth_nodoc as nodoc, msth_tgldoc as tgldoc
-                                          FROM TBTR_MSTRAN_H
-                                         WHERE msth_typetrn = '$typeTrn'
-                                           AND NVL (msth_flagdoc, ' ') = '$checked'
-                                           AND msth_tgldoc BETWEEN ('$startDate') AND ('$endDate')
-                                           order by msth_nodoc");
+                                    FROM TBTR_MSTRAN_H
+                                    WHERE msth_typetrn = '$typeTrn'
+                                    AND NVL (msth_flagdoc, ' ') = '$checked'
+                                    AND msth_tgldoc BETWEEN ('$startDate') AND ('$endDate')
+                                    order by msth_nodoc");
                 return response()->json($data);
             }
         }
@@ -251,13 +252,13 @@ class printBPBController extends Controller
             $record = DB::connection(Session::get('connection'))->select(
                 "SELECT NVL(PRD_AVGCOST, 0) PRD_AVGCOST, PRD_PRDCD, NVL(PRD_LASTCOST, 0) PRD_LASTCOST
                     FROM TBTR_BACKOFFICE AA,
-                         TBMASTER_PRODMAST BB,
-                         TBMASTER_SUPPLIER CC,
-                         TBMASTER_STOCK DD,
-                         TBMASTER_LOKASI EE,
-                         TBTR_PO_D FF,
-                         TBTR_PO_H GG,
-                         tbmaster_stock_cab_anak hh
+                        TBMASTER_PRODMAST BB,
+                        TBMASTER_SUPPLIER CC,
+                        TBMASTER_STOCK DD,
+                        TBMASTER_LOKASI EE,
+                        TBTR_PO_D FF,
+                        TBTR_PO_H GG,
+                        tbmaster_stock_cab_anak hh
                     WHERE     AA.TRBO_NODOC = '$data'
                     AND (NVL (TRBO_QTY, 0)
                         + NVL (TRBO_QTYBONUS1, 0)
@@ -313,7 +314,7 @@ class printBPBController extends Controller
         $temp_lokasi = [];
         $temp_nota = [];
         $model  = new AllModel();
-        $conn   = $model->connectionProcedure();
+        $conn   = loginController::getConnectionProcedure();
         $flag = $request->flag;
         if ($type == 1) {
             $v_print = $reprint;
@@ -429,13 +430,13 @@ class printBPBController extends Controller
                     TRBO_DIS4CP, TRBO_DIS4RP, TRBO_DIS4JP, TRBO_PPNRPH, TRBO_KETERANGAN,
                     PRD_KODETAG, TPOH_NOPO, TPOH_TOP, TPOH_FLAGALOKASI, TRBO_PERSENPPN
                     FROM TBTR_BACKOFFICE AA,
-                         TBMASTER_PRODMAST BB,
-                         TBMASTER_SUPPLIER CC,
-                         TBMASTER_STOCK DD,
-                         TBMASTER_LOKASI EE,
-                         TBTR_PO_D FF,
-                         TBTR_PO_H GG,
-                         tbmaster_stock_cab_anak hh
+                        TBMASTER_PRODMAST BB,
+                        TBMASTER_SUPPLIER CC,
+                        TBMASTER_STOCK DD,
+                        TBMASTER_LOKASI EE,
+                        TBTR_PO_D FF,
+                        TBTR_PO_H GG,
+                        tbmaster_stock_cab_anak hh
                     WHERE     AA.TRBO_NODOC = '$noDoc'
                     AND (NVL (TRBO_QTY, 0)
                         + NVL (TRBO_QTYBONUS1, 0)

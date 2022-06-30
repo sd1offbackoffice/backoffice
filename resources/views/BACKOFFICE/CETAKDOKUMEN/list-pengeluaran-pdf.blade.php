@@ -12,7 +12,7 @@
 @section('subtitle')
 
 @endsection
-@section('header_left')
+{{-- @section('header_left')
     <table>
         <tr>
             <td class="left">NOMOR TRN</td>
@@ -55,12 +55,53 @@
             <td class="left">{{ $data['data1'][0]->status }} </td>
         </tr>
     </table>
-
-@endsection
+@endsection --}}
+<table>
+    <tr>
+        <td class="left">NOMOR TRN</td>
+        <td class="left">: {{ $data['data1'][0]->trbo_nodoc }}</td>
+    </tr>
+    <tr>
+        <td class="left">TANGGAL</td>
+        <td class="left">: {{ date('d/m/Y',strtotime(substr($data['data1'][0]->trbo_tgldoc,0,10))) }}</td>
+    </tr>
+    <tr>
+        <td class="left">SUPPLIER</td>
+        <td class="left" colspan="4">: {{ $data['data1'][0]->trbo_kodesupplier }} {{ $data['data1'][0]->sup_namasupplier }}</td>
+    </tr>
+    @php
+        $i=0;
+    @endphp
+    @foreach($data['data2'] as $d)
+        @if($i == 0)
+            <tr>
+                <td class="left">FAKTUR PAJAK</td>
+                <td class="left">: No. {{ $d->trbo_istype }} </td>
+                <td class="left" width="50px">{{ $d->trbo_invno }}</td>
+                <td class="right">
+                    Tanggal {{ date('d/m/Y',strtotime(substr($d->trbo_tglinv,0,10))) }}</td>
+            </tr>
+        @else
+            <tr>
+                <td class="left"></td>
+                <td class="left">: No. {{ $d->trbo_istype }} </td>
+                <td class="left" width="50px">{{ $d->trbo_invno }}</td>
+                <td class="right">
+                    Tanggal {{ date('d/m/Y',strtotime(substr($d->trbo_tglinv,0,10))) }}</td>
+            </tr>
+        @endif
+        @php
+            $i++;
+        @endphp
+    @endforeach
+    <tr>
+        <td class="left">{{ $data['data1'][0]->status }} </td>
+    </tr>
+</table>
 @section('content')
-    @for($j=0; $j<$i; $j++ )
+    {{-- @for($j=0; $j<$i; $j++ )
         <br>
-    @endfor
+    @endfor --}}
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>

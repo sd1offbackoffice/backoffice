@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\BACKOFFICE;
 
 use App\AllModel;
+use App\Http\Controllers\Auth\loginController;
 use Yajra\DataTables\DataTables;
 use function foo\func;
 use PDF;
@@ -61,7 +62,7 @@ class PBOtomatisController extends Controller
         $sessid = Session::get('id');
         $ppn    = Session::get('ppn');
         $model  = new AllModel();
-        $conn   = $model->connectionProcedure();
+        $conn   = loginController::getConnectionProcedure();
         $date   = date('d-M-y');
 
         if ($mtrSup == null) { $mtrSup  = ' '; }

@@ -11,13 +11,8 @@ use Mockery\Exception;
 
 class CabangController extends Controller
 {
-    public function test(Request $request){
-         return 'asddsa';
-    }
-
     public function index(){
-        $getCabang  = Cabang::connection(Session::get('connection'))->all();
-//        $getCabang  = DB::connection(Session::get('connection'))->table('tbmaster_cabang')->orderBy('cab_kodecabang')->get();
+        $getCabang  = DB::connection(Session::get('connection'))->table('tbmaster_cabang')->orderBy('cab_kodecabang')->get();
 
         return view('MASTER.cabang', compact('getCabang'));
     }

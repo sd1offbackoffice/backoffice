@@ -71,6 +71,7 @@
             $hppTotal = 0;
             $marginTotal = 0;
             $percentageTotal = 0;
+            // dd($data);
         ?>
         @for($i=0;$i<sizeof($data);$i++)
         {{--TOTAL PER DEPARTEMEN DAN PER DIVISI--}}
@@ -365,7 +366,7 @@
             <td style="text-align: right; font-weight: bold;">{{percent($marginpersen['e'])}}</td>
         </tr>
         <tr>
-            <td colspan="2" style="text-align: right; font-weight: normal;">TOTAL BRG PPN</td>
+            <td colspan="2" style="text-align: right; font-weight: normal;">TOTAL BARANG PPN DITANGGUNG PEMERINTAH</td>
             <td style="text-align: right; font-weight: bold;">(MINYAK)</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($gross['g'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($tax['g'])}}</td>

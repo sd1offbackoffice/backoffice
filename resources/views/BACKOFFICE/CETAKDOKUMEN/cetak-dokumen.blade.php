@@ -621,10 +621,16 @@
 
         function printWithSignature() {
             let reprint = $('#reprint:checked').val();
+            let lap = $('#laporan').val();
             if (reprint == 'on') {
                 cetak()
             } else {
-                getSupplierData();
+                if (lap == 'L') {
+                    cetak()
+                } else {
+                    getSupplierData()
+                }
+                // getSupplierData();
             }
         }
 
@@ -729,7 +735,9 @@
                         if (result) {
 
                             for (i = 0; i < result.length; i++) {
-                                window.open(`{{ url()->current() }}/download?file=${result[i]}`, '_blank');
+                                let splitedFilename = result[i].split('_')
+                                console.log(splitedFilename[0]);
+                                window.open(`{{ url()->current() }}/download?file=${result[i]}&type=${splitedFilename[0]}`, '_blank');
                             }
 
                         }

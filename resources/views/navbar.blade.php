@@ -140,7 +140,7 @@
                                                             Acara Pemusnahan</a></li>
                                                     <li><a href="{{url("/bo/transaksi/pemusnahan/bapbatal/index")}}">Pembatalan
                                                             BA Pemusnahan</a></li>
-                                                    <li><a href="{{url("/bo/transaksi/pemusnahan/alasan-barang-rusak/index")}}">Master Alasan Barang 
+                                                    <li><a href="{{url("/bo/transaksi/pemusnahan/alasan-barang-rusak/index")}}">Master Alasan Barang
                                                             Rusak</a></li>
                                                     <li><a href="{{url("/bo/transaksi/pemusnahan/inquerybapb/index")}}">Inquery
                                                             BA Pemusnahan</a></li>
@@ -505,7 +505,7 @@
                 @endphp
                 <li class="dropdown">
                     <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ $m->acc_group }}</a>
+                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang($m->acc_group)</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         @endif
 
@@ -530,7 +530,7 @@
                     <li class="dropdown">
                         <a class="dropdown-toggle" @if(strlen($m->acc_subgroup1) > 25) style="white-space: normal"
                            @endif href="#" id="navbarDropdown" role="button"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ $m->acc_subgroup1 }}</a>
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang($m->acc_subgroup1)</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             @endif
 
@@ -542,7 +542,7 @@
                     @php $tempsubgroup2 = $m->acc_subgroup2; $tempsubgroup3 = '';@endphp
                     <li class="dropdown">
                         <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ $m->acc_subgroup2 }}</a>
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang($m->acc_subgroup2)</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             @endif
 
@@ -554,7 +554,7 @@
                     @php $tempsubgroup3 = $m->acc_subgroup3; @endphp
                     <li class="dropdown">
                         <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ $m->acc_subgroup3 }}</a>
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@lang($m->acc_subgroup3)</a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             @endif
                             @else
@@ -572,7 +572,7 @@
                     </ul></li>
                 @endif
                 @endif
-                <li><a href="{{url($m->acc_url)}}">{{ $m->acc_name }}</a></li>
+                <li><a href="{{url($m->acc_url)}}">@lang($m->acc_name)</a></li>
                 @endforeach
                 @if(count(Session::get('menu')) > 0)
                 </ul>
@@ -587,6 +587,20 @@
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li><a href="{{url("/logout")}}">Logout</a>
                         </li>
+                    </ul>
+                </li>
+                <li class="dropdown" style="position: relative; right:0px;">
+                    <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown" aria-haspopup="true"
+                       aria-expanded="false">
+                        <img src="{{asset('image/icon/'.app()->getLocale().'.png')}}" width="24px">
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        @if(app()->getLocale() == 'id')
+                            <li><a href="{{url("locale/en")}}" class="dropdown-item"><img src="{{asset('image/icon/en.png')}}" width="24px" alt=""> {{trans('english')}}</a></li>
+                        @else
+                            <li><a href="{{url("locale/id")}}" class="dropdown-item"><img src="{{asset('image/icon/id.png')}}" width="24px" alt=""> {{trans('indonesian')}}</a></li>
+                        @endif
                     </ul>
                 </li>
                 </ul>

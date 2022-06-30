@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\BACKOFFICE;
 
 use App\AllModel;
+use App\Http\Controllers\Auth\loginController;
 use Dompdf\Exception;
 use PDF;
 use function foo\func;
@@ -21,12 +22,12 @@ class utilityPBIGRController extends Controller
     public function __construct()
     {
         $model      = new AllModel();
-        $this->connection = $model->connectionProcedure();
+        $this->connection = loginController::getConnectionProcedure();
     }
 
     public function index(){
         $model      = new AllModel();
-        $this->model = $model->connectionProcedure();
+        $this->model = loginController::getConnectionProcedure();;
 
         return view('BACKOFFICE.utilityPBIGR');
     }

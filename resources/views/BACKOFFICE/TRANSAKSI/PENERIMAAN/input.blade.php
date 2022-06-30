@@ -197,13 +197,13 @@
                     <div class="modal-body">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text" id="header">Header</span>
+                                <span class="input-group-text" id="header" style="padding-right: 15px;">Header</span>
                             </div>
                             <input type="text" id="qrHeader" class="form-control" aria-describedby="header">
                         </div>
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text" id="detail">Detail</span>
+                                <span class="input-group-text" id="detail" style="padding-right: 25px;">Detail</span>
                             </div>
                             <input type="text" id="qrDetail" class="form-control" aria-describedby="detail">
                         </div>
@@ -2910,11 +2910,20 @@
             },
             success: (result) => {
                 $('#modal-loader').modal('hide');
-                swal(
-                    result.header,
-                    result.detail,
-                    'warning'
-                )
+                if (result.kode == 1) {
+                    swal(
+                        result.header,
+                        result.detail,
+                        'warning'
+                    )
+                } else {
+                    swal(
+                        'Proses Berhasil',
+                        result.msg,
+                        'info'
+                    )
+                }
+
                 console.log(result);
             },
             error: (err) => {

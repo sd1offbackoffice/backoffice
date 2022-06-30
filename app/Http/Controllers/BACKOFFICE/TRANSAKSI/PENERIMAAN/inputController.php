@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\DataTables;
 use PDF;
 use ZipArchive;
@@ -2635,24 +2636,6 @@ class inputController extends Controller
         }
     }
 
-    // public function showPLULain()
-    // {
-    //     $kodeigr = Session::get('kdigr');
-    //     $data = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
-    //         ->select('PRD_PRDCD', 'PRD_DESKRIPSIPANJANG')
-    //         ->join('TBMASTER_STOCK', function ($join) {
-    //             $join->on('ST_PRDCD', 'PRD_PRDCD');
-    //             $join->on('ST_KODEIGR', 'PRD_KODEIGR');
-    //         })
-    //         ->where('ST_KODEIGR', $kodeigr)
-    //         ->where('ST_LOKASI', '01')
-    //         ->where('ST_SALDOAKHIR', '>', 0)
-    //         ->whereNotNull('ST_AVGCOST')
-    //         ->whereRaw("(PRD_KODETAG != 'T' AND PRD_KODETAG != 'G' AND PRD_KODETAG != 'Q')")
-    //         ->get()->toArray();
-    //     return response()->json($data);
-    // }
-
     public function get_string_between($string, $start, $end)
     {
         $string = ' ' . $string;
@@ -2663,100 +2646,279 @@ class inputController extends Controller
         return substr($string, $ini, $len);
     }
 
-    public function bin2bstr($input)
-    // Convert a binary expression (e.g., "100111") into a binary-string
-    {
-        if (!is_string($input)) return null; // Sanity check
-
-        // Pack into a string
-        return pack('H*', base_convert($input, 2, 16));
-    }
-
     public function readQR(Request $request)
     {
+        $path = 'qrcode/';
         if (!(isset($request->header))) {
             return response()->json(['kode' => 0, 'msg' => 'HEADER Kosong!', 'data' => '']);
+        } else {
+            $header = substr($request->header, 0, -1);
+            $header = strstr($header, '504B'); //remove all trash before PK Ext.
+            //HEADER
+            $length_header = strlen($header) / 2;
+            $arr_head = array($length_header - 1);
+            for ($i = 0; $i <= $length_header - 1; $i++) {
+                $arr_head[$i] = intval(substr($header, 2 * $i, 2), 16);
+            }
+            $fp_head = fopen(storage_path($path . 'HEADER.zip'), 'wb+');
+            while (!empty($arr_head)) {
+                $byte1_head = array_shift($arr_head);
+                $byte2_head = array_shift($arr_head);
+                if (!$byte2_head) {
+                    $byte2_head = 0;
+                }
+                fwrite($fp_head, pack("n*", ($byte1_head << 8) + $byte2_head));
+            }
+            fclose($fp_head);
         }
 
         if (!(isset($request->detail))) {
             return response()->json(['kode' => 0, 'msg' => 'DETAIL Kosong!', 'data' => '']);
-        }
-
-        $header = substr($request->header, 0, -1);
-        $detail = substr($request->detail, 0, -1);
-
-        $path = 'test/';
-
-        //HEADER
-        $length_header = strlen($header) / 2;
-        $arr_head = array($length_header - 1);
-        for ($i = 0; $i <= $length_header - 1; $i++) {
-            $arr_head[$i] = intval(substr($header, 2 * $i, 2), 16);
-        }
-        $fp_head = fopen(storage_path($path . 'HEADER.zip'), 'wb+');
-
-        while (!empty($arr_head)) {
-            $byte1 = array_shift($arr_head);
-            $byte2 = array_shift($arr_head);
-            if (!$byte2) {
-                $byte2 = 0;
+        } else {
+            $detail = substr($request->detail, 0, -1);
+            $detail = strstr($detail, '504B'); //remove all trash before PK Ext.
+            //DETAIL
+            $length_detail = strlen($detail) / 2;
+            $arr_detail = array($length_detail - 1);
+            for ($i = 0; $i <= $length_detail - 1; $i++) {
+                $arr_detail[$i] = intval(substr($detail, 2 * $i, 2), 16);
             }
-            fwrite($fp_head, pack("n*", ($byte1 << 8) + $byte2));
-        }
-        fclose($fp_head);
-
-        //DETAIL
-        $length_detail = strlen($detail) / 2;
-        $arr_head = array($length_detail - 1);
-        for ($i = 0; $i <= $length_detail - 1; $i++) {
-            $arr_detail[$i] = intval(substr($detail, 2 * $i, 2), 16);
-        }
-        $fp_detail = fopen(storage_path($path . 'DETAIL.zip'), 'wb+');
-
-        while (!empty($arr_detail)) {
-            $byte1 = array_shift($arr_detail);
-            $byte2 = array_shift($arr_detail);
-            if (!$byte2) {
-                $byte2 = 0;
+            $fp_detail = fopen(storage_path($path . 'DETAIL.zip'), 'wb+');
+            while (!empty($arr_detail)) {
+                $byte1_detail = array_shift($arr_detail);
+                $byte2_detail = array_shift($arr_detail);
+                if (!$byte2_detail) {
+                    $byte2_detail = 0;
+                }
+                fwrite($fp_detail, pack("n*", ($byte1_detail << 8) + $byte2_detail));
             }
-            fwrite($fp_detail, pack("n*", ($byte1 << 8) + $byte2));
+            fclose($fp_detail);
         }
-        fclose($fp_detail);
-
         //READ
-        // $zip = new ZipArchive;
-        // $open = $zip->open('DETAIL.zip');
-        // if ($open === TRUE) {
-        //     $hex_array_header = pack("H*", $header);
-        //     $zip->setPassword('PernahKejepit2XOuch!!');
-        //     $zip->extractTo($path);
-        //     $zip->getFromName('HEADER_' . $this->get_string_between($hex_array_header, 'HEADER_', '.CSV') . '.CSV');
-        //     $zip->close();
-        // } else {
-        //     $result = $open;
-        // }
-
         $hex_array_header = pack("H*", $header);
-        $name = 'HEADER_' . $this->get_string_between($hex_array_header, 'HEADER_', '.CSV') . '.CSV';
-        // $options = [
-        //     'zip' => [
-        //         'password' => 'PernahKejepit2XOuch!!'
-        //     ]
-        // ];
+        $name_header = 'HEADER_' . $this->get_string_between($hex_array_header, 'HEADER_', '.CSV') . '.CSV';
 
-        // $context = stream_context_create($options);
-        // $result =  file_get_contents(storage_path($path . 'HEADER.zip') . '#' . $name, false, $context);
+        $hex_array_detail = pack("H*", $detail);
+        $name_detail = 'DETAIL_' . $this->get_string_between($hex_array_detail, 'DETAIL_', '.CSV') . '.CSV';
 
         $zip = new ZipArchive;
-        if ($zip->open('HEADER.zip') !== TRUE) {
-            $result = 'failed';
-        }
-        if ($zip->locateName($name) !== FALSE) {
-            $result = 'File exists';
+        $msg = '';
+        //HEAD
+        if ($zip->open('../storage/qrcode/HEADER.zip') === TRUE) {
+            $zip->setPassword('PernahKejepit2XOuch!!');
+            $zip->extractTo('../storage/qrcode/');
+            $result_header = file_get_contents('../storage/qrcode/' . $name_header);
+            $zip->close();
+            $code = 0;
+            $msg .= 'Berhasil membaca File Header | ';
         } else {
-            $result = 'File does not exist';
+            $result_header = 'Gagal Baca Header';
+            $code = 1;
+            $msg .= 'Gagal Membaca File Header | ';
         }
 
-        return response()->json(['header' => $arr_head, 'detail' => $result]);
+        $result_header = explode("\r\n", $result_header);
+        $result_header_col = explode("|", $result_header[0]);
+        $result_header_row = explode("|", $result_header[1]);
+
+        //DETAIL
+        if ($zip->open('../storage/qrcode/DETAIL.zip') === TRUE) {
+            $zip->setPassword('PernahKejepit2XOuch!!');
+            $zip->extractTo('../storage/qrcode/');
+            $result_detail = file_get_contents('../storage/qrcode/' . $name_detail);
+            $zip->close();
+            $code = 0;
+            $msg .= 'Berhasil membaca File Detail';
+        } else {
+            $result_detail = $zip->open('../storage/qrcode/DETAIL.zip');
+            $code = 1;
+            $msg .= 'Gagal Membaca File Detail';
+        }
+
+        $result_detail = explode("\r\n", $result_detail);
+        $result_detail_col = explode("|", $result_detail[0]);
+
+        $length = count($result_detail);
+        for ($i = 1; $i < $length - 1; $i++) {
+            $result_detail_row[$i] = explode("|", $result_detail[$i]);
+        }
+
+        //INSERT TO DB
+        //HEADER
+        $toko = $result_header_row[0];
+        $kirim = $result_header_row[1];
+        $gembok = $result_header_row[2];
+        $nosj = $result_header_row[3];
+        $norang = $result_header_row[4];
+        $jmlpart = $result_header_row[5];
+        $jmlrecord = $result_header_row[6];
+
+        $header = DB::connection(Session::get('connection'))->select("SELECT NOSJ FROM tbtr_npdqr_h WHERE NOSJ = '$nosj'");
+        if ($header == null) {
+            DB::connection(Session::get('connection'))->table('tbtr_npdqr_h')->insert([
+                'TOKO' => $toko,
+                'KIRIM' => $kirim,
+                'GEMBOK' => $gembok,
+                'NOSJ' => $nosj,
+                'NORANG' => $norang,
+                'JMLPART' => $jmlpart,
+                'JMLRECORD' => $jmlrecord
+            ]);
+        } else {
+            DB::connection(Session::get('connection'))->table('tbtr_npdqr_h')
+                ->where('NOSJ', $nosj)
+                ->update([
+                    'TOKO' => $toko,
+                    'KIRIM' => $kirim,
+                    'GEMBOK' => $gembok,
+                    'NORANG' => $norang,
+                    'JMLPART' => $jmlpart,
+                    'JMLRECORD' => $jmlrecord
+                ]);
+        }
+
+        //DETAIL
+        $length = count($result_detail_row);
+
+        for ($j = 1; $j < $length + 1; $j++) {
+            $docno = $result_detail_row[$j][0];
+            $picno = $result_detail_row[$j][1];
+            $pictgl = $result_detail_row[$j][2];
+            $prdcd = $result_detail_row[$j][3];
+            $sj_qty = $result_detail_row[$j][4];
+            $price = $result_detail_row[$j][5];
+            $ppnrp = $result_detail_row[$j][6];
+            $hpp = $result_detail_row[$j][7];
+            $keter = $result_detail_row[$j][8];
+            $tanggal1 = $result_detail_row[$j][9];
+            $tanggal2 = $result_detail_row[$j][10];
+            $docno2 = $result_detail_row[$j][11];
+            $dus_no = $result_detail_row[$j][12];
+            $ppn_rate = $result_detail_row[$j][13];
+
+            $detail = DB::connection(Session::get('connection'))->select(
+                "SELECT PRDCD FROM tbtr_npdqr_d 
+                    WHERE PRDCD = '$prdcd'"
+            );
+
+            $npd_rte = DB::connection(Session::get('connection'))->select(
+                "SELECT PRDCD FROM tbhistory_npd_rte 
+                    WHERE PRDCD = '$prdcd'"
+            );
+
+            if ($npd_rte == null) {
+                DB::connection(Session::get('connection'))->table('tbhistory_npd_rte')->insert([
+                    'BAR' => '',
+                    'CREATE_BY' => Session::get('userid'),
+                    'CREATE_DT' => Carbon::now()->format('Ymd'),
+                    'DIV' => '',
+                    'DOCNO' => $docno,
+                    'DOCNO2' => $docno2,
+                    'DUS_NO' => $dus_no,
+                    'GROSS' => '',
+                    'HPP' => $hpp,
+                    'KETER' => $keter,
+                    'KIRIM' => $kirim,
+                    'LT' => '',
+                    'NAMA' => '',
+                    'NAMA_FILE' => $name_detail,
+                    'NO_BPB' => '',
+                    'PICNO' => $picno,
+                    'PICNOT' => '',
+                    'PICTGL' => Carbon::parse($pictgl)->format('Ymd'),
+                    'PPNRP' => $ppnrp,
+                    'PPN_RATE' => $ppn_rate,
+                    'PRDCD' => $prdcd,
+                    'PRICE' => $price,
+                    'QTY' => '',
+                    'RAK' => '',
+                    'RECID' => '',
+                    'RTYPE' => '',
+                    'SEQNO' => '',
+                    'SJ_QTY' => $sj_qty,
+                    'STATUS' => '',
+                    'TANGGAL1' => Carbon::parse($tanggal1)->format('Ymd'),
+                    'TANGGAL2' => Carbon::parse($tanggal2)->format('Ymd'),
+                    'TGL_BPB' => '',
+                    'TOKO' => $toko
+                ]);
+            } else {
+                DB::connection(Session::get('connection'))->table('tbhistory_npd_rte')
+                    ->where('PRDCD', $prdcd)
+                    ->update([
+                        'BAR' => '',
+                        'CREATE_BY' => Session::get('userid'),
+                        'CREATE_DT' => Carbon::now()->format('Ymd'),
+                        'DIV' => '',
+                        'DOCNO2' => $docno2,
+                        'DUS_NO' => $dus_no,
+                        'GROSS' => '',
+                        'HPP' => $hpp,
+                        'KETER' => $keter,
+                        'KIRIM' => $kirim,
+                        'LT' => '',
+                        'NAMA' => '',
+                        'NAMA_FILE' => $name_detail,
+                        'NO_BPB' => '',
+                        'PICNO' => $picno,
+                        'PICNOT' => '',
+                        'PICTGL' => Carbon::parse($pictgl)->format('Ymd'),
+                        'PPNRP' => $ppnrp,
+                        'PPN_RATE' => $ppn_rate,
+                        'PRDCD' => $prdcd,
+                        'PRICE' => $price,
+                        'QTY' => '',
+                        'RAK' => '',
+                        'RECID' => '',
+                        'RTYPE' => '',
+                        'SEQNO' => '',
+                        'SJ_QTY' => $sj_qty,
+                        'STATUS' => '',
+                        'TANGGAL1' => Carbon::parse($tanggal1)->format('Ymd'),
+                        'TANGGAL2' => Carbon::parse($tanggal2)->format('Ymd'),
+                        'TGL_BPB' => '',
+                        'TOKO' => $toko
+                    ]);
+            }
+
+            if ($detail == null) {
+                DB::connection(Session::get('connection'))->table('tbtr_npdqr_d')->insert([
+                    'DOCNO' => $docno,
+                    'PICNO' => $picno,
+                    'PICTGL' => Carbon::parse($pictgl)->format('Ymd'),
+                    'PRDCD' => $prdcd,
+                    'SJ_QTY' => $sj_qty,
+                    'PRICE' => $price,
+                    'PPNRP' => $ppnrp,
+                    'HPP' => $hpp,
+                    'KETER' => $keter,
+                    'TANGGAL1' => Carbon::parse($tanggal1)->format('Ymd'),
+                    'TANGGAL2' => Carbon::parse($tanggal2)->format('Ymd'),
+                    'DOCNO2' => $docno2,
+                    'DUS_NO' => $dus_no,
+                    'PPN_RATE' => $ppn_rate
+                ]);
+            } else {
+                DB::connection(Session::get('connection'))->table('tbtr_npdqr_d')
+                    ->where('PRDCD', $prdcd)
+                    ->update([
+                        'DOCNO' => $docno,
+                        'PICNO' => $picno,
+                        'PICTGL' => Carbon::parse($pictgl)->format('Ymd'),
+                        'PRDCD' => $prdcd,
+                        'SJ_QTY' => $sj_qty,
+                        'PRICE' => $price,
+                        'PPNRP' => $ppnrp,
+                        'HPP' => $hpp,
+                        'KETER' => $keter,
+                        'TANGGAL1' => Carbon::parse($tanggal1)->format('Ymd'),
+                        'TANGGAL2' => Carbon::parse($tanggal2)->format('Ymd'),
+                        'DOCNO2' => $docno2,
+                        'DUS_NO' => $dus_no,
+                        'PPN_RATE' => $ppn_rate
+                    ]);
+            }
+        }
+        return response()->json(['kode' => $code, 'msg' => $msg, 'header_row' => $result_header_row, 'header_col' => $result_header_col, 'detail_row' => $result_detail_row, 'detail_col' => $result_detail_col]);
     }
 }

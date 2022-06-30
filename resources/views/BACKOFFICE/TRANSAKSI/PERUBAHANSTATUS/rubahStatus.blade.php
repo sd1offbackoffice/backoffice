@@ -323,7 +323,7 @@
         }
 
         function calculateHarga(value, index) {
-            let satuan    = $('.satuan')[index].value;
+            let satuan  = $('.satuan')[index].value;
             let ctn     = $('.ctn')[index].value;
             let pcs     = $('.pcs')[index].value;
             let frac    = satuan.substr(satuan.indexOf('/')+1);
@@ -333,13 +333,15 @@
             }else{
                 price   = parseFloat(unconvertToRupiah($('.price')[index].value))/frac;
             }
+            console.log(satuan,ctn,pcs,frac,price);
+
             if($('.plu')[index].value != ''){
                 $('.total')[index].value = 0;
                 if(ctn != 0 || ctn != ''){
-                    $('.total')[index].value = parseFloat($('.total')[index].value) + parseFloat(ctn * price);
+                    $('.total')[index].value = parseFloat($('.total')[index].value) + parseFloat(ctn*frac * price);
                 }
                 if(pcs != 0 || pcs != ''){
-                    $('.total')[index].value = parseFloat($('.total')[index].value) + parseFloat((pcs/frac) * price );
+                    $('.total')[index].value = parseFloat($('.total')[index].value) + parseFloat((pcs) * price );
                 }
                 $('.total')[index].value = convertToRupiah($('.total')[index].value);
             }
@@ -350,7 +352,6 @@
             var temptbl =  ` <tr class="baris">
                                                 <td>
                                                     <input disabled type="text" class="form-control plu" value=""  no="`+ index +`" id="`+ index +`" onchange="searchPlu2(this.value, this.id)">
-
                                                 </td>
                                                 <td><input disabled type="text"  class="form-control deskripsi" value=""></td>
                                                 <td><input disabled type="text" class="form-control satuan" value=""></td>
@@ -546,6 +547,11 @@
                 },
                 success: function (result) {
                     //from Rsn
+                    if(result.message){
+                        $('#modal-loader').modal('hide');
+                        swal('', result.message, result.status);
+                        return false;
+                    }
                     if(fromRsn){
                         if(result.length === 0){
                             swal('', "Nomor Dokumen Sortir Tidak Ada !!", 'warning');
@@ -710,12 +716,17 @@
                 $.ajax({
                     type: "post",
                     url: "{{ url()->current() }}/check-document",
-                    data: {noDoc:doc},
+                    data: {
+                        noDoc:doc,
+                    },
                     beforeSend: function () {
                         $('#modal-loader').modal({backdrop: 'static', keyboard: false});
                     },
                     success: function (result) {
                         $('#modal-loader').modal('hide');
+                        if(result.message){
+
+                        }
                         if(result.barangrusak == 'true'){
                             window.open(`{{ url()->current() }}/printdoc?doc=${doc}&page=barangrusak`, '_blank');
                         }
