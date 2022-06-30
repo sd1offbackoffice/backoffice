@@ -71,7 +71,7 @@
             $hppTotal = 0;
             $marginTotal = 0;
             $percentageTotal = 0;
-            // dd($data);
+            dd($data);
         ?>
         @for($i=0;$i<sizeof($data);$i++)
         {{--TOTAL PER DEPARTEMEN DAN PER DIVISI--}}
