@@ -39,7 +39,7 @@
                                    value="">
                         </div>
                         <div class="row justify-content-md-center">
-                            <label for="i_kepalagudang" class="col-sm-3 col-form-label text-right">Kepala Gudang</label>
+                            <label for="i_kepalagudang" class="col-sm-3 col-form-label text-right">@lang("Kepala Gudang")</label>
                             <input style="text-transform: uppercase;" type="text" class="col-sm-5 form-control"
                                    id="i_kepalagudang"
                                    value="">
