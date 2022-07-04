@@ -45,8 +45,8 @@
                 @endif
                 <th rowspan="2" style="width: 80px; text-align: right; vertical-align: middle;">PENJUALAN<br>KOTOR</th>
                 <th rowspan="2" style="width: 80px; text-align: right; vertical-align: middle;">PAJAK</th>
-                <th rowspan="2" style="width: 80px; text-align: right; vertical-align: middle;">BEBAS PPN</th>
-                <th rowspan="2" style="width: 80px; text-align: right; vertical-align: middle;">PPN DTP</th>
+                {{-- <th rowspan="2" style="width: 80px; text-align: right; vertical-align: middle;">BEBAS PPN</th>
+                <th rowspan="2" style="width: 80px; text-align: right; vertical-align: middle;">PPN DTP</th> --}}
                 <th rowspan="2" style="width: 80px; text-align: right; vertical-align: middle;">PENJUALAN<br>BERSIH</th>
                 <th rowspan="2" style="width: 80px; text-align: right; vertical-align: middle;">H.P.P RATA2</th>
                 <th colspan="2" style="text-align: right; vertical-align: middle;">------MARGIN------</th>
@@ -71,7 +71,6 @@
             $hppTotal = 0;
             $marginTotal = 0;
             $percentageTotal = 0;
-            dd($data);
         ?>
         @for($i=0;$i<sizeof($data);$i++)
         {{--TOTAL PER DEPARTEMEN DAN PER DIVISI--}}
@@ -367,7 +366,7 @@
         </tr>
         <tr>
             <td colspan="2" style="text-align: right; font-weight: normal;">TOTAL BARANG PPN DITANGGUNG PEMERINTAH</td>
-            <td style="text-align: right; font-weight: bold;">(MINYAK)</td>
+            <td style="text-align: right; font-weight: bold;"></td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($gross['g'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($tax['g'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($net['g'])}}</td>

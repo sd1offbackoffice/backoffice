@@ -55,7 +55,7 @@ class CabangController extends Controller
                 'cab_alamat3' => $alamat3, 'cab_teleponcabang' => $telephone, 'cab_faxcabang' => $faximile, 'cab_npwpcabang' => $npwp, 'cab_nosk' => $nosk, 'cab_tglsk' => $tglsk, 'cab_kodecabang_anak' => $kodeanakcab, 'cab_namacabang_anak' => $namaanakcab,
                 'cab_modify_by' => $user, 'cab_modify_dt' => $date]);
 
-            return response()->json("Update Data Berhasil");
+            return response()->json(__("Update Data Berhasil"));
         }
     }
 

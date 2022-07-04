@@ -22,7 +22,7 @@ class utilityPBIGRController extends Controller
     public function __construct()
     {
         $model      = new AllModel();
-        $this->connection = loginController::getConnectionProcedure();
+//        $this->connection = loginController::getConnectionProcedure();
     }
 
     public function index(){

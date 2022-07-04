@@ -87,11 +87,8 @@
             $percentageTotal_divisi = 0;
 
             $total_data = count($data);
-            // dd($total_data)
         ?>
 
-        {{--TOTAL PER DIVISI--}}
-        {{-- Alasan total diletakkan di atas header, karena kalo sudah $divisi != $data[$i+1]->cdiv, maka string dari $divisi akan berubah ke index selanjutnya --}}
         @for($i=0;$i<$total_data;$i++)
 
             {{--HEADER--}}

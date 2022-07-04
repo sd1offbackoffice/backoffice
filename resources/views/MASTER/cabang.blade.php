@@ -73,7 +73,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group col-sm-4">
-                                    <label for="">Nama Cabang Anak</label>
+                                    <label for="">@lang('Nama Cabang Anak')</label>
                                     <input type="text" class="field field12 form-control" id="i_namaAnakCabang" placeholder="..." field="12">
                                 </div>
                             </div>
@@ -291,7 +291,7 @@
 
             swal({
                 title: title,
-                text: "Data Cabang tetap bisa diedit setelah di simpan",
+                text: "{{__('Data Cabang tetap bisa diedit setelah di simpan')}}",
                 icon: "info",
                 buttons: true,
                 dangerMode: true,

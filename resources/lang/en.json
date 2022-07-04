@@ -1,4 +1,9 @@
 {
     "Kepala Gudang": "Head Of Storage",
-    "Master Cabang": "Branch Master"
+    "Master Cabang": "Branch Master",
+    "Nama Cabang Anak": "Child Branch Name",
+    "Data Cabang tidak terdaftar": "Branch data not registered",
+    "Data Cabang tetap bisa diedit setelah di simpan": "Branch data can still be edited after saving",
+    "Data Cabang Sudah Selesai di Transfer !!": "Branch Data Transfer Completed !!",
+    "Update Data Berhasil": "Data Update Successful"
 }

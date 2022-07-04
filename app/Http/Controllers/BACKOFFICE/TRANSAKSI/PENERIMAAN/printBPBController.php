@@ -142,6 +142,14 @@ class printBPBController extends Controller
                                     // ftp_put($conn_id, '/opt/btbigr/' . $value, $filePath); --send file separately
                                     $zip->addFile($filePath, $value);
                                 }
+                                // cesar nrb nrp
+                                $splitedFilename = explode('_', $value);
+                                if ($splitedFilename[0] == 'NRB' || $splitedFilename[0] == 'NRP') {
+                                    if ($splitedFilename[sizeof($splitedFilename)-1] == date("Ymd", strtotime($date))) {
+                                        $filePath = '../storage/receipts/' . $value;
+                                        $zip->addFile($filePath, $value);
+                                    }
+                                }                                
                             }
                             $zip->close();
                             ftp_put($conn_id, '/opt/btbigr/' . $zipName, $zipAddress); //send to SD6
@@ -161,7 +169,7 @@ class printBPBController extends Controller
                 $msg = 'File terkirim ke SD6';
                 File::delete($zipAddress); //delete zip file from storage
                 $this->deleteSigs(); //delete all ttd
-                $this->deleteFiles($date); //delete all files
+                // $this->deleteFiles($date); //delete all files (diminta tidak diaktifkan oleh cps pada 30/06/2022)
             } else {
                 $msg = 'Empty Record, nothing to transfer';
                 return response()->json(['kode' => 2, 'message' => $msg]);
@@ -222,13 +230,14 @@ class printBPBController extends Controller
     public function kirimServerCabang($path, $datas, $pdf, $report)
     {
         $area = $this->getArea();
-        $type = '';
-        if ($report == 'IGR_BO_CTBTBNOTA' || $report == 'IGR_BO_CTBTBNOTA_FULL') {
-            $type = 'BTB_';
-        } else {
-            $type = 'BTB_NON_HARGA_';
-        }
+        // $type = '';
+        // if ($report == 'IGR_BO_CTBTBNOTA' || $report == 'IGR_BO_CTBTBNOTA_FULL') {
+        //     $type = 'BTB_';
+        // } else {
+        //     $type = 'BTB_NON_HARGA_';
+        // }
 
+        $type = 'BTB_';
         if (!File::exists(storage_path($path))) {
             File::makeDirectory(storage_path($path), 0755, true, true);
         }
@@ -1444,6 +1453,14 @@ class printBPBController extends Controller
                     $filePath = '../storage/receipts/' . $value;
                     File::delete($filePath); //delete file from storage
                 }
+                // cesar nrb nrp
+                $splitedFilename = explode('_', $value);
+                if ($splitedFilename[0] == 'NRB' || $splitedFilename[0] == 'NRP') {
+                    if ($splitedFilename[sizeof($splitedFilename)-1] == date("Ymd", strtotime($date))) {
+                        $filePath = '../storage/receipts/' . $value;
+                        File::delete($filePath);
+                    }
+                }  
             }
         }
 
@@ -1454,6 +1471,14 @@ class printBPBController extends Controller
                 if (substr($value, -12, -4) == date("Ymd", strtotime($date))) {
                     $filePath = '../storage/receipts_backup/' . $value;
                     File::delete($filePath); //delete file from storage
+                }
+                // cesar nrb nrp
+                $splitedFilename = explode('_', $value);
+                if ($splitedFilename[0] == 'NRB' || $splitedFilename[0] == 'NRP') {
+                    if ($splitedFilename[sizeof($splitedFilename)-1] == date("Ymd", strtotime($date))) {
+                        $filePath = '../storage/receipts/' . $value;
+                        File::delete($filePath);
+                    }
                 }
             }
         }
@@ -1698,6 +1723,17 @@ class printBPBController extends Controller
             }
 
             $path = 'receipts_backup/';
+            // if (!File::exists(storage_path($path))) {
+            //     File::makeDirectory(storage_path($path), 0755, true, true);
+            // }
+
+            // for ($i = 0; $i < sizeof($datas); $i++) {
+            //     $content = $pdf->download()->getOriginalContent();
+            //     $id = 'BTB_' . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
+            //     $file = storage_path($path . $id . '.PDF');
+            //     file_put_contents($file, $content);
+            // }
+
             $this->kirimServerCabang($path, $datas, $pdf, $report);
             
             // save nota harga
@@ -1730,19 +1766,15 @@ class printBPBController extends Controller
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
-            $path = 'receipts_backup/';
-            $type = 'BTB_NON_HARGA_';
+            // $path = 'receipts_backup/';
+            // $type = 'BTB_NON_HARGA_';
 
-            if (!File::exists(storage_path($path))) {
-                File::makeDirectory(storage_path($path), 0755, true, true);
-            }
-
-            for ($i = 0; $i < sizeof($datas); $i++) {
-                $content = $pdf->download()->getOriginalContent();
-                $id = $type . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
-                $file = storage_path($path . $id . '.PDF');
-                file_put_contents($file, $content);
-            }
+            // for ($i = 0; $i < sizeof($datas); $i++) {
+            //     $content = $pdf->download()->getOriginalContent();
+            //     $id = $type . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
+            //     $file = storage_path($path . $id . '.PDF');
+            //     file_put_contents($file, $content);
+            // }
 
             return $pdf->stream($id . '.PDF');
         } else if ($report == 'IGR_BO_CTBTBNOTA_NONHARGA_FULL') {
@@ -1781,6 +1813,7 @@ class printBPBController extends Controller
             }
 
             $path = 'receipts_backup/';
+            
             $this->kirimServerCabang($path, $datas, $pdf, $report);
             //save data
 
@@ -1813,23 +1846,23 @@ class printBPBController extends Controller
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
-            for ($i = 0; $i < sizeof($datas); $i++) {
-                $id = 'BTB_' . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
-            }
+            // for ($i = 0; $i < sizeof($datas); $i++) {
+            //     $id = 'BTB_' . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
+            // }
 
-            $path = 'receipts_backup/';
-            $type = 'BTB_NON_HARGA_';
+            // $path = 'receipts_backup/';
+            // $type = 'BTB_NON_HARGA_';
 
-            if (!File::exists(storage_path($path))) {
-                File::makeDirectory(storage_path($path), 0755, true, true);
-            }
+            // if (!File::exists(storage_path($path))) {
+            //     File::makeDirectory(storage_path($path), 0755, true, true);
+            // }
 
-            for ($i = 0; $i < sizeof($datas); $i++) {
-                $content = $pdf->download()->getOriginalContent();
-                $id = $type . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
-                $file = storage_path($path . $id . '.PDF');
-                file_put_contents($file, $content);
-            }
+            // for ($i = 0; $i < sizeof($datas); $i++) {
+            //     $content = $pdf->download()->getOriginalContent();
+            //     $id = $type . $datas[$i]->msth_nodoc . '_' . date("Ymd", strtotime($datas[$i]->msth_tgldoc));
+            //     $file = storage_path($path . $id . '.PDF');
+            //     file_put_contents($file, $content);
+            // }
 
             return $pdf->stream($id . '.PDF');
         }

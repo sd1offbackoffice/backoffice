@@ -21,7 +21,7 @@ class NPDBKController extends Controller
         $connect = loginController::getConnectionProcedureKMY();
         $query = oci_parse($connect, "BEGIN sp_proses_trf_rte_npd_php(:p_sukses, :hasil); END;");
         oci_bind_by_name($query, ':p_sukses', $p_sukses, 32);
-        oci_bind_by_name($query, ':hasil', $hasil, 32);
+        oci_bind_by_name($query, ':hasil', $hasil, 100);
         oci_execute($query);
 
         if ($p_sukses == 'N') { //FALSE

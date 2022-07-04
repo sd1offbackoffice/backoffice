@@ -52,8 +52,8 @@ class EditPKMController extends Controller
 //            ->table('tbmaster_perusahaan')
 //            ->first();
 //
-//        dd($d);
-
+//        dd($d)asdsa
+//ssdasd
         return view('BACKOFFICE.PKM.edit-pkm');
     }
 
@@ -258,32 +258,63 @@ class EditPKMController extends Controller
                     ->first();
 
                 if(!$found){
-
-                    $temp_data = DB::connection(Session::get('connection'))
-                        ->table('tbtr_usulanpkm')
-                        ->insert([
-                            'upkm_kodeigr' => Session::get('kdigr'),
-                            'upkm_recordid' => null,
-                            'upkm_nousulan' => $nousulan,
-                            'upkm_tglusulan' => Carbon::createFromFormat('d/m/Y',$tglusulan),
-                            'upkm_prdcd' => $d->prdcd,
-                            'upkm_mpkm_awal' => $d->mpkmawal,
-                            'upkm_pkmadjust_awal' => $d->pkmadjustawal,
-                            'upkm_mplus_awal' => $d->mplusawal,
-                            'upkm_pkmt_awal' => $d->pkmtawal,
-                            'upkm_pkm_usulan' => $d->pkmusulan,
-                            'upkm_mplus_usulan' => $d->mplususulan,
-                            'upkm_pkm_edit' => $d->pkmedit,
-                            'upkm_mplus_edit' => $d->mplusedit,
-                            'upkm_status' => 0,
-                            'upkm_approval' => null,
-                            'upkm_keterangan' => null,
-                            'upkm_tglproses' => null,
-                            'upkm_create_by' => Session::get('usid'),
-                            'upkm_create_dt' => Carbon::now(),
-                            'upkm_modify_by' => null,
-                            'upkm_modify_dt' => null
-                        ]);
+                    // dd($d->mplusawal > 0);
+                    if($d->mplusawal > 0 == true)
+                    {
+                        $temp_data = DB::connection(Session::get('connection'))
+                            ->table('tbtr_usulanpkm')
+                            ->insert([
+                                'upkm_kodeigr' => Session::get('kdigr'),
+                                'upkm_recordid' => null,
+                                'upkm_nousulan' => $nousulan,
+                                'upkm_tglusulan' => Carbon::createFromFormat('d/m/Y',$tglusulan),
+                                'upkm_prdcd' => $d->prdcd,
+                                'upkm_mpkm_awal' => $d->mpkmawal,
+                                'upkm_pkmadjust_awal' => $d->pkmadjustawal,
+                                'upkm_mplus_awal' => $d->mplusawal,
+                                'upkm_pkmt_awal' => $d->pkmtawal,
+                                'upkm_pkm_usulan' => $d->pkmusulan,
+                                'upkm_mplus_usulan' => $d->mplususulan,
+                                'upkm_pkm_edit' => $d->pkmedit,
+                                'upkm_mplus_edit' => $d->mplusedit,
+                                'upkm_status' => 0,
+                                'upkm_approval' => null,
+                                'upkm_keterangan' => null,
+                                'upkm_tglproses' => null,
+                                'upkm_create_by' => Session::get('usid'),
+                                'upkm_create_dt' => Carbon::now(),
+                                'upkm_modify_by' => null,
+                                'upkm_modify_dt' => null
+                            ]);
+                    }
+                    else
+                    {
+                        $temp_data = DB::connection(Session::get('connection'))
+                            ->table('tbtr_usulanpkm')
+                            ->insert([
+                                'upkm_kodeigr' => Session::get('kdigr'),
+                                'upkm_recordid' => null,
+                                'upkm_nousulan' => $nousulan,
+                                'upkm_tglusulan' => Carbon::createFromFormat('d/m/Y',$tglusulan),
+                                'upkm_prdcd' => $d->prdcd,
+                                'upkm_mpkm_awal' => $d->mpkmawal,
+                                'upkm_pkmadjust_awal' => $d->pkmadjustawal,
+                                'upkm_mplus_awal' => null,
+                                'upkm_pkmt_awal' => $d->pkmtawal,
+                                'upkm_pkm_usulan' => $d->pkmusulan,
+                                'upkm_mplus_usulan' => $d->mplususulan,
+                                'upkm_pkm_edit' => $d->pkmedit,
+                                'upkm_mplus_edit' => $d->mplusedit,
+                                'upkm_status' => 0,
+                                'upkm_approval' => null,
+                                'upkm_keterangan' => null,
+                                'upkm_tglproses' => null,
+                                'upkm_create_by' => Session::get('usid'),
+                                'upkm_create_dt' => Carbon::now(),
+                                'upkm_modify_by' => null,
+                                'upkm_modify_dt' => null
+                            ]);
+                    }
 
                 }
                 else{
@@ -376,6 +407,7 @@ class EditPKMController extends Controller
             foreach($data as $d){
                 $plu = DB::connection(Session::get('connection'))
                     ->table('tbmaster_kkpkm')
+                    // ->selectRaw("NVL(tbmaster_kkpkm.pkm_qtymplus, 0) pkm_qtymplus")
                     ->join('tbmaster_prodmast',function($join){
                         $join->on('prd_kodeigr','=','pkm_kodeigr');
                         $join->on('prd_prdcd','=','pkm_prdcd');
@@ -539,7 +571,7 @@ class EditPKMController extends Controller
             // }
             // else{
             //     $tglusulan =  $data[0]->upkm_tglproses;
-                
+
             // }
             // dd($data,$tglusulan);
         }
@@ -754,7 +786,7 @@ class EditPKMController extends Controller
                 ], 500);
             }
 
-            
+
 
             if(substr($filename->getClientOriginalName(),0,6) != 'PKMN'.Session::get('kdigr')){
                 return response()->json([
@@ -765,7 +797,7 @@ class EditPKMController extends Controller
             DB::connection(Session::get('connection'))
                 ->table('tbtemp_pkmbaru_migrasi')
                 ->delete();
-            
+
             foreach($data as $d){
                 $test_insert = DB::connection(Session::get('connection'))
                     ->table('tbtemp_pkmbaru_migrasi')
@@ -795,7 +827,7 @@ class EditPKMController extends Controller
 
             // DB::connection(Session::get('connection'))
             //     ->commit();
-            
+
             // dd($data[0]['NOUSULAN'],$data[0]['TGLUSULAN']);
 
             return response()->json([

@@ -11,6 +11,7 @@
 @endsection
 
 @section('content')
+{{--    dasda--}}
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>

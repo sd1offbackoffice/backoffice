@@ -3,6 +3,7 @@
 @section('title','MENU PKM TOKO | EDIT PKM')
 
 @section('content')
+{{--    sdasd--}}
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12">
@@ -1280,7 +1281,7 @@
                                 for(i=0;i<response.data_usulan.length;i++)
                                 {
                                     $('#table_daftar tbody').append(generateTableRow(response.data_usulan[i]));
-                                    console.log(response.data_usulan[i],'ini response data usulan di upload file usulan');
+
                                 }
                                 tabel = $('#table_daftar').DataTable({
                                     "scrollY": "40vh",
@@ -1413,13 +1414,13 @@
                             },
                             success: function (response) {
                                 $('#modal-loader').modal('hide');
-                            
+
                                 swal({
                                     title: response.message,
                                     icon: 'success'
                                 }).then(() => {
                                     window.open(`{{ url()->current() }}/print-usulan?nousulan=`+response.nousulan+`&tglusulan=`+response.tglusulan);
-                                    getDataApproval();        
+                                    getDataApproval();
 
                                     // window.open(`{{ url()->current() }}/printPDF?prdcd=${$('#prdcd').val()}&upkm_mpkm_awal=${$('#upkm_mpkm_awal').val()}&upkm_pkmadjust_awal=${$('#upkm_pkmadjust_awal').val()}&upkm_mplus_awal=${$('#upkm_mplus_awal').val()}&upkm_pkmt_awal=${$('#upkm_pkmt_awal').val()}&upkm_pkm_edit=${$('#upkm_pkm_edit').val()}&upkm_mplus_edit=${$('#upkm_mplus_edit').val()}&upkm_keterangan=${$('#upkm_keterangan').val()}&pkm_mpkm=${$('#pkm_mpkm').val()}&pkm_qtymplus=${$('#pkm_qtymplus').val()}&pkm_pkmt=${$('#pkm_pkmt').val()}`, '_blank');
                                 });

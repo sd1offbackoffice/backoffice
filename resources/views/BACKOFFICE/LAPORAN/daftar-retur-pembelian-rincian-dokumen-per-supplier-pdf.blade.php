@@ -95,34 +95,34 @@
                 <td class="right padding-right">{{ number_format($data[$i]->potongan,2) }}</td>                                            
                 <td class="right padding-right">{{ number_format($data[$i]->dpp,2) }}</td>
                 <td class="right padding-right">                    
-                    @php
+                    {{-- @php
                         if ($data[$i]->prd_flagbkp1 == 'Y' && $data[$i]->prd_flagbkp2 == 'Y') {
-                            $ppn_rph = $data[$i]->ppn;
+                            $data[$i]->ppn = $data[$i]->ppn;
                         } else {
-                            $ppn_rph = 0;
+                            $data[$i]->ppn = 0;
                         }                        
-                    @endphp
-                    {{ number_format($ppn_rph,2) }}
+                    @endphp --}}
+                    {{ number_format($data[$i]->ppn,2) }}
                 </td>
                 <td class="right padding-right">
-                    @php
+                    {{-- @php
                         if ($data[$i]->prd_flagbkp1 == 'Y' && $data[$i]->prd_flagbkp2 == 'P') {
                             $ppn_bebas = $data[$i]->ppn;
                         } else {
                             $ppn_bebas = 0;
                         }                        
-                    @endphp
-                    {{ number_format($ppn_bebas,2) }}
+                    @endphp --}}
+                    {{ number_format($data[$i]->bebas,2) }}
                 </td>
                 <td class="right padding-right">
-                    @php
+                    {{-- @php
                         if ($data[$i]->prd_flagbkp1 == 'Y' && ($data[$i]->prd_flagbkp2 == 'W' ||  $data[$i]->prd_flagbkp2 == 'G')) {
                             $ppn_dtp = $data[$i]->ppn;
                         } else {
                             $ppn_dtp = 0;
                         }                        
-                    @endphp
-                    {{ number_format($ppn_dtp,2) }}
+                    @endphp --}}
+                    {{ number_format($data[$i]->dtp,2) }}
                 </td>    
                 <td class="right padding-right">{{ number_format($data[$i]->total,2) }}</td>
                 <td class="right padding-right">{{ number_format($data[$i]->avgcost,2) }}</td>
@@ -130,30 +130,30 @@
             @php
                 $st_sup_gross += $data[$i]->gross;
                 $st_sup_potongan += $data[$i]->potongan;
-                $st_sup_ppn += $ppn_rph;
+                $st_sup_ppn += $data[$i]->ppn;
                 $st_sup_dpp += $data[$i]->dpp;                                
                 $st_sup_tn += $data[$i]->total;
                 $st_sup_avg += $data[$i]->avgcost;
-                $st_sup_ppn_bebas += $ppn_bebas;
-                $st_sup_ppn_dtp += $ppn_dtp;
+                $st_sup_ppn_bebas += $data[$i]->bebas;
+                $st_sup_ppn_dtp += $data[$i]->dtp;
 
                 $sum_gross_bkp += $data[$i]->gross;
                 $sum_potongan_bkp += $data[$i]->potongan;
-                $sum_ppn_bkp += $ppn_rph;
+                $sum_ppn_bkp += $data[$i]->ppn;
                 $sum_dpp_btkp += $data[$i]->dpp;                                
                 $sum_total_bkp += $data[$i]->total;
                 $sum_avg_bkp += $data[$i]->avgcost;
-                $sum_ppn_bebas_bkp += $ppn_bebas;
-                $sum_ppn_dtp_bkp += $ppn_dtp;
+                $sum_ppn_bebas_bkp += $data[$i]->bebas;
+                $sum_ppn_dtp_bkp += $data[$i]->dtp;
 
                 $sum_gross_btkp += $data[$i]->gross;
                 $sum_potongan_btkp += $data[$i]->potongan;
-                $sum_ppn_btkp += $ppn_rph;
+                $sum_ppn_btkp += $data[$i]->ppn;
                 $sum_dpp_btkp += $data[$i]->dpp;                                
                 $sum_total_btkp += $data[$i]->total;
                 $sum_avg_btkp += $data[$i]->avgcost;
-                $sum_ppn_bebas_btkp += $ppn_bebas;
-                $sum_ppn_dtp_btkp += $ppn_dtp;
+                $sum_ppn_bebas_btkp += $data[$i]->bebas;
+                $sum_ppn_dtp_btkp += $data[$i]->dtp;
 
                 $tempsup = $data[$i]->supplier;
             @endphp

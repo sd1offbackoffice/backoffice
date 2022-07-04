@@ -96,6 +96,19 @@ Route::get('/testigr_bo_surat_penerimaan_barang', function () {
     return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_surat_penerimaan_barang');
 });
 
+Route::get('/testigr_bo_surat_jalan_expedisi', function () {
+    $pdf = PDF::loadview('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_surat_jalan_expedisi');
+    $pdf->output();
+    $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+    $canvas = $dompdf->get_canvas();
+    $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+
+    return $pdf->stream('igr_bo_surat_jalan_expedisi.PDF');
+
+    return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_surat_jalan_expedisi');
+});
+
 Route::get('locale/{locale}',function ($locale){
     \Session::put('locale',$locale);
     return redirect()->back();
@@ -848,6 +861,10 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::get('/process', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BreadController@process')->middleware('CheckLogin');
                     Route::get('/check', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BreadController@check')->middleware('CheckLogin');
                     Route::get('/show', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BreadController@show')->middleware('CheckLogin');
+                });
+
+                Route::prefix('/surat-jalan-ekspedisi')->group(function () {
+                    Route::get('/', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\SJEkspedisiController@index')->middleware('CheckLogin');
                 });
                 // ------Kingsley------
 

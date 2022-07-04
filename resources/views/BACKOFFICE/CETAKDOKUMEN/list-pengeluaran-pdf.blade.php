@@ -98,6 +98,7 @@
         <td class="left">{{ $data['data1'][0]->status }} </td>
     </tr>
 </table>
+<br>
 @section('content')
     {{-- @for($j=0; $j<$i; $j++ )
         <br>

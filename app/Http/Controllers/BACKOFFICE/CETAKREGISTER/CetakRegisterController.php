@@ -284,7 +284,8 @@ class CetakRegisterController extends Controller
         )
         group by prd_flagbkp1, prd_flagbkp2, msth_nodoc, msth_tgldoc, msth_cterm, msth_top,status,msth_nofaktur, msth_tglfaktur,
             supplier,mstd_tgldoc, mstd_pkp, mstd_typetrn
-        order by msth_nodoc, msth_tgldoc");        
+        order by msth_nodoc, msth_tgldoc");  
+        // dd($data);
 
         $pkp = new \stdClass();
         $pkp->gross = 0;

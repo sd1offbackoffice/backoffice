@@ -370,11 +370,6 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         $net['g'] = 0;
         $hpp['g'] = 0;
         $margin['g'] = 0;
-        // $gross['r'] = 0;
-        // $tax['r'] = 0;
-        // $net['r'] = 0;
-        // $hpp['r'] = 0;
-        // $margin['r'] = 0;
         $gross['d'] = 0;
         $tax['d'] = 0;
         $net['d'] = 0;
@@ -564,7 +559,11 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
-        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perkategory_t-pdf',
+        // $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perkategory_t-pdf',
+        //     ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan,
+        //         'qty' => $qty, 'cf_nmargin' => $cf_nmargin, 'periode' => $periode,
+        //         'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp, 'margin' => $margin, 'marginpersen' => $marginpersen, 'qtygrandtotal' => $qtyGrandTotal]);
+        $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perkategory_t-pdf-2',
             ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan,
                 'qty' => $qty, 'cf_nmargin' => $cf_nmargin, 'periode' => $periode,
                 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp, 'margin' => $margin, 'marginpersen' => $marginpersen, 'qtygrandtotal' => $qtyGrandTotal]);
@@ -575,7 +574,8 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         $canvas = $dompdf->get_canvas();
         $canvas->page_text(511, 78, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
-        return $pdf->stream('lap_jual_perkategory_t.pdf');
+        // return $pdf->stream('lap_jual_perkategory_t.pdf');
+        return $pdf->stream('lap_jual_perkategory_t-pdf-2.pdf');
     }
 
     public function printDocumentMenu2(Request $request)
@@ -639,15 +639,6 @@ WHERE prs_kodeigr = '$kodeigr'
   AND cStat = 'T'
 GROUP BY sls_kodeigr, prs_namaperusahaan, prs_namacabang, cdiv, div_namadivisi, cdept, dep_namadepartement, fdfbkp, cexp
 ORDER BY cdiv,cdept");
-
-// dd($datas);
-
-// -- AND SLS_FLAGBKP IN ('W','G','P')
-
-//        if(sizeof($datas) == 0){
-//            return "**DATA TIDAK ADA**";
-//        }
-
 
         //CALCULATE GRAND TOTAL
 
@@ -821,7 +812,6 @@ ORDER BY cdiv,cdept");
                     }
                 }
             } elseif (($datas[$i]->cdiv) == '5' && ($datas[$i]->cdept) == '39') {
-                // dd(($datas[$i]->cdiv) == '5' && ($datas[$i]->cdept) == '39','ini elseif 1');
                 $gross['c'] = $gross['c'] + $datas[$i]->ngross;
                 $tax['c'] = $tax['c'] + $datas[$i]->ntax;
                 $freePPN['c'] = $freePPN['c'] + $datas[$i]->ntax;
@@ -830,7 +820,6 @@ ORDER BY cdiv,cdept");
                 $hpp['c'] = $hpp['c'] + $datas[$i]->nhpp;
                 $margin['c'] = $margin['c'] + $datas[$i]->nmargin;
             } elseif (($datas[$i]->cdiv) == '5' && ($datas[$i]->cdept) == '40') {
-                // dd(($datas[$i]->cdiv) == '5' && ($datas[$i]->cdept) == '40','ini elseif 2');
                 $gross['d'] = $gross['d'] + $datas[$i]->ngross;
                 if($datas[$i]->fdfbkp == 'Y')
                 {
@@ -854,7 +843,6 @@ ORDER BY cdiv,cdept");
                 $hpp['d'] = $hpp['d'] + $datas[$i]->nhpp;
                 $margin['d'] = $margin['d'] + $datas[$i]->nmargin;
             } elseif (($datas[$i]->cdiv) == '5' && ($datas[$i]->cdept) == '43') {
-                // dd(($datas[$i]->cdiv) == '5' && ($datas[$i]->cdept) == '43','ini elseif 3');
                 $gross['f'] = $gross['f'] + $datas[$i]->ngross;
                 $tax['f'] = $tax['f'] + $datas[$i]->ntax;
                 $freePPN['f'] = $freePPN['f'] + $datas[$i]->ntax;
@@ -948,7 +936,6 @@ ORDER BY cdiv,cdept");
             }
         }
 
-        // dd($gross['g'],$tax['g'],$net['g'],$hpp['g'],$margin['g'],$marginpersen['g']);
 
         //ULTIMATE GRAND TOTAL
         $gross['total'] = 0;
@@ -1014,7 +1001,6 @@ ORDER BY cdiv,cdept");
             }
         }
 
-        // dd($gross['g'],$tax['g'],$net['g'],$hpp['g'],$margin['g'],$marginpersen['g']);
 
         //MENGAMBIL ULANG DATA TANPA FDFBKP agar tidak group by fdfbkp yang menyebabkan nilai menjadi double,
         //fdfbkp sebelumnya diperlukan untuk menghitung total
@@ -1061,7 +1047,6 @@ WHERE prs_kodeigr = '$kodeigr'
 GROUP BY sls_kodeigr, prs_namaperusahaan, prs_namacabang, cdiv, div_namadivisi, cdept, dep_namadepartement, fdfbkp, cexp
 ORDER BY cdiv,cdept");
 
-// dd($gross['g'],$tax['g'],$net['g'],$hpp['g'],$margin['g'],$marginpersen['g']);
 
         $cf_nmargin = [];
         for ($i = 0; $i < sizeof($datas); $i++) {
@@ -1543,7 +1528,6 @@ ORDER BY omidiv, omidep");
                 }
             }
         }
-        dd($gross,$tax,$net,$hpp,$margin,$marginpersen);
 
 //        //PRINT
         $perusahaan = DB::connection(Session::get('connection'))->table("tbmaster_perusahaan")->first();

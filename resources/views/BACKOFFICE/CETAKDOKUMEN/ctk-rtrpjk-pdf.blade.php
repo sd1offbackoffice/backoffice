@@ -79,6 +79,7 @@
             $f_1 = $data[$i]->sup_namanpwp ? $data[$i]->sup_namanpwp : $data[$i]->sup_namasupplier . " " . $data[$i]->sup_singkatansupplier;
             $flag = $data[$i]->msth_flagdoc==1?'*':'';
             $faktur = $data[$i]->prs_kodemto.'.' . substr($data[$i]->msth_tgldoc,9,2) . '.0'.$data[$i]->mstd_docno2.$flag;
+            $noFaktur = $data[$i]->prs_kodemto . '.' . date("y", strtotime($data[$i]->msth_tgldoc)) . '.0' . $data[$i]->mstd_docno2 . $data[$i]->msth_flagdoc == 'T' ? '*' : ''
         @endphp
 
         @if($temp_noref3 != trim($data[$i]->mstd_noref3))
@@ -97,8 +98,10 @@
                     </tr>
                     <tr>
                         <th colspan="5"></th>
+                        {{-- <th style="text-align:center;" colspan="1">
+                            Nomor: {{ $data[$i]->mstd_docno2 }}</th> --}}
                         <th style="text-align:center;" colspan="1">
-                            Nomor: {{ $data[$i]->mstd_docno2 }}</th>
+                            Nomor: {{$data[$i]->prs_kodemto . '.' . date("y", strtotime($data[$i]->msth_tgldoc)) . '.0' . $data[$i]->mstd_docno2}}</th>
                         <th colspan="1"></th>
                     </tr>
                     <tr>

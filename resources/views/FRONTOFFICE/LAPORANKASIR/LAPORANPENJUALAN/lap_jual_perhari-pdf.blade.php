@@ -32,22 +32,22 @@
 
     <table class="table table-bordered table-responsive" style="border-collapse: collapse">
         <thead style="border-top: 2px solid black;border-bottom: 2px solid black; text-align: center">
-            <tr style="text-align: center; vertical-align: center">
-                <th rowspan="2" style="width: 80px; text-align: left; vertical-align: middle">TANGGAL</th>
-                <th rowspan="2" style="width: 70px; text-align: left; vertical-align: middle">HARI</th>
-                <th rowspan="2" style="width: 120px; text-align: right; vertical-align: middle">PENJUALAN<br>KOTOR</th>
-                <th rowspan="2" style="width: 100px; text-align: right; vertical-align: middle">PAJAK</th>
-                <th rowspan="2" style="width: 100px; text-align: right; vertical-align: middle">BEBAS PPN</th>
-                <th rowspan="2" style="width: 100px; text-align: right; vertical-align: middle">PPN DTP</th>
-                <th rowspan="2" style="width: 120px; text-align: right; vertical-align: middle">PENJUALAN<br>BERSIH</th>
-                <th rowspan="2" style="width: 100px; text-align: right; vertical-align: middle">H.P.P RATA2</th>
-                <th colspan="2" style=" text-align: right; vertical-align: middle">---MARGIN---</th>
-{{--                <th style="width: 40px;">&nbsp;&nbsp;&nbsp;&nbsp;</th>--}}
-            </tr>
-            <tr>
-                <td style="width: 100px; text-align: right">Rp.</td>
-                <td style="width: 20px; text-align: right">%</td>
-            </tr>
+        <tr style="text-align: center; vertical-align: center">
+            <th rowspan="2" style="width: 80px; text-align: left; vertical-align: middle">TANGGAL</th>
+            <th rowspan="2" style="width: 70px; text-align: left; vertical-align: middle">HARI</th>
+            <th rowspan="2" style="width: 120px; text-align: right; vertical-align: middle">PENJUALAN<br>KOTOR</th>
+            <th rowspan="2" style="width: 100px; text-align: right; vertical-align: middle">PAJAK</th>
+            <th rowspan="2" style="width: 100px; text-align: right; vertical-align: middle">BEBAS PPN</th>
+            <th rowspan="2" style="width: 100px; text-align: right; vertical-align: middle">PPN DTP</th>
+            <th rowspan="2" style="width: 120px; text-align: right; vertical-align: middle">PENJUALAN<br>BERSIH</th>
+            <th rowspan="2" style="width: 100px; text-align: right; vertical-align: middle">H.P.P RATA2</th>
+            <th colspan="2" style=" text-align: right; vertical-align: middle">---MARGIN---</th>
+            {{--                <th style="width: 40px;">&nbsp;&nbsp;&nbsp;&nbsp;</th>--}}
+        </tr>
+        <tr>
+            <td style="width: 100px; text-align: right">Rp.</td>
+            <td style="width: 20px; text-align: right">%</td>
+        </tr>
         </thead>
         <tbody style="border-bottom: 2px solid black; text-align: right">
         @for($i=0;$i<sizeof($data);$i++)
@@ -62,8 +62,20 @@
                 <td>{{rupiah($data[$i]->sls_nilai)}}</td>
                 <td>{{rupiah($data[$i]->sls_tax)}}</td>
 
-                <td>bebas</td>
-                <td>dtp</td>
+                @if($data[$i]->fdfbkp == 'Y')
+                    <td class="right padding-right">{{ number_format(0,2) }}</td>
+                    <td class="right padding-right">{{ number_format(0,2) }}</td>
+                @elseif($data[$i]->fdfbkp == 'P')
+                    <td class="right padding-right">{{ number_format(0,2) }}</td>
+                    <td class="right padding-right">{{ number_format(0,2) }}</td>
+                @elseif($data[$i]->fdfbkp == 'G' || $data[$i]->fdfbkp == 'W')
+                    <td class="right padding-right">{{ number_format(0,2) }}</td>
+                    <td class="right padding-right" >{{ number_format(0,2) }}</td>
+                @else
+                    <td class="right padding-right">{{ number_format(0,2) }}</td>
+                    <td class="right padding-right">{{ number_format(0,2) }}</td>
+                @endif
+
 
                 <td>{{rupiah($data[$i]->sls_net)}}</td>
                 <td>{{rupiah($data[$i]->sls_hpp)}}</td>

@@ -135,7 +135,8 @@
             <tr>
                 <td class="border-top left" colspan="6">SUBTOTAL TANGGAL {{ $temp }}</td>
                 <td class="border-top right">{{ number_format(round($subgross), 0, '.', ',') }}</td>
-                <td class="border-top right">{{ number_format(round($subdiscount), 0, '.', ',') }}</td>
+                <td class="border-top right">{{ number_format($subdiscount, 0, '.', ',') }}</td>
+                {{-- <td class="border-top right">{{ number_format(round($subdiscount), 0, '.', ',') }}</td> --}}
                 <td class="border-top right">{{ number_format(round($submstd_ppnrph), 0, '.', ',') }}</td>
                 <td class="border-top right">{{ number_format(round($submstd_ppnbebas), 0, '.', ',') }}</td>
                 <td class="border-top right">{{ number_format(round($submstd_ppndtp), 0, '.', ',') }}</td>                                

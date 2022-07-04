@@ -14,12 +14,13 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function cekProcedure($sp){
+    public function cekProcedure($sp)
+    {
         return DB::connection(Session::get('connection'))
             ->select("select  count(1) count
                               from  " . 'gv$access' . "
                               where type = 'PROCEDURE'
-                              and object in (".$sp.")
+                              and object in (" . $sp . ")
                                 and (inst_id,sid) in (
                                                       select  inst_id,
                                                               sid
@@ -27,8 +28,4 @@ class Controller extends BaseController
                                                         where type = 'USER'
                                                      )")[0]->count;
     }
-
 }
-
-
-
