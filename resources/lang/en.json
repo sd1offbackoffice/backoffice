@@ -1,4 +1,15 @@
 {
-    "Kepala Gudang": "Head Of Storage",
-    "Master Cabang": "Branch Master"
+    "Satuan": "Unit",
+    "Supplier": "Supplier",
+    "Tanggal Mulai": "Start Date",
+    "Tanggal Akhir": "End Date",
+    "Qty": "Qty",
+    "Deskripsi": "Description",
+    "Tabel PLU PKMT untuk QTY M+" : "Table PLU PKMT for QTY M+",
+    "Penjualan Rata-Rata" : "Average Sales",
+    "Cetak Semua" : "Print All",
+    "Upload CSV" : "Upload CSV",
+    "Simpan" : "Save",
+    "Hapus" : "Delete",
+    "Yakin ingin menyimpan data" : "Are you sure you want to save the data"
 }
