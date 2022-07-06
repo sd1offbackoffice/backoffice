@@ -95,33 +95,12 @@
                 <td class="right padding-right">{{ number_format($data[$i]->potongan,2) }}</td>                                            
                 <td class="right padding-right">{{ number_format($data[$i]->dpp,2) }}</td>
                 <td class="right padding-right">                    
-                    {{-- @php
-                        if ($data[$i]->prd_flagbkp1 == 'Y' && $data[$i]->prd_flagbkp2 == 'Y') {
-                            $data[$i]->ppn = $data[$i]->ppn;
-                        } else {
-                            $data[$i]->ppn = 0;
-                        }                        
-                    @endphp --}}
                     {{ number_format($data[$i]->ppn,2) }}
                 </td>
                 <td class="right padding-right">
-                    {{-- @php
-                        if ($data[$i]->prd_flagbkp1 == 'Y' && $data[$i]->prd_flagbkp2 == 'P') {
-                            $ppn_bebas = $data[$i]->ppn;
-                        } else {
-                            $ppn_bebas = 0;
-                        }                        
-                    @endphp --}}
                     {{ number_format($data[$i]->bebas,2) }}
                 </td>
                 <td class="right padding-right">
-                    {{-- @php
-                        if ($data[$i]->prd_flagbkp1 == 'Y' && ($data[$i]->prd_flagbkp2 == 'W' ||  $data[$i]->prd_flagbkp2 == 'G')) {
-                            $ppn_dtp = $data[$i]->ppn;
-                        } else {
-                            $ppn_dtp = 0;
-                        }                        
-                    @endphp --}}
                     {{ number_format($data[$i]->dtp,2) }}
                 </td>    
                 <td class="right padding-right">{{ number_format($data[$i]->total,2) }}</td>

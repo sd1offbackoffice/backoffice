@@ -90,6 +90,11 @@ return [
             'root'   => '../storage/qrcode/',
         ],
 
+        'nrb_nrp_backup' => [
+            'driver' => 'local',
+            'root'   => '../storage/nrb_nrp_backup/',
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

@@ -275,11 +275,13 @@ FROM TBMASTER_PERUSAHAAN, /*TBMASTER_PRODMAST,*/ TBMASTER_DIVISI, TBMASTER_DEPAR
         AND trjd_recordid IS NULL
         AND trjd_prdcd = sls_prdcd
         AND TRUNC(trjd_transactiondate) = TRUNC(sls_periode)
-        AND TRUNC(trjd_transactiondate) BETWEEN '1-oct-12' AND '10-oct-12'--:p_tgl1 and :p_tgl2 --
+        AND TRUNC(trjd_transactiondate) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+        -- '1-oct-12' AND '10-oct-12'--:p_tgl1 and :p_tgl2 --
         AND trjd_cus_kodemember = cus_kodemember (+)
         AND cus_jenismember = 'E'
       )
-   WHERE TRUNC(sls_periode) BETWEEN '1-oct-12' AND '10-oct-12'--:p_tgl1 and :p_tgl2 --'1-oct-12' AND '10-oct-12'
+   WHERE TRUNC(sls_periode) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') AND TO_DATE('$eDate', 'DD-MM-YYYY')
+--    '1-oct-12' AND '10-oct-12'--:p_tgl1 and :p_tgl2 --'1-oct-12' AND '10-oct-12'
      AND sls_prdcd = prdcd(+)
    GROUP BY sls_kodeigr, sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg,sls_flagbkp, NVL(cexp,'F')
    ORDER BY sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg
@@ -320,6 +322,7 @@ FROM TBMASTER_PERUSAHAAN, /*TBMASTER_PRODMAST,*/ TBMASTER_DIVISI, TBMASTER_DEPAR
    ORDER BY sls_kodedivisi, sls_kodedepartement, sls_kodekategoribrg
 )
 WHERE prs_kodeigr = '$kodeigr'
+--   AND prdcd = '0296470'
   AND kodeigr = prs_kodeigr
   AND fdkdiv = div_kodedivisi (+)
   AND fdkdep = dep_kodedepartement (+)
@@ -332,46 +335,64 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
 
         $gross['c'] = 0;
         $tax['c'] = 0;
+        $freePPN['c'] = 0;
+        $ppnDTP['c'] = 0;
         $net['c'] = 0;
         $hpp['c'] = 0;
         $margin['c'] = 0;
         $gross['f'] = 0;
         $tax['f'] = 0;
+        $freePPN['f'] = 0;
+        $ppnDTP['f'] = 0;
         $net['f'] = 0;
         $hpp['f'] = 0;
         $margin['f'] = 0;
         $gross['p'] = 0;
         $tax['p'] = 0;
+        $freePPN['p'] = 0;
+        $ppnDTP['p'] = 0;
         $net['p'] = 0;
         $hpp['p'] = 0;
         $margin['p'] = 0;
         $gross['x'] = 0;
         $tax['x'] = 0;
+        $freePPN['x'] = 0;
+        $ppnDTP['x'] = 0;
         $net['x'] = 0;
         $hpp['x'] = 0;
         $margin['x'] = 0;
         $gross['k'] = 0;
         $tax['k'] = 0;
+        $freePPN['k'] = 0;
+        $ppnDTP['k'] = 0;
         $net['k'] = 0;
         $hpp['k'] = 0;
         $margin['k'] = 0;
         $gross['b'] = 0;
         $tax['b'] = 0;
+        $freePPN['b'] = 0;
+        $ppnDTP['b'] = 0;
         $net['b'] = 0;
         $hpp['b'] = 0;
         $margin['b'] = 0;
         $gross['e'] = 0;
         $tax['e'] = 0;
+        $freePPN['e'] = 0;
+        $ppnDTP['e'] = 0;
         $net['e'] = 0;
         $hpp['e'] = 0;
         $margin['e'] = 0;
         $gross['g'] = 0;
         $tax['g'] = 0;
+        $freePPN['g'] = 0;
+        $ppnDTP['g'] = 0;
         $net['g'] = 0;
         $hpp['g'] = 0;
         $margin['g'] = 0;
         $gross['d'] = 0;
         $tax['d'] = 0;
+        $freePPN['d'] = 0;
+        $ppnDTP['d'] = 0;
         $net['d'] = 0;
         $hpp['d'] = 0;
         $margin['d'] = 0;
@@ -379,41 +400,94 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         for ($i = 0; $i < sizeof($rec); $i++) {
             if (($rec[$i]->fdkdiv) != '5' && (($rec[$i]->fdkdep != '39') && ($rec[$i]->fdkdep != '40') && ($rec[$i]->fdkdep != '43'))) {
                 if ($rec[$i]->fdntax != 0 || $rec[$i]->fdftax != 0) {
-                    $gross['p'] = $gross['p'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
-                    $tax['p'] = $tax['p'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
-                    $net['p'] = $net['p'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
-                    $hpp['p'] = $hpp['p'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
-                    $margin['p'] = $margin['p'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
+                    // $gross['p'] = $gross['p'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
+                    // $tax['p'] = $tax['p'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                    // $freePPN['p'] = $freePPN['p'] + 0;
+                    // $ppnDTP['p'] = $ppnDTP['p'] + 0;
+                    // $net['p'] = $net['p'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
+                    // $hpp['p'] = $hpp['p'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
+                    // $margin['p'] = $margin['p'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
+
+                    switch($rec[$i]->fdfbkp){
+                        case 'Y' :
+                            $gross['p'] = $gross['p'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
+                            $tax['p'] = $tax['p'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                            $freePPN['p'] = $freePPN['p'] + 0;
+                            $ppnDTP['p'] = $ppnDTP['p'] + 0;
+                            $net['p'] = $net['p'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
+                            $hpp['p'] = $hpp['p'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
+                            $margin['p'] = $margin['p'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
+                            break;
+                        case 'P' :
+                            $gross['b'] = $gross['b'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
+                            $tax['b'] = $tax['b'] + 0;
+                            $freePPN['b'] = $freePPN['b'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                            $ppnDTP['b'] = $ppnDTP['b'] + 0;
+                            $net['b'] = $net['b'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
+                            $hpp['b'] = $hpp['b'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
+                            $margin['b'] = $margin['b'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
+                            break;
+                        case 'W' :
+                            $gross['g'] = $gross['g'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
+                            $tax['g'] = $tax['g'] + 0;
+                            $freePPN['g'] = $freePPN['g'] + 0;
+                            $ppnDTP['g'] = $ppnDTP['g'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                            $net['g'] = $net['g'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
+                            $hpp['g'] = $hpp['g'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
+                            $margin['g'] = $margin['g'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
+                            break;
+                        case 'G' :
+                            $gross['g'] = $gross['g'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
+                            $tax['g'] = $tax['g'] + 0;
+                            $freePPN['g'] = $freePPN['g'] + 0;
+                            $ppnDTP['g'] = $ppnDTP['g'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                            $net['g'] = $net['g'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
+                            $hpp['g'] = $hpp['g'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
+                            $margin['g'] = $margin['g'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
+                            break;
+                    }
+
                 } else {
                     if ($rec[$i]->fdfbkp == 'C') {
                         $gross['k'] = $gross['k'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
                         $tax['k'] = $tax['k'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                        $freePPN['k'] = $freePPN['k'] + 0;
+                        $ppnDTP['k'] = $ppnDTP['k'] + 0;
                         $net['k'] = $net['k'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                         $hpp['k'] = $hpp['k'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                         $margin['k'] = $margin['k'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
-                    } elseif ($rec[$i]->fdfbkp == 'P') {
-                        $gross['b'] = $gross['b'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
-                        $tax['b'] = $tax['b'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
-                        $net['b'] = $net['b'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
-                        $hpp['b'] = $hpp['b'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
-                        $margin['b'] = $margin['b'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
-                    } elseif ($rec[$i]->fdfbkp == 'G' || $rec[$i]->fdfbkp == 'W') {
-                        $gross['g'] = $gross['g'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
-                        $tax['g'] = $tax['g'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
-                        $net['g'] = $net['g'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
-                        $hpp['g'] = $hpp['g'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
-                        $margin['g'] = $margin['g'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
-                    }
+                    } 
+                    // elseif ($rec[$i]->fdfbkp == 'P') {
+                    //     $gross['b'] = $gross['b'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
+                    //     $tax['b'] = $tax['b'] + 0;
+                    //     $freePPN['b'] = $freePPN['b'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                    //     $ppnDTP['b'] = $ppnDTP['b'] + 0;
+                    //     $net['b'] = $net['b'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
+                    //     $hpp['b'] = $hpp['b'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
+                    //     $margin['b'] = $margin['b'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
+                    // } elseif ($rec[$i]->fdfbkp == 'G' || $rec[$i]->fdfbkp == 'W') {
+                        // $gross['g'] = $gross['g'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
+                        // $tax['g'] = $tax['g'] + 0;
+                        // $freePPN['g'] = $freePPN['g'] + 0;
+                        // $ppnDTP['g'] = $ppnDTP['g'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                        // $net['g'] = $net['g'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
+                        // $hpp['g'] = $hpp['g'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
+                        // $margin['g'] = $margin['g'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
+                    // }
                     else {
                         if ($rec[$i]->cexp == 'Y') {
                             $gross['e'] = $gross['e'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
                             $tax['e'] = $tax['e'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                            $freePPN['e'] = $freePPN['e'] + 0;
+                            $ppnDTP['e'] = $ppnDTP['e'] + 0;
                             $net['e'] = $net['e'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                             $hpp['e'] = $hpp['e'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                             $margin['e'] = $margin['e'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
                         } else {
                             $gross['x'] = $gross['x'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
                             $tax['x'] = $tax['x'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                            $freePPN['x'] =  0;
+                            $ppnDTP['x'] = 0;
                             $net['x'] = $net['x'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                             $hpp['x'] = $hpp['x'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                             $margin['x'] = $margin['x'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
@@ -423,18 +497,39 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
             } elseif ($rec[$i]->fdkdiv == '5' && $rec[$i]->fdkdep == '39') {
                 $gross['c'] = $gross['c'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
                 $tax['c'] = $tax['c'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                $freePPN['c'] = $freePPN['c'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                $ppnDTP['c'] = $ppnDTP['c'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
                 $net['c'] = $net['c'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                 $hpp['c'] = $hpp['c'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                 $margin['c'] = $margin['c'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
             } elseif ($rec[$i]->fdkdiv == '5' && $rec[$i]->fdkdep == '40') {
                 $gross['d'] = $gross['d'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
-                $tax['d'] = $tax['d'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                if($rec[$i]->fdfbkp == 'Y')
+                {
+                    $tax['d'] = $tax['d'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                    $freePPN['d'] = $freePPN['d'] + 0;
+                    $ppnDTP['d'] = $ppnDTP['d'] + 0;
+                }
+                else if($rec[$i]->fdfbkp == 'P')
+                {
+                    $tax['d'] = $tax['d'] + 0;
+                    $freePPN['d'] = $freePPN['d'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                    $ppnDTP['d'] = $ppnDTP['d'] + 0;
+                }
+                else
+                {
+                    $tax['d'] = $tax['d'] + 0;
+                    $freePPN['d'] = $freePPN['d'] + 0;
+                    $ppnDTP['d'] = $ppnDTP['d'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                }
                 $net['d'] = $net['d'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                 $hpp['d'] = $hpp['d'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                 $margin['d'] = $margin['d'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
             } elseif ($rec[$i]->fdkdiv == '5' && $rec[$i]->fdkdep == '43') {
                 $gross['f'] = $gross['f'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
                 $tax['f'] = $tax['f'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                $freePPN['f'] = $freePPN['f'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                $ppnDTP['f'] = $ppnDTP['f'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
                 $net['f'] = $net['f'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                 $hpp['f'] = $hpp['f'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                 $margin['f'] = $margin['f'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
@@ -527,23 +622,41 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         //ULTIMATE GRAND TOTAL
         $gross['total'] = 0;
         $tax['total'] = 0;
+        $freePPN['total'] = 0;
+        $ppnDTP['total'] = 0;
         $net['total'] = 0;
         $hpp['total'] = 0;
         $margin['total'] = 0;
         $qtyGrandTotal = 0;
         for ($i = 0; $i < sizeof($datas); $i++) {
+            // dd($datas);
             $gross['total'] = $gross['total'] + $datas[$i]->ngross;
-            $tax['total'] = $tax['total'] + $datas[$i]->ntax;
+            if($datas[$i]->fdfbkp == 'Y')
+            {
+                $tax['total'] = $tax['total'] + $datas[$i]->ntax;
+            }
+            else if($datas[$i]->fdfbkp == 'P')
+            {
+                $freePPN['total'] = $freePPN['total'] + $datas[$i]->ntax;
+            }
+            else if($datas[$i]->fdfbkp == 'W' || $datas[$i]->fdfbkp == 'G')
+            { 
+                $ppnDTP['total'] = $ppnDTP['total'] + $datas[$i]->ntax;
+            }
             $net['total'] = $net['total'] + $datas[$i]->nnet;
             $hpp['total'] = $hpp['total'] + $datas[$i]->nhpp;
             $margin['total'] = $margin['total'] + $datas[$i]->nmargin;
             $qtyGrandTotal = $qtyGrandTotal + $datas[$i]->ktqty;
         }
-        $gross['total'] = round($gross['total'], 0);
-        $tax['total'] = round($tax['total'], 0);
-        $net['total'] = round($net['total'], 0);
-        $hpp['total'] = round($hpp['total'], 0);
-        $margin['total'] = round($margin['total'], 0);
+
+        // dd($ppnDTP['total']);
+        // $gross['total'] = round($gross['total'], 0);
+        // $tax['total'] = round($tax['total'], 0);
+        // $freePPN['total'] = round($freePPN['total'], 0);
+        // $ppnDTP['total'] = round($ppnDTP['total'], 0);
+        // $net['total'] = round($net['total'], 0);
+        // $hpp['total'] = round($hpp['total'], 0);
+        // $margin['total'] = round($margin['total'], 0);
 
         if ($net['total'] != 0) {
             $marginpersen['total'] = round(($margin['total']) * 100 / ($net['total']), 2);
@@ -566,7 +679,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perkategory_t-pdf-2',
             ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan,
                 'qty' => $qty, 'cf_nmargin' => $cf_nmargin, 'periode' => $periode,
-                'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp, 'margin' => $margin, 'marginpersen' => $marginpersen, 'qtygrandtotal' => $qtyGrandTotal]);
+                'gross' => $gross, 'tax' => $tax, 'freePPN' => $freePPN, 'ppnDTP' => $ppnDTP, 'net' => $net, 'hpp' => $hpp, 'margin' => $margin, 'marginpersen' => $marginpersen, 'qtygrandtotal' => $qtyGrandTotal]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
@@ -719,9 +832,9 @@ ORDER BY cdiv,cdept");
                         case 'Y' :
                             $gross['y'] = $gross['y'] + $datas[$i]->ngross;
                             $tax['y'] = $tax['y'] + $datas[$i]->ntax;
-                            $tax['y'] = $tax['y'] + $datas[$i]->ntax;
                             $freePPN['y'] = $freePPN['y'] + 0;
                             $ppnDTP['y'] = $ppnDTP['y'] + 0;
+                            $net['y'] = $net['y'] + $datas[$i]->nnet;
                             $hpp['y'] = $hpp['y'] + $datas[$i]->nhpp;
                             $margin['y'] = $margin['y'] + $datas[$i]->nmargin;
                             break;
@@ -745,7 +858,8 @@ ORDER BY cdiv,cdept");
                             break;
                         case 'G' :
                             $gross['g'] = $gross['g'] + $datas[$i]->ngross;
-                            $tax['g'] = $tax['g'] + $datas[$i]->ntax;
+                            // $tax['g'] = $tax['g'] +  $datas[$i]->ntax;
+                            $tax['g'] = $tax['g'] +  0;
                             $freePPN['g'] = $freePPN['g'] + 0;
                             $ppnDTP['g'] = $ppnDTP['g'] + $datas[$i]->ntax;
                             $net['g'] = $net['g'] + $datas[$i]->nnet;
@@ -981,15 +1095,15 @@ ORDER BY cdiv,cdept");
             }
         }
 
-        if ($net['total'] != 0) {
-            $marginpersen['total'] = round(($margin['total']) * 100 / ($net['total']), 2);
-        } else {
-            if (($margin['total']) != 0) {
-                $marginpersen['total'] = 100;
-            } else {
-                $marginpersen['total'] = 0;
-            }
-        }
+        // if ($net['total'] != 0) {
+        //     $marginpersen['total'] = round(($margin['total']) * 100 / ($net['total']), 2);
+        // } else {
+        //     if (($margin['total']) != 0) {
+        //         $marginpersen['total'] = 100;
+        //     } else {
+        //         $marginpersen['total'] = 0;
+        //     }
+        // }
 
         if ($net['total'] - $net['d'] != 0) {
             $marginpersen['tminp'] = round(($margin['total'] - $margin['d']) * 100 / ($net['total'] - $net['d']), 2);

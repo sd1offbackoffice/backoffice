@@ -145,7 +145,9 @@ class printBPBController extends Controller
                                 // cesar nrb nrp
                                 $splitedFilename = explode('_', $value);
                                 if ($splitedFilename[0] == 'NRB' || $splitedFilename[0] == 'NRP') {
-                                    if ($splitedFilename[sizeof($splitedFilename)-1] == date("Ymd", strtotime($date))) {
+                                    $split = explode('.', $splitedFilename[sizeof($splitedFilename)-1]);
+                                    $docDate = $split[0];
+                                    if ($docDate == date("Ymd", strtotime($date))) {
                                         $filePath = '../storage/receipts/' . $value;
                                         $zip->addFile($filePath, $value);
                                     }

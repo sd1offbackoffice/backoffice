@@ -67,8 +67,8 @@
     @page {
         /*margin: 25px 20px;*/
         /*size: 1071pt 792pt;*/
-        size: @yield('paper_size','595pt 842pt');
-        /* size: @yield('paper_size','700pt 842pt'); */
+        /* size: @yield('paper_size','595pt 842pt'); */
+        size: @yield('paper_size','700pt 842pt');
         /*size: 842pt 638pt;*/
     }
     header {

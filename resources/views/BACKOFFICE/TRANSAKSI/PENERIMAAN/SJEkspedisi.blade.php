@@ -15,13 +15,14 @@
                                     <span class="input-group-text" id="nodoc" style="width: 100px;">NO TRN</span>
                                 </div>
                                 <input type="text" class="form-control" id="nodoc_val" aria-describedby="nodoc">
-                                <button class="btn btn btn-light" type="button" id="btnShow" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="show()">&#x1F50E;</button>
+                                <button class="btn btn btn-light" type="button" id="btnShow" data-toggle="modal" data-target="#m_lov_trn">&#x1F50E;</button>
                             </div>
-                            <div class="input-group mb-3">
+                            <div class=" input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="noreff" style="width: 100px;">NO. REFF</span>
                                 </div>
                                 <input type="text" class="form-control" id="noreff_val" aria-describedby="noreff">
+                                <button class="btn btn btn-light" type="button" id="btnShow" data-toggle="modal" data-target="#m_lov_ipb">&#x1F50E;</button>
                             </div>
                             <span style="display: block; height: 25px;"></span>
                         </div>
@@ -30,13 +31,13 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="tgltrn" style="width: 100px;">TGL. TRN</span>
                                 </div>
-                                <input type="date" id="tgltrn_val" class="form-control" aria-describedby="tgltrn">
+                                <input type="text" id="tgltrn_val" class="form-control" aria-describedby="tgltrn">
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="tglreff" style="width: 100px;">TGL. REFF</span>
                                 </div>
-                                <input type="date" id="tglreff_val" class="form-control" aria-describedby="tglreff">
+                                <input type="text" id="tglreff_val" class="form-control" aria-describedby="tglreff">
                             </div>
                         </div>
                         <div class="col-sm">
@@ -45,6 +46,7 @@
                                     <span class="input-group-text" id="tujuan" style="width: 100px;">UTK CAB</span>
                                 </div>
                                 <input type="text" id="tujuan_val" class="form-control" aria-describedby="tujuan">
+                                <button class="btn btn btn-light" type="button" id="btnShow" data-toggle="modal" data-target="#m_lov_cabang">&#x1F50E;</button>
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -137,19 +139,19 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="tot_gross" style="width: 100px;">GROSS</span>
                                 </div>
-                                <input type="date" id="tot_gross_val" class="form-control" aria-describedby="tot_gross">
+                                <input type="text" id="tot_gross_val" class="form-control" aria-describedby="tot_gross">
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="tot_ppn" style="width: 100px;">PPN</span>
                                 </div>
-                                <input type="date" id="tot_ppn_val" class="form-control" aria-describedby="tot_ppn">
+                                <input type="text" id="tot_ppn_val" class="form-control" aria-describedby="tot_ppn">
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="total" style="width: 100px;">TOTAL</span>
                                 </div>
-                                <input type="date" id="total_val" class="form-control" aria-describedby="total">
+                                <input type="text" id="total_val" class="form-control" aria-describedby="total">
                             </div>
                         </div>
                     </div>
@@ -199,31 +201,9 @@
     }
 </style>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
 <script>
-    let btnShow = $('#btnShow');
-    let btnDelete = $('#btnShow');
+    function showData() {
 
-    function show() {}
-
-    function deleteDoc() {
-        ajaxSetup();
-        $.ajax({
-            url: '{{ url()->current() }}/check',
-            data: {
-                nodraft: draft,
-                tglDraft: tgl
-            },
-            type: 'get',
-            success: function(result) {
-                console.log(result)
-            },
-            error: function(err) {
-                console.log(err.responseJSON.message.substr(0, 100));
-                alertError(err.statusText, err.responseJSON.message)
-            }
-        })
     }
 </script>
 @endsection

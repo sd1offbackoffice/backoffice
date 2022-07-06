@@ -77,23 +77,32 @@ class InputController extends Controller
             $status = 'success';
 
             $ip = Session::get('ip');
-
+            
             $pIP = str_replace('.', '0', SUBSTR(Session::get('ip'), -3));
-            // dd($pIP);
+            
 
             $c = loginController::getConnectionProcedure();
             $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMORSTADOC('" . Session::get('kdigr') . "','RPB','Nomor Reff Pengeluaran Barang'," . $pIP . " || '2' , 7, FALSE); END;");
             oci_bind_by_name($s, ':ret', $no, 32);
             oci_execute($s);
 
-            $checkNoDoc = DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
-                ->where('trbo_nodoc', '=', $no)
-                ->where('trbo_kodeigr', '=', Session::get('kdigr'))
-                ->first();
-            if ($checkNoDoc) {
-                $no = $no + 1;
-            }
+            // $checkNoDoc = DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
+            //     ->where('trbo_nodoc', '=', $no)
+            //     ->where('trbo_kodeigr', '=', Session::get('kdigr'))
+            //     ->first();
+            
+            // if ($checkNoDoc != null) {
+            //     $no++;
+            //     // $intNo = (int)$no + 1;
+            //     // $no = strval($intNo);
+            //     // dd($no);
+            // }
+            
             // dd($no);
+
+            // while()
+            $no = $this->checkNoDoc($no);
+
             DB::connection(Session::get('connection'))->table('tbtr_tac')
                 ->where('tac_kodeigr', Session::get('kdigr'))
                 ->where('tac_nodoc', $no)
@@ -109,6 +118,25 @@ class InputController extends Controller
             ]
         ]);
         // return compact(['no', 'model', 'status', 'message']);
+    }
+
+    public function checkNoDoc($no){
+        
+        $flag = false;
+        $nodoc = $no;        
+        do {
+            $checkNoDoc = DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
+                ->where('trbo_nodoc', '=', $nodoc)
+                ->where('trbo_kodeigr', '=', Session::get('kdigr'))
+                ->first();
+            if($checkNoDoc != null){
+                $nodoc++;
+            }else {
+                $flag = true;
+            }
+        } while ($flag != true);
+
+        return $nodoc;
     }
 
     public function getDataPengeluaran(Request $request)

@@ -141,7 +141,7 @@
                 {
                     $freePPN_body = $freePPN_body + $data[$i]->ntax;
                 }
-                else {
+                else if($data[$i]->fdfbkp == 'G'){
                     $ppnDTP_body = $ppnDTP_body + $data[$i]->ntax;
                 }
                 $net_body = $net_body + $data[$i]->nnet;
@@ -165,7 +165,7 @@
                     <td style="width: 20px; text-align: left">{{$tempKodeKategori}}</td>
                     <td style="width: 158px; text-align: left">{{$tempKategori}}</td>
                     @if($qty == 'Y')
-                        <td>{{rupiah($qty_body)}}</td>
+                        <td>{{$qty_body}}</td>
                     @else
                         <td> </td>
                     @endif
@@ -231,7 +231,7 @@
                     {{-- total setiap departement --}}
                     <td colspan="2" style="text-align: left; font-weight: bold;">TOTAL PER DEPARTEMEN</td>
                     @if($qty == 'Y')
-                        <td style="text-align: right; font-weight: bold;">{{rupiah($qtyTotal_departement)}}</td>
+                        <td style="text-align: right; font-weight: bold;">{{$qtyTotal_departement}}</td>
                     @else
                         <td style="border-bottom: 1px solid black"> </td>
                     @endif
@@ -296,7 +296,7 @@
                     {{-- total setiap divisi --}}
                     <td colspan="2" style="text-align: left; font-weight: bold; border-bottom: 1px solid black;">TOTAL PER DIVISI</td>
                     @if($qty == 'Y')
-                        <td style="text-align: right; font-weight: bold; border-bottom: 1px solid black">{{rupiah($qtyTotal_divisi)}}</td>
+                        <td style="text-align: right; font-weight: bold; border-bottom: 1px solid black">{{$qtyTotal_divisi}}</td>
                     @else
                         <td style="border-bottom: 1px solid black"> </td>
                     @endif
@@ -329,8 +329,8 @@
             <td></td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($gross['c'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($tax['c'])}}</td>
-            <td style="text-align: right; font-weight: bold;">{{rupiah($tax['c'])}}</td>
-            <td style="text-align: right; font-weight: bold;">{{rupiah($tax['c'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($freePPN['c'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($ppnDTP['c'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($net['c'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($hpp['c'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($margin['c'])}}</td>
@@ -341,6 +341,8 @@
             <td></td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($gross['p'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($tax['p'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($freePPN['p'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($ppnDTP['p'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($net['p'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($hpp['p'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($margin['p'])}}</td>
@@ -351,6 +353,8 @@
             <td></td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($gross['x'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($tax['x'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($freePPN['x'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($ppnDTP['x'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($net['x'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($hpp['x'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($margin['x'])}}</td>
@@ -361,6 +365,8 @@
             <td></td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($gross['k'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($tax['k'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($freePPN['k'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($ppnDTP['k'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($net['k'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($hpp['k'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($margin['k'])}}</td>
@@ -371,6 +377,8 @@
             <td></td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($gross['b'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($tax['b'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($freePPN['b'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($ppnDTP['b'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($net['b'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($hpp['b'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($margin['b'])}}</td>
@@ -381,6 +389,8 @@
             <td></td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($gross['e'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($tax['e'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($freePPN['e'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($ppnDTP['e'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($net['e'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($hpp['e'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($margin['e'])}}</td>
@@ -391,6 +401,8 @@
             <td style="text-align: right; font-weight: bold;"></td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($gross['g'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($tax['g'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($freePPN['g'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($ppnDTP['g'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($net['g'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($hpp['g'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($margin['g'])}}</td>
@@ -401,6 +413,8 @@
             <td></td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($gross['f'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($tax['f'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($freePPN['f'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($ppnDTP['f'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($net['f'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($hpp['f'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($margin['f'])}}</td>
@@ -409,12 +423,14 @@
         <tr>
             <td colspan="2" style="text-align: right; font-weight: bold;">GRAND TOTAL (TANPA DEPT 40)</td>
             @if($qty == 'Y')
-                <td style="text-align: right; font-weight: bold;">{{rupiah($qtygrandtotal-1)}}</td>
+                <td style="text-align: right; font-weight: bold;">{{$qtygrandtotal-1}}</td>
             @else
                 <td> </td>
             @endif
             <td style="text-align: right; font-weight: bold;">{{rupiah($gross['total']-$gross['d'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($tax['total']-$tax['d'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($freePPN['total']-$tax['d'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($ppnDTP['total']-$tax['d'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($net['total']-$net['d'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($hpp['total']-$hpp['d'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($margin['total']-$margin['d'])}}</td>
@@ -423,12 +439,14 @@
         <tr>
             <td colspan="2" style="text-align: right; font-weight: bold;">GRAND TOTAL (+ DEPT 40)</td>
             @if($qty == 'Y')
-                <td style="text-align: right; font-weight: bold;">{{rupiah($qtygrandtotal)}}</td>
+                <td style="text-align: right; font-weight: bold;">{{$qtygrandtotal}}</td>
             @else
                 <td> </td>
             @endif
             <td style="text-align: right; font-weight: bold;">{{rupiah($gross['total'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($tax['total'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($freePPN['total'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($ppnDTP['total'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($net['total'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($hpp['total'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($margin['total'])}}</td>

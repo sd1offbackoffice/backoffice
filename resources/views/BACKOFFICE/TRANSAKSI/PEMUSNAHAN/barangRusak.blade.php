@@ -76,7 +76,7 @@
                                                     <select onchange="changeKeterangan(this.id)" class="form-control add_keterangan keterangan" id="select-{{$i}}" name="add_keterangan">
                                                         {{-- <option value="">...</option> --}}
                                                     </select>
-                                                    <input style="display: none;" onchange="newKeterangan(this.value, this.id)" type="text" class="form-control text_keterangan keterangan" id="inputhidden-{{$i}}">
+                                                    <input style="display: none;" onchange="newKeterangan(this.value, this.id)" type="text" class="form-control text_keterangan keterangan" id="input-hidden-{{$i}}">
                                                 </td>
                                                 <td width="3%" class="text-center">
                                                     <button style="display:none ;"class="btn btn-warning showdropdown" id="showdropdown-{{$i}}" style="width: 40px" onclick="showDropdown(this.id)"><</button>
@@ -240,7 +240,7 @@
                     console.log(data)
                     dataKtrgn += '<option value="">...</option>'
                     for (i = 0; i< data.length; i++) {
-                        dataKtrgn += '<option value="'+data[i].kbr_tipe+'">'+data[i].kbr_tipe+'</option>';
+                        dataKtrgn += '<option id="opt-val'+dataKtrgnLen+'" value="'+data[i].kbr_tipe+'">'+data[i].kbr_tipe+'</option>';
                         dataKtrgnLen++;
                     }
                     $('.add_keterangan').append(dataKtrgn);
@@ -258,23 +258,23 @@
             // let keterangan = $('.add_keterangan')[index].value ;
             // $('.text_keterangan')[index].value = keterangan;
             var no = index.split('-')[1];
-            $('#inputhidden-'+no).val($('#select-'+no).val()) ;
+            $('#input-hidden-'+no).val($('#select-'+no).val()) ;
             console.log(index,no)
             console.log($('#'+index).val())
             if($('#'+index).val() == 'Barang Rusak lain-lain'){ 
-                $('#inputhidden-'+no).show();
+                $('#input-hidden-'+no).show();
                 $('#select-'+no).hide();
                 $('#showdropdown-'+no).show();
-                $('#inputhidden-'+no).focus();
+                $('#input-hidden-'+no).focus();
             }
             else{
-                $('#inputhidden'+no).hide()
+                $('#input-hidden'+no).hide()
             }
         }
 
         function newKeterangan(value, index){
-            var no = index.split('-')[1];
-            dataKtrgn += '<option value="'+value+'">'+value+'</option>';
+            var no = index.split('-')[2];
+            dataKtrgn += '<option id="opt-val'+dataKtrgnLen+'" value="'+value+'">'+value+'</option>';
             // dataKtrgnLen masukin ke kode -
             ajaxSetup();
             $.ajax({
@@ -303,18 +303,19 @@
             }
             // dataKtrgn += '<option value="'+value+'">'+value+'</option>';
             // $('.add_keterangan').find('option').remove().end().append(dataKtrgn);
-            $('#inputhidden-'+no).hide();
-            $('#inputhidden-'+no).val(value);
+            $('#input-hidden-'+no).hide();
+            $('#input-hidden-'+no).val(value);
             $('#select-'+no).val(value);
             $('#select-'+no).show();
             $('#showdropdown-'+no).hide();
             
         }
 
+
         function showDropdown(index){
             var no = index.split('-')[1];
             console.log(index,no);
-            $('#inputhidden-'+no).hide();
+            $('#input-hidden-'+no).hide();
             $('#select-'+no).val('');
             $('#select-'+no).show();
             $('#showdropdown-'+no).hide();
@@ -506,7 +507,7 @@
                                                 <td width="5%"><input disabled type="text" class="form-control pcs text-right" value="`+ pcs +`" id="`+ i +`" onchange="calculateQty(this.value,this.id,2)"></td>
                                                 <td width="10%"><input disabled type="text" class="form-control harga text-right" value="`+ convertToRupiah(result[i].hrgsatuan )+`"></td>
                                                 <td width="12%"><input disabled type="text" class="form-control total text-right" value="`+ convertToRupiah(ttl) +`"></td>
-                                                <td width="24%"><input disabled type="text" class="form-control keterangan" value="Barang Rusak">
+                                                <td width="24%"><input disabled type="text" class="form-control keterangan" id="input-hidden-`+ i +`"value="Barang Rusak">
                                                 </td>
                                                 <td width="3%" class="text-center">
                                                     <button style="display:none ;"class="btn btn-warning showdropdown" id="showdropdown-{{$i}}" style="width: 40px" onclick="showDropdown(this.id)">T</button>
@@ -579,10 +580,10 @@
                                                 <td width="5%"><input disabled type="text" class="form-control pcs text-right" value="` + result[i].qty_pcs +`"></td>
                                                 <td width="10%"><input disabled type="text" class="form-control harga text-right" value="`+ convertToRupiah(result[i].rsk_hrgsatuan )+`"></td>
                                                 <td width="12%"><input disabled type="text" class="form-control total text-right" value="`+ convertToRupiah(result[i].rsk_nilai) +`"></td>
-                                                <td width="24%"><input disabled type="text" class="form-control keterangan" value="`+ nvl(result[i].rsk_keterangan, ' ') +`">
+                                                <td width="24%"><input disabled type="text" class="form-control keterangan" id="input-hidden-`+ i +`" value="`+ nvl(result[i].rsk_keterangan, ' ') +`">
                                                 </td>
                                                 <td width="3%" class="text-center">
-                                                    <button style="display:none ;"class="btn btn-warning showdropdown" id="showdropdown-{{$i}}" style="width: 40px" onclick="showDropdown(this.id)"><</button>
+                                                    <button style="display:none ;"class="btn btn-warning showdropdown" id="showdropdown-`+ i +`" style="width: 40px" onclick="showDropdown(this.id)"><</button>
                                                 </td> 
                                             </tr>`
 
@@ -612,14 +613,30 @@
                                                 <td width="5%"><input type="text" class="form-control pcs text-right" value="` + result[i].qty_pcs +`" id="`+ i +`" onchange="calculateQty(this.value,this.id,2)"></td>
                                                 <td width="10%"><input disabled type="text" class="form-control harga text-right" value="`+ convertToRupiah(result[i].rsk_hrgsatuan )+`"></td>
                                                 <td width="12%"><input disabled type="text" class="form-control total text-right" value="`+ convertToRupiah(result[i].rsk_nilai) +`"></td>
-                                                <td width="24%"><input type="text" class="form-control keterangan" value="`+ nvl(result[i].rsk_keterangan, ' ') +`">
+                                                
+                                                <td width="24%">
+                                                    <select onchange="changeKeterangan(this.id)" class="form-control add_keterangan" id="select-`+ i +`" name="add_keterangan">                                                   
+                                                    </select>
+                                                    <input style="display: none;" onchange="newKeterangan(this.value, this.id)" type="text" id="input-hidden-`+ i +`" class="form-control keterangan">
                                                 </td>
                                                 <td width="3%" class="text-center">
-                                                    <button style="display:none ;"class="btn btn-warning showdropdown" id="showdropdown-{{$i}}" style="width: 40px" onclick="showDropdown(this.id)"><</button>
+                                                    <button style="display:none ;"class="btn btn-warning showdropdown" id="showdropdown-`+ i +`" style="width: 40px" onclick="showDropdown(this.id)"><</button>
                                                 </td> 
                                             </tr>`
 
                                 $('#tbody').append(temp);
+                                
+                            }
+                            $('.add_keterangan').append(dataKtrgn);
+                            for (i = 0; i< result.length; i++) {
+                                console.log(result[i].rsk_keterangan);
+                                console.log(dataKtrgn);
+                                $('#select-'+i).val(result[i].rsk_keterangan);
+                                $('#showdropdown-'+i).show();
+                                $('#input-hidden-'+i).show();
+                                $('#select-'+i).hide();
+                                $('#input-hidden-'+i).val(result[i].rsk_keterangan);
+
                             }
                         }
                     }
@@ -821,7 +838,7 @@
                         focusToRow(i);
                         return false;
                     }
-                    datas.push({'plu': $('.plu')[i].value, 'qty' : qty, 'harga' : unconvertToRupiah($('.harga')[i].value), 'total' : unconvertToRupiah($('.total')[i].value), 'keterangan' : $('#inputhidden-'+i).val()})
+                    datas.push({'plu': $('.plu')[i].value, 'qty' : qty, 'harga' : unconvertToRupiah($('.harga')[i].value), 'total' : unconvertToRupiah($('.total')[i].value), 'keterangan' : $('#input-hidden-'+i).val()})
                 }
             }
 
@@ -963,7 +980,7 @@
                                                 <td width="24%">
                                                     <select onchange="changeKeterangan(this.id)" class="form-control add_keterangan" id="select-`+ index +`" name="add_keterangan">                                                   
                                                     </select>
-                                                    <input style="display: none;" onchange="newKeterangan(this.value, this.id)" type="text" id="inputhidden-`+ index +`" class="form-control keterangan">
+                                                    <input style="display: none;" onchange="newKeterangan(this.value, this.id)" type="text" id="input-hidden-`+ index +`" class="form-control keterangan">
                                                 </td>
                                                 <td width="3%" class="text-center">
                                                     <button style="display:none ;"class="btn btn-warning showdropdown" id="showdropdown-`+ index +`" style="width: 40px" onclick="showDropdown(this.id)"><</button>

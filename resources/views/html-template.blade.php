@@ -18,9 +18,7 @@
         .content-wrapper{
             margin:auto;
             min-height: @yield('paper_height','842pt');
-            width: @yield('paper_width','595pt');
-            /*min-height: auto;*/
-            /*width: auto;*/
+            width: @yield('paper_width','700pt');
             padding: 5% 4%;
         }
 
@@ -56,8 +54,9 @@
         @page {
             /*margin: 25px 20px;*/
             /*size: 1071pt 792pt;*/
-            size: @yield('paper_width','595pt') @yield('paper_height','842pt');
-{{--            size: @yield('paper_width','auto') @yield('paper_height','auto');--}}
+            /* size: @yield('paper_width','700pt') @yield('paper_height','842pt'); */
+            /* size: @yield('paper_width','auto') @yield('paper_height','auto'); */
+            size: @yield('paper_size','700pt 842pt');
             /*size: 842pt 638pt;*/
         }
 

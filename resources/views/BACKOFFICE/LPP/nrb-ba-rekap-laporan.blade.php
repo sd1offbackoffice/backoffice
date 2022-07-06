@@ -11,7 +11,7 @@
 @endsection
 
 @section('subtitle')
-    TANGGAL : {{$tgl1}} s/d {{$tgl2}}
+    TANGGAL : {{strtoupper(DateTime::createFromFormat('d/m/Y', $tgl1)->format('d-M-Y')) }} s/d {{strtoupper(DateTime::createFromFormat('d/m/Y', $tgl1)->format('d-M-Y'))}}
 @endsection
     @php
         $total_dpp     = 0;
@@ -55,25 +55,20 @@
                 <td align="right">{{ number_format($data[$i]->nilai    ,2)}}</td>
             </tr>
             @php
-                $total_nilai      += $data[$i]->nilai   ;
                 $total_dpp        += $data[$i]->dpp;
                 $total_3persen    += $data[$i]->tigapersen;
                 $total_ppn        += $data[$i]->btd_ppn;
                 $total_nilai      += $data[$i]->nilai;
-
-                $tempnrb = $data[$i]->bth_nonrb;
             @endphp
-
-
         @endfor
         </tbody>
         <tfoot style="border-top:solid 1px ">
         <tr>
-            <td align="right" colspan="6"><strong>TOTAL NILAI BA</strong></td>
-            <td align="right">{{ number_format($total_dpp    ,2) }}</td>
-            <td align="right">{{ number_format($total_3persen,2) }}</td>
-            <td align="right">{{ number_format($total_ppn    ,2) }}</td>
-            <td align="right">{{ number_format($total_nilai  ,2) }}</td>
+            <th align="right" colspan="6"><strong>TOTAL NILAI BA</strong></th>
+            <th align="right">{{ number_format($total_dpp    ,2) }}</th>
+            <th align="right">{{ number_format($total_3persen,2) }}</th>
+            <th align="right">{{ number_format($total_ppn    ,2) }}</th>
+            <th align="right">{{ number_format($total_nilai  ,2) }}</th>
         </tr>
         </tfoot>
     </table>

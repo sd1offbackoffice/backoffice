@@ -149,7 +149,8 @@ class VirtualStockCmoController extends Controller
             $and_ksuppmcg = " and sup_kodesuppliermcg like '" . $kodemcg . "' ";
             $and_namasupp = " and sup_namasupplier like '" . $namasupplier . "' ";
         }
-    
+        
+        // rekap 
         if($tipevcmo == 'r1')
         {
             $data = DB::connection(Session::get('connection'))

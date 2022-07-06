@@ -10,7 +10,7 @@
             <th style="font-weight: bold;border-top: 1px solid black;border-bottom: 1px solid black;" align="right" rowspan="2">GROSS</th>
             <th style="font-weight: bold;border-top: 1px solid black;border-bottom: 1px solid black;" align="right" rowspan="2">POTONGAN</th>
             <th style="font-weight: bold;border-top: 1px solid black;border-bottom: 1px solid black;" align="right" rowspan="2">PPN</th>
-            <th style="font-weight: bold;border-top: 1px solid black;border-bottom: 1px solid black;" align="right" rowspan="2">PPN BEBAS</th>
+            <th style="font-weight: bold;border-top: 1px solid black;border-bottom: 1px solid black;" align="right" rowspan="2">BEBAS PPN</th>
             <th style="font-weight: bold;border-top: 1px solid black;border-bottom: 1px solid black;" align="right" rowspan="2">PPN DTP</th>                        
             <th style="font-weight: bold;border-top: 1px solid black;border-bottom: 1px solid black;" align="right" rowspan="2">TOTAL</th>
             <th style="font-weight: bold;border-top: 1px solid black;border-bottom: 1px solid black;" align="left" rowspan="2">STATUS</th>

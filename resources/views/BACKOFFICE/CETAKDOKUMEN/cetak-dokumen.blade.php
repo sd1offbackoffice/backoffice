@@ -734,12 +734,36 @@
                         buttons = '';
                         if (result) {
 
-                            for (i = 0; i < result.length; i++) {
-                                // let splitedFilename = result[i].split('_')
-                                // console.log(splitedFilename[0]);
+                            for (i = 0; i < result.length; i++) {                                
                                 window.open(`{{ url()->current() }}/download?file=${result[i]}`, '_blank');
                             }
 
+                            // kirim ke cabang
+                            let flag = false
+                            for(let i = 0; i < result.length; i++){
+                                let split = result[i].split('_')
+                                if(split[0] == 'NRB' || split[0] == 'NRP'){
+                                    flag = true
+                                }
+                            }
+                            if (flag == true) {
+                                let splitedFile = result[0].split('_')
+                                let docDate = splitedFile[splitedFile.length-1]
+                                console.log(docDate);
+                                $.ajax({
+                                    type: "GET",
+                                    url: "{{ url()->current() }}/kirim-cabang",
+                                    data: {
+                                        date: docDate,                        
+                                    },
+                                    beforeSend: function () {
+                                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                                    },
+                                    success: function (res) {
+                                        $('#modal-loader').modal('hide');
+                                    }
+                                });
+                            }                            
                         }
 
                         if (result.message) {

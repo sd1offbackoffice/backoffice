@@ -14,6 +14,8 @@ use PDF;
 use Yajra\DataTables\DataTables;
 use File;
 use Illuminate\Support\Facades\File as FacadesFile;
+use Illuminate\Support\Facades\Storage;
+use ZipArchive;
 
 class CetakDokumenController extends Controller
 {
@@ -415,7 +417,8 @@ class CetakDokumenController extends Controller
                         $connect = loginController::getConnectionProcedure();
 
 
-                        $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('" . Session::get('kdigr') . "','NRB','Nomor Retur Barang','Z',7,true); END;");
+                        // $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('" . Session::get('kdigr') . "','NRB','Nomor Retur Barang','Z',7,true); END;");
+                        $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('" . Session::get('kdigr') . "','NRB','Nomor Retur Barang','" . Session::get('kdigr') . "',7,true); END;");
                         oci_bind_by_name($query, ':ret', $nofak, 32);
                         oci_execute($query);
                     }
@@ -449,7 +452,7 @@ class CetakDokumenController extends Controller
 //            }
 
             if ($reprint == '0') {
-                $rmbo_recs = Self::RMBO_CUR($nodoc);
+                $rmbo_recs = Self::RMBO_CUR($nodocs[$i]);
 
                 foreach ($rmbo_recs as $rmbo_rec) {
                     $adaisi = true;
@@ -475,7 +478,7 @@ class CetakDokumenController extends Controller
                 }
 
             } else {
-                $rmtr_recs = Self::RMTR_CUR($nodoc);
+                $rmtr_recs = Self::RMTR_CUR($nodocs[$i]);
 
                 foreach ($rmtr_recs as $rmtr_rec) {
                     $adaisi = true;
@@ -823,7 +826,7 @@ class CetakDokumenController extends Controller
             array_push($nodocs, $splitData[0]);
             array_push($tgldocs, $splitData[1]);
         }
-        
+
         if ($nrfp == 'on') {
             $nrfp = 1;
         } else {
@@ -923,8 +926,7 @@ class CetakDokumenController extends Controller
                               WHERE     TRBO_PRDCD = PRD_PRDCD
                                 and TRBO_TYPETRN = 'K'
                                 and TRBO_NODOC = '" . $nodocs[$i] . "'
-                                and NVL(PRD_FLAGBKP1, 'N') <> 'Y'
-                                    or NVL(PRD_FLAGBKP2, 'N') <> 'Y'")[0]->count;
+                                and (NVL(PRD_FLAGBKP1, 'N') <> 'Y' OR NVL(PRD_FLAGBKP2, 'N') <> 'Y')")[0]->count;
 
 
                         if ($tmp > 0) {
@@ -963,12 +965,8 @@ class CetakDokumenController extends Controller
                             } else {
 
                                 $connect = loginController::getConnectionProcedure();
-                                $query = oci_parse($connect, "BEGIN :ret :=  F_IGR_GET_NOMOR('" . Session::get('kdigr') . "',
-                                 'NRB',
-                                    'Nomor Retur Barang',
-                                    'Z',
-                                    7,
-                                    true); END;");
+                                // $query = oci_parse($connect, "BEGIN :ret :=  F_IGR_GET_NOMOR('" . Session::get('kdigr') . "','NRB','Nomor Retur Barang','',7,true); END;");
+                                $query = oci_parse($connect, "BEGIN :ret :=  F_IGR_GET_NOMOR('" . Session::get('kdigr') . "','NRB','Nomor Retur Barang','" . Session::get('kdigr') . "',7,true); END;");
                                 oci_bind_by_name($query, ':ret', $nofak, 32);
                                 oci_execute($query);
                             }
@@ -1616,11 +1614,12 @@ class CetakDokumenController extends Controller
             }
 
             $temp = substr($temp, 0, strlen($temp) - 1);
+            // var_dump($temp);
             if (isset($temp)) {
-                // array_push($file, Self::PRINT_DOC(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2, $arrSuppSig));
+                array_push($file, Self::PRINT_DOC(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2, $arrSuppSig));
 
                 if ($lap != 'L') {
-                    // array_push($file, Self::printSuratJalan(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2, $arrSuppSig));
+                    array_push($file, Self::printSuratJalan(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2, $arrSuppSig));
                 }
 
 
@@ -2093,7 +2092,7 @@ class CetakDokumenController extends Controller
         $filename = '';
         $cw = '';
         $ch = '';
-        if ($TypeLap == 'L') {            
+        if ($TypeLap == 'L') {
         } else {
             switch ($TypeDoc) {
                 case  'K' :
@@ -2185,9 +2184,9 @@ class CetakDokumenController extends Controller
             // $splitedNodoc = explode(',', $NoDoc);
             // foreach ($splitedNodoc as $nodoc) {
             //     $nodocs .= $nodoc . '_';
-            // }            
+            // }
             // $filenames = 'SJ_'. $nodocs . $data1[0]->msth_tgldoc;
-            // $file = storage_path($path . $filenames . '.pdf');            
+            // $file = storage_path($path . $filenames . '.pdf');
 
             // file_put_contents($file, $pdf->output());
 
@@ -2195,9 +2194,9 @@ class CetakDokumenController extends Controller
             $splitedNodoc = explode(',', $NoDoc);
             foreach ($splitedNodoc as $nodoc) {
                 $nodocs .= $nodoc . '_';
-            }          
-            
-            if ($REPRINT == '0') {                
+            }
+
+            if ($REPRINT == '0') {
                 $path = 'surat_jalan/';
                 $filenames = 'SJ_'. $nodocs . $data1[0]->msth_tgldoc;
             } else {
@@ -2207,12 +2206,12 @@ class CetakDokumenController extends Controller
 
             if (!FacadesFile::exists(storage_path($path))) {
                 FacadesFile::makeDirectory(storage_path($path), 0755, true, true);
-            }                        
-                        
-            $file = storage_path($path . $filenames . '.PDF');            
+            }
+
+            $file = storage_path($path . $filenames . '.PDF');
 
             file_put_contents($file, $pdf->output());
-            
+
             return $filenames;
             // return $data;
 
@@ -2239,7 +2238,7 @@ class CetakDokumenController extends Controller
                     $cw = 510;
                     $ch = 78;
                     $filename = 'list-pengeluaran';
-                    $P_PN = " AND TRBO_NODOC IN ('" . $NoDoc . "') AND TRBO_TYPETRN='K'";
+                    $P_PN = " AND TRBO_NODOC IN (" . $NoDoc . ") AND TRBO_TYPETRN='K'";
                     $data1 = DB::connection(Session::get('connection'))
                         ->select("SELECT   TRBO_NODOC, to_char(TRBO_TGLDOC,'yyyymmdd') TRBO_TGLDOC, TRBO_KODESUPPLIER, TRBO_ISTYPE, TRBO_INVNO, TRBO_TGLINV,
                                  TRBO_PRDCD, TRBO_HRGSATUAN, TRBO_KETERANGAN, TRBO_GROSS, TRBO_DISCRPH, TRBO_PPNRPH,
@@ -2264,6 +2263,7 @@ class CetakDokumenController extends Controller
                              AND TRBO_PRDCD = BTB_PRDCD(+)
                              AND TRBO_NOREFF = BTB_NODOC(+)
                         ORDER BY TRBO_SEQNO");
+                        // var_dump($data1);
 
                     $data2 = DB::connection(Session::get('connection'))->select("SELECT distinct trbo_nodoc, trbo_tgldoc, trbo_kodesupplier,trbo_istype, trbo_invno, trbo_tglinv
                                     FROM TBTR_BACKOFFICE,  TBMASTER_PRODMAST, TBMASTER_SUPPLIER, TBMASTER_PERUSAHAAN
@@ -2279,7 +2279,7 @@ class CetakDokumenController extends Controller
                     $splitedNodoc = explode(',', $NoDoc);
                     foreach ($splitedNodoc as $nodoc) {
                         $nodocs .= $nodoc . '_';
-                    }            
+                    }
                     $filenames = 'LIST-PENGELUARAN_'. $nodocs . $data1[0]->trbo_tgldoc;
                     break;
                 case  'F' :      // Pemusnahan
@@ -2311,7 +2311,7 @@ class CetakDokumenController extends Controller
                     $splitedNodoc = explode(',', $NoDoc);
                     foreach ($splitedNodoc as $nodoc) {
                         $nodocs .= $nodoc . '_';
-                    }            
+                    }
                     $filenames = 'LIST-PEMUSNAHAN_'. $nodocs . $data1[0]->trbo_tgldoc;
                     break;
                 case  'X' :      // Penyesuaian
@@ -2321,7 +2321,7 @@ class CetakDokumenController extends Controller
                     $cw = 508.5;
                     $ch = 77.5;
                     $filename = 'list-baranghilang';
-                    $P_PN = " AND TRBO_NODOC IN ('" . $NoDoc . "') AND TRBO_TYPETRN='H'";
+                    $P_PN = " AND TRBO_NODOC IN (" . $NoDoc . ") AND TRBO_TYPETRN='H'";
                     $data1 = DB::connection(Session::get('connection'))->select("SELECT trbo_nodoc,to_char(TRBO_TGLDOC,'yyyymmdd') TRBO_TGLDOC, trbo_flagdisc1, trbo_prdcd, prd_unit trbo_unit, prd_frac trbo_frac, trbo_hrgsatuan, trbo_keterangan,
                                     CASE WHEN trbo_flagdoc = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
                                  trbo_qty, FLOOR(trbo_qty/prd_frac) AS CTN, MOD(trbo_qty,prd_frac) AS PCS, (trbo_qty * (trbo_hrgsatuan/prd_frac)) AS total ,
@@ -2344,7 +2344,7 @@ class CetakDokumenController extends Controller
                     $splitedNodoc = explode(',', $NoDoc);
                     foreach ($splitedNodoc as $nodoc) {
                         $nodocs .= $nodoc . '_';
-                    }            
+                    }
                     $filenames = 'LIST-BARANG-HILANG_'. $nodocs . $data1[0]->trbo_tgldoc;
                     break;
                 case  'P' :      // Re-Packing
@@ -2415,15 +2415,15 @@ class CetakDokumenController extends Controller
                     $splitedNodoc = explode(',', $NoDoc);
                     foreach ($splitedNodoc as $nodoc) {
                         $nodocs .= $nodoc . '_';
-                    }            
+                    }
                     $filenames = 'NRB_'. $nodocs . $data1[0]->msth_tgldoc;
-                    $path_backup = 'receipts_backup/';
+                    $path_backup = 'nrb_nrp_backup/';
                     break;
                 case  'H' :      // Barang Hilang
                     if ($JNSKERTAS == 'B') {
                         $cw = 508;
                         $ch = 77.5;
-                        $P_PN = " AND MSTD_NODOC IN ('" . $NoDoc . "') AND MSTH_TYPETRN='H'";
+                        $P_PN = " AND MSTD_NODOC IN (" . $NoDoc . ") AND MSTH_TYPETRN='H'";
 
                         $data1 = DB::connection(Session::get('connection'))
                             ->select("SELECT msth_nodoc, to_char(msth_tgldoc,'yyyymmdd') msth_tgldoc, msth_nopo, msth_tglpo,
@@ -2487,7 +2487,7 @@ class CetakDokumenController extends Controller
                     $splitedNodoc = explode(',', $NoDoc);
                     foreach ($splitedNodoc as $nodoc) {
                         $nodocs .= $nodoc . '_';
-                    }            
+                    }
                     $filenames = 'NBH_'. $nodocs . $data1[0]->msth_tgldoc;
                     break;
             }
@@ -2519,7 +2519,7 @@ class CetakDokumenController extends Controller
             $canvas->page_text($cw, $ch, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
             $dompdf = $pdf;
-            
+
             if ($REPRINT != '0') {
                 $path = 'reprint/';
                 $filenames = 'REPRINT_' . $filenames;
@@ -2527,13 +2527,16 @@ class CetakDokumenController extends Controller
 
             if (!FacadesFile::exists(storage_path($path))) {
                 FacadesFile::makeDirectory(storage_path($path), 0755, true, true);
-            }                        
-                        
-            $file = storage_path($path . $filenames . '.PDF');            
+            }
+
+            $file = storage_path($path . $filenames . '.PDF');
 
             file_put_contents($file, $pdf->output());
             if ($path_backup != '') {
-                $file_backup = storage_path($path_backup . $filenames . '.PDF'); 
+                if (!FacadesFile::exists(storage_path($path_backup))) {
+                    FacadesFile::makeDirectory(storage_path($path_backup), 0755, true, true);
+                }
+                $file_backup = storage_path($path_backup . $filenames . '.PDF');
                 file_put_contents($file_backup, $pdf->output());
             }
             return $filenames;
@@ -2551,7 +2554,7 @@ class CetakDokumenController extends Controller
         $filename = 'ctk-rtrpjk';
         $P_PN = "AND MSTH_NODOC IN (" . $nodoc . ") AND MSTH_TYPETRN='K'";
 
-        $data = DB::connection(Session::get('connection'))->select("SELECT MSTH_KODEIGR, MSTH_NODOC, 
+        $data = DB::connection(Session::get('connection'))->select("SELECT MSTH_KODEIGR, MSTH_NODOC,
         --trunc(msth_tgldoc) msth_tgldoc,
         to_char(msth_tgldoc,'yyyymmdd') msth_tgldoc,
         MSTH_KODESUPPLIER, MSTD_DOCNO2, MSTD_DATE3 ,
@@ -2615,9 +2618,9 @@ ORDER BY mstd_noref3 asc");
             // $splitedNodoc = explode(',', $nodoc);
             // foreach ($splitedNodoc as $nodoc) {
             //     $nodocs .= $nodoc . '_';
-            // }            
+            // }
             // $filenames = 'NRP_'. $nodocs . $data[0]->msth_tgldoc;
-            // $file = storage_path($path . $filenames . '.pdf');            
+            // $file = storage_path($path . $filenames . '.pdf');
 
             // file_put_contents($file, $pdf->output());
 
@@ -2625,12 +2628,12 @@ ORDER BY mstd_noref3 asc");
             $splitedNodoc = explode(',', $nodoc);
             foreach ($splitedNodoc as $nodoc) {
                 $nodocs .= $nodoc . '_';
-            }          
-            
+            }
+
             $path_backup = '';
-            if ($reprint == '0') {                
+            if ($reprint == '0') {
                 $path = 'receipts/';
-                $path_backup = 'receipts_backup/';
+                $path_backup = 'nrb_nrp_backup/';
                 $filenames = 'NRP_'. $nodocs . $data[0]->msth_tgldoc;
             } else {
                 $path = 'reprint/';
@@ -2639,13 +2642,16 @@ ORDER BY mstd_noref3 asc");
 
             if (!FacadesFile::exists(storage_path($path))) {
                 FacadesFile::makeDirectory(storage_path($path), 0755, true, true);
-            }                        
-                        
-            $file = storage_path($path . $filenames . '.PDF');            
+            }
 
-            file_put_contents($file, $pdf->output());            
+            $file = storage_path($path . $filenames . '.PDF');
+
+            file_put_contents($file, $pdf->output());
             if ($path_backup != '') {
-                $file_backup = storage_path($path_backup . $filenames . '.PDF'); 
+                if (!FacadesFile::exists(storage_path($path_backup))) {
+                    FacadesFile::makeDirectory(storage_path($path_backup), 0755, true, true);
+                }
+                $file_backup = storage_path($path_backup . $filenames . '.PDF');
                 file_put_contents($file_backup, $pdf->output());
             }
 
@@ -2658,10 +2664,12 @@ ORDER BY mstd_noref3 asc");
     {
         $filesAndPaths = $request->file;
         $splitedFilename = explode('_', $filesAndPaths);
-        
+
+
+
         if ($splitedFilename[0] == 'NRB' || $splitedFilename[0] == 'NRP') {
             $path = 'receipts/';
-                return response()->download(storage_path($path . $filesAndPaths . '.PDF'));
+            return response()->download(storage_path($path . $filesAndPaths . '.PDF'));
         }
         if ($splitedFilename[0] == 'SJ') {
             $path = 'surat_jalan/';
@@ -2689,6 +2697,80 @@ ORDER BY mstd_noref3 asc");
         }
 
         // return response()->download(storage_path($path.$filesAndPaths))->deleteFileAfterSend();
-    
+
+    }
+
+    public function getArea()
+    {
+        $kodeigr = Session::get('kdigr');
+        $result = DB::connection(Session::get('connection'))->select(
+            "SELECT CAB_KODEWILAYAH
+             FROM TBMASTER_CABANG
+             WHERE CAB_KODECABANG = '$kodeigr'"
+        );
+        return $result[0]->cab_kodewilayah;
+    }
+
+    public function kirimFtpCabang(Request $request)
+    {
+        $date = $request->date;
+        // $filesAndPaths = $request->file;
+        // $splitedFilename = explode('_', $filesAndPaths);
+
+        $area = $this->getArea();
+        $cabang = strtolower($area);
+        $msg = '';
+        $ftp_server = config('database.connections.' . Session::get('connection') . '.host');
+        $ftp_user_name = 'ftpigr';
+        $ftp_user_pass = 'ftpigr';
+        $zipName = Session::get('kdigr') . '_' . date("dmY", strtotime(Carbon::now())) . '.ZIP';
+        $zipAddress = '../storage/nrb_nrp_backup/' . $zipName;
+        
+        try {
+            $conn_id = ftp_connect($ftp_server);
+            ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+            $files = Storage::disk('nrb_nrp_backup')->allFiles();
+            if (count($files) > 0) {
+                if (Storage::disk('nrb_nrp_backup')->exists($zipName) == false) {
+                    $zip = new ZipArchive;
+                    if (true === ($zip->open($zipAddress, ZipArchive::CREATE | ZipArchive::OVERWRITE))) {
+                        foreach ($files as $file => $value) {
+                            // $filePath = '../storage/nrb_nrp_backup/' . $value;
+                            // $zip->addFile($filePath, $value);
+
+                            // cesar nrb nrp
+                            $splitedFilename = explode('_', $value);                            
+                            if ($splitedFilename[0] == 'NRB' || $splitedFilename[0] == 'NRP') {                                
+                                $split = explode('.', $splitedFilename[sizeof($splitedFilename)-1]);
+                                $docDate = $split[0];
+                                if ($docDate == $date) {
+                                    $filePath = '../storage/nrb_nrp_backup/' . $value;
+                                    $zip->addFile($filePath, $value);
+                                }
+                            }
+                        }
+                        $zip->close();
+                        ftp_put($conn_id, '/u01/lhost/nrb_nrp_backup/' . $zipName, $zipAddress);
+                        //send to Cabang
+                    } else {
+                        $msg = 'Proses kirim file gagal';
+                        return response()->json(['kode' => 0, 'message' => $msg]);
+                    }
+                } else {
+                    ftp_put($conn_id, '/u01/lhost/nrb_nrp_backup/' . $zipName, $zipAddress);
+                    //send to Cabang
+                }
+                $msg = 'File terkirim ke Cabang';
+                FacadesFile::delete($zipAddress); //delete zip file from storage
+                // $this->deleteBackupFiles(); //delete all files
+            } else {
+                $msg = 'Empty Record, nothing to transfer';
+                return response()->json(['kode' => 2, 'message' => $msg]);
+            }
+        } catch (Exception $e) {
+            $msg = 'Proses kirim file gagal (error)';
+            return response()->json(['kode' => 0, 'message' => $msg . $e]);
+        }
+        return response()->json(['kode' => 1, 'message' => $msg]);
     }
 }

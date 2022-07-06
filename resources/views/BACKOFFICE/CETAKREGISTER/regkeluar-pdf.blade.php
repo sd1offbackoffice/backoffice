@@ -27,7 +27,7 @@
             <th class="tengah" rowspan="2">GROSS</th>
             <th class="tengah" rowspan="2">POTONGAN</th>
             <th class="tengah" rowspan="2">PPN</th>
-            <th class="tengah" rowspan="2">PPN<br>BEBAS</th>
+            <th class="tengah" rowspan="2">BEBAS<br>PPN</th>
             <th class="tengah" rowspan="2">PPN DTP</th>
             <th class="tengah" rowspan="2">TOTAL</th>
             <th class="tengah" rowspan="2">STATUS</th>

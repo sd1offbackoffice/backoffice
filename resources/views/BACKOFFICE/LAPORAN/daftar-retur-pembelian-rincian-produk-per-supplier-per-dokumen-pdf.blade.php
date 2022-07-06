@@ -128,34 +128,13 @@
                 <td class="right">{{ number_format($data[$i]->gross,2) }}</td>
                 <td class="right">{{ number_format($data[$i]->potongan,2) }}</td>
                 {{-- <td class="right">{{ number_format($data[$i]->ppn,2) }}</td> --}}
-                <td class="right">                    
-                    {{-- @php
-                        if ($data[$i]->prd_flagbkp1 == 'Y' && $data[$i]->prd_flagbkp2 == 'Y') {
-                            $data[$i]->ppn = $data[$i]->ppn;
-                        } else {
-                            $data[$i]->ppn = 0;
-                        }                        
-                    @endphp --}}
+                <td class="right">                                        
                     {{ number_format($data[$i]->ppn,2) }}
                 </td>
-                <td class="right">                    
-                    {{-- @php
-                        if ($data[$i]->prd_flagbkp1 == 'Y' && $data[$i]->prd_flagbkp2 == 'P') {
-                            $data[$i]->bebas = $data[$i]->ppn;
-                        } else {
-                            $data[$i]->bebas = 0;
-                        }                         --}}
-                    @endphp
+                <td class="right">                                       
                     {{ number_format($data[$i]->bebas,2) }}
                 </td>
-                <td class="right">                    
-                    {{-- @php
-                        if ($data[$i]->prd_flagbkp1 == 'Y' && ($data[$i]->prd_flagbkp2 == 'W' || $data[$i]->prd_flagbkp2 == 'G')) {
-                            $data[$i]->dtp = $data[$i]->ppn;
-                        } else {
-                            $data[$i]->dtp = 0;
-                        }                        
-                    @endphp --}}
+                <td class="right">                                       
                     {{ number_format($data[$i]->dtp,2) }}
                 </td>                                
                 <td class="right padding-right">{{ number_format($data[$i]->total,2) }}</td>

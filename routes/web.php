@@ -109,8 +109,8 @@ Route::get('/testigr_bo_surat_jalan_expedisi', function () {
     return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.igr_bo_surat_jalan_expedisi');
 });
 
-Route::get('locale/{locale}',function ($locale){
-    \Session::put('locale',$locale);
+Route::get('locale/{locale}', function ($locale) {
+    \Session::put('locale', $locale);
     return redirect()->back();
 });
 
@@ -551,6 +551,11 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/lov-search', 'MASTER\HargaBeliController@lovSearch');
             Route::get('/lov-select', 'MASTER\HargaBeliController@lovSelect');
         });
+
+        /*MASTER EKSPEDISI*/
+        Route::prefix('/ekspedisi')->group(function () {
+            Route::get('/', 'MASTER\EkspedisiController@index');
+        });
     });
 
     Route::prefix('/bo')->group(function () {
@@ -863,9 +868,6 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::get('/show', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BreadController@show')->middleware('CheckLogin');
                 });
 
-                Route::prefix('/surat-jalan-ekspedisi')->group(function () {
-                    Route::get('/', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\SJEkspedisiController@index')->middleware('CheckLogin');
-                });
                 // ------Kingsley------
 
                 // Cesar
@@ -1004,6 +1006,9 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::post('/save-data-lks', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\InputController@saveDataLKS');
                     Route::post('/delete-data-lks', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\InputController@deleteDataLKS');
                     Route::post('/save-data-trn', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\InputController@saveDataTrn');
+                    //
+                    Route::get('/get-data-ekspedisi', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\InputController@getDataEks');
+                    Route::get('/get-data-cabang', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\InputController@getDataCabang');
                 });
 
                 Route::prefix('/cetak')->group(function () {
@@ -1042,6 +1047,15 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::post('/transfer', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\TransferSJController@transfer');
                     Route::get('/download', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\TransferSJController@download');
                     Route::get('/open', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\TransferSJController@open');
+                });
+
+                //Kingsley
+                Route::prefix('/master-ekspedisi')->group(function () {
+                    Route::get('/', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\SJEkspedisiController@index')->middleware('CheckLogin');
+                    Route::get('/get-new-no-trn', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\SJEkspedisiController@index')->middleware('CheckLogin');
+                    Route::get('/get-data-lov-trn', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\SJEkspedisiController@getDataLovTrn')->middleware('CheckLogin');
+                    Route::get('/get-data-lov-ipb', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\SJEkspedisiController@getLovIpb')->middleware('CheckLogin');
+                    Route::get('/get-data-lov-cabang', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\SJEkspedisiController@getDataLovCabang')->middleware('CheckLogin');
                 });
             });
 
@@ -1639,6 +1653,7 @@ Route::middleware(['CheckLogin'])->group(function () {
 
             // Cesar
             Route::post('/save-signature', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@saveSignature');
+            Route::get('/kirim-cabang', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@kirimFtpCabang');
             // Route::get('/find-kodesupp', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@saveSignature')
         });
 
