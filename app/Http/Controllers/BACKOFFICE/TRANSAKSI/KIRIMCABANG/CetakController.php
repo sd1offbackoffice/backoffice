@@ -334,6 +334,6 @@ class CetakController extends Controller
     }
 
     public function testingdata($perusahaan, $data, $reprint) {
-        dd();
+        return view('BACKOFFICE.TRANSAKSI.KIRIMCABANG.laporan-nota',compact(['perusahaan','data','reprint']));
     }
 }
