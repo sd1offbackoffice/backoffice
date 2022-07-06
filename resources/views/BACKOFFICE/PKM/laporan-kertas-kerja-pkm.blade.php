@@ -8,10 +8,10 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend class="w-auto ml-3">LAPORAN KERTAS KERJA PKM</legend>
+                    <legend class="w-auto ml-3">@lang('LAPORAN KERTAS KERJA PKM')</legend>
                     <div class="card-body">
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-3 text-right col-form-label">DIVISI</label>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">{{ strtoupper(__('Divisi')) }}</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="div1" disabled>
                                 <button type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal"
@@ -19,7 +19,7 @@
                                     <i class="fas fa-question"></i>
                                 </button>
                             </div>
-                            <label class="col-sm-1 text-center col-form-label">s/d</label>
+                            <label class="col-sm-1 text-center col-form-label">@lang('s/d')</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="div2" disabled>
                                 <button type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal"
@@ -29,7 +29,7 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-3 text-right col-form-label">DEPARTEMENT</label>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">{{ strtoupper(__('Departemen')) }}</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="dep1" disabled>
                                 <button type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal"
@@ -37,7 +37,7 @@
                                     <i class="fas fa-question"></i>
                                 </button>
                             </div>
-                            <label class="col-sm-1 text-center col-form-label">s/d</label>
+                            <label class="col-sm-1 text-center col-form-label">@lang('s/d')</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="dep2" disabled>
                                 <button type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal"
@@ -47,7 +47,7 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-3 text-right col-form-label">KATEGORI</label>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">{{ strtoupper(__('Kategori')) }}</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="kat1" disabled>
                                 <button type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal"
@@ -55,7 +55,7 @@
                                     <i class="fas fa-question"></i>
                                 </button>
                             </div>
-                            <label class="col-sm-1 text-center col-form-label">s/d</label>
+                            <label class="col-sm-1 text-center col-form-label">@lang('s/d')</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="kat2" disabled>
                                 <button type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal"
@@ -65,7 +65,7 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-3 text-right col-form-label">PLU</label>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">@lang('PLU')</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="plu1" disabled>
                                 <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0"
@@ -73,7 +73,7 @@
                                     <i class="fas fa-question"></i>
                                 </button>
                             </div>
-                            <label class="col-sm-1 text-center col-form-label">s/d</label>
+                            <label class="col-sm-1 text-center col-form-label">@lang('s/d')</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="plu2" disabled>
                                 <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0"
@@ -83,7 +83,7 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-3 text-right col-form-label">KODE MONITORING PLU</label>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">{{ strtoupper(__('Kode Monitoring')) }} @lang('PLU')</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="mtr" disabled>
                                 <button id="btn_monitoring" type="button" class="btn btn-primary btn-lov p-0"
@@ -96,7 +96,7 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-3 text-right col-form-label">Supplier</label>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">{{ strtoupper(__('Suplier')) }}</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="sup1" disabled>
                                 <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0"
@@ -104,7 +104,7 @@
                                     <i class="fas fa-question"></i>
                                 </button>
                             </div>
-                            <label class="col-sm-1 text-center col-form-label">s/d</label>
+                            <label class="col-sm-1 text-center col-form-label">@lang('s/d')</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="sup2" disabled>
                                 <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0"
@@ -117,8 +117,8 @@
                             <label for="prdcd" class="col-sm-3 text-right col-form-label">Tag</label>
                             <div class="col-sm-2">
                                 <select class="form-control" id="tag">
-                                    <option value="A">Semua</option>
-                                    <option value="P">Pilih</option>
+                                    <option value="A">@lang('Semua')</option>
+                                    <option value="P">@lang('Pilih')</option>
                                 </select>
                             </div>
                         </div>
@@ -162,27 +162,27 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-3 text-right col-form-label">Urut</label>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">@lang('Urut')</label>
                             <div class="col-sm-2">
                                 <select class="form-control" id="urut">
-                                    <option value="1">Divisi</option>
-                                    <option value="2">PLU</option>
-                                    <option value="3">Supplier</option>
+                                    <option value="1">@lang('Divisi')</option>
+                                    <option value="2">@lang('PLU')</option>
+                                    <option value="3">@lang('Supplier')</option>
                                 </select>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-3 text-right col-form-label">Item PLU</label>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">@lang('Item') @lang('PLU')</label>
                             <div class="col-sm-2">
                                 <select class="form-control" id="item">
-                                    <option value="1">OMI/IDM</option>
-                                    <option value="2">Nasional</option>
+                                    <option value="1">@lang('OMI / IDM')</option>
+                                    <option value="2">@lang('Nasional')</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group row">
                             <button type="button" class="btn btn-primary offset-9 col-sm-2"
-                                    id="btn-cetak" onclick="cetak()">CETAK
+                                    id="btn-cetak" onclick="cetak()">{{ strtoupper(__('Cetak')) }}
                             </button>
                         </div>
                     </div>
@@ -203,9 +203,9 @@
                                 <table class="table table-sm mb-0 text-center" id="table_prdcd">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>PLU</th>
-                                        <th>Deskripsi</th>
-                                        <th>Unit</th>
+                                        <th>@lang('PLU')</th>
+                                        <th>@lang('Deskripsi')</th>
+                                        <th>@lang('Unit')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -232,8 +232,8 @@
                                 <table class="table table-sm mb-0 text-center" id="table_divisi">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Kode Divisi</th>
-                                        <th>Nama Divisi</th>
+                                        <th>@lang('Kode Divisi')</th>
+                                        <th>@lang('Nama Divisi')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -260,9 +260,9 @@
                                 <table class="table table-sm mb-0 text-center" id="table_departement">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Kode Departement</th>
-                                        <th>Nama Departement</th>
-                                        <th>Kode Divisi</th>
+                                        <th>@lang('Kode Departemen')</th>
+                                        <th>@lang('Nama Departemen')</th>
+                                        <th>@lang('Kode Divisi')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -289,9 +289,9 @@
                                 <table class="table table-sm mb-0 text-center" id="table_kategori">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Kode Kategori</th>
-                                        <th>Nama Kategori</th>
-                                        <th>Kode Departement</th>
+                                        <th>@lang('Kode Kategori')</th>
+                                        <th>@lang('Nama Kategori')</th>
+                                        <th>@lang('Kode Departemen')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -318,8 +318,8 @@
                                 <table class="table table-sm mb-0 text-center" id="table_monitoring">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Kode Monitoring</th>
-                                        <th>Nama Monitoring</th>
+                                        <th>@lang('Kode Monitoring')</th>
+                                        <th>@lang('Nama Monitoring')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -346,8 +346,8 @@
                                 <table class="table table-sm mb-0 text-center" id="table_supplier">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Kode</th>
-                                        <th>Nama</th>
+                                        <th>@lang('Kode')</th>
+                                        <th>@lang('Nama')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">

@@ -12,7 +12,7 @@
                         <div class="row text-right">
                             <div class="col-sm-12">
                                 <div class="row form-group">
-                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">PLU</label>
+                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('PLU')</label>
                                     <div class="col-sm-2 buttonInside">
                                         <input type="text" class="form-control text-left" id="plu">
                                         <button id="btn_lov" type="button" class="btn btn-primary btn-lov p-0" onclick="showModalLovPLU()">
@@ -36,19 +36,19 @@
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label for="omi" class="col-sm-2 col-form-label text-right pl-0 pr-0">OMI</label>
+                                    <label for="omi" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('OMI')</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="omi" disabled>
                                     </div>
                                     <div class="col pl-0"></div>
-                                    <button class="col-sm-7 btn btn-primary" id="btnPrintTag" onclick="printTag()">PRINT Tag ARNOHX, tdk ada di PRODCRM</button>
+                                    <button class="col-sm-7 btn btn-primary" id="btnPrintTag" onclick="printTag()">@lang('PRINT Tag ARNOHX, tidak ada di PRODCRM')</button>
                                 </div>
                                 <div class="row form-group">
-                                    <label for="qtymplus" class="col-sm-2 col-form-label text-right pl-0 pr-0">QTY M+</label>
+                                    <label for="qtymplus" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('Qty M+')</label>
                                     <div class="col-sm">
                                         <input type="number" class="form-control" id="qtymplus" disabled>
                                     </div>
-                                    <label for="pkmt" class="col-sm-1 col-form-label text-right pl-0 pr-0">PKMT</label>
+                                    <label for="pkmt" class="col-sm-1 col-form-label text-right pl-0 pr-0">@lang('PKMT')</label>
                                     <div class="col-sm">
                                         <input type="text" class="form-control" id="pkmt" disabled>
                                     </div>
@@ -66,16 +66,16 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary mt-0" id="data-field">
-                    <legend  class="w-auto ml-3">All Data PLU PKMT untuk QTY M+</legend>
+                    <legend  class="w-auto ml-3">@lang('Semua Data PLU PKMT untuk QTY M+')</legend>
                     <div class="card-body pt-0">
                         <table class="table table bordered table-sm mt-3" id="table_data">
                             <thead class="theadDataTables">
                             <tr class="text-center align-middle">
-                                <th class="align-middle">PLU</th>
+                                <th class="align-middle">@lang('PLU')</th>
                                 <th class="align-middle">@lang('Penjualan Rata-Rata')</th>
-                                <th class="align-middle">OMI</th>
-                                <th class="align-middle">QTY M+</th>
-                                <th class="align-middle">PKMT</th>
+                                <th class="align-middle">@lang('OMI')</th>
+                                <th class="align-middle">@lang('Qty M+')</th>
+                                <th class="align-middle">@lang('PKMT')</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -100,7 +100,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">LOV PLU</h5>
+                    <h5 class="modal-title">@lang('LOV PLU')</h5>
                 </div>
                 <div class="modal-body">
                     <div class="container">
@@ -109,9 +109,9 @@
                                 <table class="table table-striped table-bordered" id="table_lov_plu">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Deskripsi</th>
-                                        <th>PLU</th>
-                                        <th>Satuan</th>
+                                        <th>@lang('Deskripsi')</th>
+                                        <th>@lang('PLU')</th>
+                                        <th>@lang('Satuan')</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -133,11 +133,11 @@
                 <div class="modal-body">
                     <div class="container">
                         <div class="form-group row text-center">
-                            <label for="i_username" class="col-sm-12 text-center col-form-label">Masukkan username dan password untuk melanjutkan</label>
+                            <label for="i_username" class="col-sm-12 text-center col-form-label">@lang('Masukkan username dan password untuk melanjutkan')</label>
                         </div>
                         <div class="form-group row text-center">
                             <div class="col-sm-2"></div>
-                            <label for="i_username" class="col-sm-2 pl-0 col-form-label">Username</label>
+                            <label for="i_username" class="col-sm-2 pl-0 col-form-label">@lang('Username')</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control text-uppercase" id="i_username">
                             </div>
@@ -145,7 +145,7 @@
                         </div>
                         <div class="form-group row text-center">
                             <div class="col-sm-2"></div>
-                            <label for="i_password" class="col-sm-2 pl-0 col-form-label">Password</label>
+                            <label for="i_password" class="col-sm-2 pl-0 col-form-label">@lang('Password')</label>
                             <div class="col-sm-6">
                                 <input type="password" class="form-control text-uppercase" id="i_password">
                             </div>
@@ -153,8 +153,8 @@
                         </div>
                         <div class="form-group row text-center">
                             <div class="col-sm"></div>
-                            <button id="btnCancel" class="btn col-sm-4 mr-1 btn-secondary" onclick="$('#m_otorisasi').modal('hide')">CANCEL</button>
-                            <button id="btnLogin" class="btn col-sm-4 ml-1 btn-danger" onclick="uploadCSV()">OK</button>
+                            <button id="btnCancel" class="btn col-sm-4 mr-1 btn-secondary" onclick="$('#m_otorisasi').modal('hide')">@lang('BATAL')</button>
+                            <button id="btnLogin" class="btn col-sm-4 ml-1 btn-danger" onclick="uploadCSV()">@lang('OK')</button>
                             <div class="col-sm"></div>
                         </div>
                     </div>
@@ -263,7 +263,7 @@
         function getDataPLU(plu){
             if(plu.substr(-1) != '0'){
                 swal({
-                    title: 'PLU harus satuan jual 0!',
+                    title: `{{ __('PLU harus satuan jual 0') }}!`,
                     icon: 'error'
                 }).then(() => {
                     $('#plu').select();
@@ -415,7 +415,7 @@
 
         function deleteData(){
             swal({
-                title: 'Yakin ingin menghapus data?',
+                title: `{{ __('Yakin ingin menghapus data') }}?`,
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true,
