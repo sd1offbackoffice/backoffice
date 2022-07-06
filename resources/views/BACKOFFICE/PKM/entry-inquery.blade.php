@@ -11,7 +11,7 @@
                     <legend  class="w-auto ml-3">ENTRY & INQUERY KERTAS KERJA PKM</legend>
                     <div class="card-body">
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-3 text-right col-form-label">PLU</label>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">@lang('PLU')</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="prdcd">
                                 <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_prdcd">
@@ -20,7 +20,7 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="desk" class="col-sm-3 text-right col-form-label">DESKRIPSI</label>
+                            <label for="desk" class="col-sm-3 text-right col-form-label">{{ strtoupper(__('Deskripsi')) }}</label>
                             <div class="col-sm-7 pr-0">
                                 <input type="text" class="form-control" id="desk" disabled>
                             </div>
@@ -30,7 +30,7 @@
                         </div>
                         <hr>
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-3 text-right col-form-label">DIVISI</label>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">{{ strtoupper(__('Divisi')) }}</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="div_kode" disabled>
                                 {{-- value="1" --}}
@@ -43,7 +43,7 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-3 text-right col-form-label">DEPARTEMENT</label>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">{{ strtoupper(__('Departemen')) }}</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="dep_kode" disabled>
                                 {{-- value="01" --}}
@@ -56,7 +56,7 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-3 text-right col-form-label">KATEGORI BARANG</label>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">{{ strtoupper(__('Kategori Barang')) }}</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="kat_kode" disabled>
                                 {{-- value="01" --}}
@@ -69,21 +69,21 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="sales3" class="col-sm-3 text-right col-form-label">ITEM</label>
+                            <label for="sales3" class="col-sm-3 text-right col-form-label">{{ strtoupper(__('Item')) }}</label>
                             <div class="col-sm-2">
                                 <select class="form-control" id="item" onchange="cekItem()">
-                                    <option value="-" selected disabled>Pilih item</option>
-                                    <option value="1">1 - NASIONAL</option>
-                                    <option value="2">2 - OMI / IDM</option>
+                                    <option value="-" selected disabled>{{ __('Pilih Item') }}</option>
+                                    <option value="1">1 - @lang('Nasional')</option>
+                                    <option value="2">2 - @lang('OMI / IDM')</option>
                                 </select>
                             </div>
                             <div class="col-sm-2 pl-0 pr-0">
-                                <button type="button" class="btn btn-md btn btn-primary" id="btnItem" onclick="itemDetail()">CEK DETAIL</button>
+                                <button type="button" class="btn btn-md btn btn-primary" id="btnItem" onclick="itemDetail()">{{ strtoupper(__('Cek Detail')) }}</button>
                             </div>
                         </div>
                         <hr>
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-3 text-right col-form-label">KODE MONITORING PLU</label>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">{{ strtoupper(__('Kode Monitoring')) }} @lang('PLU')</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="mon_kode" disabled>
                                 <button id="btn_monitoring" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_monitoring">
@@ -107,75 +107,75 @@
                     <legend  class="w-auto ml-3">ENTRY & INQUERY KERTAS KERJA PKM</legend>
                     <div class="card-body">
                         <div class="row">
-                            <button class="ml-4 col-sm-1 btn btn-primary" onclick="showMainView()">BACK</button>
-                            <label for="desk" class="mon col-sm-2 text-right col-form-label">MONITORING</label>
+                            <button class="ml-4 col-sm-1 btn btn-primary" onclick="showMainView()">{{ strtoupper(__('Kembali')) }}</button>
+                            <label for="desk" class="mon col-sm-2 text-right col-form-label">{{ strtoupper(__('Monitoring')) }}</label>
                             <div class="col-sm-3">
                                 <input type="text" class="mon form-control" id="mon" disabled>
                             </div>
                             <div class="col"></div>
-                            <label for="desk" class="dsikat col-sm-3 text-right col-form-label">DSI KAT</label>
+                            <label for="desk" class="dsikat col-sm-3 text-right col-form-label">@lang('DSI KAT')</label>
                             <div class="col-sm-1">
                                 <input type="text" class="form-control" id="dsikat" disabled>
                             </div>
                         </div>
                         <div class="row">
-                            <label for="desk" class="div col-sm-2 text-right col-form-label">DIVISI</label>
+                            <label for="desk" class="div col-sm-2 text-right col-form-label">{{ strtoupper(__('Divisi')) }}</label>
                             <div class="col-sm-3">
                                 <input type="text" class="div form-control" id="div" disabled>
                             </div>
                             <div class="col"></div>
-                            <label for="desk" class="col-sm-3 text-right col-form-label">TOP KAT</label>
+                            <label for="desk" class="col-sm-3 text-right col-form-label">@lang('TOP KAT')</label>
                             <div class="col-sm-1">
                                 <input type="text" class="form-control" id="topkat" disabled>
                             </div>
                         </div>
                         <div class="row">
-                            <label for="desk" class="dep col-sm-2 text-right col-form-label">DEPARTEMENT</label>
+                            <label for="desk" class="dep col-sm-2 text-right col-form-label">{{ strtoupper(__('Departemen')) }}</label>
                             <div class="col-sm-3">
                                 <input type="text" class="dep form-control" id="dep" disabled>
                             </div>
                             <div class="col"></div>
-                            <label for="desk" class="col-sm-3 text-right col-form-label">MIN DISPLAY</label>
+                            <label for="desk" class="col-sm-3 text-right col-form-label">@lang('MIN DISPLAY')</label>
                             <div class="col-sm-1">
                                 <input type="text" class="form-control" id="mindis" disabled>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="desk" class="kat col-sm-2 text-right col-form-label">KATEGORI</label>
+                            <label for="desk" class="kat col-sm-2 text-right col-form-label">{{ strtoupper(__('Kategori')) }}</label>
                             <div class="col-sm-3">
                                 <input type="text" class="kat form-control" id="kat" disabled>
                             </div>
                             <div class="col"></div>
-                            <label for="desk" class="col-sm-3 text-right col-form-label">MINOR</label>
+                            <label for="desk" class="col-sm-3 text-right col-form-label">@lang('MINOR')</label>
                             <div class="col-sm-1">
                                 <input type="text" class="form-control" id="minor" disabled>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="" class="d_prdcd col-sm-2 text-right col-form-label">PLU</label>
+                            <label for="" class="d_prdcd col-sm-2 text-right col-form-label">@lang('PLU')</label>
                             <div class="col-sm-1">
                                 <input type="text" class="d_prdcd form-control" id="d_prdcd" disabled>
                             </div>
-                            <label for="desk" class="col-sm-4 text-right col-form-label">USER</label>
+                            <label for="desk" class="col-sm-4 text-right col-form-label">{{ strtoupper(__('Pengguna')) }}</label>
                             <div class="col-sm-1">
                                 <input type="text" class="form-control" id="d_user" value="{{ Session::get('usertype') != 'XXX' ? Session::get('usertype') : ''}} " disabled>
                             </div>
-                            <label for="desk" class="col-sm-2 text-right col-form-label">KETERANGAN</label>
+                            <label for="desk" class="col-sm-2 text-right col-form-label">{{ strtoupper(__('Keterangan')) }}</label>
                             <div class="col-sm-2">
                                 <input type="text" class="form-control" id="ketnewplu" disabled>
                             </div>
                         </div>
                         <div class="row form-group d-flex justify-content-end">
-                            <label for="desk" class="ndsi1 text-right col-form-label">NDSI 1</label>
+                            <label for="desk" class="ndsi1 text-right col-form-label">@lang('NDSI 1')</label>
                             <div class="col-sm-1">
                                 <input type="text" class="ndsi1 form-control" id="ndsi1" disabled>
                             </div>
                             {{-- <label for="" class="dividen col-form-label" style="margin-right: 15px;"><center>/</center></label> --}}
-                            <label for="desk" class="ndsi2 text-right col-form-label">NDSI 2</label>
+                            <label for="desk" class="ndsi2 text-right col-form-label">@lang('NDSI 2')</label>
                             <div class="col-sm-1">
                                 <input type="text" class="ndsi2 form-control" id="ndsi2" disabled>
                             </div>
-                            <label for="desk" class="ntop text-right col-form-label">NTOP</label>
+                            <label for="desk" class="ntop text-right col-form-label">@lang('NTOP')</label>
                             <div class="col-sm-1">
                                 <input type="text" class="ntop form-control" id="ntop" disabled>
                             </div>
@@ -183,15 +183,15 @@
                             <div class="col-sm-1">
                                 <input type="text" class="nrph1 form-control" id="nrph1" disabled>
                             </div> --}}
-                            <label for="desk" class="nrph1 text-right col-form-label">NRPH1</label>
+                            <label for="desk" class="nrph1 text-right col-form-label">lang('NRPH1')</label>
                             <div class="col-sm-1">
                                 <input type="text" class="nrph1 form-control" id="nrph1" disabled>
                             </div>
-                            <label for="desk" class="nmid_rp text-right col-form-label">NMID RP</label>
+                            <label for="desk" class="nmid_rp text-right col-form-label">@lang('NMID RP')</label>
                             <div class="col-sm-1">
                                 <input type="text" class="nmid_rp form-control" id="nmid_rp" disabled>
                             </div>
-                            <label for="desk" class="nmin_rp text-right col-form-label">NMIN RP</label>
+                            <label for="desk" class="nmin_rp text-right col-form-label">@lang('NMIN RP')</label>
                             <div class="col-sm-1">
                                 <input type="text" class="nmin_rp form-control" id="nmin_rp" disabled>
                             </div>
@@ -201,21 +201,21 @@
                             <table class="table table-sm mb-0 text-right" id="table_detail">
                                 <thead class="text-center thColor">
                                 <tr>
-                                    <th>PLU</th>
-                                    <th>MDIS</th>
-                                    <th>MAX D</th>
-                                    <th>A_SLS</th>
-                                    <th>LT</th>
-                                    <th>KOEF</th>
-                                    <th>HARI_SALES</th>
-                                    <th>PKM</th>
-                                    <th>MPKM</th>
-                                    <th>PKMT</th>
-                                    <th>N+</th>
-                                    <th>PKMX</th>
-                                    <th>SLP</th>
-                                    <th>STS</th>
-                                    <th>% SL</th>
+                                    <th>@lang('PLU')</th>
+                                    <th>@lang('MDIS')</th>
+                                    <th>@lang('MAX D')</th>
+                                    <th>@lang('A_SLS')</th>
+                                    <th>@lang('LT')</th>
+                                    <th>@lang('KOEF')</th>
+                                    <th>@lang('HARI_SALES')</th>
+                                    <th>@lang('PKM')</th>
+                                    <th>@lang('MPKM')</th>
+                                    <th>@lang('PKMT')</th>
+                                    <th>@lang('N+')</th>
+                                    <th>lang('PKMX')</th>
+                                    <th>@lang('SLP')</th>
+                                    <th>@lang('STS')</th>
+                                    <th>% @lang('SL')</th>
                                 </tr>
                                 </thead>
                                 <tbody id="">
@@ -225,7 +225,7 @@
                         </div>
                         <hr>
                         <div class="row mt-1">
-                            <label for="desk" class="col-sm-1 text-right col-form-label">Deskripsi</label>
+                            <label for="desk" class="col-sm-1 text-right col-form-label">@lang('Deskripsi')</label>
                             <div class="col-sm-5">
                                 <input maxlength="10" type="text" class="form-control" id="d_desk" disabled>
                             </div>
@@ -234,29 +234,29 @@
                             </div>
                         </div>
                         <div class="row mt-1">
-                            <label for="desk" class="col-sm-1 text-right col-form-label">TAG</label>
+                            <label for="desk" class="col-sm-1 text-right col-form-label">@lang('TAG')</label>
                             <div class="col-sm-1">
                                 <input maxlength="10" type="text" class="form-control text-center" id="tag" disabled>
                             </div>
-                            <label for="desk" class="ml-3 text-right col-form-label">MIN</label>
+                            <label for="desk" class="ml-3 text-right col-form-label">@lang('MIN')</label>
                             <div class="col-sm-1">
                                 <input maxlength="10" type="text" class="form-control text-center" id="min" disabled>
                             </div>
-                            <label for="desk" class="ml-3 text-right col-form-label">DSI</label>
+                            <label for="desk" class="ml-3 text-right col-form-label">@lang('DSI')</label>
                             <div class="col-sm-1">
                                 <input maxlength="10" type="text" class="form-control text-center" id="dsi" disabled>
                             </div>
-                            <label for="desk" class="ml-3 text-right col-form-label">TOP</label>
+                            <label for="desk" class="ml-3 text-right col-form-label">@lang('TOP')</label>
                             <div class="col-sm-1">
                                 <input maxlength="10" type="text" class="form-control text-center" id="top" disabled>
                             </div>
-                            <label for="desk" class="ml-3 text-right col-form-label">MAX PALET</label>
+                            <label for="desk" class="ml-3 text-right col-form-label">@lang('MAX PALET')</label>
                             <div class="col-sm-1">
                                 <input maxlength="10" type="text" class="form-control text-center" id="maxpalet" disabled>
                             </div>
                         </div>
                         <div class="row mt-1">
-                            <label for="desk" class="col-sm-1 text-right col-form-label">Supplier</label>
+                            <label for="desk" class="col-sm-1 text-right col-form-label">@lang('Supplier')</label>
                             <div class="col-sm-1">
                                 <input maxlength="10" type="text" class="form-control text-center" id="sup_kode" disabled>
                             </div>
@@ -265,15 +265,15 @@
                             </div>
                             <div class="col-sm-2"></div>
                             <div class="col">
-                                MPKM = nilai PKM hasil perhitungan
+                                @lang('MPKM') = @lang('Nilai PKM hasil perhitungan')
                             </div>
                         </div>
                         <div class="row mt-1">
-                            <label for="desk" class="col-sm-1 text-right col-form-label">Qty M+</label>
+                            <label for="desk" class="col-sm-1 text-right col-form-label">@lang('Qty M+')</label>
                             <div class="col-sm-1">
                                 <input maxlength="10" type="text" class="form-control text-center" id="mplus" disabled>
                             </div>
-                            <label for="desk" class="col-sm-1 text-right col-form-label">OMI</label>
+                            <label for="desk" class="col-sm-1 text-right col-form-label">@lang('OMI')</label>
                             <div class="col-sm-1 pl-0">
                                 <input maxlength="10" type="text" class="form-control text-center" id="omi" disabled>
                             </div>
@@ -288,7 +288,7 @@
                                 <input maxlength="10" type="text" class="form-control text-right" id="bln1" disabled>
                             </div>
                             <div class="col">
-                                PKM = nilai PKM hasil perhitungan / adjust
+                                @lang('PKM') = @lang('Nilai PKM hasil perhitungan / adjust')
                             </div>
                         </div>
                         <div class="row mt-1">
@@ -307,7 +307,7 @@
                                 <input maxlength="10" type="text" class="form-control text-right" id="qty1" disabled>
                             </div>
                             <div class="col">
-                                PKMT = PKM + Mplus
+                                @lang('PKMT') = @lang('PKM') + @lang('Mplus')
                             </div>
                         </div>
                         <div class="row mt-1">
@@ -317,7 +317,7 @@
                             </div>
                             <div class="col-sm-2"></div>
                             <div class="col">
-                                PKMX = PKMT + Nplus
+                                @lang('PKMX') = @lang('PKMT') + @lang('Nplus')
                             </div>
                         </div>
                     </div>
@@ -338,9 +338,9 @@
                                 <table class="table table-sm mb-0 text-center" id="table_prdcd">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Deskripsi</th>
-                                        <th>PLU</th>
-                                        <th>Unit</th>
+                                        <th>@lang('Deskripsi')</th>
+                                        <th>@lang('PLU')</th>
+                                        <th>@lang('Satuan')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -367,8 +367,8 @@
                                 <table class="table table-sm mb-0 text-center" id="table_divisi">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Nama Divisi</th>
-                                        <th>Kode Divisi</th>
+                                        <th>@lang('Nama Divisi')</th>
+                                        <th>@lang('Kode Divisi')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -395,9 +395,9 @@
                                 <table class="table table-sm mb-0 text-center" id="table_departement">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Nama Departement</th>
-                                        <th>Kode Departement</th>
-                                        <th>Kode Divisi</th>
+                                        <th>@lang('Nama Departemen')</th>
+                                        <th>@lang('Kode Departemen')</th>
+                                        <th>@lang('Kode Divisi')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -424,9 +424,9 @@
                                 <table class="table table-sm mb-0 text-center" id="table_kategori">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Nama Kategori</th>
-                                        <th>Kode Kategori</th>
-                                        <th>Kode Departement</th>
+                                        <th>@lang('Nama Kategori')</th>
+                                        <th>@lang('Kode Kategori')</th>
+                                        <th>@lang('Kode Departemen')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -453,8 +453,8 @@
                                 <table class="table table-sm mb-0 text-center" id="table_monitoring">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Nama Monitoring</th>
-                                        <th>Kode Monitoring</th>
+                                        <th>@lang('Nama Monitoring')</th>
+                                        <th>@lang('Kode Monitoring')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -646,7 +646,7 @@
         function getDepartement(){
             if(!$('#div_kode').val()){
                 swal({
-                    title: 'Pilih Divisi terlebih dahulu!',
+                    title: `{{ __('Pilih Divisi terlebih dahulu') }}!`,
                     icon: 'warning'
                 });
             }
@@ -700,7 +700,7 @@
         function getKategori(){
             if(!$('#dep_kode').val()){
                 swal({
-                    title: 'Pilih Departement terlebih dahulu!',
+                    title: `{{ __('Pilih Departement terlebih dahulu') }}!`,
                     icon: 'warning'
                 });
             }
@@ -799,7 +799,7 @@
         function cekItem(){
             if(!$('#kat_kode').val()){
                 swal({
-                    title: 'Pilih Kategori terlebih dahulu!',
+                    title: `{{ __('Pilih Kategori terlebih dahulu') }}!`,
                     icon: 'warning'
                 });
                 $('#item').val('-');
@@ -815,7 +815,7 @@
             if($('#div_kode').val() == '' || $('#dept_kode').val() == '' || $('#kat_kode').val() == '' || $('#kat_kode').val() == '' )
             {
                 swal({
-                    title : 'Kolom input divisi/departement/kategori/item tidak boleh kosong !',
+                    title : `{{ __('Kolom input divisi/departement/kategori/item tidak boleh kosong') }}!`,
                     icon : 'warning'
                 });
             }
@@ -1039,7 +1039,7 @@
             $('#ketnewplu').val(dataDetail[i].ketnewplu);
             if(dataDetail[i].ketnewplu != ''){
                 $('.row-pkm').prop('disabled',true);
-                $('#editplubaru').val('PLU Terdaftar Sbg Produk Baru, Update Via Menu Inquiry Monitoring Produk Baru');
+                $('#editplubaru').val(`{{ __('PLU Terdaftar Sebagai Produk Baru, Update Via Menu Inquiry Monitoring Produk Baru') }}`);
             }
             else{
                 $('#editplubaru').val('');
@@ -1097,7 +1097,7 @@
                     error: function (error) {
                         $('#modal-loader').modal('hide');
                         swal({
-                            title: 'Terjadi kesalahan!',
+                            title: `{{ __('Terjadi kesalahan') }}!`,
                             text: error.responseJSON.message,
                             icon: 'error',
                         });
