@@ -13,21 +13,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe5a705e-429e-4590-b22e-8b596c37d781" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ADMINISTRATION/AccessController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ADMINISTRATION/AccessController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ADMINISTRATION/DevController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ADMINISTRATION/DevController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ADMINISTRATION/MenuController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ADMINISTRATION/MenuController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ADMINISTRATION/userController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ADMINISTRATION/userController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/CETAKDOKUMEN/CetakDokumenController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/CETAKDOKUMEN/CetakDokumenController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/lang/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/lang/en.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/ADMINISTRATION/access.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/ADMINISTRATION/access.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/ADMINISTRATION/dev.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/ADMINISTRATION/dev.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/ADMINISTRATION/menu.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/ADMINISTRATION/menu.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/ADMINISTRATION/user.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/ADMINISTRATION/user.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKDOKUMEN/cetak-nota-pengeluaran-biasa-pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKDOKUMEN/cetak-nota-pengeluaran-biasa-pdf.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/storage/nrb_nrp_backup/REPRINT_NRB_2222206013_20220706.PDF" beforeDir="false" />
-    </list>
+    <list default="true" id="fe5a705e-429e-4590-b22e-8b596c37d781" name="Default" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
