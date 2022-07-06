@@ -54,7 +54,7 @@ class AccessController extends Controller
 
         if(!$temp){
             return response()->json([
-                'title' => 'Data user tidak ditemukan!'
+                'title' => (__('Data user tidak ditemukan!'))
             ], 500);
         }
         else{
@@ -98,7 +98,7 @@ class AccessController extends Controller
 
             if(!$temp){
                 return response()->json([
-                    'title' => 'Data user tidak ditemukan!'
+                    'title' => (__('Data user tidak ditemukan!'))
                 ], 500);
             }
             else{
@@ -121,7 +121,7 @@ class AccessController extends Controller
                 DB::connection(Session::get('connection'))->commit();
 
                 return response()->json([
-                    'title' => 'Data berhasil disimpan!'
+                    'title' => (__('Data berhasil disimpan!'))
                 ], 200);
             }
         }
@@ -129,14 +129,14 @@ class AccessController extends Controller
             DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
-                'title' => 'Terjadi kesalahan!',
+                'title' => (__('Terjadi kesalahan!')),
                 'message' => $e->getMessage()
             ], 500);
         }
     }
 
     public function clone(){
-        dd('sudah otomatis, tidak perlu clone manual lagi :)');
+        dd((__('sudah otomatis, tidak perlu clone manual lagi :)')));
     }
 
     public static function getListMenu(){
@@ -391,6 +391,6 @@ class AccessController extends Controller
             ->table('tbmaster_access_migrasi')
             ->insert($menu);
 
-        dd('Berhasil clone menu dari '.$source.' ke '.$target);
+        dd((__('Berhasil clone menu dari ')).$source.(__(' ke ')).$target);
     }
 }

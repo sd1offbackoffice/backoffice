@@ -39,7 +39,7 @@
                                             <th width="10%" class="text-center small">Password</th>
                                             <th width="7.5%" class="text-center small">Level</th>
                                             <th width="10%" class="text-center small">Station</th>
-                                            <th width="22.5%" class="text-center small">Jabatan</th>
+                                            <th width="22.5%" class="text-center small">@lang('Jabatan')</th>
                                             <th width="22.5%" class="text-center small">Email</th>
                                         </tr>
                                         </thead>
@@ -162,7 +162,7 @@
                             <input class="form-control col-sm-2" id="add-station" type="text" maxlength="3" value="">
                         </div>
                         <div class="row">
-                            <label class="col-form-label col-sm-2 text-right">Jabatan</label>
+                            <label class="col-form-label col-sm-2 text-right">@lang('Jabatan')</label>
                             <select class="form-control col-sm-7" id="add-jabatan">
                                 <option value=""></option>
                                 <option value="1">Senior Manager</option>
@@ -268,10 +268,10 @@
                                                     <tr class="thNormal text-center">
                                                         <th width="25%" class="text-center">ACCESS CODE</th>
                                                         <th width="35%" class="text-center">ACCESS NAME</th>
-                                                        <th width="10%" class="text-center">BACA</th>
-                                                        <th width="10%" class="text-center">TAMBAH</th>
-                                                        <th width="10%" class="text-center">KOREKSI</th>
-                                                        <th width="10%" class="text-center">HAPUS</th>
+                                                        <th width="10%" class="text-center">READ</th>
+                                                        <th width="10%" class="text-center">ADD</th>
+                                                        <th width="10%" class="text-center">UPDATE</th>
+                                                        <th width="10%" class="text-center">DELETE</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody id="body-table-user-access">
@@ -474,7 +474,7 @@
 
             status = 1;
             if (id == '') {
-                $('#validate-id-user').text("Harus diisi!");
+                $('#validate-id-user').text(@json(__('Harus diisi!')));
                 status = 0;
             }
             else {
@@ -482,7 +482,7 @@
             }
 
             if (username == '') {
-                $('#validate-username').text("Harus diisi!");
+                $('#validate-username').text(@json(__('Harus diisi!')));
                 status = 0;
             }
             else {
@@ -490,14 +490,14 @@
             }
 
             if (password == '') {
-                $('#validate-password').text("Harus diisi!");
+                $('#validate-password').text(@json(__('Harus diisi!')));
                 status = 0;
             } else {
                 validatePassword();
             }
 
             if (level == '') {
-                $('#validate-level').text("Harus diisi!");
+                $('#validate-level').text(@json(__('Harus diisi!')));
                 status = 0;
             }
             else {
@@ -555,26 +555,26 @@
             valid_password = false;
             str = $('#add-password').val();
             if (str.length < 4) {
-                $('#validate-password').text("Min 6 Karakter");
+                $('#validate-password').text(@json(__('Min 6 Karakter')));
                 valid_password = false;
             } else if (str.length > 8) {
-                $('#validate-password').text("Max 8 Karakter");
+                $('#validate-password').text(@json(__('Max 8 Karakter')));
                 valid_password = false;
             } else if (str.search(/\d/) == -1) {
-                $('#validate-password').text("Min 1 Angka");
+                $('#validate-password').text(@json(__('Min 1 Angka')));
                 valid_password = false;
             } else if (str.search(/[a-z]/) == -1) {
-                $('#validate-password').text("Min 1 Huruf Kecil");
+                $('#validate-password').text(@json(__('Min 1 Huruf Kecil')));
                 valid_password = false;
             } else if (str.search(/[A-Z]/) == -1) {
-                $('#validate-password').text("Min 1 Huruf Besar");
+                $('#validate-password').text(@json(__('Min 1 Huruf Besar')));
                 valid_password = false;
             } else if (str.search(/[^a-zA-Z0-9\!\@\#\$\%\^\&\*\(\)\_\+]/) != -1) {
-                $('#validate-password').text("Symbol Tidak Diterima");
+                $('#validate-password').text(@json(__('Symbol Tidak Diterima')));
                 valid_password = false;
             }
             else if (str.search(/[@$-/:-?{-~!"^_`\[\]]/) == -1) {
-                $('#validate-password').text("Min 1 Symbol");
+                $('#validate-password').text(@json(__('Min 1 Symbol')));
                 valid_password = false;
             } else {
                 $('#validate-password').text("");
@@ -758,8 +758,8 @@
 
             });
             swal({
-                title: "Simpan Perubahan?",
-                text: dataUser.userid.length + " Data Berubah.",
+                title: @json(__('Simpan Perubahan?')),
+                text: dataUser.userid.length + @json(__(' Data Berubah.')),
                 icon: "info",
                 buttons: true,
                 dangerMode: true,
@@ -791,7 +791,7 @@
                         }
                     });
                 } else {
-                    swal('Data Tidak Disimpan', '', 'warning');
+                    swal(@json(__('Data Tidak Disimpan')), '', 'warning');
                 }
             });
             // console.log(dataUser);
@@ -866,7 +866,7 @@
             console.log(dataAccess);
 
             swal({
-                title: "Simpan Perubahan?",
+                title: @json(__('Simpan Perubahan?')),
                 icon: "info",
                 buttons: true,
                 dangerMode: true,
@@ -899,7 +899,7 @@
                         }
                     });
                 } else {
-                    swal('Data Tidak Disimpan', '', 'warning');
+                    swal(@json(__('Data Tidak Disimpan')), '', 'warning');
                 }
             });
         });
@@ -912,7 +912,7 @@
         });
         $('#add-ip-1').on('keyup', function () {
             if($(this).val().length > 0 &&  $.isNumeric( $(this).val() ) == false){
-                $('#validate-ip').text('IP harus Angka!');
+                $('#validate-ip').text(@json(__('IP harus Angka!')));
                 $(this).val("");
             }
             else {
@@ -924,7 +924,7 @@
         });
         $('#add-ip-2').on('keyup', function () {
             if($(this).val().length > 0 &&  $.isNumeric( $(this).val() ) == false){
-                $('#validate-ip').text('IP harus Angka!');
+                $('#validate-ip').text(@json(__('IP harus Angka!')));
                 $(this).val("");
             }
             else {
@@ -936,7 +936,7 @@
         });
         $('#add-ip-3').on('keyup', function () {
             if($(this).val().length > 0 &&  $.isNumeric( $(this).val() ) == false){
-                $('#validate-ip').text('IP harus Angka!');
+                $('#validate-ip').text(@json(__('IP harus Angka!')));
                 $(this).val("");
             }
             else {
@@ -948,7 +948,7 @@
         });
         $('#add-ip-4').on('keyup', function () {
             if($(this).val().length > 0 && $.isNumeric( $(this).val() ) == false){
-                $('#validate-ip').text('IP harus Angka!');
+                $('#validate-ip').text(@json(__('IP harus Angka!')));
                 $(this).val("");
             }
             else {
@@ -1016,27 +1016,27 @@
                 computername = $('#add-computername').val();
 
                 if(  $.isNumeric( ip1 ) == false){
-                    $('#validate-ip').text('IP harus Angka!');
+                    $('#validate-ip').text(@json(__('IP harus Angka!')));
                     $('#add-ip-1').focus();
                     valid = false;
                 }
                 else if(  $.isNumeric( ip2 ) == false){
-                    $('#validate-ip').text('IP harus Angka!');
+                    $('#validate-ip').text(@json(__('IP harus Angka!')));
                     $('#add-ip-2').focus();
                     valid = false;
                 }
                 else if(  $.isNumeric( ip3 ) == false){
-                    $('#validate-ip').text('IP harus Angka!');
+                    $('#validate-ip').text(@json(__('IP harus Angka!')));
                     $('#add-ip-3').focus();
                     valid = false;
                 }
                 else if(  $.isNumeric( ip4 ) == false){
-                    $('#validate-ip').text('IP harus Angka!');
+                    $('#validate-ip').text(@json(__('IP harus Angka!')));
                     $('#add-ip-4').focus();
                     valid = false;
                 }
                 else if(station==''){
-                    $('#validate-station').text('Station tidak boleh kosong!');
+                    $('#validate-station').text(@json(__('Station tidak boleh kosong!')));
                     $('#add-station-ip').focus();
                     valid = false;
                 }
@@ -1121,8 +1121,8 @@
 
                 });
                 swal({
-                    title: "Simpan Perubahan?",
-                    text: dataIp.ip.length + " Data Berubah.",
+                    title: @json(__('Simpan Perubahan?')),
+                    text: dataIp.ip.length + @json(__(' Data Berubah.')),
                     icon: "info",
                     buttons: true,
                     dangerMode: true,
@@ -1153,7 +1153,7 @@
                             }
                         });
                     } else {
-                        swal('Data Tidak Disimpan', '', 'warning');
+                        swal(@json(__('Data Tidak Disimpan')), '', 'warning');
                     }
                 });
                 console.log(dataIp);

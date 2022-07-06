@@ -64,7 +64,7 @@
 {{--                                </div>--}}
                                 <div class="row form-group">
                                     <div class="col-sm"></div>
-                                    <button class="col-sm-2 btn btn-primary mr-3" id="" onclick="showModalAdd()">TAMBAH</button>
+                                    <button class="col-sm-2 btn btn-primary mr-3" id="" onclick="showModalAdd()">@lang('TAMBAH')</button>
                                 </div>
                             </div>
                         </fieldset>
@@ -78,7 +78,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Tambah Data</h4>
+                    <h4 class="modal-title">@lang('Tambah Data')</h4>
                 </div>
                 <div class="modal-body">
                     <div class="container">
@@ -116,7 +116,7 @@
                             <label class="col-sm-3 text-right col-form-label">LEVEL</label>
                             <div class="col-sm-7">
                                 <select id="add_level" class="form-control">
-                                    <option value="" disabled selected>Pilih Level</option>
+                                    <option value="" disabled selected>@lang('Pilih Level')</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -133,7 +133,7 @@
                         </div>
                         <div class="row form-group">
                             <div class="col-sm"></div>
-                            <button class="col-sm-2 btn btn-success" onclick="add()">TAMBAH</button>
+                            <button class="col-sm-2 btn btn-success" onclick="add()">@lang('TAMBAH')</button>
                             <div class="col-sm"></div>
                         </div>
                     </div>
@@ -190,7 +190,7 @@
                             <label class="col-sm-3 text-right col-form-label">LEVEL</label>
                             <div class="col-sm-7">
                                 <select id="edit_level" class="form-control">
-                                    <option value="" disabled selected>Pilih Level</option>
+                                    <option value="" disabled selected>@lang('Pilih Level')</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -225,8 +225,8 @@
                         </div>
                         <div class="row form-group">
                             <div class="col-sm"></div>
-                            <button class="col-sm-2 btn btn-success mr-1" onclick="edit()">SIMPAN</button>
-                            <button class="col-sm-2 btn btn-danger ml-1" onclick="del()">HAPUS</button>
+                            <button class="col-sm-2 btn btn-success mr-1" onclick="edit()">@lang('SIMPAN')</button>
+                            <button class="col-sm-2 btn btn-danger ml-1" onclick="del()">@lang('HAPUS')</button>
                             <div class="col-sm"></div>
                         </div>
                     </div>
@@ -448,7 +448,7 @@
 
         function del(){
             swal({
-                title: 'Yakin ingin menghapus data?',
+                title: @json(__('Yakin ingin menghapus data?')),
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true
@@ -497,7 +497,7 @@
         function deleteByPLU(){
             if(!$('#plu').val()){
                 swal({
-                    title: 'Pilih PLU terlebih dahulu!',
+                    title: @json(__('Pilih PLU terlebih dahulu!')),
                     icon: 'error'
                 });
             }
@@ -614,7 +614,7 @@
 
         function print(){
             swal({
-                title: 'Cetak data PLU yang tidak ikut promo?',
+                title: @json(__('Cetak data PLU yang tidak ikut promo?')),
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true

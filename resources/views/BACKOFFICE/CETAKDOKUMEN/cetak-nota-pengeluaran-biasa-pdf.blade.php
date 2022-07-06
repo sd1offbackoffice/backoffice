@@ -250,17 +250,17 @@
                                         @endfor                                    
                                     </tr>
                                     <tr>
-                                        <td class="left" colspan="3">
+                                        <td class="center" colspan="3">
                                             &nbsp; ADMINISTRASI
                                             <p>{{ file_get_contents('../storage/names/clerk.txt') }}</p>
                                         </td>
-                                        <td class="left" colspan="3">
+                                        <td class="center" colspan="3">
                                             &nbsp; KEPALA GUDANG
                                             <p>{{ file_get_contents('../storage/names/srclerk.txt') }}</p>
                                         </td>
                                         @for ($j = 0; $j < sizeof($data['arrSuppSig']); $j++)
                                         @if ($data['data1'][$i]->msth_kodesupplier == $data['arrSuppSig'][$j]['sup_kodesupplier'])
-                                            <td class="left" colspan="4">
+                                            <td class="center" colspan="4">
                                                 &nbsp; SUPPLIER
                                                 <p>{{ strtoupper($data['arrSuppSig'][$j]['signedBy']) }}</p>
                                             </td>

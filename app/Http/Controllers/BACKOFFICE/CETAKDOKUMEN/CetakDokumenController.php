@@ -2417,7 +2417,9 @@ class CetakDokumenController extends Controller
                         $nodocs .= $nodoc . '_';
                     }
                     $filenames = 'NRB_'. $nodocs . $data1[0]->msth_tgldoc;
-                    $path_backup = 'nrb_nrp_backup/';
+                    if($REPRINT == '0'){
+                        $path_backup = 'nrb_nrp_backup/';
+                    }
                     break;
                 case  'H' :      // Barang Hilang
                     if ($JNSKERTAS == 'B') {
