@@ -148,8 +148,7 @@ class CetakController extends Controller
                 DB::connection(Session::get('connection'))->commit();
 
                 return view('BACKOFFICE.TRANSAKSI.KIRIMCABANG.laporan-list',compact(['perusahaan','data','reprint']));
-            }
-            else{
+            } else {
                 $reprint = DB::connection(Session::get('connection'))
                     ->table('tbtr_mstran_h')
                     ->whereIn('msth_nodoc',$nodoc)
@@ -324,7 +323,7 @@ class CetakController extends Controller
                 if($jenis != 1){
                     $reprint = $reprint ? 1 : 0;
                 }
-
+                $this->testingdata($perusahaan, $data, $reprint);
                 return view('BACKOFFICE.TRANSAKSI.KIRIMCABANG.laporan-nota',compact(['perusahaan','data','reprint']));
             }
         }
@@ -332,5 +331,9 @@ class CetakController extends Controller
             DB::connection(Session::get('connection'))->rollBack();
             dd($e->getMessage());
         }
+    }
+
+    public function testingdata($perusahaan, $data, $reprint) {
+        dd();
     }
 }

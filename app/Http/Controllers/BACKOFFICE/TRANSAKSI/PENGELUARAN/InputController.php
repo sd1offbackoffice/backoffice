@@ -79,6 +79,7 @@ class InputController extends Controller
             $ip = Session::get('ip');
             
             $pIP = str_replace('.', '0', SUBSTR(Session::get('ip'), -3));
+            // dd($pIP);
             
 
             $c = loginController::getConnectionProcedure();

@@ -137,15 +137,15 @@
             <table class="table">
                 <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
                 <tr>
-                    <th class="tengah right padding-right" rowspan="2">NO</th>
-                    <th class="tengah left" rowspan="2">PLU</th>
-                    <th class="tengah left" rowspan="2">NAMA BARANG</th>
-                    <th class="tengah left" rowspan="2">SATUAN</th>
+                    <th class="tengah center padding-right" rowspan="2">NO</th>
+                    <th class="tengah center" rowspan="2">PLU</th>
+                    <th class="tengah center" rowspan="2">NAMA BARANG</th>
+                    <th class="tengah center" rowspan="2">SATUAN</th>
                     <th class="tengah center" colspan="2">KUANTITAS</th>
                     {{-- <th class="tengah right" rowspan="2">HARGA<br>SATUAN</th>
                     <th class="tengah right" rowspan="2">TOTAL NILAI</th> --}}
                     {{-- <th class="tengah right padding-right" rowspan="2">NO. REF <br> BTB</th> --}}
-                    <th class="tengah left" rowspan="2">KETERANGAN</th>
+                    <th class="tengah center" rowspan="2">KETERANGAN</th>
                 </tr>
                 <tr>
                     <th class="center">BESAR</th>
@@ -163,17 +163,17 @@
                 @endphp
                 @endif
                 <tr>
-                    <td class="right padding-right">{{ $number }}</td>
-                    <td class="left">{{ $data['data1'][$i]->mstd_prdcd }}</td>
-                    <td class="left">{{ $data['data1'][$i]->prd_deskripsipanjang}}</td>
-                    <td class="left">{{ $data['data1'][$i]->mstd_unit }}
+                    <td class="center padding-right">{{ $number }}</td>
+                    <td class="center">{{ $data['data1'][$i]->mstd_prdcd }}</td>
+                    <td class="center">{{ $data['data1'][$i]->prd_deskripsipanjang}}</td>
+                    <td class="center">{{ $data['data1'][$i]->mstd_unit }}
                         /{{ $data['data1'][$i]->mstd_frac }}</td>
                     <td class="center">{{ $data['data1'][$i]->ctn }}</td>
                     <td class="center">{{ $data['data1'][$i]->pcs }}</td>
                     {{-- <td class="right">{{ number_format(round($data['data1'][$i]->mstd_hrgsatuan), 0, '.', ',') }}</td>
                     <td class="right">{{ number_format(round($data['data1'][$i]->mstd_gross), 0, '.', ',') }}</td>
                     <td class="right padding-right">{{ $data['data1'][$i]->mstd_noref3 }}</td> --}}
-                    <td class="left">{{ $data['data1'][$i]->mstd_keterangan }}</td>
+                    <td class="center">{{ $data['data1'][$i]->mstd_keterangan }}</td>
                 </tr>
                 @php
                     $number++;
