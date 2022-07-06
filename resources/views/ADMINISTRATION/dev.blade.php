@@ -295,7 +295,7 @@
 
         function save(){
             swal({
-                title: 'Yakin ingin menyimpan data?',
+                title: @json(__('Yakin ingin menyimpan data?')),
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true

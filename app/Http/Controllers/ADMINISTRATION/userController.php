@@ -32,7 +32,7 @@ class userController extends Controller
                 ->orderBy('userid')
                 ->get();
             if (sizeof($user) == 0) {
-                $message = "User tidak ditemukan!";
+                $message = (__('User tidak ditemukan!'));
                 $status = "error";
             }
         }
@@ -53,7 +53,7 @@ class userController extends Controller
                 ->where('IP', 'like', '%' . $request->value . '%')
                 ->get();
             if (sizeof($ip) == 0) {
-                $message = "IP tidak ditemukan!";
+                $message = (__('IP tidak ditemukan!'));
                 $status = "error";
             }
         }
@@ -68,7 +68,7 @@ class userController extends Controller
             ->first();
 
         if (!is_null($cek)) {
-            $message = 'User ID Sudah Ada, Silahkan Ganti User ID!';
+            $message = (__('User ID Sudah Ada, Silahkan Ganti User ID!'));
             $status = 'error';
         } else {
             if (DB::connection(Session::get('connection'))->table('tbmaster_user')->insert(
@@ -78,10 +78,10 @@ class userController extends Controller
                     'email' => $request->email, 'create_by' => Session::get('usid'),
                     'create_dt' => Carbon::now(),
                     'encryptpwd' => md5($request->password), 'jabatan' => $request->jabatan])) {
-                $message = 'User Berhasil Disimpan!';
+                $message = (__('User Berhasil Disimpan!'));
                 $status = 'success';
             } else {
-                $message = 'User Gagal Disimpan!';
+                $message = (__('User Gagal Disimpan!'));
                 $status = 'error';
             }
         }
@@ -95,7 +95,7 @@ class userController extends Controller
                 ->where('userid', '=', $request->value['userid'][$i])
                 ->update(['userpassword' => $request->value['password'][$i], 'userlevel' => $request->value['userlevel'][$i], 'station' => $request->value['station'][$i], 'username' => $request->value['username'][$i], 'email' => $request->value['email'][$i], 'jabatan' => $request->value['jabatan'][$i], 'encryptpwd' => md5($request->value['password'][$i]), 'modify_by' => Session::get('usid'), 'modify_dt' => Carbon::now()]);
         }
-        $message = 'User berhasil di update!';
+        $message = (__('User berhasil di update!'));
         $status = 'success';
         return compact(['message', 'status']);
     }
@@ -170,7 +170,7 @@ class userController extends Controller
                     ]);
             }
         }
-        $message = 'Akses berhasil di update!';
+        $message = (__('Akses berhasil di update!'));
         $status = 'success';
 
         return compact(['message', 'status']);
@@ -184,7 +184,7 @@ class userController extends Controller
             ->first();
 
         if (!is_null($cek)) {
-            $message = 'IP / Station Sudah Ada, Silahkan Ganti IP / Station!';
+            $message = (__('IP / Station Sudah Ada, Silahkan Ganti IP / Station!'));
             $status = 'error';
         } else {
             if (DB::connection(Session::get('connection'))->table('TBMASTER_COMPUTER')->insert(
@@ -196,10 +196,10 @@ class userController extends Controller
                     'create_dt' => Carbon::now(),
                     'kodeigr' => Session::get('kdigr')
                 ])) {
-                $message = 'IP Berhasil Disimpan!';
+                $message = (__('IP Berhasil Disimpan!'));
                 $status = 'success';
             } else {
-                $message = 'IP Gagal Disimpan!';
+                $message = (__('IP Gagal Disimpan!'));
                 $status = 'error';
             }
         }
@@ -212,7 +212,7 @@ class userController extends Controller
                 ->where('ip', '=', $request->value['ip'][$i])
                 ->update(['station' => $request->value['station'][$i], 'computername' => $request->value['computername'][$i], 'modify_by' => Session::get('usid'), 'modify_dt' => Carbon::now()]);
         }
-        $message = 'IP berhasil di update!';
+        $message = (__('IP berhasil di update!'));
         $status = 'success';
         return compact(['message', 'status']);
     }

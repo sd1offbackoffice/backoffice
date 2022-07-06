@@ -113,12 +113,12 @@ class MenuController extends Controller
             }
 
             return response()->json([
-                'title' => 'Data berhasil ditambahkan!'
+                'title' => (__('Data berhasil ditambahkan!'))
             ], 200);
         }
         else{
             return response()->json([
-                'title' => 'Data sudah ada!'
+                'title' => (__('Data sudah ada!'))
             ], 500);
         }
     }
@@ -160,12 +160,12 @@ class MenuController extends Controller
             }
 
             return response()->json([
-                'title' => 'Data berhasil diubah!'
+                'title' => (__('Data berhasil dihapus!'))
             ], 200);
         }
         else{
             return response()->json([
-                'title' => 'Data tidak ditemukan!'
+                'title' => (__('Data tidak ditemukan!'))
             ], 500);
         }
     }
@@ -181,12 +181,12 @@ class MenuController extends Controller
                 ->delete();
 
             return response()->json([
-                'title' => 'Data berhasil dihapus!'
+                'title' => (__('Data berhasil dihapus!'))
             ], 200);
         }
         else{
             return response()->json([
-                'title' => 'Data tidak ditemukan!'
+                'title' => (__('Data tidak ditemukan!'))
             ], 500);
         }
     }

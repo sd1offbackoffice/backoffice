@@ -287,7 +287,7 @@
                     }
 
                     swal({
-                        title: 'User '+ $('#userid').val().toUpperCase() +' memiliki akses terhadap '+ response.data.length +' menu!',
+                        title: 'User '+ $('#userid').val().toUpperCase() + @json(__(' memiliki akses terhadap ')) + response.data.length +' menu!',
                         icon: 'warning'
                     }).then(function(){
                         $('#modal-loader').modal('hide');
@@ -309,13 +309,13 @@
         function save(){
             if(!$('#userid').val()){
                 swal({
-                    title: 'User ID belum diisi!',
+                    title: @json(__('User ID belum diisi!')),
                     icon: 'error'
                 });
             }
             else{
                 swal({
-                    title: 'Yakin ingin menyimpan data?',
+                    title: @json(__('Yakin ingin menyimpan data?')),
                     icon: 'warning',
                     buttons: true,
                     dangerMode: true

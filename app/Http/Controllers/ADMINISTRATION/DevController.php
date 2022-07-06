@@ -84,14 +84,14 @@ class DevController extends Controller
             DB::connection(Session::get('connection'))->commit();
 
             return response()->json([
-                'title' => 'Data berhasil disimpan!',
+                'title' => (__('Data berhasil disimpan!')),
             ], 200);
         }
         catch (\Exception $e){
             DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
-                'title' => 'Terjadi kesalahan!',
+                'title' => (__('Terjadi kesalahan!')),
                 'message' => $e->getMessage()
             ], 500);
         }
