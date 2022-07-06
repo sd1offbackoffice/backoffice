@@ -9,6 +9,7 @@
     "Tabel PLU PKMT untuk QTY M+" : "Table PLU PKMT for QTY M+",
     "Penjualan Rata-Rata" : "Average Sales",
     "Cetak Semua" : "Print All",
+    "Cetak" : "Print",
     "Upload CSV" : "Upload CSV",
     "Simpan" : "Save",
     "Hapus" : "Delete",
@@ -86,5 +87,12 @@
     "Masukkan username dan password untuk melanjutkan" : "Enter your username and password to continue",
     "LOV PLU" : "LOV PLU",
     "Semua Data PLU PKMT untuk QTY M+" : "All PLU PKMT Data for QTY M+",
-    "PRINT Tag ARNOHX, tidak ada di PRODCRM" : "PRINT Tag ARNOHX, not in PRODCRM"
+    "PRINT Tag ARNOHX, tidak ada di PRODCRM" : "PRINT Tag ARNOHX, not in PRODCRM",
+    "LAPORAN KERTAS KERJA PKM" : "PKM WORK PAPER REPORT",
+    "Semua" : "All",
+    "Pilih" : "Choose",
+    "s/d" : "Until",
+    "Kode" : "Code",
+    "Nama" : "Name",
+    "Urut" : "Sort"
 }
