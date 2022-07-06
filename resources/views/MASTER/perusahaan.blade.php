@@ -11,106 +11,92 @@
                             <div class="row" id="layar-1">
                                 <div class="col-sm-12">
                                     <div class="form-group row">
-                                        <label for="i_namaperusahaan" class="col-sm-2 col-form-label text-right">Nama
-                                            Perusahaan</label>
+                                        <label for="i_namaperusahaan" class="col-sm-2 col-form-label text-right">@lang('Nama Perusahaan')</label>
                                         <div class="col-sm-5">
                                             <input type="text" class="form-control" id="i_namaperusahaan"
                                                    value="{{$result->prs_namaperusahaan}}">
                                         </div>
-                                        <label for="i_kode" class="col-sm-4 col-form-label text-right">Kode</label>
+                                        <label for="i_kode" class="col-sm-4 col-form-label text-right">@lang('Kode')</label>
                                         <div class="col-sm-1">
                                             <input type="text" class="form-control" id="i_kode"
                                                    value="{{$result->prs_kodeperusahaan}}">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="i_kodewilayah" class="col-sm-2 col-form-label text-right">Kode
-                                            Wilayah</label>
+                                        <label for="i_kodewilayah" class="col-sm-2 col-form-label text-right">@lang('Kode Wilayah')</label>
                                         <div class="col-sm-1">
                                             <input type="text" class="form-control" id="i_kodewilayah"
                                                    value="{{$result->prs_kodewilayah}}">
                                         </div>
-                                        <label for="i_namawilayah" class="col-sm-2 col-form-label text-right">Nama
-                                            Wilayah</label>
+                                        <label for="i_namawilayah" class="col-sm-2 col-form-label text-right">@lang('Nama Wilayah')</label>
                                         <div class="col-sm-5">
                                             <input type="text" class="form-control" id="i_namawilayah"
                                                    value="{{$result->prs_namawilayah}}">
                                         </div>
-                                        <label for="i_singkatanwilayah" class="col-sm-5 col-form-label text-right">Singkatan
-                                            Wilayah</label>
+                                        <label for="i_singkatanwilayah" class="col-sm-5 col-form-label text-right">@lang('Singkatan Wilayah')</label>
                                         <div class="col-sm-3">
                                             <input type="text" class="form-control" id="i_singkatanwilayah"
                                                    value="{{$result->prs_singkatanwilayah}}">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="i_koderegion" class="col-sm-2 col-form-label text-right">Kode
-                                            Region</label>
+                                        <label for="i_koderegion" class="col-sm-2 col-form-label text-right">@lang('Kode Region')</label>
                                         <div class="col-sm-1">
                                             <input type="text" class="form-control" id="i_koderegion"
                                                    value="{{$result->prs_koderegional}}">
                                         </div>
-                                        <label for="i_namaregion" class="col-sm-2 col-form-label text-right">Nama
-                                            Region</label>
+                                        <label for="i_namaregion" class="col-sm-2 col-form-label text-right">@lang('Nama Region')</label>
                                         <div class="col-sm-5">
                                             <input type="text" class="form-control" id="i_namaregion"
                                                    value="{{$result->prs_namaregional}}">
                                         </div>
-                                        <label for="i_singkatanregion" class="col-sm-5 col-form-label text-right">Singkatan
-                                            Region</label>
+                                        <label for="i_singkatanregion" class="col-sm-5 col-form-label text-right">@lang('Singkatan Region')</label>
                                         <div class="col-sm-3">
                                             <input type="text" class="form-control" id="i_singkatanregion"
                                                    value="{{$result->prs_singkatanregional}}">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="i_kodecabang" class="col-sm-2 col-form-label text-right">Kode
-                                            Cabang</label>
+                                        <label for="i_kodecabang" class="col-sm-2 col-form-label text-right">@lang('Kode Cabang')</label>
                                         <div class="col-sm-1">
                                             <input type="text" class="form-control" id="i_kodecabang"
                                                    value="{{$result->prs_kodecabang}}">
                                         </div>
-                                        <label for="i_namacabang" class="col-sm-2 col-form-label text-right">Nama
-                                            Cabang</label>
+                                        <label for="i_namacabang" class="col-sm-2 col-form-label text-right">@lang('Nama Cabang')</label>
                                         <div class="col-sm-5">
                                             <input type="text" class="form-control" id="i_namacabang"
                                                    value="{{$result->prs_namacabang}}">
                                         </div>
-                                        <label for="i_singkatancabang" class="col-sm-5 col-form-label text-right">Singkatan
-                                            Cabang</label>
+                                        <label for="i_singkatancabang" class="col-sm-5 col-form-label text-right">@lang('Singkatan Cabang')</label>
                                         <div class="col-sm-3">
                                             <input type="text" class="form-control" id="i_singkatancabang"
                                                    value="{{$result->prs_singkatancabang}}">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="i_kodesbu" class="col-sm-2 col-form-label text-right">Kode
-                                            SBU</label>
+                                        <label for="i_kodesbu" class="col-sm-2 col-form-label text-right">@lang('Kode SBU')</label>
                                         <div class="col-sm-1">
                                             <input type="text" class="form-control" id="i_kodesbu"
                                                    value="{{$result->prs_kodesbu}}">
                                         </div>
-                                        <label for="i_namasbu" class="col-sm-2 col-form-label text-right">Nama
-                                            SBU</label>
+                                        <label for="i_namasbu" class="col-sm-2 col-form-label text-right">@lang('Nama SBU')</label>
                                         <div class="col-sm-5">
                                             <input type="text" class="form-control" id="i_namasbu"
                                                    value="{{$result->prs_namasbu}}">
                                         </div>
-                                        <label for="i_singkatansbu" class="col-sm-5 col-form-label text-right">Singkatan
-                                            SBU</label>
+                                        <label for="i_singkatansbu" class="col-sm-5 col-form-label text-right">@lang('Singkatan SBU')</label>
                                         <div class="col-sm-3">
                                             <input type="text" class="form-control" id="i_singkatansbu"
                                                    value="{{$result->prs_singkatansbu}}">
                                         </div>
-                                        <label for="i_lokasisbu" class="col-sm-5 col-form-label text-right">Lokasi
-                                            SBU</label>
+                                        <label for="i_lokasisbu" class="col-sm-5 col-form-label text-right">@lang('Lokasi SBU')</label>
                                         <div class="col-sm-5">
                                             <input type="text" class="form-control" id="i_lokasisbu"
                                                    value="{{$result->prs_lokasisbu}}">
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="i_alamat1" class="col-sm-2 col-form-label text-right">Alamat</label>
+                                        <label for="i_alamat1" class="col-sm-2 col-form-label text-right">@lang('Alamat')</label>
                                         <div class="col-sm-6">
                                             <input type="text" class="form-control" id="i_alamat1"
                                                    value="{{$result->prs_alamat1}}">
@@ -122,7 +108,7 @@
                                     </div>
                                     <div class="form-group row">
                                         <label for="i_telepone"
-                                               class="col-sm-2 col-form-label text-right">Telephone</label>
+                                               class="col-sm-2 col-form-label text-right">@lang('Telepon')</label>
                                         <div class="col-sm-3">
                                             <input type="text" class="form-control" id="i_telepone"
                                                    value="{{$result->prs_telepon}}">
@@ -135,14 +121,14 @@
                             <div class="row" id="layar-2">
                                 <div class="col-sm-12">
                                     <div class="row">
-                                        <label for="i_npwp" class="col-sm-3 col-form-label text-right">NPWP</label>
+                                        <label for="i_npwp" class="col-sm-3 col-form-label text-right">@lang('NPWP')</label>
                                         <div class="col-sm-4">
                                             <input type="text" class="form-control" id="i_npwp"
                                                    value="{{$result->prs_npwp}}">
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <label for="i_ppn" class="col-sm-3 col-form-label text-right">PPN</label>
+                                        <label for="i_ppn" class="col-sm-3 col-form-label text-right">@lang('PPN')</label>
                                         <div class="col-sm-1">
                                             <input type="text" maxlength="1" class="form-control" id="i_ppn"
                                                    value="{{$result->prs_flagppn}}">
@@ -158,43 +144,38 @@
                                         <label class="col-sm-5 col-form-label font-weight-bold">[ Y / ]</label>
                                     </div>
                                     <div class="row">
-                                        <label for="i_jenis_printer" class="col-sm-3 col-form-label text-right">Jenis
-                                            Printer</label>
+                                        <label for="i_jenis_printer" class="col-sm-3 col-form-label text-right">@lang('Jenis Printer')</label>
                                         <div class="col-sm-1">
                                             <input type="text" maxlength="1" class="form-control" id="i_jenis_printer"
                                                    value="{{$result->prs_jenisprinter}}">
                                         </div>
                                         <label for="i_ket_jenis_printer"
-                                               class="col-sm-5 col-form-label font-weight-bold">[ -UBI / 1 -ZEBRA / 2
-                                            -UBI, ZEBRA DAN SATO</label>
+                                               class="col-sm-5 col-form-label font-weight-bold">[ -UBI / 1 -ZEBRA / 2 -UBI, ZEBRA AND SATO</label>
                                     </div>
                                     <div class="row">
-                                        <label for="i_jenis_timbangan" class="col-sm-3 col-form-label text-right">Jenis
-                                            Timbangan</label>
+                                        <label for="i_jenis_timbangan" class="col-sm-3 col-form-label text-right">@lang('Jenis Timbangan')</label>
                                         <div class="col-sm-1">
                                             <input type="text" maxlength="1" class="form-control" id="i_jenis_timbangan"
                                                    value="{{$result->prs_jenistimbangan}}">
                                         </div>
                                         <label for="i_ket_jenis_timbangan"
-                                               class="col-sm-5 col-form-label font-weight-bold">[ -ISHIDA / 1 -EVERY /2
-                                            -BIZERBA /3 -ISHIDA & BIZERBA</label>
+                                               class="col-sm-5 col-form-label font-weight-bold">[ -ISHIDA / 1 -EVERY /2 -BIZERBA /3 -ISHIDA & BIZERBA</label>
                                     </div>
                                     <div class="row">
-                                        <label for="i_sk_pengukuhan_pajak" class="col-sm-3 col-form-label text-right">SK
-                                            Pengukuhan Pajak</label>
+                                        <label for="i_sk_pengukuhan_pajak" class="col-sm-3 col-form-label text-right">@lang('SK Pengukuhan Pajak')</label>
                                         <div class="col-sm-5">
                                             <input type="text" class="form-control" id="i_sk_pengukuhan_pajak"
                                                    value="{{$result->prs_nosk}}">
                                         </div>
                                         <label for="i_tanggal"
-                                               class="col-sm-2 col-form-label text-right">Tanggal</label>
+                                               class="col-sm-2 col-form-label text-right">@lang('Tanggal')</label>
                                         <div class="col-sm-2">
                                             <input type="text" class="form-control" id="i_tanggal"
                                                    value="{{date_format(date_create(substr($result->prs_tglsk,0,10)),"d/m/Y")}}">
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <label for="i_alamat_faktur_pajak" class="col-sm-3 col-form-label text-right">Alamat</label>
+                                        <label for="i_alamat_faktur_pajak" class="col-sm-3 col-form-label text-right">@lang('Alamat')</label>
                                         <div class="col-sm-5">
                                             <input type="text" class="form-control" id="i_alamat_faktur_pajak1"
                                                    value="{{$result->prs_alamatfakturpajak1}}">
@@ -206,8 +187,7 @@
                                     </div>
                                     <div class="row">
                                         <label for="i_limit_profit_label_baru"
-                                               class="col-sm-3 col-form-label text-right">Limit Profit Label
-                                            Biru</label>
+                                               class="col-sm-3 col-form-label text-right">@lang('Limit Profit Label Biru')</label>
                                         <div class="col-sm-1">
                                             <input type="text" class="form-control" id="i_limit_profit_label_baru"
                                                    value="{{$result->prs_limitprofitlabelbiru}}">
@@ -216,49 +196,42 @@
                                                class="col-sm-1 col-form-label font-weight-bold text-left">%</label>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="i_modal_awal_baru" class="col-sm-3 col-form-label text-right">Modal
-                                            Awal Rp.</label>
+                                        <label for="i_modal_awal_baru" class="col-sm-3 col-form-label text-right">@lang('Modal Awal Rp.')</label>
                                         <div class="col-sm-3">
                                             <input type="text" class="form-control" id="i_modal_awal_baru"
                                                    value="{{ number_format($result->prs_modalawal) }}">
                                         </div>
-                                        <label for="i_flag_commit_order" class="col-sm-3 col-form-label text-right">Flag
-                                            Commit Order</label>
+                                        <label for="i_flag_commit_order" class="col-sm-3 col-form-label text-right">Flag Commit Order</label>
                                         <div class="col-sm-1">
                                             <input style="text-transform: uppercase;" type="text" maxlength="1"
                                                    class="form-control" id="i_flag_commit_order"
                                                    value="{{$result->prs_flagcmo}}">
                                         </div>
-                                        <label for="i_tgl_commit_order" class="col-sm-9 col-form-label text-right">Tgl
-                                            Commit Order</label>
+                                        <label for="i_tgl_commit_order" class="col-sm-9 col-form-label text-right">@lang('Tgl Commit Order')</label>
                                         <div class="col-sm-2">
                                             <input type="text" class="form-control" id="i_tgl_commit_order"
                                                    value="{{ date_format(date_create(substr($result->prs_tglcmo,0,10)),"d/m/Y") }}">
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <label for="i_periode_bulan_aktif" class="col-sm-3 col-form-label text-right">Periode
-                                            Bulan Aktif</label>
+                                        <label for="i_periode_bulan_aktif" class="col-sm-3 col-form-label text-right">@lang('Periode Bulan Aktif')</label>
                                         <div class="col-sm-2">
                                             <input type="text" class="form-control" id="i_periode_bulan_aktif"
                                                    value="{{$result->prs_periodebaru}}">
                                         </div>
-                                        <label for="i_periode_tahun" class="col-sm-4 col-form-label text-right">Periode
-                                            Tahun</label>
+                                        <label for="i_periode_tahun" class="col-sm-4 col-form-label text-right">@lang('Periode Tahun')</label>
                                         <div class="col-sm-2">
                                             <input type="text" class="form-control" id="i_periode_tahun"
                                                    value="{{$result->prs_tahunberjalan}}">
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <label for="i_periode_tanggal_aktif" class="col-sm-3 col-form-label text-right">Periode
-                                            Tanggal Aktif</label>
+                                        <label for="i_periode_tanggal_aktif" class="col-sm-3 col-form-label text-right">@lang('Periode Tanggal Aktif')</label>
                                         <div class="col-sm-2">
                                             <input type="text" class="form-control" id="i_periode_tanggal_aktif"
                                                    value="{{ date_format(date_create(substr($result->prs_periodeterakhir,0,10)),"d/m/Y")}}">
                                         </div>
-                                        <label for="i_periode_bulan" class="col-sm-4 col-form-label text-right">Periode
-                                            Bulan</label>
+                                        <label for="i_periode_bulan" class="col-sm-4 col-form-label text-right">@lang('Periode Bulan')</label>
                                         <div class="col-sm-2">
                                             <input type="text" class="form-control" id="i_periode_bulan"
                                                    value="{{$result->prs_bulanberjalan}}">
@@ -266,8 +239,7 @@
                                     </div>
                                     <div class="row">
                                         <label for="i_nomor_seri_faktur_pajak"
-                                               class="col-sm-3 col-form-label text-right">Nomor Seri Faktur
-                                            Pajak</label>
+                                               class="col-sm-3 col-form-label text-right">@lang('Nomor Seri Faktur Pajak')</label>
                                         <div class="col-sm-4">
                                             <input type="text" class="form-control" id="i_nomor_seri_faktur_pajak"
                                                    value="{{$result->prs_noserifakturpajak}}">
@@ -275,8 +247,7 @@
                                     </div>
                                     <div class="row">
                                         <label for="i_toleransi_harga_po_dgn_faktur"
-                                               class="col-sm-3 col-form-label text-right">Toleransi Harga PO Dgn
-                                            Faktur</label>
+                                               class="col-sm-3 col-form-label text-right">@lang('Toleransi Harga PO Dgn Faktur')</label>
                                         <div class="col-sm-1">
                                             <input type="text" class="form-control" id="i_toleransi_harga_po_dgn_faktur"
                                                    value="{{$result->prs_toleransihrg}}">
@@ -285,15 +256,13 @@
                                                class="col-sm-3 col-form-label font-weight-bold">%</label>
                                     </div>
                                     <div class="row">
-                                        <label for="i_kode_mto" class="col-sm-3 col-form-label text-right">Kode
-                                            M.T.O</label>
+                                        <label for="i_kode_mto" class="col-sm-3 col-form-label text-right">@lang('Kode M.T.O')</label>
                                         <div class="col-sm-1">
                                             <input type="text" class="form-control" id="i_kode_mto"
                                                    value="{{$result->prs_kodemto}}">
                                         </div>
                                         <label for="i_faktor_pengali_kph_mean"
-                                               class="col-sm-5 col-form-label text-right">Faktor Pengali KPH
-                                            Mean</label>
+                                               class="col-sm-5 col-form-label text-right">@lang('Faktor Pengali KPH Mean')</label>
                                         <div class="col-sm-1">
                                             <input type="number" min="3" class="form-control"
                                                    id="i_faktor_pengali_kph_mean"
@@ -308,10 +277,10 @@
                             </div>
                         </form>
                         <div class="form-group row mt-3">
-                            <label for="i_layar" class="col-sm-2 col-form-label" id="lbl-layar">Layar 1/2</label>
+                            <label for="i_layar" class="col-sm-2 col-form-label" id="lbl-layar">@lang('Layar 1/2')</label>
                             <div class="col-sm-10">
                                 <div class="float-right">
-                                    <button class="btn btn-primary" id="btn-pindah">Pindah Layar</button>
+                                    <button class="btn btn-primary" id="btn-pindah">@lang('Pindah Layar')</button>
 
                                 </div>
                             </div>
@@ -367,7 +336,7 @@
             onSelect: function (dateText) {
                 obj = 'tglcmo';
                 if ($(this).val() < 3 || $(this).val() == null) {
-                    swal('Info', 'Nilai KPH tidak boleh dibawah 3', 'info');
+                    swal('Info', "{{__('Nilai KPH tidak boleh dibawah 3')}}", 'info');
                     $(this).val(3);
                 } else {
                     $("#modal").modal('show');
@@ -389,14 +358,14 @@
                 $("#layar-2").show();
                 // $( "#btn-rekam1" ).hide();
                 // $( "#btn-rekam2" ).show();
-                $("#lbl-layar").html('Layar 2/2');
+                $("#lbl-layar").html("{{__('Layar 2/2')}}");
 
             } else {
                 $("#layar-1").show();
                 $("#layar-2").hide();
                 // $( "#btn-rekam1" ).show();
                 // $( "#btn-rekam2" ).hide();
-                $("#lbl-layar").html('Layar 1/2');
+                $("#lbl-layar").html("{{__('Layar 2/2')}}");
             }
         });
 
@@ -404,7 +373,7 @@
             obj = 'kph';
             if (event.keyCode == 13) {
                 if ($(this).val() < 3 || $(this).val() == null) {
-                    swal('Info', 'Nilai KPH tidak boleh dibawah 3', 'info');
+                    swal('Info', "{{__('Nilai KPH tidak boleh dibawah 3')}}", 'info');
                     $(this).val(3);
                 } else {
                     $("#modal").modal('show');
@@ -419,7 +388,7 @@
                 if ($(this).val() == 'N' || $(this).val() == 'Y') {
                     $("#modal").modal('show');
                 } else {
-                    swal('Info', 'Isi Flag CMO dengan [Y /N] saja', 'info');
+                    swal('Info', "{{__('Isi Flag CMO dengan [Y /N] saja')}}", 'info');
                 }
             }
         });
@@ -466,7 +435,7 @@
                     }
                 });
             } else {
-                swal('Error', 'Username / Password masih kosong!', 'error');
+                swal('Error', "{{__('Username / Password masih kosong!')}}", 'error');
             }
 
         });

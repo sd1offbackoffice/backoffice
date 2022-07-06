@@ -11,20 +11,20 @@
                             <div class="row text-right">
                                 <div class="col-sm-12">
                                     <div class="form-group row mb-0">
-                                        <label for="i_kodesupplier" class="col-sm-2 col-form-label">Kode Supplier</label>
+                                        <label for="i_kodesupplier" class="col-sm-2 col-form-label">@lang('Kode Supplier')</label>
                                         <div class="col-sm-2 buttonInside">
                                             <input type="text" class="form-control" id="i_kodesupplier">
                                             <button id="btn-no-doc" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_kodesupplierHelp">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
-                                        <label for="i_kodesupplierho" class="col-sm-2 col-form-label">Kode Supplier HO</label>
+                                        <label for="i_kodesupplierho" class="col-sm-2 col-form-label">@lang('Kode Supplier HO')</label>
                                         <div class="col-sm-2">
                                             <input type="text" class="form-control" id="i_kodesupplierho">
                                         </div>
                                     </div>
                                     <div class="form-group row mb-0">
-                                        <label for="i_namasupplier" class="col-sm-2 col-form-label">Nama Supplier</label>
+                                        <label for="i_namasupplier" class="col-sm-2 col-form-label">@lang('Nama Supplier')</label>
                                         <div class="col-sm-7">
                                             <input type="text" class="form-control" id="i_namasupplier">
                                         </div>
@@ -37,7 +37,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group row mb-0">
-                                        <label for="i_alamat1" class="col-sm-2 col-form-label">Alamat</label>
+                                        <label for="i_alamat1" class="col-sm-2 col-form-label">@lang('Alamat')</label>
                                         <div class="col-sm-7">
                                             <input type="text" class="form-control" id="i_alamat1">
                                             <input type="text" class="form-control" id="i_alamat2">
@@ -45,7 +45,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group row mb-0">
-                                        <label for="i_telepon" class="col-sm-2 col-form-label">Telepon</label>
+                                        <label for="i_telepon" class="col-sm-2 col-form-label">@lang('Telepon')</label>
                                         <div class="col-sm-7">
                                             <input type="text" class="form-control" id="i_telepon">
                                         </div>
@@ -79,13 +79,13 @@
                                         </div>
                                     </div>
                                     <div class="form-group row mb-0">
-                                        <label for="i_tglskp" class="col-sm-2 col-form-label">Tgl. SKP</label>
+                                        <label for="i_tglskp" class="col-sm-2 col-form-label">@lang('Tgl. SKP')</label>
                                         <div class="col-sm-3">
                                             <input type="text" class="form-control" id="i_tglskp">
                                         </div>
                                     </div>
                                     <div class="form-group row mb-0">
-                                        <label for="i_jenissupplier" class="col-sm-2 col-form-label">Jenis Supplier</label>
+                                        <label for="i_jenissupplier" class="col-sm-2 col-form-label">@lang('Jenis Supplier')</label>
                                         <div class="col-sm-1 pr-0">
                                             <input type="text" class="form-control" id="i_jenissupplier">
                                             {{--<select id="i_jenissupplier" class="browser-default custom-select">--}}
@@ -95,7 +95,7 @@
                                                 {{--<option value="X">Lain - lain</option>--}}
                                             {{--</select>--}}
                                         </div>
-                                        <label for="i_penangananbr" class="col-sm-5 col-form-label text-left">K : Konsinyasi | C : Counter | Kosong : Lain-lain</label>
+                                        <label for="i_penangananbr" class="col-sm-5 col-form-label text-left">@lang('K : Konsinyasi | C : Counter | Kosong : Lain-lain')</label>
                                     </div>
                                     <div class="form-group row mb-0">
                                         <label for="i_penyerahanfp" class="col-sm-2 col-form-label">Penyerahan F.P</label>
@@ -107,10 +107,10 @@
                                                 {{--<option value="2">2 - Saat Penagihan</option>--}}
                                             {{--</select>--}}
                                         </div>
-                                        <label for="i_penangananbr" class="col-sm-4 col-form-label text-left">1 : Saat Pengiriman | 2 : Saat Penagihan</label>
+                                        <label for="i_penangananbr" class="col-sm-4 col-form-label text-left">@lang('1 : Saat Pengiriman | 2 : Saat Penagihan')</label>
                                     </div>
                                     <div class="form-group row mb-0">
-                                        <label for="i_penangananbr" class="col-sm-2 col-form-label">Penanganan B.R</label>
+                                        <label for="i_penangananbr" class="col-sm-2 col-form-label">@lang('Penanganan B.R')</label>
                                         <div class="col-sm-1 pr-0">
                                             <input type="text" class="form-control" id="i_penangananbr">
                                             {{--<select id="i_penangananbr" class="browser-default custom-select">--}}
@@ -120,8 +120,8 @@
                                                 {{--<option value="PT">PT - Putus</option>--}}
                                             {{--</select>--}}
                                         </div>
-                                        <label for="i_penangananbr" class="col-sm-4 col-form-label text-left">RT : Retur | TG : Tukar Guling | PT : Putus</label>
-                                        <label for="i_minkarton" class="col-sm-2 col-form-label">Min Karton</label>
+                                        <label for="i_penangananbr" class="col-sm-4 col-form-label text-left">@lang('RT : Retur | TG : Tukar Guling | PT : Putus')</label>
+                                        <label for="i_minkarton" class="col-sm-2 col-form-label">@lang('Min Karton')</label>
                                         <div class="col-sm-2">
                                             <input id="i_minkarton" type="number" class="form-control">
                                         </div>
@@ -131,11 +131,11 @@
                                         <div class="col-sm-1 pr-0">
                                             <input type="text" class="form-control" id="i_top">
                                         </div>
-                                        <label for="i_leadtimetoko" class="col-sm-2 col-form-label">Lead Time Toko</label>
+                                        <label for="i_leadtimetoko" class="col-sm-2 col-form-label">@lang('Lead Time Toko')</label>
                                         <div class="col-sm-1 pl-0 pr-0">
                                             <input type="text" class="form-control" id="i_leadtimetoko">
                                         </div>
-                                        <label for="i_minrupiah" class="col-sm-3 col-form-label">Min Rupiah</label>
+                                        <label for="i_minrupiah" class="col-sm-3 col-form-label">@lang('Min Rupiah')</label>
                                         <div class="col-sm-2">
                                             <input type="number" class="form-control" id="i_minrupiah">
                                         </div>
@@ -150,7 +150,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group row mb-0">
-                                        <label for="i_hari" class="col-sm-2 col-form-label">Hari Kunjungan</label>
+                                        <label for="i_hari" class="col-sm-2 col-form-label">@lang('Hari Kunjungan')</label>
                                         <div class="col-sm-5">
                                             <input type="text" class="form-control" id="i_hari_kunjungan">
                                         </div>
@@ -171,7 +171,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group row mb-0">
-                                        <label for="i_supplierot" class="col-sm-2 col-form-label">Supplier Order Toko</label>
+                                        <label for="i_supplierot" class="col-sm-2 col-form-label">@lang('Supplier Order Toko')</label>
                                         <div class="col-sm-1">
                                             <input type="text" class="form-control" id="i_supplierot">
                                         </div>
@@ -191,7 +191,7 @@
                                                 {{--<label class="custom-control-label" for="i_discsupplier"></label>--}}
                                             {{--</div>--}}
                                         {{--</div>--}}
-                                        <label for="i_lastupdate" class="col-sm-2 col-form-label">Update Terakhir</label>
+                                        <label for="i_lastupdate" class="col-sm-2 col-form-label">@lang('Update Terakhir')</label>
                                         <div class="col-sm-1 pr-0">
                                             <input type="text" class="form-control" id="i_updateby">
                                         </div>
@@ -225,8 +225,8 @@
                                 <table class="table table-sm" id="table_supplier">
                                     <thead class="theadDataTables">
                                         <tr>
-                                            <th>Nama Supplier</th>
-                                            <th>Kode Supplier</th>
+                                            <th>@lang('Nama Supplier')</th>
+                                            <th>@lang('Kode Supplier')</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -327,7 +327,7 @@
                 success: function(response){
                     if(response == 'not-found'){
                         swal({
-                            title: "Data Tidak Ditemukan",
+                            title: "{{__('Data Tidak Ditemukan')}}",
                             icon: "error"
                         });
                         $(':input').val('');
@@ -357,9 +357,9 @@
                         $('#i_penyerahanfp').val(response.sup_flagpenyerahanfp);
                         $('#i_penangananbr').val(response.sup_flagpenangananproduk);
                         $('#i_minkarton').val(response.sup_minkarton);
-                        $('#i_top').val(response.sup_top + ' hari');
+                        $('#i_top').val(response.sup_top + "{{__(' hari')}}");
                         $('#i_minrupiah').val(response.sup_minrph);
-                        $('#i_leadtimeogm').val(response.sup_jangkawaktukirimbarang + ' hari');
+                        $('#i_leadtimeogm').val(response.sup_jangkawaktukirimbarang + "{{__(' hari')}}");
 
                         var j = 0;
                         hariKunjungan = [];

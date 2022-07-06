@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','MASTER | MASTER CABANG')
+@section('title', ((__('MASTER | MASTER CABANG'))))
 @section('content')
 
     <div class="container mt-4">
@@ -10,7 +10,7 @@
                         <form>
                             <div class="form-row">
                                 <div class="form-group col-md-3">
-                                    <label for="">Kode Cabang</label>
+                                    <label for="">@lang('Kode Cabang')</label>
                                     <div class="row">
                                         <div class="col-sm-5 buttonInside" >
                                             <input type="text" class="field field1 form-control " id="i_kodeCabang" placeholder="..." field="1">
@@ -23,13 +23,13 @@
                                     </div>
                                 </div>
                                 <div class="form-group col-md-4">
-                                    <label for="">Nama Cabang</label>
+                                    <label for="">@lang('Nama Cabang')</label>
                                     <input type="text" class="field field2 form-control" id="i_namaCabang" placeholder="..." field="2">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-sm-4">
-                                    <label for="">Alamat</label>
+                                    <label for="">@lang('Alamat')</label>
                                     <input type="text" class="field field3 form-control" id="i_alamat1" placeholder="..."  field="3">
                                 </div>
                                 <div class="form-group col-md-4">
@@ -43,7 +43,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-sm-4">
-                                    <label for="">Telephone</label>
+                                    <label for="">@lang('Telepon')</label>
                                     <input type="text" class="field field6 form-control" id="i_telephone" placeholder="..."  field="6">
                                 </div>
                                 <div class="form-group col-sm-4">
@@ -61,13 +61,13 @@
                                     <input type="text" class="field field9 form-control" id="i_noSK" placeholder="..." field="9">
                                 </div>
                                 <div class="form-group col-sm-3">
-                                    <label for="">Tgl. SK</label>
+                                    <label for="">@lang('Tgl. SK')</label>
                                     <input type="text" id="i_tglSK" class="field field10  form-control tanggal" field="10">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-sm-3">
-                                    <label for="">Kode Cabang Anak</label>
+                                    <label for="">@lang('Kode Cabang Anak')</label>
                                     <div class="row">
                                         <input type="text" class="field field11 col-sm-3 form-control ml-3" id="i_kodeAnakCabang" placeholder="..." field="11">
                                     </div>
@@ -79,7 +79,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="form-group col-sm-3 offset-sm-6">
-                                    <button type="button" class="btn btnOKC btn-block btn-primary" onclick="trfDataAnakCab()">Trf Data Cabang Anak</button>
+                                    <button type="button" class="btn btnOKC btn-block btn-primary" onclick="trfDataAnakCab()">@lang('Trf Data Cabang Anak')</button>
                                 </div>
                                 <div class="form-group col-sm-3">
                                     <button type="button" class="field field13 btn btn-primary btn-block" onclick="editBranch()" field="13">Edit</button>
@@ -97,7 +97,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Data Cabang</h5>
+                    <h5 class="modal-title">@lang('Data Cabang')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -109,8 +109,8 @@
                                 <table class="table table-striped table-bordered" id="table_cabang">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Cabang</th>
-                                        <th>Kode</th>
+                                        <th>@lang('Cabang')</th>
+                                        <th>@lang('Kode')</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -235,7 +235,7 @@
                     if (!data){
                         swal({
                             title: "Create New Data?",
-                            text: "Data Cabang tidak terdaftar",
+                            text: "{{__('Data Cabang tidak terdaftar')}}",
                             icon: "warning",
                             buttons: true,
                             dangerMode: true,

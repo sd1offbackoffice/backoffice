@@ -49,13 +49,13 @@ class CabangController extends Controller
                 'cab_alamat3' => $alamat3, 'cab_teleponcabang' => $telephone, 'cab_faxcabang' => $faximile, 'cab_npwpcabang' => $npwp, 'cab_nosk' => $nosk, 'cab_tglsk' => $tglsk, 'cab_kodecabang_anak' => $kodeanakcab, 'cab_namacabang_anak' => $namaanakcab,
                 'cab_create_by' => $user, 'cab_create_dt' => $date]);
 
-            return response()->json("Insert Data Berhasil");
+            return response()->json(__('Insert Data Berhasil'));
         } else {
             DB::connection(Session::get('connection'))->table('tbmaster_cabang')->where('cab_kodecabang', $kodeigr)->update(['cab_kodecabang' => $kodeigr, 'cab_namacabang' => strtoupper($namacabang), 'cab_alamat1' => $alamat1, 'cab_alamat2' => $alamat2,
                 'cab_alamat3' => $alamat3, 'cab_teleponcabang' => $telephone, 'cab_faxcabang' => $faximile, 'cab_npwpcabang' => $npwp, 'cab_nosk' => $nosk, 'cab_tglsk' => $tglsk, 'cab_kodecabang_anak' => $kodeanakcab, 'cab_namacabang_anak' => $namaanakcab,
                 'cab_modify_by' => $user, 'cab_modify_dt' => $date]);
 
-            return response()->json(__("Update Data Berhasil"));
+            return response()->json(__('Update Data Berhasil'));
         }
     }
 
@@ -82,10 +82,10 @@ class CabangController extends Controller
                 oci_execute($s);
 
                 if (!$sukses){
-                    $msg = "cek ".$result;
+                    $msg = (__('cek ')).$result;
                     return response()->json(["msg" => $msg, "kode" => 0]);
                 } else {
-                    $msg = "Data Cabang Sudah Selesai di Transfer !!";
+                    $msg = (__('Data Cabang Sudah Selesai di Transfer !!'));
                     return response()->json(["msg" => $msg, "kode" => 1]);
                 }
             } else {

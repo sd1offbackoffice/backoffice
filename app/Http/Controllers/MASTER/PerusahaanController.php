@@ -33,7 +33,7 @@ class PerusahaanController extends Controller
 
         if ($temp == 0) {
             $status = 'error';
-            $message = 'Kode User / Password Anda Salah !!!';
+            $message = (__('Kode User / Password Anda Salah !!!'));
             return compact(['status', 'message']);
 
         }
@@ -46,7 +46,7 @@ class PerusahaanController extends Controller
 
         if ($temp == 0) {
             $status = 'error';
-            $message = 'Anda tidak Berhak Mengubah Nilai !!';
+            $message = (__('Anda tidak Berhak Mengubah Nilai !!'));
             return compact(['status', 'message']);
 
         } else {
@@ -56,7 +56,7 @@ class PerusahaanController extends Controller
                         'PRS_KPHCONST' => $kph
                     ]);
                 $status = 'success';
-                $message = 'Nilai Faktor Pengali KPH Mean sudah diupdate';
+                $message = (__('Nilai Faktor Pengali KPH Mean sudah diupdate'));
                 return compact(['status', 'message']);
             }
             else if ($obj == 'cmo') {
@@ -65,7 +65,7 @@ class PerusahaanController extends Controller
                         'PRS_FLAGCMO' => $cmo
                     ]);
                 $status = 'success';
-                $message = 'Flag CMO sudah diupdate';
+                $message = (__('Flag CMO sudah diupdate'));
                 return compact(['status', 'message']);
             }
             else if ($obj == 'tglcmo') {
@@ -74,7 +74,7 @@ class PerusahaanController extends Controller
                         'PRS_TGLCMO' => DB::connection(Session::get('connection'))->raw("to_date('".$tglcmo."','dd/mm/yyyy')")
                     ]);
                 $status = 'success';
-                $message = 'Tanggal CMO sudah diupdate';
+                $message = (__('Tanggal CMO sudah diupdate'));
                 return compact(['status', 'message']);
             }
 

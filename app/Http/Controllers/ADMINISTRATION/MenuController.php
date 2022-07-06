@@ -160,7 +160,7 @@ class MenuController extends Controller
             }
 
             return response()->json([
-                'title' => (__('Data berhasil dihapus!'))
+                'title' => (__('Data berhasil diedit!'))
             ], 200);
         }
         else{
