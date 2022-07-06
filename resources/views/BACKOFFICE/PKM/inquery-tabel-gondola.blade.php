@@ -23,13 +23,13 @@
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">Satuan</label>
+                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('Satuan')</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="satuan" disabled>
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">Supplier</label>
+                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('Supplier')</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="kodesupplier" disabled>
                                     </div>
@@ -38,19 +38,19 @@
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">Tanggal Mulai</label>
+                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('Tanggal Mulai')</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="tglawal" disabled>
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">Tanggal Akhir</label>
+                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('Tanggal Akhir')</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="tglakhir" disabled>
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">Jumlah Qty</label>
+                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('Qty')</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="qty" disabled>
                                     </div>
@@ -94,9 +94,9 @@
                                 <table class="table table-striped table-bordered" id="table_lov_plu">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Deskripsi</th>
+                                        <th>@lang('Deskripsi')</th>
                                         <th>PLU</th>
-                                        <th>Satuan</th>
+                                        <th>@lang('Satuan')</th>
                                     </tr>
                                     </thead>
                                     <tbody>

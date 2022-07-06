@@ -5,5 +5,18 @@
     "Data Cabang tidak terdaftar": "Branch data not registered",
     "Data Cabang tetap bisa diedit setelah di simpan": "Branch data can still be edited after saving",
     "Data Cabang Sudah Selesai di Transfer !!": "Branch Data Transfer Completed !!",
-    "Update Data Berhasil": "Data Update Successful"
+    "Update Data Berhasil": "Data Update Successful",
+    "Satuan": "Unit",
+    "Supplier": "Supplier",
+    "Tanggal Mulai": "Start Date",
+    "Tanggal Akhir": "End Date",
+    "Qty": "Qty",
+    "Deskripsi": "Description",
+    "Tabel PLU PKMT untuk QTY M+" : "Table PLU PKMT for QTY M+",
+    "Penjualan Rata-Rata" : "Average Sales",
+    "Cetak Semua" : "Print All",
+    "Upload CSV" : "Upload CSV",
+    "Simpan" : "Save",
+    "Hapus" : "Delete",
+    "Yakin ingin menyimpan data" : "Are you sure you want to save the data"
 }

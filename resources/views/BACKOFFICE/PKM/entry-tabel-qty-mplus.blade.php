@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary mt-0" id="data-field">
-                    <legend  class="w-auto ml-3">Tabel PLU PKMT untuk QTY M+</legend>
+                    <legend  class="w-auto ml-3">@lang('Tabel PLU PKMT untuk QTY M+')</legend>
                     <div class="card-body pt-0" id="inputField">
                         <div class="row text-right">
                             <div class="col-sm-12">
@@ -21,7 +21,7 @@
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label for="deskripsi" class="col-sm-2 col-form-label text-right pl-0 pr-0">Deskripsi</label>
+                                    <label for="deskripsi" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('Deskripsi')</label>
                                     <div class="col-sm-8">
                                         <input type="text" class="form-control" id="deskripsi" disabled>
                                     </div>
@@ -30,7 +30,7 @@
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label for="avgsales" class="col-sm-2 col-form-label text-right pl-0 pr-0">Average Sales</label>
+                                    <label for="avgsales" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('Penjualan Rata-Rata')</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="avgsales" disabled>
                                     </div>
@@ -52,10 +52,10 @@
                                     <div class="col-sm">
                                         <input type="text" class="form-control" id="pkmt" disabled>
                                     </div>
-                                    <button class="col-sm-2 mr-1 btn btn-primary" id="btnPrintAll" onclick="printAll()">PRINT ALL</button>
-{{--                                    <button class="col-sm-2 mr-1 btn btn-secondary" id="btnUploadCSV" onclick="">UPLOAD CSV</button>--}}
-                                    <button class="col-sm-1 mr-1 btn btn-success" id="btnSave" onclick="save()">SAVE</button>
-                                    <button class="col btn btn-danger" id="btnDelete" onclick="deleteData()">DELETE</button>
+                                    <button class="col-sm-2 mr-1 btn btn-primary" id="btnPrintAll" onclick="printAll()">@lang('Cetak Semua')</button>
+{{--                                    <button class="col-sm-2 mr-1 btn btn-secondary" id="btnUploadCSV" onclick="">@lang('Upload CSV')</button>--}}
+                                    <button class="col-sm-1 mr-1 btn btn-success" id="btnSave" onclick="save()">@lang('Simpan')</button>
+                                    <button class="col btn btn-danger" id="btnDelete" onclick="deleteData()">@lang('Hapus')</button>
                                 </div>
                             </div>
                         </div>
@@ -72,7 +72,7 @@
                             <thead class="theadDataTables">
                             <tr class="text-center align-middle">
                                 <th class="align-middle">PLU</th>
-                                <th class="align-middle">Average Sales</th>
+                                <th class="align-middle">@lang('Penjualan Rata-Rata')</th>
                                 <th class="align-middle">OMI</th>
                                 <th class="align-middle">QTY M+</th>
                                 <th class="align-middle">PKMT</th>
@@ -82,7 +82,7 @@
                             </tbody>
                         </table>
                         <div class="row form-group">
-                            <label for="deskripsi" class="col-sm-1 col-form-label text-right pl-0 pr-0">Deskripsi</label>
+                            <label for="deskripsi" class="col-sm-1 col-form-label text-right pl-0 pr-0">@lang('Deskripsi')</label>
                             <div class="col-sm-9">
                                 <input type="text" class="form-control" id="all_deskripsi" disabled>
                             </div>
@@ -361,7 +361,7 @@
 
         function save(){
             swal({
-                title: 'Yakin ingin menyimpan data?',
+                title: `{{__('Yakin ingin menyimpan data')}}?`,
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true,

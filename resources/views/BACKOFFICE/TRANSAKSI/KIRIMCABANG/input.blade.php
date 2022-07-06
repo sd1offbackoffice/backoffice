@@ -1045,9 +1045,7 @@
                     });
                 } else {
                     data[`row-${currentRow}`] = response;
-
                     row = $('.row-' + currentRow);
-
                     row.find('.prdcd').val(prdcd);
                     row.find('.deskripsi').val(response.prd_deskripsipendek);
                     row.find('.satuan').val(response.prd_unit + '/' + response.prd_frac);

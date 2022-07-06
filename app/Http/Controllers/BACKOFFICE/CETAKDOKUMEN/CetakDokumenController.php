@@ -1619,7 +1619,7 @@ class CetakDokumenController extends Controller
                 array_push($file, Self::PRINT_DOC(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2, $arrSuppSig));
 
                 if ($lap != 'L') {
-                    array_push($file, Self::printSuratJalan(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2, $arrSuppSig));
+                    // array_push($file, Self::printSuratJalan(Session::get('kdigr'), $temp, $doc, $lap, $kertas, $reprint, $tgl1, $tgl2, $arrSuppSig));
                 }
 
 
