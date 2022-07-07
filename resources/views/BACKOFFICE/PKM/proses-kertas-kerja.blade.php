@@ -8,25 +8,25 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-3">PROSES ALL DATA PKM</legend>
+                    <legend  class="w-auto ml-3">@lang('PROSES ALL DATA PKM')</legend>
 
                     <div class="card-body">
                         <div class="row form-group">
-                            <label for="periode" class="col-sm-3 text-right col-form-label">Periode Proses</label>
+                            <label for="periode" class="col-sm-3 text-right col-form-label">@lang('Periode Proses')</label>
                             <div class="col-sm-2">
                                 <input maxlength="10" type="text" class="form-control tanggal" id="periode" autocomplete="off">
                             </div>
                             <label class="col-form-label">[ MM/YYYY ]</label>
                         </div>
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-3 text-right col-form-label">PRDCD</label>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">@lang('PRDCD')</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="prdcd">
                                 <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_prdcd" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
                             </div>
-                            <label class="col-form-label">[ ALL PLU -> KOSONG ]</label>
+                            <label class="col-form-label">[ @lang('Semua PLU') -> {{ strtoupper(__('Kosong')) }} ]</label>
                         </div>
                         <div class="row form-group">
                             <label for="desk" class="col-sm-3 text-right col-form-label"></label>
@@ -35,32 +35,32 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="periode1" class="col-sm-3 text-right col-form-label">Periode Sales 1</label>
+                            <label for="periode1" class="col-sm-3 text-right col-form-label">@lang('Periode Sales 1')</label>
                             <div class="col-sm-2">
                                 <input maxlength="10" type="text" class="form-control tanggal" id="periode1" autocomplete="off">
                             </div>
                             <label class="col-form-label">[ MM/YYYY ]</label>
                         </div>
                         <div class="row form-group">
-                            <label for="periode2" class="col-sm-3 text-right col-form-label">Periode Sales 2</label>
+                            <label for="periode2" class="col-sm-3 text-right col-form-label">@lang('Periode Sales 2')</label>
                             <div class="col-sm-2">
                                 <input maxlength="10" type="text" class="form-control tanggal" id="periode2" autocomplete="off">
                             </div>
                             <label class="col-form-label">[ MM/YYYY ]</label>
                         </div>
                         <div class="row form-group">
-                            <label for="periode3" class="col-sm-3 text-right col-form-label">Periode Sales 3</label>
+                            <label for="periode3" class="col-sm-3 text-right col-form-label">@lang('Periode Sales 3')</label>
                             <div class="col-sm-2">
                                 <input maxlength="10" type="text" class="form-control tanggal" id="periode3" autocomplete="off">
                             </div>
                             <label class="col-form-label">[ MM/YYYY ]</label>
                         </div>
                         <div class="row form-group">
-                            <label for="periode3" class="col-sm-3 text-right col-form-label">Hitung Ulang Data Sales</label>
+                            <label for="periode3" class="col-sm-3 text-right col-form-label">@lang('Hitung Ulang Data Penjualan')</label>
                             <div class="col-sm-2">
                                 <select class="form-control" id="hitungUlang">
-                                    <option value="Y">Ya</option>
-                                    <option value="N" selected>Tidak</option>
+                                    <option value="Y">@lang('Ya')</option>
+                                    <option value="N" selected>@lang('Tidak')</option>
                                 </select>
                             </div>
                         </div>
@@ -68,10 +68,10 @@
                     <div class="card-body pt-0 mr-3">
                         <div class="row">
                             <button id="btn_history" class="col-sm-4 btn btn-primary ml-3" onclick="showHistoryView()">
-                                History Proses dan Inquery
+                                @lang('History Proses dan Inquery')
                             </button>
                             <div class="col"></div>
-                            <button class="col-sm-4 btn btn-success mr-2" onclick="proses()">PROSES ALL DATA PKM</button>
+                            <button class="col-sm-4 btn btn-success mr-2" onclick="proses()">@lang('Proses Semua Data PKM')</button>
                         </div>
                     </div>
 
@@ -84,28 +84,28 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-3">History Proses dan Inquery ALL PKM</legend>
+                    <legend  class="w-auto ml-3">@lang('History Proses dan Inquery ALL PKM')</legend>
                     <div class="card-body">
                         <div class="row form-group">
-                            <button class="ml-4 col-sm-1 btn btn-primary" onclick="showMainView()">BACK</button>
+                            <button class="ml-4 col-sm-1 btn btn-primary" onclick="showMainView()">{{ strtoupper(__('Kembali')) }}</button>
                         </div>
                         <div class="row form-group">
                             <table class="table table-sm mb-0 text-right" id="table_history">
                                 <thead class="text-center thColor">
                                 <tr>
-                                    <th class="align-middle">PRDCD</th>
-                                    <th class="text-center">Min<br>Display</th>
-                                    <th class="text-center">Min<br>Order</th>
-                                    <th class="text-center">AVG<br>3 bln akhir</th>
-                                    <th class="align-middle" colspan="3">Bln ke-3 terakhir</th>
-                                    <th class="align-middle" colspan="3">Bln ke-2 terakhir</th>
-                                    <th class="align-middle" colspan="3">Bln ke-1 terakhir</th>
-                                    <th class="align-middle">MPKM</th>
-                                    <th class="align-middle" width="6%">PKM*</th>
-                                    <th class="align-middle">M+</th>
-                                    <th class="align-middle">PKMT</th>
-                                    <th class="align-middle">Proses</th>
-                                    <th class="align-middle">Adjust</th>
+                                    <th class="align-middle">@lang('PRDCD')</th>
+                                    <th class="text-center">@lang('Min')<br>@lang('Display')</th>
+                                    <th class="text-center">>@lang('Min')<br>@lang('Order')</th>
+                                    <th class="text-center">AVG<br>@lang('3 bln akhir')</th>
+                                    <th class="align-middle" colspan="3">@lang('Bln ke-3 terakhir')</th>
+                                    <th class="align-middle" colspan="3">>@lang('Bln ke-2 terakhir')</th>
+                                    <th class="align-middle" colspan="3">>@lang('Bln ke-1 terakhir')</th>
+                                    <th class="align-middle">@lang('MPKM')</th>
+                                    <th class="align-middle" width="6%">@lang('PKM')*</th>
+                                    <th class="align-middle">@lang('M+')</th>
+                                    <th class="align-middle">@lang('PKMT')</th>
+                                    <th class="align-middle">@lang('Proses')</th>
+                                    <th class="align-middle">@lang('Adjust')</th>
                                 </tr>
                                 </thead>
                                 <tbody id="">
@@ -114,27 +114,27 @@
                             </table>
                         </div>
                         <div class="row form-group">
-                            <label for="desk" class="col-sm-1 text-right col-form-label">Deskripsi</label>
+                            <label for="desk" class="col-sm-1 text-right col-form-label">@lang('Deskripsi')</label>
                             <div class="col-sm-4">
                                 <input maxlength="10" type="text" class="form-control" id="h_desk" disabled>
                             </div>
-                            <label for="desk" class="col-sm-1 text-right col-form-label">Nama Supplier</label>
+                            <label for="desk" class="col-sm-1 text-right col-form-label">@lang('Nama Supplier')</label>
                             <div class="col pr-5">
                                 <input maxlength="10" type="text" class="form-control" id="h_namasupplier" disabled>
                             </div>
-                            <button class="mr-5 col-sm-2 btn btn-primary" id="btn_cetak">CETAK STATUS STORAGE</button>
+                            <button class="mr-5 col-sm-2 btn btn-primary" id="btn_cetak">{{ strtoupper(__('Cetak Status Storage')) }}</button>
                         </div>
                         <div class="row form-group">
-                            <label for="desk" class="col-sm-1 text-right col-form-label">Periode Proses</label>
+                            <label for="desk" class="col-sm-1 text-right col-form-label">@lang('Periode Proses')</label>
                             <div class="col-sm-1">
                                 <input maxlength="10" type="text" class="form-control text-center" id="h_periode" disabled>
                             </div>
                             <div class="col-sm-3"></div>
-                            <label for="desk" class="col-sm-1 text-right col-form-label">Supplier</label>
+                            <label for="desk" class="col-sm-1 text-right col-form-label">@lang('Supplier')</label>
                             <div class="col-sm-1">
                                 <input maxlength="10" type="text" class="form-control text-center" id="h_kodesupplier" disabled>
                             </div>
-                            <label for="desk" class="text-right col-form-label ml-3">Koef</label>
+                            <label for="desk" class="text-right col-form-label ml-3">@lang('Koef')</label>
                             <div class="col-sm-1">
                                 <input maxlength="10" type="text" class="form-control text-center" id="h_koef" disabled>
                             </div>
@@ -161,10 +161,10 @@
                                 <table class="table table-sm mb-0 text-center" id="table_prdcd">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Deskripsi</th>
-                                        <th>PLU</th>
-                                        <th>Konversi</th>
-                                        <th>Harga Jual</th>
+                                        <th>@lang('Deskripsi')</th>
+                                        <th>@lang('PLU')</th>
+                                        <th>@lang('Konversi')</th>
+                                        <th>@lang('Harga Jual')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -425,7 +425,7 @@
                 }
                 else if(plu.substr(-1) != '0'){
                     swal({
-                        title: 'PLU harus satuan jual 0!',
+                        title: `{{ __('PLU harus satuan jual 0') }}!`,
                         icon: 'warning'
                     }).then(() => {
                         $('#prdcd').select();
@@ -455,7 +455,7 @@
                         error: function (error) {
                             $('#modal-loader').modal('hide');
                             swal({
-                                title: 'Terjadi kesalahan!',
+                                title:  `{{ __('Terjadi kesalahan') }}!`,
                                 text: error.responseJSON.message,
                                 icon: 'error',
                             }).then(() => {
@@ -495,7 +495,7 @@
         function changePKM(e,idx){
             if(e.which === 13){
                 swal({
-                    title: 'Yakin ingin melakukan perubahan nilai PKM?',
+                    title: `{{ __('Yakin ingin melakukan perubahan nilai PKM') }}?`,
                     icon: 'warning',
                     buttons: true,
                     dangerMode: true
@@ -536,7 +536,7 @@
                             error: function (error) {
                                 $('#modal-loader').modal('hide');
                                 swal({
-                                    title: 'Terjadi kesalahan!',
+                                    title: `{{ __('Terjadi kesalahan') }}`,
                                     text: error.responseJSON.message,
                                     icon: 'error',
                                 });
@@ -556,37 +556,37 @@
 
             if(!$('#periode').val() || !$('#periode1').val() || !$('#periode2').val() || !$('#periode3').val()){
                 swal({
-                    title: 'Inputan belum lengkap!',
+                    title: `{{ __('Inputan belum lengkap') }}!`,
                     icon: 'error'
                 });
             }
             else if($('#periode').val() > periodeAktif){
                 swal({
-                    title: 'Periode lebih besar dari periode aktif!',
+                    title: `{{ __('Periode lebih besar dari periode aktif') }}!`,
                     icon: 'error'
                 });
             }
             else if($('#periode1').val() > periodeAktif){
                 swal({
-                    title: 'Periode sales 1 lebih besar dari periode aktif!',
+                    title: `{{ __('Periode sales 1 lebih besar dari periode aktif') }}!`,
                     icon: 'error'
                 });
             }
             else if($('#periode2').val() > periodeAktif){
                 swal({
-                    title: 'Periode sales 2 lebih besar dari periode aktif!',
+                    title: `{{ __('Periode sales 2 lebih besar dari periode aktif') }}!`,
                     icon: 'error'
                 });
             }
             else if($('#periode3').val() > periodeAktif){
                 swal({
-                    title: 'Periode sales 3 lebih besar dari periode aktif!',
+                    title: `{{ __('Periode sales 3 lebih besar dari periode aktif') }}!`,
                     icon: 'error'
                 });
             }
             else{
                 swal({
-                    title: 'Yakin ingin melakukan proses data?',
+                    title: `{{ __('Yakin ingin melakukan proses data') }}?`,
                     icon: 'warning',
                     buttons: true,
                     dangerMode: true
@@ -624,7 +624,7 @@
                             error: function (error) {
                                 $('#modal-loader').modal('hide');
                                 swal({
-                                    title: 'Terjadi kesalahan!',
+                                    title: `{{ __('Terjadi kesalahan') }}!`,
                                     text: error.responseJSON.message,
                                     icon: 'error',
                                 });
@@ -637,7 +637,7 @@
 
         $('#btn_cetak').on('click',() => {
             swal({
-                title: 'File akan terdownload beberapa saat lagi',
+                title: `{{ __('File akan terdownload beberapa saat lagi') }}`,
                 icon: 'success'
             }).then(() => {
                 window.open('{{ url()->current().'/print-status-storage' }}','_blank');
