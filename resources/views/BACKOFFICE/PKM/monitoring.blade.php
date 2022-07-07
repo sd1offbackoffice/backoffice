@@ -10,17 +10,17 @@
                 <fieldset class="card border-secondary">
                     <div class="card-body">
                         <fieldset class="card border-secondary">
-                            <legend class="w-auto ml-3">ENTRY & INQUERY MONITORING PLU BARU</legend>
+                            <legend class="w-auto ml-3">@lang('ENTRY & INQUERY MONITORING PLU BARU')</legend>
                             <div class="card-body">
                                 <div class="row form-group mb-0">
-                                    <label for="prdcd" class="col-sm-2 text-right col-form-label">KODE PLU</label>
+                                    <label for="prdcd" class="col-sm-2 text-right col-form-label">{{ strtoupper(__('Kode PLU')) }}</label>
                                     <div class="col-sm-2 buttonInside">
                                         <input type="text" class="form-control" id="prdcd1" disabled>
                                         <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" onclick="showLOVPrdcdNew('prdcd1')">
                                             <i class="fas fa-question"></i>
                                         </button>
                                     </div>
-                                    <label for="prdcd" class="col-sm-1 text-right col-form-label">s/d</label>
+                                    <label for="prdcd" class="col-sm-1 text-right col-form-label">@lang('s/d')</label>
                                     <div class="col-sm-2 buttonInside">
                                         <input type="text" class="form-control" id="prdcd2" disabled>
                                         <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" onclick="showLOVPrdcdNew('prdcd2')">
@@ -29,27 +29,27 @@
                                     </div>
                                     <div class="col-sm-2"></div>
                                     <div class="col-sm-2">
-                                        <button class="col btn btn-primary" onclick="getData()">PILIH</button>
+                                        <button class="col btn btn-primary" onclick="getData()">{{ strtoupper(__('Pilih')) }}</button>
                                     </div>
                                 </div>
                             </div>
                         </fieldset>
                         <fieldset class="card border-secondary">
-                            <legend class="w-auto ml-3">MASTER BARANG BARU</legend>
+                            <legend class="w-auto ml-3">@lang('MASTER BARANG BARU')</legend>
                             <div class="card-body pt-0">
                                 <div class="row form-group">
                                     <table class="table table-sm mb-0 text-center" id="table_data">
                                         <thead class="text-center thColor">
                                         <tr>
                                             <th width="6%"></th>
-                                            <th>PLU</th>
-                                            <th>Tanggal Daftar</th>
-                                            <th>Tanggal BPB</th>
-                                            <th>PKMT</th>
-                                            <th>TAG</th>
-                                            <th>MINOR</th>
-                                            <th>FLAG</th>
-                                            <th>OMI</th>
+                                            <th>@lang('PLU')</th>
+                                            <th>@lang('Tanggal Daftar')</th>
+                                            <th>@lang('Tanggal BPB')</th>
+                                            <th>@lang('PKMT')</th>
+                                            <th>@lang('TAG')</th>
+                                            <th>@lang('MINOR')</th>
+                                            <th>@lang('FLAG')</th>
+                                            <th>@lang('OMI')</th>
                                         </tr>
                                         </thead>
                                         <tbody id="">
@@ -58,7 +58,7 @@
                                     </table>
                                 </div>
                                 <div class="row">
-                                    <label for="desk" class="pl-0 pr-0 text-right col-form-label">Deskripsi</label>
+                                    <label for="desk" class="pl-0 pr-0 text-right col-form-label">@lang('Deskripsi')</label>
                                     <div class="col-sm">
                                         <input maxlength="10" type="text" class="form-control" id="desk" disabled>
                                     </div>
@@ -68,8 +68,8 @@
                                 </div>
                                 <div class="row mt-2">
                                     <div class="col"></div>
-                                    <button id="btn_tambah" class="col-sm-2 mr-3 btn btn-success" data-toggle="modal" data-target="#m_add" disabled>TAMBAH</button>
-                                    <button id="btn_cetak" class="col-sm-2 btn btn-primary" onclick="print()" disabled>CETAK</button>
+                                    <button id="btn_tambah" class="col-sm-2 mr-3 btn btn-success" data-toggle="modal" data-target="#m_add" disabled>{{ strtoupper(__('Tambah')) }}</button>
+                                    <button id="btn_cetak" class="col-sm-2 btn btn-primary" onclick="print()" disabled>{{ strtoupper(__('Cetak')) }}</button>
                                 </div>
                             </div>
                         </fieldset>
@@ -84,12 +84,12 @@
         <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Tambah Data</h4>
+                    <h4 class="modal-title">@lang('Tambah Data')</h4>
                 </div>
                 <div class="modal-body">
                     <div class="container">
                         <div class="row form-group">
-                            <label class="col-sm-3 text-right col-form-label">KODE PLU</label>
+                            <label class="col-sm-3 text-right col-form-label">{{ strtoupper(__('Kode PLU')) }}</label>
                             <div class="col-sm-4 buttonInside">
                                 <input type="text" class="form-control" id="add_prdcd" disabled>
                                 <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" onclick="showLOVPrdcd()">
@@ -98,61 +98,61 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label class="col-sm-3 text-right col-form-label">DESKRIPSI</label>
+                            <label class="col-sm-3 text-right col-form-label">{{ strtoupper(__('Deskripsi')) }}</label>
                             <div class="col-sm-7">
                                 <input type="text" class="form-control" id="add_deskripsi" disabled>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label class="col-sm-3 text-right col-form-label">SATUAN</label>
+                            <label class="col-sm-3 text-right col-form-label">{{ strtoupper(__('Satuan')) }}</label>
                             <div class="col-sm-4">
                                 <input type="text" class="form-control" id="add_satuan" disabled>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label class="col-sm-3 text-right col-form-label">TANGGAL DAFTAR</label>
+                            <label class="col-sm-3 text-right col-form-label">{{ strtoupper(__('Tanggal Daftar')) }}</label>
                             <div class="col-sm-4">
                                 <input type="text" class="form-control" id="add_tgldaftar" disabled>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label class="col-sm-3 text-right col-form-label">TANGGAL BPB</label>
+                            <label class="col-sm-3 text-right col-form-label">{{ strtoupper(__('Tanggal BPB')) }}</label>
                             <div class="col-sm-4">
                                 <input type="text" class="form-control" id="add_tglbpb" disabled>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label class="col-sm-3 text-right col-form-label">PKMT</label>
+                            <label class="col-sm-3 text-right col-form-label">@lang('PKMT')</label>
                             <div class="col-sm-4">
                                 <input type="text" class="form-control" id="add_pkmt" disabled>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label class="col-sm-3 text-right col-form-label">TAG</label>
+                            <label class="col-sm-3 text-right col-form-label">@lang('TAG')</label>
                             <div class="col-sm-2">
                                 <input type="text" class="form-control" id="add_tag" disabled>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label class="col-sm-3 text-right col-form-label">MINOR</label>
+                            <label class="col-sm-3 text-right col-form-label">@lang('MINOR')</label>
                             <div class="col-sm-2">
                                 <input type="text" class="form-control" id="add_minor" disabled>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label class="col-sm-3 text-right col-form-label">FLAG</label>
+                            <label class="col-sm-3 text-right col-form-label">@lang('FLAG')</label>
                             <div class="col-sm-2">
                                 <input type="text" class="form-control" id="add_flag" disabled>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label class="col-sm-3 text-right col-form-label">OMI</label>
+                            <label class="col-sm-3 text-right col-form-label">@lang('OMI')</label>
                             <div class="col-sm-2">
                                 <input type="text" class="form-control" id="add_omi" disabled>
                             </div>
                             <div class="col"></div>
                             <div class="col-sm-2">
-                                <button class="col btn btn-success" onclick="addData()">TAMBAH</button>
+                                <button class="col btn btn-success" onclick="addData()">{{ strtoupper(__('Tambah')) }}</button>
                             </div>
                         </div>
                     </div>
@@ -173,8 +173,8 @@
                                 <table class="table table-sm mb-0 text-center" id="table_prdcd_new">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Deskripsi</th>
-                                        <th>PLU</th>
+                                        <th>@lang('Deskripsi')</th>
+                                        <th>@lang('PLU')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -201,9 +201,9 @@
                                 <table class="table table-sm mb-0 text-center" id="table_prdcd">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>PLU</th>
-                                        <th>Deskripsi</th>
-                                        <th>Satuan</th>
+                                        <th>@lang('PLU')</th>
+                                        <th>@lang('Deskripsi')</th>
+                                        <th>@lang('Satuan')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -396,7 +396,7 @@
             if($('#prdcd1').val() && $('#prdcd2').val() && $('#prdcd1').val() > $('#prdcd2').val()){
                 $('#' + field).val('');
                 swal({
-                    title: field === 'prdcd1' ? 'PLU pertama lebih besar dari PLU kedua!' : 'PLU kedua lebih kecil dari PLU pertama!',
+                    title: field === 'prdcd1' ? `{{ __('PLU pertama lebih besar dari PLU kedua') }}!` : `{{ __('PLU kedua lebih kecil dari PLU pertama') }}!`,
                     icon: 'warning'
                 }).then(() => {
                     showLOVPrdcdNew(field);
@@ -407,7 +407,7 @@
         function getData(){
             if(!($('#prdcd1').val() && $('#prdcd2').val())){
                 swal({
-                    title: 'Inputan PLU belum lengkap!',
+                    title: `{{ __('Inputan PLU belum lengkap') }}!`,
                     icon: 'warning'
                 });
             }
@@ -529,7 +529,7 @@
 
         function deleteData(i){
             swal({
-                title: 'Yakin ingin menghapus data PLU ' + dataPRDCDNew[i] + '?',
+                title: `{{ __('Yakin ingin menghapus data PLU') }} ` + dataPRDCDNew[i] + '?',
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true
@@ -571,7 +571,7 @@
         function changePKM(event, i){
             if(event.which == 13){
                 swal({
-                    title: 'Yakin ingin mengubah nilai PKMT?',
+                    title: `{{ __('Yakin ingin mengubah nilai PKMT') }}?`,
                     icon: 'warning',
                     buttons: true,
                     dangerMode: true

@@ -94,5 +94,17 @@
     "s/d" : "Until",
     "Kode" : "Code",
     "Nama" : "Name",
-    "Urut" : "Sort"
+    "Urut" : "Sort",
+    "ENTRY & INQUERY MONITORING PLU BARU" : "NEW PLU ENTRY & INQUERY MONITORING",
+    "Kode PLU" : "PLU Code",
+    "MASTER BARANG BARU" : "NEW ITEM MASTER",
+    "Tanggal Daftar" : "Register Date",
+    "Tanggal BPB": "BPB Register",
+    "Tambah" : "Add",
+    "Tambah Data": " Add Data",
+    "Inputan PLU belum lengkap" : "PLU input is not complete",
+    "Yakin ingin mengubah nilai PKMT" : "Are you sure you want to change the PKMT value",
+    "Yakin ingin menghapus data PLU" : "Are you sure you want to delete PLU data?",
+    "PLU pertama lebih besar dari PLU kedua" : "The first PLU is bigger than the second PLU",
+    "PLU kedua lebih kecil dari PLU pertama" : "The second PLU is smaller than the first PLU"
 }
