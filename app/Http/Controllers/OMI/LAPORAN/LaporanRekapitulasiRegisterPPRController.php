@@ -8,9 +8,11 @@
 
 namespace App\Http\Controllers\OMI\LAPORAN;
 
+use App\Http\Controllers\ExcelController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use DateTime;
@@ -23,6 +25,7 @@ class LaporanRekapitulasiRegisterPPRController extends Controller
     {
         return view('OMI.LAPORAN.LAPORANREKAPITULASIREGISTERPPR.laporan-rekapitulasi-register-ppr');
     }
+
     public function lovNodoc(Request $request)
     {
         $search = $request->value;
@@ -46,13 +49,14 @@ class LaporanRekapitulasiRegisterPPRController extends Controller
         }
         return DataTables::of($data)->make(true);
     }
+
     public function lovMember(Request $request)
     {
         $search = $request->value;
         $tipe = $request->tipe;
         if ($tipe == 'IDM') {
             $data = DB::connection(Session::get('connection'))->table('tbtr_piutang')
-                ->join('tbmaster_customer','trpt_cus_kodemember','=','cus_kodemember')
+                ->join('tbmaster_customer', 'trpt_cus_kodemember', '=', 'cus_kodemember')
                 ->select('trpt_cus_kodemember as kode_member', 'cus_namamember as nama_member')
                 ->Where('trpt_cus_kodemember', 'LIKE', '%' . $search . '%')
                 ->orderBy('trpt_cus_kodemember', 'asc')
@@ -61,7 +65,7 @@ class LaporanRekapitulasiRegisterPPRController extends Controller
                 ->get();
         } else if ($tipe == 'OMI') {
             $data = DB::connection(Session::get('connection'))->table('tbtr_returomi')
-                ->join('tbmaster_customer','rom_member','=','cus_kodemember')
+                ->join('tbmaster_customer', 'rom_member', '=', 'cus_kodemember')
                 ->select('rom_member as kode_member', 'cus_namamember as nama_member')
                 ->Where('rom_member', 'LIKE', '%' . $search . '%')
                 ->orderBy('rom_member', 'asc')
@@ -71,6 +75,7 @@ class LaporanRekapitulasiRegisterPPRController extends Controller
         }
         return DataTables::of($data)->make(true);
     }
+
     public function cetak(Request $request)
     {
         $tgl1 = $request->tgl1;
@@ -85,6 +90,7 @@ class LaporanRekapitulasiRegisterPPRController extends Controller
         $and_member = '';
         $data = '';
         $filename = '';
+        $title = '';
 
         $w = 663;
         $h = 50.75;
@@ -142,6 +148,8 @@ class LaporanRekapitulasiRegisterPPRController extends Controller
                                                 rom_member, rom_tgltransaksi, cus_namamember,
                                                 prs_namaperusahaan, prs_namacabang, prs_namawilayah");
             $filename = 'igr-bo-rekapregppr';
+            $title = 'LAPORAN REKAPITULASI REGISTER PPR OMI';
+
         } else if ($tipe == 'IDM') {
             if (isset($nodoc2) && isset($nodoc1)) {
                 $and_doc = " and trpt_salesinvoiceno between '" . $nodoc1 . "' and '" . $nodoc2 . "'";
@@ -192,28 +200,14 @@ class LaporanRekapitulasiRegisterPPRController extends Controller
 //            }
 
             $filename = 'igr-bo-rekapregppr-idm';
+            $title = 'LAPORAN REKAPITULASI REGISTER PPR IDM';
         }
 
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
-//        $date = Carbon::now();
-//        $dompdf = new PDF();
-//
-//        $pdf = PDF::loadview('OMI.LAPORAN.LAPORANREKAPITULASIREGISTERPPR.' . $filename . '-pdf', compact(['perusahaan', 'data','tgl1','tgl2','nodoc1','nodoc2','member1','member2']));
-//
-//        error_reporting(E_ALL ^ E_DEPRECATED);
-//
-//        $pdf->output();
-//        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-//
-//        $canvas = $dompdf->get_canvas();
-//        $canvas->page_text($w, $h, "HAL : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-//
-//        $dompdf = $pdf;
-//
-//        return $dompdf->stream($filename . ' - ' . $date . '.pdf');
         return view('OMI.LAPORAN.LAPORANREKAPITULASIREGISTERPPR.' . $filename . '-pdf', compact(['perusahaan', 'data','tgl1','tgl2','nodoc1','nodoc2','member1','member2']));
+
 
     }
 

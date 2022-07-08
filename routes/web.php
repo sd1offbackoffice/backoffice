@@ -1009,12 +1009,15 @@ Route::middleware(['CheckLogin'])->group(function () {
                     //
                     Route::get('/get-data-ekspedisi', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\InputController@getDataEks');
                     Route::get('/get-data-cabang', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\InputController@getDataCabang');
+                    Route::post('/save-data-trn-titip', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\InputController@saveDataTrn');
                 });
 
                 Route::prefix('/cetak')->group(function () {
                     Route::get('/', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\CetakController@index');
                     Route::post('/get-data', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\CetakController@getData');
                     Route::get('/laporan', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\CetakController@laporan');
+                    // 
+                    Route::get('/laporan-sj', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\CetakController@laporanSJ');
                 });
 
                 Route::prefix('/batal')->group(function () {

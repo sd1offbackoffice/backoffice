@@ -30,7 +30,6 @@
             <th width="5%" class="right padding-right">PPN</th>
             <th width="5%" class="right padding-right">PPN DIBEBASKAN</th>
             <th width="5%" class="right padding-right">PPN DTP</th>
-
             <th width="10%" class="left padding-right">NPWP</th>
             <th width="10%" class="left">NO. REFERENSI</th>
         </tr>

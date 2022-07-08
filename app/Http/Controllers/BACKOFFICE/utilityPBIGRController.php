@@ -18,7 +18,6 @@ class utilityPBIGRController extends Controller
         SEMUA PROCEDURE DIUBAH PARAMETER DARI BOOLEAN KE VARCHAR2
      * */
 
-    public $connection;
     public function __construct()
     {
         $model      = new AllModel();
@@ -27,7 +26,7 @@ class utilityPBIGRController extends Controller
 
     public function index(){
         $model      = new AllModel();
-        $this->model = loginController::getConnectionProcedure();;
+        $this->model = loginController::getConnectionProcedure();
 
         return view('BACKOFFICE.utilityPBIGR');
     }
@@ -49,7 +48,7 @@ class utilityPBIGRController extends Controller
              return response()->json(['kode' => '0', 'return' => "Data Service Level Kosong !!"]);
         }
 
-        $connection = $this->connection;
+        $connection = loginController::getConnectionProcedure();
 
         try{
             $exec = oci_parse($connection, "BEGIN  sp_hitung_mplusi_web(:param,:sukses,:errtxt); END;"); // ganti 2 pakai _web
@@ -70,7 +69,7 @@ class utilityPBIGRController extends Controller
     }
 
     public function callProc2(){
-        $connection = $this->connection;
+        $connection = loginController::getConnectionProcedure();
 
         try{
             $exec = oci_parse($connection, "BEGIN  sp_tarik_seasonalomi_web(:sukses,:errtxt); END;"); // ganti 2 pakai _web
@@ -93,7 +92,7 @@ class utilityPBIGRController extends Controller
         $search     = $this->cekTableServieceLevel();
         $v_param    = date('Ym');
 
-        $connection = $this->connection;
+        $connection = loginController::getConnectionProcedure();
 
         if (!$search){
             return response()->json(['kode' => '0', 'return' => "Data Service Level Kosong !!"]);

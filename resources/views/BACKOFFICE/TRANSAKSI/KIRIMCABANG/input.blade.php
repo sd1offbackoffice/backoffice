@@ -1780,6 +1780,88 @@
         }
     }
 
+    function simpanTrnTitip() {
+        if ($('#kodecabang').val() == '') {
+            swal({
+                title: 'Inputan belum lengkap!',
+                icon: 'error'
+            })
+        } else {
+            trbo_prdcd = [];
+            trbo_qty = [];
+            trbo_hrgsatuan = [];
+            trbo_gross = [];
+            trbo_ppnrph = [];
+            trbo_averagecost = [];
+            trbo_stokqty = [];
+            trbo_keterangan = [];
+
+            $('#table_daftar_titip tbody tr').each(function() {
+                idx = $(this).attr('class').replace(/ .*/, '');
+
+                frac = data[idx].prd_frac;
+
+                row = $(this);
+                trbo_prdcd.push(convertPlu(row.find('.prdcd').val()));
+                trbo_qty.push(frac * row.find('.kctn').val() + parseInt(row.find('.kpcs').val()));
+                trbo_hrgsatuan.push(data[idx].prd_avgcost);
+                trbo_gross.push(unconvertToRupiah(row.find('.gross').val()));
+                trbo_ppnrph.push(unconvertToRupiah(row.find('.ppn').val()));
+                trbo_averagecost.push(data[idx].prd_avgcost);
+                trbo_stokqty.push(frac * row.find('.sctn').val() + parseInt(row.find('.spcs').val()));
+                trbo_keterangan.push(row.find('.keterangan').val());
+            });
+
+            $.ajax({
+                type: "POST",
+                url: currurl + '/save-data-trn-titip',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                data: {
+                    nodoc: $('#nosj').val(),
+                    tgletd: $('#tgletd').val(),
+                    tgleta: $('#tgleta').val(),
+                    loc: $('#kodecabangtitip').val(),
+                    ekspedisi: $('#ekspedisi').val(),
+                    seal: $('#seal').val(),
+                    durasi: $('#durasi').val(),
+                    tarif: $('#tarif').val(),
+                    tipetarif: $('#tipetarif').val(),
+                    alamat: $('#alamat').val(),
+                    catatan: $('#catatan').val(),
+                    container: $('#container').val(),
+                    kapal: $('#kapal').val(),
+                    trbo_prdcd,
+                    trbo_qty,
+                    trbo_hrgsatuan,
+                    trbo_gross,
+                    trbo_ppnrph,
+                    trbo_averagecost,
+                    trbo_stokqty,
+                    trbo_keterangan
+                },
+                beforeSend: function() {
+                    $('#modal-loader').modal('show');
+                },
+                success: function(response) {
+                    $('#modal-loader').modal('hide');
+
+                    swal({
+                        title: response.title,
+                        text: response.message,
+                        icon: response.status
+                    }).then(() => {
+                        location.reload();
+                    });
+                },
+                error: function(error) {
+
+                }
+            });
+        }
+    }
+
     function enableField() {
         $('#table_daftar button').prop('disabled', false);
         $('#btn_tambah').prop('disabled', false);

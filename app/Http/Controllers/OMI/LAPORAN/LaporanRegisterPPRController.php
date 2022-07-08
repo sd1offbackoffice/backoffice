@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\OMI\LAPORAN;
 
+use App\Http\Controllers\ExcelController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -56,6 +57,7 @@ class LaporanRegisterPPRController extends Controller
         $and_doc = '';
         $data = '';
         $filename = '';
+        $title = '';
 
         $w = 665;
         $h = 50.75;
@@ -122,6 +124,7 @@ ORDER BY TGLDOK, ROM_NODOKUMEN");
                 $data[$i]->cp_reffp = $cp_reffp;
             }
             $filename = 'igr-bo-lapregppr';
+            $title = 'LAPORAN REGISTER PPR OMI';
         }
         else if ($tipe == 'IDM') {
             if (isset($nodoc2) && isset($nodoc1)) {
@@ -158,31 +161,23 @@ order by trpt_salesinvoicedate, trpt_invoicetaxno, trpt_salesinvoiceno, trpt_cus
                 $cf_item = Self::cf_item($data[$i]->trpt_invoicetaxno, $data[$i]->tko_kodeomi);
                 $data[$i]->cf_item = $cf_item;
             }
+            $title = 'LAPORAN REGISTER PPR IDM';
             $filename = 'igr-bo-lapregppr-idm';
         }
 
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->first();
 
-//        $date = Carbon::now();
-//        $dompdf = new PDF();
-//
-//        $pdf = PDF::loadview('OMI.LAPORAN.LAPORANREGISTERPPR.' . $filename . '-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2', 'nodoc1', 'nodoc2']));
-//
-//        error_reporting(E_ALL ^ E_DEPRECATED);
-//
-//        $pdf->output();
-//        $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-//
-//        $canvas = $dompdf->get_canvas();
-//        $canvas->page_text($w, $h, "Hal : {PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
-//
-//        $dompdf = $pdf;
-//
-//        return $dompdf->stream($filename . ' - ' . $date . '.pdf');
+//        return view('OMI.LAPORAN.LAPORANREGISTERPPR.' . $filename. '-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2', 'nodoc1', 'nodoc2']));
 
-        return view('OMI.LAPORAN.LAPORANREGISTERPPR.' . $filename. '-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2', 'nodoc1', 'nodoc2']));
+        //excel
+        $subtitle = 'Tgl : '. substr($tgl1,0,10) .' - '. substr($tgl2,0,10) .' '. 'No. Dokumen : '. $nodoc1 .' - '. $nodoc2;
 
+        $keterangan = $tgl1 . '  -  ' . $tgl2;
+        $view = view('OMI.LAPORAN.LAPORANREGISTERPPR.' . $filename . '-xlxs', compact(['perusahaan', 'data', 'tgl1', 'tgl2', 'nodoc1', 'nodoc2']))->render();
+        $filename = $title . '_' . Carbon::now()->format('dmY_His') . '.xlsx';
+        ExcelController::create($view, $filename, $title, $subtitle, $keterangan);
+        return response()->download(storage_path($filename))->deleteFileAfterSend(true);
     }
 
     public function cp_nonota($nodokumen, $tgldok, $rom_kodetoko)

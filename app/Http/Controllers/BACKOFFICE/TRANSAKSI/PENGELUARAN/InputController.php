@@ -87,6 +87,8 @@ class InputController extends Controller
             oci_bind_by_name($s, ':ret', $no, 32);
             oci_execute($s);
 
+            // F_IGR_GET_NOMORSTADOC (:PARAMETER.KODEIGR,'RPB','Nomor Reff Pengeluaran Barang',:PARAMETER.IP || '2',6,FALSE)
+
             // $checkNoDoc = DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
             //     ->where('trbo_nodoc', '=', $no)
             //     ->where('trbo_kodeigr', '=', Session::get('kdigr'))
@@ -102,7 +104,7 @@ class InputController extends Controller
             // dd($no);
 
             // while()
-            $no = $this->checkNoDoc($no);
+            // $no = $this->checkNoDoc($no);
 
             DB::connection(Session::get('connection'))->table('tbtr_tac')
                 ->where('tac_kodeigr', Session::get('kdigr'))
@@ -1168,6 +1170,14 @@ class InputController extends Controller
 
             $index++;
         }
+
+        $pIP = str_replace('.', '0', SUBSTR(Session::get('ip'), -3));
+
+        $c = loginController::getConnectionProcedure();
+        $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMORSTADOC('" . Session::get('kdigr') . "','RPB','Nomor Reff Pengeluaran Barang'," . $pIP . " || '2' , 7, TRUE); END;");
+        oci_bind_by_name($s, ':ret', $no, 32);
+        oci_execute($s);       
+
         DB::connection(Session::get('connection'))->commit();
 
         $message = 'Nodoc ' . $nodoc . ' Berhasil di simpan';

@@ -424,9 +424,9 @@
                                                 <td width="5%"><input disabled type="text" class="form-control qtyRsk text-right" value="`+ result.data[i].rsk_qty +`"></td>
                                                 <td width="5%"><input onblur="calculateQty(this.value,this.id)"  type="text" class="form-control qtyReal text-right" id="`+ i +`" value="`+ result.data[i].rsk_qty +`"></td>
                                                 <td width="12%"><input disabled type="text" class="form-control nilai text-right" value="`+ convertToRupiah(result.data[i].rsk_nilai) +`"></td>
-                                                <td width="25%"><input disabled type="text" class="form-control keterangan" value="`+ nvl(result.data[i].brsk_keterangan,' ') +`"></td>
+                                                <td width="25%"><input disabled type="text" class="form-control keterangan" value="`+ nvl(result.data[i].rsk_keterangan,' ') +`"></td>
                                             </tr>`;
-
+                            //penggantian rsk_keterangan dari brsk_keterangan td trakhir dalam temp
                             $('#tbody').append(temp);
                         }
 

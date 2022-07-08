@@ -417,10 +417,11 @@ class CetakDokumenController extends Controller
                         $connect = loginController::getConnectionProcedure();
 
 
-                        // $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('" . Session::get('kdigr') . "','NRB','Nomor Retur Barang','Z',7,true); END;");
-                        $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('" . Session::get('kdigr') . "','NRB','Nomor Retur Barang','" . Session::get('kdigr') . "',7,true); END;");
+                        $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('" . Session::get('kdigr') . "','NRB','Nomor Retur Barang','Z',7,true); END;");
+                        // $query = oci_parse($connect, "BEGIN :ret := f_igr_get_nomor('" . Session::get('kdigr') . "','NRB','Nomor Retur Barang','" . Session::get('kdigr') . "',7,true); END;");
                         oci_bind_by_name($query, ':ret', $nofak, 32);
                         oci_execute($query);
+                        $nofak = str_replace('Z', Session::get('kdigr'), $nofak);
                     }
 
                     DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
@@ -965,10 +966,11 @@ class CetakDokumenController extends Controller
                             } else {
 
                                 $connect = loginController::getConnectionProcedure();
-                                // $query = oci_parse($connect, "BEGIN :ret :=  F_IGR_GET_NOMOR('" . Session::get('kdigr') . "','NRB','Nomor Retur Barang','',7,true); END;");
-                                $query = oci_parse($connect, "BEGIN :ret :=  F_IGR_GET_NOMOR('" . Session::get('kdigr') . "','NRB','Nomor Retur Barang','" . Session::get('kdigr') . "',7,true); END;");
+                                $query = oci_parse($connect, "BEGIN :ret :=  F_IGR_GET_NOMOR('" . Session::get('kdigr') . "','NRB','Nomor Retur Barang','Z',7,true); END;");
+                                // $query = oci_parse($connect, "BEGIN :ret :=  F_IGR_GET_NOMOR('" . Session::get('kdigr') . "','NRB','Nomor Retur Barang','" . Session::get('kdigr') . "',7,true); END;");
                                 oci_bind_by_name($query, ':ret', $nofak, 32);
                                 oci_execute($query);
+                                $nofak = str_replace('Z', Session::get('kdigr'), $nofak);
                             }
 
 //                        getnofp_tab(i).nofak = substr(nofak, 2, 7);

@@ -254,7 +254,7 @@ class beritaAcaraPemusnahanController extends Controller
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
         $data = DB::connection(Session::get('connection'))->table('tbtr_bpb_barangrusak')
             ->select('brsk_flagdoc', 'prs_namaperusahaan', 'prs_namacabang', 'prs_alamat1', 'prs_alamat3', 'prs_npwp', 'prs_namawilayah', 'brsk_prdcd', 'brsk_qty_real', 'brsk_hrgsatuan', 'brsk_nilai',
-                                'brsk_keterangan', 'brsk_noref', 'brsk_nodoc', 'brsk_tgldoc', 'brsk_flagdoc', 'prd_deskripsipanjang', 'prd_unit', 'prd_frac', 'rap_store_manager', 'rap_store_adm', 'rap_logistic_supervisor','rap_stockkeeper_ii')
+                'brsk_keterangan', 'brsk_noref', 'brsk_nodoc', 'brsk_tgldoc', 'brsk_flagdoc', 'prd_deskripsipanjang', 'prd_unit', 'prd_frac', 'rap_store_manager', 'rap_store_adm', 'rap_logistic_supervisor','rap_stockkeeper_ii')
             ->leftJoin('tbmaster_perusahaan', 'prs_kodeigr', 'brsk_kodeigr')
             ->leftJoin('tbmaster_prodmast', 'prd_prdcd', 'brsk_prdcd')
             ->leftJoin('tbmaster_report_approval', 'rap_kodeigr', 'brsk_kodeigr')
