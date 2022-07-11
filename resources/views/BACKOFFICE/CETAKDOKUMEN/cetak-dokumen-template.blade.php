@@ -6,7 +6,7 @@
 <body>
 
 <header>
-    <div style="float:left; margin-top: 0px; line-height: 8px !important;">
+    {{-- <div style="float:left; margin-top: 0px; line-height: 8px !important;">
         <p>
             {{ $perusahaan->prs_namaperusahaan }}
         </p>
@@ -14,9 +14,9 @@
             {{ $perusahaan->prs_namacabang }}
         </p>
         @yield('header_left')
-    </div>
+    </div> --}}
     <div style="float:right; margin-top: 0px;margin-right: 0px; line-height: 3px !important;">
-        <p>
+        {{-- <p>
             Tgl. Cetak : {{ date("d/m/Y") }}
         </p>
         <p>
@@ -28,7 +28,7 @@
         <p>
             Hal. :
         </p>
-        @yield('header_right')
+        @yield('header_right') --}}
     </div>
     <div style="float: center">
         <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">

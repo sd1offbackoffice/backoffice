@@ -8,6 +8,8 @@
 
 namespace App\Http\Controllers\OMI\LAPORAN;
 
+use App\Http\Controllers\ExcelController;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
@@ -53,7 +55,6 @@ FROM TBTR_RETUROMI, TBMASTER_CUSTOMER, TBMASTER_PERUSAHAAN, TBMASTER_PRODMAST
 WHERE rom_kodeigr = '$kodeigr'
               AND TRUNC(rom_tgldokumen) BETWEEN TO_DATE('$sDate','DD-MM-YYYY') and TO_DATE('$eDate', 'DD-MM-YYYY')
               ".$and_doc."
-              --AND cus_kodeigr(+) = rom_kodeigr
               AND cus_kodemember(+) = rom_member
               AND prs_kodeigr = rom_kodeigr
               AND substr(rom_prdcd,1,6)||'0' = prd_prdcd(+)
@@ -62,14 +63,23 @@ GROUP BY rom_nodokumen, tgldok, rom_kodetoko, rom_member, rom_noreferensi, rom_t
     cus_namamember, prs_namaperusahaan, prs_namacabang, prs_namawilayah
     ORDER BY tgldok, rom_nodokumen
 ");
-//        if(sizeof($datas) == 0){
-//            return "**DATA TIDAK ADA**";
-//        }
         //PRINT
         $perusahaan = DB::table("tbmaster_perusahaan")->first();
         $today = date('d-m-Y');
         $time = date('H:i:s');
-        return view('OMI.LAPORAN.laporan-register-barang-retur-pdf',
-            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'nodoc1' => $nodoc1 , 'nodoc2' => $nodoc2, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan]);
+//        return view('OMI.LAPORAN.laporan-register-barang-retur-pdf',
+//            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'nodoc1' => $nodoc1 , 'nodoc2' => $nodoc2, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan]);
+
+
+        $title = 'LAPORAN REGISTER BARANG RETUR';
+        $filename = $title.'_'.Carbon::now()->format('dmY_His').'.xlsx';
+        $view = view('OMI.LAPORAN.laporan-register-barang-retur-xlxs',
+            ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'nodoc1' => $nodoc1 , 'nodoc2' => $nodoc2, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan])
+            ->render();
+        $keterangan = '';
+        $subtitle = 'TANGGAL :'. $dateA .' s/d '. $dateB." NO. DOKUMEN :". $nodoc1 .' s/d '. $nodoc2;
+        ExcelController::create($view,$filename,$title,$subtitle,$keterangan);
+
+        return response()->download(storage_path($filename))->deleteFileAfterSend(true);
     }
 }

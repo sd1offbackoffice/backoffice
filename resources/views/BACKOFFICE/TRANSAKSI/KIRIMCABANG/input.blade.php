@@ -9,11 +9,11 @@
         <div class="col-sm-12">
             <fieldset class="card border-secondary">
                 <div class="card-body">
-                    <div class="buttonContainer" style="text-align: center;">
+                    <!-- <div class="buttonContainer" style="text-align: center;">
                         <button class="btn btn-primary" onclick="toggleInput()">Input Barang</button>
                         <button class="btn btn-info" onclick="toggleTitip()">Titipan Barang</button>
                         <button class="btn btn-warning" onclick="toggleAll()">Semua</button>
-                    </div>
+                    </div> -->
                     <fieldset class="card border-dark p-4" id="fieldInput">
                         <legend class="w-auto ml-5">Input</legend>
                         <div class="row">
@@ -98,7 +98,7 @@
                             </div>
                             <label class="col-sm-1 pr-0 text-right col-form-label">TGL. ETD</label>
                             <div class="col-sm-1">
-                                <input type="text" class="form-control" id="tgletd" disabled>
+                                <input type="text" class="form-control" id="tgletd" autocomplete="off" disabled>
                             </div>
                             <label class="col-sm-1 pr-0 text-right col-form-label">TGL. ETA</label>
                             <div class="col-sm-1">
@@ -159,12 +159,20 @@
                         <br>
                         <div class="row">
                             <label class="col-sm-1 pr-0 text-right col-form-label">CONTAINER</label>
-                            <div class="col-sm-2">
+                            <div class="col-sm-1">
                                 <input type="text" class="form-control" id="container">
                             </div>
                             <label class="col-sm-1 pr-0 text-right col-form-label">KAPAL</label>
                             <div class="col-sm-2">
                                 <input type="text" class="form-control" id="kapal">
+                            </div>
+                            <label class="col-sm-1 pr-0 text-right col-form-label">NO MOBIL</label>
+                            <div class="col-sm-1">
+                                <input type="text" class="form-control" id="nomobil">
+                            </div>
+                            <label class="col-sm-1 pr-0 text-right col-form-label">KOLI</label>
+                            <div class="col-sm-1">
+                                <input type="text" class="form-control" id="koli">
                             </div>
                         </div>
                     </fieldset>
@@ -226,42 +234,20 @@
                             <table id="table_daftar_titip" class="table table-sm table-bordered mb-3 text-center">
                                 <thead class="thColor">
                                     <tr>
-                                        <th width="3%" class="align-middle" rowspan="2"><i class="fas fa-trash"></i> </th>
-                                        <th width="8%" class="align-middle" rowspan="2">PLU</th>
-                                        <th width="15%" class="align-middle" rowspan="2">DESKRIPSI</th>
-                                        <th width="6%" class="align-middle" rowspan="2">SATUAN</th>
-                                        <th width="3%" class="align-middle" rowspan="2">TAG</th>
-                                        <th width="" class="align-middle" colspan="2">STOCK</th>
-                                        <th width="" class="align-middle" colspan="2">KUANTUM</th>
-                                        <th width="8%">HRG SATUAN</th>
-                                        <th width="8%" class="align-middle" rowspan="2">GROSS</th>
-                                        <th width="6%" class="align-middle" rowspan="2">PPN</th>
-                                        <th width="" class="align-middle" rowspan="2">KETERANGAN</th>
-                                    </tr>
-                                    <tr>
-                                        <th width="5%">CTN</th>
-                                        <th width="5%">PCS</th>
-                                        <th width="5%">CTN</th>
-                                        <th width="5%">PCS</th>
-                                        <th>IN CTN</th>
+                                        <th width="3%" class="align-middle"><i class="fas fa-trash"></i></th>
+                                        <th width="8%" class="align-middle">KODE</th>
+                                        <th width="15%" class="align-middle">NAMA BARANG</th>
+                                        <th width="8%" class="align-middle">FRAC</th>
+                                        <th width="8%" class="align-middle">QTY</th>
+                                        <th width="8%" class="align-middle">HRG M3</th>
+                                        <th width="8%" class="align-middle">TON</th>
+                                        <th width="" class="align-middle">KET</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @for($i=0;$i<0;$i++) <tr>
                                         <td><button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button></td>
-                                        <td>
-                                            <div class="" style="position: relative">
-                                                <input maxlength="7" type="text" class="form-control prdcd">
-                                                <button type="button" class="btn btn-lov-plu" data-toggle="modal" data-target="#m_lov_plu">
-                                                    <img src="{{ asset('image/icon/help.png') }}" width="30px">
-                                                </button>
-                                            </div>
-                                        </td>
-                                        <td><input type="text" class="form-control"></td>
-                                        <td><input type="text" class="form-control"></td>
-                                        <td><input type="text" class="form-control"></td>
-                                        <td><input type="text" class="form-control"></td>
-                                        <td><input type="text" class="form-control"></td>
+                                        <td><input maxlength="7" type="text" class="form-control kode"></td>
                                         <td><input type="text" class="form-control"></td>
                                         <td><input type="text" class="form-control"></td>
                                         <td><input type="text" class="form-control"></td>
@@ -287,7 +273,12 @@
                                 <i class="fas fa-plus"></i> TAMBAH ITEM
                             </button>
                         </div>
-                        <div class="col-sm-4"></div>
+                        <div class="col-sm-2">
+                            <button class="col btn btn-primary" onclick="tambahItemTitip()" id="btn_tambah_titip" disabled>
+                                <i class="fas fa-plus"></i> TAMBAH ITEM TITIPAN
+                            </button>
+                        </div>
+                        <div class="col-sm-2"></div>
                         <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">GROSS</label>
                         <div class="col-sm-2">
                             <input type="text" class="form-control" id="gross" disabled>
@@ -314,44 +305,6 @@
                         <div class="col-sm-2">
                             <button class="col btn btn-success" id="btn_simpan" disabled onclick="simpanTrn()">
                                 <i class="fas fa-save"></i> SIMPAN
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body" id="dataContainerTitip">
-                    <div class="row">
-                        <div class="col-sm-2">
-                            <button class="col btn btn-primary" onclick="tambahItemTitip()" id="btn_tambah_titip" disabled>
-                                <i class="fas fa-plus"></i> TAMBAH ITEM TITIPAN
-                            </button>
-                        </div>
-                        <div class="col-sm-4"></div>
-                        <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">GROSS</label>
-                        <div class="col-sm-2">
-                            <input type="text" class="form-control" id="grosstitip" disabled>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6"></div>
-                        <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">PPN</label>
-                        <div class="col-sm-2">
-                            <input type="text" class="form-control" id="ppntitip" disabled>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">TOTAL ITEM</label>
-                        <div class="col-sm-1">
-                            <input type="text" class="form-control" id="totalitemtitip" disabled>
-                        </div>
-                        <div class="col-sm-4"></div>
-                        <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">TOTAL</label>
-                        <div class="col-sm-2">
-                            <input type="text" class="form-control" id="totaltitip" disabled>
-                        </div>
-                        <div class="col-sm-1"></div>
-                        <div class="col-sm-2">
-                            <button class="col btn btn-success" id="btn_simpan_titip" disabled onclick="simpanTrn()">
-                                <i class="fas fa-save"></i> SIMPAN TITIPAN
                             </button>
                         </div>
                     </div>
@@ -1251,23 +1204,13 @@
         $('#table_daftar_titip tbody').append(
             `<tr class="row-${rowIndex}" onmouseover="pointerIn(${rowIndex})" onmouseout="pointerOut()">
                 <td><button class="btn btn-sm btn-danger" onclick="hapusItem(${rowIndex})"><i class="fas fa-trash"></i></button></td>
-                <td><div class="" style="position: relative">
-                        <input maxlength="7" type="text" class="form-control prdcd" onkeypress="getPLU(event,${rowIndex})">
-                        <button type="button" class="btn btn-lov-plu" data-toggle="modal" data-target="#m_lov_plu" onclick="currentRow = ${rowIndex}">
-                            <img src="{{ asset('image/icon/help.png') }}" width="30px">
-                        </button>
-                    </div></td>
-                <td><input type="text" class="form-control deskripsi" disabled></td>
-                <td><input type="text" class="form-control satuan" disabled></td>
-                <td><input type="text" class="form-control tag" disabled></td>
-                <td><input type="text" class="form-control sctn" disabled></td>
-                <td><input type="text" class="form-control spcs" disabled></td>
-                <td><input type="text" class="form-control kctn" onkeyup="hitunghrg(${rowIndex})" onblur="cekqty(${rowIndex})"></td>
-                <td><input type="text" class="form-control kpcs" onkeyup="hitunghrg(${rowIndex})" onblur="showLKSonBlur(${rowIndex})" onkeypress="showLKS(event, ${rowIndex})" onchange="showLKS(event, ${rowIndex})"></td>
-                <td><input type="text" class="form-control hrgsatuan" disabled></td>
-                <td><input type="text" class="form-control gross"></td>
-                <td><input type="text" class="form-control ppn" disabled></td>
-                <td><input type="text" class="form-control keterangan"></td>
+                <td><input maxlength="7" type="text" class="form-control kode"></td>
+                <td><input type="text" class="form-control nama_barang"></td>
+                <td><input type="text" class="form-control frac"></td>
+                <td><input type="text" class="form-control qty"></td>
+                <td><input type="text" class="form-control m3"></td>
+                <td><input type="text" class="form-control ton"></td>
+                <td><input type="text" class="form-control keterangan_titipan"></td>
             </tr>`);
 
         if (!$.fn.DataTable.isDataTable('#table_daftar_titip')) {
@@ -1564,6 +1507,13 @@
                                 }
 
                                 $("#table_daftar tbody [role='row']").remove();
+
+                                if ($.fn.DataTable.isDataTable('#table_daftar_titip')) {
+                                    $('#table_daftar_titip').DataTable().destroy();
+                                }
+
+                                $("#table_daftar_titip tbody [role='row']").remove();
+
                                 $('input').val('');
                                 rowIndex = 0;
                                 data = [];
@@ -1572,75 +1522,12 @@
                                 // $('#table_daftar input').prop('disabled',false);
 
                                 enableField();
-
                                 tambahItem();
+                                enableFieldTitip();
+                                tambahItemTitip();
 
                                 $('#notrn').val(response);
                                 tgltrn.datepicker('setDate', new Date())
-                            },
-                            error: function(error) {
-                                $('#modal-loader').modal('hide');
-                                // handle error
-                                swal({
-                                    title: 'Terjadi kesalahan!',
-                                    text: error.responseJSON.message,
-                                    icon: 'error'
-                                }).then(() => {
-
-                                });
-                            }
-                        });
-                    }
-                });
-            } else {
-                getDataTrn(this.value);
-            }
-        }
-    });
-
-    $('#nosj').on('keypress', function(e) {
-        if (e.which == 13) {
-            if ($(this).val().length == 0) {
-                swal({
-                    title: 'Buat Nomor Surat Jalan Baru?',
-                    icon: 'warning',
-                    buttons: true,
-                    dangerMode: true
-                }).then((ok) => {
-                    if (ok) {
-                        $.ajax({
-                            type: "GET",
-                            url: currurl + '/get-new-no-trn',
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            data: {
-                                notrn: notrn
-                            },
-                            beforeSend: function() {
-                                $('#modal-loader').modal('show');
-                            },
-                            success: function(response) {
-                                $('#modal-loader').modal('hide');
-
-                                if ($.fn.DataTable.isDataTable('#table_daftar_titip')) {
-                                    $('#table_daftar_titip').DataTable().destroy();
-                                }
-
-                                $("#table_daftar_titip tbody [role='row']").remove();
-                                $('input').val('');
-                                rowIndex = 0;
-                                data = [];
-
-                                $('#model').val('* TAMBAH *');
-                                // $('#table_daftar input').prop('disabled',false);
-
-                                enableFieldTitip();
-
-                                tambahItemTitip();
-
-                                $('#nosj').val(response);
-                                tgletd.datepicker('setDate', new Date())
                             },
                             error: function(error) {
                                 $('#modal-loader').modal('hide');
@@ -1715,6 +1602,7 @@
                 icon: 'error'
             })
         } else {
+            //INPUT
             trbo_prdcd = [];
             trbo_qty = [];
             trbo_hrgsatuan = [];
@@ -1740,6 +1628,28 @@
                 trbo_keterangan.push(row.find('.keterangan').val());
             });
 
+            //TITIPAN
+            titip_kode = [];
+            titip_nama_barang = [];
+            titip_frac = [];
+            titip_qty = [];
+            titip_m3 = [];
+            titip_ton = [];
+            titip_keterangan_titipan = [];
+
+            $('#table_daftar_titip tbody tr').each(function() {
+                idx = $(this).attr('class').replace(/ .*/, '');
+
+                row = $(this);
+                titip_kode.push(row.find('.kode').val());
+                titip_nama_barang.push(row.find('.nama_barang').val());
+                titip_frac.push(row.find('.frac').val());
+                titip_qty.push(row.find('.qty').val());
+                titip_m3.push(row.find('.m3').val());
+                titip_ton.push(row.find('.ton').val());
+                titip_keterangan_titipan.push(row.find('.keterangan_titipan').val());
+            });
+
             $.ajax({
                 type: "POST",
                 url: currurl + '/save-data-trn',
@@ -1757,72 +1667,12 @@
                     trbo_ppnrph,
                     trbo_averagecost,
                     trbo_stokqty,
-                    trbo_keterangan
-                },
-                beforeSend: function() {
-                    $('#modal-loader').modal('show');
-                },
-                success: function(response) {
-                    $('#modal-loader').modal('hide');
-
-                    swal({
-                        title: response.title,
-                        text: response.message,
-                        icon: response.status
-                    }).then(() => {
-                        location.reload();
-                    });
-                },
-                error: function(error) {
-
-                }
-            });
-        }
-    }
-
-    function simpanTrnTitip() {
-        if ($('#kodecabang').val() == '') {
-            swal({
-                title: 'Inputan belum lengkap!',
-                icon: 'error'
-            })
-        } else {
-            trbo_prdcd = [];
-            trbo_qty = [];
-            trbo_hrgsatuan = [];
-            trbo_gross = [];
-            trbo_ppnrph = [];
-            trbo_averagecost = [];
-            trbo_stokqty = [];
-            trbo_keterangan = [];
-
-            $('#table_daftar_titip tbody tr').each(function() {
-                idx = $(this).attr('class').replace(/ .*/, '');
-
-                frac = data[idx].prd_frac;
-
-                row = $(this);
-                trbo_prdcd.push(convertPlu(row.find('.prdcd').val()));
-                trbo_qty.push(frac * row.find('.kctn').val() + parseInt(row.find('.kpcs').val()));
-                trbo_hrgsatuan.push(data[idx].prd_avgcost);
-                trbo_gross.push(unconvertToRupiah(row.find('.gross').val()));
-                trbo_ppnrph.push(unconvertToRupiah(row.find('.ppn').val()));
-                trbo_averagecost.push(data[idx].prd_avgcost);
-                trbo_stokqty.push(frac * row.find('.sctn').val() + parseInt(row.find('.spcs').val()));
-                trbo_keterangan.push(row.find('.keterangan').val());
-            });
-
-            $.ajax({
-                type: "POST",
-                url: currurl + '/save-data-trn-titip',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                data: {
-                    nodoc: $('#nosj').val(),
+                    trbo_keterangan,
+                    nosj: $('#nosj').val(),
                     tgletd: $('#tgletd').val(),
                     tgleta: $('#tgleta').val(),
-                    loc: $('#kodecabangtitip').val(),
+                    kodecabangtitip: $('#kodecabangtitip').val(),
+                    namacabangtitip: $('#namacabangtitip').val(),
                     ekspedisi: $('#ekspedisi').val(),
                     seal: $('#seal').val(),
                     durasi: $('#durasi').val(),
@@ -1832,14 +1682,15 @@
                     catatan: $('#catatan').val(),
                     container: $('#container').val(),
                     kapal: $('#kapal').val(),
-                    trbo_prdcd,
-                    trbo_qty,
-                    trbo_hrgsatuan,
-                    trbo_gross,
-                    trbo_ppnrph,
-                    trbo_averagecost,
-                    trbo_stokqty,
-                    trbo_keterangan
+                    nomobil: $('#nomobil').val(),
+                    koli: $('#koli').val(),
+                    titip_kode,
+                    titip_nama_barang,
+                    titip_frac,
+                    titip_qty,
+                    titip_m3,
+                    titip_ton,
+                    titip_keterangan_titipan
                 },
                 beforeSend: function() {
                     $('#modal-loader').modal('show');

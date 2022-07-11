@@ -94,6 +94,9 @@ class LaporanRekapitulasiRegisterPPRController extends Controller
 
         $w = 663;
         $h = 50.75;
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
+            ->first();
+
         if ($tipe == 'OMI') {
             if (isset($nodoc2) && isset($nodoc1)) {
                 $and_doc = " and rom_nodokumen between '" . $nodoc1 . "' and '" . $nodoc2 . "'";
@@ -200,13 +203,25 @@ class LaporanRekapitulasiRegisterPPRController extends Controller
 //            }
 
             $filename = 'igr-bo-rekapregppr-idm';
+
+            //Excel
             $title = 'LAPORAN REKAPITULASI REGISTER PPR IDM';
+            $subtitle = '';
+            if ($member1 != '') {
+                $subtitle .= 'Member : ' . $member1 . ' - ' . $member2;
+            }
+            $subtitle .= 'Tgl : ' . substr($tgl1, 0, 10) . ' - ' . substr($tgl2, 0, 10);
+            if ($nodoc1 != '') {
+                $subtitle .= 'No. Dokumen : ' . $nodoc1 . ' - ' . $nodoc2;
+            }
+            $keterangan = 'Tanggal :  ' . $tgl1 . '  -  ' . $tgl2;
+            $view = view('OMI.LAPORAN.LAPORANREKAPITULASIREGISTERPPR.' . $filename . '-xlxs', compact(['perusahaan', 'data', 'tgl1', 'tgl2', 'nodoc1', 'nodoc2', 'member1', 'member2']))->render();
+            $filename = str_replace('/', ' ', $title) . '_' . Carbon::now()->format('dmY_His') . '.xlsx';
+            ExcelController::create($view, $filename, $title, $subtitle, $keterangan);
+            return response()->download(storage_path($filename))->deleteFileAfterSend(true);
         }
 
-        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
-            ->first();
-
-        return view('OMI.LAPORAN.LAPORANREKAPITULASIREGISTERPPR.' . $filename . '-pdf', compact(['perusahaan', 'data','tgl1','tgl2','nodoc1','nodoc2','member1','member2']));
+        return view('OMI.LAPORAN.LAPORANREKAPITULASIREGISTERPPR.' . $filename . '-pdf', compact(['perusahaan', 'data', 'tgl1', 'tgl2', 'nodoc1', 'nodoc2', 'member1', 'member2']));
 
 
     }

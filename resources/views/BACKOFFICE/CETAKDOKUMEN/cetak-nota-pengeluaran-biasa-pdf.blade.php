@@ -1,4 +1,5 @@
-@extends('pdf-template')
+@extends('BACKOFFICE.CETAKDOKUMEN.cetak-dokumen-template')
+{{-- @extends('pdf-template') --}}
 {{-- @extends('html-template') --}}
 
 @section('table_font_size','7 px')
@@ -17,10 +18,10 @@
 @section('footer')
 
 @endsection
-@section('header_left')
+{{-- @section('header_left')
     NPWP:{{ $perusahaan->prs_npwp }}
 
-@endsection
+@endsection --}}
 @section('content')
     <style>
         .table-header thead tr td, .table-header tbody tr td {
@@ -224,25 +225,27 @@
                                     </thead>
                                     <tbody>
                                     <tr style="border-top: 1px solid black;border-bottom: 1px solid black;">
-                                        <td class="left" colspan="3">
+                                        <td class="center" colspan="3">
                                             &nbsp; DIBUAT
                                             <div>
-                                                <img style="max-width: 200px; max-height: 100px" src="../storage/signature/clerk.png"
+                                                <img style="max-width: 200px; max-height: 100px position: absolute; margin-left:25%; z-index: 0;" src="../storage/signature/clerk.png"
                                                     alt="">
                                             </div>
                                         </td>
-                                        <td class="left" colspan="3">
-                                            &nbsp; MENYETUJUI :
+                                        <td class="center" colspan="3">
+                                            &nbsp; DISETUJUI :
                                             <div>
-                                                <img style="max-width: 200px; max-height: 100px" src="../storage/signature/srclerk.png"
+                                                <img style="width: 200px;  height: 100px; position: absolute; margin-left:25%; z-index: 0;" src="../storage/signature/srclerk.png"
                                                     alt="">
+                                                <img style="max-width: 150px; position: absolute; margin-left: 50%; margin-top: 0%; z-index: 10;" src="../storage/stempel/{{$perusahaan->prs_namacabang . '.png'}}">
                                             </div>
-                                        </td>                                    
+                                        </td>                                                                      
                                         @for ($j = 0; $j < sizeof($data['arrSuppSig']); $j++)
                                         @if ($data['data1'][$i]->msth_kodesupplier == $data['arrSuppSig'][$j]['sup_kodesupplier'])
-                                            <td colspan="4">
+                                            <td class="center" colspan="3">
+                                                &nbsp; DITERIMA : 
                                                 <div>
-                                                    <img style="max-width: 200px; max-height: 100px"
+                                                    <img style="max-width: 200px;  max-height: 100px; position: absolute; margin-left:25%; z-index: 0;"
                                                         src="../storage/signature_expedition/{{ $data['arrSuppSig'][$j]['signatureId'] . '.png' }}" alt="">
                                                 </div>
                                             </td>
@@ -257,10 +260,10 @@
                                         <td class="center" colspan="3">
                                             &nbsp; KEPALA GUDANG
                                             <p>{{ file_get_contents('../storage/names/srclerk.txt') }}</p>
-                                        </td>
+                                        </td>                                        
                                         @for ($j = 0; $j < sizeof($data['arrSuppSig']); $j++)
                                         @if ($data['data1'][$i]->msth_kodesupplier == $data['arrSuppSig'][$j]['sup_kodesupplier'])
-                                            <td class="center" colspan="4">
+                                            <td class="center" colspan="3">
                                                 &nbsp; SUPPLIER
                                                 <p>{{ strtoupper($data['arrSuppSig'][$j]['signedBy']) }}</p>
                                             </td>

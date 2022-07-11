@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\BACKOFFICE\LPP;
 
+use App\Http\Controllers\ExcelController;
 use Carbon\Carbon;
 use Dompdf\Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Yajra\DataTables\DataTables;
@@ -39,7 +41,9 @@ class RegisterBAIDMController extends Controller
         $menu = $request->menu;
         $tgl1 = $request->periode1;
         $tgl2 = $request->periode2;
-
+        $filename = '';
+        $title = '';
+        $data = '';
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
             ->select('prs_namaperusahaan', 'prs_namacabang', 'prs_namawilayah')
             ->first();
@@ -57,7 +61,7 @@ class RegisterBAIDMController extends Controller
                 AND prs_kodeigr = " . Session::get('kdigr') . "
             ORDER BY bth_nonrb ) ab");
             $title = 'Rincian BA Klaim atas NRB Proforma Toko IDM';
-            return view('BACKOFFICE.LPP.nrb-ba-detail-laporan', compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
+            $filename = 'nrb-ba-detail-laporan';
         }
         else if ($menu == 'rekap') {
             $data = DB::connection(Session::get('connection'))->select("SELECT ROWNUM ||  '.' nomor, ab.* FROM (
@@ -72,9 +76,17 @@ class RegisterBAIDMController extends Controller
                 GROUP BY prs_namaperusahaan, prs_namacabang, bth_nonrb, bth_tglnrb, tko_kodeomi, bth_kodemember, bth_nodoc, bth_tgldoc
                 ORDER BY bth_nonrb ) ab");
             $title = 'Rekapitulasi BA Klaim atas NRB Proforma Toko IDM';
-
-            return view('BACKOFFICE.LPP.nrb-ba-rekap-laporan', compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
-
+            $filename = 'nrb-ba-rekap-laporan';
         }
+//        return view('BACKOFFICE.LPP.'.$filename, compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']));
+
+        //Excel
+        $view = view('BACKOFFICE.LPP.'.$filename.'-xlxs',compact(['title', 'perusahaan', 'data', 'tgl1', 'tgl2']))->render();
+        $filename = $title.'_'.Carbon::now()->format('dmY_His').'.xlsx';
+        $keterangan = '';
+        $subtitle = 'TANGGAL :'. strtoupper(\DateTime::createFromFormat('d/m/Y', $tgl1)->format('d-M-Y')) .' s/d '. strtoupper(\DateTime::createFromFormat('d/m/Y', $tgl1)->format('d-M-Y'));
+        ExcelController::create($view,$filename,$title,$subtitle,$keterangan);
+
+        return response()->download(storage_path($filename))->deleteFileAfterSend(true);
     }
 }

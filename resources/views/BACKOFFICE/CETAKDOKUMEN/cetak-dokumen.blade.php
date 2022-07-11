@@ -138,7 +138,8 @@
                             </button>
                         </div>
                         <div class="col-sm-5">
-                            <button type="button" class="btn btn-success" id="btnCetak" data-dismiss="modal"> CETAK
+                            <button type="button" class="btn btn-success" id="btnCetak" data-dismiss="modal"><i
+                                class="icon fas fa-print"></i> CETAK
                             </button>
                         </div>
                     </div>
@@ -704,87 +705,115 @@
         }
 
         function cetak() {
-            if (checked.length != 0) {
-                ajaxSetup();
-                $.ajax({
-                    url: '{{ url()->current() }}/cetak',
-                    type: 'post',
-                    data: {
-                        nrfp: $('#cetaknotareturfp:checked').val(),
-                        namattd: $('#nama-penandatangan').val(),
-                        jbt1: $('#jabatan1').val(),
-                        jbt2: $('#jabatan2').val(),
-                        doc: $('#dokumen').val(),
-                        lap: $('#laporan').val(),
-                        reprint: $('#reprint:checked').val(),
-                        tgl1: $('#tgl1').val(),
-                        tgl2: $('#tgl2').val(),
-                        kertas: $('#kertas').val(),
-                        data: checked,
-                        arrSuppSig: arrSuppSig
-                    },
-                    beforeSend: function () {
-                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                    },
-                    success: function (result) {
-                        $('#modal-loader').modal('hide');
-                        $('#pdf').empty();
-                        console.log(result);
+            if (arrSupp.length == arrSuppSig.length) {
+                if (checked.length != 0) {
+                    ajaxSetup();
+                    $.ajax({
+                        url: '{{ url()->current() }}/cetak',
+                        type: 'post',
+                        data: {
+                            nrfp: $('#cetaknotareturfp:checked').val(),
+                            namattd: $('#nama-penandatangan').val(),
+                            jbt1: $('#jabatan1').val(),
+                            jbt2: $('#jabatan2').val(),
+                            doc: $('#dokumen').val(),
+                            lap: $('#laporan').val(),
+                            reprint: $('#reprint:checked').val(),
+                            tgl1: $('#tgl1').val(),
+                            tgl2: $('#tgl2').val(),
+                            kertas: $('#kertas').val(),
+                            data: checked,
+                            arrSuppSig: arrSuppSig
+                        },
+                        beforeSend: function () {
+                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                        },
+                        success: function (result) {
+                            $('#modal-loader').modal('hide');
+                            $('#pdf').empty();
+                            console.log(result);
 
-                        buttons = '';
-                        if (result) {
+                            buttons = '';
+                            if (result) {
 
-                            for (i = 0; i < result.length; i++) {                                
-                                window.open(`{{ url()->current() }}/download?file=${result[i]}`, '_blank');
-                            }
-
-                            // kirim ke cabang
-                            let flag = false
-                            for(let i = 0; i < result.length; i++){
-                                let split = result[i].split('_')
-                                if(split[0] == 'NRB' || split[0] == 'NRP'){
-                                    flag = true
+                                for (i = 0; i < result.length; i++) {                                
+                                    window.open(`{{ url()->current() }}/download?file=${result[i]}`, '_blank');
                                 }
-                            }
-                            if (flag == true) {
-                                let splitedFile = result[0].split('_')
-                                let docDate = splitedFile[splitedFile.length-1]
-                                console.log(docDate);
-                                $.ajax({
-                                    type: "GET",
-                                    url: "{{ url()->current() }}/kirim-cabang",
-                                    data: {
-                                        date: docDate,                        
-                                    },
-                                    beforeSend: function () {
-                                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                                    },
-                                    success: function (res) {
-                                        $('#modal-loader').modal('hide');
-                                    }
-                                });
-                            }                            
-                        }
 
-                        if (result.message) {
-                            swal({
-                                title: result.message,
-                                icon: result.status
-                            });
+                                // kirim ke cabang
+                                let flag = false
+                                for(let i = 0; i < result.length; i++){
+                                    let split = result[i].split('_')
+                                    if(split[0] == 'NRB' || split[0] == 'NRP'){
+                                        flag = true
+                                    }
+                                }
+                                if (flag == true) {
+                                    let splitedFile = result[0].split('_')
+                                    let docDate = splitedFile[splitedFile.length-1]
+                                    console.log(docDate);
+                                    $.ajax({
+                                        type: "GET",
+                                        url: "{{ url()->current() }}/kirim-cabang",
+                                        data: {
+                                            date: docDate,                        
+                                        },
+                                        beforeSend: function () {
+                                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                                        },
+                                        success: function (res) {
+                                            $('#modal-loader').modal('hide');
+                                        }
+                                    });
+                                }
+                                
+                                //hapus signature
+                                // deleteSignature()
+                            }
+
+                            if (result.message) {
+                                swal({
+                                    title: result.message,
+                                    icon: result.status
+                                });
+                            }
+                            // window.location.reload();
+                        }, error: function (err) {
+                            $('#modal-loader').modal('hide');
+                            errorHandlingforAjax(err);
                         }
-                        // window.location.reload();
-                    }, error: function (err) {
-                        $('#modal-loader').modal('hide');
-                        errorHandlingforAjax(err);
-                    }
-                });
+                    });
+                } else {
+                    swal({
+                        title: 'Dokumen belum dipilih!',
+                        icon: 'error'
+                    });
+                }
             } else {
                 swal({
-                    title: 'Dokumen belum dipilih!',
-                    icon: 'error'
-                });
+                        title: 'Ada Supplier yang belum tanda tangan!',
+                        icon: 'error'
+                    });
             }
+            
         }
+
+        // function deleteSignature(){
+        //     ajaxSetup()
+        //     $.ajax({
+        //         type: "GET",
+        //         url: "{{ url()->current() }}/delete-signature",
+        //         data: {
+        //             arrSuppSig: arrSuppSig
+        //         },               
+        //         beforeSend: function () {
+        //             $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+        //         },   
+        //         success: function (response) {
+        //             $('#modal-loader').modal('hide');                    
+        //         }
+        //     });
+        // }
     </script>
 
 @endsection

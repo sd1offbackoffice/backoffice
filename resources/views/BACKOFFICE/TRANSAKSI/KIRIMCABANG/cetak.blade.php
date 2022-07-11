@@ -31,7 +31,6 @@
                                 <select class="form-control" id="jenis" onchange="getData()">
                                     <option value="1">LIST</option>
                                     <option value="0">NOTA</option>
-                                    <option value="2">SURAT JALAN</option>
                                 </select>
                             </div>
                             <div class="custom-control custom-checkbox col-sm-2 mt-2">

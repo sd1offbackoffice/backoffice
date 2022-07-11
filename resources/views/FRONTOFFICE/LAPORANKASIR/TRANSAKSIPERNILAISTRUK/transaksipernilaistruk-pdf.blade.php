@@ -7,7 +7,7 @@
 @endsection
 
 @section('title')
-    LAPORAN SALES TRANSAKSI / NILAI STRUK
+    LAPORAN SALES TRANSAKSI / NILAI STRUKs
 @endsection
 
 @section('subtitle')

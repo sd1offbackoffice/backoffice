@@ -206,7 +206,9 @@
                     <tr>
                         <td colspan="6" class="border-left-pink"></td>
                         <td align="center" class="border-right-pink">
-                            <img style="margin-right:2%;" width="60px" src="../storage/signature/ljm.png" alt="">
+                            <img style="max-width: 150px; position: absolute; margin-top: 2%; z-index: 10;" src="../storage/stempel/{{$perusahaan->prs_namacabang . '.png'}}">
+                            <img style="margin-right:2%; max-width: 200px;  max-height: 100px; z-index: 0; margin-top: 2%;" src="../storage/signature/ljm.png" alt="">
+                            
                         </td>
                     </tr>
                     <tr >

@@ -1009,7 +1009,6 @@ Route::middleware(['CheckLogin'])->group(function () {
                     //
                     Route::get('/get-data-ekspedisi', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\InputController@getDataEks');
                     Route::get('/get-data-cabang', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\InputController@getDataCabang');
-                    Route::post('/save-data-trn-titip', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\InputController@saveDataTrn');
                 });
 
                 Route::prefix('/cetak')->group(function () {
@@ -1657,6 +1656,7 @@ Route::middleware(['CheckLogin'])->group(function () {
             // Cesar
             Route::post('/save-signature', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@saveSignature');
             Route::get('/kirim-cabang', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@kirimFtpCabang');
+            // Route::get('/delete-signature', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@kirimFtpCabang');
             // Route::get('/find-kodesupp', 'BACKOFFICE\CETAKDOKUMEN\CetakDokumenController@saveSignature')
         });
 

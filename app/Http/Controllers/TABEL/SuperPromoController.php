@@ -84,23 +84,36 @@ class SuperPromoController extends Controller
         $dateB = $request->date2;
         $sDate = DateTime::createFromFormat('d-m-Y', $dateA)->format('d-m-Y');
         $eDate = DateTime::createFromFormat('d-m-Y', $dateB)->format('d-m-Y');
-        for($i=1;$i<sizeof($datas);$i++){
-            DB::connection(Session::get('connection'))->table("tbtr_hadiahkejutan")
-                ->insert([
-                    'spot_kodeigr'=>$kodeigr,
-                    'spot_periodeawal'=>DB::connection(Session::get('connection'))->raw("TO_DATE('$sDate','DD-MM-YYYY')"),
-                    'spot_periodeakhir'=>DB::connection(Session::get('connection'))->raw("TO_DATE('$eDate','DD-MM-YYYY')"),
-                    'spot_prdcd'=>$datas[$i]['plu'],
-                    'spot_fmtrgq'=>$datas[$i]['qty'],
-                    'spot_fmtrgs'=>$datas[$i]['sales'],
-                    'spot_fmtrgg'=>$datas[$i]['margin'],
-                    'spot_hrgjual'=>$datas[$i]['hrg'],
-                    'spot_create_by'=>Session::get('usid'),
-                    'spot_create_dt'=>DB::connection(Session::get('connection'))->raw("trunc(SYSDATE)"),
-                    'spot_modify_by'=>'',
-                    'spot_modify_dt'=>'',
-                ]);
+        $insert = [];
+        DB::connection(Session::get('connection'))->beginTransaction();
+        DB::connection(Session::get('connection'))->table("tbtr_hadiahkejutan")
+            ->where('spot_periodeawal',DB::connection(Session::get('connection'))->raw("TO_DATE('$sDate','DD-MM-YYYY')"))
+            ->where('spot_periodeakhir',DB::connection(Session::get('connection'))->raw("TO_DATE('$eDate','DD-MM-YYYY')"))
+            ->delete();
+        for($i=0;$i<sizeof($datas);$i++){
+            if($datas[$i]['plu']!='') {
+                DB::connection(Session::get('connection'))->table("tbtr_hadiahkejutan")
+                    ->insert(
+                        [
+                            'spot_kodeigr' => $kodeigr,
+                            'spot_periodeawal' => DB::connection(Session::get('connection'))->raw("TO_DATE('$sDate','DD-MM-YYYY')"),
+                            'spot_periodeakhir' => DB::connection(Session::get('connection'))->raw("TO_DATE('$eDate','DD-MM-YYYY')"),
+                            'spot_prdcd' => $datas[$i]['plu'],
+                            'spot_fmtrgq' => $datas[$i]['qty'],
+                            'spot_fmtrgs' => $datas[$i]['sales'],
+                            'spot_fmtrgg' => $datas[$i]['margin'],
+                            'spot_hrgjual' => $datas[$i]['hrg'],
+                            'spot_create_by' => Session::get('usid'),
+                            'spot_create_dt' => DB::connection(Session::get('connection'))->raw("trunc(SYSDATE)"),
+                            'spot_modify_by' => '',
+                            'spot_modify_dt' => '',
+                        ]
+                    );
+            }
         }
+
+        DB::connection(Session::get('connection'))->commit();
+
     }
 
     public function getTable(Request $request){

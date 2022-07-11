@@ -2777,4 +2777,29 @@ ORDER BY mstd_noref3 asc");
         }
         return response()->json(['kode' => 1, 'message' => $msg]);
     }
+
+    // public function deleteSigs(Request $request)
+    // {
+    //     $path = 'signature_expedition/';
+    //         if (!FacadesFile::exists(storage_path($path))) {
+    //             FacadesFile::makeDirectory(storage_path($path), 0755, true, true);
+    //         }
+    //         $img = $this->dataURLtoImage($request->signed);
+    //         $file = storage_path($path . $id . '.' . $img['image_type']);
+    //         file_put_contents($file, $img['image_base64']);
+    //         $message = "Signature Successfully Saved!";
+    //         $status = "SUCCESS";
+
+    //     $data = $request->arrSuppSig;
+
+    //     $files = Storage::disk('signature_expedition')->allFiles();
+    //     if (count($files) > 0) {
+    //         foreach ($files as $file => $value) {
+    //             for($i = 0; $i < sizeof($data); $i++){
+    //                 $filePath = '../storage/signature_expedition/' . $value;
+    //                 File::delete($filePath);
+    //             }
+    //         }                
+    //     }
+    // }
 }
