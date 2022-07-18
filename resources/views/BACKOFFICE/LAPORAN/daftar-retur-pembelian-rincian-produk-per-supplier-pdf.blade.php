@@ -137,7 +137,11 @@
                 </td>                                
                 <td class="right padding-right">{{ number_format($data[$i]->total,2) }}</td>
                 <td class="left">{{ $data[$i]->mstd_keterangan }}</td>
-                <td class="right">{{ number_format($data[$i]->lcost,2) }}</td>
+                @php
+                    $lcost = (($data[$i]->gross - $data[$i]->potongan ) * $data[$i]->frac / ($data[$i]->ctn * $data[$i]->frac + $data[$i]->pcs + $data[$i]->bonus))
+                @endphp
+                <td class="right">{{ number_format($lcost,2) }}</td>
+                {{-- <td class="right">{{ number_format($data[$i]->lcost,2) }}</td> --}}
                 <td class="right">{{ number_format($data[$i]->acost,2) }}</td>
                 <td class="right">{{ number_format($data[$i]->avgcost,2) }}</td>
             </tr>

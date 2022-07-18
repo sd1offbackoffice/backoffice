@@ -501,13 +501,14 @@
                         response.data.forEach(data => {
                             arrSupp.push(data)
                         })
-                        arrSupp.forEach(data => {
+                        arrSupp.forEach(data => {                            
                             $('#body-table-supplier').append('<tr class="table-sm">\n' +
                             '                               <td class="small nama_supplier">' + data.nama_supplier + '</td>\n' +
                             '                               <td class="small sup_kodesupplier">' + data.sup_kodesupplier + '</td>\n' +
                             '                               <td class="small action"><button type="button" class="btn btn-primary btnSignature" id="btnSignature">TANDA TANGAN</button></td>\n' +
                             '                            </tr>')
                         });
+                        
                     }
                 });
             }
@@ -623,10 +624,11 @@
         function printWithSignature() {
             let reprint = $('#reprint:checked').val();
             let lap = $('#laporan').val();
+            let doc = $('#dokumen').val();
             if (reprint == 'on') {
                 cetak()
             } else {
-                if (lap == 'L') {
+                if (lap == 'L' || doc == 'H') {
                     cetak()
                 } else {
                     getSupplierData()
@@ -705,96 +707,90 @@
         }
 
         function cetak() {
-            if (arrSupp.length == arrSuppSig.length) {
-                if (checked.length != 0) {
-                    ajaxSetup();
-                    $.ajax({
-                        url: '{{ url()->current() }}/cetak',
-                        type: 'post',
-                        data: {
-                            nrfp: $('#cetaknotareturfp:checked').val(),
-                            namattd: $('#nama-penandatangan').val(),
-                            jbt1: $('#jabatan1').val(),
-                            jbt2: $('#jabatan2').val(),
-                            doc: $('#dokumen').val(),
-                            lap: $('#laporan').val(),
-                            reprint: $('#reprint:checked').val(),
-                            tgl1: $('#tgl1').val(),
-                            tgl2: $('#tgl2').val(),
-                            kertas: $('#kertas').val(),
-                            data: checked,
-                            arrSuppSig: arrSuppSig
-                        },
-                        beforeSend: function () {
-                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                        },
-                        success: function (result) {
-                            $('#modal-loader').modal('hide');
-                            $('#pdf').empty();
-                            console.log(result);
+            
+            if (checked.length != 0) {
+                ajaxSetup();
+                $.ajax({
+                    url: '{{ url()->current() }}/cetak',
+                    type: 'post',
+                    data: {
+                        nrfp: $('#cetaknotareturfp:checked').val(),
+                        namattd: $('#nama-penandatangan').val(),
+                        jbt1: $('#jabatan1').val(),
+                        jbt2: $('#jabatan2').val(),
+                        doc: $('#dokumen').val(),
+                        lap: $('#laporan').val(),
+                        reprint: $('#reprint:checked').val(),
+                        tgl1: $('#tgl1').val(),
+                        tgl2: $('#tgl2').val(),
+                        kertas: $('#kertas').val(),
+                        data: checked,
+                        arrSuppSig: arrSuppSig
+                    },
+                    beforeSend: function () {
+                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                    },
+                    success: function (result) {
+                        $('#modal-loader').modal('hide');
+                        $('#pdf').empty();
+                        console.log(result);
 
-                            buttons = '';
-                            if (result) {
+                        buttons = '';
+                        if (result) {
 
-                                for (i = 0; i < result.length; i++) {                                
-                                    window.open(`{{ url()->current() }}/download?file=${result[i]}`, '_blank');
-                                }
-
-                                // kirim ke cabang
-                                let flag = false
-                                for(let i = 0; i < result.length; i++){
-                                    let split = result[i].split('_')
-                                    if(split[0] == 'NRB' || split[0] == 'NRP'){
-                                        flag = true
-                                    }
-                                }
-                                if (flag == true) {
-                                    let splitedFile = result[0].split('_')
-                                    let docDate = splitedFile[splitedFile.length-1]
-                                    console.log(docDate);
-                                    $.ajax({
-                                        type: "GET",
-                                        url: "{{ url()->current() }}/kirim-cabang",
-                                        data: {
-                                            date: docDate,                        
-                                        },
-                                        beforeSend: function () {
-                                            $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-                                        },
-                                        success: function (res) {
-                                            $('#modal-loader').modal('hide');
-                                        }
-                                    });
-                                }
-                                
-                                //hapus signature
-                                // deleteSignature()
+                            for (i = 0; i < result.length; i++) {                                
+                                window.open(`{{ url()->current() }}/download?file=${result[i]}`, '_blank');
                             }
 
-                            if (result.message) {
-                                swal({
-                                    title: result.message,
-                                    icon: result.status
+                            // kirim ke cabang
+                            let flag = false
+                            for(let i = 0; i < result.length; i++){
+                                let split = result[i].split('_')
+                                if(split[0] == 'NRB' || split[0] == 'NRP'){
+                                    flag = true
+                                }
+                            }
+                            if (flag == true) {
+                                let splitedFile = result[0].split('_')
+                                let docDate = splitedFile[splitedFile.length-1]
+                                console.log(docDate);
+                                $.ajax({
+                                    type: "GET",
+                                    url: "{{ url()->current() }}/kirim-cabang",
+                                    data: {
+                                        date: docDate,                        
+                                    },
+                                    beforeSend: function () {
+                                        $('#modal-loader').modal({backdrop: 'static', keyboard: false});
+                                    },
+                                    success: function (res) {
+                                        $('#modal-loader').modal('hide');
+                                    }
                                 });
                             }
-                            // window.location.reload();
-                        }, error: function (err) {
-                            $('#modal-loader').modal('hide');
-                            errorHandlingforAjax(err);
+                            
+                            //hapus signature
+                            // deleteSignature()
                         }
-                    });
-                } else {
-                    swal({
-                        title: 'Dokumen belum dipilih!',
-                        icon: 'error'
-                    });
-                }
+
+                        if (result.message) {
+                            swal({
+                                title: result.message,
+                                icon: result.status
+                            });
+                        }
+                        // window.location.reload();
+                    }, error: function (err) {
+                        $('#modal-loader').modal('hide');
+                        errorHandlingforAjax(err);
+                    }
+                });
             } else {
                 swal({
-                        title: 'Ada Supplier yang belum tanda tangan!',
-                        icon: 'error'
-                    });
-            }
+                    title: 'Dokumen belum dipilih!',
+                    icon: 'error'
+                });
+            }            
             
         }
 

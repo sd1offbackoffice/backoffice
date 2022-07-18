@@ -456,7 +456,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
                         $net['k'] = $net['k'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                         $hpp['k'] = $hpp['k'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                         $margin['k'] = $margin['k'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
-                    } 
+                    }
                     // elseif ($rec[$i]->fdfbkp == 'P') {
                     //     $gross['b'] = $gross['b'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
                     //     $tax['b'] = $tax['b'] + 0;
@@ -640,7 +640,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
                 $freePPN['total'] = $freePPN['total'] + $datas[$i]->ntax;
             }
             else if($datas[$i]->fdfbkp == 'W' || $datas[$i]->fdfbkp == 'G')
-            { 
+            {
                 $ppnDTP['total'] = $ppnDTP['total'] + $datas[$i]->ntax;
             }
             $net['total'] = $net['total'] + $datas[$i]->nnet;

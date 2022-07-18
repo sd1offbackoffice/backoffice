@@ -903,7 +903,8 @@
     let rte = 'N';
     let qrDetail = $('#qrDetail');
     let qrHeader = $('#qrHeader');
-
+    let currurl = '{{ url()->current() }}';
+    
     $(document).ready(function() {
         typeTrn = 'B'
         chooseTypeBtn.click();
@@ -1145,8 +1146,8 @@
                 console.log(result);
                 if (result.kode == 0) {
                     swal({
-                        icon: 'warning',
-                        text: result.msg,
+                        icon: 'info',
+                        text: result.message,
                         timer: 2000
                     });
                 }
@@ -1354,6 +1355,7 @@
         var ppn_data = $('#ppn' + plu);
         var avg_data = $('#avg' + plu);
         var lcst_data = $('#lcst' + plu);
+
         edit.hide();
         del.hide();
         save.removeAttr('hidden');
@@ -1730,8 +1732,8 @@
 
     function setValue(data) {
         if (jenisPenerimaan == 2) {
-            console.log(data.prdcd)
-            i_plu.val(data.prdcd);
+            console.log(data.i_prdcd)
+            i_plu.val(data.i_prdcd);
             i_deskripsi.val(data.nama);
             i_kemasan.val('PCS');
             i_tag.val('');
@@ -1740,8 +1742,8 @@
             i_hrgbeli.val(convertToRupiah(data.price));
             i_lcost.val(convertToRupiah(data.price));
             i_acost.val(convertToRupiah(data.price));
-            i_qty.val(data.qty);
-            i_qtyk.val(data.sj_qty);
+            i_qty.val(data.i_qty);
+            i_qtyk.val(data.i_qtyk);
             i_isibeli.val(0);
             i_bonus1.val(0);
             i_bonus2.val(0);
@@ -1995,7 +1997,7 @@
         tableModalHelp.clear().destroy();
 
         tableModalHelp = $('#tableModalHelp').DataTable({
-            ajax: 'http://172.20.28.17/BackOffice/public/bo/transaksi/penerimaan/input/showpo/',
+            ajax:  currurl + '/showpo/',
             paging: true,
             lengthChange: true,
             searching: true,
@@ -2055,7 +2057,7 @@
         tableModalHelp.clear().destroy();
 
         tableModalHelp = $('#tableModalHelp').DataTable({
-            ajax: 'http://172.20.28.17/BackOffice/public/bo/transaksi/penerimaan/input/shownpd/',
+            ajax: currurl + '/shownpd',
             paging: true,
             lengthChange: true,
             searching: true,
@@ -2198,7 +2200,7 @@
         modalThName4.show();
         tableModalHelp.clear().destroy();
         tableModalHelp = $('#tableModalHelp').DataTable({
-            ajax: 'http://172.20.28.17/BackOffice/public/bo/transaksi/penerimaan/input/showsupplierrte',
+            ajax: currurl + '/showsupplierrte',
             paging: true,
             lengthChange: true,
             searching: true,
@@ -2241,7 +2243,7 @@
         modalThName4.show();
         tableModalHelp.clear().destroy();
         tableModalHelp = $('#tableModalHelp').DataTable({
-            ajax: 'http://172.20.28.17/BackOffice/public/bo/transaksi/penerimaan/input/showsupplier',
+            ajax: currurl + '/showsupplier',
             paging: true,
             lengthChange: true,
             searching: true,
@@ -2375,8 +2377,8 @@
                             tbodyModalHelpPLU.append(`
                             <tr class="modalRowPLU" onclick="choosePLU('` + value.prdcd + `')">
                                 <td>` + value.docno + `</td>
-                                <td>` + value.prdcd + `</td>
-                                <td>` + value.nama + `</td>
+                                <td>` + value.prd_prdcd + `</td>
+                                <td>` + value.prd_deskripsipanjang + `</td>
                             </tr>
                         `)
                         }
@@ -2619,7 +2621,12 @@
             ppbbm = parseInt(ppbbm) + parseInt(value.trbo_ppnbmrph);
             ppnbotol = parseInt(ppnbotol) + parseInt(value.trbo_ppnbtlrph);
             // grantTotal = parseInt(grantTotal) + parseInt(value.total_rph);
-            grantTotal = parseInt(grantTotal) + (gross + ppn + ppbbm + ppnbotol - discount);
+            if (jenisPenerimaan == 2) {
+                grantTotal = parseInt(grantTotal) + parseInt(gross);
+            } else {
+                grantTotal = parseInt(grantTotal) + (gross + ppn + ppbbm + ppnbotol - discount);
+            }
+
 
             console.log(gross, discount, ppn, ppbbm, ppnbotol)
         }
@@ -2734,9 +2741,14 @@
                             ppn = parseInt(ppn) + parseInt(tempDataSave[i].trbo_ppnrph);
                             ppbbm = parseInt(ppbbm) + parseInt(tempDataSave[i].trbo_ppnbmrph);
                             ppnbotol = parseInt(ppnbotol) + parseInt(tempDataSave[i].trbo_ppnbtlrph);
-                            grantTotal = parseInt(grantTotal) + parseInt(tempDataSave[i].total_rph);
+                            if (jenisPenerimaan == 2) {
+                                grantTotal = parseInt(grantTotal) + (gross + ppn + ppbbm + ppnbotol - discount);
+                            } else {
+                                grantTotal = parseInt(grantTotal) + parseInt(tempDataSave[i].total_rph);
+                            }
                         }
 
+                        console.log(tempDataSave)
                         sum_item.val(tempDataSave.length);
                         po_total_amt.val(convertToRupiah(grantTotal));
                         gross_amt.val(convertToRupiah(gross));
@@ -2843,8 +2855,7 @@
                     noFaktur: fracture.val(),
                     tglFaktur: fracture_date.val().split('/').reverse().join('-'),
                     tempDataSave: tempDataSave,
-                    typeTrn: typeTrn,
-                    prdcd: i_plu.val()
+                    typeTrn: typeTrn
                 },
                 beforeSend: () => {
                     $('#modal-loader').modal('show');
@@ -2916,6 +2927,12 @@
                         result.detail,
                         'warning'
                     )
+                } else if (result.kode == 2) {
+                    swal(
+                        'Gagal Membaca',
+                        result.msg,
+                        'warning'
+                    )
                 } else {
                     swal(
                         'Proses Berhasil',
@@ -2923,7 +2940,8 @@
                         'info'
                     )
                 }
-
+                $('.modal-backdrop').remove();
+                $('#qrModal').hide();
                 console.log(result);
             },
             error: (err) => {

@@ -18,7 +18,7 @@
         {{--        {{ $perusahaan->prs_namaperusahaan }}<br>--}}
         {{--        {{ $perusahaan->prs_namacabang }}<br><br>--}}
         {{--    </p>--}}
-        {{--    <h3 style="text-align: center">--}}
+        {{--    <h3 style="text-align:laporan daftar retur center">--}}
         {{--        ** STRUK RESET KASIR **<br>--}}
         {{--        No. Reset : {{ $noreset }}--}}
         {{--    </h3>--}}

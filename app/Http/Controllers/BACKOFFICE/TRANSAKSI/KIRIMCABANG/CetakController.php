@@ -163,21 +163,22 @@ class CetakController extends Controller
                         $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMOR('" . Session::get('kdigr') . "','SJK','Nomor Surat Jalan','3' || TO_CHAR(SYSDATE, 'yy'),5,TRUE); END;");
                         oci_bind_by_name($s, ':ret', $vnodoc, 32);
                         oci_execute($s);
-
-                        $data = DB::connection(Session::get('connection'))->select("SELECT aa.*,
-															      prd_unit, prd_frac, prd_flagbkp1,prd_flagbkp2,prd_kodedivisi,
-															      prd_kodedepartement, prd_kodekategoribarang,prd_kodetag,
-															      sup_pkp, prd_kodesupplier,sup_top,st_saldoakhir,st_lastcost,st_avgcost
-													   FROM tbtr_backoffice aa, tbmaster_prodmast bb, tbmaster_supplier, tbmaster_stock
-                             WHERE trbo_nodoc = '" . $knodoc . "' and trbo_typetrn='O'
-                          		     and prd_prdcd=trbo_prdcd
-                                     and prd_kodeigr=trbo_kodeigr
-                                     and sup_kodesupplier(+)=prd_kodesupplier
-                                     and sup_kodeigr(+)=prd_kodeigr
-                                     and trbo_kodeigr=st_kodeigr(+)
-                                     and substr(trbo_prdcd,1,6)||'0'=st_prdcd
-                                     and '01'=st_lokasi
-                             ORDER BY trbo_seqno");
+                        if ($jenis == 2) {
+                            $vnodoc -= 1;
+                        }
+                        $data = DB::connection(Session::get('connection'))->select(
+                            "SELECT aa.*, prd_unit, prd_frac, prd_flagbkp1,prd_flagbkp2,prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang,prd_kodetag, sup_pkp, prd_kodesupplier,sup_top,st_saldoakhir,st_lastcost,st_avgcost
+							FROM tbtr_backoffice aa, tbmaster_prodmast bb, tbmaster_supplier, tbmaster_stock
+                            WHERE trbo_nodoc = '" . $knodoc . "' and trbo_typetrn='O'
+                                    AND prd_prdcd=trbo_prdcd
+                                    AND prd_kodeigr=trbo_kodeigr
+                                    AND sup_kodesupplier(+)=prd_kodesupplier
+                                    AND sup_kodeigr(+)=prd_kodeigr
+                                    AND trbo_kodeigr=st_kodeigr(+)
+                                    AND substr(trbo_prdcd,1,6)||'0'=st_prdcd
+                                    AND '01'=st_lokasi
+                            ORDER BY trbo_seqno"
+                        );
 
                         foreach ($data as $d) {
                             DB::connection(Session::get('connection'))->table('tbtr_mstran_d')
@@ -295,14 +296,14 @@ class CetakController extends Controller
                 $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
                     ->first();
 
-                $data = DB::connection(Session::get('connection'))->select("SELECT msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo,
+                $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo,
                         msth_nofaktur, msth_tglfaktur,
                         msth_noref3,msth_tgref3,msth_cterm, msth_flagdoc,
                         mstd_flagdisc1,msth_loc,cab_namacabang,msth_loc2,gdg_namagudang,
                         mstd_prdcd, prd_deskripsipanjang, prd_unit||'/'||prd_frac kemasan, mstd_qty, mstd_frac,
-                        mstd_hrgsatuan, mstd_ppnrph, mstd_ppnbmrph, mstd_ppnbtlrph, mstd_gross,
-                        nvl(mstd_rphdisc1,0), nvl(mstd_rphdisc2,0),nvl(mstd_rphdisc3,0), nvl(mstd_qtybonus1,0), nvl(mstd_qtybonus2,0),  mstd_keterangan
-                        FROM tbtr_mstran_h, tbtr_mstran_d, tbmaster_prodmast, tbmaster_cabang,tbmaster_gudang
+                        mstd_hrgsatuan, mstd_ppnrph, mstd_ppnbmrph, mstd_ppnbtlrph, mstd_gross, prd_dimensilebar, prd_dimensitinggi, prd_dimensipanjang,
+                        nvl(mstd_rphdisc1,0), nvl(mstd_rphdisc2,0),nvl(mstd_rphdisc3,0), nvl(mstd_qtybonus1,0), nvl(mstd_qtybonus2,0), mstd_keterangan, brg_brutoctn
+                        FROM tbtr_mstran_h, tbtr_mstran_d, tbmaster_prodmast, tbmaster_cabang, tbmaster_gudang, tbmaster_barang
                         WHERE msth_kodeigr='" . Session::get('kdigr') . "'
                         and msth_nodoc in " . $nodoc . "
                         and mstd_nodoc=msth_nodoc
@@ -313,6 +314,7 @@ class CetakController extends Controller
                         and msth_loc2=cab_kodecabang(+)
                         and msth_kodeigr=gdg_kodeigr(+)
                         and msth_kodeigr||msth_loc2=gdg_kodegudang(+)
+                        and brg_prdcd=mstd_prdcd
                         ORDER BY msth_nodoc,mstd_prdcd");
 
                 DB::connection(Session::get('connection'))->table('tbtr_titip')
@@ -321,7 +323,7 @@ class CetakController extends Controller
                         'titip_nonota' => $vnodoc
                     ]);
 
-                $data_titip = DB::connection(Session::get('connection'))->select("SELECT *
+                $data_titip = DB::connection(Session::get('connection'))->select("SELECT DISTINCT *
                         FROM tbtr_titip
                         WHERE titip_nonota = " . $nodoc . "");
 
@@ -332,7 +334,11 @@ class CetakController extends Controller
                 $data_tujuan = DB::connection(Session::get('connection'))->select("SELECT cab_namacabang, cab_alamat1, cab_alamat2, cab_alamat3
                         FROM tbmaster_cabang
                         WHERE cab_kodecabang = " . $kode_tujuan_titip[0]->titip_kodecabangtitip . "");
-                //                dd($data[0]);
+
+                $data_hitung = DB::connection(Session::get('connection'))->select("SELECT DISTINCT xpd_jeniskontainer, xpd_tonase, xpd_kubikase
+                FROM tbmaster_ekspedisi, tbtr_titip
+                WHERE xpd_kodeekspedisi = titip_kode_ekspedisi");
+
                 DB::connection(Session::get('connection'))->commit();
 
                 if ($vnodoc)
@@ -341,11 +347,31 @@ class CetakController extends Controller
                 if ($jenis != 1) {
                     $reprint = $reprint ? 1 : 0;
                 }
-                return view('BACKOFFICE.TRANSAKSI.KIRIMCABANG.laporan-nota', compact(['perusahaan', 'data', 'reprint', 'data_titip', 'data_tujuan']));
+                if ($jenis == 0) {
+                    return view('BACKOFFICE.TRANSAKSI.KIRIMCABANG.laporan-nota', compact(['perusahaan', 'data', 'reprint']));
+                } else if ($jenis == 2) {
+                    return view('BACKOFFICE.TRANSAKSI.KIRIMCABANG.surat_jalan_expedisi', compact(['perusahaan', 'data', 'reprint', 'data_titip', 'data_tujuan', 'data_hitung']));
+                }
+                // $template = ['BACKOFFICE.TRANSAKSI.KIRIMCABANG.laporan-nota', 'BACKOFFICE.TRANSAKSI.KIRIMCABANG.surat_jalan_ekspedisi'];
+                // return compact(['perusahaan', 'data', 'reprint', 'data_titip', 'data_tujuan', 'data_hitung', 'template']);
             }
         } catch (QueryException $e) {
             DB::connection(Session::get('connection'))->rollBack();
             dd($e->getMessage());
         }
+    }
+
+    public function cetak(Request $request)
+    {
+        $data = $request->data;
+        $reprint = $request->reprint;
+        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
+            ->first();
+        return view('BACKOFFICE.TRANSAKSI.KIRIMCABANG.laporan-nota', compact(['data', 'reprint', 'perusahaan']));
+    }
+
+    public function cetakSJ(Request $request)
+    {
+        return view('BACKOFFICE.TRANSAKSI.KIRIMCABANG.surat_jalan_ekspedisi', compact(['perusahaan', 'data']));
     }
 }

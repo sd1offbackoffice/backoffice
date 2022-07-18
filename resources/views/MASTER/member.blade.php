@@ -285,7 +285,7 @@
                                                 Khusus</label>
                                             <div class="col-sm-1">
                                                 <input type="text" maxlength="1" class="form-control"
-                                                       id="cus_flagmemberkhusus">
+                                                       id="cus_flagmemberkhusus" disabled>
                                             </div>
                                             <label for="cus_flagpkp" class="col-sm-1 col-form-label pl-0 text-left">[ Y
                                                 / ]</label>
@@ -3095,6 +3095,7 @@
                         $('#cus_tlpmember').val(member.cus_tlpmember);
                         if (member.cus_namamember == 'NEW') {
                             $('#cus_hpmember').val(member.cus_hpmember).prop('disabled', false);
+                            $('#cus_flagmemberkhusus').prop('disabled', false);
                         } else {
                             $('#cus_hpmember').val(member.cus_hpmember).prop('disabled', true);
                             $('#cus_flagmemberkhusus').prop('disabled', true);

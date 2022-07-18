@@ -1,5 +1,7 @@
 @extends('navbar')
-@section('title','MASTER | MASTER EKSPEDISI')
+
+@section('title','Master | Ekspedisi')
+
 @section('content')
     <div class="col">
         <fieldset class="card border-secondary">
@@ -7,7 +9,7 @@
             <div class="row">
                 <div class="col">
                     <div class="card-body" id="detailField">
-                        <table class="table table bordered table-sm mt-3" id="table_data_header">
+                        <table class="table table bordered table-sm mt-3" id="table_expedition">
                             <thead class="theadDataTables">
                             <tr class="text-center align-middle">
                                 <th>Kode Ekspedisi</th>
@@ -28,21 +30,21 @@
                             </thead>
                             <tbody id="tbody-data-header">
                             @foreach($ekspedisi as $e)
-                                <tr>
-                                    <td>{{ $e->eks_nama }}</td>
-                                    <td>{{ $e->eks_nama }}</td>
+                                <tr onclick="getExpeditionDetail(this,'{{ $e->xpd_kodeekspedisi }}')">
+                                    <td>{{ $e->xpd_kodeekspedisi }}</td>
+                                    <td>{{ $e->xpd_namaekspedisi }}</td>
+                                    <td>{{ $e->xpd_jeniskontainer }}</td>
+                                    <td>{{ $e->xpd_tonase }}</td>
+                                    <td>{{ $e->xpd_kubikase }}</td>
                                     <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>{{ $e->xpd_alamat }}</td>
+                                    <td>{{ $e->xpd_email }}</td>
+                                    <td>{{ $e->xpd_telp }}</td>
+                                    <td>{{ $e->xpd_fax }}</td>
+                                    <td>{{ $e->xpd_hp1 }}</td>
+                                    <td>{{ $e->xpd_pic1 }}</td>
+                                    <td>{{ $e->xpd_hp2 }}</td>
+                                    <td>{{ $e->xpd_pic2 }}</td>
                                 </tr>
                             @endforeach
                             </tbody>
@@ -53,7 +55,7 @@
             <div class="row">
                 <div class="col-sm-8">
                     <div class="card-body" id="detailField">
-                        <table class="table table bordered table-sm mt-3" id="table_data_header">
+                        <table class="table table bordered table-sm mt-3" id="table_expeditionDetail">
                             <thead class="theadDataTables">
                             <tr class="text-center align-middle">
                                 <th>Cabang Tujuan</th>
@@ -68,7 +70,7 @@
                 </div>
                 <div class="col-sm-4">
                     <div class="card-body text-center" id="detailField">
-                        <button class="mt-3 btn btn-primary">UPLOAD</button>
+                        <button class="mt-3 btn btn-primary" onclick="updateFromIGRCRM()">UPDATE</button>
                     </div>
                 </div>
             </div>
@@ -89,10 +91,8 @@
             margin: 0;
         }
 
-        table.dataTable tbody tr:hover {
+        #table_expedition tbody tr:hover {
             cursor: pointer;
-            background-color: gray;
-            color: white;
         }
 
 
@@ -142,58 +142,40 @@
     <script>
         var arrData = [];
 
-        @if(\Illuminate\Support\Facades\Session::get('usid') != 'DVX')
-            swal({
-                title: 'Under Development',
-                icon: 'warning',
-            }).then((ok) => {
-                window.location.href = '/BackOffice/public/';
-            });
-        @endif
-
         $(document).ready(function () {
             $('#tanggal').daterangepicker({
                 locale: {
                     format: 'DD/MM/YYYY'
                 }
             });
-            getDataHeader();
+
+            $('#table_expedition tbody tr:eq(0)').click();
         });
 
-        function getDataHeader() {
-            if ($.fn.DataTable.isDataTable('#table_data_header')) {
-                $('#table_data_header').DataTable().clear().destroy();
+        function getExpeditionDetail(event,code) {
+            $('#table_expedition tbody tr').css('background-color','white').css('color','black');
+
+            $(event).css('background-color','gray');
+            $(event).css('color','white');
+
+
+
+            if ($.fn.DataTable.isDataTable('#table_expeditionDetail')) {
+                $('#table_expeditionDetail').DataTable().clear().destroy();
             }
-            $('#table_data_header').DataTable();
-        }
 
-        $(document).on('click', '.row-hdr', function () {
-            var currentButton = $(this);
-            let grouprak = currentButton.children().first().text();
-            let namagrouprak = currentButton.find('td:eq(1)').text();
-            let flag = currentButton.find('td:eq(2)').text();
-
-            $('#kgr-1').val(grouprak);
-            $('#ngr-1').val(namagrouprak);
-            $('#fcp-1').val(flag);
-            getDataDetail(grouprak);
-        });
-
-        function getDataDetail(grouprak) {
-            console.log(grouprak)
-            if ($.fn.DataTable.isDataTable('#table_data_detail')) {
-                $('#table_data_detail').DataTable().clear().destroy();
-            }
-            $('#table_data_detail').DataTable({
+            $('#table_expeditionDetail').DataTable({
                 "ajax": {
-                    url: '{{ url()->current() }}/get-data-detail',
+                    url: '{{ route('expedition-get-expedition-detail') }}',
                     data: {
-                        "search": grouprak
+                        "code": code
                     }
                 },
                 "columns": [
-                    {data: 'grr_koderak'},
-                    {data: 'grr_subrak'}
+                    {data: 'tujuan'},
+                    {data: 'biaya'},
+                    {data: 'lamakirim'}
+
                 ],
                 "paging": true,
                 "lengthChange": true,
@@ -203,178 +185,65 @@
                 "autoWidth": false,
                 "responsive": true,
                 "createdRow": function (row, data, dataIndex) {
-                    $(row).addClass('row-dtl row-lov text-right').css({'cursor': 'pointer'});
-                    $(row).find('td:eq(0)').addClass('text-center');
+                    // $(row).addClass('row-dtl row-lov text-right').css({'cursor': 'pointer'});
+                    // $(row).find('td:eq(0)').addClass('text-center');
                 },
                 "order": [],
                 "initComplete": function (data) {
-                    koderak = $('#tbody-data-detail').find('tr:eq(0)').find('td:eq(0)').text();
-                    subrak = $('#tbody-data-detail').find('tr:eq(0)').find('td:eq(1)').text();
-                    $('#kgr-2').val(grouprak);
-                    $('#kr-2').val(koderak);
-                    $('#sr-2').val(subrak);
+                    // koderak = $('#tbody-data-detail').find('tr:eq(0)').find('td:eq(0)').text();
+                    // subrak = $('#tbody-data-detail').find('tr:eq(0)').find('td:eq(1)').text();
+                    // $('#kgr-2').val(grouprak);
+                    // $('#kr-2').val(koderak);
+                    // $('#sr-2').val(subrak);
                 }
             });
         }
-        $(document).on('click', '.row-dtl', function () {
-            var currentButton = $(this);
-            let koderak = currentButton.find('td:eq(0)').text();
-            let subrak = currentButton.find('td:eq(1)').text();
 
-            $('#kr-2').val(koderak);
-            $('#sr-2').val(subrak);
-        });
-
-        function simpan1() {
-            data = null;
-            data = {
-                grouprak: $('#kgr-1').val(),
-                namarak: $('#ngr-1').val(),
-                flag: $('#fcp-1').val(),
-                koderak: $('#kr-2').val(),
-                subrak: $('#sr-2').val()
-            }
-            console.log(data.grouprak);
-            if(data.grouprak == '' ||data.namarak == '' ||data.flag == '' ||data.koderak == '' ||data.subrak == '' ){
-                swal('Error','Data tidak Lengkap!','error');
-                return false;
-            }
-            if(data.flag != 'H' && data.flag != 'D' && data.flag != 'Y' ){
-                swal('Error','Data Flag Salah! [ H / D / Y ]','error');
-                return false;
-            }
+        function updateFromIGRCRM(){
             swal({
-                title: 'Simpan?',
-                icon: 'info',
-                dangerMode: true,
-                buttons: true,
-            }).then(function (confirm) {
-                if (confirm) {
-                    ajaxSetup();
-                    $.ajax({
-                        url: '{{ url()->current() }}/simpan-header',
-                        type: 'post',
-                        data: {
-                            data: data,
-                        }, beforeSend: () => {
-                            $('#modal-loader').modal('show');
-                        },
-                        success: function (result) {
-                            console.log(result);
-                            $('#modal-loader').modal('hide');
-                            getDataHeader();
-                            getDataDetail(grouprak);
-                            $('#header').find('tr:eq(0)').each(function( index ) {
-                                if($(this).find('td:eq(0)').text() == data.grouprak ){
-                                    $(this).click();
-                                }
-                            });
-                            swal({
-                                title: result.message,
-                                icon: result.status
-                            });
-
-                        }, error: function (err) {
-                            $('#modal-loader').modal('hide');
-                            console.log(err.responseJSON.message.substr(0, 100));
-                            alertError(err.statusText, err.responseJSON.message)
-                        }
-                    })
-                }
-            });
-        }
-        function simpan2() {
-            data = {
-                grouprak: $('#kgr-2').val(),
-                namarak: $('#ngr-1').val(),
-                flag: $('#fcp-1').val(),
-                koderak: $('#kr-2').val(),
-                subrak: $('#sr-2').val()
-            }
-
-            if(data.grouprak == '' ||data.namarak == '' ||data.flag == '' ||data.koderak == '' ||data.subrak == '' ){
-                swal('Error','Data tidak Lengkap!','error');
-                return false;
-            }
-            swal({
-                title: 'Simpan Data Detail?',
-                icon: 'info',
-                dangerMode: true,
-                buttons: true,
-            }).then(function (confirm) {
-                if (confirm) {
-                    ajaxSetup();
-                    $.ajax({
-                        url: '{{ url()->current() }}/simpan-detail',
-                        type: 'post',
-                        data: {
-                            data: data,
-                        }, beforeSend: () => {
-                            $('#modal-loader').modal('show');
-                        },
-                        success: function (result) {
-                            console.log(result);
-                            $('#modal-loader').modal('hide');
-                            getDataHeader();
-                            getDataDetail($('#kgr-2').val());
-                            swal({
-                                title: result.message,
-                                icon: result.status
-                            });
-
-                        }, error: function (err) {
-                            $('#modal-loader').modal('hide');
-                            console.log(err.responseJSON.message.substr(0, 100));
-                            alertError(err.statusText, err.responseJSON.message)
-                        }
-                    })
-                }
-            });
-        }
-        function hapus2() {
-            data = {
-                grouprak: $('#kgr-2').val(),
-                koderak: $('#kr-2').val(),
-                subrak: $('#sr-2').val()
-            }
-            if(data.grouprak == '' ||data.koderak == '' ||data.subrak == '' ){
-                swal('Error','Data tidak Lengkap!','error');
-                return false;
-            }
-            swal({
-                title: 'Hapus Data Detail?',
+                title: 'Update data dari IGRCRM?',
                 icon: 'warning',
-                dangerMode: true,
                 buttons: true,
-            }).then(function (confirm) {
-                if (confirm) {
-                    ajaxSetup();
+                dangerMode: true,
+            }).then((ok) => {
+                if(ok){
                     $.ajax({
-                        url: '{{ url()->current() }}/hapus-detail',
-                        type: 'post',
+                        url: '{{ route('expedition-update-from-igrcrm') }}',
+                        type: 'GET',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
                         data: {
-                            data: data,
-                        }, beforeSend: () => {
+
+                        },
+                        beforeSend: function () {
                             $('#modal-loader').modal('show');
                         },
-                        success: function (result) {
-                            console.log(result);
+                        success: function (response) {
                             $('#modal-loader').modal('hide');
-                            getDataDetail($('#kgr-2').val());
-                            swal({
-                                title: result.message,
-                                icon: result.status
-                            });
 
-                        }, error: function (err) {
+                            swal({
+                                title: response.message,
+                                icon: 'success'
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function (error) {
                             $('#modal-loader').modal('hide');
-                            console.log(err.responseJSON.message.substr(0, 100));
-                            alertError(err.statusText, err.responseJSON.message)
+
+                            swal({
+                                title: error.responseJSON.message,
+                                text: error.responseJSON.error,
+                                icon: 'error',
+                            }).then(() => {
+
+                            });
                         }
-                    })
+                    });
                 }
             });
-
         }
     </script>
+
 @endsection

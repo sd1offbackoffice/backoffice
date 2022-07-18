@@ -145,13 +145,13 @@ class printBPBController extends Controller
                                 // cesar nrb nrp
                                 $splitedFilename = explode('_', $value);
                                 if ($splitedFilename[0] == 'NRB' || $splitedFilename[0] == 'NRP') {
-                                    $split = explode('.', $splitedFilename[sizeof($splitedFilename)-1]);
+                                    $split = explode('.', $splitedFilename[sizeof($splitedFilename) - 1]);
                                     $docDate = $split[0];
                                     if ($docDate == date("Ymd", strtotime($date))) {
                                         $filePath = '../storage/receipts/' . $value;
                                         $zip->addFile($filePath, $value);
                                     }
-                                }                                
+                                }
                             }
                             $zip->close();
                             ftp_put($conn_id, '/opt/btbigr/' . $zipName, $zipAddress); //send to SD6
@@ -586,6 +586,13 @@ class printBPBController extends Controller
                 $sum = 1;
             } else {
                 $sum = 1000;
+            }
+            if ($data->trbo_prdcd == '1381070') {
+                DB::connection(Session::get('connection'))->table('TBTR_KRAT_IGR')
+                    ->where('KRT_NOBO', $noDoc)
+                    ->update([
+                        'KRT_NOBPB' => $no_btb
+                    ]);
             }
             DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')->insert([
                 "MSTD_TYPETRN" => $data->trbo_typetrn,
@@ -1458,11 +1465,11 @@ class printBPBController extends Controller
                 // cesar nrb nrp
                 $splitedFilename = explode('_', $value);
                 if ($splitedFilename[0] == 'NRB' || $splitedFilename[0] == 'NRP') {
-                    if ($splitedFilename[sizeof($splitedFilename)-1] == date("Ymd", strtotime($date))) {
+                    if ($splitedFilename[sizeof($splitedFilename) - 1] == date("Ymd", strtotime($date))) {
                         $filePath = '../storage/receipts/' . $value;
                         File::delete($filePath);
                     }
-                }  
+                }
             }
         }
 
@@ -1477,7 +1484,7 @@ class printBPBController extends Controller
                 // cesar nrb nrp
                 $splitedFilename = explode('_', $value);
                 if ($splitedFilename[0] == 'NRB' || $splitedFilename[0] == 'NRP') {
-                    if ($splitedFilename[sizeof($splitedFilename)-1] == date("Ymd", strtotime($date))) {
+                    if ($splitedFilename[sizeof($splitedFilename) - 1] == date("Ymd", strtotime($date))) {
                         $filePath = '../storage/receipts/' . $value;
                         File::delete($filePath);
                     }
@@ -1737,7 +1744,7 @@ class printBPBController extends Controller
             // }
 
             $this->kirimServerCabang($path, $datas, $pdf, $report);
-            
+
             // save nota harga
             $datas = DB::connection(Session::get('connection'))->select("select msth_recordid, msth_nodoc, msth_tgldoc, msth_nopo, msth_tglpo, msth_nofaktur, msth_tglfaktur, msth_cterm, msth_flagdoc, (mstd_tgldoc + msth_cterm) tgljt, mstd_cterm,
             prs_namaperusahaan, prs_namacabang, prs_alamat1, prs_alamat2, prs_alamat3,prs_npwp,
@@ -1815,7 +1822,7 @@ class printBPBController extends Controller
             }
 
             $path = 'receipts_backup/';
-            
+
             $this->kirimServerCabang($path, $datas, $pdf, $report);
             //save data
 

@@ -216,9 +216,15 @@
                     });
                     nodoc = nodoc.substr(0, nodoc.length - 1);
 
-                    window.open(`{{ url()->current() }}/laporan?nodoc=${nodoc}&reprint=${reprint}&jenis=${$('#jenis').val()}`, '_blank');
-
-                    $('#cb_checkall').prop('checked', false);
+                    if ($('#jenis').val() == 1) {
+                        window.open(`{{ url()->current() }}/laporan?nodoc=${nodoc}&reprint=${reprint}&jenis=${$('#jenis').val()}`, '_blank');
+                    } else {
+                        window.open(`{{ url()->current() }}/laporan?nodoc=${nodoc}&reprint=${reprint}&jenis=${$('#jenis').val()}`, '_blank');
+                        setTimeout(function() {
+                            window.open(`{{ url()->current() }}/laporan?nodoc=${nodoc}&reprint=${reprint}&jenis=2`, '_blank');
+                            $('#cb_checkall').prop('checked', false);
+                        }, 1000);
+                    }
 
                     setTimeout(function() {
                         getData();

@@ -1,4 +1,5 @@
-@extends('pdf-template')
+@extends('BACKOFFICE.CETAKDOKUMEN.cetak-dokumen-template')
+{{-- @extends('pdf-template') --}}
 {{-- @extends('html-template') --}}
 
 @section('table_font_size','7 px')
@@ -94,7 +95,7 @@
                     <th class="right padding-right">{{ number_format(round($total), 0, '.', ',') }}</th>
                     <th></th>
                 </tr>
-                <tr>
+                {{-- <tr>
                     <td colspan="10">
                         <table class="table" border="1">
                             <tbody>
@@ -113,7 +114,7 @@
                             </tbody>
                         </table>
                     </td>
-                </tr>
+                </tr> --}}
                 </tfoot>
             </table>
             <br><br>

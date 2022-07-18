@@ -38,13 +38,13 @@
                             </div>
                             <label class="col-sm-1 pr-0 text-right col-form-label">UNTUK CABANG</label>
                             <div class="col-sm-1 buttonInside">
-                                <input type="text" class="form-control" id="kodecabang" disabled>
+                                <input type="text" class="form-control" id="kodecabang" disabled autocomplete="off">
                                 <button id="btn_lov_cabang" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov_cabang" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
                             </div>
                             {{--<div class="col-sm-1" style="position: relative">--}}
-                            {{--<input maxlength="2" type="text" class="form-control" id="kodecabang">--}}
+                            {{--<input maxlength="2" type="text" class="form-control" id="kodecabang" autocomplete="off">--}}
                             {{--<button type="button" class="btn btn_lov btn-lov-cabang" id="btn_lov_cabang" data-toggle="modal" data-target="#m_lov_cabang">--}}
                             {{--<img src="{{ asset('image/icon/help.png') }}" width="30px">--}}
                             {{--</button>--}}
@@ -98,26 +98,22 @@
                             </div>
                             <label class="col-sm-1 pr-0 text-right col-form-label">TGL. ETD</label>
                             <div class="col-sm-1">
-                                <input type="text" class="form-control" id="tgletd" autocomplete="off" disabled>
+                                <input type="text" class="form-control" id="tgletd" autocomplete="off">
                             </div>
                             <label class="col-sm-1 pr-0 text-right col-form-label">TGL. ETA</label>
                             <div class="col-sm-1">
-                                <input type="text" class="form-control" id="tgleta" disabled>
+                                <input type="text" class="form-control" id="tgleta" autocomplete="off" disabled>
                             </div>
-                            <label class="col-sm-1 pr-0 text-right col-form-label">UNTUK CABANG</label>
+                            <label class="col-sm-1 pr-0 text-right col-form-label">TIPE</label>
                             <div class="col-sm-1 buttonInside">
-                                <input type="text" class="form-control" id="kodecabangtitip" disabled>
+                                <input type="text" class="form-control" id="tipeeks" autocomplete="off" disabled>
                             </div>
-                            <div class="col-sm-2">
-                                <input type="text" class="form-control" id="namacabangtitip" disabled>
-                            </div>
-                            <button class="col-sm-1 pr-0 pl-0 btn btn-danger" id="btn_hapus_titip" onclick="hapusTrn()" disabled>HAPUS DOKUMEN</button>
                         </div>
                         <div class="row">
                             <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">PILIH EKS</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="ekspedisi" disabled>
-                                <button id="btn_lov_eks" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov_ekspedisi" disabled>
+                                <button id="btn_lov_eks" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#eksModal" onclick="showEks()" disabled>
                                     <i class="fas fa-spinner fa-spin"></i>
                                 </button>
                             </div>
@@ -139,21 +135,10 @@
                             </div>
                             <label class="col-sm-1 pr-0 text-right col-form-label">TARIF</label>
                             <div class="col-sm-1">
-                                <input type="text" class="form-control" id="tarif">
+                                <input type="text" class="form-control" id="tarif" autocomplete="off">
                             </div>
-                            <div class="col-sm-2">
+                            <div class="col-sm-2" style="display: none;">
                                 <input type="text" class="form-control" id="tipetarif" disabled>
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <label class="col-sm-1 pr-0 text-right col-form-label">ALAMAT</label>
-                            <div class="col-sm-4">
-                                <input type="text" class="form-control" id="alamat" disabled>
-                            </div>
-                            <label class="col-sm-1 pr-0 text-right col-form-label">CATATAN</label>
-                            <div class="col-sm-3">
-                                <input type="text" class="form-control" id="catatan" disabled>
                             </div>
                         </div>
                         <br>
@@ -247,7 +232,7 @@
                                 <tbody>
                                     @for($i=0;$i<0;$i++) <tr>
                                         <td><button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button></td>
-                                        <td><input maxlength="7" type="text" class="form-control kode"></td>
+                                        <td><input type="text" class="form-control kode"></td>
                                         <td><input type="text" class="form-control"></td>
                                         <td><input type="text" class="form-control"></td>
                                         <td><input type="text" class="form-control"></td>
@@ -500,7 +485,7 @@
                                 <thead>
                                     <tr>
                                         <th>NAMA EKSPEDISI</th>
-                                        <th>ALAMAT</th>
+                                        <th>TARIF</th>
                                         <th>TIPE EKSPEDISI</th>
                                         <th>TARIF EKSPEDISI</th>
                                         <th>TIPE TARIF EKSPEDISI</th>
@@ -521,6 +506,33 @@
     </div>
 </div>
 
+<!-- EKSEPEDISI Modal -->
+<div class="modal fade" id="eksModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <!-- <div class="modal-header">
+                <input autocomplete="off" type="text" id="eksSearch" onkeyup="searchEks()" placeholder="&#x1F50E;">
+            </div> -->
+            <div class="modal-body">
+                <div class="sticky-table sticky-headers sticky-ltr-cells">
+                    <table class="table table-sm table-bordered" id="tableModalHelpEks">
+                        <thead class="theadDataTables">
+                            <tr id="headRowEks">
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyModalHelpEks"></tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button id="closeEksBtn" type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- EKSPEDISI Modal -->
+
+<input id="kodeeks" type="hidden"></input>
 <style>
     body {
         background-color: #edece9;
@@ -637,9 +649,111 @@
         getLovIpb();
         getLovCabang();
         getLovTrn();
-        getLovEks();
-        // $('#m_lks').modal('show');
     });
+
+    function showEks() {
+        $('#tbodyModalHelpEks').empty();
+        $('#headRowEks').empty();
+        $('#headRowEks').append(`
+                <th>Nama Ekspedisi</th>
+                <th>Tarif</th>
+            `)
+        if ($('#tbodyModalHelpEks').contents().length == 0) {
+            ajaxSetup();
+            $.ajax({
+                url: '{{ url()->current() }}/get-data-ekspedisi',
+                type: 'get',
+                data: {
+                    area: $('#kodecabang').val()
+                },
+                beforeSend: () => {
+                    $('#modal-loader').modal('show');
+                },
+                success: function(result) {
+                    if (result.eks.length == 0) {
+                        $('#closeEksBtn').click();
+                        $('.modal-backdrop').remove();
+                        $('#modal-loader').modal('hide');
+                        swal({
+                            title: 'Ekspedisi tidak tersedia',
+                            text: 'Tidak ada jasa ekspedisi yang melayani area ' + $('#namacabang').val(),
+                            icon: 'info'
+                        })
+                    } else {
+                        $('#modal-loader').modal('hide');
+                        $('#tbodyModalHelpEks').empty();
+                        $('#theadDataTables').empty();
+                        console.log(result, result.eks.length)
+                        for (var i = 0; i < result.eks.length; i++) {
+                            let value = result.eks[i];
+                            $('#tbodyModalHelpEks').append(`
+                            <tr class="modalRowEks" onclick="chooseEks('` + value.xpd_namaekspedisi + `','` + value.axp_lamakirim + `','` + value.axp_biaya + `','` + value.xpd_jeniskontainer + `','` + value.xpd_kodeekspedisi + `')">
+                                <td>` + value.xpd_namaekspedisi + `</td>
+                                <td>` + value.axp_biaya + `</td>
+                            </tr>
+                        `)
+                        }
+                    }
+                },
+                error: function(err) {
+                    $('#modal-loader').modal('hide');
+                    console.log(err.responseJSON.message.substr(0, 100));
+                    alertError(err.statusText, err.responseJSON.message);
+                }
+            })
+        }
+    }
+
+    function chooseEks(nama, durasi, biaya, jenis, kode) {
+        if ($('#tgletd').val() === null || $('#tgletd').val() === '') {
+            $('#closeEksBtn').click();
+            $('.modal-backdrop').remove();
+            swal({
+                title: 'Tanggal ETD Kosong!',
+                text: 'Mohon isi tanggal ETD',
+                icon: 'error'
+            })
+        } else {
+            $('#closeEksBtn').click();
+            $('.modal-backdrop').remove();
+            $('#ekspedisi').val(nama);
+            $('#tarif').val(convertToRupiah(biaya));
+            $('#durasi').val(durasi + ' hari');
+            $('#tipeeks').val(jenis);
+            $('#kodeeks').val(kode);
+            etd = $('#tgletd').val();
+            const [day, month, year] = etd.split('/');
+            etd = new Date(+year, +month - 1, +day);
+            etd.setDate(etd.getDate() + parseInt(durasi));
+            eta = new Date(etd);
+            var dd = eta.getDate();
+            var mm = eta.getMonth() + 1;
+            var yyyy = eta.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd;
+            }
+            if (mm < 10) {
+                mm = '0' + mm;
+            }
+            eta = dd + '/' + mm + '/' + yyyy;
+            $('#tgleta').val(eta);
+        }
+    }
+
+    // function searchEks() {
+    //     var filter = event.target.value.toUpperCase();
+    //     var rows = document.querySelector("#tableModalHelpEks tbody").rows;
+
+    //     for (var i = 0; i < rows.length; i++) {
+    //         var nama = rows[i].cells[0].textContent.toUpperCase();
+    //         var tarif = rows[i].cells[1].textContent.toUpperCase();
+    //         if (nama.indexOf(filter) > -1 || tarif.indexOf(filter) > -1) {
+    //             rows[i].style.display = "";
+    //         } else {
+    //             rows[i].style.display = "none";
+    //         }
+    //     }
+    // }
 
     function getLovTrn() {
         lovtrn = $('#table_lov_trn').DataTable({
@@ -826,140 +940,6 @@
                     $('.row-' + currentRow + ' .prdcd').val(prdcd);
 
                     getDataPlu(prdcd);
-                });
-            }
-        });
-    }
-
-    function getLovEks() {
-        loveks = $('#table_lov_eks').DataTable({
-            "ajax": currurl + '/get-data-ekspedisi',
-            "columns": [{
-                    data: 'eks_nama',
-                    name: 'eks_nama'
-                },
-                {
-                    data: 'eks_alamat',
-                    name: 'eks_alamat'
-                },
-                {
-                    data: 'eks_tipe',
-                    name: 'eks_tipe'
-                },
-                {
-                    data: 'eks_tarif',
-                    name: 'eks_tarif'
-                },
-                {
-                    data: 'eks_tipe_tarif',
-                    name: 'eks_tipe_tarif'
-                },
-                {
-                    data: 'eks_durasi',
-                    name: 'eks_durasi'
-                },
-                {
-                    data: 'eks_area',
-                    name: 'eks_area'
-                },
-                {
-                    data: 'eks_notes',
-                    name: 'eks_notes'
-                },
-            ],
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-            "createdRow": function(row, data, dataIndex) {
-                $(row).addClass('row-lov-eks').css({
-                    'cursor': 'pointer'
-                });
-            },
-            "order": [],
-            "initComplete": function() {
-                $(document).on('click', '.row-lov-eks', function(e) {
-                    eks_nama = $(this).find('td:eq(0)').html() ? $(this).find('td:eq(0)').html() : '-';
-                    eks_alamat = $(this).find('td:eq(1)').html() ? $(this).find('td:eq(1)').html() : '-';
-                    eks_tipe = $(this).find('td:eq(2)').html() ? $(this).find('td:eq(2)').html() : '-';
-                    eks_tarif = $(this).find('td:eq(3)').html() ? $(this).find('td:eq(3)').html() : '-';
-                    eks_tipe_tarif = $(this).find('td:eq(4)').html() ? $(this).find('td:eq(4)').html() : '-';
-                    eks_durasi = $(this).find('td:eq(5)').html() ? $(this).find('td:eq(5)').html() : '-';
-                    eks_area = $(this).find('td:eq(6)').html() ? $(this).find('td:eq(6)').html() : '-';
-                    eks_notes = $(this).find('td:eq(7)').html() ? $(this).find('td:eq(7)').html() : '-';
-                    $('#m_lov_ekspedisi').modal('hide');
-                    $('.row-' + currentRow + ' .eks_nama').val(eks_nama);
-                    $('.row-' + currentRow + ' .eks_alamat').val(eks_alamat);
-                    $('.row-' + currentRow + ' .eks_tipe').val(eks_tipe);
-                    $('.row-' + currentRow + ' .eks_tarif').val(eks_tarif);
-                    $('.row-' + currentRow + ' .eks_tipe_tarif').val(eks_tipe_tarif);
-                    $('.row-' + currentRow + ' .eks_durasi').val(eks_durasi);
-                    $('.row-' + currentRow + ' .eks_area').val(eks_area);
-                    $('.row-' + currentRow + ' .eks_notes').val(eks_notes);
-
-                    console.log(eks_nama, eks_tipe, eks_tarif, eks_tipe_tarif, eks_durasi, eks_area, eks_notes)
-                    $('#ekspedisi').val(eks_nama);
-                    $('#tarif').val(convertToRupiah(eks_tarif));
-                    $('#tipetarif').val(eks_tipe_tarif);
-                    $('#durasi').val(eks_durasi + ' hari');
-                    $('#catatan').val(eks_notes);
-                    $('#alamat').val(eks_alamat);
-
-                    etd = $('#tgletd').val();
-                    etd = formatDate((etd.substr(0, 10)));
-                    etd = new Date(etd);
-                    eta = new Date();
-                    duration = parseInt(etd.getDate()) + parseInt(eks_durasi)
-                    eta.setDate(duration)
-                    var dd = eta.getDate();
-                    var mm = eta.getMonth() + 1;
-                    var yyyy = eta.getFullYear();
-                    if (dd < 10) {
-                        dd = '0' + dd;
-                    }
-                    if (mm < 10) {
-                        mm = '0' + mm;
-                    }
-                    eta = dd + '/' + mm + '/' + yyyy;
-                    console.log(eta);
-                    eta = $('#tgleta').val(eta);
-                    getCabang(eks_area);
-                });
-            }
-        });
-    }
-
-    function getCabang(area) {
-        $.ajax({
-            type: "GET",
-            url: currurl + '/get-data-cabang',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            data: {
-                area: area
-            },
-            beforeSend: function() {
-                $('#modal-loader').modal('show');
-            },
-            success: function(response) {
-                $('#modal-loader').modal('hide');
-                $('#kodecabangtitip').val(response.data[0].cab_kodecabang);
-                $('#namacabangtitip').val(response.data[0].cab_namacabang);
-                console.log(response)
-            },
-            error: function(error) {
-                $('#modal-loader').modal('hide');
-                // handle error
-                swal({
-                    title: 'Terjadi kesalahan!',
-                    text: error.responseJSON.message,
-                    icon: 'error'
-                }).then(() => {
-
                 });
             }
         });
@@ -1204,13 +1184,13 @@
         $('#table_daftar_titip tbody').append(
             `<tr class="row-${rowIndex}" onmouseover="pointerIn(${rowIndex})" onmouseout="pointerOut()">
                 <td><button class="btn btn-sm btn-danger" onclick="hapusItem(${rowIndex})"><i class="fas fa-trash"></i></button></td>
-                <td><input maxlength="7" type="text" class="form-control kode"></td>
+                <td><input type="text" class="form-control kode"></td>
                 <td><input type="text" class="form-control nama_barang"></td>
                 <td><input type="text" class="form-control frac"></td>
                 <td><input type="text" class="form-control qty"></td>
                 <td><input type="text" class="form-control m3"></td>
                 <td><input type="text" class="form-control ton"></td>
-                <td><input type="text" class="form-control keterangan_titipan"></td>
+                <td><input maxlength="27" type="text" class="form-control keterangan_titipan"></td>
             </tr>`);
 
         if (!$.fn.DataTable.isDataTable('#table_daftar_titip')) {
@@ -1671,19 +1651,18 @@
                     nosj: $('#nosj').val(),
                     tgletd: $('#tgletd').val(),
                     tgleta: $('#tgleta').val(),
-                    kodecabangtitip: $('#kodecabangtitip').val(),
-                    namacabangtitip: $('#namacabangtitip').val(),
+                    kodecabangtitip: $('#kodecabang').val(),
+                    namacabangtitip: $('#namacabang').val(),
                     ekspedisi: $('#ekspedisi').val(),
                     seal: $('#seal').val(),
                     durasi: $('#durasi').val(),
                     tarif: $('#tarif').val(),
-                    tipetarif: $('#tipetarif').val(),
                     alamat: $('#alamat').val(),
-                    catatan: $('#catatan').val(),
                     container: $('#container').val(),
                     kapal: $('#kapal').val(),
                     nomobil: $('#nomobil').val(),
                     koli: $('#koli').val(),
+                    kodeeks: $('#kodeeks').val(),
                     titip_kode,
                     titip_nama_barang,
                     titip_frac,

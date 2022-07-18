@@ -192,8 +192,23 @@ class VirtualStockCmoController extends Controller
                                 ORDER BY pluigr, prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang");
 
             $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
+            
+            // return view('BACKOFFICE.virtual_stock_cmo-pdf', compact(['perusahaan','tipevcmo','data','div1','div2','dept1','dept2','kat1','kat2','kodesupplier','kodemcg','namasupplier','periode1', 'periode2']));
+        
+            $pdf = PDF::loadview('BACKOFFICE.virtual-stock-cmo-pdf-2',
+            ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1, 
+            'div2' => $div2, 'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2, 
+            'kodesupplier' => $kodesupplier,'kodemcg' => $kodemcg,'namasupplier' => $namasupplier, 
+            'periode1' => $periode1, 'periode2' => $periode2]);
+            $pdf->setPaper('A4', 'potrait');
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
-            return view('BACKOFFICE.virtual_stock_cmo-pdf', compact(['perusahaan','tipevcmo','data','div1','div2','dept1','dept2','kat1','kat2','kodesupplier','kodemcg','namasupplier','periode1', 'periode2']));
+            $canvas = $dompdf->get_canvas();
+            $canvas->page_text(1450, 800, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
+
+            return $pdf->stream('virtual-stock-cmo-pdf-2.pdf');
+
         }
         else if($tipevcmo == 'r2')
         {
@@ -230,7 +245,20 @@ class VirtualStockCmoController extends Controller
    
             $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
 
-            return view('BACKOFFICE.virtual_stock_cmo-pdf', compact(['perusahaan','tipevcmo','data','div1','div2','dept1','dept2','kat1','kat2','kodesupplier','kodemcg','namasupplier','periode1', 'periode2']));
+            // return view('BACKOFFICE.virtual_stock_cmo-pdf', compact(['perusahaan','tipevcmo','data','div1','div2','dept1','dept2','kat1','kat2','kodesupplier','kodemcg','namasupplier','periode1', 'periode2']));
+            
+            $pdf = PDF::loadview('BACKOFFICE.virtual-stock-cmo-pdf-2',
+            ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1, 'div2' => $div2, 
+            'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2, 'kodesupplier' => $kodesupplier,
+            'kodemcg' => $kodemcg,'namasupplier' => $namasupplier, 'periode1' => $periode1, 'periode2' => $periode2]);
+            $pdf->setPaper('A4', 'potrait');
+            $pdf->output();
+            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+            $canvas = $dompdf->get_canvas();
+            $canvas->page_text(1450, 800, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
+
+            return $pdf->stream('virtual-stock-cmo-pdf-2.pdf');
         }
 
     }

@@ -100,7 +100,6 @@
                                     <tr>
                                         <th></th>
                                         <th>PRDCD</th>
-                                        <th></th>
                                         <th>SATUAN</th>
                                         <th>CTN</th>
                                         <th>PCs</th>

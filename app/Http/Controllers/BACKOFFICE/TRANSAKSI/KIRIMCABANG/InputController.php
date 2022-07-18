@@ -309,9 +309,7 @@ ORDER BY PRDCD,
         $nomobil = $request->nomobil;
         $durasi = $request->durasi;
         $tarif = $request->tarif;
-        $tipetarif = $request->tipetarif;
         $alamat = $request->alamat;
-        $catatan = $request->catatan;
         $container = $request->container;
         $kapal = $request->kapal;
         $titip_nama_barang = $request->titip_nama_barang;
@@ -322,7 +320,7 @@ ORDER BY PRDCD,
         $titip_ton = $request->titip_ton;
         $titip_keterangan_titipan = $request->titip_keterangan_titipan;
         $koli = $request->koli;
-
+        $kodeeks = $request->kodeeks;
         try {
             DB::connection(Session::get('connection'))->beginTransaction();
 
@@ -491,15 +489,14 @@ ORDER BY PRDCD,
                 $ins_titip['titip_nomobil'] = $nomobil;
                 $ins_titip['titip_durasi'] = intval($durasi);
                 $ins_titip['titip_tarif'] = intval($tarif);
-                $ins_titip['titip_tipetarif'] = $tipetarif;
                 $ins_titip['titip_alamat'] = $alamat;
-                $ins_titip['titip_catatan'] = $catatan;
                 $ins_titip['titip_container'] = $container;
                 $ins_titip['titip_kapal'] = $kapal;
                 $ins_titip['titip_create_dt'] = Carbon::now()->format('Ymd');
                 $ins_titip['titip_modify_dt'] = Carbon::now()->format('Ymd');
                 $ins_titip['titip_created_by'] = Session::get('usid');
                 $ins_titip['titip_koli'] = $koli;
+                $ins_titip['titip_kode_ekspedisi'] = $kodeeks;
 
                 $inserts_titip[] = $ins_titip;
             }
@@ -536,15 +533,17 @@ ORDER BY PRDCD,
     }
 
     // Ekspedisi
-    public function getDataEks()
+    public function getDataEks(Request $request)
     {
+        $area = $request->area;
         $eks = DB::connection(Session::get('connection'))->table('tbmaster_ekspedisi')
-            ->select('eks_nama', 'eks_tipe', 'eks_tarif', 'eks_tipe_tarif', 'eks_durasi', 'eks_area', 'eks_notes', 'eks_alamat')
-            ->distinct()
-            ->orderBy('eks_tarif')
+            ->select('xpd_jeniskontainer', 'xpd_kodeekspedisi', 'xpd_namaekspedisi', 'axp_biaya', 'axp_igrtujuan', 'axp_lamakirim')
+            ->leftJoin('tbmaster_ekspedisi_area', 'xpd_kodeekspedisi', '=', 'axp_kodeekspedisi')
+            ->where('axp_igrtujuan', $area)
+            ->orderBy('axp_biaya')
             ->get();
 
-        return DataTables::of($eks)->make(true);
+        return compact(['eks']);
     }
 
     public function getDataCabang(Request $request)

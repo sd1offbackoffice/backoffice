@@ -1,4 +1,4 @@
-@extends('pdf-template')
+@extends('lap-jual-perhari-pdf-template')
 
 @section('table_font_size','10 px')
 
@@ -50,7 +50,7 @@
         </tr>
         </thead>
         <tbody style="border-bottom: 2px solid black; text-align: right">
-        @for($i=0;$i<sizeof($data);$i++)
+        @for($i=2;$i<sizeof($data);$i++)
             <?php
             $date = ($data[$i]->sls_periode);
             $createDate = new DateTime($date);
@@ -63,17 +63,17 @@
                 <td>{{rupiah($data[$i]->sls_tax)}}</td>
 
                 @if($data[$i]->fdfbkp == 'Y')
-                    <td class="right padding-right">{{ number_format(0,2) }}</td>
-                    <td class="right padding-right">{{ number_format(0,2) }}</td>
+                    <td class="right">{{ number_format(0,2) }}</td>
+                    <td class="right">{{ number_format(0,2) }}</td>
                 @elseif($data[$i]->fdfbkp == 'P')
-                    <td class="right padding-right">{{ number_format(0,2) }}</td>
-                    <td class="right padding-right">{{ number_format(0,2) }}</td>
+                    <td class="right ">{{ number_format(0,2) }}</td>
+                    <td class="right ">{{ number_format(0,2) }}</td>
                 @elseif($data[$i]->fdfbkp == 'G' || $data[$i]->fdfbkp == 'W')
-                    <td class="right padding-right">{{ number_format(0,2) }}</td>
-                    <td class="right padding-right" >{{ number_format(0,2) }}</td>
+                    <td class="right">{{ number_format(0,2) }}</td>
+                    <td class="right " >{{ number_format(0,2) }}</td>
                 @else
-                    <td class="right padding-right">{{ number_format(0,2) }}</td>
-                    <td class="right padding-right">{{ number_format(0,2) }}</td>
+                    <td class="right">{{ number_format(0,2) }}</td>
+                    <td class="right">{{ number_format(0,2) }}</td>
                 @endif
 
 
@@ -87,6 +87,8 @@
             <td colspan="2" style="text-align: center; border-top: 1px black solid">GRAND TOTAL</td>
             <td style="border-top: 1px solid black;">{{rupiah($val['gross'])}}</td>
             <td style="border-top: 1px solid black;">{{rupiah($val['tax'])}}</td>
+            <td style="border-top: 1px solid black;" >{{rupiah($val['free])}}</td>
+            <td style="border-top: 1px solid black;">{{rupiah($val['dtp'])}}</td>
             <td style="border-top: 1px solid black;">{{rupiah($val['net'])}}</td>
             <td style="border-top: 1px solid black;">{{rupiah($val['hpp'])}}</td>
             <td style="border-top: 1px solid black;">{{rupiah($val['margin'])}}</td>

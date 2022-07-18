@@ -50,6 +50,12 @@ class BarcodePutihController extends Controller
         return DataTables::of($data)->make(true);
     }
 
+    // public function showData(Request $request){
+    //     $data = $request->plu_datas;
+    //     dd($data);
+    //     return DataTables::of($data)->make(true);
+    // }
+
     public function checkNoFaktur(Request $request) {
         $kodeigr = Session::get('kdigr');
         $noFaktur = $request->noFaktur;
@@ -77,91 +83,103 @@ class BarcodePutihController extends Controller
         //                         ->whereIn('CNB_PLUMCG', $plus)
         //                         ->get();
 
-        $existsInMasterBarcode = [];
-        $notExistsInMasterKlaim = [];
-        $existsInMasterKlaim = [];
-        foreach ($data as $data) {
-            $data_master_barcode = DB::connection(Session::get('connection'))->table('TBMASTER_PLUNONBARCODE')
-                                ->where('PNB_PLUMCG', '=', $data->mstd_prdcd)
-                                ->first();
-            $data_master_klaim_barcode = DB::connection(Session::get('connection'))->table('TBMASTER_CLAIMPLUNONBARCODE')
-                                            ->where('CNB_PLUMCG', '=', $data->mstd_prdcd)
-                                            ->first();
+        // $existsInMasterBarcode = [];
+        // $notExistsInMasterKlaim = [];
+        // $existsInMasterKlaim = [];
+        // foreach ($data as $data) {
+        //     $data_master_barcode = DB::connection(Session::get('connection'))->table('TBMASTER_PLUNONBARCODE')
+        //                         ->where('PNB_PLUMCG', '=', $data->mstd_prdcd)
+        //                         ->first();
+        //     $data_master_klaim_barcode = DB::connection(Session::get('connection'))->table('TBMASTER_CLAIMPLUNONBARCODE')
+        //                                     ->where('CNB_PLUMCG', '=', $data->mstd_prdcd)
+        //                                     ->first();
             
-            switch ($data->mstd_unit) {
-                case 'CTN':                    
-                    $qty = intval($data->mstd_qty / $data->mstd_frac);
-                    $totalPriceBarcode = ($qty * $this->priceCtnBarcode);
-                    break;
-                case 'BOX':                   
-                    $qty = intval($data->mstd_qty / $data->mstd_frac);
-                    $totalPriceBarcode = 0;
-                    break;
-                case 'PCS':                   
-                    $qty = $data->mstd_qty;
-                    $totalPriceBarcode = ($qty * $this->pricePcsBarcode);
-                    break;
-                default:
-                    $qty = $data->mstd_qty;
-                    $totalPriceBarcode = 0;
-                    break;
-            }
+        //     switch ($data->mstd_unit) {
+        //         case 'CTN':                    
+        //             $qty = intval($data->mstd_qty / $data->mstd_frac);
+        //             $totalPriceBarcode = ($qty * $this->priceCtnBarcode);
+        //             break;
+        //         case 'BOX':                   
+        //             $qty = intval($data->mstd_qty / $data->mstd_frac);
+        //             $totalPriceBarcode = 0;
+        //             break;
+        //         case 'PCS':                   
+        //             $qty = $data->mstd_qty;
+        //             $totalPriceBarcode = ($qty * $this->pricePcsBarcode);
+        //             break;
+        //         default:
+        //             $qty = $data->mstd_qty;
+        //             $totalPriceBarcode = 0;
+        //             break;
+        //     }
             
-            if (isset($data_master_barcode)) {
-                $obj = (object)'';
+        //     if (isset($data_master_barcode)) {
+        //         $obj = (object)'';
 
-                $obj->mstd_prdcd = $data->mstd_prdcd;
-                $obj->prd_deskripsipanjang = $data->prd_deskripsipanjang;
-                $obj->mstd_unit = $data->mstd_unit;
-                $obj->mstd_frac = $data->mstd_frac;
-                $obj->mstd_qty = $qty;
-                $obj->mstd_nofaktur = $data->mstd_nofaktur;
-                $obj->mstd_tgldoc = $data->mstd_tgldoc;
-                $obj->keterangan = 'TERDAPAT DI MASTER BARCODE';                
+        //         $obj->mstd_prdcd = $data->mstd_prdcd;
+        //         $obj->prd_deskripsipanjang = $data->prd_deskripsipanjang;
+        //         $obj->mstd_unit = $data->mstd_unit;
+        //         $obj->mstd_frac = $data->mstd_frac;
+        //         $obj->mstd_qty = $qty;
+        //         $obj->mstd_nofaktur = $data->mstd_nofaktur;
+        //         $obj->mstd_tgldoc = $data->mstd_tgldoc;
+        //         $obj->keterangan = 'TERDAPAT DI MASTER BARCODE';                
 
-                array_push($existsInMasterBarcode, $obj);
-            } else {
-                if (isset($data_master_klaim_barcode)) {
-                    $obj = (object)'';
+        //         array_push($existsInMasterBarcode, $obj);
+        //     } else {
+        //         if (isset($data_master_klaim_barcode)) {
+        //             $obj = (object)'';
 
-                    $obj->mstd_prdcd = $data->mstd_prdcd;
-                    $obj->prd_deskripsipanjang = $data->prd_deskripsipanjang;
-                    $obj->mstd_unit = $data->mstd_unit;
-                    $obj->mstd_frac = $data->mstd_frac;
-                    $obj->mstd_qty = $qty;
-                    $obj->mstd_nofaktur = $data->mstd_nofaktur;
-                    $obj->mstd_tgldoc = $data->mstd_tgldoc;
-                    $obj->keterangan = 'TERDAPAT DI MASTER KLAIM BARCODE';
+        //             $obj->mstd_prdcd = $data->mstd_prdcd;
+        //             $obj->prd_deskripsipanjang = $data->prd_deskripsipanjang;
+        //             $obj->mstd_unit = $data->mstd_unit;
+        //             $obj->mstd_frac = $data->mstd_frac;
+        //             $obj->mstd_qty = $qty;
+        //             $obj->mstd_nofaktur = $data->mstd_nofaktur;
+        //             $obj->mstd_tgldoc = $data->mstd_tgldoc;
+        //             $obj->keterangan = 'TERDAPAT DI MASTER KLAIM BARCODE';
 
-                    array_push($existsInMasterKlaim, $obj);
-                } else {
-                    $obj = (object)'';                
+        //             array_push($existsInMasterKlaim, $obj);
+        //         } else {
+        //             $obj = (object)'';                
 
-                    $obj->mstd_prdcd = $data->mstd_prdcd;
-                    $obj->prd_deskripsipanjang = $data->prd_deskripsipanjang;
-                    $obj->mstd_unit = $data->mstd_unit;
-                    $obj->mstd_frac = $data->mstd_frac;
-                    $obj->mstd_qty = $qty;
-                    $obj->mstd_nofaktur = $data->mstd_nofaktur;
-                    $obj->mstd_tgldoc = $data->mstd_tgldoc;
-                    $obj->keterangan = 'TIDAK ADA DI MASTER KLAIM BARCODE';
+        //             $obj->mstd_prdcd = $data->mstd_prdcd;
+        //             $obj->prd_deskripsipanjang = $data->prd_deskripsipanjang;
+        //             $obj->mstd_unit = $data->mstd_unit;
+        //             $obj->mstd_frac = $data->mstd_frac;
+        //             $obj->mstd_qty = $qty;
+        //             $obj->mstd_nofaktur = $data->mstd_nofaktur;
+        //             $obj->mstd_tgldoc = $data->mstd_tgldoc;
+        //             $obj->keterangan = 'TIDAK ADA DI MASTER KLAIM BARCODE';
 
-                    array_push($notExistsInMasterKlaim, $obj);
-                }
-            }
-        }
+        //             array_push($notExistsInMasterKlaim, $obj);
+        //         }
+        //     }
+        // }
 
 
+        // if (isset($data)) {
+        //     return response()->json([
+        //         'status' => 'SUCCESS',
+        //         'message' => 'No Faktur found',
+        //         'data' => [
+        //             'plu_datas' => $data,
+        //             'existsInMasterBarcode' => $existsInMasterBarcode,
+        //             'existsInMasterKlaim' => $existsInMasterKlaim,
+        //             'notExistsInMasterKlaim' => $notExistsInMasterKlaim
+        //         ]
+        //     ]);
+        // } else {
+        //     return response()->json([
+        //         'status' => 'FAILED',
+        //         'message' => 'No Faktur not found'
+        //     ]);
+        // }
         if (isset($data)) {
             return response()->json([
                 'status' => 'SUCCESS',
                 'message' => 'No Faktur found',
-                'data' => [
-                    'plu_datas' => $data,
-                    'existsInMasterBarcode' => $existsInMasterBarcode,
-                    'existsInMasterKlaim' => $existsInMasterKlaim,
-                    'notExistsInMasterKlaim' => $notExistsInMasterKlaim
-                ]
+                'data' => $data
             ]);
         } else {
             return response()->json([
@@ -236,7 +254,7 @@ class BarcodePutihController extends Controller
             default:
                 $mstd_ctn = 0;
                 $mstd_box = 0;
-                $mstd_pcs = $data['mstd_qty'];
+                $mstd_pcs = ($data['mstd_qty'] / $data['mstd_frac']);
                 $totalPriceBarcode = 0;
                 break;
         }

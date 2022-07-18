@@ -89,7 +89,7 @@ class BreadController extends Controller
                                                                         ORDER BY krt_tglbpb DESC) aa
                                                                         WHERE ROWNUM = 1");
             $draft = $data[0]->krt_nodraft;
-            $tglbpb = $data[0]->krt_tglbpb;
+            $tglbpb = date('Y-m-d', strtotime($data[0]->krt_tglbpb));
             //ambil saldo sebelumnya
             $temp = DB::connection('simkmy')->select("SELECT NVL (COUNT (1), 0)
                                                                         AS temp
@@ -116,7 +116,6 @@ class BreadController extends Controller
                                                                         FROM (SELECT *
                                                                         FROM TBTR_KRAT_IGR
                                                                         WHERE krt_tglnrb IS NULL AND krt_nodraft <> '$nodraft') aa");
-
             $qty_lalu = 0;
             if ($temp[0]->temp != 0) {
                 $data = DB::connection('simkmy')->select("SELECT krt_qty_bpb AS qty_lalu
@@ -152,8 +151,8 @@ class BreadController extends Controller
             }
             $txt_qty_draft = $txt_qty_draft + $qty_lalu + $saldo_lalu;
             $txt_qty_saldo  = $txt_qty_draft;
-            if ($txt_tgldraft <  $tglbpb) {
-                return response()->json(['kode' => '0', 'message' => 'Data Draft terakhir dengan No ' . $draft, 'pointer' => $pointer, 'draft' => $draft, 'tgl_draft' => $txt_tgldraft, 'qty_draft' => $txt_qty_draft, 'nopb' => $txt_nobpb, 'qty_bpb' => $txt_qty_bpb, 'prdcd' => $txt_prdcd, 'qty_saldo' => $txt_qty_saldo, 'status' => $txt_status, 'qty_nrb' => $txt_qty_nrb]);
+            if (date('d/m/Y', strtotime($txt_tgldraft)) <  date('d/m/Y', strtotime($tglbpb))) {
+                return response()->json(['kode' => '0', 'message' => 'Data Draft terakhir dengan No ' . $draft, 'pointer' => '', 'draft' => $draft, 'tgl_draft' => '', 'qty_draft' => '', 'nopb' => '', 'qty_bpb' => '', 'prdcd' => '', 'qty_saldo' => '', 'status' => '', 'qty_nrb' => '']);
             } else {
                 return response()->json(['kode' => '2', 'message' => '', 'pointer' => $pointer, 'draft' => $draft, 'tgl_draft' => $txt_tgldraft, 'qty_draft' => $txt_qty_draft, 'nopb' => $txt_nobpb, 'qty_bpb' => $txt_qty_bpb, 'prdcd' => $txt_prdcd, 'qty_saldo' => $txt_qty_saldo, 'status' => $txt_status, 'qty_nrb' => $txt_qty_nrb]);
             }
@@ -167,33 +166,19 @@ class BreadController extends Controller
         if (!(isset($nodraft))) {
             return response()->json(['kode' => '1', 'message' => 'Nomor Draft harus diisi !!', 'p_sukses' => 'N']);
         } else {
-            $data = DB::connection('simkmy')->select("SELECT DISTINCT 
-                                                                krt_tglbpb,
-                                                                krt_nobpb,
-                                                                krt_prdcd,
-                                                                hgb_kodesupplier,
-                                                                prd_deskripsipanjang,
-                                                                prd_satuanbeli,
-                                                                hgb_hrgbeli,
-                                                                hgb_statusbarang
-                                                                sup_namasupplier,
-                                                                sup_alamatsupplier1,
-                                                                sup_alamatsupplier2,
-                                                                sup_kotasupplier3,
-                                                                sup_telpsupplier,
-                                                                sup_contactperson,
-                                                                sup_npwp,
-                                                                mstd_docno2,
-                                                                mstd_frac,
-                                                                mstd_gross,
-                                                                mstd_qty,
-                                                                mstd_keterangan
-                                                    FROM TBTR_KRAT_IGR, TBMASTER_HARGABELI, TBMASTER_PRODMAST, TBMASTER_SUPPLIER, TBTR_MSTRAN_D
-                                                    WHERE krt_nodraft = '$nodraft'
-                                                    AND krt_prdcd = prd_prdcd
-                                                    AND hgb_prdcd = prd_prdcd
-                                                    AND hgb_kodesupplier = sup_kodesupplier
-                                                    AND krt_prdcd = mstd_prdcd");
+            $data = DB::connection('simkmy')->select("SELECT DISTINCT
+                    krt_nodraft, krt_tglbpb, krt_nobpb, krt_prdcd, hgb_kodesupplier,
+                    prd_deskripsipanjang, prd_satuanbeli, hgb_hrgbeli, sup_namasupplier,
+                    sup_alamatsupplier1, sup_alamatsupplier2, sup_kotasupplier3,
+                    sup_telpsupplier, sup_contactperson, sup_npwp, mstd_docno2,
+                    mstd_frac, mstd_gross, mstd_qty, mstd_keterangan
+                    FROM TBTR_KRAT_IGR, TBMASTER_HARGABELI, TBMASTER_PRODMAST, TBMASTER_SUPPLIER, TBTR_MSTRAN_D
+                    WHERE krt_nodraft = '$nodraft'
+                    AND krt_prdcd = prd_prdcd
+                    AND hgb_prdcd = krt_prdcd
+                    AND hgb_kodesupplier = sup_kodesupplier
+                    AND krt_prdcd = mstd_prdcd
+                    AND mstd_nopo = krt_nosj");
 
             $alamat = DB::connection(Session::get('connection'))->select("SELECT prs_alamat1, prs_alamat2, prs_alamat3
                                                     FROM TBMASTER_PERUSAHAAN

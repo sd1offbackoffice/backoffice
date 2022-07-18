@@ -49,8 +49,8 @@
                                             <th>DESKRIPSI</th>
                                             <th>UNIT</th>
                                             <th>FRAC</th>
-                                            {{-- <th>CTN</th>
-                                            <th>BOX</th> --}}
+                                            <th>CTN</th>
+                                            {{-- <th>BOX</th> --}}
                                             <th>QTY</th>                                            
                                             <th>KETERANGAN</th>
                                         </tr>
@@ -171,11 +171,11 @@
             // console.log($('#npb1').val());
         });
 
-        $('#noFaktur').keypress(async function (e) { 
+        $('#noFaktur').keypress(function (e) { 
             if (e.keyCode == 13) {
                 // showDataToTable()
-                await checkNoFaktur()
-                showDataToTable()
+                checkNoFaktur()
+                // showDataToTable()
                 // showDataToTable()
                 // console.log('test');
             }
@@ -193,7 +193,7 @@
             $.ajax({
                 type: "GET",
                 url: "{{ url()->current() }}/check-no-faktur",
-                // async: false,
+                async: false,
                 data: {
                     noFaktur: noFaktur
                 },
@@ -204,19 +204,19 @@
                     })
                     // $('#modal-loader').modal('show')
                 },
-                success: async function (res) {
+                success: function (res) {
                     $('#modal-loader').modal('hide');
 
                     if (res.status = 'SUCCESS') {
-                        // res.data.forEach(data => {
-                        //     // plu_datas.push(data)
-                        //     checkPluBarcode(data)
-                        // })
-                        plu_datas = res.data.plu_datas
-                        existsInMasterBarcode = res.data.existsInMasterBarcode
-                        existsInMasterKlaim = res.data.existsInMasterKlaim
-                        notExistsInMasterKlaim = res.data.notExistsInMasterKlaim
-                        // showDataToTable()
+                        res.data.forEach(data => {
+                            // plu_datas.push(data)
+                            checkPluBarcode(data)
+                        })
+                        // plu_datas = res.data.plu_datas
+                        // existsInMasterBarcode = res.data.existsInMasterBarcode
+                        // existsInMasterKlaim = res.data.existsInMasterKlaim
+                        // notExistsInMasterKlaim = res.data.notExistsInMasterKlaim
+                        showDataToTable()
                     }
                     // showDataToTable(); 
                     // plu_datas = res.data.plu_datas;
@@ -251,47 +251,76 @@
                     {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
                     {data: 'mstd_unit', name: 'mstd_unit'},
                     {data: 'mstd_frac', name: 'mstd_frac'},
-                    // {data: 'mstd_ctn', name: 'mstd_ctn'},
+                    {data: 'mstd_ctn', name: 'mstd_ctn'},
                     // {data: 'mstd_box', name: 'mstd_box'},
                     {data: 'mstd_qty', name: 'mstd_qty'},
                     {data: 'keterangan', name: 'keterangan'},
                 ],
-            });            
+            });
+            
+            // $('#pluTable').DataTable({
+            //     "ajax": {
+            //         'url': '{{ url()->current() }}/show-data'                    
+            //     },
+            //     "data": plu_datas,
+            //     "columns": [
+            //         {data: 'mstd_prdcd', name: 'mstd_prdcd'},
+            //         {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
+            //         {data: 'mstd_unit', name: 'mstd_unit'},
+            //         {data: 'mstd_frac', name: 'mstd_frac'},
+            //         // {data: 'mstd_ctn', name: 'mstd_ctn'},
+            //         // {data: 'mstd_box', name: 'mstd_box'},
+            //         {data: 'mstd_qty', name: 'mstd_qty'},
+            //         {data: 'keterangan', name: 'keterangan'},
+            //     ],
+            //     "paging": true,
+            //     "lengthChange": true,
+            //     "searching": true,
+            //     "ordering": true,
+            //     "info": true,
+            //     "autoWidth": false,
+            //     "responsive": true,
+            //     "createdRow": function (row, data, dataIndex) {
+            //         $(row).addClass('modalRow');
+            //     },
+            //     columnDefs: [],
+            //     "order": []
+            // })
         }
 
-        // function checkPluBarcode(data) {                             
-        //     ajaxSetup()
-        //     $.ajax({
-        //         type: "GET",
-        //         url: "{{ url()->current() }}/check-plu-barcode",
-        //         async: false,
-        //         data: {
-        //             data: data
-        //         },
-        //         beforeSend: function () {
-        //             $('#modal-loader').modal({
-        //                 backdrop: 'static',
-        //                 keyboard: false
-        //             })
-        //         },
-        //         success: function (res) {
-        //             $('#modal-loader').modal('hide');
-        //             // console.log(res.data)               
-        //             plu_datas.push(res.data)
-        //             switch (res.status) {
-        //                 case 'INFO MASTER':
-        //                     existsInMasterBarcode.push(res.data)                            
-        //                     break;
-        //                 case 'INFO KLAIM':
-        //                     notExistsInMasterKlaim.push(res.data)                            
-        //                     break;
-        //                 case 'SUCCESS':
-        //                     existsInMasterKlaim.push(res.data)                      
-        //                     break;
-        //             }
-        //         }
-        //     });
-        // }
+        function checkPluBarcode(data) {                             
+            ajaxSetup()
+            $.ajax({
+                type: "GET",
+                url: "{{ url()->current() }}/check-plu-barcode",
+                async: false,
+                data: {
+                    data: data
+                },
+                beforeSend: function () {
+                    $('#modal-loader').modal({
+                        backdrop: 'static',
+                        keyboard: false
+                    })
+                },
+                success: function (res) {
+                    $('#modal-loader').modal('hide');
+                    // console.log(res.data)               
+                    plu_datas.push(res.data)
+                    switch (res.status) {
+                        case 'INFO MASTER':
+                            existsInMasterBarcode.push(res.data)                            
+                            break;
+                        case 'INFO KLAIM':
+                            notExistsInMasterKlaim.push(res.data)                            
+                            break;
+                        case 'SUCCESS':
+                            existsInMasterKlaim.push(res.data)                      
+                            break;
+                    }
+                }
+            });
+        }
 
         function sendEmail() {
             ajaxSetup()

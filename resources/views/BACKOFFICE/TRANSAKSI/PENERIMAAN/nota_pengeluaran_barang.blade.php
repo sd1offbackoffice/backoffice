@@ -144,7 +144,7 @@ use Illuminate\Support\Facades\Session;
                 <td style="width:20px;">{{ fmod($data[$i]->mstd_qty , $data[$i]->mstd_frac) }}</td>
                 <td style="width:20px;">{{$data[$i]->hgb_hrgbeli}}</td>
                 <td style="width:20px;">{{$data[$i]->mstd_gross}}</td>
-                <td style="width:20px;">{{$data[$i]->mstd_docno2 ? $data[$i]->mstd_docno2 : '-'}}</td>
+                <td style="width:20px;">{{$data[$i]->krt_nobpb ? $data[$i]->krt_nobpb : '-'}}</td>
                 <td style="width:20px;">{{$data[$i]->mstd_keterangan ? $data[$i]->mstd_keterangan : '-'}}</td>
                 </tr>
                 {{$total += $data[$i]->hgb_hrgbeli}}

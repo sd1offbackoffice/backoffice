@@ -77,12 +77,23 @@ class utilityPBIGRController extends Controller
             oci_bind_by_name($exec, ':errtxt', $v_errtxt,1000);
             oci_execute($exec);
 
-            if (!$v_sukses){
-                return response()->json(['kode' => '0', 'return' => $v_errtxt]);
-            } else {
+            $msg = '';
+            if (!$v_errtxt){
                 $msg = 'Tarikan Data Bulan Seasonal Sudah di Proses !!';
-                return response()->json(['kode' => '1', 'return' => $msg]);
+            } else {
+                $msg = $v_errtxt;
             }
+
+            return response()->json(['kode' => '1', 'return' => $msg]);
+
+            // Direvisi karena ketika tidak ada datanya, tidak muncul notif tarikan sudah selesai di proses
+            // Revisi by : JR (12/07/2022) atas komplain : Tata di WA
+//            if (!$v_sukses){
+//                return response()->json(['kode' => '0', 'return' => $v_errtxt]);
+//            } else {
+//                $msg = 'Tarikan Data Bulan Seasonal Sudah di Proses !!';
+//                return response()->json(['kode' => '1', 'return' => $msg]);
+//            }
         } catch (\Exception $catch){
             return response()->json(['kode' => '0', 'return' => "Call Procedure Failed"]);
         }

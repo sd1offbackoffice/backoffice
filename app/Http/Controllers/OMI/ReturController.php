@@ -2441,7 +2441,11 @@ ORDER BY rom_nodokumen, rom_prdcd");
             DB::connection(Session::get('connection'))->beginTransaction();
 //            $sesiproc = DB::connection(Session::get('connection'))->selectOne("select TO_CHAR (USERENV ('SESSIONID')) userenv from dual")->userenv;
 
-            $sesiproc = '9999999';
+
+            $sesiproc = Session::get('sessionID');
+//            dd($sesiproc);
+
+//            $sesiproc = '9999999';
             $lok = false;
 
 //            dd($sesiproc);
@@ -2628,6 +2632,8 @@ ORDER BY rom_nodokumen, rom_prdcd");
                 ->first();
 
             if($temp){
+                dd($temp);
+
                 DB::connection(Session::get('connection'))->table('temp_retur_omi')
                     ->where('sessid','=',$sesiproc)
                     ->where('namafile','=',$namaFileR)

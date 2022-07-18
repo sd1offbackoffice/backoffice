@@ -14,33 +14,33 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="nodraft" style="width: 100px;">No. Draft</span>
                                 </div>
-                                <input type="text" class="form-control" id="nodraftval" aria-describedby="nodraft">
+                                <input type="text" class="form-control" id="nodraftval" aria-describedby="nodraft" autocomplete="off">
                                 <button class="btn btn btn-light" type="button" id="showbtn" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="show()">&#x1F50E;</button>
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="tgldraft" style="width: 100px;">Tgl. Draft</span>
                                 </div>
-                                <input type="text" class="form-control" id="tgldraftval" aria-describedby="tgldraft">
+                                <input type="text" class="form-control" id="tgldraftval" aria-describedby="tgldraft" autocomplete="off">
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="qtydraft" style="width: 100px;">Qty. Draft</span>
                                 </div>
-                                <input type="text" class="form-control" id="qty_draft" aria-describedby="qtydraft">
+                                <input type="text" class="form-control" id="qty_draft" aria-describedby="qtydraft" autocomplete="off">
                             </div>
                             <span style="display: block; height: 25px;"></span>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="plu" style="width: 100px;">PLU</span>
                                 </div>
-                                <input type="text" id="plu_val" class="form-control" aria-describedby="plu">
+                                <input type="text" id="plu_val" class="form-control" aria-describedby="plu" autocomplete="off">
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="qtynrb" style="width: 100px;">Qty. NRB</span>
                                 </div>
-                                <input type="text" class="form-control" id="qty_nrb" aria-describedby="qtynrb">
+                                <input type="text" class="form-control" id="qty_nrb" aria-describedby="qtynrb" autocomplete="off">
                             </div>
                         </div>
                         <div class="col-sm">
@@ -48,20 +48,20 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="nobpb" style="width: 100px;">No. BPB</span>
                                 </div>
-                                <input type="text" id="nobpb_val" class="form-control" aria-describedby="nobpb">
+                                <input type="text" id="nobpb_val" class="form-control" aria-describedby="nobpb" autocomplete="off">
                             </div>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="qtybpb" style="width: 100px;">Qty. BPB</span>
                                 </div>
-                                <input type="text" id="qty_bpb" class="form-control" aria-describedby="qtybpb">
+                                <input type="text" id="qty_bpb" class="form-control" aria-describedby="qtybpb" autocomplete="off">
                             </div>
                             <span style="display: block; height: 80px;"></span>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="qtysaldo" style="width: 100px;">Qty. Saldo</span>
                                 </div>
-                                <input type="text" id="qty_saldo" class="form-control" aria-describedby="qtysaldo">
+                                <input type="text" id="qty_saldo" class="form-control" aria-describedby="qtysaldo" autocomplete="off">
                             </div>
                         </div>
                         <div class="col-sm">
@@ -166,7 +166,7 @@
 
         nodraft.val(noDraft)
         qty_nrb.val(qtyNRB);
-        tgldraft.val(tglDraft);
+        tgldraft.val(formatDate(tglDraft));
         nobpb.val(noBPB);
         qty_bpb.val(qtyBPB);
 
@@ -177,17 +177,17 @@
     nodraft.keypress(function(e) {
         if (e.which === 13) {
             console.log(nodraft.text());
-            if (nodraft.val() == null || nodraft.val() == '' ||
-                tgldraft.val() == null || tgldraft.val() == '') {
-                swal({
-                    icon: 'info',
-                    title: 'No Draft/ Tanggal Draft Kosong',
-                    text: 'Harap Isi Data yang Kurang!',
-                    timer: 2000
-                });
-            } else {
-                check(nodraft.val(), tgldraft.val());
-            }
+            // if (nodraft.val() == null || nodraft.val() == '' ||
+            //     tgldraft.val() == null || tgldraft.val() == '') {
+            //     swal({
+            //         icon: 'info',
+            //         title: 'No Draft/ Tanggal Draft Kosong',
+            //         text: 'Harap Isi Data yang Kurang!',
+            //         timer: 2000
+            //     });
+            // } else {
+            check(nodraft.val(), tgldraft.val());
+            // }
         }
     });
 
@@ -266,8 +266,14 @@
                 if (result.pointer == '1') {
                     nodraft.val('')
                 } else if (result.pointer == '2') {
-                    qty_nrb.disabled = true;
-                    btnNRB.prop('disabled', true);
+                    btnNRB.prop("disabled", true);
+                    plu.prop("disabled", true);
+                    nobpb.prop("disabled", true);
+                    qty_nrb.prop("disabled", true);
+                    qty_bpb.prop("disabled", true);
+                    qty_saldo.prop("disabled", true);
+                    tgldraft.prop("disabled", true);
+                    qty_draft.prop("disabled", true);
                 }
                 if (result.kode == 1) {
                     swal('', result.message, 'warning')
@@ -275,15 +281,32 @@
                 if (result.kode == 0) {
                     swal('', result.message, 'info')
                     nodraft.val(result.draft)
-                    nodraft.focus()
+                    nodraft.focus();
+                    btnNRB.prop("disabled", true);
+                    plu.prop("disabled", true);
+                    nobpb.prop("disabled", true);
+                    qty_bpb.prop("disabled", true);
+                    qty_saldo.prop("disabled", true);
+                    tgldraft.prop("disabled", true);
+                    qty_draft.prop("disabled", true);
                 }
                 if (result.kode == 2) {
                     qty_nrb.val(result.qty_saldo)
                     qty_nrb.focus()
+                    plu.prop("disabled", true);
+                    nobpb.prop("disabled", true);
+                    qty_bpb.prop("disabled", true);
+                    qty_saldo.prop("disabled", true);
+                    tgldraft.prop("disabled", true);
+                    qty_draft.prop("disabled", true);
                 }
                 plu.val(result.prdcd);
+                nobpb.val(result.nopb);
                 qty_nrb.val(result.qty_nrb);
+                qty_bpb.val(result.qty_bpb);
                 qty_saldo.val(result.qty_saldo);
+                tgldraft.val(formatDate(result.tgl_draft));
+                qty_draft.val(result.qty_draft);
             },
             error: function(err) {
                 console.log(err.responseJSON.message.substr(0, 100));

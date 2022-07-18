@@ -760,7 +760,7 @@
                 let kodesup = $('.supplierid')[idsup].value;
                 let kodesar = $('.kodesarana')[idsup].value;
                 let volsar = $('.volsarana')[idsup].value;
-                var volsarint = parseInt(thousands_combiners(volsar));
+                var volsarint = parseInt(thousands_combiners(thousands_combiners(volsar)));
                 console.log('volsarint');
                 console.log(volsarint);
                 let plu     = $('.plu')[index].value;
@@ -795,6 +795,10 @@
                             $('.kubikase')[index].value = thousands_separators(result.kubikase);
                             var totalkubik = parseInt(result.totalkubik);
                             $('.totalkubik')[idsup].value = thousands_separators(totalkubik);
+                            console.log('totalkubik')
+                            console.log(totalkubik)
+                            console.log('volsarint')
+                            console.log(volsarint)
                             if(totalkubik > volsarint){
                                 $('.flag')[idsup].value = "X";
                             }
@@ -1008,13 +1012,15 @@
                                                         },
                                                         success: function (result){
                                                             $('#modal-loader').modal('hide')
+                                                            clearField();
+                                                            $('#btn-save').attr("disabled", true)
                                                             swal({
                                                                 title: result.status,
                                                                 text: result.message,
                                                                 icon: result.status,
-                                                            });
-                                                            clearField();
-                                                            $('#btn-save').attr("disabled", true)
+                                                            }).then(function(confirm){
+                                                                window.location.reload();
+                                                            })
 
                                                         }, error: function () {
                                                             alert('error');
@@ -1176,6 +1182,10 @@
         // }
 
     function thousands_separators(num){
+        if(num == null){
+            num = '';
+            return num;
+        }
         var num_parts = num.toString().split(".");
         num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         return num_parts.join(".");
@@ -1210,23 +1220,25 @@
                         // },
                         success: function (response){
                             //$('#modal-loader').modal('hide');
+                            if (response.message == 'Draft sudah menjadi PB'){
+                                swal({
+                                    title: 'Tidak Bisa Delete',
+                                    text: response.message,
+                                    icon: response.status,
+                                })
+                            }
+                            else{
+                                clearField()
 
-                            // go_block('header1');
-                            // clear_block(no_validate);
-                            // go_block('header2');
-                            // clear_block(no_validate);
-                            // go_block('detailpb');
-                            // clear_block(no_validate);
-                            clearField()
-
-                            swal({
-                                title: response.status,
-                                text: response.message,
-                                icon: response.status,
-                            })
-
-                            window.location.reload();
-
+                                swal({
+                                    title: response.status,
+                                    text: response.message,
+                                    icon: response.status,
+                                }).then(function(confirm){
+                                    window.location.reload();
+                                })
+                            }
+                            
                         }, error: function () {
                             alert('error');
                             //$('#modal-loader').modal('hide')

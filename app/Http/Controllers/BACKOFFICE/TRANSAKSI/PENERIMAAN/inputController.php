@@ -142,16 +142,15 @@ class inputController extends Controller
     {
 
         $connect = loginController::getConnectionProcedureKMY();
-
-        $query = oci_parse($connect, "BEGIN sp_proses_trf_rte_npd_php(:p_sukses, :p_result); END;");
+        $query = oci_parse($connect, "BEGIN sp_proses_trf_rte_npd_php(:p_sukses, :hasil); END;");
         oci_bind_by_name($query, ':p_sukses', $p_sukses, 32);
-        oci_bind_by_name($query, ':p_result', $hasil, 32);
+        oci_bind_by_name($query, ':hasil', $hasil, 100);
         oci_execute($query);
 
-        if ($p_sukses == 'N') {
-            return response()->json(['kode' => 1, 'msg' => $hasil, 'p_sukses' => $p_sukses]);
+        if ($p_sukses == 'N') { //FALSE
+            return response()->json(['kode' => '1', 'message' => $hasil, 'p_sukses' => $p_sukses]);
         } else {
-            return response()->json(['kode' => 0, 'msg' => 'Data NPD sudah di tarik !!', 'p_sukses' => $p_sukses]);
+            return response()->json(['kode' => '0', 'message' => 'Data NPD sudah di download', 'hasil' => $hasil]);
         }
     }
 
@@ -597,7 +596,7 @@ class inputController extends Controller
     {
         $kodeigr = Session::get('kdigr');
 
-        $data = DB::connection(Session::get('connection'))->select("select sup_namasupplier || '/' || sup_Singkatansupplier sup_namasupplier, sup_kodesupplier, sup_pkp, sup_top
+        $data = DB::connection(Session::get('connection'))->select("select distinct sup_namasupplier || '/' || sup_Singkatansupplier sup_namasupplier, sup_kodesupplier, sup_pkp, sup_top
                                     from tbmaster_supplier
                                     where sup_kodeigr='$kodeigr'");
 
@@ -693,10 +692,16 @@ class inputController extends Controller
                 ->limit(100)
                 ->get()->toArray();
         } else if ($typeLov == 'RTE') {
-            $data = DB::connection('simkmy')->select("SELECT docno, pictgl, kirim, prdcd, nama, prd_unit||'/'||prd_frac kemasan
-                                    FROM tbhistory_npd_rte, tbmaster_prodmast
-                                    WHERE prd_prdcd = prdcd
-                                    AND docno = '$noPo'");
+            $data = DB::connection('simkmy')->select("SELECT prd_deskripsipanjang, prd_prdcd, prdcd, prd_unit||'/'||prd_frac kemasan,
+            floor(sj_qty/prd_frac) qty,mod(sj_qty,prd_frac) qtyk, docno
+                    FROM TBHISTORY_NPD_RTE, tbmaster_prodmast
+                    WHERE docno = '$noPo'
+                    AND kirim = '$supplier'
+                    AND substr(toko, 3, 2)='18'
+                    AND prd_plumcg = prdcd
+                    AND prd_kodeigr=substr(toko, 3, 2)
+                    AND prd_prdcd LIKE '%0'
+                    ORDER BY prd_prdcd");
         }
         return response()->json($data);
     }
@@ -713,9 +718,10 @@ class inputController extends Controller
         $kodeigr = Session::get('kdigr');
 
         if ($rte == 'Y') {
-            $data = DB::connection('simkmy')->select("SELECT *
-                FROM tbhistory_npd_rte
+            $data = DB::connection('simkmy')->select("SELECT sj_qty as i_qtyk, ppnrp, nama_file, price, gross as i_gross, prd_prdcd as i_prdcd, nama, div, rtype
+                FROM tbhistory_npd_rte, tbmaster_prodmast
                 WHERE prdcd = '$prdcd'
+                AND prd_plumcg = '$prdcd'
                 AND docno = '$noPo'");
             return response()->json(['kode' => 0, 'msg' => 'Data RTE', 'data' => $data[0]]);
         } else if ($rte == 'N') {
@@ -1989,9 +1995,9 @@ class inputController extends Controller
                         $temp->trbo_kodetag     = '';
                         $temp->trbo_bkp         = '';
                         $temp->trbo_hrgsatuan   = $data->price;
-                        $temp->qty              = $data->qty;
-                        $temp->qtyk             = $data->sj_qty;
-                        $temp->trbo_qty         = $data->qty;
+                        $temp->qty              = $data->i_qty;
+                        $temp->qtyk             = $data->i_qtyk;
+                        $temp->trbo_qty         = $data->i_qtyk;
                         $temp->trbo_qtybonus1   = 0;
                         $temp->trbo_qtybonus2   = 0;
                         $temp->trbo_persendisc1   = 0;
@@ -2013,7 +2019,7 @@ class inputController extends Controller
                         $temp->kemasan          = 'PCS';
                         $temp->total_disc       = 0;
                         $temp->total_rph        = $data->price;
-                        $temp->trbo_gross       = $data->gross;
+                        $temp->trbo_gross       = $data->i_gross;
                         $temp->trbo_ppnrph      = $data->ppnrp;
                         $temp->trbo_ppnbmrph    = 0;
                         $temp->trbo_ppnbtlrph   = 0;
@@ -2042,7 +2048,7 @@ class inputController extends Controller
 
                         array_push($this->tempDataSave, $temp);
 
-                        $qtypb = $data->qty + $data->sj_qty;
+                        $qtypb = $data->i_qty + $data->i_qtyk;
                         DB::connection(Session::get('connection'))->table('tbtr_po_d')
                             ->where('tpod_kodeigr', $kodeigr)->where('tpod_nopo', $noPo)->where('tpod_prdcd', $prdcd)
                             ->update(['tpod_qtypb' => $qtypb, 'tpod_recordid' => 2]);
@@ -2467,7 +2473,6 @@ class inputController extends Controller
         $help       = new AllModel();
         $date       = $help->getDate();
         $noPo       = $request->noPO;
-        $prdcd = $request->prdcd;
         $IP = str_replace('.', '0', SUBSTR(Session::get('ip'), -3));
         $connect = loginController::getConnectionProcedure();
 
@@ -2480,7 +2485,6 @@ class inputController extends Controller
             oci_bind_by_name($query, ':ret', $fixNoBTB, 32);
             oci_execute($query);
         }
-
 
         try {
             if ($noPo) {
@@ -2547,7 +2551,7 @@ class inputController extends Controller
                         "TRBO_PERSENPPN" => $tax
                     ]);
 
-                    if ($prdcd == '1381070') {
+                    if ($data->trbo_prdcd == '1381070') {
                         $query = oci_parse($connect, "BEGIN :no_krat := F_IGR_GET_NOMOR('$kodeigr', 'KRT', 'Nomor KRAT','K' || TO_CHAR (SYSDATE, 'yy'), 5, TRUE); END;");
                         oci_bind_by_name($query, ':no_krat', $result, 32);
                         oci_execute($query);
@@ -2555,7 +2559,7 @@ class inputController extends Controller
                             "krt_kodeigr" => $kodeigr,
                             "krt_nosj" => $request->noPO,
                             "krt_nobo" => $fixNoBTB,
-                            "krt_prdcd" => $prdcd,
+                            "krt_prdcd" => $data->trbo_prdcd,
                             "krt_qty_bpb" => ($data->trbo_qty * $data->trbo_frac) + $data->qtyk,
                             "krt_nodraft" => $result,
                             "krt_qty_draft" => ($data->trbo_qty * $data->trbo_frac) + $data->qtyk,
@@ -2696,10 +2700,19 @@ class inputController extends Controller
         }
         //READ
         $hex_array_header = pack("H*", $header);
-        $name_header = 'HEADER_' . $this->get_string_between($hex_array_header, 'HEADER_', '.CSV') . '.CSV';
+        $header_name_file = $this->get_string_between(strtoupper($hex_array_header), 'HEADER_', '.CSV');
+        $name_header = 'HEADER_' . $header_name_file . '.CSV';
+        if ($header_name_file == '') {
+            return response()->json(['kode' => 2, 'msg' => 'Gagal Membaca File Header, Pastikan String QR adalah Header']);
+        }
 
         $hex_array_detail = pack("H*", $detail);
-        $name_detail = 'DETAIL_' . $this->get_string_between($hex_array_detail, 'DETAIL_', '.CSV') . '.CSV';
+        $detail_name_file = $this->get_string_between(strtoupper($hex_array_detail), 'DETAIL_', '.CSV');
+        $name_detail = 'DETAIL_' . $detail_name_file . '.CSV';
+        if ($detail_name_file == '') {
+            return response()->json(['kode' => 2, 'msg' => 'Gagal Membaca File Detail, Pastikan String QR adalah Detail']);
+        }
+
 
         $zip = new ZipArchive;
         $msg = '';

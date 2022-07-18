@@ -1,5 +1,5 @@
 @section('paper_height','850pt')
-@section('paper_width','1000pt')
+@section('paper_width','1700pt')
 
 @extends('html-template')
 

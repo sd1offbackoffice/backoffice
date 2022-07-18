@@ -51,8 +51,8 @@ class JenisItemController extends Controller
         return $result;
     }
 
-    public function ceknull(string $value,string $ret){
-        if($value==""){
+    public function ceknull( $value, $ret){
+        if($value=="" || !isset($value) || $value == null || is_null($value)){
             return $ret;
         }
         return $value;
@@ -208,9 +208,9 @@ class JenisItemController extends Controller
             ->get();
 
         for($i=0;$i<sizeof($supplier);$i++){
-            $supplier[$i]->trm_qtybns =  $this->ceknull($supplier[$i]->mstd_qty,0);
-            $supplier[$i]->trm_bonus = $this->ceknull($supplier[$i]->mstd_qtybonus1,0);
-            $supplier[$i]->trm_bonus2 = $this->ceknull($supplier[$i]->mstd_qtybonus2,0);
+            $supplier[$i]->trm_qtybns =  Self::ceknull($supplier[$i]->mstd_qty,0);
+            $supplier[$i]->trm_bonus = Self::ceknull($supplier[$i]->mstd_qtybonus1,0);
+            $supplier[$i]->trm_bonus2 = Self::ceknull($supplier[$i]->mstd_qtybonus2,0);
             $supplier[$i]->trm_dokumen = $supplier[$i]->mstd_nodoc;
             $supplier[$i]->trm_tanggal = $supplier[$i]->mstd_tgldoc;
             $supplier[$i]->trm_supp = $supplier[$i]->sup_namasupplier;
@@ -252,7 +252,7 @@ class JenisItemController extends Controller
                 ->where('LKS_JENISRAK', '=', 'S')
                 ->count();
 
-            if ($this->ceknull($TEMP, 0) == 0) {
+            if (Self::ceknull($TEMP, 0) == 0) {
                 DB::connection(Session::get('connection'))->table('TBMASTER_LOKASI')
                     ->where('LKS_KODEIGR', Session::get('kdigr'))
                     ->where('LKS_PRDCD', $request->prdcd)
@@ -264,7 +264,7 @@ class JenisItemController extends Controller
                     ->where('PLN_PRDCD', '=', $request->prdcd)
                     ->count();
 
-                if ($this->ceknull($TEMP, 0) == 0) {
+                if (Self::ceknull($TEMP, 0) == 0) {
 
                     DB::connection(Session::get('connection'))->table('TBMASTER_PLUPLANO')->insert(
                         ['PLN_KODEIGR' => Session::get('kdigr'), 'PLN_PRDCD' => $request->prdcd, 'PLN_JENISRAK' => $request->jenisrak, 'PLN_CREATE_BY' => 'WEB', 'PLN_CREATE_DT' => $date]
@@ -299,7 +299,7 @@ class JenisItemController extends Controller
                 ->where('PLN_PRDCD', '=', $request->prdcd)
                 ->count();
 
-            if ($this->ceknull($TEMP, 0) == 0 ) {
+            if (Self::ceknull($TEMP, 0) == 0 ) {
 
                 DB::connection(Session::get('connection'))->table('TBMASTER_PLUPLANO')->insert(
                     ['PLN_KODEIGR' => Session::get('kdigr'), 'PLN_PRDCD' => $request->prdcd, 'PLN_JENISRAK' => $request->jenisrak, 'PLN_CREATE_BY' => 'WEB', 'PLN_CREATE_DT' => $date]

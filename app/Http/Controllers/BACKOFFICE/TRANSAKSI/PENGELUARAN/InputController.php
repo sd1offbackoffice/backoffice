@@ -1081,7 +1081,7 @@ class InputController extends Controller
         // dd($datas_detail);
 
         DB::connection(Session::get('connection'))->beginTransaction();
-        if ($model = '* KOREKSI *') {
+        if ($model == '* KOREKSI *') {
             DB::connection(Session::get('connection'))->table('TBTR_BACKOFFICE')
                 ->where([
                     'trbo_kodeigr' => $trbo_kodeigr,
@@ -1119,6 +1119,26 @@ class InputController extends Controller
                         'trbo_prdcd' => $data['trbo_prdcd']
                     ])
                     ->update([
+                        // 'trbo_typetrn' => $trbo_typetrn,
+                        // 'trbo_tgldoc' => $data['tgldoc'],
+                        // 'trbo_noreff' => $data['trbo_noreff'],
+                        // 'trbo_istype' => $data['trbo_istype'],
+                        // 'trbo_invno' => $data['trbo_inv'],
+                        // 'trbo_tglinv' => $data['trbo_tgl'],
+                        // 'trbo_kodesupplier' => $kdsup,
+                        // 'trbo_qty' => ($data['qtyctn'] * $data['frac']) + $data['qtypcs'],
+                        // 'trbo_hrgsatuan' => $data['trbo_hrgsatuan'],
+                        // 'trbo_persendisc1' => $data['discper'],
+                        // 'trbo_gross' => $data['trbo_gross'],
+                        // 'trbo_discrph' => $data['trbo_discrph'],
+                        // 'trbo_ppnrph' => $data['trbo_ppnrph'],
+                        // 'trbo_averagecost' => $avg_cost,
+                        // 'trbo_posqty' => $data['trbo_posqty'],
+                        // 'trbo_flagdoc' => $trbo_flagdoc,
+                        // 'trbo_keterangan' => $data['trbo_keterangan'],
+                        // 'trbo_create_by' => $trbo_create_by,
+                        // 'trbo_create_dt' => $data['trbo_create_dt']
+
                         'trbo_typetrn' => $trbo_typetrn,
                         'trbo_tgldoc' => $data['tgldoc'],
                         'trbo_noreff' => $data['trbo_noreff'],
@@ -1131,6 +1151,7 @@ class InputController extends Controller
                         'trbo_persendisc1' => $data['discper'],
                         'trbo_gross' => $data['trbo_gross'],
                         'trbo_discrph' => $data['trbo_discrph'],
+                        'trbo_persenppn' => $data['trbo_persenppn'],
                         'trbo_ppnrph' => $data['trbo_ppnrph'],
                         'trbo_averagecost' => $avg_cost,
                         'trbo_posqty' => $data['trbo_posqty'],
@@ -1169,14 +1190,15 @@ class InputController extends Controller
             }
 
             $index++;
+        }        
+        
+        if ($model != '* KOREKSI *') {
+            $pIP = str_replace('.', '0', SUBSTR(Session::get('ip'), -3));
+            $c = loginController::getConnectionProcedure();
+            $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMORSTADOC('" . Session::get('kdigr') . "','RPB','Nomor Reff Pengeluaran Barang'," . $pIP . " || '2' , 7, TRUE); END;");
+            oci_bind_by_name($s, ':ret', $no, 32);
+            oci_execute($s);
         }
-
-        $pIP = str_replace('.', '0', SUBSTR(Session::get('ip'), -3));
-
-        $c = loginController::getConnectionProcedure();
-        $s = oci_parse($c, "BEGIN :ret := F_IGR_GET_NOMORSTADOC('" . Session::get('kdigr') . "','RPB','Nomor Reff Pengeluaran Barang'," . $pIP . " || '2' , 7, TRUE); END;");
-        oci_bind_by_name($s, ':ret', $no, 32);
-        oci_execute($s);       
 
         DB::connection(Session::get('connection'))->commit();
 

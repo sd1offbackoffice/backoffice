@@ -2426,12 +2426,24 @@ class CetakDokumenController extends Controller
                 case  'H' :      // Barang Hilang
                     if ($JNSKERTAS == 'B') {
                         $cw = 508;
-                        $ch = 77.5;
-                        $P_PN = " AND MSTD_NODOC IN (" . $NoDoc . ") AND MSTH_TYPETRN='H'";
+                        $ch = 77.5;                    
+
+                        $explode = explode(',', $NoDoc);
+                        $temp = "";
+                        for($i = 0; $i < sizeof($explode); $i++){                            
+                            if($i == sizeof($explode)-1){
+                                $temp .= "'$explode[$i]'";
+                            } else {
+                                $temp .= "'$explode[$i]',";
+                            }
+                        }
+                        $P_PN = " AND MSTD_NODOC IN (" . $temp . ") AND MSTH_TYPETRN='H'";
+                        // $P_PN = " AND MSTD_NODOC IN (" . $NoDoc . ") AND MSTH_TYPETRN='H'";
 
                         $data1 = DB::connection(Session::get('connection'))
                             ->select("SELECT msth_nodoc, to_char(msth_tgldoc,'yyyymmdd') msth_tgldoc, msth_nopo, msth_tglpo,
-                                    CASE WHEN msth_flagdoc = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
+                                    --CASE WHEN msth_flagdoc = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
+                                    CASE WHEN '" . $REPRINT . "' = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
                                     mstd_flagdisc1, mstd_prdcd, mstd_unit, mstd_frac, mstd_qty, mstd_hrgsatuan,
                                 FLOOR(mstd_qty/mstd_frac) AS CTN, MOD(mstd_qty,mstd_frac) AS PCS, (mstd_qty * (mstd_hrgsatuan/mstd_frac))                                       AS total, mstd_keterangan,
                                     CASE WHEN msth_typetrn = 'H' THEN
@@ -2458,9 +2470,20 @@ class CetakDokumenController extends Controller
                     } else {
                         $cw = 508;
                         $ch = 77.5;
-                        $P_PN = " AND MSTH_NODOC IN (" . $NoDoc . ") AND MSTH_TYPETRN='H'";
+                        $explode = explode(',', $NoDoc);
+                        $temp = "";
+                        for($i = 0; $i < sizeof($explode); $i++){                            
+                            if($i == sizeof($explode)-1){
+                                $temp .= "'$explode[$i]'";
+                            } else {
+                                $temp .= "'$explode[$i]',";
+                            }
+                        }
+                        $P_PN = " AND MSTH_NODOC IN (" . $temp . ") AND MSTH_TYPETRN='H'";
+                        // $P_PN = " AND MSTH_NODOC IN (" . $NoDoc . ") AND MSTH_TYPETRN='H'";
                         $data1 = DB::connection(Session::get('connection'))->select("SELECT msth_nodoc, to_char(msth_tgldoc,'yyyymmdd') msth_tgldoc, msth_nopo, msth_tglpo,
-                                    CASE WHEN msth_flagdoc = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
+                                    -- CASE WHEN msth_flagdoc = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
+                                    CASE WHEN '" . $REPRINT . "' = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
                                     mstd_flagdisc1, mstd_prdcd, mstd_unit, mstd_frac, mstd_qty, mstd_hrgsatuan,
                                     FLOOR(mstd_qty/mstd_frac) AS CTN, MOD(mstd_qty,mstd_frac) AS PCS, (mstd_qty * (mstd_hrgsatuan/mstd_frac)) AS total, mstd_keterangan,
                                     CASE WHEN msth_typetrn = 'H' THEN
@@ -2729,7 +2752,7 @@ ORDER BY mstd_noref3 asc");
         $ftp_user_pass = 'ftpigr';
         $zipName = Session::get('kdigr') . '_' . date("dmY", strtotime(Carbon::now())) . '.ZIP';
         $zipAddress = '../storage/nrb_nrp_backup/' . $zipName;
-        
+
         try {
             $conn_id = ftp_connect($ftp_server);
             ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
@@ -2743,8 +2766,8 @@ ORDER BY mstd_noref3 asc");
                             // $zip->addFile($filePath, $value);
 
                             // cesar nrb nrp
-                            $splitedFilename = explode('_', $value);                            
-                            if ($splitedFilename[0] == 'NRB' || $splitedFilename[0] == 'NRP') {                                
+                            $splitedFilename = explode('_', $value);
+                            if ($splitedFilename[0] == 'NRB' || $splitedFilename[0] == 'NRP') {
                                 $split = explode('.', $splitedFilename[sizeof($splitedFilename)-1]);
                                 $docDate = $split[0];
                                 if ($docDate == $date) {
@@ -2799,7 +2822,7 @@ ORDER BY mstd_noref3 asc");
     //                 $filePath = '../storage/signature_expedition/' . $value;
     //                 File::delete($filePath);
     //             }
-    //         }                
+    //         }
     //     }
     // }
 }

@@ -53,7 +53,10 @@ class PBPerishableController extends Controller
 
         $temp = DB::connection(Session::get('connection'))->select("SELECT count(1) as temp FROM tbtr_pb_h
         WHERE pbh_tgltransfer IS NOT NULL
-        AND pbh_nopb =$nopb");
+        AND pbh_nopb ='$nopb'");
+
+        //pbh_tgltransfer kalo null = belum transfer (koreksi)
+        //kalo not null = sudah transfer
 
         if ($temp[0]->temp == 0){
             $flag = 0;
@@ -84,7 +87,7 @@ class PBPerishableController extends Controller
                             tbmaster_saranafreezer
                     WHERE     pbp_kodesupplier = sup_kodesupplier
                             AND pbp_kodesarana = sfrz_kodesarana
-                            AND pbp_nopb = $nopb");
+                            AND pbp_nopb = '$nopb'");
             // ->table('tbtr_pb_perishable')
             // ->leftJoin('tbmaster_saranafreezer', 'pbp_kodesarana', '=', 'sfrz_kodesarana')
             // ->leftJoin('tbmaster_supplier', 'pbp_kodesupplier', '=', 'sup_kodesupplier')
@@ -120,7 +123,7 @@ class PBPerishableController extends Controller
         FROM tbtr_pb_perishable, tbmaster_prodmast, tbmaster_supplier
         WHERE pbp_prdcd = prd_prdcd
         AND pbp_kodesupplier = sup_kodesupplier
-        AND pbp_nopb = $nopb AND pbp_kodesupplier = '$kodesup' AND pbp_kodesarana = $kodesar
+        AND pbp_nopb = '$nopb' AND pbp_kodesupplier = '$kodesup' AND pbp_kodesarana = '$kodesar'
         ORDER BY pbp_avgsales DESC, pbp_prdcd");
 
         return response()->json($result);
@@ -164,7 +167,7 @@ class PBPerishableController extends Controller
         // where pbp_nopb = :no_pb;
 
         $temp = DB::connection(Session::get('connection'))->select("SELECT SUM(pbp_qtypb) as temp FROM tbtr_pb_perishable
-        WHERE pbp_nopb =$nopb");
+        WHERE pbp_nopb ='$nopb'");
         // IF temp <= 0
         // THEN
         // dc_alert.ok ('Tidak ada qty yang akan diPB', 'info');
@@ -218,7 +221,7 @@ class PBPerishableController extends Controller
                     tbmaster_saranafreezer
                 WHERE     pbp_kodesupplier = sup_kodesupplier
                     AND pbp_kodesarana = sfrz_kodesarana
-                    AND pbp_nopb = $nopb
+                    AND pbp_nopb = '$nopb'
                     AND ttl_kubikase > sfrz_volsarana*sfrz_jumlahsarana");
 
         // IF temp > 0
@@ -301,7 +304,7 @@ class PBPerishableController extends Controller
         DB::connection(Session::get('connection'))
         ->update("UPDATE tbtr_pb_perishable
                     SET pbp_nopb = $no_pb
-                    WHERE pbp_nopb = $nopb");
+                    WHERE pbp_nopb = '$nopb'");
 
         //     FORMS_DDL ('commit');
         return response()->json(['message' => 'ganti nomor', 'status' => 'info', 'nopbnew' => $no_pb]);
@@ -399,10 +402,10 @@ class PBPerishableController extends Controller
         //   AND pbp_prdcd = :d_prdcd;
 
         $qtypb_db = DB::connection(Session::get('connection'))->select("SELECT pbp_qtypb FROM tbtr_pb_perishable
-        WHERE pbp_nopb = $nopb
-        AND pbp_prdcd = $plu
+        WHERE pbp_nopb = '$nopb'
+        AND pbp_prdcd = '$plu'
         AND pbp_kodesupplier = '$kodesup'
-        AND pbp_kodesarana = $kodesar");
+        AND pbp_kodesarana = '$kodesar'");
 
         //         IF :d_qtypb = qtypb_db
         // --         ( :d_kubikase / :d_dimensi) - :d_stockakhir - :d_poout
@@ -492,10 +495,10 @@ class PBPerishableController extends Controller
                                                 pbp_kubikase = $kubikase,
                                                 pbp_modify_by = '$userid',
                                                 pbp_modify_dt = SYSDATE
-                                            WHERE     pbp_nopb = $nopb
+                                            WHERE     pbp_nopb = '$nopb'
                                                 AND pbp_kodesupplier = '$kodesup'
-                                                AND pbp_kodesarana = $kodesar
-                                                AND pbp_prdcd = $plu");
+                                                AND pbp_kodesarana = '$kodesar'
+                                                AND pbp_prdcd = '$plu' ");
 
 
 
@@ -503,9 +506,9 @@ class PBPerishableController extends Controller
 
         $totalkubik = DB::connection(Session::get('connection'))->select("SELECT SUM (pbp_kubikase) AS ttlkubik
         FROM tbtr_pb_perishable
-        WHERE     pbp_nopb = $nopb
+        WHERE     pbp_nopb = '$nopb'
                 AND pbp_kodesupplier = '$kodesup'
-                AND pbp_kodesarana = $kodesar");
+                AND pbp_kodesarana = '$kodesar'");
 
         // SELECT SUM (pbp_kubikase)
         // INTO :h_kubikase
@@ -542,7 +545,7 @@ class PBPerishableController extends Controller
 
         $temp = DB::connection(Session::get('connection'))->select("SELECT COUNT(1) as temp
         FROM tbtr_pb_perishable
-        WHERE pbp_nopb = $nopb");
+        WHERE pbp_nopb = '$nopb'");
 
         if($temp[0]->temp > 0){
             $message = 'No PB sudah diproses, silahkan edit';
@@ -570,7 +573,7 @@ class PBPerishableController extends Controller
 
         $temp = DB::connection(Session::get('connection'))->select("SELECT COUNT(1) as temp
         FROM tbtr_pb_perishable
-        WHERE pbp_nopb = $nopb");
+        WHERE pbp_nopb = '$nopb'");
 
         if($temp[0]->temp == 0) {
             $message = 'Tidak ada PLU yang bisa di PB untuk tgl ' . $tglpb;
@@ -605,8 +608,7 @@ class PBPerishableController extends Controller
         // where pbh_nopb = :no_pb;
 
         $temp = DB::connection(Session::get('connection'))->select("SELECT count(1) as temp FROM tbtr_pb_h
-        WHERE pbh_tgltransfer IS NOT NULL
-        AND pbh_nopb =$nopb");
+        WHERE pbh_nopb = '$nopb'");
 
         // if temp > 0
         // then
@@ -625,7 +627,7 @@ class PBPerishableController extends Controller
 
         DB::connection(Session::get('connection'))
             ->table('tbtr_pb_perishable')
-            ->where('pbp_nopb', $nopb)
+            ->where('pbp_nopb', '=',$nopb)
             ->delete();
 
         // forms_ddl('commit');

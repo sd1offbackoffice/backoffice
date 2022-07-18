@@ -40,7 +40,7 @@
 @endsection
 
 @section('content')
-    <br>
+    {{-- <br>
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
@@ -97,5 +97,21 @@
 
         </tbody>
 
-    </table>
+    </table> --}}
+
+    <br>    
+        @php
+            $nodoc='';
+            $j=0;
+            $showfooter = false;
+        @endphp
+        
+        @for ($i = 0; $i < sizeof($data['data1']); $i++)
+            @if ($nodoc != $data['data1'][$i]->msth_nodoc)
+                @php
+                    $nodoc = $data['data1'][$i]->msth_nodoc;
+                @endphp
+            @endif
+        @endfor
+
 @endsection

@@ -3,133 +3,121 @@
 <head>
     <title>@yield('page_title')</title>
 </head>
+<body>
+
+<header>
+    <div style="float:left; margin-top: 0px; line-height: 8px !important;">
+        <p>
+            {{ $perusahaan->prs_namaperusahaan }}
+        </p>
+        <p>
+            {{ $perusahaan->prs_namacabang }}
+        </p>
+        @yield('header_left')
+    </div>
+    <div style="float:right; margin-top: 0px;margin-right: 0px; line-height: 3px !important;">
+        <p>
+            Tgl. Cetak : {{ date("d/m/Y") }}
+        </p>
+        <p>
+            Jam Cetak : {{ date('H:i:s') }}
+        </p>
+        <p>
+            <i>User ID</i> : {{ Session::get('usid') }}
+        </p>
+
+        @yield('header_right')
+    </div>
+    <div style="float: center">
+        <p style="font-weight:bold;font-size:14px;text-align: center;margin: 0;padding: 0">
+            @yield('title')
+        </p>
+        <p style="text-align: center;margin: 0;padding: 0">
+            @yield('subtitle',date("d/m/Y"))
+        </p>
+    </div>
+{{--    <div class="center" style="clear:both">--}}
+{{--        @yield('header_optional')--}}
+{{--    </div>--}}
+</header>
+
+
+
+<main>
+    @if(sizeof($data) == 0 )
+        <h4 class="center">TIDAK ADA DATA</h4>
+    @else
+        @yield('content')
+    @endif
+
+
+</main>
+
+{{--<footer>--}}
+{{--    <p class="right" style="font-size: @yield('table_font_size','10px')">@yield('footer','** Akhir dari laporan **')</p>--}}
+{{--</footer>--}}
+
+<br>
+</body>
 <style>
-    body{
-        margin: 0;
-    }
-
-    .bg-white{
-        background-color: white;
-    }
-
-    .bg-gray{
-        background-color: rgb(82, 86, 89);
-    }
-
-    .content-wrapper{
-        margin:auto;
-        min-height: @yield('paper_height','842pt');
-        width: @yield('paper_width','1100pt');
-        padding: 5% 4%;
-    }
-
-    table.report-container {
-        page-break-after:always;
-        width: 100%;
-    }
-    thead.report-header {
-        display:table-header-group;
-    }
-    tfoot.report-footer {
-        display:table-footer-group;
-    }
-    table.report-container div.article {
-        page-break-inside: avoid;
-    }
-
-    .btn-print{
-        float:right;
-        color: #fff;
-        background-color: #007bff;
-        border-color: #007bff;
-        display: inline-block;
-        font-weight: 400;border: 1px solid transparent;
-        padding: .375rem .75rem;
-        font-size: 1rem;
-        line-height: 1.5;
-        height: 100%;
-        cursor: pointer;
-        border-radius: 5px;
-    }
-
     @page {
         /*margin: 25px 20px;*/
         /*size: 1071pt 792pt;*/
-        size: @yield('paper_size','595pt 842pt');
+        /* size: @yield('paper_size','595pt 842pt'); */
+        size: @yield('paper_size','1500pt 842pt');
         /*size: 842pt 638pt;*/
     }
-
-    @media print{
-        #buttonArea{
-            display: none;
-        }
-
-        .content-wrapper{
-            padding: 0;
-        }
-    }
-
     header {
-        /*position: fixed;*/
+        position: fixed;
         top: 0cm;
         left: 0cm;
         right: 0cm;
         height: 3cm;
     }
     body {
-        /*margin-top: 80px;*/
-        /*margin-bottom: 10px;*/
+        margin-top: 80px;
+        margin-bottom: 10px;
         font-size: 9px;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         font-weight: 400;
         line-height: @yield('body_line_height','1.8'); /* 1.25 */
-
-        counter-reset: page;
     }
-
-    #pageNumber {
-        page-break-before: always;
-        counter-increment: page;
+    table{
+        border-collapse: collapse;
     }
-    #pageNumber::after {
-        content: counter(page);
-    }
-
-    .table tbody {
+    tbody {
         display: table-row-group;
         vertical-align: middle;
-        border-color: inherit;
+        border-color: black;
     }
-    .table tr {
+    tr {
         display: table-row;
         vertical-align: inherit;
-        border-color: inherit;
+        border-color: black;
     }
-    .table td {
+    td {
         display: table-cell;
     }
-    .table thead{
+    thead{
         text-align: center;
     }
-    .table tbody{
+    tbody{
         text-align: center;
     }
-    .table tfoot{
+    tfoot{
         border-top: 1px solid black;
-        border-bottom: 1px solid black;
     }
 
     .keterangan{
         text-align: left;
     }
     .table{
-        border-collapse: collapse;
         width: 100%;
-        font-size: @yield('table_font_size','10px') !important;
+        font-size: @yield('table_font_size','10px');
         white-space: nowrap;
         color: #212529;
         /*padding-top: 20px;*/
-        /*margin-top: 25px;*/
+        margin-right: 250px;
     }
     .table-ttd{
         width: 100%;
@@ -150,6 +138,11 @@
         vertical-align: top;
         padding: 0.20rem 0;
     }
+
+    .table tfoot tr td{
+        font-weight: bold;
+    }
+
     .judul, .table-borderless{
         text-align: center;
     }
@@ -158,12 +151,8 @@
         padding: 0.50rem;
     }
 
-    .table tbody td.padding-right, .table thead th.padding-right, .table tfoot th.padding-right{
+    .table tbody td.padding-right,.table tbody th.padding-right, .table thead th.padding-right, .table tfoot th.padding-right{
         padding-right: 10px !important;
-    }
-
-    .table tbody td.padding-left, .table thead th.padding-left, .table tfoot th.padding-left{
-        padding-left: 10px !important;
     }
 
     .center{
@@ -194,10 +183,6 @@
         vertical-align: middle !important;
     }
 
-    .bawah{
-        vertical-align: bottom !important;
-    }
-
     .blank-row {
         line-height: 70px!important;
         color: white;
@@ -205,6 +190,10 @@
 
     .bold td{
         font-weight: bold;
+    }
+
+    .border-top td{
+        border-top: 1px solid black;
     }
 
     .top-bottom{
@@ -219,94 +208,9 @@
     .overline{
         text-decoration: overline;
     }
-
+    .pagebreak {
+        page-break-before: always;
+    }
     @yield('custom_style')
 </style>
-<body class="bg-gray">
-    <div id="buttonArea" style="position: sticky; width: 100%; height: 50px; top: 0;">
-        <button class="btn-print" onclick="window.print()">CETAK</button>
-    </div>
-    <div class="bg-white content-wrapper">
-        <table class="report-container">
-            <thead class="report-header">
-            <tr>
-                <th class="report-header-cell">
-                    <div class="header-info">
-                        <div class="left" style="margin-top: -60px; line-height: 8px !important;">
-                            <p>{{ $perusahaan->prs_namaperusahaan }}</p>
-                            <p>{{ $perusahaan->prs_namacabang }}</p>
-                            @yield('header_left')
-                        </div>
-                        <div class="left" style="float:right; margin-top: -45px; line-height: 8px !important;">
-                            <p>
-                                Tgl. Cetak : {{ date("d/m/Y") }}
-                            </p>
-                            <p>
-                                Jam Cetak : {{ date('H:i:s') }}
-                            </p>
-                            <p>
-                                <i>User ID</i> : {{ Session::get('usid') }}
-                            </p>
-                            @yield('header_right')
-                        </div>
-                        <div class="center">
-                            <p style="font-weight:bold;font-size:14px;text-align: center;margin-left: 90px;padding: 0">
-                                @yield('title')
-                            </p>  
-                        </div>
-                    </div>
-                    <div class="center" style="clear:both">
-                        @yield('header_optional')
-                    </div>
-                    <div class="row">
-                        <div class="center" style="margin:10px;">
-                            <div class="form-group row" style="margin: auto;">
-                                <div class="col-md-12">
-                                    <div class="col-sm-2">
-
-                                        @yield('subtitle')
-                                    </div>
-                                    <div class="col-sm-2">
-                                        @yield('subtitle_2')
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-                </th>
-            </tr>
-            </thead>
-            
-            <tfoot class="report-footer">
-                <tr>
-                    <td class="report-footer-cell">
-                        <div class="footer-info">
-                            @yield('ttd')
-                        </div>
-                    </td>
-                </tr>
-            </tfoot>
-            <tbody class="report-content">
-            <tr>
-                <td class="report-content-cell">
-                    <div class="main">
-                        <div class="article">
-                            <main>
-                                @if(sizeof($data) == 0)
-                                    <h4 class="center">@yield('nodata','TIDAK ADA DATA')</h4>
-                                @else
-                                    @yield('content')
-                                @endif
-                                <p class="right" style="border-top:1px solid black;font-size: @yield('table_font_size','10px')">@yield('footer','** Akhir dari laporan **')</p>
-
-                            </main>
-                        </div>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</body>
 </html>

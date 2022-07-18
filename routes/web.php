@@ -553,8 +553,10 @@ Route::middleware(['CheckLogin'])->group(function () {
         });
 
         /*MASTER EKSPEDISI*/
-        Route::prefix('/ekspedisi')->group(function () {
-            Route::get('/', 'MASTER\EkspedisiController@index');
+        Route::prefix('/ekspedisi')->group(function(){
+            Route::get('/','MASTER\EkspedisiController@index')->name('master-expedition');
+            Route::get('/get-expedition-detail','MASTER\EkspedisiController@getExpeditionDetail')->name('expedition-get-expedition-detail');
+            Route::get('/update-from-igrcrm','MASTER\EkspedisiController@updateFromIGRCRM')->name('expedition-update-from-igrcrm');
         });
     });
 
@@ -877,6 +879,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::get('/show-sjf-data', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@showSJFData');
                     Route::get('/check-no-faktur', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@checkNoFaktur');
                     Route::get('/check-plu-barcode', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@checkPluBarcode');
+                    Route::get('/show-data', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@showData');
                     Route::post('/send-email', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@sendEmail');
                     Route::post('/total-price-barcode', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@totalPriceBarcode');
                 });
@@ -1015,8 +1018,8 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::get('/', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\CetakController@index');
                     Route::post('/get-data', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\CetakController@getData');
                     Route::get('/laporan', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\CetakController@laporan');
-                    // 
-                    Route::get('/laporan-sj', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\CetakController@laporanSJ');
+                    //
+                    Route::get('/titip', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\CetakController@titip');
                 });
 
                 Route::prefix('/batal')->group(function () {
@@ -1737,6 +1740,23 @@ Route::middleware(['CheckLogin'])->group(function () {
             Route::get('/printPDF', 'BACKOFFICE\VirtualStockCmoController@printPDF');
             Route::get('/printCSV', 'BACKOFFICE\VirtualStockCmoController@printCSV');
         });
+
+        /*elizabeth*/
+        Route::prefix('/pengadaan-item-procurement')->group(function () {
+            Route::prefix('/pb-procurement')->group(function () {
+                Route::get('/', 'BACKOFFICE\PENGADAANITEMPROCUREMENT\PBProcurementController@index');
+                Route::get('/lov_nopb', 'BACKOFFICE\PENGADAANITEMPROCUREMENT\PBProcurementController@lov_nopb');
+                Route::get('/lov_search_plu', 'BACKOFFICE\PENGADAANITEMPROCUREMENT\PBProcurementController@lov_search_plu');
+                Route::get('/lov_search_plu_pb', 'BACKOFFICE\PENGADAANITEMPROCUREMENT\PBProcurementController@lov_search_plu_pb');
+                Route::get('/get-data-pb', 'BACKOFFICE\PENGADAANITEMPROCUREMENT\PBProcurementController@getDataPB');
+                Route::post('/hapus-dokumen', 'BACKOFFICE\PENGADAANITEMPROCUREMENT\PBProcurementController@hapusDokumen');
+                Route::post('/cek_plu', 'BACKOFFICE\PENGADAANITEMPROCUREMENT\PBProcurementController@cek_plu');
+                Route::post('/cek_bonus', 'BACKOFFICE\PENGADAANITEMPROCUREMENT\PBProcurementController@cek_bonus');
+                Route::post('/save_data', 'BACKOFFICE\PENGADAANITEMPROCUREMENT\PBProcurementController@save_data');
+
+            });
+        });
+
     });
 
     /*Steven Leo*/
