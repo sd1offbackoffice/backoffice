@@ -60,7 +60,7 @@ class InformasiHistoryProductController extends Controller
                 ->where('prd_prdcd', '=', $request->value)
                 ->first();
             if (is_null($plu)) {
-                array_push($message, 'Kode Tidak Terdaftar !!');
+                array_push($message,  __('Kode Tidak Terdaftar').'!!');
                 return $message;
             }
         } else if ($lCek == 2) {

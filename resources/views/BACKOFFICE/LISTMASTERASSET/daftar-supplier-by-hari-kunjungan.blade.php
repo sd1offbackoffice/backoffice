@@ -6,7 +6,7 @@
 {{--        <legend class="w-auto ml-5">Daftar Supplier by Hari Kunjungan</legend>--}}
         <br>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Kode</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Kode')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuGSup1Input" class="form-control" type="text">
                 <button id="menuGBtnSup1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Kode</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Kode')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuGSup2Input" class="form-control" type="text">
                 <button id="menuGBtnSup2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -34,21 +34,21 @@
         <br>
         <div class="row">
             {{--minggu--}}
-            <label class="col-sm-3 text-right col-form-label">Hari Hari</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Hari')</label>
             <div class="col-sm-1">
                 <input id="menuGCheckMinggu" class="form-control" type="checkbox">
             </div>
-            <label class="col-sm-2 text-left col-form-label">Minggu</label>
+            <label class="col-sm-2 text-left col-form-label">@lang('Minggu')</label>
             {{--senin--}}
             <div class="col-sm-1">
                 <input id="menuGCheckSenin" class="form-control" type="checkbox">
             </div>
-            <label class="col-sm-2 text-left col-form-label">Senin</label>
+            <label class="col-sm-2 text-left col-form-label">@lang('Senin')</label>
             {{--selasa--}}
             <div class="col-sm-1">
                 <input id="menuGCheckSelasa" class="form-control" type="checkbox">
             </div>
-            <label class="col-sm-2 text-left col-form-label">Selasa</label>
+            <label class="col-sm-2 text-left col-form-label">@lang('Selasa')</label>
         </div>
         <div class="row">
             {{--rabu--}}
@@ -56,17 +56,17 @@
             <div class="col-sm-1">
                 <input id="menuGCheckRabu" class="form-control" type="checkbox">
             </div>
-            <label class="col-sm-2 text-left col-form-label">Rabu</label>
+            <label class="col-sm-2 text-left col-form-label">@lang('Rabu')</label>
             {{--kamis--}}
             <div class="col-sm-1">
                 <input id="menuGCheckKamis" class="form-control" type="checkbox">
             </div>
-            <label class="col-sm-2 text-left col-form-label">Kamis</label>
+            <label class="col-sm-2 text-left col-form-label">@lang('Kamis')</label>
             {{--jumat--}}
             <div class="col-sm-1">
                 <input id="menuGCheckJumat" class="form-control" type="checkbox">
             </div>
-            <label class="col-sm-2 text-left col-form-label">Jumat</label>
+            <label class="col-sm-2 text-left col-form-label">@lang('Jumat')</label>
         </div>
         <div class="row">
             {{--rabu--}}
@@ -74,7 +74,7 @@
             <div class="col-sm-1">
                 <input id="menuGCheckSabtu" class="form-control" type="checkbox">
             </div>
-            <label class="col-sm-2 text-left col-form-label">Sabtu</label>
+            <label class="col-sm-2 text-left col-form-label">@lang('Sabtu')</label>
         </div>
     </fieldset>
 </div>
@@ -101,7 +101,7 @@
                 $('#menuGSup1Desk').val(tableSupplier.row(index-1).data()['sup_namasupplier'].replace(/&amp;/g, '&'));
                 $('#menuGBtnSup2').prop("hidden",false);
             }else{
-                swal('', "Kode Supplier tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Supplier tidak terdaftar') }}`, 'warning');
                 $('#menuGSup1Input').val('').change();
             }
         }
@@ -116,7 +116,7 @@
             if(index){
                 $('#menuGSup2Desk').val(tableSupplier.row(index-1).data()['sup_namasupplier'].replace(/&amp;/g, '&'));
             }else{
-                swal('', "Kode Supplier tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Supplier tidak terdaftar') }}`, 'warning');
                 $('#menuGSup2Input').val('').change();
             }
         }

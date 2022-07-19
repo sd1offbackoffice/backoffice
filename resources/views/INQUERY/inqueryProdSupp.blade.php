@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title', 'INQUIRY | INQUIRY PRODUK PER SUPPPLIER')
+@section('title', __('INQUIRY | INQUIRY PRODUK PER SUPPPLIER'))
 @section('content')
 
 
@@ -8,7 +8,7 @@
             <div class="col-sm-12">
 
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">INQUIRY PRODUK PER SUPPLIER</legend>
+                    <legend  class="w-auto ml-5">@lang('INQUIRY PRODUK PER SUPPLIER')</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="row">
                             <div class="col-sm-10">
@@ -17,7 +17,7 @@
                                     <div class="row text-right">
                                         <div class="col-sm-12">
                                             <div class="form-group row mb-0">
-                                                <label for="i_kodesupplier" class="col-sm-2 col-form-label">Supplier</label>
+                                                <label for="i_kodesupplier" class="col-sm-2 col-form-label">@lang('Supplier')</label>
                                                 <div class="col-sm-2 buttonInside">
                                                     <input type="text" class="form-control" id="i_kodesupplier">
                                                     <button type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#modal_supp" onclick="showLOV()">
@@ -37,18 +37,18 @@
                             </div>
                             <div class="col-sm-12">
                                 <fieldset class="card border-secondary">
-                                    <legend  class="w-auto ml-4">Detail</legend>
+                                    <legend  class="w-auto ml-4">@lang('Detail')</legend>
                                     <div class="table-wrapper-scroll-y my-custom-scrollbar">
                                         <table id="tabledetail" class="table table-sm">
                                             <thead class="headerTable">
                                             <tr class="d-flex fontTable">
-                                                <th class="col-sm-1">PLU</th>
-                                                <th class="col-sm-3">Nama Barang</th>
-                                                <th class="col-sm-1 pl-0 pr-0 text-right">Stok</th>
-                                                <th class="col-sm-2 text-right">Sales</th>
-                                                <th class="col-sm-2 text-right">PKM Exist</th>
-                                                <th class="col-sm-2 text-right">H.P.P</th>
-                                                <th class="col-sm-1 text-right">Tag</th>
+                                                <th class="col-sm-1">@lang('PLU')</th>
+                                                <th class="col-sm-3">@lang('Nama Barang')</th>
+                                                <th class="col-sm-1 pl-0 pr-0 text-right">@lang('Stok')</th>
+                                                <th class="col-sm-2 text-right">@lang('Sales')</th>
+                                                <th class="col-sm-2 text-right">@lang('PKM Exist')</th>
+                                                <th class="col-sm-2 text-right">@lang('H.P.P')</th>
+                                                <th class="col-sm-1 text-right">@Lang('Tag')</th>
                                             </tr>
                                             </thead>
                                             <tbody id="body-table">
@@ -62,7 +62,7 @@
                         <div class="row text-right">
                             <div class="offset-sm-12 col-sm-5 mt-3">
                                 <div class="form-group row mb-0">
-                                    <label for="i_totalitem" class="col-sm-4 col-form-label">Total Item</label>
+                                    <label for="i_totalitem" class="col-sm-4 col-form-label">@lang('Total Item')</label>
                                     <div class="col-sm-3">
                                         <input type="text" class="form-control" id="i_totalitem" value="" disabled>
                                     </div>
@@ -111,9 +111,9 @@
                                     <table class="table table-sm" id="table_lov">
                                         <thead class="headerModalSupp">
                                         <tr class="fontModal">
-                                            <td>Kode Supplier</td>
-                                            <td>Kode Supplier MCG</td>
-                                            <td>Nama Supplier</td>
+                                            <td>@lang('Kode Supplier')</td>
+                                            <td>@lang('Kode Supplier MCG')</td>
+                                            <td>@lang('Nama Supplier')</td>
                                         </tr>
                                         </thead>
                                         <tbody id="tbodyModal">
@@ -218,7 +218,7 @@
 
                     if(result.data.length == 0){
                         swal({
-                            title: 'Data tidak ada',
+                            title: `{{ __('Data tidak ada') }}`,
                             icon: 'error'
                         })
                     } else {

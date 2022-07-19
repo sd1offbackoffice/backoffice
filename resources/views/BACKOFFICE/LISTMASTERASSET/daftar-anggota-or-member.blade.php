@@ -6,7 +6,7 @@
 {{--        <legend class="w-auto ml-5">Daftar Produk</legend>--}}
         <br>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Kode</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Kode')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menu5Mem1Input" class="form-control" type="text">
                 <button id="menu5BtnMem1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Kode</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Kode')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menu5Mem2Input" class="form-control" type="text">
                 <button id="menu5BtnMem2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -32,17 +32,17 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Pilihan</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Pilihan')</label>
             <div class="col-sm-6">
                 <select class="form-control" id="menu5Pilihan">
-                    <option value="1">SEMUA</option>
-                    <option value="2">AKTIF</option>
-                    <option value="3">TIDAK AKTIF</option>
+                    <option value="1">{{ strtoupper(__('Semua')) }}</option>
+                    <option value="2">{{ strtoupper(__('Aktif')) }}</option>
+                    <option value="3">{{ strtoupper(__('Tidak Aktif')) }}</option>
                 </select>
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Outlet</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Outlet')</label>
             <div class="col-sm-2 buttonInside">
                 <input id="menu5OutlInput" class="form-control" type="text">
                 <button id="menu5BtnOutl" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -55,7 +55,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sub Outlet</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sub Outlet')</label>
             <div class="col-sm-2 buttonInside">
                 <input id="menu5SOu1Input" class="form-control" type="text">
                 <button id="menu5BtnSOu1" type="button" class="btn btn-lov p-0" data-toggle="modal" hidden
@@ -63,7 +63,7 @@
                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                 </button>
             </div>
-            <label class="col-sm-1 text-center col-form-label">s/d</label>
+            <label class="col-sm-1 text-center col-form-label">@lang('s/d')</label>
             <div class="col-sm-2 buttonInside">
                 <input id="menu5SOu2Input" class="form-control" type="text">
                 <button id="menu5BtnSOu2" type="button" class="btn btn-lov p-0" data-toggle="modal" hidden
@@ -73,25 +73,25 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Urut (SORT) Atas</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Urut (SORT) Atas')</label>
             <div class="col-sm-6">
                 <select class="form-control" id="menu5SortBy">
-                    <option value="1">1. OUTLET+AREA+KODE</option>
-                    <option value="2">2. OUTLET+AREA+NAMA</option>
-                    <option value="3">3. OUTLET+KODE</option>
-                    <option value="4">4. OUTLER+NAMA</option>
-                    <option value="5">5. AREA+KODE</option>
-                    <option value="6">6. AREA+NAMA</option>
-                    <option value="7">7. KODE</option>
-                    <option value="8">8. NAMA</option>
-                    <option value="9">9. BLOCKING PENGIRIMAN</option>
+                    <option value="1">1. @lang('OUTLET+AREA+KODE')</option>
+                    <option value="2">2. @lang('OUTLET+AREA+NAMA')</option>
+                    <option value="3">3. @lang('OUTLET+KODE')</option>
+                    <option value="4">4. @lang('OUTLET+NAMA')</option>
+                    <option value="5">5. @lang('AREA+KODE')</option>
+                    <option value="6">6. @lang('AREA+NAMA')</option>
+                    <option value="7">7. {{ strtoupper(__('Kode')) }}</option>
+                    <option value="8">8. {{ strtoupper(__('Nama')) }}</option>
+                    <option value="9">9. @lang('BLOCKING PENGIRIMAN')</option>
                 </select>
             </div>
         </div>
 
         <br>
         <div class="d-flex justify-content-start">
-            <label class="font-weight-bold">&nbsp;&nbsp;SUB OUTLET KOSONG = SEMUA</label>
+            <label class="font-weight-bold">&nbsp;&nbsp;@lang('SUB OUTLET KOSONG = SEMUA')</label>
         </div>
     </fieldset>
 </div>
@@ -128,7 +128,7 @@
                 $('#menu5Mem1Desk').val(deskripsi);
                 $('#menu5BtnMem2').prop("hidden",false);
             }else{
-                swal('', "Kode Member tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Member tidak terdaftar') }}`, 'warning');
                 $('#menu5Mem1Input').val('').change();
             }
         }
@@ -143,7 +143,7 @@
             if(deskripsi != "false"){
                 $('#menu5Mem2Desk').val(deskripsi);
             }else{
-                swal('', "Kode Member tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Member tidak terdaftar') }}`, 'warning');
                 $('#menu5Mem2Input').val('').change();
             }
         }
@@ -181,7 +181,7 @@
                 $('#outletFilterer').val($('#menu5OutlInput').val()).change();
                 $('#menu5BtnSOu1').prop("hidden",false);
             }else{
-                swal('', "Kode Outlet tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Outlet tidak terdaftar') }}`, 'warning');
                 $('#menu5OutlInput').val('').change();
             }
         }
@@ -197,7 +197,7 @@
                 // $('#menu5OutlDesk').val(deskripsi);
                 $('#menu5BtnSOu2').prop("hidden",false);
             }else{
-                swal('', "Kode Sub-Outlet tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Sub-Outlet tidak terdaftar') }}`, 'warning');
                 $('#menu5SOu1Input').val('').change();
             }
         }
@@ -210,7 +210,7 @@
             if(index){
                 //code here
             }else{
-                swal('', "Kode Sub-Outlet tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Sub-Outlet tidak terdaftar') }}`, 'warning');
                 $('#menu5SOu2Input').val('');
             }
         }
@@ -282,7 +282,7 @@
         // }
 
         if(outlet == ''){
-            swal('', "Silahkan Isi Kode Outlet Terlebih Dahulu", 'warning');
+            swal('',`{{ __('Silahkan Isi Kode Outlet Terlebih Dahulu') }}`, 'warning');
             return false;
         }
 

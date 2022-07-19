@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','BO | KERTAS KERJA STATUS')
+@section('title',__('BO | KERTAS KERJA STATUS'))
 
 @section('content')
 
@@ -10,16 +10,16 @@
                 <fieldset class="card border-secondary">
                     <div class="card-body pt-0">
                         <fieldset class="card border-secondary mt-0">
-                            <legend  class="w-auto ml-3">KK STATUS</legend>
+                            <legend  class="w-auto ml-3">@lang('KK STATUS')</legend>
                             <div class="card-body py-0">
                                 <div class="row form-group">
-                                    <label class="col-sm-2 text-right col-form-label  text-right pl-0">Periode Proses</label>
+                                    <label class="col-sm-2 text-right col-form-label  text-right pl-0">@lang('Periode Proses')</label>
                                     <div class="col-sm-3">
                                         <input type="text" class="form-control text-left" id="periode" autocomplete="off">
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label class="col-sm-2 col-form-label text-right">Kode RAK</label>
+                                    <label class="col-sm-2 col-form-label text-right">@lang('Kode RAK')</label>
                                     <div class="col-sm-3 buttonInside">
                                         <input type="text" class="form-control text-left" id="koderak">
                                         <button id="btn_departement" type="button" class="btn btn-primary btn-lov p-0" onclick="showLovKodeRak()">
@@ -28,20 +28,20 @@
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label class="col-sm-2 text-right col-form-label  text-right pl-0">Row Storage Besar</label>
+                                    <label class="col-sm-2 text-right col-form-label  text-right pl-0">@lang('Row Storage Besar')</label>
                                     <div class="col-sm-3">
                                         <input type="text" class="form-control text-left" id="rowstoragebesar">
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label class="col-sm-2 text-right col-form-label  text-right pl-0">Row Storage Kecil</label>
+                                    <label class="col-sm-2 text-right col-form-label  text-right pl-0">@lang('Row Storage Kecil')</label>
                                     <div class="col-sm-3">
                                         <input type="text" class="form-control text-left" id="rowstoragekecil">
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-sm-10"></div>
-                                    <button class="col-sm-2 btn btn-primary" onclick="print()">CETAK</button>
+                                    <button class="col-sm-2 btn btn-primary" onclick="print()">{{ strtoupper(__('Cetak')) }}</button>
                                 </div>
                             </div>
                         </fieldset>
@@ -62,7 +62,7 @@
                                 <table class="table table-sm mb-0 text-center" id="table_koderak">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Kode Rak</th>
+                                        <th>@lang('Kode RAK')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -180,7 +180,7 @@
 
         function print(){
             swal({
-                title: 'Yakin ingin mencetak KK Status periode '+$('#periode').val()+'?',
+                title: `{{ __('Yakin ingin mencetak KK Status periode') }} `+$('#periode').val()+'?',
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true

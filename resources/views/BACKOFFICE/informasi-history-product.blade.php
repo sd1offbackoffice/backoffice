@@ -1,13 +1,12 @@
 @extends('navbar')
-@section('title','MASTER | INFORMASI HISTORY PRODUCT')
+@section('title',__('MASTER | INFORMASI HISTORY PRODUCT'))
 @section('content')
 
     <div class="container-fluid page1">
         <div class="row justify-content-sm-center">
             <div class="col-sm-12">
                 <fieldset class="card border-dark card-hdr cardForm">
-                    <legend class="w-auto ml-5">Ketik PLU / Deskripsi / Scan Barcode
-                        Barang
+                    <legend class="w-auto ml-5">@lang('Ketik PLU') / @lang('Deskripsi') / @lang('Scan Barcode Barang')
                     </legend>
                     <div class="card-body">
                         <div class="row justify-content-md-center">
@@ -29,7 +28,7 @@
         <div class="row justify-content-sm-center">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary card-hdr ">
-                    <legend class="w-auto ml-5">Informasi & History Product</legend>
+                    <legend class="w-auto ml-5">@lang('Informasi & History Product')</legend>
                     <div class="card-body">
                         <div class="row mr-2">
                             <input type="text" class="col-sm-3 form-control" id="cabang" disabled>
@@ -37,7 +36,7 @@
                         </div>
                         <hr>
                         <div class="row mr-2">
-                            <label for="plu" class="col-sm-1 col-form-label text-right">PLU</label>
+                            <label for="plu" class="col-sm-1 col-form-label text-right">@lang('PLU')</label>
                             <input type="text" class="col-sm-1 form-control" id="plu" value="" disabled>
                             <label for="flaggdg" class="col-sm-2 col-form-label text-right">Flag Gdg</label>
                             <input type="text" class="col-sm-1 form-control" id="flaggdg" value="" disabled>
@@ -1191,7 +1190,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" id="btn-hb-prev"><<< PREV</button>
                     <button type="button" class="btn btn-secondary" id="btn-hb-next">NEXT >>></button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">CLOSE</button>
                 </div>
             </div>
         </div>
@@ -1203,7 +1202,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal" role="document">
             <div class="modal-content" style="max-height: 70%;">
                 <div class="modal-header">
-                    <h5>Stock Carton</h5>
+                    <h5>@lang('Stock Carton')</h5>
                 </div>
                 <div class="modal-body">
                     <input type="text" class="form-control text-center" id="title-stock-carton" disabled>
@@ -1211,9 +1210,9 @@
                         <table class="table table-sm justify-content-md-center m-2" id="table-stockcarton">
                             <thead class="theadDataTables">
                             <tr>
-                                <th class="text-center small">Status Barang</th>
-                                <th class="text-center small">Carton</th>
-                                <th class="text-center small">Pcs</th>
+                                <th class="text-center small">@lang('Status Barang')</th>
+                                <th class="text-center small">@lang('Carton')</th>
+                                <th class="text-center small">@lang('Pcs')</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -1233,7 +1232,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">@lang('Tutup')</button>
                 </div>
             </div>
         </div>
@@ -1254,7 +1253,7 @@
                                 <table class="table table-sm justify-content-md-center p-0 col-sm-12">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th class="text-center small">Pesan</th>
+                                        <th class="text-center small">@lang('Pesan')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="table-notif">
@@ -1265,7 +1264,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">@lang('Tutup')</button>
                 </div>
             </div>
         </div>

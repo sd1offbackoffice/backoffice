@@ -6,7 +6,7 @@
 {{--        <legend class="w-auto ml-5">Daftar Produk</legend>--}}
         <br>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Outlet</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Outlet')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menu6Out1Input" class="form-control" type="text">
                 <button id="menu6BtnOut1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Outlet</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Outlet')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menu6Out2Input" class="form-control" type="text">
                 <button id="menu6BtnOut2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Member</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Member')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menu6Mem1Input" class="form-control" type="text">
                 <button id="menu6BtnMem1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -45,7 +45,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Member</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Member')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menu6Mem2Input" class="form-control" type="text">
                 <button id="menu6BtnMem2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -103,7 +103,7 @@
                 $('#menu6Out1Desk').val(tableOutlet.row(index-1).data()['out_namaoutlet'].replace(/&amp;/g, '&'));
                 $('#menu6BtnOut2').prop("hidden",false);
             }else{
-                swal('', "Kode Outlet tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Outlet tidak terdaftar') }}`, 'warning');
                 $('#menu6Out1Input').val('').change();
             }
         }
@@ -124,7 +124,7 @@
                 $('#menu6Out2Desk').val(tableOutlet.row(index-1).data()['out_namaoutlet'].replace(/&amp;/g, '&'));
                 $('#menu6BtnMem1').prop("hidden",false);
             }else{
-                swal('', "Kode Outlet tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Outlet tidak terdaftar') }}`, 'warning');
                 $('#menu6Out2Input').val('').change();
             }
         }
@@ -143,7 +143,7 @@
                 $('#menu6Mem1Desk').val(deskripsi);
                 $('#menu6BtnMem2').prop("hidden",false);
             }else{
-                swal('', "Kode Member tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Member tidak terdaftar') }}`, 'warning');
                 $('#menu6Mem1Input').val('').change();
             }
         }
@@ -159,7 +159,7 @@
             if(deskripsi != "false"){
                 $('#menu6Mem2Desk').val(deskripsi);
             }else{
-                swal('', "Kode Member tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Member tidak terdaftar') }}`, 'warning');
                 $('#menu6Mem2Input').val('');
             }
         }

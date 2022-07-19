@@ -1,12 +1,12 @@
 @extends('navbar')
-@section('title', 'INQUIRY | INQUIRY SUPPLIER PER PRODUK')
+@section('title', __('INQUIRY | INQUIRY SUPPLIER PER PRODUK'))
 @section('content')
 
     <div class="container mt-3">
         <div class="row justify-content-center mb-3">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">INQUIRY SUPPLIER PER PRODUK</legend>
+                    <legend  class="w-auto ml-5">@lang('INQUIRY SUPPLIER PER PRODUK')</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="row">
                             <div class="col-sm-12">
@@ -15,7 +15,7 @@
                                         <div class="row text-right">
                                             <div class="col-sm-12 ">
                                                 <div class="form-group row mb-0">
-                                                    <label for="i_kodeplu" class="col-sm-2 col-form-label">PLU</label>
+                                                    <label for="i_kodeplu" class="col-sm-2 col-form-label">@lang('PLU')</label>
                                                     <div class="col-sm-2 buttonInside">
                                                         <input type="text" class="form-control" id="i_kodeplu">
                                                         <button type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#modal_plu" onclick="showLOV()">
@@ -47,18 +47,18 @@
 
                             <div class="col-sm-12">
                                 <fieldset class="card border-secondary">
-                                    <legend  class="w-auto ml-4">Detail</legend>
+                                    <legend  class="w-auto ml-4">@lang('Detail')</legend>
                                     <div class="table-wrapper-scroll-y my-custom-scrollbar">
                                         <table id="table_detail" class="table table-sm">
                                             <thead class="headerTable">
                                             <tr class="d-flex">
-                                                <th class="col-sm-1">Supplier</th>
-                                                <th class="col-sm-4">Nama Supplier</th>
-                                                <th class="col-sm-1 text-right">Kuantum</th>
-                                                <th class="col-sm-2 pl-5 pr-0 text-left">BPB</th>
-                                                <th class="col-sm-2 text-right">Tanggal</th>
-                                                <th class="col-sm-1 text-right">Term</th>
-                                                <th class="col-sm-1 text-right">H.P.P</th>
+                                                <th class="col-sm-1">@lang('Supplier')</th>
+                                                <th class="col-sm-4">@lang('Nama Supplier')</th>
+                                                <th class="col-sm-1 text-right">@lang('Kuantum')</th>
+                                                <th class="col-sm-2 pl-5 pr-0 text-left">@lang('BPB')</th>
+                                                <th class="col-sm-2 text-right">@lang('Tanggal')</th>
+                                                <th class="col-sm-1 text-right">@lang('Term')</th>
+                                                <th class="col-sm-1 text-right">@lang('H.P.P')</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -101,7 +101,7 @@
                     <div class="modal-header">
                         <div class="form-row col-sm">
                             <input id="helpSearch" class="form-control helpSearch" type="text" placeholder="..." aria-label="Search">
-                                <div class="invalid-feedback">Inputkan minimal 3 karakter</div>
+                                <div class="invalid-feedback">@lang('Inputkan minimal 3 karakter')</div>
                         </div>
                     </div>
                     <div class="modal-body">
@@ -112,8 +112,8 @@
                                         <table class="table table-sm" id="table_lov">
                                             <thead class="headerModalSupp">
                                             <tr>
-                                                <td>Kode PLU</td>
-                                                <td class="text-left">Deskripsi</td>
+                                                <td>@lang('Kode PLU')</td>
+                                                <td class="text-left">@lang('Deskripsi')</td>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -231,7 +231,7 @@
 
                     if(result.data.length == 0){
                         swal({
-                            title: 'Data tidak ada',
+                            title: `{{ __('Data tidak ada') }}`,
                             icon: 'error'
                         })
                     } else {

@@ -9,20 +9,20 @@
                 <fieldset class="card border-secondary">
                     <ul class="nav nav-tabs custom-color" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" id="btnTabUsulan" data-toggle="tab" href="#tabUsulan" onclick="refreshTableApproval()">USULAN</a>
+                            <a class="nav-link active" id="btnTabUsulan" data-toggle="tab" href="#tabUsulan" onclick="refreshTableApproval()">{{ strtoupper(__('Usulan')) }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="btnTabApproval" data-toggle="tab" href="#tabApproval" onclick="refreshTableApproval()">APPROVAL</a>
+                            <a class="nav-link" id="btnTabApproval" data-toggle="tab" href="#tabApproval" onclick="refreshTableApproval()">{{ strtoupper(__('Approval')) }}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="btnTabPKM" data-toggle="tab" href="#tabPKM">PKM PRODUK BARU</a>
+                            <a class="nav-link" id="btnTabPKM" data-toggle="tab" href="#tabPKM">{{ strtoupper(__('PKM Produk Baru')) }}</a>
                         </li>
                     </ul>
                     <div class="tab-content">
                         <div id="tabUsulan" class="container-fluid tab-pane active pl-0 pr-0 fix-height">
                             <div class="card-body">
                                 <div class="row">
-                                    <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">No. Usulan</label>
+                                    <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">{{ __('No. Usulan') }}</label>
                                     <div class="col-sm-2 buttonInside">
                                         <input type="text" class="form-control" id="u_noUsulan" autocomplete="off">
                                         <button id="btn_lov_trn" type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_lov_usulan" disabled>
@@ -34,14 +34,14 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <label class="col-sm-1 pr-0 text-right col-form-label">Tgl Usulan</label>
+                                    <label class="col-sm-1 pr-0 text-right col-form-label">{{ __('Tgl Usulan') }}</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="u_tglUsulan" disabled>
                                     </div>
 
                                     <div class="col"></div>
-                                    <button class="col-sm-1 btn btn-danger mr-1 d-none" id="u_btnBatal">BATAL</button>
-                                    <button class="col-sm-1 btn btn-primary mr-1" id="u_btnCetak" onclick="printUsulan()">CETAK</button>
+                                    <button class="col-sm-1 btn btn-danger mr-1 d-none" id="u_btnBatal">@lang('BATAL')</button>
+                                    <button class="col-sm-1 btn btn-primary mr-1" id="u_btnCetak" onclick="printUsulan()">{{ strtoupper(__('Cetak')) }}</button>
                                 </div>
                             </div>
                             <fieldset class="card border-secondary ml-2 mr-2 mt-0">
@@ -52,22 +52,22 @@
                                                 <thead class="thColor">
                                                 <tr>
                                                     <th width="3%" class="align-middle" rowspan="2"><i class="fas fa-trash"></i> </th>
-                                                    <th width="10%" class="align-middle" rowspan="2">PLU</th>
-                                                    <th width="" class="align-middle" colspan="4">AWAL</th>
-                                                    <th width="" class="align-middle" colspan="2">DATA EDIT PKM</th>
-                                                    <th width="" class="align-middle" colspan="4">HASIL EDIT PKM</th>
+                                                    <th width="10%" class="align-middle" rowspan="2">@lang('PLU')</th>
+                                                    <th width="" class="align-middle" colspan="4">@lang('AWAL')</th>
+                                                    <th width="" class="align-middle" colspan="2">@lang('DATA EDIT PKM')</th>
+                                                    <th width="" class="align-middle" colspan="4">@lang('HASIL EDIT PKM')</th>
                                                 </tr>
                                                 <tr>
-                                                    <th width="">PKM</th>
-                                                    <th width="">PKM Adj.</th>
-                                                    <th width="">MPlus</th>
-                                                    <th width="">PKMT Awal</th>
-                                                    <th width="">PKM</th>
-                                                    <th width="">MPlus</th>
-                                                    <th width="">PKM</th>
-                                                    <th width="">MPlus</th>
-                                                    <th width="">PKMT</th>
-                                                    <th width="">Ket</th>
+                                                    <th width="">@lang('PKM')</th>
+                                                    <th width="">@lang('PKM Adj')</th>
+                                                    <th width="">@lang('MPlus')</th>
+                                                    <th width="">@lang('PKMT Awal')</th>
+                                                    <th width="">@lang('PKM')</th>
+                                                    <th width="">@lang('MPlus')</th>
+                                                    <th width="">@lang('PKM')</th>
+                                                    <th width="">@lang('MPlus')</th>
+                                                    <th width="">@lang('PKMT')</th>
+                                                    <th width="">@lang('Ket')</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -98,19 +98,19 @@
                                         </div>
                                         <div class="col-sm-2">
                                             <a href="{{ url()->current() }}/download-format-usulan">
-                                                <button id="u_btnDownloadFormat" class="form-group col btn btn-primary mr-1 btn-usulan">Download Format File</button>
+                                                <button id="u_btnDownloadFormat" class="form-group col btn btn-primary mr-1 btn-usulan">@lang('Download Format File')</button>
                                             </a>
-                                            <button id="u_btnSelectFile" class="form-group col btn btn-secondary mr-1 btn-usulan" onclick="chooseFile()">Select File to Upload</button>
+                                            <button id="u_btnSelectFile" class="form-group col btn btn-secondary mr-1 btn-usulan" onclick="chooseFile()">@lang('Select File to Upload')</button>
                                             <input type="file" class="d-none" id="u_fileUsulan">
-                                            <label class="col pl-0 text-left col-form-label btn-usulan">Nama File</label>
+                                            <label class="col pl-0 text-left col-form-label btn-usulan">{{ __('Nama File') }}</label>
                                             <div class="col p-0 form-group">
                                                 <input type="text" class="form-control" id="u_namaFile" disabled>
                                             </div>
-                                            <button id="u_btnUpload" class="form-group col btn btn-primary mr-1 btn-usulan" onclick="uploadFileUsulan()">UPLOAD</button>
+                                            <button id="u_btnUpload" class="form-group col btn btn-primary mr-1 btn-usulan" onclick="uploadFileUsulan()">{{ strtoupper(__('Upload')) }}</button>
                                             <hr>
-                                            <button id="u_btnSimpan" class="form-group col btn btn-success mr-1 btn-usulan" onclick="saveUsulan()">SIMPAN</button>
-                                            <button id="u_btnKirim" class="form-group col btn btn-secondary mr-1 btn-usulan" onclick="sendUsulan()">KIRIM</button>
-                                            <button id="u_btnTambah" class="form-group col btn btn-primary mr-1 mt-5 btn-usulan" onclick="tambahItem()">TAMBAH ITEM</button>
+                                            <button id="u_btnSimpan" class="form-group col btn btn-success mr-1 btn-usulan" onclick="saveUsulan()">{{ strtoupper(__('Simpan')) }}</button>
+                                            <button id="u_btnKirim" class="form-group col btn btn-secondary mr-1 btn-usulan" onclick="sendUsulan()">{{ strtoupper(__('Kirim')) }}</button>
+                                            <button id="u_btnTambah" class="form-group col btn btn-primary mr-1 mt-5 btn-usulan" onclick="tambahItem()">{{ strtoupper(__('Tambah Item')) }}</button>
                                         </div>
                                     </div>
                                 </div>
@@ -129,7 +129,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">Deskripsi</label>
+                                    <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">@lang('Deskripsi')</label>
                                     <div class="col-sm-4">
                                         <input type="text" class="form-control" id="u_deskripsi" disabled>
                                     </div>
@@ -151,19 +151,19 @@
                                 <div class="row form-group">
                                     <div class="col-sm-1"></div>
                                     <input type="file" class="d-none" id="a_fileApproval">
-                                    <button class="col-sm-3 btn btn-primary mr-1" id="a_btnSelect" onclick="chooseApprovalFile()">Select file to upload...</button>
+                                    <button class="col-sm-3 btn btn-primary mr-1" id="a_btnSelect" onclick="chooseApprovalFile()">@lang('Select File to Upload')...</button>
                                 </div>
                                 <div class="row">
-                                    <label class="col-sm-1 text-right col-form-label">Directory File</label>
+                                    <label class="col-sm-1 text-right col-form-label">@lang('Directory File')</label>
                                     <input type="text" class="col-sm-4 form-control" id="a_directoryFile" disabled>
                                     <div class="col-sm-1"></div>
-                                    <button class="col-sm-1 btn btn-primary mr-1" id="a_btnTransfer" onclick="uploadFileApproval()">TRANSFER</button>
+                                    <button class="col-sm-1 btn btn-primary mr-1" id="a_btnTransfer" onclick="uploadFileApproval()">{{ strtoupper(__('Transfer')) }}</button>
                                 </div>
                             </div>
                             <fieldset class="card border-secondary ml-2 mr-2 mt-0">
                                 <div class="card-body">
                                     <div class="row form-group">
-                                        <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">No. Usulan</label>
+                                        <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">@lang('No. Usulan')</label>
                                         <div class="col-sm-2">
                                             <input type="text" class="form-control" id="a_noUsulan" autocomplete="off" disabled>
                                         </div>
@@ -176,22 +176,22 @@
                                             <table id="a_tableApproval" class="table table-sm table-bordered mb-3 text-center">
                                                 <thead class="thColor">
                                                 <tr>
-                                                    <th width="8%" class="align-middle" rowspan="2">PLU</th>
-                                                    <th width="" class="align-middle" colspan="4">AWAL</th>
-                                                    <th width="" class="align-middle" colspan="3">FILE EDIT PKM</th>
-                                                    <th width="" class="align-middle" colspan="3">HASIL</th>
+                                                    <th width="8%" class="align-middle" rowspan="2">@lang('PLU')</th>
+                                                    <th width="" class="align-middle" colspan="4">@lang('AWAL')</th>
+                                                    <th width="" class="align-middle" colspan="3">@lang('FILE EDIT PKM')</th>
+                                                    <th width="" class="align-middle" colspan="3">{{ strtoupper(__('Hasil')) }}</th>
                                                 </tr>
                                                 <tr>
-                                                    <th width="">PKM</th>
-                                                    <th width="">PKM Adj.</th>
-                                                    <th width="">MPlus</th>
-                                                    <th width="">PKMT Awal</th>
-                                                    <th width="">PKM</th>
-                                                    <th width="">MPlus</th>
-                                                    <th width="">Ket</th>
-                                                    <th width="">PKM</th>
-                                                    <th width="">MPlus</th>
-                                                    <th width="">PKMT</th>
+                                                    <th width="">@lang('PKM')</th>
+                                                    <th width="">@lang('PKM Adj').</th>
+                                                    <th width="">@lang('MPlus')</th>
+                                                    <th width="">@lang('PKMT Awal')</th>
+                                                    <th width="">@lang('PKM')</th>
+                                                    <th width="">@lang('MPlus')</th>
+                                                    <th width="">@lang('Ket')</th>
+                                                    <th width="">@lang('PKM')</th>
+                                                    <th width="">@lang('MPlus')</th>
+                                                    <th width="">@lang('PKMT')</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -225,7 +225,7 @@
                             </fieldset>
                             <div class="card-body">
                                 <div class="row">
-                                    <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">Deskripsi</label>
+                                    <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">@lang('Deskripsi')</label>
                                     <div class="col-sm-4">
                                         <input type="text" class="form-control" id="a_deskripsi" disabled>
                                     </div>
@@ -237,13 +237,13 @@
                                 <div class="row form-group">
                                     <div class="col-sm-1"></div>
                                     <input type="file" class="d-none" id="p_filePKM">
-                                    <button class="col-sm-3 btn btn-primary mr-1" id="p_btnSelect" onclick="choosePKMFile()">Select file to upload...</button>
+                                    <button class="col-sm-3 btn btn-primary mr-1" id="p_btnSelect" onclick="choosePKMFile()">@lang('Select File to Upload')...</button>
                                 </div>
                                 <div class="row">
-                                    <label class="col-sm-1 text-right col-form-label">Directory File</label>
+                                    <label class="col-sm-1 text-right col-form-label">@lang('Directory File')</label>
                                     <input type="text" class="col-sm-4 form-control" id="p_directoryFile" disabled>
                                     <div class="col-sm-1"></div>
-                                    <button class="col-sm-1 btn btn-primary mr-1" id="p_btnTransfer" onclick="uploadFilePKMBaru()">TRANSFER</button>
+                                    <button class="col-sm-1 btn btn-primary mr-1" id="p_btnTransfer" onclick="uploadFilePKMBaru()">{{ strtoupper(__('Transfer')) }}</button>
                                     <div class="col"></div>
                                     <div class="col-sm-2">
                                         <div class="buttonInside">
@@ -253,13 +253,13 @@
                                             </button>
                                         </div>
                                     </div>
-                                    <button class="col-sm-1 btn btn-primary mr-1" id="p_btnFind" onclick="getDataPKMBaru(null)">FIND</button>
+                                    <button class="col-sm-1 btn btn-primary mr-1" id="p_btnFind" onclick="getDataPKMBaru(null)">{{ strtoupper(__('Find')) }}</button>
                                 </div>
                             </div>
                             <fieldset class="card border-secondary ml-2 mr-2 mt-0">
                                 <div class="card-body">
                                     <div class="row form-group">
-                                        <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">No Dok</label>
+                                        <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">@lang('No Dok')</label>
                                         <div class="col-sm-2">
                                             <input type="text" class="form-control" id="p_noUsulan" autocomplete="off" disabled>
                                         </div>
@@ -272,14 +272,14 @@
                                             <table id="p_tablePKM" class="table table-sm table-bordered mb-3 text-center">
                                                 <thead class="thColor">
                                                 <tr>
-                                                    <th>PLU</th>
-                                                    <th>MPKM</th>
-                                                    <th>PKM</th>
-                                                    <th>M PLUS I</th>
-                                                    <th>M PLUS O</th>
-                                                    <th>PKMT</th>
-                                                    <th>CREATE BY</th>
-                                                    <th>KETERANGAN</th>
+                                                    <th>@lang('PLU')</th>
+                                                    <th>@lang('MPKM')</th>
+                                                    <th>@lang('PKM')</th>
+                                                    <th>@lang('M PLUS I')</th>
+                                                    <th>@lang('M PLUS O')</th>
+                                                    <th>@lang('PKMT')</th>
+                                                    <th>@lang('CREATE BY')</th>
+                                                    <th>{{ strtoupper(__('Keterangan')) }}</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -292,7 +292,7 @@
                             </fieldset>
                             <div class="card-body">
                                 <div class="row">
-                                    <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">Deskripsi</label>
+                                    <label class="col-sm-1 pl-0 pr-0 text-right col-form-label">@lang('Deskripsi')</label>
                                     <div class="col-sm-4">
                                         <input type="text" class="form-control" id="p_deskripsi" disabled>
                                     </div>
@@ -317,9 +317,9 @@
                                 <table class="table table-sm mb-0" id="table_lov_usulan">
                                     <thead>
                                     <tr>
-                                        <th>Dokumen</th>
-                                        <th>Tanggal</th>
-                                        <th>Keterangan</th>
+                                        <th>@lang('Dokumen')</th>
+                                        <th>@lang('Tanggal')</th>
+                                        <th>@lang('Keterangan')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -346,8 +346,8 @@
                                 <table class="table table-sm mb-0" id="table_lov_pkm_baru">
                                     <thead>
                                     <tr>
-                                        <th>Dokumen</th>
-                                        <th>Tanggal</th>
+                                        <th>@lang('Dokumen')</th>
+                                        <th>@lang('Tanggal')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -374,9 +374,9 @@
                                 <table class="table table-sm mb-0" id="table_lov_plu">
                                     <thead>
                                     <tr>
-                                        <th>PLU</th>
-                                        <th>DESKRIPSI</th>
-                                        <th>SATUAN</th>
+                                        <th>@lang('PLU')</th>
+                                        <th>{{ strtoupper(__('Deskripsi')) }}</th>
+                                        <th>{{ strtoupper(__('Satuan')) }}</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -640,7 +640,7 @@
 
                     if(response.length == 0){
                         swal({
-                            title: 'PLU tidak ditemukan!',
+                            title: `{{ __('PLU tidak ditemukan') }}!`,
                             icon: 'error'
                         }).then(function(){
                             $('.row-'+currentRow).find('.prdcd').select();
@@ -664,7 +664,7 @@
                     $('#modal-loader').modal('hide');
                     // handle error
                     swal({
-                        title: 'Terjadi kesalahan!',
+                        title: `{{ __('Terjadi kesalahan') }}!`,
                         text: error.responseJSON.message,
                         icon: 'error'
                     }).then(() => {
@@ -877,7 +877,7 @@
                 },
                 error: function (error) {
                     swal({
-                        title: 'Terjadi kesalahan!',
+                        title: `{{ __('Terjadi kesalahan') }}!`,
                         text: error.responseJSON.message,
                         icon: 'error'
                     }).then(() => {
@@ -922,7 +922,7 @@
 
         function getNewNoUsulan(){
             swal({
-                title: 'Ingin membuat nomor usulan baru?',
+                title: `{{ __('Ingin membuat nomor usulan baru') }}?`,
                 icon: 'warning',
                 buttons: true
             }).then((ok) => {
@@ -968,7 +968,7 @@
                             $('#modal-loader').modal('hide');
                             // handle error
                             swal({
-                                title: 'Terjadi kesalahan!',
+                                title: `{{ __('Terjadi kesalahan') }}!`,
                                 text: error.responseJSON.message,
                                 icon: 'error'
                             }).then(() => {
@@ -1128,7 +1128,7 @@
 
         function saveUsulan(){
             swal({
-                title: 'Yakin ingin menyimpan usulan?',
+                title: `{{ __('Yakin ingin menyimpan usulan') }}!`,
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true
@@ -1182,7 +1182,7 @@
                             $('#modal-loader').modal('hide');
                             // handle error
                             swal({
-                                title: 'Terjadi kesalahan!',
+                                title: `{{ __('Terjadi kesalahan') }}!`,
                                 text: error.responseJSON.message,
                                 icon: 'error'
                             }).then(() => {
@@ -1210,7 +1210,7 @@
         function chooseFile() {
             if($('#u_tglUsulan').val() == ''){
                 swal({
-                    title: 'Silahkan pilih usulan terlebih dahulu!',
+                    title: `{{ __('Silahkan pilih usulan terlebih dahulu') }}!`,
                     icon: 'error'
                 }).then(() => {
                     $('#u_noUsulan').select();
@@ -1235,7 +1235,7 @@
         function uploadFileUsulan() {
             if($('#u_namaFile').val() == ''){
                 swal({
-                    title: 'Silahkan pilih file terlebih dahulu!',
+                    title: `{{ __('Silahkan pilih file terlebih dahulu') }}!`,
                     icon: 'warning'
                 }).then(() => {
                     $('#u_btnSelectFile').focus();
@@ -1322,7 +1322,7 @@
         function printUsulan(){
             if($('#u_noUsulan').val() == ''){
                 swal({
-                    title: 'Silahkan pilih usulan terlebih dahulu!',
+                    title: `{{ __('Silahkan pilih usulan terlebih dahulu') }}!`,
                     icon: 'error'
                 }).then(() => {
                     $('#u_noUsulan').select();
@@ -1378,7 +1378,7 @@
         function uploadFileApproval() {
             if($('#a_directoryFile').val() == ''){
                 swal({
-                    title: 'Silahkan pilih file terlebih dahulu!',
+                    title: `{{ __('Silahkan pilih file terlebih dahulu') }}!`,
                     icon: 'warning'
                 }).then(() => {
                     $('#a_btnSelect').focus();
@@ -1592,7 +1592,7 @@
         function uploadFilePKMBaru() {
             if($('#p_directoryFile').val() == ''){
                 swal({
-                    title: 'Silahkan pilih file terlebih dahulu!',
+                    title: `{{ __('Silahkan pilih file terlebih dahulu') }}!`,
                     icon: 'warning'
                 }).then(() => {
                     $('#p_btnSelect').focus();

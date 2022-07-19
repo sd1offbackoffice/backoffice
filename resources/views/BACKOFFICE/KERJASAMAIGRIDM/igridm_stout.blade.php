@@ -6,30 +6,30 @@
         <div class="row justify-content-center">
             <div class="col-md-7">
                 <fieldset class="card">
-                    <legend class="w-auto ml-5">LAPORAN STOCK OUT</legend>
+                    <legend class="w-auto ml-5">@lang('LAPORAN STOCK OUT')</legend>
                     <div class="card-body shadow-lg cardForm">
                         <form>
                             <div class="row">
                                 <div class="col-sm-12 text-center">
                                     <label class="radio-inline">
-                                        <input type="radio" name="optradio" value="r1" checked> Stock Out berdasarkan KPH Mean
+                                        <input type="radio" name="optradio" value="r1" checked> @lang('Stock Out berdasarkan KPH Mean')
                                     </label>
                                     &nbsp;&nbsp;&nbsp;
                                     <label class="radio-inline">
-                                        <input type="radio" name="optradio" value="r2"> Stock Out berdasarkan KPH Mean dan PO
+                                        <input type="radio" name="optradio" value="r2"> @lang('Stock Out berdasarkan KPH Mean dan PO')
                                     </label>
                                 </div>
                             </div>
                             <br>
                             <div class="row">
-                                <label class="col-sm-4 text-right font-weight-normal">Kode Divisi</label>
+                                <label class="col-sm-4 text-right font-weight-normal">@lang('Kode Divisi')</label>
                                 <div class="col-sm-2 buttonInside">
                                     <input type="text" class="bigGuy form-control" id="div1" maxlength="1">
                                     <button onclick="GetDiv(this)" id="1" type="button" class="btn btn-lov p-0">
                                         <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                     </button>
                                 </div>
-                                <label class="col-sm-1 text-center">s/d</label>
+                                <label class="col-sm-2 text-center">@lang('s/d')</label>
                                 <div class="col-sm-2 buttonInside">
                                     <input type="text" class="bigGuy form-control" id="div2" maxlength="1">
                                     <button onclick="GetDiv(this)" id="2" type="button" class="btn btn-lov p-0">
@@ -38,14 +38,14 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <label class="col-sm-4 text-right font-weight-normal">Kode Departement</label>
+                                <label class="col-sm-4 text-right font-weight-normal">@lang('Kode Departemen')</label>
                                 <div class="col-sm-2 buttonInside">
                                     <input type="text" class="bigGuy form-control" id="dept1" maxlength="2">
                                     <button onclick="GetDept(this)" id="1" type="button" class="btn btn-lov p-0">
                                         <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                     </button>
                                 </div>
-                                <label class="col-sm-1 text-center">s/d</label>
+                                <label class="col-sm-2 text-center">@lang('s/d')</label>
                                 <div class="col-sm-2 buttonInside">
                                     <input type="text" class="bigGuy form-control" id="dept2" maxlength="2">
                                     <button onclick="GetDept(this)" id="2" type="button" class="btn btn-lov p-0">
@@ -54,14 +54,14 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <label class="col-sm-4 text-right font-weight-normal">Kode Kategori</label>
+                                <label class="col-sm-4 text-right font-weight-normal">@lang('Kode Kategori')</label>
                                 <div class="col-sm-2 buttonInside">
                                     <input type="text" class="bigGuy form-control" id="kat1" maxlength="2">
                                     <button onclick="GetKat(this)" id="1" type="button" class="btn btn-lov p-0">
                                         <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                     </button>
                                 </div>
-                                <label class="col-sm-1 text-center">s/d</label>
+                                <label class="col-sm-2 text-center">@lang('s/d')    </label>
                                 <div class="col-sm-2 buttonInside">
                                     <input type="text" class="bigGuy form-control" id="kat2" maxlength="2">
                                     <button onclick="GetKat(this)" id="2" type="button" class="btn btn-lov p-0">
@@ -71,8 +71,8 @@
                             </div>
                             <br>
                             <div class="d-flex bd-highlight mb-3">
-                                <div class="mr-auto p-2 bd-highlight font-weight-bold">** Kosong Semua = ALL</div>
-                                <button class="p-2 bd-highlight btn btn-success col-sm-4" type="button" onclick="print()">CETAK</button>
+                                <div class="mr-auto p-2 bd-highlight font-weight-bold">** @lang('Kosong Semua') = ALL</div>
+                                <button class="p-2 bd-highlight btn btn-success col-sm-4" type="button" onclick="print()">{{ strtoupper(__('Cetak')) }}</button>
                             </div>
 {{--                            <div class="d-flex justify-content-end">--}}
 {{--                                <button class="p-2 bd-highlight btn btn-success col-sm-4" type="button" onclick="print()">CETAK</button>--}}
@@ -89,7 +89,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Memilih Divisi</h5>
+                    <h5 class="modal-title">@lang('Memilih Divisi') </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

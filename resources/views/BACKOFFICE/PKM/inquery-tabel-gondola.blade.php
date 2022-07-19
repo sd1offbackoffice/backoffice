@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','PKM | INQUERY TABEL GONDOLA')
+@section('title',__('PKM | INQUERY TABEL GONDOLA'))
 @section('content')
 
 
@@ -11,7 +11,7 @@
                         <div class="row text-right">
                             <div class="col-sm-12">
                                 <div class="row form-group">
-                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">PLU</label>
+                                    <label for="prdcd" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('PLU')</label>
                                     <div class="col-sm-2 buttonInside">
                                         <input type="text" class="form-control text-left" id="plu">
                                         <button id="btn_lov" type="button" class="btn btn-primary btn-lov p-0 divisi1" data-toggle="modal" data-target="#m_lov_plu">
@@ -95,7 +95,7 @@
                                     <thead class="theadDataTables">
                                     <tr>
                                         <th>@lang('Deskripsi')</th>
-                                        <th>PLU</th>
+                                        <th>@lang('PLU')</th>
                                         <th>@lang('Satuan')</th>
                                     </tr>
                                     </thead>
@@ -243,7 +243,7 @@
             }
             if(!found){
                 swal({
-                    title: 'PLU '+plu+' tidak ditemukan!',
+                    title: `{{ __('PLU') }} `+plu+` {{ __('tidak ditemukan') }}!` ,
                     icon: 'error'
                 });
             }
@@ -295,7 +295,7 @@
                         index++;
                     else{
                         swal({
-                            title: 'Sudah pada akhir data!',
+                            title: `{{ __('Sudah pada akhir data') }}!`,
                             icon: 'warning'
                         });
                     }
@@ -305,7 +305,7 @@
                         index--;
                     else{
                         swal({
-                            title: 'Sudah pada awal data!',
+                            title: `{{ __('Sudah pada awal data') }}!`,
                             icon: 'warning'
                         });
                     }

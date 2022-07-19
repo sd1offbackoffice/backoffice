@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','BO | INPUT PERTEMANAN')
+@section('title',__('BO | INPUT PERTEMANAN'))
 
 @section('content')
 
@@ -10,10 +10,10 @@
                 <fieldset class="card border-secondary">
                     <div class="card-body pt-0">
                         <fieldset class="card border-secondary mt-0">
-                            <legend  class="w-auto ml-3">INPUT PLU</legend>
+                            <legend  class="w-auto ml-3">@lang('INPUT PLU')</legend>
                             <div class="card-body py-0">
                                 <div class="row form-group">
-                                    <label for="prdcd" class="col-sm-1 col-form-label text-right">PLU</label>
+                                    <label for="prdcd" class="col-sm-1 col-form-label text-right">@lang('PLU')</label>
                                     <div class="col-sm-3 buttonInside">
                                         <input type="text" class="form-control text-left" id="prdcd">
                                         <button id="btn_departement" type="button" class="btn btn-primary btn-lov p-0" onclick="showLovPrdcd()">
@@ -22,18 +22,18 @@
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label for="prdcd" class="col-sm-1 text-right col-form-label  text-right pl-0">Deskripsi</label>
+                                    <label for="prdcd" class="col-sm-1 text-right col-form-label  text-right pl-0">@lang('Deskripsi')</label>
                                     <div class="col-sm-7">
                                         <input type="text" class="form-control text-left" id="desk" disabled>
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label for="prdcd" class="col-sm-1 text-right col-form-label">Satuan</label>
+                                    <label for="prdcd" class="col-sm-1 text-right col-form-label">@lang('Satuan')</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control text-left" id="satuan" disabled>
                                     </div>
                                     <div class="col-sm-4"></div>
-                                    <label for="prdcd" class="col-sm-3 text-right col-form-label">Max qty(CTN) / palet</label>
+                                    <label for="prdcd" class="col-sm-3 text-right col-form-label">@lang('Max qty(CTN) / palet')</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control text-center" id="maxqty" disabled>
                                     </div>
@@ -41,16 +41,16 @@
                             </div>
                         </fieldset>
                         <fieldset class="card border-secondary mt-0" id="data-field">
-                            <legend  class="w-auto ml-3">INFO</legend>
+                            <legend  class="w-auto ml-3">@lang('INFO')</legend>
                             <div class="card-body pt-0">
                                 <div class="row form-group mb-0">
-                                    <label for="prdcd" class="col-sm-2 text-center col-form-label pr-1">Kode Rak</label>
-                                    <label for="prdcd" class="col-sm-2 text-center pl-0 pr-0 col-form-label">Kode Subrak</label>
-                                    <label for="prdcd" class="col-sm-1 text-center pl-0 pr-0 col-form-label">Tipe Rak</label>
-                                    <label for="prdcd" class="col-sm-2 text-center col-form-label pr-1">Shelving</label>
-                                    <label for="prdcd" class="col-sm-1 text-center col-form-label pl-0 pr-0">No. Urut</label>
-                                    <label for="prdcd" class="col-sm-1 text-center col-form-label pl-0 pr-0">Qty (pcs)</label>
-                                    <label for="prdcd" class="col-sm-2 text-center col-form-label pl-0 pr-0">Expired Date</label>
+                                    <label for="prdcd" class="col-sm-2 text-center col-form-label pr-1">@lang('Kode Rak')</label>
+                                    <label for="prdcd" class="col-sm-2 text-center pl-0 pr-0 col-form-label">@lang('Kode Subrak')</label>
+                                    <label for="prdcd" class="col-sm-1 text-center pl-0 pr-0 col-form-label">@lang('Tipe Rak')</label>
+                                    <label for="prdcd" class="col-sm-2 text-center col-form-label pr-1">@lang('Shelving')</label>
+                                    <label for="prdcd" class="col-sm-1 text-center col-form-label pl-0 pr-0">@lang('No Urut')</label>
+                                    <label for="prdcd" class="col-sm-1 text-center col-form-label pl-0 pr-0">@lang('Qty (pcs)')</label>
+                                    <label for="prdcd" class="col-sm-2 text-center col-form-label pl-0 pr-0">@lang('Expired Date')</label>
                                 </div>
                                 <div class="scrollable-field" id="lokasi">
                                     @for($i=0;$i<4;$i++)
@@ -82,14 +82,14 @@
                             </div>
                         </fieldset>
                         <fieldset class="card border-secondary mt-0" id="data-field">
-                            <legend  class="w-auto ml-3">PERTEMANAN</legend>
+                            <legend  class="w-auto ml-3">@lang('PERTEMANAN')</legend>
                             <div class="card-body pt-0">
                                 <div class="col-sm-6">
                                     <div class="row form-group mb-0">
                                         <div class="col-sm-2"></div>
-                                        <label for="prdcd" class="col-sm-2 text-center col-form-label pr-4">No</label>
-                                        <label for="prdcd" class="col-sm-4 text-center pr-5 col-form-label">Kode Rak</label>
-                                        <label for="prdcd" class="col-sm-4 text-center pr-5 col-form-label plano-subrak">Sub Rak</label>
+                                        <label for="prdcd" class="col-sm-2 text-center col-form-label pr-4">@lang('No')</label>
+                                        <label for="prdcd" class="col-sm-4 text-center pr-5 col-form-label">@lang('Kode Rak')</label>
+                                        <label for="prdcd" class="col-sm-4 text-center pr-5 col-form-label plano-subrak">@lang('Sub Rak')</label>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -116,9 +116,9 @@
                                     <div class="col-sm-6">
                                         <div class="row form-group">
                                             <div class="col-sm-2"></div>
-                                            <button class="btn btn-primary col-sm-3" onclick="showModalAdd()">TAMBAH</button>
+                                            <button class="btn btn-primary col-sm-3" onclick="showModalAdd()">{{ strtoupper(__('Tambah')) }}</button>
                                             <div class="col-sm-2"></div>
-                                            <button class="btn btn-primary col-sm-3" onclick="showModalTukar()">TUKAR</button>
+                                            <button class="btn btn-primary col-sm-3" onclick="showModalTukar()">{{ strtoupper(__('Tukar')) }}</button>
                                             <div class="col-sm-2"></div>
                                         </div>
                                     </div>
@@ -142,9 +142,9 @@
                                 <table class="table table-sm mb-0 text-center" id="table_prdcd">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Deskripsi</th>
-                                        <th>Satuan</th>
-                                        <th>PLU</th>
+                                        <th>@lang('Deskripsi')</th>
+                                        <th>@lang('Satuan')</th>
+                                        <th>@lang('PLU')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -166,7 +166,7 @@
                 <div class="modal-body">
                     <div class="container">
                         <div class="row form-group">
-                            <label class="col-sm-3 text-right col-form-label  text-right pl-0">No Urut</label>
+                            <label class="col-sm-3 text-right col-form-label  text-right pl-0">@lang('No Urut')</label>
                             <div class="col-sm-2">
                                 <input type="text" class="form-control text-left" id="add_nourut" disabled>
                             </div>
@@ -175,7 +175,7 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label class="col-sm-3 col-form-label text-right">Kode Rak</label>
+                            <label class="col-sm-3 col-form-label text-right">@lang('Kode Rak')</label>
                             <div class="col-sm-3 buttonInside">
                                 <input type="text" class="form-control text-left" id="add_koderak">
                                 <button id="btn_departement" type="button" class="btn btn-primary btn-lov p-0" onclick="showLovRak()">
@@ -184,16 +184,16 @@
                             </div>
                         </div>
                         <div class="row form-group" id="add_field_subrak">
-                            <label class="col-sm-3 col-form-label text-right">Kode Sub Rak</label>
+                            <label class="col-sm-3 col-form-label text-right">@lang('Kode Sub Rak')</label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control text-left" id="add_subrak">
                             </div>
                         </div>
                         <div class="row form-group">
                             <div class="col-sm"></div>
-                            <button class="btn btn-danger col-sm-2" onclick="$('#m_add').modal('hide')">BATAL</button>
+                            <button class="btn btn-danger col-sm-2" onclick="$('#m_add').modal('hide')">@lang('BATAL')</button>
                             <div class="col-sm-1"></div>
-                            <button class="btn btn-success col-sm-2" onclick="addPlano()">TAMBAH</button>
+                            <button class="btn btn-success col-sm-2" onclick="addPlano()">{{ strtoupper(__('Tambah')) }}</button>
                         </div>
                     </div>
                 </div>
@@ -212,7 +212,7 @@
                                 <table class="table table-sm mb-0 text-center" id="table_koderak">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Kode Rak</th>
+                                        <th>@lang('Kode Rak')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -238,8 +238,8 @@
                                 <table class="table table-sm mb-0 text-center" id="table_subrak">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Kode Rak</th>
-                                        <th>Sub Rak</th>
+                                        <th>@lang('Kode Rak')</th>
+                                        <th>@lang('Sub Rak')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -264,26 +264,26 @@
                             <label for="prdcd" class="col-sm-1 col-form-label text-right">Plano</label>
                             <div class="col-sm-3">
                                 <select class="form-control" id="tukarA">
-                                    <option value="-">- Pilih plano -</option>
+                                    <option value="-">- @lang('Pilih plano') -</option>
                                 </select>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-4 col-form-label text-center">dengan</label>
+                            <label for="prdcd" class="col-sm-4 col-form-label text-center">@lang('dengan')</label>
                         </div>
                         <div class="row form-group">
                             <label for="prdcd" class="col-sm-1 col-form-label text-right">Plano</label>
                             <div class="col-sm-3">
                                 <select class="form-control" id="tukarB">
-                                    <option value="-">- Pilih plano -</option>
+                                    <option value="-">- @lang('Pilih plano') -</option>
                                 </select>
                             </div>
                         </div>
                         <div class="row form-group">
                             <div class="col-sm"></div>
-                            <button class="btn btn-danger col-sm-2" onclick="$('#m_tukar').modal('hide')">BATAL</button>
+                            <button class="btn btn-danger col-sm-2" onclick="$('#m_tukar').modal('hide')">@lang('BATAL')</button>
                             <div class="col-sm-1"></div>
-                            <button class="btn btn-success col-sm-2" onclick="tukarPlano()">TUKAR</button>
+                            <button class="btn btn-success col-sm-2" onclick="tukarPlano()">{{ strtoupper(__('Tukar')) }}</button>
                         </div>
                     </div>
                 </div>
@@ -579,7 +579,7 @@
 
         function deletePlano(row, koderak, subrak){
             swal({
-                title: `Yakin ingin menghapus data pada PLU ${$('#prdcd').val()} [ ${koderak} ${ isSubrak ? ' - '+subrak : ''}]`,
+                title: `{{ __('Yakin ingin menghapus data pada PLU') }} ${$('#prdcd').val()} [ ${koderak} ${ isSubrak ? ' - '+subrak : ''}]`,
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true
@@ -664,7 +664,7 @@
 
         function addPlano(){
             swal({
-                title: 'Yakin ingin menambahkan data pertemanan untuk PLU '+$('#prdcd').val()+' ?',
+                title: `{{ __('Yakin ingin menambahkan data pertemanan untuk PLU') }} `+$('#prdcd').val()+` ?`,
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true
@@ -815,19 +815,19 @@
         function tukarPlano(){
             if(!$('#tukarA').val() || !$('#tukarB').val()){
                 swal({
-                    title: 'Data pertemanan yang dipilih belum lengkap!',
+                    title: `{{ __('Data pertemanan yang dipilih belum lengkap') }}!`,
                     icon: 'warning'
                 });
             }
             else if($('#tukarA').val() == $('#tukarB').val()){
                 swal({
-                    title: 'Data pertemanan yang dipilih sama!',
+                    title: `{{ __('Data pertemanan yang dipilih sama') }}!`,
                     icon: 'warning'
                 });
             }
             else{
                 swal({
-                    title: 'Yakin ingin menukar data pertemanan untuk PLU '+$('#prdcd').val()+' ?',
+                    title: `{{ __('Yakin ingin menukar data pertemanan untuk PLU') }} `+$('#prdcd').val()+` ?`,
                     icon: 'warning',
                     buttons: true,
                     dangerMode: true

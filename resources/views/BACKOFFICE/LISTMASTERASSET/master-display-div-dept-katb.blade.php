@@ -6,7 +6,7 @@
         {{--        <legend class="w-auto ml-5">Master Display Div/Dept/Katb</legend>--}}
         <br>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Divisi</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Divisi')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuEDiv1Input" class="form-control" type="text">
                 <button id="menuEBtnDiv1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Divisi</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Divisi')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuEDiv2Input" class="form-control" type="text">
                 <button id="menuEBtnDiv2" type="button" class="btn btn-lov p-0" data-toggle="modal" hidden
@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Dept</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Dept')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuEDep1Input" class="form-control" type="text">
                 <button id="menuEBtnDep1" type="button" class="btn btn-lov p-0" data-toggle="modal" hidden
@@ -45,7 +45,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Dept</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Dept')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuEDep2Input" class="form-control" type="text">
                 <button id="menuEBtnDep2" type="button" class="btn btn-lov p-0" data-toggle="modal" hidden
@@ -58,7 +58,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Kat</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Kat')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuEKat1Input" class="form-control" type="text">
                 <button id="menuEBtnKat1" type="button" class="btn btn-lov p-0" data-toggle="modal" hidden
@@ -71,7 +71,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Kat</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Kat')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuEKat2Input" class="form-control" type="text">
                 <button id="menuEBtnKat2" type="button" class="btn btn-lov p-0" data-toggle="modal" hidden
@@ -84,7 +84,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai PLU</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai PLU')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuEPlu1Input" class="form-control" type="text">
                 <button id="menuEBtnPlu1" type="button" class="btn btn-lov p-0" onclick="menuETogglePlu()">
@@ -96,7 +96,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai PLU</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai PLU')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuEPlu2Input" class="form-control" type="text">
                 <button id="menuEBtnPlu2" type="button" class="btn btn-lov p-0" onclick="menuETogglePlu()">
@@ -109,7 +109,7 @@
         </div>
         <br>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Hanya Item OMI</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Hanya Item OMI')</label>
             <div class="col-sm-1">
                 <input id="menuECheck" class="form-control" type="checkbox">
             </div>
@@ -215,7 +215,7 @@
 
                 $('#menuEBtnDiv2').prop("hidden",false);
             }else{
-                swal('', "Kode Divisi tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Divisi tidak terdaftar') }}`, 'warning');
 
                 $('#menuEDiv1Input').val('').change().focus();
             }
@@ -248,7 +248,7 @@
 
                 $('#menuEBtnDep1').prop("hidden",false);
             }else{
-                swal('', "Kode Divisi tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Divisi tidak terdaftar') }}`, 'warning');
 
                 $('#menuEDiv2Input').val('').change();
             }
@@ -278,7 +278,7 @@
 
                 $('#menuEBtnDep2').prop("hidden",false);
             }else{
-                swal('', "Kode Departement tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Departemen tidak terdaftar') }}`, 'warning');
 
                 $('#menuEDep1Input').val('').change();
             }
@@ -307,7 +307,7 @@
 
                 $('#menuEBtnKat1').prop("hidden",false);
             }else{
-                swal('', "Kode Departement tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Departemen tidak terdaftar') }}`, 'warning');
 
                 $('#menuEDep2Input').val('').change();
             }
@@ -332,7 +332,7 @@
 
                 $('#menuEBtnKat2').prop("hidden",false);
             }else{
-                swal('', "Kode Kategori tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Kategori tidak terdaftar') }}`, 'warning');
 
                 $('#menuEKat1Input').val('').change();
             }
@@ -353,7 +353,7 @@
             if(index){
                 $('#menuEKat2Desk').val(tableKategori.row(index-1).data()['kat_namakategori'].replace(/&amp;/g, '&'));
             }else{
-                swal('', "Kode Kategori tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Kategori tidak terdaftar') }}`, 'warning');
 
                 $('#menuEKat2Input').val('').change();
             }
@@ -386,7 +386,7 @@
                 // }
                 $('#menuEPlu1Desk').val(deskripsi);
             }else{
-                swal('', "Kode PLU tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Plu tidak terdaftar') }}`, 'warning');
 
                 $('#menuEPlu1Input').val('').change();
             }
@@ -419,7 +419,7 @@
                     $('#menuEPlu2Desk').val(deskripsi);
                 }
             }else{
-                swal('', "Kode PLU tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Plu tidak terdaftar') }}`, 'warning');
 
                 $('#menuEPlu2Input').val('').change();
             }

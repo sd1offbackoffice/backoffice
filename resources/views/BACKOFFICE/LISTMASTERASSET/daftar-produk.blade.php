@@ -6,7 +6,7 @@
 {{--        <legend class="w-auto ml-5">Daftar Produk</legend>--}}
         <br>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Divisi</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Divisi')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menu1Div1Input" class="form-control" type="text">
                 <button id="menu1BtnDiv1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Divisi</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Divisi')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menu1Div2Input" class="form-control" type="text">
                 <button id="menu1BtnDiv2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Dept</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Dept')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menu1Dep1Input" class="form-control" type="text">
                 <button id="menu1BtnDep1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -45,7 +45,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Dept</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Dept')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menu1Dep2Input" class="form-control" type="text">
                 <button id="menu1BtnDep2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -58,7 +58,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Kat</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Kat')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menu1Kat1Input" class="form-control" type="text">
                 <button id="menu1BtnKat1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -71,7 +71,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Kat</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Kat')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menu1Kat2Input" class="form-control" type="text">
                 <button id="menu1BtnKat2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -84,17 +84,17 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Urut (SORT) Atas</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Urut (SORT) Atas')</label>
             <div class="col-sm-6">
                 <select class="form-control" id="menu1SortBy">
-                    <option value="1">1. DIV+DEPT+KATEGORI+KODE</option>
-                    <option value="2">2. DIV+DEPT+KATEGORI+NAMA</option>
-                    <option value="3">3. NAMA</option>
+                    <option value="1">1. @lang('DIV+DEPT+KATEGORI+KODE')</option>
+                    <option value="2">2. @lang('DIV+DEPT+KATEGORI+NAMA')</option>
+                    <option value="3">3. {{ strtoupper(__('Nama')) }}</option>
                 </select>
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Tag</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Tag')</label>
             <div class="col-sm-1">
                 <input id="menu1Tag1" class="form-control" type="text">
             </div>
@@ -113,17 +113,17 @@
         </div>
         <br>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Produk Baru</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Produk Baru')</label>
             <div class="col-sm-1">
                 <input id="menu1CheckProduk" class="form-control" type="checkbox">
             </div>
-            <label class="col-sm-3 text-right col-form-label">Periode Produk Baru</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Periode Produk Baru')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menu1daterangepicker" class="form-control" type="text">
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Cetak Harga Pokok</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Cetak Harga Pokok')</label>
             <div class="col-sm-1">
                 <input id="menu1CheckCHP" class="form-control" type="checkbox">
             </div>
@@ -235,7 +235,7 @@
                 $('#menu1Div1Desk').val(tableDivisi.row(index-1).data()['div_namadivisi'].replace(/&amp;/g, '&'));
                 $('#menu1BtnDiv2').prop("hidden",false);
             }else{
-                swal('', "Kode Divisi tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Divisi tidak terdaftar') }}`, 'warning');
                 $('#minDep').val('').change();
                 $('#menu1Div1Input').val('').change().focus();
             }
@@ -264,7 +264,7 @@
                 // $('#maxDep').val($('#menu1Div2Input').val()).change();
                 $('#menu1BtnDep1').prop("hidden",false);
             }else{
-                swal('', "Kode Divisi tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Divisi tidak terdaftar') }}`, 'warning');
                 $('#maxDep').val('').change();
                 $('#menu1Div2Input').val('').change();
             }
@@ -290,7 +290,7 @@
 
                 $('#menu1BtnDep2').prop("hidden",false);
             }else{
-                swal('', "Kode Departement tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Departemen tidak terdaftar') }}`, 'warning');
                 $('#limitKat').val('').change();
                 $('#menu1Dep1Input').val('').change();
             }
@@ -315,7 +315,7 @@
 
                 $('#menu1BtnKat1').prop("hidden",false);
             }else{
-                swal('', "Kode Departement tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Departemen tidak terdaftar') }}`, 'warning');
                 $('#limitKat').val('').change();
                 $('#menu1Dep2Input').val('').change();
             }
@@ -336,7 +336,7 @@
 
                 $('#menu1BtnKat2').prop("hidden",false);
             }else{
-                swal('', "Kode Kategori tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Kategori tidak terdaftar') }}`, 'warning');
 
                 $('#menu1Kat1Input').val('').change();
             }
@@ -352,7 +352,7 @@
             if(index){
                 $('#menu1Kat2Desk').val(tableKategori.row(index-1).data()['kat_namakategori'].replace(/&amp;/g, '&'));
             }else{
-                swal('', "Kode Kategori tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Kategori tidak terdaftar') }}`, 'warning');
 
                 $('#menu1Kat2Input').val('').change();
             }
@@ -501,13 +501,13 @@
         //periksa agar input tidak aneh" meski input sudah dibatasin, jaga" kalau input nya pakai f12
         if(div1 != ''){
             if(checkDivExist(div1) == false){
-                swal('', "Kode Divisi tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Divisi tidak terdaftar') }}`, 'warning');
                 return false;
             }
         }
         if(div2 != ''){
             if(checkDivExist(div2) == false){
-                swal('', "Kode Divisi tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Divisi tidak terdaftar') }}`, 'warning');
                 return false;
             }
         }
@@ -516,7 +516,7 @@
             $('#minDep').val(div1);
             $('#maxDep').val(div1);
             if(checkDepExist(dep1) == false){
-                swal('', "Kode Departemen tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Departemen tidak terdaftar') }}`, 'warning');
                 return false;
             }
         }
@@ -525,7 +525,8 @@
             $('#minDep').val(div2);
             $('#maxDep').val(div2);
             if(checkDepExist(dep2) == false){
-                swal('', "Kode Departemen tidak terdaftar", 'warning');
+                
+                swal('', `{{ __('Kode Departemen tidak terdaftar') }}`, 'warning');
                 return false;
             }
         }
@@ -534,16 +535,16 @@
 
             $('#limitKat').val(dep1);
             if(checkKatExist(kat1) == false){
-                swal('', "Kode Kategori tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Kategori tidak terdaftar') }}`, 'warning');
                 return false;
             }
         }
         if(kat2 != ''){
             //limit kategori berdasarkan departemen, tak perlu trigger fungsi change, karena bukan untuk tampilan
-
+            
             $('#limitKat').val(dep2);
             if(checkKatExist(kat2) == false){
-                swal('', "Kode Kategori tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Kategori tidak terdaftar') }}`, 'warning');
                 return false;
             }
         }

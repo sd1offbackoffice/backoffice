@@ -6,7 +6,7 @@
 {{--        <legend class="w-auto ml-5">Daftar Produk</legend>--}}
         <br>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Kode</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Kode')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menu9Mem1Input" class="form-control" type="text">
                 <button id="menu9BtnMem1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Kode</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Kode')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menu9Mem2Input" class="form-control" type="text">
                 <button id="menu9BtnMem2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -32,17 +32,17 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Urut (SORT) Atas</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Urut (SORT) Atas')</label>
             <div class="col-sm-6">
                 <select class="form-control" id="menu9SortBy">
-                    <option value="1">1. OUTLET+AREA+KODE</option>
-                    <option value="2">2. OUTLET+AREA+NAMA</option>
-                    <option value="3">3. OUTLET+KODE</option>
-                    <option value="4">4. OUTLER+NAMA</option>
-                    <option value="5">5. AREA+KODE</option>
-                    <option value="6">6. AREA+NAMA</option>
-                    <option value="7">7. KODE</option>
-                    <option value="8">8. NAMA</option>
+                    <option value="1">1. @lang('OUTLET+AREA+KODE')</option>
+                    <option value="2">2. @lang('OUTLET+AREA+NAMA')</option>
+                    <option value="3">3. @lang('OUTLET+KODE')</option>
+                    <option value="4">4. @lang('OUTLET+NAMA')</option>
+                    <option value="5">5. @lang('AREA+KODE')</option>
+                    <option value="6">6. @lang('AREA+NAMA')</option>
+                    <option value="7">7. {{ strtoupper(__('Kode')) }}</option>
+                    <option value="8">8. {{ strtoupper(__('Nama')) }}</option>
                 </select>
             </div>
         </div>
@@ -72,7 +72,7 @@
                 $('#menu9Mem1Desk').val(deskripsi);
                 $('#menu9BtnMem2').prop("hidden",false);
             }else{
-                swal('', "Kode Member tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Member tidak terdaftar') }}`, 'warning');
                 $('#menu9Mem1Input').val('').change();
             }
         }
@@ -87,7 +87,7 @@
             if(deskripsi != "false"){
                 $('#menu9Mem2Desk').val(deskripsi);
             }else{
-                swal('', "Kode Member tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Member tidak terdaftar') }}`, 'warning');
                 $('#menu9Mem2Input').val('').change();
             }
         }

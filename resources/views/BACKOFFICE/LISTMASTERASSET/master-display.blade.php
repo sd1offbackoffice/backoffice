@@ -6,7 +6,7 @@
         {{--        <legend class="w-auto ml-5">Master Display</legend>--}}
         <br>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Kode Rak</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Kode Rak')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuDRak1Input" class="form-control" type="text">
                 <button id="menuDBtnRak1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -14,7 +14,7 @@
                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                 </button>
             </div>
-            <label class="col-sm-2 text-center col-form-label">s/d</label>
+            <label class="col-sm-2 text-center col-form-label">@lang('s/d')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuDRak2Input" class="form-control" type="text">
                 <button id="menuDBtnRak2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -24,7 +24,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Kode Sub Rak</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Kode Sub Rak')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuDSubRak1Input" class="form-control" type="text">
                 <button id="menuDBtnSubRak1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -32,7 +32,7 @@
                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                 </button>
             </div>
-            <label class="col-sm-2 text-center col-form-label">s/d</label>
+            <label class="col-sm-2 text-center col-form-label">@lang('s/d')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuDSubRak2Input" class="form-control" type="text">
                 <button id="menuDBtnSubRak2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -42,7 +42,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Tipe Rak</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Tipe Rak')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuDTipeRak1Input" class="form-control" type="text">
                 <button id="menuDBtnTipeRak1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -50,7 +50,7 @@
                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                 </button>
             </div>
-            <label class="col-sm-2 text-center col-form-label">s/d</label>
+            <label class="col-sm-2 text-center col-form-label">@lang('s/d')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuDTipeRak2Input" class="form-control" type="text">
                 <button id="menuDBtnTipeRak2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -60,7 +60,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Shelving</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Shelving')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuDShelving1Input" class="form-control" type="text">
                 <button id="menuDBtnShelving1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -68,7 +68,7 @@
                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                 </button>
             </div>
-            <label class="col-sm-2 text-center col-form-label">s/d</label>
+            <label class="col-sm-2 text-center col-form-label">@lang('s/d')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuDShelving2Input" class="form-control" type="text">
                 <button id="menuDBtnShelving2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -79,7 +79,7 @@
         </div>
         <br>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Hanya Item OMI</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Hanya Item OMI')</label>
             <div class="col-sm-1">
                 <input id="menuDCheck" class="form-control" type="checkbox">
             </div>
@@ -137,7 +137,7 @@
             if(index){
                 $('#menuDBtnSubRak1').prop("hidden",false);
             }else{
-                swal('', "Kode Rak tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Rak tidak terdaftar') }}`, 'warning');
                 $('#menuDRak1Input').val('').change().focus();
             }
         }
@@ -153,7 +153,7 @@
             if(index){
                 $('#menuDBtnTipeRak1').prop("hidden",false);
             }else{
-                swal('', "Kode Sub Rak tidak termasuk dalam Rak", 'warning');
+                swal('',`{{ __('Kode Sub Rak tidak termasuk dalam Rak') }}`, 'warning');
                 $('#menuDSubRak1Input').val('').change().focus();
             }
         }
@@ -168,7 +168,7 @@
             if(index){
                 $('#menuDBtnShelving1').prop("hidden",false);
             }else{
-                swal('', "Kode Tipe Rak tidak termasuk dalam Sub Rak", 'warning');
+                swal('',`{{ __('Kode Tipe Rak tidak termasuk dalam Sub Rak') }}`, 'warning');
                 $('#menuDTipeRak1Input').val('').change().focus();
             }
         }
@@ -181,7 +181,7 @@
             if(index){
                 //do nothing
             }else{
-                swal('', "Kode Shelving Rak tidak termasuk dalam Tipe Rak", 'warning');
+                swal('',`{{ __('Kode Shelving Rak tidak termasuk dalam Tipe Rak') }}`, 'warning');
                 $('#menuDShelving1Input').val('').change().focus();
             }
         }
@@ -235,7 +235,7 @@
             if(index){
                 $('#menuDBtnSubRak2').prop("hidden",false);
             }else{
-                swal('', "Kode Rak tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Rak tidak terdaftar') }}`, 'warning');
                 $('#menuDRak2Input').val('').change().focus();
             }
         }
@@ -251,7 +251,7 @@
             if(index){
                 $('#menuDBtnTipeRak2').prop("hidden",false);
             }else{
-                swal('', "Kode Sub Rak tidak termasuk dalam Rak", 'warning');
+                swal('',`{{ __('Kode Sub Rak tidak termasuk dalam Rak') }}`, 'warning');
                 $('#menuDSubRak2Input').val('').change().focus();
             }
         }
@@ -266,7 +266,7 @@
             if(index){
                 $('#menuDBtnShelving2').prop("hidden",false);
             }else{
-                swal('', "Kode Tipe Rak tidak termasuk dalam Sub Rak", 'warning');
+                swal('',`{{ __('Kode Tipe Rak tidak termasuk dalam Sub Rak') }}`, 'warning');
                 $('#menuDTipeRak2Input').val('').change().focus();
             }
         }
@@ -279,7 +279,7 @@
             if(index){
                 //do nothing
             }else{
-                swal('', "Kode Shelving Rak tidak termasuk dalam Tipe Rak", 'warning');
+                swal('',`{{ __('Kode Shelving Rak tidak termasuk dalam Tipe Rak') }}`, 'warning');
                 $('#menuDShelving2Input').val('').change().focus();
             }
         }

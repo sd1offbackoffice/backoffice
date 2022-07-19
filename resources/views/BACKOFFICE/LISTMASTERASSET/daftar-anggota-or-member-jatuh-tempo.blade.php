@@ -6,13 +6,13 @@
 {{--        <legend class="w-auto ml-5">Daftar Produk</legend>--}}
         <br>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Tanggal</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Tanggal')</label>
             <div class="col-sm-6 buttonInside">
                 <input id="menu8daterangepicker" class="form-control" type="text">
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Kode</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Kode')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menu8Kod1Input" class="form-control" type="text">
                 <button id="menu8BtnKod1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Kode</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Kode')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menu8Kod2Input" class="form-control" type="text">
                 <button id="menu8BtnKod2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -38,17 +38,17 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Urut (SORT) Atas</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Urut (SORT) Atas')</label>
             <div class="col-sm-6">
                 <select class="form-control" id="menu8SortBy">
-                    <option value="1">1. OUTLET+AREA+KODE</option>
-                    <option value="2">2. OUTLET+AREA+NAMA</option>
-                    <option value="3">3. OUTLET+KODE</option>
-                    <option value="4">4. OUTLET+NAMA</option>
-                    <option value="5">5. AREA+KODE</option>
-                    <option value="6">6. AREA+NAMA</option>
-                    <option value="7">7. KODE</option>
-                    <option value="8">8. NAMA</option>
+                    <option value="1">1. @lang('OUTLET+AREA+KODE')</option>
+                    <option value="2">2. @lang('OUTLET+AREA+NAMA')</option>
+                    <option value="3">3. @lang('OUTLET+KODE')</option>
+                    <option value="4">4. @lang('OUTLET+NAMA')</option>
+                    <option value="5">5. @lang('AREA+KODE')</option>
+                    <option value="6">6. @lang('AREA+NAMA')</option>
+                    <option value="7">7. {{ strtoupper(__('Kode')) }}</option>
+                    <option value="8">8. {{ strtoupper(__('Nama')) }}</option>
                 </select>
             </div>
         </div>
@@ -65,7 +65,7 @@
     $('#menu8daterangepicker').on('change',function(){
         let date = $('#menu8daterangepicker').val();
         if(date == null || date == ""){
-            swal('Periode tidak boleh kosong','','warning');
+            swal(`{{ __('Periode tidak boleh kosong') }}`,'','warning');
             return false;
         }
         let dateA = date.substr(0,10);
@@ -101,7 +101,7 @@
                 $('#menu8Kod1Desk').val(tableMemberDate.row(index-1).data()['cus_namamember'].replace(/&amp;/g, '&'));
                 $('#menu8BtnKod2').prop("hidden",false);
             }else{
-                swal('', "Kode Member tidak terdaftar dalam rentang waktu yg dipilih", 'warning');
+                swal('', `{{ __('Kode Member tidak terdaftar dalam rentang waktu yg dipilih') }}`, 'warning');
                 $('#menu8Kod1Input').val('').change();
             }
         }
@@ -116,7 +116,7 @@
             if(index){
                 $('#menu8Kod2Desk').val(tableMemberDate.row(index-1).data()['cus_namamember'].replace(/&amp;/g, '&'));
             }else{
-                swal('', "Kode Member tidak terdaftar dalam rentang waktu yg dipilih", 'warning');
+                swal('',`{{ __('Kode Member tidak terdaftar dalam rentang waktu yg dipilih') }}`, 'warning');
                 $('#menu8Kod2Input').val('').change();
             }
         }
