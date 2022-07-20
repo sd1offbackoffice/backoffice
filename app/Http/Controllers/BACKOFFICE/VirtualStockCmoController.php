@@ -10,6 +10,7 @@ namespace App\Http\Controllers\BACKOFFICE;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
@@ -193,7 +194,11 @@ class VirtualStockCmoController extends Controller
 
             $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
             
-            // return view('BACKOFFICE.virtual_stock_cmo-pdf', compact(['perusahaan','tipevcmo','data','div1','div2','dept1','dept2','kat1','kat2','kodesupplier','kodemcg','namasupplier','periode1', 'periode2']));
+            return view('BACKOFFICE.virtual-stock-cmo-pdf-2',
+            ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1, 
+            'div2' => $div2, 'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2, 
+            'kodesupplier' => $kodesupplier,'kodemcg' => $kodemcg,'namasupplier' => $namasupplier, 
+            'periode1' => $periode1, 'periode2' => $periode2]);
         
             $pdf = PDF::loadview('BACKOFFICE.virtual-stock-cmo-pdf-2',
             ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1, 
@@ -245,7 +250,10 @@ class VirtualStockCmoController extends Controller
    
             $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
 
-            // return view('BACKOFFICE.virtual_stock_cmo-pdf', compact(['perusahaan','tipevcmo','data','div1','div2','dept1','dept2','kat1','kat2','kodesupplier','kodemcg','namasupplier','periode1', 'periode2']));
+            return view('BACKOFFICE.virtual-stock-cmo-pdf-2',
+            ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1, 'div2' => $div2, 
+            'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2, 'kodesupplier' => $kodesupplier,
+            'kodemcg' => $kodemcg,'namasupplier' => $namasupplier, 'periode1' => $periode1, 'periode2' => $periode2]);
             
             $pdf = PDF::loadview('BACKOFFICE.virtual-stock-cmo-pdf-2',
             ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1, 'div2' => $div2, 
@@ -344,19 +352,35 @@ class VirtualStockCmoController extends Controller
 
             $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
 
-            $filename = 'laporan-virtual-stock-cmo-rekap.csv';
+            $today = Carbon::now()->format('Ymd');
+            $filename = 'LPPCMO_RKP_'.$today.'.csv';
+            // $filename = 'laporan-virtual-stock-cmo-rekap.csv';
+            // $columnHeader = [
+            //     'NO',
+            //     'PLU IDM',
+            //     'PLU IGR',
+            //     'SALDO AWAL',
+            //     'BPB',
+            //     'BPBR',
+            //     'MPP (+)',
+            //     'ADJ (+)',
+            //     'DSPB',
+            //     'MPP (-)',
+            //     'ADJ (-)',
+            //     'SALDO AKHIR',
+            // ];
             $columnHeader = [
-                'NO',
-                'PLU IDM',
-                'PLU IGR',
+                'PLUIDM',
+                'PLUIGR',
+                'DESKRIPSI',
                 'SALDO AWAL',
-                'BPB',
-                'BPBR',
-                'MPP (+)',
-                'ADJ (+)',
-                'DSPB',
-                'MPP (-)',
-                'ADJ (-)',
+                'BPB_QTY',
+                'BPBR_QTY',
+                'MPP_QTY',
+                'ADJP_QTY',
+                'DSPB_QTY',
+                'MPN_QTY',
+                'ADJM_QTY',
                 'SALDO AKHIR',
             ];
 
@@ -365,9 +389,9 @@ class VirtualStockCmoController extends Controller
             $linebuffs = array();
             foreach ($data as $d) {
                 $tempdata = [
-                    $i++,
                     $d->prc_pluidm, 
                     $d->pluigr,
+                    $d->prd_deskripsipanjang,
                     $d->sta_saldoawal,
                     $d->bpb_qty,
                     $d->idm_qty,
@@ -406,6 +430,8 @@ class VirtualStockCmoController extends Controller
                             prc_pluidm,
                             prd_deskripsipanjang,
                             sup_kodesuppliermcg || '-' || sup_namasupplier AS sup_namasupplier,
+                            sup_kodesuppliermcg,
+                            sup_kodesupplier,
                             idm_toko || '-' || idm.tko_namaomi AS namaidm,
                             dspb_toko || '-' || dspb.tko_namaomi AS namadspb
                     FROM temp_lpp_cmo lpp,
@@ -429,49 +455,58 @@ class VirtualStockCmoController extends Controller
                     " . $and_namasupp . "
                     ORDER BY pluigr, row_id ");
             
+            // dd($data);
    
             $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
 
-            $filename = 'laporan-virtual-stock-cmo-detail.csv';
+            $today = Carbon::now()->format('Ymd');
+            $filename = 'LPPCMO_DET_'.$today.'.csv';
+            // $filename = 'laporan-virtual-stock-cmo-detail.csv';
             $columnHeader = [
-                'NO',
-                'PLU IDM',
-                'PLU IGR',
-                'SALDO AWAL',
+                'PLUIDM',
+                'PLUIGR',
+                'DESKRIPSI',
+                'SALDO_AWAL',
 
-                'KODE - NAMA',
-                'NO. PO',
-                'TGL BPB',
-                'NO. BPB',
-                'QTY',
+                'KODE_SUPP',
+                'SUPP_MCG',
+                'NAMA_SUPP',
 
-                'KODE - NAMA',
-                'TGL BPBR',
-                'NO. BPBR',
-                'NO. NBR',
-                'QTY',
+                'BPB_NOPO',
+                'BPB_TANGGAL',
+                'BPB_NO',
+                'BPB_QTY', // TYPO BTB QTY DI EXCEL
 
-                'TGL MPP',
-                'NO. MPP',
-                'QTY',
+                'BPBR_TOKO',
+                'BPBR_NAMATOKO',
+                'BPBR_TANGGAL',
+                'BPBR_NO',
+                'BPBR_NRB',
+                'BPBR_QTY',
 
-                'TGL ADJ',
-                'NO. BA',
-                'QTY',
+                'MPP_NO',
+                'MPP_TANGGAL',
+                'MPP_QTY',
 
-                'KODE - NAMA',
-                'TGL DSPB',
-                'NO. DSPB',
-                'QTY',
+                'ADJP_NO',
+                'ADJP_TANGGAL',
+                'ADJP_QTY',
 
-                'TGL. MPP',
-                'NO. MPP',
-                'QTY',
-
-                'TGL ADJ',
-                'NO. BA',
-                'QTY',
-                'SALDO AKHIR',
+                'DSPB_TOKO',
+                'DSPB_NAMA',
+                'DSPB_NO',
+                'DSPB_TANGGAL',
+                'DSPB_QTY',
+                
+                'MPN_NO',
+                'MPN_TANGGAL',
+                'MPN_QTY',
+                
+                'ADJM_NO',
+                'ADJM_TANGGAL',
+                'ADJM_QTY',
+                
+                'SALDO_AKHIR'
             ];
 
             $i = 0;
@@ -479,48 +514,143 @@ class VirtualStockCmoController extends Controller
             $linebuffs = array();
             foreach ($data as $d) {
                 $tempdata = [
-                    $i++,
-                    $d->prc_pluidm, 
-                    $d->pluigr,
-                    $d->awal,
+                    $d->prc_pluidm, // PLUIDM
+                    $d->pluigr, // PLUIGR
+                    $d->prd_deskripsipanjang, // DESKRIPSI 
+                    $d->awal, // SALDO AWAL
+                    
+                    $d->sup_kodesupplier,// KODE SUPP
+                    $d->sup_kodesuppliermcg,// SUPP_MCG
+                    $d->sup_namasupplier, // NAMA SUPP
 
-                    $d->sup_namasupplier,
-                    $d->bpb_nopo,
-                    $d->bpb_tanggal,
-                    $d->bpb_no,
-                    $d->bpb_qty,
+                    $d->bpb_nopo, // BPB_NOPO
+                    $d->bpb_tanggal, // BPB_TANGGAL
+                    $d->bpb_no, // BPB_NO
+                    $d->bpb_qty, // BPB_QTY
+                    
+                    $d->idm_toko,// BPBR_TOKO
+                    $d->namaidm, // BPBR_NAMATOKO
+                    $d->idm_tanggal, // BPBR_TANGGAL
+                    $d->idm_no, // BPBR_NO
+                    $d->idm_nrb, // BPBR_NRB
+                    $d->idm_qty,  // BPBR_QTY
 
-                    $d->namaidm,
-                    $d->idm_tanggal,
-                    $d->idm_no,
-                    $d->idm_nrb,
-                    $d->idm_qty,
+                    $d->mpp_no, // MPP_NO
+                    $d->mpp_tanggal, // MPP_TANGGAL
+                    $d->mpp_qty, // MPP_QTY
 
-                    $d->mpp_tanggal,
-                    $d->mpp_no,
-                    $d->mpp_qty,
+                    $d->intp_no,  // 'ADJP_NO',
+                    $d->intp_tanggal, // ADJP_TANGGAL
+                    $d->intp_qty, // ADJP_QTY
 
-                    $d->intp_tanggal,
-                    $d->intp_no,
-                    $d->intp_qty,
+                    $d->dspb_toko,// DSPB_TOKO
+                    $d->namadspb, // DSPB_NAMA
+                    $d->dspb_no, // DSPB_NO
+                    $d->dspb_tanggal, // DSPB_TANGGAL
+                    $d->dspb_qty, // DSPB_QTY
 
-                    $d->namadspb,
-                    $d->dspb_tanggal,
-                    $d->dspb_no,
-                    $d->dspb_qty,
+                    $d->mpn_no,   // MPN_NO
+                    $d->mpn_tanggal, // MPN_TANGGAL
+                    $d->mpn_qty, // MPN_QTY
 
-                    $d->mpn_tanggal,
-                    $d->mpn_no,
-                    $d->mpn_qty,
+                    $d->intn_no,  // ADJM_NO
+                    $d->intn_tanggal, // ADJM_TANGGAL
+                    $d->intn_qty, // ADJM_QTY
 
-                    $d->intn_tanggal,
-                    $d->intn_no,
-                    $d->intn_qty,
 
-                    $d->akhir,
+                    $d->akhir, // SALDO_AKHIR
                 ];
                 array_push($linebuffs, $tempdata);
             }
+
+            // $columnHeader = [
+            //     'NO',
+            //     'PLU IDM',
+            //     'PLU IGR',
+            //     'SALDO AWAL',
+
+            //     'KODE - NAMA',
+            //     'NO. PO',
+            //     'TGL BPB',
+            //     'NO. BPB',
+            //     'QTY',
+
+            //     'KODE - NAMA',
+            //     'TGL BPBR',
+            //     'NO. BPBR',
+            //     'NO. NBR',
+            //     'QTY',
+
+            //     'TGL MPP',
+            //     'NO. MPP',
+            //     'QTY',
+
+            //     'TGL ADJ',
+            //     'NO. BA',
+            //     'QTY',
+
+            //     'KODE - NAMA',
+            //     'TGL DSPB',
+            //     'NO. DSPB',
+            //     'QTY',
+
+            //     'TGL. MPP',
+            //     'NO. MPP',
+            //     'QTY',
+
+            //     'TGL ADJ',
+            //     'NO. BA',
+            //     'QTY',
+            //     'SALDO AKHIR',
+            // ];
+
+            // $i = 0;
+
+            // $linebuffs = array();
+            // foreach ($data as $d) {
+            //     $tempdata = [
+            //         $i++,
+            //         $d->prc_pluidm, 
+            //         $d->pluigr,
+            //         $d->awal,
+
+            //         $d->sup_namasupplier,
+            //         $d->bpb_nopo,
+            //         $d->bpb_tanggal,
+            //         $d->bpb_no,
+            //         $d->bpb_qty,
+
+            //         $d->namaidm,
+            //         $d->idm_tanggal,
+            //         $d->idm_no,
+            //         $d->idm_nrb,
+            //         $d->idm_qty,
+
+            //         $d->mpp_tanggal,
+            //         $d->mpp_no,
+            //         $d->mpp_qty,
+
+            //         $d->intp_tanggal,
+            //         $d->intp_no,
+            //         $d->intp_qty,
+
+            //         $d->namadspb,
+            //         $d->dspb_tanggal,
+            //         $d->dspb_no,
+            //         $d->dspb_qty,
+
+            //         $d->mpn_tanggal,
+            //         $d->mpn_no,
+            //         $d->mpn_qty,
+
+            //         $d->intn_tanggal,
+            //         $d->intn_no,
+            //         $d->intn_qty,
+
+            //         $d->akhir,
+            //     ];
+            //     array_push($linebuffs, $tempdata);
+            // }
 
             $headers = [
                 "Content-type" => "text/csv",

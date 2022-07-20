@@ -25,7 +25,9 @@
         <p>
             <i>User ID</i> : {{ Session::get('usid') }}
         </p>
-
+        <p>
+            Hal. :
+        </p>
         @yield('header_right')
     </div>
     <div style="float: center">
@@ -63,8 +65,8 @@
     @page {
         /*margin: 25px 20px;*/
         /*size: 1071pt 792pt;*/
-        /* size: @yield('paper_size','650pt 842pt'); */
-        /* size: @yield('paper_size','1500pt 842pt'); */
+        /* size: @yield('paper_size','595pt 842pt'); */
+        size: @yield('paper_size','800pt 842pt');
         /*size: 842pt 638pt;*/
     }
     header {
@@ -117,7 +119,7 @@
         white-space: nowrap;
         color: #212529;
         /*padding-top: 20px;*/
-        margin-right: 300px;
+        /*margin-top: 25px;*/
     }
     .table-ttd{
         width: 100%;

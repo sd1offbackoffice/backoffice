@@ -47,8 +47,7 @@
             <td rowspan="3" style="width: 8%; border-right: 1px solid black">PENJUALAN BERSIH</td>
             <td rowspan="3" style="width: 8%; border-right: 1px solid black">HPP RATA-RATA</td>
             <td rowspan="3" colspan="2" style="border-right: 1px solid black">--MARGIN--</td>
-            {{-- <td rowspan="3" style="width: 2%">T<br>A<br>G</td> --}}
-            <td rowspan="3" style="width: 2%">TAG</td>
+            <td rowspan="3" style="width: 2%">T<br>A<br>G</td>
         </tr>
         <tr style="border-top: 1px solid black;">
             @for($i=0;$i<4;$i++)
@@ -116,19 +115,23 @@
             <td>{{rupiah($data[$i]->tot2)}}</td>
             <td>{{rupiah($data[$i]->tot3)}}</td>
 
+
             @if($data[$i]->fdfbkp == 'Y')
-                <td class="right padding-right">{{ number_format(0,2) }}</td>
-                <td class="right padding-right">{{ number_format(0,2) }}</td>
+                <td class="right">{{ number_format(0,2) }}</td>
+                <td class="right">{{ number_format(0,2) }}</td>
             @elseif($data[$i]->fdfbkp == 'P')
-                <td class="right padding-right">{{ number_format(0,2) }}</td>
-                <td class="right padding-right">{{ number_format(0,2) }}</td>
+                <td class="right ">{{ number_format(0,2) }}</td>
+                <td class="right ">{{ number_format(0,2) }}</td>
             @elseif($data[$i]->fdfbkp == 'G' || $data[$i]->fdfbkp == 'W')
-                <td class="right padding-right">{{ number_format(0,2) }}</td>
-                <td class="right padding-right" >{{ number_format(0,2) }}</td>
+                <td class="right">{{ number_format(0,2) }}</td>
+                <td class="right " >{{ number_format(0,2) }}</td>
             @else
-                <td class="right padding-right">{{ number_format(0,2) }}</td>
-                <td class="right padding-right">{{ number_format(0,2) }}</td>
+                <td class="right">{{ number_format(0,2) }}</td>
+                <td class="right">{{ number_format(0,2) }}</td>
             @endif
+
+
+
             <td>{{rupiah($data[$i]->tot4)}}</td>
             <td>{{rupiah($data[$i]->tot5)}}</td>
             <td style="width: 11%">{{rupiah($data[$i]->tot6)}}</td>
@@ -169,9 +172,6 @@
                     <td>{{rupiah($sumKwantum['kat'])}}</td>
                     <td>{{rupiah($sumGross['kat'])}}</td>
                     <td>{{rupiah($sumTax['kat'])}}</td>
-                    {{-- bebas ppn dan ppn dtp --}}
-                    <td>{{rupiah($sumTax['kat'])}}</td>
-                    <td>{{rupiah($sumTax['kat'])}}</td>
 
                     <td>{{rupiah($sumNet['kat'])}}</td>
                     <td>{{rupiah($sumHpp['kat'])}}</td>
@@ -206,10 +206,6 @@
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td>{{rupiah($sumGross['dep'])}}</td>
                     <td>{{rupiah($sumTax['dep'])}}</td>
-                    {{-- bebas ppn dan ppn dtp --}}
-                    <td>{{rupiah($sumTax['dep'])}}</td>
-                    <td>{{rupiah($sumTax['dep'])}}</td>
-
 
                     <td>{{rupiah($sumNet['dep'])}}</td>
                     <td>{{rupiah($sumHpp['dep'])}}</td>
@@ -244,11 +240,6 @@
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td>{{rupiah($sumGross['div'])}}</td>
                     <td>{{rupiah($sumTax['div'])}}</td>
-                    {{-- bebas ppn dan ppn dtp --}}
-                    <td>{{rupiah($sumTax['div'])}}</td>
-                    <td>{{rupiah($sumTax['div'])}}</td>
-
-
                     <td>{{rupiah($sumNet['div'])}}</td>
                     <td>{{rupiah($sumHpp['div'])}}</td>
                     <td>{{rupiah($sumMargin['div'])}}</td>
@@ -285,9 +276,12 @@
             <td>{{rupiah($sumKwantum['kat'])}}</td>
             <td>{{rupiah($sumGross['kat'])}}</td>
             <td>{{rupiah($sumTax['kat'])}}</td>
-            {{-- bebas ppn dan ppn dtp  --}}
-            <td>{{rupiah($sumTax['kat'])}}</td>
-            <td>{{rupiah($sumTax['kat'])}}</td>
+
+
+
+                <td class="right">{{ number_format(0,2) }}</td>
+                <td class="right">{{ number_format(0,2) }}</td>
+
 
             <td>{{rupiah($sumNet['kat'])}}</td>
             <td>{{rupiah($sumHpp['kat'])}}</td>
@@ -322,10 +316,9 @@
             <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
             <td>{{rupiah($sumGross['dep'])}}</td>
             <td>{{rupiah($sumTax['dep'])}}</td>
-            {{-- bebas ppn dan ppn dtp --}}
-            <td>{{rupiah($sumTax['dep'])}}</td>
-            <td>{{rupiah($sumTax['dep'])}}</td>
 
+            <td class="right">{{ number_format(0,2) }}</td>
+            <td class="right">{{ number_format(0,2) }}</td>
 
             <td>{{rupiah($sumNet['dep'])}}</td>
             <td>{{rupiah($sumHpp['dep'])}}</td>
@@ -360,10 +353,10 @@
             <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
             <td>{{rupiah($sumGross['div'])}}</td>
             <td>{{rupiah($sumTax['div'])}}</td>
-            {{-- bebas ppn dan ppn dtp --}}
-            <td>{{rupiah($sumTax['div'])}}</td>
-            <td>{{rupiah($sumTax['div'])}}</td>
 
+
+            <td class="right">{{ number_format(0,2) }}</td>
+            <td class="right">{{ number_format(0,2) }}</td>
 
             <td>{{rupiah($sumNet['div'])}}</td>
             <td>{{rupiah($sumHpp['div'])}}</td>

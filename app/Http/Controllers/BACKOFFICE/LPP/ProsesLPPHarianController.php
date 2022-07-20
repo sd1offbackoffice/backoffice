@@ -62,7 +62,7 @@ class ProsesLPPHarianController extends Controller
         $txt_tglso = $request->tglso;
         $checkplu = $request->checkplu;
 
-        $periode = "to_char('" . $txt_tgl2 . "', 'MM-yyyy')";
+        $periode = "to_char(to_date('" . $txt_tgl2 . "','dd/mm/yyyy'), 'MM-yyyy')";
 
         if ($checkplu == 'true') {
             $p_and = " and lpp_prdcd in ( select distinct lsi_prdcd from tbtr_lokasi_so_ey where to_char(lsi_tglso, 'MM-yyyy') = ".$periode." ) ";

@@ -25,6 +25,7 @@
         $hasil_rupiah = number_format($angka,2,'.',',');
         return $hasil_rupiah;
     }
+
 @endphp
 
 @section('content')
@@ -50,7 +51,7 @@
         </tr>
         </thead>
         <tbody style="border-bottom: 2px solid black; text-align: right">
-        @for($i=2;$i<sizeof($data);$i++)
+        @for($i=0;$i<sizeof($data);$i++)
             <?php
             $date = ($data[$i]->sls_periode);
             $createDate = new DateTime($date);
@@ -61,22 +62,8 @@
                 <td style="text-align: left">{{$data[$i]->hari}}</td>
                 <td>{{rupiah($data[$i]->sls_nilai)}}</td>
                 <td>{{rupiah($data[$i]->sls_tax)}}</td>
-
-                @if($data[$i]->fdfbkp == 'Y')
-                    <td class="right">{{ number_format(0,2) }}</td>
-                    <td class="right">{{ number_format(0,2) }}</td>
-                @elseif($data[$i]->fdfbkp == 'P')
-                    <td class="right ">{{ number_format(0,2) }}</td>
-                    <td class="right ">{{ number_format(0,2) }}</td>
-                @elseif($data[$i]->fdfbkp == 'G' || $data[$i]->fdfbkp == 'W')
-                    <td class="right">{{ number_format(0,2) }}</td>
-                    <td class="right " >{{ number_format(0,2) }}</td>
-                @else
-                    <td class="right">{{ number_format(0,2) }}</td>
-                    <td class="right">{{ number_format(0,2) }}</td>
-                @endif
-
-
+                <td>{{rupiah($data[$i]->sls_taxbebas)}}</td>
+                <td>{{rupiah($data[$i]->sls_taxdtp)}}</td>
                 <td>{{rupiah($data[$i]->sls_net)}}</td>
                 <td>{{rupiah($data[$i]->sls_hpp)}}</td>
                 <td>{{rupiah($data[$i]->sls_margin)}}</td>
@@ -87,7 +74,7 @@
             <td colspan="2" style="text-align: center; border-top: 1px black solid">GRAND TOTAL</td>
             <td style="border-top: 1px solid black;">{{rupiah($val['gross'])}}</td>
             <td style="border-top: 1px solid black;">{{rupiah($val['tax'])}}</td>
-            <td style="border-top: 1px solid black;" >{{rupiah($val['free])}}</td>
+            <td style="border-top: 1px solid black;">{{rupiah($val['bebas'])}}</td>
             <td style="border-top: 1px solid black;">{{rupiah($val['dtp'])}}</td>
             <td style="border-top: 1px solid black;">{{rupiah($val['net'])}}</td>
             <td style="border-top: 1px solid black;">{{rupiah($val['hpp'])}}</td>

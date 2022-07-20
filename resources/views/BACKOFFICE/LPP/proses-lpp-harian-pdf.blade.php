@@ -9,6 +9,8 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
 
 @section('table_font_size','7 px')
 
+@section('paper_width','1200pt')
+@section('paper_height','842pt')
 @section('page_title')
     {{ isset($data[0])?$data[0]->judul:'' }}
 @endsection
@@ -113,7 +115,7 @@ $total_akhirrph =0;
                 <tr>
                     <td class="left">DEPARTEMEN :</td>
                     <td class="left">{{$data[$i]->lpp_kodedepartemen}}</td>
-                    <td colspan="5" class="left">{{$data[$i]->dep_namadepartemen}}</td>
+                    <td colspan="5" class="left">{{$data[$i]->dep_namadepartement}}</td>
                     <td class="left">KATEGORI :</td>
                     <td class="left">{{$data[$i]->lpp_kategoribrg}}</td>
                     <td colspan="10" class="left">{{$data[$i]->kat_namakategori}}</td>
@@ -135,7 +137,7 @@ $total_akhirrph =0;
                 <td class="left">{{rupiah($data[$i]->beliqty)}}</td>
                 <td class="left">{{rupiah($data[$i]->bonusqty)}}</td>
                 <td class="left">{{rupiah($data[$i]->trmcbqty)}}</td>
-                <td class="left">{{rupiah($data[$i]->returqty)}}</td>
+                <td class="left">{{rupiah($data[$i]->retursalesqty)}}</td>
                 <td class="left">{{rupiah($data[$i]->repackqty)}}</td>
                 <td class="left">{{rupiah($data[$i]->laininqty)}}</td>
                 <td class="left">{{rupiah($data[$i]->salesqty)}}</td>
@@ -143,7 +145,7 @@ $total_akhirrph =0;
                 <td class="left">{{rupiah($data[$i]->prepackqty)}}</td>
                 <td class="left">{{rupiah($data[$i]->hilangqty)}}</td>
                 <td class="left">{{rupiah($data[$i]->lainoutqty)}}</td>
-                <td class="left">{{rupiah($data[$i]->selso_qty)}}</td>
+                <td class="left">{{rupiah($data[$i]->sel_so)}}</td>
                 <td class="left">{{rupiah($data[$i]->intrstqty)}}</td>
                 <td class="left">{{rupiah($data[$i]->adjqty)}}</td>
                 <td class="left">0</td>
@@ -158,7 +160,7 @@ $total_akhirrph =0;
                 <td class="left">{{rupiah($data[$i]->belirph)}}</td>
                 <td class="left">{{rupiah($data[$i]->bonusrph)}}</td>
                 <td class="left">{{rupiah($data[$i]->trmcbrph)}}</td>
-                <td class="left">{{rupiah($data[$i]->returrph)}}</td>
+                <td class="left">{{rupiah($data[$i]->retursalesrph)}}</td>
                 <td class="left">{{rupiah($data[$i]->repackrph)}}</td>
                 <td class="left">{{rupiah($data[$i]->laininrph)}}</td>
                 <td class="left">{{rupiah($data[$i]->salesrph)}}</td>
@@ -166,7 +168,7 @@ $total_akhirrph =0;
                 <td class="left">{{rupiah($data[$i]->prepackrph)}}</td>
                 <td class="left">{{rupiah($data[$i]->hilangrph)}}</td>
                 <td class="left">{{rupiah($data[$i]->lainoutrph)}}</td>
-                <td class="left">{{rupiah($data[$i]->selso_rph)}}</td>
+                <td class="left">{{rupiah($data[$i]->rph_sel_so)}}</td>
                 <td class="left">{{rupiah($data[$i]->intrstrph)}}</td>
                 <td class="left">{{rupiah($data[$i]->adjrph)}}</td>
                 <td class="left">{{rupiah($data[$i]->sadj)}}</td>
@@ -181,7 +183,7 @@ $total_akhirrph =0;
                 $sub_belirph = $data[$i]->belirph;
                 $sub_bonusrph = $data[$i]->bonusrph;
                 $sub_trmcbrph = $data[$i]->trmcbrph;
-                $sub_returrph = $data[$i]->returrph;
+                $sub_returrph = $data[$i]->retursalesrph;
                 $sub_repackrph = $data[$i]->repackrph;
                 $sub_laininrph = $data[$i]->laininrph;
                 $sub_salesrph = $data[$i]->salesrph;
@@ -189,7 +191,7 @@ $total_akhirrph =0;
                 $sub_prepackrph = $data[$i]->prepackrph;
                 $sub_hilangrph = $data[$i]->hilangrph;
                 $sub_lainoutrph = $data[$i]->lainoutrph;
-                $sub_selso_rph = $data[$i]->selso_rph;
+                $sub_selso_rph = $data[$i]->rph_sel_so;
                 $sub_intrstrph = $data[$i]->intrstrph;
                 $sub_adjrph = $data[$i]->adjrph;
                 $sub_sadj = $data[$i]->sadj;
@@ -203,7 +205,7 @@ $total_akhirrph =0;
                 $total_belirph = $data[$i]->belirph;
                 $total_bonusrph = $data[$i]->bonusrph;
                 $total_trmcbrph = $data[$i]->trmcbrph;
-                $total_returrph = $data[$i]->returrph;
+                $total_returrph = $data[$i]->retursalesrph;
                 $total_repackrph = $data[$i]->repackrph;
                 $total_laininrph = $data[$i]->laininrph;
                 $total_salesrph = $data[$i]->salesrph;
@@ -211,7 +213,7 @@ $total_akhirrph =0;
                 $total_prepackrph = $data[$i]->prepackrph;
                 $total_hilangrph = $data[$i]->hilangrph;
                 $total_lainoutrph = $data[$i]->lainoutrph;
-                $total_selso_rph = $data[$i]->selso_rph;
+                $total_selso_rph = $data[$i]->rph_sel_so;
                 $total_intrstrph = $data[$i]->intrstrph;
                 $total_adjrph = $data[$i]->adjrph;
                 $total_sadj = $data[$i]->sadj;

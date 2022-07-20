@@ -172,6 +172,8 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
             <td class="right">{{rupiah($cp_nccsb)}}</td>
             <td class="right">{{rupiah($cp_ncnet)}}</td>
             <td class="right">{{rupiah($cp_nctax)}}</td>
+            <td class="right">{{rupiah($cp_nc_bebasppn)}}</td>
+            <td class="right">{{rupiah($cp_nc_ppndtp)}}</td>
         </tr>
         <tr>
             <td colspan="2" class="right"><b>TOTAL BARANG KENA PAJAK :</b></td>
@@ -179,6 +181,8 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
             <td class="right">{{rupiah($cp_npcsb)}}</td>
             <td class="right">{{rupiah($cp_npnet)}}</td>
             <td class="right">{{rupiah($cp_nptax)}}</td>
+            <td class="right">{{rupiah($cp_np_bebasppn)}}</td>
+            <td class="right">{{rupiah($cp_np_ppndtp)}}</td>
         </tr>
         <tr>
             <td colspan="2" class="right"><b>TOTAL BARANG TIDAK KENA PAJAK :</b></td>
@@ -186,6 +190,8 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
             <td class="right">{{rupiah($cp_nxcsb)}}</td>
             <td class="right">{{rupiah($cp_nxnet)}}</td>
             <td class="right">{{rupiah($cp_nxtax)}}</td>
+            <td class="right">{{rupiah($cp_nx_bebasppn)}}</td>
+            <td class="right">{{rupiah($cp_nx_ppndtp)}}</td>
         </tr>
         <tr>
             <td colspan="2" class="right"><b>TOTAL BARANG KENA CUKAI :</b></td>
@@ -193,6 +199,8 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
             <td class="right">{{rupiah($cp_nkcsb)}}</td>
             <td class="right">{{rupiah($cp_nknet)}}</td>
             <td class="right">{{rupiah($cp_nktax)}}</td>
+            <td class="right">{{rupiah($cp_nk_bebasppn)}}</td>
+            <td class="right">{{rupiah($cp_nk_ppndtp)}}</td>
         </tr>
         <tr>
             <td colspan="2" class="right"><b>TOTAL BARANG BEBAS PPN :</b></td>
@@ -200,6 +208,8 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
             <td class="right">{{rupiah($cp_nbcsb)}}</td>
             <td class="right">{{rupiah($cp_nbnet)}}</td>
             <td class="right">{{rupiah($cp_nbtax)}}</td>
+            <td class="right">{{rupiah($cp_nb_bebasppn)}}</td>
+            <td class="right">{{rupiah($cp_nb_ppndtp)}}</td>
         </tr>
         <tr>
             <td colspan="2" class="right"><b>TOTAL BARANG EXPORT :</b></td>
@@ -207,6 +217,8 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
             <td class="right">{{rupiah($cp_necsb)}}</td>
             <td class="right">{{rupiah($cp_nenet)}}</td>
             <td class="right">{{rupiah($cp_netax)}}</td>
+            <td class="right">{{rupiah($cp_ne_bebasppn)}}</td>
+            <td class="right">{{rupiah($cp_ne_ppndtp)}}</td>
         </tr>
         <tr>
             <td colspan="2" class="right"><b>TOTAL BARANG PPN DIBAYAR PEMERINTAH</b></td>
@@ -214,6 +226,8 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
             <td class="right">{{rupiah($cp_ngcsb)}}</td>
             <td class="right">{{rupiah($cp_ngnet)}}</td>
             <td class="right">{{rupiah($cp_ngtax)}}</td>
+            <td class="right">{{rupiah($cp_ng_bebasppn)}}</td>
+            <td class="right">{{rupiah($cp_ng_ppndtp)}}</td>
         </tr>
         {{-- <tr>
             <td colspan="2" class="right"><b>TOTAL BRG PPN DIBYR PMERINTH (TEPUNG) :</b></td>
@@ -228,6 +242,8 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
             <td class="right">{{rupiah($cp_nfcsb)}}</td>
             <td class="right">{{rupiah($cp_nfnet)}}</td>
             <td class="right">{{rupiah($cp_nftax)}}</td>
+            <td class="right">{{rupiah($cp_nf_bebasppn)}}</td>
+            <td class="right">{{rupiah($cp_nf_ppndtp)}}</td>
         </tr>
         <tr>
             <td colspan="2" class="right"><b>GRAND TOTAL (TANPA DEPT 40) :</b></td>
@@ -235,7 +251,10 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
             <td class="right">{{rupiah($tot_all_potongan-$cp_ndcsb)}}</td>
             <td class="right">{{rupiah($tot_all_dpp-$cp_ndnet)}}</td>
             <td class="right">{{rupiah($tot_all_ppn-$cp_ndtax)}}</td>
-        </tr>
+            <td class="right">{{rupiah($tot_all_ppn_bebas-$cp_nd_bebasppn)}}</td>
+            <td class="right">{{rupiah($tot_all_ppn_dtp-$cp_nd_ppndtp)}}</td>
+
+            </tr>
         <tr>
             <td colspan="2" class="right"><b>GRAND TOTAL (+ DEPT 40) :</b></td>
             <td class="right">{{rupiah($tot_all_gross)}}</td>

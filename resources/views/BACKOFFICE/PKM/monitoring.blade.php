@@ -15,14 +15,14 @@
                                 <div class="row form-group mb-0">
                                     <label for="prdcd" class="col-sm-2 text-right col-form-label">KODE PLU</label>
                                     <div class="col-sm-2 buttonInside">
-                                        <input type="text" class="form-control" id="prdcd1" disabled>
+                                        <input type="text" class="form-control" id="prdcd1">
                                         <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" onclick="showLOVPrdcdNew('prdcd1')">
                                             <i class="fas fa-question"></i>
                                         </button>
                                     </div>
                                     <label for="prdcd" class="col-sm-1 text-right col-form-label">s/d</label>
                                     <div class="col-sm-2 buttonInside">
-                                        <input type="text" class="form-control" id="prdcd2" disabled>
+                                        <input type="text" class="form-control" id="prdcd2">
                                         <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" onclick="showLOVPrdcdNew('prdcd2')">
                                             <i class="fas fa-question"></i>
                                         </button>
@@ -291,6 +291,20 @@
             $('#m_add input').val('');
         });
 
+        $('#prdcd1').on('keypress',function(e){
+            if(e.which == 13){
+                this.value = convertPlu(this.value);
+                $('#prdcd2').select();
+            }
+        });
+
+        $('#prdcd2').on('keypress',function(e){
+            if(e.which == 13){
+                this.value = convertPlu(this.value);
+                getData();
+            }
+        });
+
         function showLOVPrdcd(){
             // if(needRefreshNew){
             //     $('#table_prdcd').DataTable().destroy();
@@ -342,8 +356,6 @@
                 },
                 "order" : [],
                 "initComplete": function(){
-                    // $('#btn_prdcd').empty().append('<i class="fas fa-question"></i>').prop('disabled', false);
-
                     $(document).on('click', '.row-prdcd', function (e) {
                         $('#add_prdcd').val($(this).find('td:eq(0)').html());
                         $('#add_deskripsi').val($(this).find('td:eq(1)').html());
@@ -499,6 +511,7 @@
                     ],
                     "initComplete": function(){
                         $('#modal-loader').modal('hide');
+                        $('#prdcd1').select();
 
                         // $(document).on('click', '.row-detail', function (e) {
                         //     $('.clicked').removeClass('clicked');

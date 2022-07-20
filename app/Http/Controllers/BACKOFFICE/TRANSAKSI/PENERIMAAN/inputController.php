@@ -2653,6 +2653,8 @@ class inputController extends Controller
     public function readQR(Request $request)
     {
         $path = 'qrcode/';
+        chmod(storage_path($path . 'HEADER.zip'), 755);
+        chmod(storage_path($path . 'DETAIL.zip'), 755);
         if (!(isset($request->header))) {
             return response()->json(['kode' => 0, 'msg' => 'HEADER Kosong!', 'data' => '']);
         } else {

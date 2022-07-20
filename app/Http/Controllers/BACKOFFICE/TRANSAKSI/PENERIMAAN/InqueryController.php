@@ -21,11 +21,11 @@ class InqueryController extends Controller
         $typeTrn    = $request->typeTrn;
 
         $data = DB::connection(Session::get('connection'))->select("SELECT msth_nodoc, trunc(msth_tgldoc) as msth_tgldoc
-                                    FROM tbtr_mstran_h
-                                   WHERE     msth_kodeigr = '$kodeigr'
-                                         AND msth_typetrn = '$typeTrn'
-                                         AND NVL (msth_recordid, 9) <> 1
-                                         and trunc(msth_tgldoc) between trunc(sysdate-5) and trunc(sysdate)
+                                FROM tbtr_mstran_h
+                                WHERE     msth_kodeigr = '$kodeigr'
+                                AND msth_typetrn = '$typeTrn'
+                                AND NVL (msth_recordid, 9) <> 1
+                                AND trunc(msth_tgldoc) between trunc(sysdate-5) and trunc(sysdate)
                                 ORDER BY msth_tgldoc DESC");
 
         return DataTables::of($data)->make(true);

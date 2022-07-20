@@ -1,6 +1,7 @@
-@extends('virtual-stock-cmo-pdf-template')
+{{-- @extends('virtual-stock-cmo-pdf-template') --}}
+@extends('html-template')
 
-@section('table_font_size','10 px')
+@section('table_font_size','7px')
 
 @section('page_title')
     @if($tipevcmo == 'r1')
@@ -18,43 +19,22 @@
     @endif
 @endsection
 
+@if($tipevcmo == 'r1')
+    @section('paper_height','595pt')
+@section('paper_width','842pt')
+@else
+    @section('paper_height','595pt')
+@section('paper_width','1200pt')
+    @endif
+
 @section('subtitle')
-    {{-- <div class="row"> --}}
-        {{-- <div class="col-lg-6">
-            @if($div1 == NULL && $div2 == NULL)
-                <span>Divisi : ALL</span><br> 
-            @else
-                <span>Divisi : {{ $div1 }} s/d {{ $div2 }}</span><br>
-            @endif
-            @if($dept1 == NULL && $dept2 == NULL)
-                <span>Departement : ALL</span><br> 
-            @else
-                <span>Departement : {{ $dept1 }} s/d {{ $dept2 }}</span><br>
-            @endif
-            @if($kat1 == NULL && $kat2 == NULL)
-                <span>Kategori : ALL</span><br>
-            @else
-                <span>Kategori : {{ $kat1 }} s/d {{ $kat2 }}</span><br> 
-            @endif
-        </div>
-        <div class="col-lg-6">
-            @if($kodesupplier == NULL)
-                <span>Kode Supplier : ALL</span> 
-            @else
-                <span>Kode Supplier :  {{ $kodesupplier }}</span> 
-            @endif
-            @if($namasupplier == NULL)
-                <span>Nama Supplier : ALL</span> 
-            @else
-                <span>Nama Supplier : {{ $namasupplier }}</span> 
-            @endif
-            <span>Periode : {{ $periode1 }} s/d {{ $periode2 }}</span>
-        </div> --}}
-    {{-- </div> --}}
+
 @endsection
 
 @section('content')
     @if($tipevcmo == 'r1')
+{{--        @section('paper_height','595pt')--}}
+{{--        @section('paper_width','842pt')--}}
         <table class="table table-bordered table-responsive">
             <thead style="border-top: 1px solid black;border-bottom: 1px solid black;border-left: 1px solid black;">
                 <tr style="text-align: center; vertical-align: center">
@@ -97,35 +77,34 @@
                 </tr>
             </tbody>
         </table>
-        <br>    
+        <br>
         <table class="table table-bordered table-responsive" style="border-collapse: collapse">
             <thead style="border-top: 1px solid black;border-bottom: 1px solid black;border-left: 1px solid black;">
             <tr style="text-align: center; vertical-align: center">
-                <th rowspan="2" style="width:15px;border-right: 1px solid black">No.</th>
-                <th colspan="1" style="width:20px;border-top: 1px solid black; border-right: 1px solid black;">plu IDM</th>
-                <th colspan="1" style="width:20px;border-top: 1px solid black; border-right: 1px solid black;">plu IGR</th>
-                <th rowspan="2" style="width:20px; border-right: 1px solid black; border-left: 1px solid black">saldo awal</th>
-                <th colspan="4" style="width:150px; border-right: 1px solid black">PENERIMAAN</th>
-                <th colspan="3" style="width:150px; border-right: 1px solid black">PENGELUARAN</th>
+                <th rowspan="2" style="width:15px;border: 1px solid black">No.</th>
+                <th colspan="1" style="width:20px;border: 1px solid black;">plu IDM</th>
+                <th colspan="1" style="width:20px;border: 1px solid black;">plu IGR</th>
+                <th rowspan="2" style="width:20px;border: 1px solid black;">saldo awal</th>
+                <th colspan="4" style="width:100px; border: 1px solid black">PENERIMAAN</th>
+                <th colspan="3" style="width:150px; border: 1px solid black">PENGELUARAN</th>
                 <th rowspan="2" style="width:25px;border: 1px solid black;">Saldo Akhir</th>
             </tr>
             <tr style="text-align: center; vertical-align: center">
-                <th colspan="2" style="width: 30px; border-right: 1px solid black; border-top: 1px solid black;">Deskripsi</th>
-                <th style="border-top: 1px solid black; border-right: 1px solid black; width: 25px; text-align: center">BPB</th>
-                <th style="border-top: 1px solid black; border-right: 1px solid black; width: 25px; text-align: center">BPBR</th>
-                <th style="border-top: 1px solid black; border-right: 1px solid black; width: 25px; text-align: center">MPP (+)</th>
-                <th style="border-top: 1px solid black; border-right: 1px solid black; width: 25px; text-align: center">ADJ (+)</th>
-                <th style="border-top: 1px solid black; border-right: 1px solid black; width: 25px; text-align: center">DSPB</th>
-                <th style="border-top: 1px solid black; border-right: 1px solid black; width: 25px; text-align: center">MPP (-)</th>
-                <th style="border-top: 1px solid black; border-right: 1px solid black; width: 25px; text-align: center">ADJ (-)</th>
+                <th colspan="2" style="width: 40px; border-right: 1px solid black; border-top: 1px solid black;">Deskripsi</th>
+                <th style="border:1px solid black; width: 25px; text-align: center">BPB</th>
+                <th style="border:1px solid black; width: 25px; text-align: center">BPBR</th>
+                <th style="border:1px solid black; width: 25px; text-align: center">MPP (+)</th>
+                <th style="border:1px solid black; width: 25px; text-align: center">ADJ (+)</th>
+                <th style="border:1px solid black; width: 50px; text-align: center">DSPB</th>
+                <th style="border:1px solid black; width: 50px; text-align: center">MPP (-)</th>
+                <th style="border:1px solid black; width: 50px; text-align: center">ADJ (-)</th>
             </tr>
             </thead>
-
             <tbody>
-                @for($i=0; $i<sizeof($data) ;$i++)
-
+                @for($i=0; $i<100 ;$i++)
+                {{-- @for($i=0; $i<sizeof($data) ;$i++) --}}
                     <tr>
-                        <td rowspan="2" style="text-align: center;">{{$i+1}}</td>
+                        <td style="text-align: center;">{{$i+1}}</td>
                         <td style="text-align: left;">{{ $data[$i]->prc_pluidm }}</td>
                         <td style="text-align: left;">{{ $data[$i]->pluigr }}</td>
                         <td style="text-align: left;">{{ $data[$i]->sta_saldoawal }}</td>
@@ -139,14 +118,27 @@
                         <td>{{ $data[$i]->sta_saldoakhir }}</td>
                     </tr>
                     <tr>
-                        <td colspan="3" style="text-align: left;" >{{ $data[$i]->prd_deskripsipanjang }}</td>
+                        <td colspan="3" style="text-align: center;">{{ $data[$i]->prd_deskripsipanjang }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        {{-- <th colspan="9"></th> --}}
                     </tr>
+
 
                 @endfor
             </tbody>
         </table>
     @elseif($tipevcmo == 'r2')
-        <table class="table table-bordered table-responsive">
+{{--        @section('paper_height','595pt')--}}
+{{--        @section('paper_width','1200pt')--}}
+        <table class="table table-bordered table-responsive" style="justify-content: center">
             <thead style="border-top: 1px solid black;border-bottom: 1px solid black;border-left: 1px solid black;">
                 <tr style="text-align: center; vertical-align: center">
                     <th style="border: 1px solid black">Divisi</th>
@@ -188,17 +180,17 @@
                 </tr>
             </tbody>
         </table>
-        <br>    
+        <br>
         <table class="table table-bordered table-responsive" style="border-collapse: collapse">
             <thead style="border-top: 1px solid black;border-bottom: 1px solid black;border-left: 1px solid black;">
             <tr>
-            <th rowspan="3" style="width:50px;border-right: 1px solid black;text-align: center;vertical-align: middle;">No.</th>
-            <th colspan="1" style="width:20px;border-top: 1px solid black; border-right: 1px solid black; text-align: center">plu IDM</th>
-            <th colspan="1" style="width:20px;border-top: 1px solid black; border-right: 1px solid black;text-align: center">plu IGR</th>
-            <th rowspan="3" style="width: 20px; border-right: 1px solid black; border-left: 1px solid black;text-align: center;vertical-align: middle;">saldo awal</th>
-            <th colspan="16" style="width:150px; border-right: 1px solid black">PENERIMAAN</th>
-            <th colspan="10" style="width:150px; border-right: 1px solid black">PENGELUARAN</th>
-            <th rowspan="3" style="width:25px; border: 1px solid black;">Saldo Akhir</th>
+            <th rowspan="3"  style="width:50px;border: 1px solid black;text-align: center;vertical-align: middle;">No.</th>
+            <th colspan="1"  style="width:20px;border: 1px solid black; text-align: center">plu IDM</th>
+            <th colspan="1"  style="width:20px;border: 1px solid black;text-align: center">plu IGR</th>
+            <th rowspan="3"  style="width: 20px;border: 1px solid black;text-align: center;vertical-align: middle;">saldo awal</th>
+            <th colspan="16" style="width:150px;border: 1px solid black">PENERIMAAN</th>
+            <th colspan="10" style="width:150px;border: 1px solid black">PENGELUARAN</th>
+            <th rowspan="3"  style="width:25px;border: 1px solid black;">Saldo Akhir</th>
             </tr>
             <tr style="text-align: center; vertical-align: center">
                 <th colspan="2" rowspan="2" style="width: 30px; border-right: 1px solid black; border-top: 1px solid black;text-align: center;vertical-align: middle;">Deskripsi</th>
@@ -216,7 +208,7 @@
                 <th colspan="1" style="width: 25px; border-right: 1px solid black; border-top: 1px solid black;">Tgl BPB</th>
                 <th colspan="1" style="width: 25px; border-right: 1px solid black; border-top: 1px solid black;">No. BPB</th>
                 <th colspan="1" style="width: 25px; border-right: 1px solid black; border-top: 1px solid black;">Qty</th>
-            
+
                 <th colspan="1" style="width: 25px; border-right: 1px solid black; border-top: 1px solid black;">Kode - Nama</th>
                 <th colspan="1" style="width: 25px; border-right: 1px solid black; border-top: 1px solid black;">Tgl BPBR</th>
                 <th colspan="1" style="width: 25px; border-right: 1px solid black; border-top: 1px solid black;">No. BPBR</th>
@@ -242,14 +234,15 @@
 
                 <th colspan="1" style="width: 25px; border-right: 1px solid black; border-top: 1px solid black;">Tgl ADJ</th>
                 <th colspan="1" style="width: 25px; border-right: 1px solid black; border-top: 1px solid black;">No BA</th>
-                <th colspan="1" style="width: 25px; border-right: 1px solid black; border-top: 1px solid black;">Qty</th>     
+                <th colspan="1" style="width: 25px; border-right: 1px solid black; border-top: 1px solid black;">Qty</th>
             </tr>
             </thead>
             <tbody>
                 <?php
                     $number = 0;
                 ?>
-                @for($i=0; $i<sizeof($data) ;$i++)
+                {{-- @for($i=0; $i<sizeof($data) ;$i++) --}}
+                @for($i=0; $i<100 ;$i++)
 
                     <?php
                         $temp_pluidm = '';
@@ -276,7 +269,7 @@
                         @else
                             <td colspan="1">-</td>
                         @endif
-                        
+
                         <!-- Supplier -->
                         <td colspan="1">{{ $data[$i]->sup_namasupplier }}</td>
                         <td colspan="1">{{ $data[$i]->bpb_nopo }}</td>
@@ -316,7 +309,7 @@
 
                     @if($temp_deskripsi != $data[$i]->prd_deskripsipanjang)
                         <tr style="text-align: center">
-                            <td colspan="2" >{{ $data[$i]->prd_deskripsipanjang }}</td>
+                            <td colspan="2">{{ $data[$i]->prd_deskripsipanjang }}</td>
                         </tr>
                         <?php
                             $temp_deskripsi = $data[$i]->prd_deskripsipanjang;
@@ -324,15 +317,15 @@
                     @endif
 
                     @php
-                        $temp_saldo_awal_penerimaan = $data[$i]->awal;  
-                        $temp_qty_supplier_penerimaan = $data[$i]->bpb_qty;  
-                        $temp_qty_toko_idm_penerimaan = $data[$i]->idm_qty;  
-                        $temp_mpp_plus_penerimaan = $data[$i]->mpp_qty;  
-                        $temp_adj_plus_penerimaan = $data[$i]->intp_qty;  
-                        $temp_qty_toko_idm_pengeluaran = $data[$i]->dspb_qty;  
-                        $temp_mpp_minus_pengeluaran = $data[$i]->mpn_qty;  
-                        $temp_adj_minus_pengeluaran = $data[$i]->intn_qty;  
-                        $temp_saldo_akhir_pengeluaran = $data[$i]->akhir;      
+                        $temp_saldo_awal_penerimaan = $data[$i]->awal;
+                        $temp_qty_supplier_penerimaan = $data[$i]->bpb_qty;
+                        $temp_qty_toko_idm_penerimaan = $data[$i]->idm_qty;
+                        $temp_mpp_plus_penerimaan = $data[$i]->mpp_qty;
+                        $temp_adj_plus_penerimaan = $data[$i]->intp_qty;
+                        $temp_qty_toko_idm_pengeluaran = $data[$i]->dspb_qty;
+                        $temp_mpp_minus_pengeluaran = $data[$i]->mpn_qty;
+                        $temp_adj_minus_pengeluaran = $data[$i]->intn_qty;
+                        $temp_saldo_akhir_pengeluaran = $data[$i]->akhir;
                     @endphp
 
                     <tr>
@@ -382,11 +375,11 @@
                         <!-- ADJ (-) -->
                         <td colspan="1"></td>
                         <td colspan="1"></td>
-                        <td colspan="1">{{ $temp_adj_minus_pengeluaran }}</td>
+                        <td colspan="1" style="text-align: right">{{ $temp_adj_minus_pengeluaran }}</td>
                         <!-- Saldo Akhir -->
                         <td colspan="1" style="text-align: right">{{ $temp_saldo_akhir_pengeluaran }}</td>
                     </tr>
-                   
+
                     <tr>
                         <th colspan="31" style="text-align:center"><hr></th>
                     </tr>

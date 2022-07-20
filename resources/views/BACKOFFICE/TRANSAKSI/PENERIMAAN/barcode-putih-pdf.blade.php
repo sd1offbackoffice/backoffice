@@ -94,6 +94,9 @@ Periode : {{ $tgl1 }} - {{ $tgl2 }}
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>BARCODE PUTIH</title>
     <style>
+        /* body {
+            display: flex;            
+        } */
         .grid-container {
             display: grid;
             grid-template-columns: auto auto auto;
@@ -106,11 +109,28 @@ Periode : {{ $tgl1 }} - {{ $tgl2 }}
             padding: 20px;
             font-size: 30px;
             text-align: center;
+            align-content: center;
+        }
+
+        @media print {
+            @page {
+                size: auto;
+                margin: 0mm;
+            }
+            footer {page-break-after: always;}
+        }
+
+        .pagebreak {
+            page-break-before: always;        
         }
     </style>
 </head>
 <body>
+    <div class="printContainer" style="display: flex; justify-content: center;">
+        <button id="printBtn" class="btn btn-primary" role="button">CETAK</button>
+    </div>
     <div class="grid-container">
+        
         @foreach ($data as $d)
             @php
                 $generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG();
@@ -119,19 +139,55 @@ Periode : {{ $tgl1 }} - {{ $tgl2 }}
                 } else {
                     $totalPrint = $d->mstd_qty;
                 }
+                $index = 0;
             @endphp
-            @for ($i = 0; $i < $totalPrint; $i++)
+            @for ($i = 1; $i <= 1; $i++)
                 <div class="grid-item">
-                    <img style="max-width: 250px;" src="data:image/png;base64,{{ base64_encode($generatorPNG->getBarcode($d->mstd_prdcd, $generatorPNG::TYPE_CODE_128)) }}">
-                    <p class="left">PLU &nbsp;: {{ $d->mstd_prdcd }}</p>
-                    <p class="left">UNIT/FRAC &nbsp;: {{ $d->mstd_unit }}/{{ $d->mstd_frac }}</p>
+                    <img style="max-width: 250px;" src="data:image/png;base64,{{ base64_encode($generatorPNG->getBarcode($d->prd_plumcg, $generatorPNG::TYPE_CODE_128)) }}">
+                    <p class="left">PLU &nbsp;: {{ $d->prd_plumcg }}</p>
+                    <p class="left">UNIT/FRAC &nbsp;: {{ $d->mstd_unit }} / {{ $d->mstd_frac }}</p>
                     <p class="left">DESKRIPSI &nbsp;: {{ $d->prd_deskripsipanjang }}</p>
                 </div>
-                @if($i == $totalPrint)
+                {{-- @if($i == $totalPrint-1)
                     <div class="pagebreak"></div>
-                @endif
+                @endif --}}
             @endfor
+            <div class="pagebreak"></div>
         @endforeach
     </div>
+    {{-- <div class="container" style="display: flex; justify-content: flex-start">
+        @foreach ($data as $d)
+        @php
+            $generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG();
+            if ($d->mstd_unit != 'PCS') {
+                $totalPrint = intval($d->mstd_qty / $d->mstd_frac);
+            } else {
+                $totalPrint = $d->mstd_qty;
+            }
+            $index = 0;
+        @endphp
+        @for ($i = 1; $i <= $totalPrint; $i++)
+            <div style="width: 25%;">
+                <img style="max-width: 80%;" src="data:image/png;base64,{{ base64_encode($generatorPNG->getBarcode($d->prd_plumcg, $generatorPNG::TYPE_CODE_128)) }}">
+                <p class="left">PLU &nbsp;: {{ $d->prd_plumcg }}</p>
+                <p class="left">UNIT/FRAC &nbsp;: {{ $d->mstd_unit }} / {{ $d->mstd_frac }}</p>
+                <p class="left">DESKRIPSI &nbsp;: {{ $d->prd_deskripsipanjang }}</p>
+            </div>            
+        @endfor
+        @endforeach
+    </div> --}}
 </body>
+
+<script>
+    // function print(){
+    //     document.querySelector('.printBtn').remove();
+    //     window.print();
+    // }
+    document.querySelector('#printBtn').addEventListener('click', function() {
+        // TODO event handler logic
+        document.querySelector('.printContainer').remove();
+        window.print();
+        document.querySelector('.printContainer').append();
+    });
+</script>
 </html>

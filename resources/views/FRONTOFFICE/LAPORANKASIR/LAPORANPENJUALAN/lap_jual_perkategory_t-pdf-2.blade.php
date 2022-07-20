@@ -141,7 +141,7 @@
                 {
                     $freePPN_body = $freePPN_body + $data[$i]->ntax;
                 }
-                else if($data[$i]->fdfbkp == 'G'){
+                else if($data[$i]->fdfbkp == 'G' || $data[$i]->fdfbkp == 'W'){
                     $ppnDTP_body = $ppnDTP_body + $data[$i]->ntax;
                 }
                 $net_body = $net_body + $data[$i]->nnet;
@@ -397,7 +397,7 @@
             <td style="text-align: right; font-weight: bold;">{{percent($marginpersen['e'])}}</td>
         </tr>
         <tr>
-            <td colspan="2" style="text-align: right; font-weight: normal;">TOTAL BARANG PPN DITANGGUNG PEMERINTAH</td>
+            <td colspan="2" style="text-align: right; font-weight: bold;">TOTAL BARANG PPN DITANGGUNG PEMERINTAH</td>
             <td style="text-align: right; font-weight: bold;"></td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($gross['g'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($tax['g'])}}</td>
@@ -429,8 +429,8 @@
             @endif
             <td style="text-align: right; font-weight: bold;">{{rupiah($gross['total']-$gross['d'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($tax['total']-$tax['d'])}}</td>
-            <td style="text-align: right; font-weight: bold;">{{rupiah($freePPN['total']-$tax['d'])}}</td>
-            <td style="text-align: right; font-weight: bold;">{{rupiah($ppnDTP['total']-$tax['d'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($freePPN['total']-$freePPN['d'])}}</td>
+            <td style="text-align: right; font-weight: bold;">{{rupiah($ppnDTP['total']-$ppnDTP['d'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($net['total']-$net['d'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($hpp['total']-$hpp['d'])}}</td>
             <td style="text-align: right; font-weight: bold;">{{rupiah($margin['total']-$margin['d'])}}</td>

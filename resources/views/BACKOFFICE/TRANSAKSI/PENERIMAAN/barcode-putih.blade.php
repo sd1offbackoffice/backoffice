@@ -36,7 +36,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <button type="button" class="btn btn-primary" onclick="print()">CETAK</button>
+                                <button type="button" class="btn btn-primary" onclick="saveDataBarcode()">SIMPAN DATA UNTUK PRINT</button>
                             </div>
                         </div>
                         
@@ -47,9 +47,9 @@
                                         <tr>
                                             <th>PLU</th>
                                             <th>DESKRIPSI</th>
-                                            <th>UNIT</th>
-                                            <th>FRAC</th>
-                                            <th>CTN</th>
+                                            {{-- <th>UNIT</th>
+                                            <th>FRAC</th> --}}
+                                            {{-- <th>CTN</th> --}}
                                             {{-- <th>BOX</th> --}}
                                             <th>QTY</th>                                            
                                             <th>KETERANGAN</th>
@@ -126,6 +126,7 @@
         let notExistsInMasterKlaim = []
         let existsInMasterKlaim = []
         let existsInMasterBarcode = []
+        let printData = []
         // let existsPluMasterKlaimBarcode = []
         $(document).ready(function () {
             $('#pluTable').DataTable()
@@ -187,6 +188,7 @@
             notExistsInMasterKlaim = []
             existsInMasterKlaim = []
             existsInMasterBarcode = []
+            printData = []
             // $('#pluTable').DataTable().destroy()        
 
             ajaxSetup()
@@ -208,6 +210,7 @@
                     $('#modal-loader').modal('hide');
 
                     if (res.status = 'SUCCESS') {
+                        // console.log(res.data);
                         res.data.forEach(data => {
                             // plu_datas.push(data)
                             checkPluBarcode(data)
@@ -249,9 +252,9 @@
                 columns: [
                     {data: 'mstd_prdcd', name: 'mstd_prdcd'},
                     {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
-                    {data: 'mstd_unit', name: 'mstd_unit'},
-                    {data: 'mstd_frac', name: 'mstd_frac'},
-                    {data: 'mstd_ctn', name: 'mstd_ctn'},
+                    // {data: 'mstd_unit', name: 'mstd_unit'},
+                    // {data: 'mstd_frac', name: 'mstd_frac'},
+                    // {data: 'mstd_ctn', name: 'mstd_ctn'},
                     // {data: 'mstd_box', name: 'mstd_box'},
                     {data: 'mstd_qty', name: 'mstd_qty'},
                     {data: 'keterangan', name: 'keterangan'},
@@ -306,16 +309,20 @@
                 success: function (res) {
                     $('#modal-loader').modal('hide');
                     // console.log(res.data)               
-                    plu_datas.push(res.data)
+                    plu_datas.push(res.data.datas)
                     switch (res.status) {
                         case 'INFO MASTER':
-                            existsInMasterBarcode.push(res.data)                            
+                            existsInMasterBarcode.push(res.data.datas)                            
                             break;
                         case 'INFO KLAIM':
-                            notExistsInMasterKlaim.push(res.data)                            
+                            notExistsInMasterKlaim.push(res.data.datas)                            
+                                                                            
                             break;
                         case 'SUCCESS':
-                            existsInMasterKlaim.push(res.data)                      
+                            existsInMasterKlaim.push(res.data.datas)    
+                            res.data.data_print.forEach(dp => {
+                                printData.push(dp)
+                            });                   
                             break;
                     }
                 }
@@ -355,7 +362,7 @@
             });
         }
 
-        function print() {
+        function saveDataBarcode() {
             if (plu_datas.length == 0) {
                 swal({
                     icon: 'info',
@@ -364,43 +371,72 @@
                     timer: 2000
                 });
             } else {
-                // if (notExistsInMasterKlaim.length > 0) {
-                //     sendEmail();
-                // }
-                            
-                let plus = ''
-                for (let index = 0; index < notExistsInMasterKlaim.length-1; index++) {                                      
-                    if (index == notExistsInMasterKlaim.length-1) {
-                        plus += notExistsInMasterKlaim[index].mstd_prdcd
-                    } else {
-                        plus += notExistsInMasterKlaim[index].mstd_prdcd + ','
-                    }                
-                }
-                // totalPriceBarcode()                
-                window.open(`{{ url()->current() }}/print-barcode?plus=${plus}&noFaktur=${notExistsInMasterKlaim[0].mstd_nofaktur}`, '_blank')
+                if (notExistsInMasterKlaim.length > 0) {
+                    sendEmail();
+                }                
+                
+                ajaxSetup()
+                $.ajax({
+                    type: "POST",
+                    url: "{{ url()->current() }}/save-barcode-print",
+                    data: {
+                        data: printData
+                    },
+                    beforeSend: function () {
+                        $('#modal-loader').modal({
+                            backdrop: 'static',
+                            keyboard: false
+                        })
+                    },
+                    success: function (res) {
+                        $('#modal-loader').modal('hide');                        
+                        if (res.status == 'SUCCESS') {
+                            swal({
+                                icon: 'success',
+                                title: 'Barcode Putih',
+                                text: res.message,                        
+                            }).then(() => {location.reload()});                             
+                        } else {
+                            swal({
+                                icon: 'info',
+                                title: 'Barcode Putih',
+                                text: res.message,                        
+                            }).then(() => {location.reload()});
+                        }                        
+                    }, 
+                    error: function (err) {
+                        $('#modal-loader').modal('hide');
+
+                        swal({                        
+                            text: response.message,
+                            icon: response.status
+                        }).then(() => {});
+                    }
+                });
+                // window.open(`{{ url()->current() }}/print-barcode?plus=${plus}&noFaktur=${existsInMasterKlaim[0].mstd_nofaktur}`, '_blank')
             }                        
         }
 
-        function totalPriceBarcode() {
-            ajaxSetup()
-            $.ajax({
-                type: "POST",
-                url: "{{ url()->current() }}/total-price-barcode",
-                data: {
-                    data: notExistsInMasterKlaim
-                },
-                beforeSend: function () {
-                    $('#modal-loader').modal({
-                        backdrop: 'static',
-                        keyboard: false
-                    })
-                },
-                success: function (response) {
-                    $('#modal-loader').modal('hide');
+        // function saveBarcodePrint() {
+        //     ajaxSetup()
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "{{ url()->current() }}/save-barcod-print",
+        //         data: {
+        //             data: printData
+        //         },
+        //         beforeSend: function () {
+        //             $('#modal-loader').modal({
+        //                 backdrop: 'static',
+        //                 keyboard: false
+        //             })
+        //         },
+        //         success: function (response) {
+        //             $('#modal-loader').modal('hide');
 
 
-                }
-            });
-        }
+        //         }
+        //     });
+        // }
     </script>
 @endsection

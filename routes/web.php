@@ -881,7 +881,7 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::get('/check-plu-barcode', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@checkPluBarcode');
                     Route::get('/show-data', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@showData');
                     Route::post('/send-email', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@sendEmail');
-                    Route::post('/total-price-barcode', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@totalPriceBarcode');
+                    Route::post('/save-barcode-print', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\BarcodePutihController@saveBarcodePrint');
                 });
             });
 
@@ -1754,6 +1754,16 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::post('/cek_bonus', 'BACKOFFICE\PENGADAANITEMPROCUREMENT\PBProcurementController@cek_bonus');
                 Route::post('/save_data', 'BACKOFFICE\PENGADAANITEMPROCUREMENT\PBProcurementController@save_data');
 
+            });
+        });
+
+        //Kingsley
+        Route::prefix('/naik-turun-status')->group(function () {
+            Route::prefix('/status')->group(function () {
+                Route::get('/', 'BACKOFFICE\NAIKTURUNSTATUS\StatusController@index');
+                Route::get('/showNaik', 'BACKOFFICE\NAIKTURUNSTATUS\StatusController@showNaik');
+                Route::get('/showTurun', 'BACKOFFICE\NAIKTURUNSTATUS\StatusController@showTurun');
+                Route::post('/sendEmail', 'BACKOFFICE\NAIKTURUNSTATUS\StatusController@sendEmail');
             });
         });
 

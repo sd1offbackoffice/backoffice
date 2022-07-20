@@ -54,9 +54,9 @@
         @page {
             /*margin: 25px 20px;*/
             /*size: 1071pt 792pt;*/
-            /* size: @yield('paper_width','700pt') @yield('paper_height','842pt'); */
+             size: @yield('paper_width','595pt') @yield('paper_height','842pt');
             /* size: @yield('paper_width','auto') @yield('paper_height','auto'); */
-            size: @yield('paper_size','700pt 842pt');
+            /* size: @yield('paper_size','700pt 842pt'); */
             /*size: 842pt 638pt;*/
         }
 
@@ -231,7 +231,7 @@
 
         /* @yield('custom_style') */
     </style>
-    
+
     {{-- <link rel="stylesheet" type="text/css" href="{{ asset('/css/bootstrap.min.css') }}"> --}}
 
     <script src={{asset('/js/jquery.js')}}></script>

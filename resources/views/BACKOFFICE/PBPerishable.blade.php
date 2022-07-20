@@ -795,10 +795,10 @@
                             $('.kubikase')[index].value = thousands_separators(result.kubikase);
                             var totalkubik = parseInt(result.totalkubik);
                             $('.totalkubik')[idsup].value = thousands_separators(totalkubik);
-                            console.log('totalkubik')
-                            console.log(totalkubik)
-                            console.log('volsarint')
-                            console.log(volsarint)
+                            console.log('totalkubik');
+                            console.log(totalkubik);
+                            console.log('volsarint');
+                            console.log(volsarint);
                             if(totalkubik > volsarint){
                                 $('.flag')[idsup].value = "X";
                             }
@@ -816,6 +816,7 @@
                             times = parseInt(qtypbint / minorderint);
                             console.log('times');
                             console.log(times);
+                            let qtypb2 = '';
                             if (qtypbint < minorderint){
                                 $('.qtypb')[index].value = thousands_separators(minorder);
                             }
@@ -823,17 +824,22 @@
                                 if (qtypbint - (minorderint * times) >=  minorderint/2 ){
                                     qtypb2 = qtypbint + (minorderint - (qtypbint - (minorderint * times)))
                                     $('.qtypb')[index].value = thousands_separators(qtypb2);
+                                    // qty(qtypb2, index , idsup,e);
                                 }
                                 else{
                                     qtypb2 = qtypbint - (qtypbint - (minorderint * times))
                                     $('.qtypb')[index].value = thousands_separators(qtypb2);
+                                    // qty(qtypb2, index , idsup,e);
                                 }
                             }
+                            
                             
                             // $('.qtypb')[index].value = thousands_separators(minorder);
                             swal({
                                 title: result.message,
                                 icon: 'error'
+                            }).then(function(confirm){
+                                qty(qtypb2, index , idsup,e);
                             })
                             return;
                         }
@@ -1181,21 +1187,21 @@
         //     $('.qtypb')[index].focus()
         // }
 
-    function thousands_separators(num){
-        if(num == null){
-            num = '';
-            return num;
-        }
-        var num_parts = num.toString().split(".");
-        num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        return num_parts.join(".");
+        function thousands_separators(num){
+            if(num == null){
+                num = '';
+                return num;
+            }
+            var num_parts = num.toString().split(".");
+            num_parts[0] = num_parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            return num_parts.join(".");
 
-    }
-    function thousands_combiners(num){
-        var num_parts = num.toString().split(".");
-        num_parts[0] = num_parts[0].replace(",", "");
-        return num_parts.join(".");
-    }
+        }
+        function thousands_combiners(num){
+            var num_parts = num.toString().split(".");
+            num_parts[0] = num_parts[0].replace(",", "");
+            return num_parts.join(".");
+        }
 
 
 

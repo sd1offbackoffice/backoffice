@@ -61,7 +61,7 @@ class BarcodePutihController extends Controller
         $noFaktur = $request->noFaktur;
 
         $data = DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')
-                ->select('mstd_prdcd', 'mstd_nofaktur', 'mstd_tgldoc', 'prd_deskripsipanjang', 'mstd_unit', 'mstd_frac', 'mstd_qty')
+                ->select('prd_plumcg', 'mstd_prdcd', 'mstd_nofaktur', 'mstd_tgldoc', 'prd_deskripsipanjang', 'mstd_unit', 'mstd_frac', 'mstd_qty')
                 ->join('TBMASTER_PRODMAST', 'MSTD_PRDCD', '=', 'PRD_PRDCD')
                 ->where('MSTD_NOFAKTUR', '=', $noFaktur)
                 ->where('MSTD_KODEIGR', '=', $kodeigr)
@@ -189,94 +189,180 @@ class BarcodePutihController extends Controller
         }
     }
 
+    // public function checkPluBarcode(Request $request) {
+    //     $data = $request->data;
+    //     $plu = $data['prd_plumcg'];
+    //     // $plu = $request->plu;
+
+    //     // $data_master_barcode = DB::connection(Session::get('connection'))->table('TBMASTER_PLUNONBARCODE')
+    //     //                         ->whereIn('PNB_PLUMCG', $plus)
+    //     //                         ->get();
+
+    //     // $data_master_klaim_barcode = DB::connection(Session::get('connection'))->table('TBMASTER_CLAIMPLUNONBARCODE')
+    //     //                         ->whereIn('CNB_PLUMCG', $plus)
+    //     //                         ->get();
+
+    //     $data_master_barcode = DB::connection(Session::get('connection'))->table('TBMASTER_PLUNONBARCODE')
+    //                             ->where('PNB_PLUMCG', '=', $plu)
+    //                             ->first();
+    //     $data_master_klaim_barcode = DB::connection(Session::get('connection'))->table('TBMASTER_CLAIMPLUNONBARCODE')
+    //                                     ->where('CNB_PLUMCG', '=', $plu)
+    //                                     ->first();
+
+    //     if (isset($data_master_barcode)) {
+    //         $keterangan = 'TERDAPAT DI MASTER BARCODE';
+    //         $status = 'INFO MASTER';
+    //         $message = 'Data PLU ' . $plu . ' sudah ada di Master Barcode';
+    //     } else {
+    //         if (isset($data_master_klaim_barcode)) {
+    //             $keterangan = 'TERDAPAT DI MASTER KLAIM BARCODE';
+    //             $status = 'SUCCESS';
+    //             $message = 'Data PLU ' . $plu . ' sudah ada di Master Klaim Barcode';
+    //         } else {
+    //             $keterangan = 'TIDAK ADA DI MASTER KLAIM BARCODE';
+    //             $status = 'INFO KLAIM';
+    //             $message = 'Data PLU ' . $plu . ' tidak ada di Master Klaim Barcode';
+    //         }
+    //     }
+
+    //     // $priceCtnBarcode = DB::connection(Session::get('connection'))->table('TBMASTER_BARCODE_PRICE')
+    //     //                     ->where('B_UNIT', '=', 'CTN')
+    //     //                     ->first();
+    //     // $pricePcsBarcode = DB::connection(Session::get('connection'))->table('TBMASTER_BARCODE_PRICE')
+    //     //                     ->where('B_UNIT', '=', 'PCS')
+    //     //                     ->first();
+    //     // dd($priceCtnBarcode, $pricePcsBarcode);
+    //     switch ($data['mstd_unit']) {
+    //         case 'CTN':
+    //             $mstd_ctn = intval($data['mstd_qty'] / $data['mstd_frac']);
+    //             $mstd_box = 0;
+    //             $mstd_pcs = ($data['mstd_qty'] % $data['mstd_frac']);
+    //             $totalPriceBarcode = ($mstd_ctn * $this->priceCtnBarcode) + ($mstd_ctn * $mstd_pcs * $this->pricePcsBarcode);
+    //             break;
+    //         case 'BOX':
+    //             $mstd_ctn = 0;
+    //             $mstd_box = intval($data['mstd_qty'] / $data['mstd_frac']);
+    //             $mstd_pcs = ($data['mstd_qty'] % $data['mstd_frac']);
+    //             $totalPriceBarcode = 0;
+    //             break;
+    //         case 'PCS':
+    //             $mstd_ctn = 0;
+    //             $mstd_box = 0;
+    //             $mstd_pcs = $data['mstd_qty'];
+    //             $totalPriceBarcode = ($mstd_pcs * $this->pricePcsBarcode);
+    //             break;
+    //         default:
+    //             $mstd_ctn = 0;
+    //             $mstd_box = 0;
+    //             $mstd_pcs = ($data['mstd_qty'] / $data['mstd_frac']);
+    //             $totalPriceBarcode = 0;
+    //             break;
+    //     }
+
+    //     $datas = [
+    //         'prd_plumcg' => $data['prd_plumcg'],
+    //         'prd_deskripsipanjang' => $data['prd_deskripsipanjang'],
+    //         'mstd_unit' => $data['mstd_unit'],
+    //         'mstd_frac' => $data['mstd_frac'],
+    //         'mstd_ctn' => $mstd_ctn,
+    //         'mstd_box' => $mstd_box,
+    //         'mstd_qty' => $mstd_pcs,
+    //         'mstd_totalpricebarcode' => $totalPriceBarcode,
+    //         'mstd_nofaktur' => $data['mstd_nofaktur'],
+    //         'mstd_tgldoc' => $data['mstd_tgldoc'],
+    //         'keterangan' => $keterangan
+    //     ];
+
+    //     return response()->json([
+    //         'status' => $status,
+    //         'message' => $message,
+    //         'data' => $datas
+    //     ]);
+    // }
     public function checkPluBarcode(Request $request) {
-        $data = $request->data;
-        $plu = $data['mstd_prdcd'];
-        // $plu = $request->plu;
+        $data = $request->data;        
+        // $plu = substr($data['mstd_prdcd'], -1);
+        $prd_plumcg = $data['prd_plumcg'];       
 
-        // $data_master_barcode = DB::connection(Session::get('connection'))->table('TBMASTER_PLUNONBARCODE')
-        //                         ->whereIn('PNB_PLUMCG', $plus)
-        //                         ->get();
-
-        // $data_master_klaim_barcode = DB::connection(Session::get('connection'))->table('TBMASTER_CLAIMPLUNONBARCODE')
-        //                         ->whereIn('CNB_PLUMCG', $plus)
-        //                         ->get();
-
-        $data_master_barcode = DB::connection(Session::get('connection'))->table('TBMASTER_PLUNONBARCODE')
-                                ->where('PNB_PLUMCG', '=', $plu)
+        $data_master_barcode = DB::connection(Session::get('connection'))->table('TBMASTER_PLUNONBARCODE')                                
+                                ->where('PNB_PLUMCG', '=', $prd_plumcg)                                
                                 ->first();
-        $data_master_klaim_barcode = DB::connection(Session::get('connection'))->table('TBMASTER_CLAIMPLUNONBARCODE')
-                                        ->where('CNB_PLUMCG', '=', $plu)
+                                // dd($data_master_barcode);
+        $data_master_klaim_barcode = DB::connection(Session::get('connection'))->table('TBMASTER_CLAIMPLUNONBARCODE')                                        
+                                        ->where('CNB_PLUMCG', '=', $prd_plumcg)                                        
                                         ->first();
 
         if (isset($data_master_barcode)) {
             $keterangan = 'TERDAPAT DI MASTER BARCODE';
             $status = 'INFO MASTER';
-            $message = 'Data PLU ' . $plu . ' sudah ada di Master Barcode';
+            $message = 'Data PLUMCG ' . $prd_plumcg . ' sudah ada di Master Barcode';
         } else {
             if (isset($data_master_klaim_barcode)) {
                 $keterangan = 'TERDAPAT DI MASTER KLAIM BARCODE';
                 $status = 'SUCCESS';
-                $message = 'Data PLU ' . $plu . ' sudah ada di Master Klaim Barcode';
+                $message = 'Data PLUMCG ' . $prd_plumcg . ' sudah ada di Master Klaim Barcode';
+
+                $data_master_prodmast =  DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')                                        
+                                        ->where('PRD_PLUMCG', '=', $prd_plumcg)                                        
+                                        ->get();
+                $data_print = [];
+                for ($i=0; $i < sizeof($data_master_prodmast); $i++) {                     
+                    if (substr($data_master_prodmast[$i]->prd_prdcd, -1) == '0') {
+                        $d = (object)'';
+                        $d->nofaktur =  $data['mstd_nofaktur'];
+                        $d->prd_plumcg = $data_master_prodmast[$i]->prd_plumcg;
+                        $d->prd_prdcd = $data_master_prodmast[$i]->prd_prdcd;                            
+                        $d->prd_deskripsipanjang = $data_master_prodmast[$i]->prd_deskripsipanjang;
+                        $d->prd_unit = $data_master_prodmast[$i]->prd_unit;
+                        $d->prd_frac = $data_master_prodmast[$i]->prd_frac;
+                        $d->qty = $data['mstd_qty'] / $data_master_prodmast[$i]->prd_frac;
+                        $d->total_price_barcode = $d->qty * $this->priceCtnBarcode;
+
+                        array_push($data_print, $d);
+                    }
+
+                    if (substr($data_master_prodmast[$i]->prd_prdcd, -1) == '1') {
+                        $d = (object)'';
+                        $d->nofaktur =  $data['mstd_nofaktur'];
+                        $d->prd_plumcg = $data_master_prodmast[$i]->prd_plumcg;
+                        $d->prd_prdcd = $data_master_prodmast[$i]->prd_prdcd;                            
+                        $d->prd_deskripsipanjang = $data_master_prodmast[$i]->prd_deskripsipanjang;
+                        $d->prd_unit = $data_master_prodmast[$i]->prd_unit;
+                        $d->prd_frac = $data_master_prodmast[$i]->prd_frac;
+                        $d->qty = $data['mstd_qty'];
+                        $d->total_price_barcode = $d->qty * $this->pricePcsBarcode;
+
+                        array_push($data_print, $d);
+                    }
+                }
             } else {
                 $keterangan = 'TIDAK ADA DI MASTER KLAIM BARCODE';
                 $status = 'INFO KLAIM';
-                $message = 'Data PLU ' . $plu . ' tidak ada di Master Klaim Barcode';
+                $message = 'Data PLUMCG ' . $prd_plumcg . ' tidak ada di Master Klaim Barcode';
             }
         }
 
-        // $priceCtnBarcode = DB::connection(Session::get('connection'))->table('TBMASTER_BARCODE_PRICE')
-        //                     ->where('B_UNIT', '=', 'CTN')
-        //                     ->first();
-        // $pricePcsBarcode = DB::connection(Session::get('connection'))->table('TBMASTER_BARCODE_PRICE')
-        //                     ->where('B_UNIT', '=', 'PCS')
-        //                     ->first();
-        // dd($priceCtnBarcode, $pricePcsBarcode);
-        switch ($data['mstd_unit']) {
-            case 'CTN':
-                $mstd_ctn = intval($data['mstd_qty'] / $data['mstd_frac']);
-                $mstd_box = 0;
-                $mstd_pcs = ($data['mstd_qty'] % $data['mstd_frac']);
-                $totalPriceBarcode = ($mstd_ctn * $this->priceCtnBarcode) + ($mstd_ctn * $mstd_pcs * $this->pricePcsBarcode);
-                break;
-            case 'BOX':
-                $mstd_ctn = 0;
-                $mstd_box = intval($data['mstd_qty'] / $data['mstd_frac']);
-                $mstd_pcs = ($data['mstd_qty'] % $data['mstd_frac']);
-                $totalPriceBarcode = 0;
-                break;
-            case 'PCS':
-                $mstd_ctn = 0;
-                $mstd_box = 0;
-                $mstd_pcs = $data['mstd_qty'];
-                $totalPriceBarcode = ($mstd_pcs * $this->pricePcsBarcode);
-                break;
-            default:
-                $mstd_ctn = 0;
-                $mstd_box = 0;
-                $mstd_pcs = ($data['mstd_qty'] / $data['mstd_frac']);
-                $totalPriceBarcode = 0;
-                break;
-        }
-
         $datas = [
+            'prd_plumcg' => $data['prd_plumcg'],
             'mstd_prdcd' => $data['mstd_prdcd'],
             'prd_deskripsipanjang' => $data['prd_deskripsipanjang'],
             'mstd_unit' => $data['mstd_unit'],
             'mstd_frac' => $data['mstd_frac'],
-            'mstd_ctn' => $mstd_ctn,
-            'mstd_box' => $mstd_box,
-            'mstd_qty' => $mstd_pcs,
-            'mstd_totalpricebarcode' => $totalPriceBarcode,
+            // 'mstd_ctn' => $mstd_ctn,
+            // 'mstd_box' => $mstd_box,
+            'mstd_qty' =>$data['mstd_qty'],            
             'mstd_nofaktur' => $data['mstd_nofaktur'],
             'mstd_tgldoc' => $data['mstd_tgldoc'],
             'keterangan' => $keterangan
-        ];
+        ];        
 
         return response()->json([
             'status' => $status,
             'message' => $message,
-            'data' => $datas
+            'data' => [
+                'datas' => $datas,
+                'data_print' => $data_print
+            ]
         ]);
     }
 
@@ -355,21 +441,30 @@ class BarcodePutihController extends Controller
             ->select('prs_namaperusahaan', 'prs_namacabang')
             ->first();
 
-        // $data = DB::connection(Session::get('connection'))
-        //         ->select("SELECT mstd_prdcd, mstd_nofaktur, prd_deskripsipanjang, mstd_unit, mstd_frac, mstd_qty FROM TBTR_MSTRAN_D
-        //                     JOIN TBMASTER_PRODMAST
-        //                     ON MSTD_PRDCD = PRD_PRDCD
-        //                     WHERE MSTD_KODEIGR = '".$kodeigr."'
-        //                     AND MSTD_NOFAKTUR = '".$noFaktur."'
-        //                     AND MSTD_PRDCD IN ('".$arrPlus."')");
-        $data = DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')
-                ->select('mstd_prdcd', 'mstd_nofaktur', 'mstd_tgldoc', 'prd_deskripsipanjang', 'mstd_unit', 'mstd_frac', 'mstd_qty')
-                ->join('TBMASTER_PRODMAST', 'MSTD_PRDCD', '=', 'PRD_PRDCD')
-                ->where('MSTD_NOFAKTUR', '=', $noFaktur)
-                ->where('MSTD_KODEIGR', '=', $kodeigr)
-                ->whereIn('MSTD_PRDCD', $arrPlus)
+        // $data = DB::connection(Session::get('connection'))->table('TBTR_MSTRAN_D')
+        //         ->select('prd_plumcg', 'mstd_prdcd', 'mstd_nofaktur', 'mstd_tgldoc', 'prd_deskripsipanjang', 'mstd_unit', 'mstd_frac', 'mstd_qty')
+        //         ->join('TBMASTER_PRODMAST', 'MSTD_PRDCD', '=', 'PRD_PRDCD')
+        //         ->where('MSTD_NOFAKTUR', '=', $noFaktur)
+        //         ->where('MSTD_KODEIGR', '=', $kodeigr)
+        //         ->whereIn('mstd_prdcd', $arrPlus)
+        //         ->get();
+        $data_master = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')                                
+                ->whereIn('prd_plumcg', $arrPlus)
                 ->get();
-                dd($data);
+
+        $temp_plumcg = '';
+        $data = [];
+
+        for ($i=0; $i < sizeof($data_master); $i++) { 
+            if($data_master[$i]->prd_plumcg != $temp_plumcg){
+                $temp_plumcg = $data_master[$i]->prd_plumcg;
+            }
+
+            if($data_master[$i]->prd_unit == 'CTN' || $data_master[$i]->prd_unit == 'PCS'){
+                $d = (object)'';
+                
+            }
+        }
         
         // foreach ($data as $d) {            
         //     switch ($data['mstd_unit']) {
@@ -397,48 +492,39 @@ class BarcodePutihController extends Controller
         return view('BACKOFFICE.TRANSAKSI.PENERIMAAN.barcode-putih-pdf', compact('data', 'perusahaan'));
     }
 
-    public function totalPriceBarcode(Request $request) {
+    public function saveBarcodePrint(Request $request) {
         $kodeigr = Session::get('kdigr');
-        $data = $request->data;
-        $ctnPrice = DB::connection(Session::get('connection'))->table('TBMASTER_BARCODE_PRICE')
-                        ->where('B_UNIT', '=', 'CTN')
-                        ->first();        
-        $pcsPrice = DB::connection(Session::get('connection'))->table('TBMASTER_BARCODE_PRICE')
-                        ->where('B_UNIT', '=', 'PCS')
-                        ->first();
-        $ctnPrice = $ctnPrice->b_price;
-        $pcsPrice = $pcsPrice->b_price;
+        $data = $request->data;        
+        
+        $data_barcode_putih = DB::connection(Session::get('connection'))->table('TBTR_BARCODE_PUTIH')
+                                ->where('BP_KODEIGR', '=', $kodeigr)
+                                ->where('BP_NOFAKTUR', '=', $data[0]['nofaktur'])
+                                ->get();
+                                // dd($data_barcode_putih);
+        if (sizeof($data_barcode_putih) > 0) {
+            return response()->json([
+                'status' => 'FAILED',
+                'message' => 'Data Barcode Putih No Faktur '. $data[0]['nofaktur'] .' Sudah ada'
+            ]);
+        } else {
+            foreach ($data as $d) {            
 
-        foreach ($data as $d) {
-            $totalPrice = 0;
-            switch ($d['mstd_unit']) {
-                case 'CTN':
-                    $unit_qty = $d['mstd_ctn'];  
-                    $totalPrice = $unit_qty * $ctnPrice;                  
-                    break;
-                case 'BOX':
-                    $unit_qty = $d['mstd_box'];
-                    break;
-                case 'PCS':
-                    $unit_qty = $d['mstd_qty'];
-                    $totalPrice = $unit_qty * $pcsPrice;
-                    break;
+                DB::connection(Session::get('connection'))->table('TBTR_BARCODE_PUTIH')->insert([
+                    'BP_KODEIGR' => $kodeigr,                                   
+                    'BP_NOFAKTUR' => $d['nofaktur'],
+                    'BP_PLUMCG' => $d['prd_plumcg'],
+                    'BP_PRDCD' => $d['prd_prdcd'],
+                    'BP_UNIT' => $d['prd_unit'],
+                    'BP_UNIT_QTY' => $d['qty'],
+                    'BP_TOTALPRICE' => $d['total_price_barcode']
+                ]);
             }
 
-            DB::connection(Session::get('connection'))->table('TBTR_BARCODE_PUTIH')->insert([
-                'BP_KODEIGR' => $kodeigr,
-                'BP_NOFAKTUR' => $d['mstd_nofaktur'],
-                'BP_PRDCD' => $d['mstd_prdcd'],
-                'BP_UNIT' => $d['mstd_unit'],
-                'BP_UNIT_QTY' => $unit_qty,
-                'BP_TOTALPRICE' => $totalPrice
+            return response()->json([
+                'status' => 'SUCCESS',
+                'message' => 'Data Barcode Putih No Faktur '. $data[0]['nofaktur'] .' Berhasil Disimpan'
             ]);
-        }
-
-        return response()->json([
-            'status' => 'SUCCESS',
-            'message' => 'Data Perhitungan Barcode Putih Berhasil Disimpan'
-        ]);
+        }                
     }
 }
 

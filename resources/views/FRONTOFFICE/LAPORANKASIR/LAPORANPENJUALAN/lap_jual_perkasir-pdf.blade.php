@@ -1,4 +1,4 @@
-@extends('pdf-template')
+@extends('lap-jual-pekasir-pdf-template')
 
 @section('custom_style')
 
@@ -40,6 +40,8 @@
             <td rowspan="2" style="width: 150px; text-align: left">KATEGORI</td>
             <td rowspan="2" style="width: 100px; text-align: right">PENJUALAN<br>KOTOR</td>
             <td rowspan="2" style="width: 100px; text-align: right">PAJAK</td>
+            <td rowspan="2" style="width: 100px; text-align: right">PPN BEBAS/td>
+            <td rowspan="2" style="width: 100px; text-align: right">PPN DTP</td>
             <td rowspan="2" style="width: 100px; text-align: right">PENJUALAN<br>BERSIH</td>
             <td rowspan="2" style="width: 100px; text-align: right">HPP RATA2</td>
             <td style="text-align: right" colspan="2">--MARGIN--</td>
@@ -78,6 +80,20 @@
             <td style="text-align: left">{{$data[$i]->kat_namakategori}}</td>
             <td>{{rupiah($data[$i]->fdnamt)}}</td>
             <td>{{rupiah($data[$i]->fdntax)}}</td>
+            @if($data[$i]->fdfbkp == 'Y')
+                <td class="right">{{ number_format(0,2) }}</td>
+                <td class="right">{{ number_format(0,2) }}</td>
+            @elseif($data[$i]->fdfbkp == 'P')
+                <td class="right ">{{ number_format(0,2) }}</td>
+                <td class="right ">{{ number_format(0,2) }}</td>
+            @elseif($data[$i]->fdfbkp == 'G' || $data[$i]->fdfbkp == 'W')
+                <td class="right">{{ number_format(0,2) }}</td>
+                <td class="right " >{{ number_format(0,2) }}</td>
+            @else
+                <td class="right">{{ number_format(0,2) }}</td>
+                <td class="right">{{ number_format(0,2) }}</td>
+            @endif
+
             <td>{{rupiah($data[$i]->fdnnet)}}</td>
             <td>{{rupiah($data[$i]->fdnhpp)}}</td>
             <td>{{rupiah($data[$i]->fdnmrgn)}}</td>

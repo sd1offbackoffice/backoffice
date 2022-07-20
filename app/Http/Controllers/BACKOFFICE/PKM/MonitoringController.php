@@ -47,6 +47,7 @@ class MonitoringController extends Controller
             ->get();
 
         if(count($plu) == 0){
+            return DataTables::of($plu)->make(true);
             return [
                 'status' => 'error',
                 'title' => 'Tidak ada data yang diproses!'
