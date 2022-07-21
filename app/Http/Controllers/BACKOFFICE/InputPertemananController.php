@@ -37,7 +37,7 @@ class InputPertemananController extends Controller
             ->first();
 
         if(!$plu){
-            return response()->json(['title' => 'PLU tidak terdaftar!'],500);
+            return response()->json(['title' => __('PLU tidak terdaftar').'!'],500);
         }
 
         $temp = DB::connection(Session::get('connection'))->table('tbmaster_maxpalet')

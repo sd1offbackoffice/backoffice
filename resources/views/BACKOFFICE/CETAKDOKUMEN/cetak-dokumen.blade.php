@@ -10,26 +10,26 @@
                 <fieldset class="card border-secondary">
                     <div class="card-body">
                         <fieldset class="card border-secondary">
-                            <legend class="w-auto ml-3">CETAK DOKUMEN
+                            <legend class="w-auto ml-3">{{ strtoupper(__('Cetak Dokumen')) }}
                                 {{--                                <span class="text-danger">[ Jenis Dokumen : Pengeluaran dibuat oleh Pak Slamet]</span>--}}
                             </legend>
                             <div class="card-body">
                                 <div class="row form-group">
-                                    <label class="col-sm text-right col-form-label">Tanggal</label>
+                                    <label class="col-sm text-right col-form-label">@lang('Tanggal')</label>
                                     <div class="col-sm-4">
                                         <input type="text" class="form-control tanggal" id="tgl1">
                                     </div>
-                                    <label class="col-sm-1 text-right col-form-label">s/d</label>
+                                    <label class="col-sm-1 text-right col-form-label">@lang('s/d')</label>
                                     <div class="col-sm-4">
                                         <input type="text" class="form-control tanggal" id="tgl2">
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label class="col-sm-3 text-right col-form-label">Jenis Dokumen</label>
+                                    <label class="col-sm-3 text-right col-form-label">@lang('Jenis Dokumen')</label>
                                     <div class="col-sm-4">
                                         <select class="form-control" id="dokumen">
-                                            <option value="K">PENGELUARAN</option>
-                                            <option value="H">BARANG HILANG</option>
+                                            <option value="K">{{ strtoupper(__('Pengeluaran')) }}</option>
+                                            <option value="H">{{ strtoupper(__('Barang Hilang')) }}</option>
                                         </select>
                                     </div>
                                     <div class="col-sm-4 form-check notareturfp">
@@ -39,7 +39,7 @@
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label class="col-sm-3 text-right col-form-label">Jenis Laporan</label>
+                                    <label class="col-sm-3 text-right col-form-label">@lang('Jenis Laporan')</label>
                                     <div class="col-sm-4">
                                         <select class="form-control" id="laporan">
                                             <option value="L">LIST</option>
@@ -52,22 +52,22 @@
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label class="col-sm-3 text-right col-form-label">Jenis Kertas</label>
+                                    <label class="col-sm-3 text-right col-form-label">@lang('Jenis Kertas')</label>
                                     <div class="col-sm-4">
                                         <select class="form-control" id="kertas">
-                                            <option value="B">BIASA</option>
-                                            <option value="K">KECIL</option>
+                                            <option value="B">{{ strtoupper(__('Biasa')) }}</option>
+                                            <option value="K">{{ strtoupper(__('Kecil')) }}</option>
                                         </select>
                                     </div>
                                 </div>
                                 <fieldset class="card border-secondary">
-                                    <legend class="w-auto ml-3">[ DAFTAR DOKUMEN ]</legend>
+                                    <legend class="w-auto ml-3">[ {{ strtoupper(__('Daftar Dokumen')) }} ]</legend>
                                     <div class="tableFixedHeader col-sm-12 text-center">
                                         <table class="table table-sm" id="tableDocument">
                                             <thead>
                                             <tr>
-                                                <th id="nomor">NOMOR DOKUMEN</th>
-                                                <th>TANGGAL</th>
+                                                <th id="nomor">{{ strtoupper(__('Nomor Dokumen')) }}</th>
+                                                <th>{{ strtoupper(__('Tanggal')) }}</th>
                                                 <th><i class="fas fa-check"></i></th>
                                             </tr>
                                             </thead>
@@ -76,18 +76,18 @@
                                     </div>
                                     <div class="col-sm-12 form-check ml-3">
                                         <input type="checkbox" class="form-check-input" id="check10lbl">
-                                        <label for="check10lbl"> Check 10 Dokumen Pertama</label><br>
+                                        <label for="check10lbl"> @lang('Check 10 Dokumen Pertama')</label><br>
                                     </div>
                                 </fieldset>
 
                                 <div class="row form-group mt-3 mb-0">
                                     <div class="col-sm-4">
-                                        <button class="col btn btn-success" onclick="cetakEFaktur()">CSV eFaktur
+                                        <button class="col btn btn-success" onclick="cetakEFaktur()">@lang('CSV eFaktur')
                                         </button>
                                     </div>
                                     <div class="col-sm-4">
                                         <button class="col btn btn-success printBtn" onclick="printWithSignature()">
-                                            CETAK
+                                            {{ strtoupper(__('Cetak')) }}
                                         </button>
                                         {{-- <button class="col btn btn-success printBtn" onclick="cetak()">CETAK</button> --}}
                                     </div>
@@ -106,7 +106,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5>Tanda Tangan per Supplier</h5>
+                    <h5>@lang('Tanda Tangan per Supplier')</h5>
                 </div>
                 <div class="modal-body">
                     <div class="container">
@@ -117,9 +117,9 @@
                                         id="table-detail">
                                         <thead class="theadDataTables">
                                         <tr class="table-sm text-center">
-                                            <th class="text-center small">NAMA SUPPLIER</th>
-                                            <th class="text-center small">KODE SUPPLIER</th>
-                                            <th class="text-center small">AKSI</th>
+                                            <th class="text-center small">{{ strtoupper(__('Nama Supplier')) }}</th>
+                                            <th class="text-center small">{{ strtoupper(__('Kode Supplier')) }}</th>
+                                            <th class="text-center small">{{ strtoupper(__('Aksi')) }}</th>
                                         </tr>
                                         </thead>
                                         <tbody id="body-table-supplier">
@@ -134,12 +134,16 @@
                     <div class="row">
                         <div class="col-sm-5">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal"><i
-                                    class="icon fas fa-times"></i> CANCEL
+                                    class="icon fas fa-times"></i> {{ strtoupper(__('Batal')) }}
                             </button>
                         </div>
                         <div class="col-sm-5">
+<<<<<<< HEAD
                             <button type="button" class="btn btn-success" id="btnCetak" data-dismiss="modal"><i
                                 class="icon fas fa-print"></i> CETAK
+=======
+                            <button type="button" class="btn btn-success" id="btnCetak" data-dismiss="modal">  {{ strtoupper(__('Cetak')) }}
+>>>>>>> a911de075ebffc710af6f8e34c7cb7c4e44b383f
                             </button>
                         </div>
                     </div>
@@ -163,7 +167,7 @@
                         <div class="row align-items-center">
                             <div class="col-2"></div>
                             <div class="col-3">
-                                <label for="nama_personil">Supplier/Expedisi</label>
+                                <label for="nama_personil">@lang('Nama Supplier')</label>
                             </div>
                             <div class="col-5">
                                 <div class="input-group mb">
@@ -205,7 +209,7 @@
         <div class="modal-dialog-centered modal-dialog modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Pilih Laporan</h5>
+                    <h5 class="modal-title">@lang('Pilih Laporan')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -224,26 +228,26 @@
         <div class="modal-dialog-centered modal-dialog modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">TTD</h5>
+                    <h5 class="modal-title">@lang('TTD')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="row form-group">
-                        <label class="col-sm-5 col-form-label">Nama Penandatangan</label>
+                        <label class="col-sm-5 col-form-label">@lang('Nama Penandatangan')</label>
                         <div class="col-sm-6">
                             <input type="text" class="form-control" id="nama-penandatangan">
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-sm-5 col-form-label">Jabatan</label>
+                        <label class="col-sm-5 col-form-label">@lang('Jabatan')</label>
                         <div class="col-sm-6">
                             <input type="text" class="form-control" id="jabatan1">
                         </div>
                     </div>
                     <div class="row form-group">
-                        <label class="col-sm-5 col-form-label">Jabatan 2</label>
+                        <label class="col-sm-5 col-form-label">@lang('Jabatan 2')</label>
                         <div class="col-sm-6">
                             <input type="text" class="form-control" id="jabatan2">
                         </div>
@@ -361,7 +365,7 @@
                 }
                 if (new Date(tgl1) > new Date(tgl2)) {
                     swal({
-                        title: 'Tanggal Tidak Benar!',
+                        title: `{{ __('Tanggal Tidak Benar') }}!`,
                         icon: 'warning'
                     });
                 }
@@ -475,8 +479,8 @@
             if (checked.length == 0) {
                 swal({
                     icon: 'info',
-                    title: 'Nomor Dokumen',
-                    text: 'Mohon pilih nomor dokumen yang ingin dicetak',
+                    title: `{{ __('Nomor Dokumen') }}`,
+                    text: `{{ __('Mohon pilih nomor dokumen yang ingin dicetak') }}`,
                     timer: 2000
                 });
             } else {
@@ -531,8 +535,8 @@
             } else {
                 swal({
                     icon: 'info',
-                    title: 'Tanda Tangan',
-                    text: 'Tanda Tangan untuk supplier ini sudah ada',
+                    title: `{{ __('Tanda Tangan') }}`,
+                    text: `{{ __('Tanda Tangan untuk supplier ini sudah ada') }}`,
                     timer: 2000
                 });
             }
@@ -570,8 +574,8 @@
             if ($('#nama_personil').val() == null || $('#nama_personil').val() == '' || $('#signature64').val() == null || $('#signature64').val() == '') {
                 swal({
                     icon: 'info',
-                    title: 'Data Tanda Tangan Kosong',
-                    text: 'Harap mengisi nama personil dan tanda tangan!',
+                    title: `{{ __('Data Tanda Tangan Kosong') }}`,
+                    text: `{{ __('Harap mengisi nama personil dan tanda tangan') }}!`,
                     timer: 2000
                 });
             } else {
@@ -607,7 +611,7 @@
                             let kdsup = $(this).find('.sup_kodesupplier').html();
                             if (kdsup == sup_kodesupplier) {
                                 $(this).find('.action').empty()
-                                $(this).find('.action').html('<p class="text-success">SUDAH TANDA TANGAN</p>')
+                                $(this).find('.action').html(`<p class="text-success">{{ __('SUDAH TANDA TANGAN') }}</p>`)
                                 // console.log($(this).find('.action').html());
                             }
                         });
@@ -641,8 +645,8 @@
             if (arrSupp.length != arrSuppSig.length) {
                 swal({
                     icon: 'info',
-                    title: 'Tanda Tangan Kosong',
-                    text: 'Harap mengisi tanda tangan pada dokumen yang telah dipilih!',
+                    title: `{{ __('Tanda Tangan Kosong') }}`,
+                    text: `{{ __('Harap mengisi tanda tangan pada dokumen yang telah dipilih') }}!`,
                     timer: 2000
                 });
             } else {
@@ -653,7 +657,7 @@
         function cetakEFaktur() {
             if ($('#dokumen').val() != 'K' && $('#laporan').val() != 'N') {
                 swal({
-                    title: 'Button Create CSV Faktur hanya untuk Dokumen Keluaran yang sudah cetak List.',
+                    title: `{{ __('Button Create CSV Faktur hanya untuk Dokumen Keluaran yang sudah cetak List') }}`,
                     icon: 'info'
                 });
             } else if (checked.length != 0) {
@@ -691,7 +695,7 @@
                 })
             } else {
                 swal({
-                    title: 'Dokumen belum dipilih!',
+                    title: `{{ __('Dokumen belum dipilih') }}!`,
                     icon: 'error'
                 });
             }
@@ -787,7 +791,7 @@
                 });
             } else {
                 swal({
-                    title: 'Dokumen belum dipilih!',
+                    title: `{{ __('Dokumen belum dipilih') }}!`,
                     icon: 'error'
                 });
             }            

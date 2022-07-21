@@ -6,7 +6,7 @@
 {{--        <legend class="w-auto ml-5">Daftar margin negatif vs mcg</legend>--}}
         <br>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Divisi</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Divisi')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuFDiv1Input" class="form-control" type="text">
                 <button id="menuFBtnDiv1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Divisi</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Divisi')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuFDiv2Input" class="form-control" type="text">
                 <button id="menuFBtnDiv2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Dept</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Dept')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuFDep1Input" class="form-control" type="text">
                 <button id="menuFBtnDep1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -45,7 +45,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Dept</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Dept')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuFDep2Input" class="form-control" type="text">
                 <button id="menuFBtnDep2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -58,7 +58,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Kat</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Kat')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuFKat1Input" class="form-control" type="text">
                 <button id="menuFBtnKat1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -71,7 +71,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Kat</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Kat')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuFKat2Input" class="form-control" type="text">
                 <button id="menuFBtnKat2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -84,17 +84,17 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Urut (SORT) Atas</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Urut (SORT) Atas')</label>
             <div class="col-sm-6">
                 <select class="form-control" id="menuFSortBy">
-                    <option value="1">1. DIV+DEPT+KATEGORI+KODE</option>
-                    <option value="2">2. DIV+DEPT+KATEGORI+NAMA</option>
-                    <option value="3">3. NAMA</option>
+                    <option value="1">1. @lang('DIV+DEPT+KATEGORI+KODE')</option>
+                    <option value="2">2. @lang('DIV+DEPT+KATEGORI+NAMA')</option>
+                    <option value="3">3. {{ strtoupper(__('Nama')) }}</option>
                 </select>
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Tag</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Tag')</label>
             <div class="col-sm-1">
                 <input id="menuFTag1" class="form-control" type="text">
             </div>
@@ -219,7 +219,7 @@
 
                 $('#menuFBtnDiv2').prop("hidden",false);
             }else{
-                swal('', "Kode Divisi tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Divisi tidak terdaftar') }}`, 'warning');
                 //$('#minDep').val('').change();
                 $('#menuFDiv1Input').val('').change().focus();
             }
@@ -248,7 +248,7 @@
 
                 $('#menuFBtnDep1').prop("hidden",false);
             }else{
-                swal('', "Kode Divisi tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Divisi tidak terdaftar') }}`, 'warning');
 
                 $('#menuFDiv2Input').val('').change();
             }
@@ -275,7 +275,8 @@
 
                 $('#menuFBtnDep2').prop("hidden",false);
             }else{
-                swal('', "Kode Departement tidak terdaftar", 'warning');
+               
+                swal('',`{{ __('Kode Departemen tidak terdaftar') }}`, 'warning');
 
                 $('#menuFDep1Input').val('').change();
             }
@@ -300,7 +301,7 @@
 
                 $('#menuFBtnKat1').prop("hidden",false);
             }else{
-                swal('', "Kode Departement tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Departemen tidak terdaftar') }}`, 'warning');
 
                 $('#menuFDep2Input').val('').change();
             }
@@ -321,7 +322,7 @@
 
                 $('#menuFBtnKat2').prop("hidden",false);
             }else{
-                swal('', "Kode Kategori tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Kategori tidak terdaftar') }}`, 'warning');
 
                 $('#menuFKat1Input').val('').change();
             }
@@ -337,7 +338,7 @@
             if(index){
                 $('#menuFKat2Desk').val(tableKategori.row(index-1).data()['kat_namakategori'].replace(/&amp;/g, '&'));
             }else{
-                swal('', "Kode Kategori tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Kategori tidak terdaftar') }}`, 'warning');
 
                 $('#menuFKat2Input').val('').change();
             }

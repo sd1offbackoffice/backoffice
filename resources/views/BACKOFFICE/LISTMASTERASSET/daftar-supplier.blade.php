@@ -6,7 +6,7 @@
 {{--        <legend class="w-auto ml-5">Daftar Supplier</legend>--}}
         <br>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Kode</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Kode')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menu4Sup1Input" class="form-control" type="text">
                 <button id="menu4BtnSup1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Kode</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Kode')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menu4Sup2Input" class="form-control" type="text">
                 <button id="menu4BtnSup2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -62,7 +62,7 @@
                 $('#menu4Sup1Desk').val(tableSupplier.row(index-1).data()['sup_namasupplier'].replace(/&amp;/g, '&'));
                 $('#menu4BtnSup2').prop("hidden",false);
             }else{
-                swal('', "Kode Supplier tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Supplier tidak terdaftar') }}`, 'warning');
                 $('#menu4Sup1Input').val('').change();
             }
         }
@@ -77,7 +77,7 @@
             if(index){
                 $('#menu4Sup2Desk').val(tableSupplier.row(index-1).data()['sup_namasupplier'].replace(/&amp;/g, '&'));
             }else{
-                swal('', "Kode Supplier tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Supplier tidak terdaftar') }}`, 'warning');
                 $('#menu4Sup2Input').val('').change();
             }
         }
@@ -114,13 +114,13 @@
         let sup2 = $('#menu4Sup2Input').val();
         if(sup1 != ''){
             if(checkSupExist(sup1) == false){
-                swal('', "Kode Supplier tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Supplier tidak terdaftar') }}`, 'warning');
                 return false;
             }
         }
         if(sup2 != ''){
             if(checkSupExist(sup2) == false){
-                swal('', "Kode Supplier tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Supplier tidak terdaftar') }}`, 'warning');
                 return false;
             }
         }
@@ -129,7 +129,7 @@
                 // temp = sup1;
                 // sup1 = sup2;
                 // sup2 = temp;
-                swal('', "Range Supplier Salah", 'warning');
+                swal('', `{{ __('Range Supplier Salah') }}`, 'warning');
                 return false;
             }
         }

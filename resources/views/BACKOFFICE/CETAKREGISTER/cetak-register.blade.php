@@ -11,13 +11,13 @@
                 <fieldset class="card border-secondary">
                     <div class="card-body">
                         <fieldset class="card border-secondary">
-                            <legend class="w-auto ml-3">CETAK REGISTER</legend>
+                            <legend class="w-auto ml-3">@lang('CETAK REGISTER')</legend>
                             <div class="card-body">
                                 <div class="row form-group">
-                                    <label class="col-sm-3 text-right col-form-label">Jenis Register</label>
+                                    <label class="col-sm-3 text-right col-form-label">@lang('Jenis Register')</label>
                                     <div class="col-sm-9">
                                         <select class="form-control" id="register">
-                                            <option selected disabled>- silahkan pilih jenis register -</option>
+                                            <option selected disabled>- @lang('silahkan pilih jenis register') -</option>
                                             <option value="B">PENERIMAAN BARANG</option>
                                             <option value="K">NOTA PENGELUARAN BARANG</option>
                                             <option value="O">SURAT JALAN</option>
@@ -41,20 +41,20 @@
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label class="col-sm text-right col-form-label">Tanggal</label>
+                                    <label class="col-sm text-right col-form-label">@lang('Tanggal')</label>
                                     <div class="col-sm-4">
                                         <input type="text" class="form-control tanggal" id="tgl1">
                                     </div>
-                                    <label class="col-sm-1 text-right col-form-label">s/d</label>
+                                    <label class="col-sm-1 text-right col-form-label">@lang('s/d')</label>
                                     <div class="col-sm-4">
                                         <input type="text" class="form-control tanggal" id="tgl2">
                                     </div>
                                 </div>
                                 <div class="row form-group" id="field_cabang" style="display: none">
-                                    <label class="col-sm-3 text-right col-form-label">Cabang</label>
+                                    <label class="col-sm-3 text-right col-form-label">@lang('Cabang')</label>
                                     <div class="col-sm-9">
                                         <select id="cabang" class="form-control">
-                                            <option value="ALL" selected>SEMUA CABANG</option>
+                                            <option value="ALL" selected>{{ strtoupper(__('Semua Cabang')) }}</option>
                                             @foreach($cabang as $c)
                                                 <option value="{{ $c->cab_kodecabang }}">{{ $c->cab_kodecabang }} - {{ $c->cab_namacabang }}</option>
                                             @endforeach
@@ -64,7 +64,7 @@
                                 <div class="row form-group">
                                     <div class="col"></div>
                                     <div class="col-sm-4">
-                                        <button class="col btn btn-primary" onclick="print()">CETAK</button>
+                                        <button class="col btn btn-primary" onclick="print()">{{ strtoupper(__('Cetak')) }}</button>
                                     </div>
                                 </div>
                             </div>
@@ -140,13 +140,13 @@
 
             if(!$('#register').val() || !$('#tgl1').val() || !$('#tgl2').val()){
                 swal({
-                    title: 'Inputan belum lengkap!',
+                    title: `{{ __('Inputan belum lengkap') }}!`,
                     icon: 'warning'
                 });
             }
             else{
                 swal({
-                    title: 'Ingin mencetak register tanggal ' + $('#tgl1').val() + ' s/d ' + $('#tgl2').val() + '?',
+                    title: `{{ __('Ingin mencetak register tanggal') }} ` + $('#tgl1').val() + ' s/d ' + $('#tgl2').val() + '?',
                     icon: 'warning',
                     buttons: true,
                     dangerMode: true
@@ -154,16 +154,16 @@
                     if(ok){
                         if($.inArray($('#register').val(), ['K','X','X1']) > -1){
                             swal({
-                                title: 'Pilih ukuran cetakan',
+                                title: `{{ __('Pilih ukuran cetakan') }}`,
                                 icon: 'warning',
                                 buttons: {
                                     cancel: 'Cancel',
                                     besar: {
-                                        text: 'Besar',
+                                        text: `{{ __('Besar') }}`,
                                         value: 'besar'
                                     },
                                     kecil: {
-                                        text: 'Kecil',
+                                        text: `{{ __('Kecil') }}`,
                                         value: 'kecil'
                                     }
                                 },
@@ -176,16 +176,16 @@
                         }
                         else if($('#register').val() == 'B2'){
                             swal({
-                                title: 'Pilih Jenis Penerimaan',
+                                title: `{{ __('Pilih Jenis Penerimaan') }}`,
                                 icon: 'warning',
                                 buttons: {
                                     cancel: 'Cancel',
                                     pembelian: {
-                                        text: 'Pembelian',
+                                        text: `{{ __('Pembelian') }}`,
                                         value: 'B'
                                     },
                                     lain: {
-                                        text: 'Lain-lain',
+                                        text: `{{ __('Lain-lain') }}`,
                                         value: 'L'
                                     }
                                 },

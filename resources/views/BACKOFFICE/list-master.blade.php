@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','LIST MASTER')
+@section('title',__('LAPORAN LIST MASTER'))
 @section('content')
 
     <div class="container-fluid mt-4">
@@ -11,25 +11,25 @@
                         <br>
                     <div id="mainMenu">
                         <div class="row">
-                            <label class="col-sm-3 text-right col-form-label">Jenis Laporan</label>
+                            <label class="col-sm-3 text-right col-form-label">@lang('Jenis Laporan')</label>
                             <div class="col-sm-8">
                                 <select class="form-control" id="jenisLaporan" onchange="jenisLaporanChange()">
-                                    <option value="1">1. Daftar Produk</option>
-                                    <option value="2">2. Daftar Perubahan Harga Jual</option>
-                                    <option value="3">3. Daftar Margin Negatif</option>
-                                    <option value="4">4. Daftar Supplier</option>
-                                    <option value="5">5. Daftar Anggota / Member</option>
-                                    <option value="6">6. Daftar Anggota / Type Outlet</option>
-                                    <option value="7">7. Daftar Anggota / Member Baru</option>
-                                    <option value="8">8. Daftar Anggota / Member Jatuh Tempo</option>
-                                    <option value="9">9. Daftar Anggota /Member Expired</option>
-                                    <option value="A">A. Daftar Harga Jual Baru</option>
-                                    <option value="B">B. Daftar Perpanjangan Anggota / Member</option>
-                                    <option value="C">C. Daftar Status Tag Bar Code</option>
-                                    <option value="D">D. Master Display</option>
-                                    <option value="E">E. Master Display DIV/DEPT/KATB</option>
-                                    <option value="F">F. Daftar Margin Negatif VS MCG</option>
-                                    <option value="G">G. Daftar Supplier By Hari Kunjungan</option>
+                                    <option value="1">1. @lang('Daftar Produk')</option>
+                                    <option value="2">2. @lang('Daftar Perubahan Harga Jual')</option>
+                                    <option value="3">3. @lang('Daftar Margin Negatif')</option>
+                                    <option value="4">4. @lang('Daftar Supplier')</option>
+                                    <option value="5">5. @lang('Daftar Anggota / Member')</option>
+                                    <option value="6">6. @lang('Daftar Anggota / Type Outlet')</option>
+                                    <option value="7">7. @lang('Daftar Anggota / Member Baru')</option>
+                                    <option value="8">8. @lang('Daftar Anggota / Member Jatuh Tempo')</option>
+                                    <option value="9">9. @lang('Daftar Anggota / Member Expired')</option>
+                                    <option value="A">A. @lang('Daftar Harga Jual Baru')</option>
+                                    <option value="B">B. @lang('Daftar Perpanjangan Anggota / Member')</option>
+                                    <option value="C">C. @lang('Daftar Status Tag Bar Code')</option>
+                                    <option value="D">D. @lang('Master Display')</option>
+                                    <option value="E">E. @lang('Master Display DIV/DEPT/KATB')</option>
+                                    <option value="F">F. @lang('Daftar Margin Negatif VS MCG')</option>
+                                    <option value="G">G. @lang('Daftar Supplier By Hari Kunjungan')</option>
 {{--                                        <option value="Z2">DAFTAR BARANG BAIK KE RUSAK</option>--}}
                                 </select>
                             </div>
@@ -118,7 +118,7 @@
                     </div>
                     <br>
                     <div class="d-flex justify-content-end">
-                        <button id="Cetak" class="btn btn-success col-sm-3" type="button" onclick="cetak()">CETAK LAPORAN</button>
+                        <button id="Cetak" class="btn btn-success col-sm-3" type="button" onclick="cetak()">@lang('CETAK LAPORAN')</button>
                     </div>
                 </fieldset>
             </div>
@@ -130,7 +130,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Daftar Divisi</h5>
+                    <h5 class="modal-title">@lang('Daftar Divisi')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -142,8 +142,8 @@
                                 <table class="table table-striped table-bordered" id="tableModalDiv">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Nama Divisi</th>
-                                        <th>Kode Divisi</th>
+                                        <th>@lang('Nama Divisi')</th>
+                                        <th>@lang('Kode Divisi')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyModalDiv"></tbody>
@@ -163,7 +163,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Daftar Departemen</h5>
+                    <h5 class="modal-title">@lang('Daftar Departemen')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -183,8 +183,8 @@
                                 <table class="table table-striped table-bordered" id="tableModalDep">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Nama Departemen</th>
-                                        <th>Kode Departemen</th>
+                                        <th>@lang('Nama Departemen')</th>
+                                        <th>@lang('Kode Departemen')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyModalDep"></tbody>
@@ -204,7 +204,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Daftar Kategori</h5>
+                    <h5 class="modal-title">@lang('Daftar Kategori')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -220,8 +220,8 @@
                                 <table class="table table-striped table-bordered" id="tableModalKat">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Nama Kategori</th>
-                                        <th>Kode Kategori</th>
+                                        <th>@lang('Nama Kategori')</th>
+                                        <th>@lang('Kode Kategori')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyModalKat"></tbody>
@@ -241,7 +241,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Daftar Supplier</h5>
+                    <h5 class="modal-title">@lang('Daftar Supplier')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -257,8 +257,8 @@
                                 <table class="table table-striped table-bordered" id="tableModalSup">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Nama Supplier</th>
-                                        <th>Kode Supplier</th>
+                                        <th>@lang('Nama Supplier')</th>
+                                        <th>@lang('Kode Supplier')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyModalSup"></tbody>
@@ -278,7 +278,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Daftar Member</h5>
+                    <h5 class="modal-title">@lang('Daftar Member')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -294,8 +294,8 @@
                                 <table class="table table-striped table-bordered" id="tableModalMem">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Nama Member</th>
-                                        <th>Kode Member</th>
+                                        <th>@lang('Nama Member')</th>
+                                        <th>@lang('Kode Member')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyModalMem"></tbody>
@@ -315,7 +315,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Daftar Member</h5>
+                    <h5 class="modal-title">@lang('Daftar Member')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -327,8 +327,8 @@
                                 <table class="table table-striped table-bordered" id="tableModalMemDate">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Nama Member</th>
-                                        <th>Kode Member</th>
+                                        <th>@lang('Nama Member')</th>
+                                        <th>@lang('Kode Member')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyModalMemDate"></tbody>
@@ -348,7 +348,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Daftar Outlet</h5>
+                    <h5 class="modal-title">@lang('Daftar Outlet')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -360,8 +360,8 @@
                                 <table class="table table-striped table-bordered" id="tableModalOutlet">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Nama Outlet</th>
-                                        <th>Kode Outlet</th>
+                                        <th>@lang('Nama Outlet')</th>
+                                        <th>@lang('Kode Outlet')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyModalOutlet"></tbody>
@@ -381,7 +381,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Daftar Sub-Outlet</h5>
+                    <h5 class="modal-title">@lang('Daftar Sub-Outlet')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -398,9 +398,9 @@
                                 <table class="table table-striped table-bordered" id="tableModalSubOutlet">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Nama Sub-Outlet</th>
-                                        <th>Kode Sub-Outlet</th>
-                                        <th>Kode Outlet</th>
+                                        <th>@lang('Nama Sub-Outlet')</th>
+                                        <th>@lang('Kode Sub-Outlet')</th>
+                                        <th>@lang('Kode Outlet')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyModalSubOutlet"></tbody>
@@ -420,7 +420,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Daftar Barang</h5>
+                    <h5 class="modal-title">@lang('Daftar Barang')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -432,8 +432,8 @@
                                 <table class="table table-striped table-bordered" id="tableModalPlu">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Deskripsi Barang</th>
-                                        <th>PLU</th>
+                                        <th>@lang('Deskripsi Barang')</th>
+                                        <th>@lang('PLU')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyModalPlu"></tbody>
@@ -453,7 +453,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Daftar Barang</h5>
+                    <h5 class="modal-title">@lang('Daftar Barang')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -465,8 +465,8 @@
                                 <table class="table table-striped table-bordered" id="tableModalPluCustom">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Deskripsi Barang</th>
-                                        <th>PLU</th>
+                                        <th>@lang('Deskripsi Barang')</th>
+                                        <th>@lang('PLU')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyModalPluCustom"></tbody>
@@ -486,7 +486,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Daftar Rak</h5>
+                    <h5 class="modal-title">@lang('Daftar Rak')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -505,10 +505,10 @@
                                 <table class="table table-striped table-bordered" id="tableModalRak">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Kode Rak</th>
-                                        <th>Kode Sub Rak</th>
-                                        <th>Tipe Rak</th>
-                                        <th>Shelving</th>
+                                        <th>@lang('Kode Rak')</th>
+                                        <th>@lang('Kode Sub Rak')</th>
+                                        <th>@lang('Tipe Rak')</th>
+                                        <th>@lang('Shelving')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyModalRak"></tbody>
@@ -1436,7 +1436,7 @@
                     $('#modal-loader').modal('hide');
                     swal({
                         title: "ERROR",
-                        text: "GAGAL CHECK MEMBER !!",
+                        text: `{{ __('GAGAL CHECK MEMBER') }} !!`,
                         icon: 'error',
                     }).then(() => {
 
@@ -1510,7 +1510,7 @@
                     $('#modal-loader').modal('hide');
                     swal({
                         title: "ERROR",
-                        text: "GAGAL CHECK PLU !!",
+                        text: `{{ __('GAGAL CHECK PLU') }} !!`,
                         icon: 'error',
                     }).then(() => {
 

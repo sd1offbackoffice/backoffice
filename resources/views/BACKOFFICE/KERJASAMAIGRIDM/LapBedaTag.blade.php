@@ -6,22 +6,22 @@
         <div class="row justify-content-center">
             <div class="col-md-7">
                 <fieldset class="card border-dark">
-                    <legend class="w-auto ml-5">LAPORAN PERBEDAAN TAG IGR dan IDM</legend>
+                    <legend class="w-auto ml-5">@lang('LAPORAN PERBEDAAN TAG IGR dan IDM')</legend>
                     <div class="card-body shadow-lg cardForm">
                         <form>
                             <div class="row">
-                                <label class="col-sm-4 text-right font-weight-normal">Per Tanggal</label>
+                                <label class="col-sm-4 text-right font-weight-normal">@lang('Per Tanggal')</label>
                                 <input class="col-sm-3 text-center" type="text" id="datepicker" disabled>
                                 <label class="col-sm-2 text-left">DD / MM / YYYY</label>
                             </div>
                             <div class="row">
-                                <label class="col-sm-4 text-right font-weight-normal">Kode Tag IGR</label>
+                                <label class="col-sm-4 text-right font-weight-normal">@lang('Kode Tag IGR')</label>
                                 <input class="col-sm-1 text-center" type="text" id="tag" maxlength="1">
-                                <label class="col-sm-2 text-left">[ kosong - SEMUA ]</label>
+                                <label class="col-sm-2 text-left">[ @lang('Kosong') - {{ strtoupper(__('Semua')) }} ]</label>
                             </div>
                             <br>
                             <div class="d-flex justify-content-end">
-                                <button class="btn btn-success col-sm-4" type="button" onclick="print()">CETAK</button>
+                                <button class="btn btn-success col-sm-4" type="button" onclick="print()">{{ strtoupper(__('Cetak')) }}</button>
                             </div>
                         </form>
                     </div>

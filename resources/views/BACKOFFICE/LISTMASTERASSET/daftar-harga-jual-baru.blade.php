@@ -6,13 +6,13 @@
         {{--        <legend class="w-auto ml-5">Daftar Perubahan Harga Jual</legend>--}}
         <br>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Tanggal</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Tanggal')</label>
             <div class="col-sm-6 buttonInside">
                 <input id="menuAdaterangepicker" class="form-control" type="text">
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Divisi</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Divisi')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuADiv1Input" class="form-control" type="text">
                 <button id="menuABtnDiv1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -25,7 +25,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Divisi</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Divisi')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuADiv2Input" class="form-control" type="text">
                 <button id="menuABtnDiv2" type="button" class="btn btn-lov p-0" data-toggle="modal" hidden
@@ -38,7 +38,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Dept</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Dept')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuADep1Input" class="form-control" type="text">
                 <button id="menuABtnDep1" type="button" class="btn btn-lov p-0" data-toggle="modal" hidden
@@ -51,7 +51,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Dept</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Dept')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuADep2Input" class="form-control" type="text">
                 <button id="menuABtnDep2" type="button" class="btn btn-lov p-0" data-toggle="modal" hidden
@@ -64,7 +64,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Kat</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Kat')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuAKat1Input" class="form-control" type="text">
                 <button id="menuABtnKat1" type="button" class="btn btn-lov p-0" data-toggle="modal" hidden
@@ -77,7 +77,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Kat</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Kat')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuAKat2Input" class="form-control" type="text">
                 <button id="menuABtnKat2" type="button" class="btn btn-lov p-0" data-toggle="modal" hidden
@@ -90,28 +90,28 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Urut (SORT) Atas</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Urut (SORT) Atas')</label>
             <div class="col-sm-6">
                 <select class="form-control" id="menuASortBy">
-                    <option value="1">1. DIV+DEPT+KATEGORI+KODE</option>
-                    <option value="2">2. DIV+DEPT+KATEGORI+NAMA</option>
-                    <option value="3">3. NAMA</option>
+                    <option value="1">1. @lang('DIV+DEPT+KATEGORI+KODE')</option>
+                    <option value="2">2. @lang('DIV+DEPT+KATEGORI+NAMA')</option>
+                    <option value="3">3. {{ strtoupper(__('Nama')) }}</option>
                 </select>
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Tag</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Tag')</label>
             <div class="col-sm-2">
                 <input id="menuATag1" class="form-control" type="text">
             </div>
-            <label class="col-sm-2 text-center col-form-label">s/d</label>
+            <label class="col-sm-2 text-center col-form-label">@lang('s/d')</label>
             <div class="col-sm-2">
                 <input id="menuATag2" class="form-control" type="text">
             </div>
         </div>
         <br>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Discontinue</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Discontinue')</label>
             <div class="col-sm-1">
                 <input id="menuACheck" class="form-control" type="checkbox">
             </div>
@@ -219,7 +219,7 @@
 
                 $('#menuABtnDiv2').prop("hidden",false);
             }else{
-                swal('', "Kode Divisi tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Divisi tidak terdaftar') }}`, 'warning');
 
                 $('#menuADiv1Input').val('').change().focus();
             }
@@ -248,7 +248,7 @@
 
                 $('#menuABtnDep1').prop("hidden",false);
             }else{
-                swal('', "Kode Divisi tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Divisi tidak terdaftar') }}`, 'warning');
 
                 $('#menuADiv2Input').val('').change();
             }
@@ -274,7 +274,7 @@
 
                 $('#menuABtnDep2').prop("hidden",false);
             }else{
-                swal('', "Kode Departement tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Departemen tidak terdaftar') }}`, 'warning');
 
                 $('#menuADep1Input').val('').change();
             }
@@ -299,7 +299,7 @@
 
                 $('#menuABtnKat1').prop("hidden",false);
             }else{
-                swal('', "Kode Departement tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Departemen tidak terdaftar') }}`, 'warning');
 
                 $('#menuADep2Input').val('').change();
             }
@@ -320,7 +320,7 @@
 
                 $('#menuABtnKat2').prop("hidden",false);
             }else{
-                swal('', "Kode Kategori tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Kategori tidak terdaftar') }}`, 'warning');
 
                 $('#menuAKat1Input').val('').change();
             }
@@ -336,7 +336,7 @@
             if(index){
                 $('#menuAKat2Desk').val(tableKategori.row(index-1).data()['kat_namakategori'].replace(/&amp;/g, '&'));
             }else{
-                swal('', "Kode Kategori tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Kategori tidak terdaftar') }}`, 'warning');
 
                 $('#menuAKat2Input').val('').change();
             }
@@ -423,7 +423,7 @@
     function menuACetak(){
         let date = $('#menuAdaterangepicker').val();
         if(date == null || date == ""){
-            swal('Periode tidak boleh kosong','','warning');
+            swal(`{{ __('Periode tidak boleh kosong') }}`,'','warning');
             return false;
         }
         let dateA = date.substr(0,10);

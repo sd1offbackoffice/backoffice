@@ -1,13 +1,12 @@
 @extends('navbar')
-@section('title','MASTER | INFORMASI HISTORY PRODUCT')
+@section('title',__('MASTER | INFORMASI HISTORY PRODUCT'))
 @section('content')
 
     <div class="container-fluid page1">
         <div class="row justify-content-sm-center">
             <div class="col-sm-12">
                 <fieldset class="card border-dark card-hdr cardForm">
-                    <legend class="w-auto ml-5">Ketik PLU / Deskripsi / Scan Barcode
-                        Barang
+                    <legend class="w-auto ml-5">@lang('Ketik PLU') / @lang('Deskripsi') / @lang('Scan Barcode Barang')
                     </legend>
                     <div class="card-body">
                         <div class="row justify-content-md-center">
@@ -29,7 +28,7 @@
         <div class="row justify-content-sm-center">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary card-hdr ">
-                    <legend class="w-auto ml-5">Informasi & History Product</legend>
+                    <legend class="w-auto ml-5">@lang('Informasi & History Product')</legend>
                     <div class="card-body">
                         <div class="row mr-2">
                             <input type="text" class="col-sm-3 form-control" id="cabang" disabled>
@@ -37,32 +36,30 @@
                         </div>
                         <hr>
                         <div class="row mr-2">
-                            <label for="plu" class="col-sm-1 col-form-label text-right">PLU</label>
+                            <label for="plu" class="col-sm-1 col-form-label text-right">@lang('PLU')</label>
                             <input type="text" class="col-sm-1 form-control" id="plu" value="" disabled>
-                            <label for="flaggdg" class="col-sm-2 col-form-label text-right">Flag Gdg</label>
+                            <label for="flaggdg" class="col-sm-2 col-form-label text-right">@lang('Flag Gdg')</label>
                             <input type="text" class="col-sm-1 form-control" id="flaggdg" value="" disabled>
-                            <label for="kdcabang" class="col-sm-1 col-form-label text-right">Kd Cabang</label>
+                            <label for="kdcabang" class="col-sm-1 col-form-label text-right">@lang('Kd Cabang')</label>
                             <input type="text" class="col-sm-1 form-control" id="kdcabang" value="" disabled>
                             {{--                            <input type="text" class="offset-1 col-sm-1 form-control" id="promosi" value="" disabled>--}}
-                            <label for="tglprm" class="offset-2 col-sm-1 col-form-label text-right promo">Tgl
-                                Prm</label>
+                            <label for="tglprm" class="offset-2 col-sm-1 col-form-label text-right promo">@lang('Tgl Prm')</label>
                             <input type="text" class="col-sm-2 form-control promo" id="tglpromo" value="" disabled>
                         </div>
                         <div class="row mr-2">
-                            <label for="produk" class="col-sm-1 col-form-label text-right">Produk</label>
+                            <label for="produk" class="col-sm-1 col-form-label text-right">@lang('Produk')</label>
                             <input type="text" class="col-sm-3 form-control" id="produk" value="" disabled>
-                            <label for="kattoko" class="col-sm-2 col-form-label text-right">Kat. Toko</label>
+                            <label for="kattoko" class="col-sm-2 col-form-label text-right">@lang('Kat. Toko')</label>
                             <input type="text" class="col-sm-1 form-control" id="kattoko" value="" disabled>
-                            <label for="jamprm" class="offset-2 col-sm-1 col-form-label text-right promo">Jam
-                                Prm</label>
+                            <label for="jamprm" class="offset-2 col-sm-1 col-form-label text-right promo">@lang('Jam Prm')</label>
                             <input type="text" class="col-sm-2 form-control promo" id="jampromo" value="" disabled>
                         </div>
                         <div class="row mr-2">
-                            <label for="kat-barang" class="col-sm-1 col-form-label text-right">Kat.Brg</label>
+                            <label for="kat-barang" class="col-sm-1 col-form-label text-right">@lang('Kat.Brg')</label>
                             <input type="text" class="col-sm-3 form-control" id="katbarang" value="" disabled>
-                            <label for="upd" class="col-sm-2 col-form-label text-right">Upd.</label>
+                            <label for="upd" class="col-sm-2 col-form-label text-right">@lang('Upd.')</label>
                             <input type="text" class="col-sm-2 form-control" id="upd" value="" disabled>
-                            <label for="hrgpromo" class="col-sm-2 col-form-label text-right promo">Hrg. Promo</label>
+                            <label for="hrgpromo" class="col-sm-2 col-form-label text-right promo">@lang('Hrg. Promo')</label>
                             <input type="text" class="col-sm-2 form-control promo" id="hrgpromo" value="" disabled>
                         </div>
                         <br>
@@ -70,18 +67,18 @@
                             <table class="table table-sm  justify-content-md-center m-3" id="table-satuan">
                                 <thead class="theadDataTables">
                                 <tr>
-                                    <th width="3%" class="text-center small">SJ</th>
-                                    <th width="7%" class="text-center small">Satuan / Frac</th>
-                                    <th class="text-center small">Barcode</th>
-                                    <th width="9%" class="text-center small">Hg Jual</th>
-                                    <th width="9%" class="text-center small">LCost</th>
-                                    <th width="9%" class="text-center small">ACost</th>
-                                    <th width="6%" class="text-center small">MGN-L</th>
-                                    <th width="6%" class="text-center small">MGN-A</th>
-                                    <th width="3%" class="text-center small">Tag</th>
-                                    <th width="3%" class="text-center small">MinJ</th>
-                                    <th width="3%" class="text-center small">BKP</th>
-                                    <th width="3%" class="text-center small">BKL</th>
+                                    <th width="3%" class="text-center small">@lang('SJ')</th>
+                                    <th width="7%" class="text-center small">@lang('Satuan / Frac')</th>
+                                    <th class="text-center small">@lang('Barcode')</th>
+                                    <th width="9%" class="text-center small">@lang('Harga Jual')</th>
+                                    <th width="9%" class="text-center small">@lang('LCost')</th>
+                                    <th width="9%" class="text-center small">@lang('ACost')</th>
+                                    <th width="6%" class="text-center small">@lang('MGN-L')</th>
+                                    <th width="6%" class="text-center small">@lang('MGN-A')</th>
+                                    <th width="3%" class="text-center small">@lang('Tag')</th>
+                                    <th width="3%" class="text-center small">@lang('MinJ')</th>
+                                    <th width="3%" class="text-center small">@lang('BKP')</th>
+                                    <th width="3%" class="text-center small">@lang('BKL')</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -133,18 +130,18 @@
                                            id="table-trendsales">
                                         <thead class="theadDataTables">
                                         <tr>
-                                            <th class="text-center" colspan="3" scope="colgroup">TREND SALES</th>
+                                            <th class="text-center" colspan="3" scope="colgroup">@lang('TREND SALES')</th>
                                         </tr>
                                         <tr>
                                             <th width="20%"></th>
-                                            <th width="40%" class="text-center small">QTY</th>
-                                            <th width="40%" class="text-center small">RUPIAH</th>
+                                            <th width="40%" class="text-center small">{{ strtoupper(__('Qty')) }}</th>
+                                            <th width="40%" class="text-center small">@lang('RUPIAH')</th>
                                         </tr>
                                         </thead>
                                         <tbody>
                                         <tr class="baris">
                                             <td class="p-0 text-center">
-                                                JAN
+                                                @lang('JAN')
                                             </td>
                                             <td class="p-0">
                                                 <input type="text" class=" form-control text-right" disabled
@@ -157,7 +154,7 @@
                                         </tr>
                                         <tr class="baris">
                                             <td class="p-0 text-center">
-                                                FEB
+                                                @lang('FEB')
                                             </td>
                                             <td class="p-0">
                                                 <input type="text" class=" form-control text-right" disabled
@@ -170,7 +167,7 @@
                                         </tr>
                                         <tr class="baris">
                                             <td class="p-0 text-center">
-                                                MAR
+                                                @lang('MAR')
                                             </td>
                                             <td class="p-0">
                                                 <input type="text" class=" form-control text-right" disabled
@@ -183,7 +180,7 @@
                                         </tr>
                                         <tr class="baris">
                                             <td class="p-0 text-center">
-                                                APR
+                                                @lang('APR')
                                             </td>
                                             <td class="p-0">
                                                 <input type="text" class=" form-control text-right" disabled
@@ -196,7 +193,7 @@
                                         </tr>
                                         <tr class="baris">
                                             <td class="p-0 text-center">
-                                                MEI
+                                                @lang('MEI')
                                             </td>
                                             <td class="p-0">
                                                 <input type="text" class=" form-control text-right" disabled
@@ -209,7 +206,7 @@
                                         </tr>
                                         <tr class="baris">
                                             <td class="p-0 text-center">
-                                                JUN
+                                                @lang('JUN')
                                             </td>
                                             <td class="p-0">
                                                 <input type="text" class=" form-control text-right" disabled
@@ -222,7 +219,7 @@
                                         </tr>
                                         <tr class="baris">
                                             <td class="p-0 text-center">
-                                                JUL
+                                                @lang('JUL')
                                             </td>
                                             <td class="p-0">
                                                 <input type="text" class=" form-control text-right" disabled
@@ -235,7 +232,7 @@
                                         </tr>
                                         <tr class="baris">
                                             <td class="p-0 text-center">
-                                                AGU
+                                                @lang('AGU')
                                             </td>
                                             <td class="p-0">
                                                 <input type="text" class=" form-control text-right" disabled
@@ -248,7 +245,7 @@
                                         </tr>
                                         <tr class="baris">
                                             <td class="p-0 text-center">
-                                                SEP
+                                                @lang('SEP')
                                             </td>
                                             <td class="p-0">
                                                 <input type="text" class=" form-control text-right" disabled
@@ -261,7 +258,7 @@
                                         </tr>
                                         <tr class="baris">
                                             <td class="p-0 text-center">
-                                                OKT
+                                                @lang('OKT')
                                             </td>
                                             <td class="p-0">
                                                 <input type="text" class=" form-control text-right" disabled
@@ -274,7 +271,7 @@
                                         </tr>
                                         <tr class="baris">
                                             <td class="p-0 text-center">
-                                                NOV
+                                                @lang('NOV')
                                             </td>
                                             <td class="p-0">
                                                 <input type="text" class=" form-control text-right" disabled
@@ -287,7 +284,7 @@
                                         </tr>
                                         <tr class="baris">
                                             <td class="p-0 text-center">
-                                                DES
+                                                @lang('DES')
                                             </td>
                                             <td class="p-0">
                                                 <input type="text" class=" form-control text-right" disabled
@@ -311,16 +308,16 @@
                                             <th class="text-center" colspan="10" scope="colgroup">S T O K</th>
                                         </tr>
                                         <tr class="justify-content-md-center">
-                                            <th width="10%" class="text-center small">LOKASI</th>
-                                            <th width="10%" class="text-center small">AWAL</th>
-                                            <th width="10%" class="text-center small">TERIMA</th>
-                                            <th width="10%" class="text-center small">KELUAR</th>
-                                            <th width="10%" class="text-center small">SALES</th>
-                                            <th width="10%" class="text-center small">RETUR</th>
-                                            <th width="10%" class="text-center small">ADJ</th>
-                                            <th width="10%" class="text-center small">INSTRST</th>
-                                            <th width="10%" class="text-center small">SO</th>
-                                            <th width="10%" class="text-center small">AKHIR</th>
+                                            <th width="10%" class="text-center small">@lang('LOKASI')</th>
+                                            <th width="10%" class="text-center small">@lang('AWAL')</th>
+                                            <th width="10%" class="text-center small">@lang('TERIMA')</th>
+                                            <th width="10%" class="text-center small">@lang('KELUAR')</th>
+                                            <th width="10%" class="text-center small">@lang('SALES')</th>
+                                            <th width="10%" class="text-center small">@lang('RETUR')</th>
+                                            <th width="10%" class="text-center small">@lang('ADJ')</th>
+                                            <th width="10%" class="text-center small">@lang('INSTRST')</th>
+                                            <th width="10%" class="text-center small">@lang('SO')</th>
+                                            <th width="10%" class="text-center small">@lang('AKHIR')</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -374,44 +371,44 @@
                                                 scope="colgroup"></th>
                                             <th class="text-center small"
                                                 style="border: 1px solid;border-bottom: 0px solid" colspan="2"
-                                                scope="colgroup">PKMT
+                                                scope="colgroup">@lang('PKMT')
                                             </th>
                                             <th class="text-center small"
                                                 style="border: 1px solid;border-bottom: 0px solid" colspan="2"
-                                                scope="colgroup">MINOR
+                                                scope="colgroup">@lang('MINOR')
                                             </th>
                                             <th class="text-center small"
                                                 style="border: 1px solid;border-bottom: 0px solid" colspan="2"
-                                                scope="colgroup">MIN DISPLAY
+                                                scope="colgroup">@lang('MIN DISPLAY')
                                             </th>
                                         </tr>
                                         <tr>
                                             <th style="border: 1px solid;border-top: 0px solid" width="11%"
-                                                class="text-center small">DSI
+                                                class="text-center small">@lang('DSI')
                                             </th>
                                             <th style="border: 1px solid;border-top: 0px solid" width="11%"
-                                                class="text-center small">TO
+                                                class="text-center small">@lang('TO')
                                             </th>
                                             <th style="border: 1px solid;border-top: 0px solid" width="11%"
-                                                class="text-center small">TOP
+                                                class="text-center small">@lang('TOP')
                                             </th>
                                             <th style="border: 1px solid;border-top: 0px solid" width="11%"
-                                                class="text-center small">QTY
+                                                class="text-center small">{{ strtoupper(__('Qty')) }}
                                             </th>
                                             <th style="border: 1px solid;border-top: 0px solid" width="11%"
-                                                class="text-center small">TO
+                                                class="text-center small">@lang('TO')
                                             </th>
                                             <th style="border: 1px solid;border-top: 0px solid" width="11%"
-                                                class="text-center small">QTY
+                                                class="text-center small">{{ strtoupper(__('Qty')) }}
                                             </th>
                                             <th style="border: 1px solid;border-top: 0px solid" width="11%"
-                                                class="text-center small">TO
+                                                class="text-center small">@lang('TO')
                                             </th>
                                             <th style="border: 1px solid;border-top: 0px solid" width="11%"
-                                                class="text-center small">QTY
+                                                class="text-center small">{{ strtoupper(__('Qty')) }}
                                             </th>
                                             <th style="border: 1px solid;border-top: 0px solid" width="11%"
-                                                class="text-center small">TO
+                                                class="text-center small">@lang('TO')
                                             </th>
                                         </tr>
                                         </thead>
@@ -453,28 +450,24 @@
                                         </tbody>
                                     </table>
                                     <div class="row mr-0">
-                                        <label for="mplus" class="col-sm-2 col-form-label text-right">M+</label>
+                                        <label for="mplus" class="col-sm-2 col-form-label text-right">@lang('M+')</label>
                                         <input type="text" class="col-sm-2 form-control text-right" id="mplus" disabled>
-                                        <label for="minory" class="col-sm-6 col-form-label text-right">(PKMT Sudah
-                                            termasuk M+) MINOR Y</label>
+                                        <label for="minory" class="col-sm-6 col-form-label text-right">@lang('(PKMT Sudah termasuk M+) MINOR Y')</label>
                                         <input type="text" class="col-sm-2 form-control text-right" id="minory"
                                                disabled>
                                     </div>
                                     <div class="row mr-0">
-                                        <label for="suppterakhir" class="col-sm-2 col-form-label text-right">Supplier
-                                            Terakhir</label>
+                                        <label for="suppterakhir" class="col-sm-2 col-form-label text-right">@lang('Supplier Terakhir')</label>
                                         <input type="text" class="col-sm-6 form-control" id="suppterakhir" value=""
                                                disabled>
                                     </div>
                                     <div class="row mr-0">
-                                        <label for="hargabeli" class="col-sm-2 col-form-label text-right">Harga
-                                            Beli</label>
+                                        <label for="hargabeli" class="col-sm-2 col-form-label text-right">@lang('Harga Beli')</label>
                                         <input type="text" class="col-sm-3 form-control text-right" id="hargabeli"
                                                value="" disabled>
                                     </div>
                                     <div class="row mr-0">
-                                        <label for="avgsales" class="col-sm-2 col-form-label text-right">Average
-                                            Sales</label>
+                                        <label for="avgsales" class="col-sm-2 col-form-label text-right">@lang('Average Sales')</label>
                                         <input type="text" class="col-sm-3 form-control text-right" id="avgsales"
                                                value="" disabled>
                                     </div>
@@ -486,7 +479,7 @@
                             <table class="table col-sm-8 table-sm justify-content-md-center p-0" id="table-stock">
                                 <thead class="theadDataTables">
                                 <tr>
-                                    <th class="text-center" colspan="7" scope="colgroup">FLAG</th>
+                                    <th class="text-center" colspan="7" scope="colgroup">@lang('FLAG')</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -526,26 +519,26 @@
                         <br>
                         <div class="row justify-content-md-center">
                             <button class="btn btn-primary col-sm-1 m-1" id="btn-detailsales" data-toggle="modal"
-                                    data-target="#m-detailsales" onclick="getDataDetailSales()">Detail Sales
+                                    data-target="#m-detailsales" onclick="getDataDetailSales()">@lang('Detail Sales')
                             </button>
                             <button class="btn btn-primary m-1" id="btn-penerimaan" data-toggle="modal"
-                                    data-target="#m-penerimaan" onclick="getDataPenerimaan()">Penerimaan
+                                    data-target="#m-penerimaan" onclick="getDataPenerimaan()">@lang('Penerimaan')
                             </button>
                             <button class="btn btn-primary col-sm-1 m-1" id="btn-pb" data-toggle="modal"
-                                    data-target="#m-pb" onclick="getDataPB()">PB
+                                    data-target="#m-pb" onclick="getDataPB()">@lang('MR')
                             </button>
                             <button class="btn btn-primary col-sm-1 m-1" id="btn-so" data-toggle="modal"
-                                    data-target="#m-so" onclick="getDataSO()">SO
+                                    data-target="#m-so" onclick="getDataSO()">@lang('SO')
                             </button>
                             <button class="btn btn-primary col-sm-1 m-1" id="btn-hargabeli" data-toggle="modal"
-                                    data-target="#m-hargabeli" onclick="getDataHargaBeli()">Harga Beli
+                                    data-target="#m-hargabeli" onclick="getDataHargaBeli()">@lang('Harga Beli')
                             </button>
                             <button class="btn btn-primary col-sm-1 m-1" id="btn-stockcarton" data-toggle="modal"
-                                    data-target="#m-stockcarton" onclick="getDataStockCarton()">Stock Carton
+                                    data-target="#m-stockcarton" onclick="getDataStockCarton()">@lang('Stock Carton')
                             </button>
-                            <button class="btn btn-primary col-sm-1 m-1" id="btn-cetak">Cetak
+                            <button class="btn btn-primary col-sm-1 m-1" id="btn-cetak">@lang('Cetak')
                             </button>
-                            <button class="btn btn-primary col-sm-1 m-1" id="btn-keluar">Keluar
+                            <button class="btn btn-primary col-sm-1 m-1" id="btn-keluar">@lang('Keluar')
                             </button>
                         </div>
                     </div>
@@ -559,7 +552,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">List Prodmast</h5>
+                    <h5 class="modal-title">@lang('List Prodmast')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -571,8 +564,8 @@
                                 <table class="table table-striped table-bordered" id="tableModalPLU">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>PLU</th>
-                                        <th>Nama Produk</th>
+                                        <th>@lang('PLU')</th>
+                                        <th>@lang('Nama Produk')</th>
                                     </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -593,7 +586,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5>Rekap Trend Sales</h5>
+                    <h5>@lang('Rekap Trend Sales')</h5>
                 </div>
                 <div class="modal-body" style="height: 650px;">
                     {{--<div class="container">--}}
@@ -606,45 +599,45 @@
                                     <th class="text-center small" style="border: 1px solid;border-bottom: 0px solid"
                                         colspan="1" scope="colgroup"></th>
                                     <th class="text-center" style="border: 1px solid;border-bottom: 0px solid"
-                                        colspan="2" scope="colgroup">INDOGROSIR
+                                        colspan="2" scope="colgroup">@lang('INDOGROSIR')
                                     </th>
                                     <th class="text-center" style="border: 1px solid;border-bottom: 0px solid"
-                                        colspan="2" scope="colgroup">OMI
+                                        colspan="2" scope="colgroup">@lang('OMI')
                                     </th>
                                     <th class="text-center" style="border: 1px solid;border-bottom: 0px solid"
-                                        colspan="2" scope="colgroup">IDM
+                                        colspan="2" scope="colgroup">@lang('IDM')
                                     </th>
                                     <th class="text-center" style="border: 1px solid;border-bottom: 0px solid"
-                                        colspan="2" scope="colgroup">MEMBER MERAH
+                                        colspan="2" scope="colgroup">@lang('MEMBER MERAH')
                                     </th>
                                 </tr>
                                 <tr>
                                     <th style="border: 1px solid;border-top: 0px solid" width="11%"
-                                        class="text-center small">BULAN
+                                        class="text-center small">@lang('BULAN')
                                     </th>
                                     <th style="border: 1px solid;border-top: 0px solid" width="11%"
-                                        class="text-center small">QTY
+                                        class="text-center small">{{ strtoupper(__('Qty')) }}
                                     </th>
                                     <th style="border: 1px solid;border-top: 0px solid" width="11%"
-                                        class="text-center small">RUPIAH
+                                        class="text-center small">@lang('RUPIAH')
                                     </th>
                                     <th style="border: 1px solid;border-top: 0px solid" width="11%"
-                                        class="text-center small">QTY
+                                        class="text-center small">{{ strtoupper(__('Qty')) }}
                                     </th>
                                     <th style="border: 1px solid;border-top: 0px solid" width="11%"
-                                        class="text-center small">RUPIAH
+                                        class="text-center small">@lang('RUPIAH')
                                     </th>
                                     <th style="border: 1px solid;border-top: 0px solid" width="11%"
-                                        class="text-center small">QTY
+                                        class="text-center small">{{ strtoupper(__('Qty')) }}
                                     </th>
                                     <th style="border: 1px solid;border-top: 0px solid" width="11%"
-                                        class="text-center small">RUPIAH
+                                        class="text-center small">@lang('RUPIAH')
                                     </th>
                                     <th style="border: 1px solid;border-top: 0px solid" width="11%"
-                                        class="text-center small">QTY
+                                        class="text-center small">{{ strtoupper(__('Qty')) }}
                                     </th>
                                     <th style="border: 1px solid;border-top: 0px solid" width="11%"
-                                        class="text-center small">RUPIAH
+                                        class="text-center small">@lang('RUPIAH')
                                     </th>
                                 </tr>
                                 </thead>
@@ -682,7 +675,7 @@
                                 <tfoot class="table-secondary">
                                 <tr>
                                     <td class="text-center" colspan="2" style="padding-top: .55rem!important;"><b>
-                                            Average Sales</b></td>
+                                            @lang('Average Sales')</b></td>
                                     <td>
                                         <input type="text" class="form-control text-right" id="avgsls-igr" value=""
                                                disabled>
@@ -710,7 +703,7 @@
                     {{--</div>--}}
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">@lang('Close')</button>
                 </div>
             </div>
         </div>
@@ -723,11 +716,11 @@
              role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5>Penerimaan</h5>
+                    <h5>@lang('Penerimaan')</h5>
                 </div>
                 <div class="modal-body" style="height: 650px;">
                     <div class="row">
-                        <label for="prod" class="col-sm-1 col-form-label text-right">Produk</label>
+                        <label for="prod" class="col-sm-1 col-form-label text-right">@lang('Produk')</label>
                         <input type="text" id="produk-penerimaan" class="form-control col-sm-6" disabled>
                     </div>
                     <br>
@@ -738,15 +731,15 @@
                                 >
                                     <thead>
                                     <tr class="sticky-header">
-                                        <th width="30%" class="sticky-cell text-center small">Supplier</th>
-                                        <th width="7%" class="sticky-cell text-center small">Qty BPB</th>
-                                        <th width="6%" class="sticky-cell text-center small">Bonus 1</th>
-                                        <th width="6%" class="sticky-cell text-center small">Bonus 2</th>
-                                        <th width="10%" class="sticky-cell text-center small">Dokumen</th>
-                                        <th width="13%" class="sticky-cell text-center small">Tanggal</th>
-                                        <th width="5%" class="sticky-cell text-center small">Top</th>
-                                        <th width="10%" class="sticky-cell text-center small">Last Cost (pcs)</th>
-                                        <th width="10%" class="sticky-cell text-center small">Avg Cost (pcs)</th>
+                                        <th width="30%" class="sticky-cell text-center small">@lang('Supplier')</th>
+                                        <th width="7%" class="sticky-cell text-center small">@lang('Qty BPB')</th>
+                                        <th width="6%" class="sticky-cell text-center small">@lang('Bonus 1')</th>
+                                        <th width="6%" class="sticky-cell text-center small">@lang('Bonus 2')</th>
+                                        <th width="10%" class="sticky-cell text-center small">@lang('Dokumen')</th>
+                                        <th width="13%" class="sticky-cell text-center small">@lang('Tanggal')</th>
+                                        <th width="5%" class="sticky-cell text-center small">@lang('Top')</th>
+                                        <th width="10%" class="sticky-cell text-center small">@lang('Last Cost (pcs)')</th>
+                                        <th width="10%" class="sticky-cell text-center small">@lang('Avg Cost (pcs)')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="table-penerimaan">
@@ -786,7 +779,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">@lang('Close')</button>
                 </div>
             </div>
         </div>
@@ -799,7 +792,7 @@
              role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5>PB</h5>
+                    <h5>@lang('PB')</h5>
                 </div>
                 <div class="modal-body" style="height: 520px;">
                     <div class="row">
@@ -811,26 +804,26 @@
                                     <tr class="sticky-header">
                                         <th class="text-center sticky-cell"
                                             style="border: 1px solid;border-bottom: 0px solid;border-left: 0px solid"
-                                            colspan="4" scope="colgroup">PB
+                                            colspan="4" scope="colgroup">@lang('PB')
                                         </th>
                                         <th class="text-center sticky-cell"
                                             style="border: 1px solid;border-bottom: 0px solid"
-                                            colspan="2" scope="colgroup">PO
+                                            colspan="2" scope="colgroup">@lang('PO')
                                         </th>
                                         <th class="text-center sticky-cell"
                                             style="border: 1px solid;border-bottom: 0px solid"
-                                            colspan="2" scope="colgroup">BPB
+                                            colspan="2" scope="colgroup">@lang('BPB')
                                         </th>
                                     </tr>
                                     <tr class="sticky-header">
-                                        <th width="10%" class=" sticky-cell text-center small">Dokumen</th>
-                                        <th width="10%" class=" sticky-cell text-center small">Tanggal</th>
-                                        <th width="5%" class=" sticky-cell text-center small">Qty</th>
-                                        <th width="15%" class=" sticky-cell text-center small">Keterangan</th>
-                                        <th width="10%" class=" sticky-cell text-center small">Dokumen</th>
-                                        <th width="10%" class=" sticky-cell text-center small">Tanggal</th>
-                                        <th width="5%" class=" sticky-cell text-center small">Qty</th>
-                                        <th width="15%" class=" sticky-cell text-center small">Keterangan</th>
+                                        <th width="10%" class=" sticky-cell text-center small">@lang('Dokumen')</th>
+                                        <th width="10%" class=" sticky-cell text-center small">@lang('Tanggal')</th>
+                                        <th width="5%" class=" sticky-cell text-center small">@lang('Qty')</th>
+                                        <th width="15%" class=" sticky-cell text-center small">@lang('Keterangan')</th>
+                                        <th width="10%" class=" sticky-cell text-center small">@lang('Dokumen')</th>
+                                        <th width="10%" class=" sticky-cell text-center small">@lang('Tanggal')</th>
+                                        <th width="5%" class=" sticky-cell text-center small">@lang('Qty')</th>
+                                        <th width="15%" class=" sticky-cell text-center small">@lang('Keterangan')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="table-pb">
@@ -867,7 +860,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">@lang('Close')</button>
                 </div>
             </div>
         </div>
@@ -882,9 +875,9 @@
                 <div class="modal-body" style="height: 800px;">
                     <div class="row">
                         <fieldset class="card border-secondary p-2 col-sm-8">
-                            <legend align="middle" class="w-auto h5 ">Stock Opname Nasional</legend>
+                            <legend align="middle" class="w-auto h5 ">@lang('Stock Opname Nasional')</legend>
                             <div class="row">
-                                <label for="periode-so" class="col-sm-2 col-form-label text-right">Periode SO</label>
+                                <label for="periode-so" class="col-sm-2 col-form-label text-right">@lang('Periode SO')</label>
                                 <input type="text" class="form-control col-sm-2" id="periode-so" disabled>
                             </div>
                             <br>
@@ -893,12 +886,12 @@
                                     <table class="table table-sm justify-content-md-center col-sm-12 ">
                                         <thead class="theadDataTables">
                                         <tr>
-                                            <th width="10%" class="text-center small">Qty SO</th>
-                                            <th width="10%" class="text-center small">Qty LPP</th>
-                                            <th width="5%" class="text-center small">Qty Adj</th>
-                                            <th width="15%" class="text-center small">Selisih</th>
-                                            <th width="10%" class="text-center small">Avg. Cost</th>
-                                            <th width="10%" class="text-center small">-/+ Rupiah</th>
+                                            <th width="10%" class="text-center small">@lang('Qty SO')</th>
+                                            <th width="10%" class="text-center small">@lang('Qty LPP')</th>
+                                            <th width="5%" class="text-center small">@lang('Qty Adj')</th>
+                                            <th width="15%" class="text-center small">@lang('Selisih')</th>
+                                            <th width="10%" class="text-center small">@lang('Avg. Cost')</th>
+                                            <th width="10%" class="text-center small">@lang('-/+ Rupiah')</th>
                                         </tr>
                                         </thead>
                                         <tbody id="table-so">
@@ -927,20 +920,19 @@
                                 </div>
                             </div>
 
-                            <label for="keterangan-so" class=" col-form-label">&nbsp;Selisih = Qty SO - Qty LPP + Qty
-                                Adjustment</label>
+                            <label for="keterangan-so" class=" col-form-label">&nbsp;@lang('Selisih = Qty SO - Qty LPP + Qty Adjustment')</label>
 
                             <fieldset class="card border-secondary m-2 p-2">
-                                <legend class="w-auto h5 ml-5">Detail Adjustment</legend>
+                                <legend class="w-auto h5 ml-5">@lang('Detail Adjustment')</legend>
                                 <div class="row">
                                     <div class="col my-custom-scrollbar table-wrapper-scroll-y">
                                         <table class="table table-sm justify-content-md-center col-sm-12">
                                             <thead class="theadDataTables">
                                             <tr>
-                                                <th width="10%" class="text-center small">Seq</th>
-                                                <th width="20%" class="text-center small">Qty Adj</th>
-                                                <th width="50%" class="text-center small">Keterangan</th>
-                                                <th width="20%" class="text-center small">Tanggal Adj</th>
+                                                <th width="10%" class="text-center small">@lang('Seq')</th>
+                                                <th width="20%" class="text-center small">@lang('Qty Adj')</th>
+                                                <th width="50%" class="text-center small">@lang('Keterangan')</th>
+                                                <th width="20%" class="text-center small">@lang('Tanggal Adj')</th>
                                             </tr>
                                             </thead>
                                             <tbody id="table-detailadj">
@@ -967,16 +959,16 @@
 
                         <div class="col-sm-4">
                             <fieldset class="card border-secondary p-2 ">
-                                <legend align="middle" class="w-auto h5 ">Stock Opname IC</legend>
+                                <legend align="middle" class="w-auto h5 ">@lang('Stock Opname IC')</legend>
                                 <div class="row">
                                     <div class="col my-custom-scrollbar table-wrapper-scroll-y">
                                         <table class="table table-sm justify-content-md-center col-sm-12 ">
                                             <thead class="theadDataTables">
                                             <tr>
-                                                <th width="10%" class="text-center small">Tgl SO</th>
-                                                <th width="10%" class="text-center small">Kode SO</th>
-                                                <th width="5%" class="text-center small">Qty</th>
-                                                <th width="10%" class="text-center small">Avg. Cost</th>
+                                                <th width="10%" class="text-center small">@lang('Tgl SO')</th>
+                                                <th width="10%" class="text-center small">@lang('Kode SO')</th>
+                                                <th width="5%" class="text-center small">@lang('Qty')</th>
+                                                <th width="10%" class="text-center small">@lang('Avg. Cost')</th>
                                             </tr>
                                             </thead>
                                             <tbody id="table-soic">
@@ -1005,8 +997,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-primary" id="btn-cetak-soic">Cetak</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" id="btn-cetak-soic">@lang('Cetak')</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">@lang('Close')</button>
                 </div>
             </div>
         </div>
@@ -1020,178 +1012,178 @@
             <div class="modal-content">
                 <div class="modal-body" style="height: 1000px;">
                     <fieldset class="card border-secondary col-sm-12">
-                        <legend align="middle" class="w-auto h5">Harga Beli</legend>
+                        <legend align="middle" class="w-auto h5">@lang('Harga Beli')</legend>
                         <div class="row m-1">
-                            <label for="supp-terakhir" class="col-sm-2 col-form-label text-right">Supp Terakhir</label>
+                            <label for="supp-terakhir" class="col-sm-2 col-form-label text-right">@lang('Supp Terakhir')</label>
                             <input type="text" class="form-control col-sm-10" id="hb-supp-terakhir" disabled>
                         </div>
                         <div class="row m-1">
-                            <label for="plu" class="col-sm-2 col-form-label text-right">PLU</label>
+                            <label for="plu" class="col-sm-2 col-form-label text-right">@lang('PLU')</label>
                             <input type="text" class="form-control col-sm-10" id="hb-plu" disabled>
                         </div>
                         <div class="row m-1">
-                            <label for="status-tag" class="col-sm-2 col-form-label text-right">Status Tag</label>
+                            <label for="status-tag" class="col-sm-2 col-form-label text-right">@lang('Status Tag')</label>
                             <input type="text" class="form-control col-sm-5" id="hb-status-tag" disabled>
-                            <label for="satuan-beli" class="col-sm-2 col-form-label text-right">Satuan Beli</label>
+                            <label for="satuan-beli" class="col-sm-2 col-form-label text-right">@lang('Satuan Beli')</label>
                             <input type="text" class="form-control col-sm-3 text-right" id="hb-satuan-beli" disabled>
                         </div>
                         <div class="row m-1">
-                            <label class="col-sm-2 col-form-label text-right">BKP</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('BKP')</label>
                             <input type="text" class="form-control col-sm-1" id="hb-bkp" disabled>
-                            <label class="col-sm-3 col-form-label text-right">Flag Bandrol</label>
+                            <label class="col-sm-3 col-form-label text-right">@lang('Flag Bandrol')</label>
                             <input type="text" class="form-control col-sm-1" id="hb-flag-bandrol" disabled>
-                            <label class="col-sm-2 col-form-label text-right">Harga Omi</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Harga Omi')</label>
                             <input type="text" class="form-control text-right col-sm-3" id="hb-harga-omi" disabled>
                         </div>
                     </fieldset>
                     <fieldset class="card border-secondary col-sm-12 mt-2">
                         <div class="row m-1">
-                            <label for="supp" class="col-sm-2 col-form-label text-right">Supp</label>
+                            <label for="supp" class="col-sm-2 col-form-label text-right">@lang('Supplier')</label>
                             <input type="text" class="form-control col-sm-8" id="hb-supp" disabled>
-                            <label for="plu" class="col-sm-1 col-form-label text-right">PKP</label>
+                            <label for="plu" class="col-sm-1 col-form-label text-right">@lang('PKP')</label>
                             <input type="text" class="form-control col-sm-1 text-center" id="hb-pkp" disabled>
                         </div>
                         <div class="row m-1">
-                            <label class="col-sm-2 col-form-label text-right">Jenis Harga</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Jenis Harga')</label>
                             <input type="text" class="form-control col-sm-3" id="hb-jenis-harga" disabled>
-                            <label class="col-sm-2 col-form-label text-right">Tgl Berlaku</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Tgl Berlaku')</label>
                             <input type="text" class="form-control col-sm-3" id="hb-tgl-berlaku" disabled>
-                            <label class="col-sm-1 col-form-label text-right">TOP</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('TOP')</label>
                             <input type="text" class="form-control col-sm-1" id="hb-top" disabled>
                         </div>
                         <div class="row m-1">
-                            <label class="col-sm-2 col-form-label text-right">Harga Beli</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Harga Beli')</label>
                             <input type="text" class="form-control col-sm-3 text-right" id="hb-harga-beli" disabled>
-                            <label class="col-sm-2 col-form-label text-right">Kondisi</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Kondisi')</label>
                             <input type="text" class="form-control col-sm-3" id="hb-kondisi" disabled>
                         </div>
                         <div class="row m-1">
-                            <label class="col-sm-2 col-form-label text-right">PPN BM</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('PPN BM')</label>
                             <input type="text" class="form-control col-sm-3 text-right" id="hb-ppn-bm" disabled>
-                            <label class="col-sm-2 col-form-label text-right">PPN</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('PPN')</label>
                             <input type="text" class="form-control col-sm-3 text-right" id="hb-ppn" disabled>
                         </div>
                         <div class="row m-1">
-                            <label class="col-sm-2 col-form-label text-right">Botol</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Botol')</label>
                             <input type="text" class="form-control col-sm-3 text-right" disabled id="hb-botol">
-                            <label class="col-sm-2 col-form-label text-right">Total</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Total')</label>
                             <input type="text" class="form-control col-sm-3 text-right" disabled id="hb-total">
                         </div>
                         <div class="row m-1 mt-2">
-                            <label class="col-sm-2 col-form-label text-right">Discount 1 %</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Discount 1 %')</label>
                             <input type="text" class="form-control col-sm-1 text-right" disabled id="hb-discount-1">
-                            <label class="col-sm-1 col-form-label text-right">Rp.</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('Rp.')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-rp-1">
-                            <label class="col-sm-1 col-form-label text-right">Satuan</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('Satuan')</label>
                             <input type="text" class="form-control col-sm-1" disabled id="hb-satuan">
-                            <label class="col-sm-1 col-form-label text-right">Bonus I</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('Bonus I')</label>
                             <input type="text" class="form-control col-sm-1 text-right" disabled id="hb-bonus-1">
                         </div>
                         <div class="row m-1">
-                            <label class="col-sm-2 col-form-label text-right">Discount 2 %</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Discount 2 %')</label>
                             <input type="text" class="form-control col-sm-1 text-right" disabled id="hb-discount-2">
-                            <label class="col-sm-1 col-form-label text-right">Rp.</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('Rp.')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-rp-2">
-                            <label class="col-sm-1 col-form-label text-right">Periode</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('Periode')</label>
                             <input type="text" class="form-control col-sm-3" disabled id="hb-periode-2">
                         </div>
                         <div class="row m-1">
-                            <label class="col-sm-2 col-form-label text-right">Discount 2 A %</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Discount 2 A %')</label>
                             <input type="text" class="form-control col-sm-1 text-right" disabled id="hb-discount-2a">
-                            <label class="col-sm-1 col-form-label text-right">Rp.</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('Rp.')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-rp-2a">
-                            <label class="col-sm-1 col-form-label text-right tex">Periode</label>
+                            <label class="col-sm-1 col-form-label text-right tex">@lang('Periode')</label>
                             <input type="text" class="form-control col-sm-3" disabled id="hb-periode-2a">
                         </div>
                         <div class="row m-1">
-                            <label class="col-sm-2 col-form-label text-right">Discount 2 B %</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Discount 2 B %')</label>
                             <input type="text" class="form-control col-sm-1 text-right" disabled id="hb-discount-2b">
-                            <label class="col-sm-1 col-form-label text-right">Rp.</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('Rp.')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-rp-2b">
-                            <label class="col-sm-1 col-form-label text-right">Periode</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('Periode')</label>
                             <input type="text" class="form-control col-sm-3" disabled id="hb-periode-2b">
                         </div>
                         <div class="row m-1">
-                            <label class="col-sm-2 col-form-label text-right">Discount 3 %</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Discount 3 %')</label>
                             <input type="text" class="form-control col-sm-1 text-right" disabled id="hb-discount-3">
-                            <label class="col-sm-1 col-form-label text-right">Rp.</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('Rp.')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-rp-3">
                         </div>
                         <div class="row m-1">
-                            <label class="col-sm-3 col-form-label text-right">Discount 4: &nbsp; No. Return %</label>
+                            <label class="col-sm-3 col-form-label text-right">@lang('Discount 4: No. Return %')</label>
                             <input type="text" class="form-control col-sm-1 text-right" disabled id="hb-no-return">
-                            <label class="col-sm-1 col-form-label text-right">Rp.</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('Rp.')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-rp-no-return">
                         </div>
                         <div class="row m-1">
-                            <label class="col-sm-3 col-form-label text-right">Cash Discount %</label>
+                            <label class="col-sm-3 col-form-label text-right">@lang('Cash Discount %')</label>
                             <input type="text" class="form-control col-sm-1 text-right" disabled id="hb-cash-discount">
-                            <label class="col-sm-1 col-form-label text-right">Rp.</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('Rp.')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled
                                    id="hb-rp-cash-discount">
                         </div>
                         <div class="row m-1">
-                            <label class="col-sm-3 col-form-label text-right">Distribution Fee</label>
+                            <label class="col-sm-3 col-form-label text-right">@lang('Distribution Fee')</label>
                             <input type="text" class="form-control col-sm-1 text-right" disabled
                                    id="hb-distribution-fee">
-                            <label class="col-sm-1 col-form-label text-right">Rp.</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('Rp.')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled
                                    id="hb-rp-distribution-fee">
-                            <label class="col-sm-1 col-form-label text-right">Total</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('Total')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-total-discount">
                         </div>
                         <div class="row m-1 mt-3">
-                            <label class="col-sm-2 col-form-label text-right">Bonus Kelipatan</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Bonus Kelipatan')</label>
                             <input type="text" class="form-control col-sm-1 text-right" disabled
                                    id="hb-bonus-kelipatan">
-                            <label class="col-sm-2 col-form-label text-right">Periode</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Periode')</label>
                             <input type="text" class="form-control col-sm-5" disabled id="hb-periode">
                         </div>
                         <div class="row m-1">
-                            <label class="col-sm-2 col-form-label text-right">Bonus 1</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Bonus 1')</label>
                         </div>
                         <div class="row m-1">
-                            <label class="col-sm-2 col-form-label text-right">QTY BELI --> #1</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('QTY BELI --> #1')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-qty-beli1_1">
-                            <label class="col-sm-1 col-form-label text-right">#2</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('#2')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-qty-beli1_2">
-                            <label class="col-sm-1 col-form-label text-right">#3</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('#3')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-qty-beli1_3">
                         </div>
                         <div class="row m-1">
-                            <label class="col-sm-2 col-form-label text-right">QTY BNS --> #1</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('QTY BNS --> #1')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-qty-bns1_1">
-                            <label class="col-sm-1 col-form-label text-right">#2</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('#2')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-qty-bns1_2">
-                            <label class="col-sm-1 col-form-label text-right">#3</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('#3')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-qty-bns1_3">
                         </div>
                         <div class="row m-1">
-                            <label class="col-sm-2 col-form-label text-right">Bonus 2</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Bonus 2')</label>
                         </div>
                         <div class="row m-1">
-                            <label class="col-sm-2 col-form-label text-right">QTY BELI --> #1</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('QTY BELI --> #1')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-qty-beli2_1">
-                            <label class="col-sm-1 col-form-label text-right">#2</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('#2')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-qty-beli2_2">
-                            <label class="col-sm-1 col-form-label text-right">#3</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('#3')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-qty-beli2_3">
                         </div>
                         <div class="row m-1">
-                            <label class="col-sm-2 col-form-label text-right">QTY BNS --> #1</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('QTY BNS --> #1')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-qty-bns2_1">
-                            <label class="col-sm-1 col-form-label text-right">#2</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('#2')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-qty-bns2_2">
-                            <label class="col-sm-1 col-form-label text-right">#3</label>
+                            <label class="col-sm-1 col-form-label text-right">@lang('#3')</label>
                             <input type="text" class="form-control col-sm-2 text-right" disabled id="hb-qty-bns2_3">
                         </div>
                     </fieldset>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" id="btn-hb-prev"><<< PREV</button>
-                    <button type="button" class="btn btn-secondary" id="btn-hb-next">NEXT >>></button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" id="btn-hb-prev">@lang('<<< PREV')</button>
+                    <button type="button" class="btn btn-secondary" id="btn-hb-next">@lang('NEXT >>>')</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">@lang('Close')</button>
                 </div>
             </div>
         </div>
@@ -1203,7 +1195,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal" role="document">
             <div class="modal-content" style="max-height: 70%;">
                 <div class="modal-header">
-                    <h5>Stock Carton</h5>
+                    <h5>@lang('Stock Carton')</h5>
                 </div>
                 <div class="modal-body">
                     <input type="text" class="form-control text-center" id="title-stock-carton" disabled>
@@ -1211,9 +1203,9 @@
                         <table class="table table-sm justify-content-md-center m-2" id="table-stockcarton">
                             <thead class="theadDataTables">
                             <tr>
-                                <th class="text-center small">Status Barang</th>
-                                <th class="text-center small">Carton</th>
-                                <th class="text-center small">Pcs</th>
+                                <th class="text-center small">@lang('Status Barang')</th>
+                                <th class="text-center small">@lang('Carton')</th>
+                                <th class="text-center small">@lang('Pcs')</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -1233,7 +1225,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">@lang('Tutup')</button>
                 </div>
             </div>
         </div>
@@ -1254,7 +1246,7 @@
                                 <table class="table table-sm justify-content-md-center p-0 col-sm-12">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th class="text-center small">Pesan</th>
+                                        <th class="text-center small">@lang('Pesan')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="table-notif">
@@ -1265,7 +1257,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">@lang('Tutup')</button>
                 </div>
             </div>
         </div>

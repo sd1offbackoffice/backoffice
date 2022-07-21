@@ -6,7 +6,7 @@
 {{--        <legend class="w-auto ml-5">Daftar Produk</legend>--}}
         <br>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Dept</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Dept')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuCDep1Input" class="form-control" type="text">
                 <button id="menuCBtnDep1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Dept</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Dept')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuCDep2Input" class="form-control" type="text">
                 <button id="menuCBtnDep2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -32,7 +32,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai Kat</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai Kat')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuCKat1Input" class="form-control" type="text">
                 <button id="menuCBtnKat1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -45,7 +45,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai Kat</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai Kat')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuCKat2Input" class="form-control" type="text">
                 <button id="menuCBtnKat2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -59,7 +59,7 @@
             <input id="menuCKat2HiddenVal" class="form-control" type="text" hidden>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Mulai PLU</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Mulai PLU')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuCPlu1Input" class="form-control" type="text">
                 <button id="menuCBtnPlu1" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -72,7 +72,7 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Sampai PLU</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Sampai PLU')</label>
             <div class="col-sm-3 buttonInside">
                 <input id="menuCPlu2Input" class="form-control" type="text">
                 <button id="menuCBtnPlu2" type="button" class="btn btn-lov p-0" data-toggle="modal"
@@ -85,13 +85,13 @@
             </div>
         </div>
         <div class="row">
-            <label class="col-sm-3 text-right col-form-label">Status</label>
+            <label class="col-sm-3 text-right col-form-label">@lang('Status')</label>
             <div class="col-sm-6">
                 <select class="form-control" id="menuCStatus">
-                    <option value="0">SEMUA</option>
-                    <option value="1">1. BN</option>
-                    <option value="2">2. BC</option>
-                    <option value="3">3. BD</option>
+                    <option value="0">{{ strtoupper(__('Semua')) }}</option>
+                    <option value="1">1. @lang('BN')</option>
+                    <option value="2">2. @lang('BC')</option>
+                    <option value="3">3. @lang('BD')</option>
                 </select>
             </div>
         </div>
@@ -150,7 +150,7 @@
 
                 $('#menuCBtnDep2').prop("hidden",false);
             }else{
-                swal('', "Kode Departement tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Departemen tidak terdaftar') }}`, 'warning');
                 $('#limitKat').val('').change();
                 $('#menuCDep1Input').val('').change();
             }
@@ -175,7 +175,7 @@
 
                 $('#menuCBtnKat1').prop("hidden",false);
             }else{
-                swal('', "Kode Departement tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Departemen tidak terdaftar') }}`, 'warning');
                 $('#limitKat').val('').change();
                 $('#menuCDep2Input').val('').change();
             }
@@ -196,7 +196,7 @@
 
                 $('#menuCBtnKat2').prop("hidden",false);
             }else{
-                swal('', "Kode Kategori tidak terdaftar", 'warning');
+                swal('', `{{ __('Kode Kategori tidak terdaftar') }}`, 'warning');
 
                 $('#menuCKat1Input').val('').change();
             }
@@ -212,7 +212,7 @@
             if(index){
                 $('#menuCKat2Desk').val(tableKategori.row(index-1).data()['kat_namakategori'].replace(/&amp;/g, '&'));
             }else{
-                swal('', "Kode Kategori tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Kategori tidak terdaftar') }}`, 'warning');
 
                 $('#menuCKat2Input').val('').change();
             }
@@ -233,7 +233,8 @@
                 $('#menuCPlu1Desk').val(deskripsi);
                 // $('#menuCBtnPlu2').prop("hidden",false);
             }else{
-                swal('', "Kode Plu tidak terdaftar", 'warning');
+                
+                swal('',`{{ __('Kode Plu tidak terdaftar') }}`, 'warning');
                 $('#menuCPlu1Input').val('').change();
             }
         }
@@ -248,7 +249,7 @@
                 deskripsi = deskripsi.prd_deskripsipanjang;
                 $('#menuCPlu2Desk').val(deskripsi);
             }else{
-                swal('', "Kode Plu tidak terdaftar", 'warning');
+                swal('',`{{ __('Kode Plu tidak terdaftar') }}`, 'warning');
                 $('#menuCPlu2Input').val('').change();
             }
         }
