@@ -109,7 +109,7 @@ class PBOtomatisController extends Controller
 
         if ($sukses == 'TRUE'){
             $kode   = 1;
-            $msg    = 'Proses PB otomatis berhasil! Nomor PB : '. $nomorPB;
+            $msg    = (__('Proses PB otomatis berhasil! Nomor PB : ')). $nomorPB;
 
             $temp1  = DB::connection(Session::get('connection'))->table('temp_go')->select('isi_toko', 'per_awal_pdisc_go', 'per_akhir_pdisc_go')->where('kodeigr', $kodeigr)->get()->toArray();
 
@@ -128,7 +128,7 @@ class PBOtomatisController extends Controller
             }
         } else {
             $kode   = 0;
-            $msg    = 'Proses PB otomatis GAGAL! --> '. $errm;
+            $msg    = (__('Proses PB otomatis GAGAL! --> ')). $errm;
             return response()->json(['kode' => $kode, 'msg' => $msg]);
         }
 

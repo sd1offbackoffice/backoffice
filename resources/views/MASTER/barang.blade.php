@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','MASTER | MASTER BARANG')
+@section('title',(__('MASTER | MASTER BARANG')))
 @section('content')
 
     <div class="container-fluid mt-4">
@@ -12,38 +12,38 @@
                                 <div class="form-group row mb-3">
 {{--                                    semua button nya ku hide saja ya, mau nya pakai shorcut keyboard saja kan? tenang buttonnya masih kepakai kok--}}
                                     <div class="col-sm-3 text-center offset-sm-2">
-                                        <span class="font-weight-bold">ALT + 1 : HELP MASTER BARANG</span>
-                                        <button hidden id="plunormal" type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal_plu">MASTER BARANG</button>
+                                        <span class="font-weight-bold">@lang('ALT + 1 : HELP MASTER BARANG')</span>
+                                        <button hidden id="plunormal" type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal_plu">@lang('MASTER BARANG')</button>
                                     </div>
                                     <div class="col-sm-3 text-center">
-                                        <span class="font-weight-bold">ALT + 2 : HELP MASTER BARANG IDM</span>
-                                        <button hidden id="pluidm" type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal_idm">MASTER BARANG IDM</button>
+                                        <span class="font-weight-bold">@lang('ALT + 2 : HELP MASTER BARANG IDM')</span>
+                                        <button hidden id="pluidm" type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal_idm">@lang('MASTER BARANG IDM')</button>
                                     </div>
                                     <div class="col-sm-3 text-center">
-                                        <span class="font-weight-bold">ALT + 3 : HELP MASTER BARANG OMI</span>
-                                        <button hidden id="pluomi" type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal_omi">MASTER BARANG OMI</button>
+                                        <span class="font-weight-bold">@lang('ALT + 3 : HELP MASTER BARANG OMI')</span>
+                                        <button hidden id="pluomi" type="button" class="btn btn-primary btn-block" data-toggle="modal" data-target="#modal_omi">@lang('MASTER BARANG OMI')</button>
                                     </div>
                                 </div>
                                 <div class="form-group row mb-0">
-                                    <label for="b_kodeplu" class="col-sm-2 col-form-label">PLU</label>
+                                    <label for="b_kodeplu" class="col-sm-2 col-form-label">@lang('PLU')</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="b_kodeplu">
                                     </div>
-                                    <label for="b_tgldaftar" class="col-sm-2 col-form-label">Tgl Daftar</label>
+                                    <label for="b_tgldaftar" class="col-sm-2 col-form-label">@lang('Tgl Daftar')</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="b_tgldaftar" disabled>
                                     </div>
-                                    <label for="b_barcode" class="col-sm-2 col-form-label">Barcode (E.A.N.)</label>
+                                    <label for="b_barcode" class="col-sm-2 col-form-label">@lang('Barcode (E.A.N.)')</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="b_barcode" disabled>
                                     </div>
                                 </div>
                                 <div class="form-group row mb-0">
-                                    <label for="b_pluho" class="col-sm-2 col-form-label">PLU H.O</label>
+                                    <label for="b_pluho" class="col-sm-2 col-form-label">@lang('PLU H.O')</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="b_pluho" disabled>
                                     </div>
-                                    <label for="b_tgldisc" class="col-sm-2 col-form-label">Tgl DISC</label>
+                                    <label for="b_tgldisc" class="col-sm-2 col-form-label">@lang('Tgl DISC')</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="b_tgldisc" disabled>
                                     </div>
@@ -53,24 +53,24 @@
                                     </div>
                                 </div>
                                 <div class="form-group row mb-0">
-                                    <label for="b_plusupp" class="col-sm-2 col-form-label">PLU Supplier</label>
+                                    <label for="b_plusupp" class="col-sm-2 col-form-label">@lang('PLU Supplier')</label>
                                     <div class="col-sm-3">
                                         <input type="text" class="form-control" id="b_plusupp" disabled>
                                     </div>
-                                    <label for="b_statbarcode" class="col-sm-5 col-form-label">Status Barcode</label>
+                                    <label for="b_statbarcode" class="col-sm-5 col-form-label">@lang('Status Barcode')</label>
                                     <div class="col-sm-1">
                                         <input type="text" class="form-control" id="b_statbarcode" disabled>
                                     </div>
                                 </div>
                                 <div class="form-group row mb-0">
-                                    <label class="col-sm-2 col-form-label" style="margin-left: -25px; margin-bottom: -50px">Nama Barang</label>
+                                    <label class="col-sm-2 col-form-label" style="margin-left: -25px; margin-bottom: -50px">@lang('Nama Barang')</label>
                                 </div>
                                 <div class="form-group row mb-0">
                                     <label for="b_nmbrg" class="col-sm-2 col-form-label">1.</label>
                                     <div class="col-sm-5">
                                         <input type="text" class="form-control" id="b_nmbrg" disabled>
                                     </div>
-                                    <label for="b_tglaktif" class="col-sm-3 col-form-label">Tgl Aktif Kembali</label>
+                                    <label for="b_tglaktif" class="col-sm-3 col-form-label">@lang('Tgl Aktif Kembali')</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control" id="b_tglaktif" disabled>
                                     </div>
@@ -90,13 +90,13 @@
                                     <div class="col-sm-8">
                                         <ul class="nav nav-tabs custom-color mt-3" role="tablist">
                                             <li class="nav-item">
-                                                <a class="nav-link active" id="btn-b_deskripsi" data-toggle="tab" href="#b_deskripsi">Deskripsi</a>
+                                                <a class="nav-link active" id="btn-b_deskripsi" data-toggle="tab" href="#b_deskripsi">@lang('Deskripsi')</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="nav-link" id="btn-b_harga" data-toggle="tab" href="#b_harga">Harga</a>
+                                                <a class="nav-link" id="btn-b_harga" data-toggle="tab" href="#b_harga">@lang('Harga')</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="nav-link" id="btn-b_dimensi" data-toggle="tab" href="#b_dimensi">Dimensi</a>
+                                                <a class="nav-link" id="btn-b_dimensi" data-toggle="tab" href="#b_dimensi">@lang('Dimensi')</a>
                                             </li>
                                         </ul>
                                     </div>
@@ -110,7 +110,7 @@
                                                 <div class="row text-right">
                                                     <div class="col-sm-12">
                                                         <div class="form-group row mb-0">
-                                                            <label for="d_divisi" class="col-sm-2 col-form-label">Divisi</label>
+                                                            <label for="d_divisi" class="col-sm-2 col-form-label">@lang('Divisi')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_divisi"  disabled>
                                                             </div>
@@ -120,7 +120,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="d_departemen" class="col-sm-2 col-form-label">Departemen</label>
+                                                            <label for="d_departemen" class="col-sm-2 col-form-label">@lang('Departemen')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_departemen" disabled>
                                                             </div>
@@ -129,7 +129,7 @@
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="d_kategori" class="col-sm-2 col-form-label">Kategori</label>
+                                                            <label for="d_kategori" class="col-sm-2 col-form-label">@lang('Kategori')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_kategori" disabled>
                                                             </div>
@@ -138,17 +138,17 @@
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="d_kategoritoko" class="col-sm-2 col-form-label">Kategori Toko</label>
+                                                            <label for="d_kategoritoko" class="col-sm-2 col-form-label">@lang('Kategori Toko')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_kategoritoko" disabled>
                                                             </div>
-                                                            <label for="d_flagcbg" class="col-sm-3 col-form-label">Flag Cabang</label>
+                                                            <label for="d_flagcbg" class="col-sm-3 col-form-label">@lang('Flag Cabang')</label>
                                                                 <div class="col-sm-1">
                                                                     <input type="text" class="form-control" id="d_flagcbg" disabled>
                                                                 </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="d_statustag" class="col-sm-2 col-form-label">Status Tag</label>
+                                                            <label for="d_statustag" class="col-sm-2 col-form-label">@lang('Status Tag')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_statustag" disabled>
                                                             </div>
@@ -165,27 +165,27 @@
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_kodedivpo" disabled>
                                                             </div>
-                                                            <label for="d_kelipatan" class="col-sm-3 col-form-label">Kelipatan Order</label>
+                                                            <label for="d_kelipatan" class="col-sm-3 col-form-label">@lang('Kelipatan Order')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_kelipatan" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="d_satju" class="col-sm-2 col-form-label">Satuan Jual</label>
+                                                            <label for="d_satju" class="col-sm-2 col-form-label">@lang('Satuan Jual')</label>
                                                         <div class="col-sm-1">
                                                             <input type="text" class="form-control" id="d_satju" disabled>
                                                         </div>
                                                         <div class="col-sm-1">
                                                             <input type="text" class="form-control" id="d_satju2" disabled>
                                                         </div>
-                                                            <label for="d_satbe" class="col-sm-2 col-form-label">Satuan Beli</label>
+                                                            <label for="d_satbe" class="col-sm-2 col-form-label">@lang('Satuan Beli')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_satbe" disabled>
                                                             </div>
                                                         <div class="col-sm-1">
                                                             <input type="text" class="form-control" id="d_satbe2" disabled>
                                                         </div>
-                                                            <label for="d_satstok" class="col-sm-2 col-form-label">Satuan Stok</label>
+                                                            <label for="d_satstok" class="col-sm-2 col-form-label">@lang('Satuan Stok')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_satstok" disabled>
                                                             </div>
@@ -194,64 +194,64 @@
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="d_qtymin" class="col-sm-2 col-form-label">Qty Min Order</label>
+                                                            <label for="d_qtymin" class="col-sm-2 col-form-label">@lang('Qty Min Order')</label>
                                                             <div class="col-sm-2" style="margin-left: 15px;margin-right: -16px">
                                                                 <div class="row">
                                                                     <input type="text" class="form-control col-sm-7" id="d_qtymin" disabled  style="width: 80px">
-                                                                    <label class="col-sm-5 col-form-label">(PCS)</label>
+                                                                    <label class="col-sm-5 col-form-label">@lang('(PCS)')</label>
                                                                 </div>
                                                             </div>
 
-                                                            <label for="d_kondisi" class="col-sm-2 col-form-label">Kondisi</label>
+                                                            <label for="d_kondisi" class="col-sm-2 col-form-label">@lang('Kondisi')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_kondisi" disabled>
                                                             </div>
                                                             <div class="col-sm-1">
 {{--                                                                filler doang--}}
                                                             </div>
-                                                            <label for="d_flaggdg" class="col-sm-2 col-form-label">Flag Gudang Pusat</label>
+                                                            <label for="d_flaggdg" class="col-sm-2 col-form-label">@lang('Flag Gudang Pusat')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_flaggdg" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="d_grupbrg" class="col-sm-2 col-form-label">Group Barang</label>
+                                                            <label for="d_grupbrg" class="col-sm-2 col-form-label">@lang('Group Barang')</label>
                                                             <div class="col-sm-2">
                                                                 <input type="text" class="form-control" id="d_grupbrg" disabled>
                                                             </div>
-                                                            <label for="d_grupjual" class="col-sm-2 col-form-label">Group Jual</label>
+                                                            <label for="d_grupjual" class="col-sm-2 col-form-label">@lang('Group Jual')</label>
                                                             <div class="col-sm-2">
                                                                 <input type="text" class="form-control" id="d_grupjual" disabled>
                                                             </div>
-                                                            <label for="d_minor" class="col-sm-2 col-form-label">MINOR Y</label>
+                                                            <label for="d_minor" class="col-sm-2 col-form-label">@lang('MINOR Y')</label>
                                                             <div class="col-sm-2">
                                                                 <input type="text" class="form-control" id="d_minor" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="d_hargabdr" class="col-sm-2 col-form-label">Harga Bandrol</label>
+                                                            <label for="d_hargabdr" class="col-sm-2 col-form-label">@lang('Harga Bandrol')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_hargabdr" disabled>
                                                             </div>
-                                                            <label for="d_labelhrg" class="col-sm-3 col-form-label" >Label Harga</label>
+                                                            <label for="d_labelhrg" class="col-sm-3 col-form-label" >@lang('Label Harga')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_labelhrg" disabled>
                                                             </div>
-                                                            <label for="d_ordertoko" class="col-sm-3 col-form-label">Order Toko</label>
+                                                            <label for="d_ordertoko" class="col-sm-3 col-form-label">@lang('Order Toko')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_ordertoko" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="d_tdkdiskon" class="col-sm-2 col-form-label">Tidak Diskon</label>
+                                                            <label for="d_tdkdiskon" class="col-sm-2 col-form-label">@lang('Tidak Diskon')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_tdkdiskon" disabled>
                                                             </div>
-                                                            <label for="d_openprice" class="col-sm-3 col-form-label">Open Price</label>
+                                                            <label for="d_openprice" class="col-sm-3 col-form-label">@lang('Open Price')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_openprice" disabled>
                                                             </div>
-                                                            <label for="d_minimjual" class="col-sm-3 col-form-label">Minimum Jual</label>
+                                                            <label for="d_minimjual" class="col-sm-3 col-form-label">@lang('Minimum Jual')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="d_minimjual" disabled>
                                                             </div>
@@ -266,19 +266,19 @@
                                                 <div class="row text-right">
                                                     <div class="col-sm-12">
                                                         <div class="form-group row mb-0">
-                                                            <label for="h_hppterakhir" class="col-sm-3 col-form-label">HPP Terakhir</label>
+                                                            <label for="h_hppterakhir" class="col-sm-3 col-form-label">@lang('HPP Terakhir')</label>
                                                             <div class="col-sm-2">
                                                                 <input type="text" class="form-control text-right" id="h_hppterakhir" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="h_hpprata" class="col-sm-3 col-form-label">HPP Rata2</label>
+                                                            <label for="h_hpprata" class="col-sm-3 col-form-label">@lang('HPP Rata2')</label>
                                                             <div class="col-sm-2">
                                                                 <input type="text" class="form-control text-right" id="h_hpprata" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-3">
-                                                            <label for="h_stdmrg" class="col-sm-3 col-form-label">STD Margin</label>
+                                                            <label for="h_stdmrg" class="col-sm-3 col-form-label">@lang('STD Margin')</label>
                                                             <div class="col-sm-2" style="margin-left: 15px;">
                                                                 <div class="row">
                                                                     <input type="text" class="col-sm-7 form-control text-right" id="h_stdmrg" disabled>
@@ -288,32 +288,32 @@
 
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="h_hrgjual" class="col-sm-3 col-form-label">Harga Jual</label>
+                                                            <label for="h_hrgjual" class="col-sm-3 col-form-label">@lang('Harga Jual')</label>
                                                             <div class="col-sm-2">
                                                                 <input type="text" class="form-control text-right" id="h_hrgjual" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-3">
-                                                            <label for="h_marginaktual" class="col-sm-3 col-form-label">Margin Aktual</label>
+                                                            <label for="h_marginaktual" class="col-sm-3 col-form-label">@lang('Margin Aktual')</label>
                                                             <div class="col-sm-2" style="margin-left: 15px; margin-right: -64px">
                                                                 <div class="row">
                                                                     <input type="text" class="col-sm-7 form-control text-right" id="h_marginaktual" disabled>
                                                                     <label class="col-sm-5 col-form-label">(%)</label>
                                                                 </div>
                                                             </div>
-                                                            <label for="h_tglaktif" class="col-sm-3 col-form-label" style="margin-left: 47px">Tgl Aktif</label>
+                                                            <label for="h_tglaktif" class="col-sm-3 col-form-label" style="margin-left: 47px">@lang('Tgl Aktif')</label>
                                                             <div class="col-sm-2">
                                                                 <input type="text" class="form-control" id="h_tglaktif" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="h_hrgjualbaru" class="col-sm-3 col-form-label">Harga Jual Baru</label>
+                                                            <label for="h_hrgjualbaru" class="col-sm-3 col-form-label">@lang('Harga Jual Baru')</label>
                                                             <div class="col-sm-2">
                                                                 <input type="text" class="form-control text-right" id="h_hrgjualbaru" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="h_marginaktual2" class="col-sm-3 col-form-label">Margin Aktual</label>
+                                                            <label for="h_marginaktual2" class="col-sm-3 col-form-label">@lang('Margin Aktual')</label>
                                                             <div class="col-sm-2" style="margin-left: 15px;">
                                                                 <div class="row">
                                                                     <input type="text" class="col-sm-7 form-control text-right" id="h_marginaktual2" disabled>
@@ -322,11 +322,11 @@
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="h_tglberlaku" class="col-sm-3 col-form-label">Tgl Berlaku</label>
+                                                            <label for="h_tglberlaku" class="col-sm-3 col-form-label">@lang('Tgl Berlaku')</label>
                                                             <div class="col-sm-3">
                                                                 <input type="text" class="form-control" id="h_tglberlaku" disabled>
                                                             </div>
-                                                            <label for="h_flagnondistfee" class="col-sm-2 col-form-label">Flag Non Dist Fee</label>
+                                                            <label for="h_flagnondistfee" class="col-sm-2 col-form-label">@lang('Flag Non Dist Fee')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="h_flagnondistfee" disabled>
                                                             </div>
@@ -341,61 +341,61 @@
                                                 <div class="row text-right">
                                                     <div class="col-sm-12">
                                                         <div class="form-group row mb-0">
-                                                            <label for="di_lebarprod" class="col-sm-4 col-form-label">Dimensi Lebar Produk</label>
+                                                            <label for="di_lebarprod" class="col-sm-4 col-form-label">@lang('Dimensi Lebar Produk')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="di_lebarprod" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="di_panjangprod" class="col-sm-4 col-form-label">Dimensi Panjang Produk</label>
+                                                            <label for="di_panjangprod" class="col-sm-4 col-form-label">@lang('Dimensi Panjang Produk')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="di_panjangprod" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-3">
-                                                            <label for="di_tinggiprod" class="col-sm-4 col-form-label">Dimensi Tinggi Produk</label>
+                                                            <label for="di_tinggiprod" class="col-sm-4 col-form-label">@lang('Dimensi Tinggi Produk')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="di_tinggiprod" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-3">
-                                                            <label for="di_flagexpr" class="col-sm-4 col-form-label">Flag Export</label>
+                                                            <label for="di_flagexpr" class="col-sm-4 col-form-label">@lang('Flag Export')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="di_flagexpr" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="di_lebarkemasan" class="col-sm-4 col-form-label">Dimensi Lebar Kemasan Karton</label>
+                                                            <label for="di_lebarkemasan" class="col-sm-4 col-form-label">@lang('Dimensi Lebar Kemasan Karton')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="di_lebarkemasan" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="di_panjangkemasan" class="col-sm-4 col-form-label">Dimensi Panjang Kemasan Karton</label>
+                                                            <label for="di_panjangkemasan" class="col-sm-4 col-form-label">@lang('Dimensi Panjang Kemasan Karton')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="di_panjangkemasan" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-3">
-                                                            <label for="di_tinggikemasan" class="col-sm-4 col-form-label">Dimensi Tinggi Kemasan Karton</label>
+                                                            <label for="di_tinggikemasan" class="col-sm-4 col-form-label">@lang('Dimensi Tinggi Kemasan Karton')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="di_tinggikemasan" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="di_beratpcs" class="col-sm-4 col-form-label">Berat Kotor PCS</label>
+                                                            <label for="di_beratpcs" class="col-sm-4 col-form-label">@lang('Berat Kotor PCS')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="di_beratpcs" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="di_beratctn" class="col-sm-4 col-form-label">Berat Kotor CTN</label>
+                                                            <label for="di_beratctn" class="col-sm-4 col-form-label">@lang('Berat Kotor CTN')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="di_beratctn" disabled>
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label for="di_beratbox" class="col-sm-4 col-form-label">Berat Kotor BOX</label>
+                                                            <label for="di_beratbox" class="col-sm-4 col-form-label">@lang('Berat Kotor BOX')</label>
                                                             <div class="col-sm-1">
                                                                 <input type="text" class="form-control" id="di_beratbox" disabled>
                                                             </div>
@@ -410,25 +410,25 @@
                                     <div class="row text-right">
                                         <div class="col-sm-12">
                                             <div class="form-group row mb-0">
-                                                <label for="b_updateakhir" class="col-sm-2 col-form-label">Update Akhir</label>
+                                                <label for="b_updateakhir" class="col-sm-2 col-form-label">@lang('Update Akhir')</label>
                                                 <input type="text" class="form-control col-sm-3 mr-2" id="b_updateakhir" disabled>
                                                 <input type="text" class="form-control col-sm-1" id="b_updateakhir2" disabled>
                                                 {{--<div class="col-sm-1 ml-0">--}}
                                                     {{--<input type="text" class="form-control" id="b_updateakhir2" disabled="" style="width: 70px">--}}
                                                 {{--</div>--}}
-                                                <label for="b_tglpromo" class="col-sm-3 col-form-label" style="margin-left: -8px">Tanggal Promo</label>
+                                                <label for="b_tglpromo" class="col-sm-3 col-form-label" style="margin-left: -8px">@lang('Tanggal Promo')</label>
                                                 <div class="col-sm-3">
                                                     <input type="text" class="form-control" id="b_tglpromo" disabled>
                                                 </div>
                                             </div>
                                             <div class="form-group row mb-0">
-                                                <label for="b_jampromo" class="col-sm-9 col-form-label">Jam Promo</label>
+                                                <label for="b_jampromo" class="col-sm-9 col-form-label">@lang('Jam Promo')</label>
                                                 <div class="col-sm-3">
                                                     <input type="text" class="form-control" id="b_jampromo" disabled>
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label for="b_hrgpromo" class="col-sm-9 col-form-label">Harga Promo</label>
+                                                <label for="b_hrgpromo" class="col-sm-9 col-form-label">@lang('Harga Promo')</label>
                                                 <div class="col-sm-3">
                                                     <input type="text" class="form-control" id="b_hrgpromo" disabled>
                                                 </div>
@@ -448,7 +448,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Barang</h5>
+                    <h5 class="modal-title">@lang('Master Barang')</h5>
                     <button id="closeNormal" type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -460,10 +460,10 @@
                                     <table class="table  table table-striped table-bordered" id="table_master_barang">
                                         <thead class="theadDataTables">
                                         <tr class="font">
-                                            <th>Nama Produk</th>
-                                            <th>PLU</th>
-                                            <th>PLU Supplier</th>
-                                            <th>Singkatan</th>
+                                            <th>@lang('Nama Produk')</th>
+                                            <th>@lang('PLU')</th>
+                                            <th>@lang('PLU Supplier')</th>
+                                            <th>@lang('Singkatan')</th>
                                         </tr>
                                         </thead>
                                         <tbody class="tbodyTableSearch">
@@ -482,7 +482,7 @@
         <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Barang IDM</h5>
+                    <h5 class="modal-title">@lang('Master Barang IDM')</h5>
                     <button id="closeIdm" type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -494,17 +494,17 @@
                                 <table class="table  table table-striped table-bordered" id="table_master_barang_idm">
                                     <thead class="theadDataTables">
                                     <tr class="font" >
-                                        <th>Deskripsi</th>
-                                        <th>PLU IGR</th>
-                                        <th>PLU IDM</th>
-                                        <th>Tag</th>
-                                        <th>Harga</th>
-                                        <th>Renceng</th>
-                                        <th>Minor</th>
-                                        <th>Min</th>
-                                        <th>Max</th>
-                                        <th>Tgl Promo</th>
-                                        <th>Hrg Promo</th>
+                                        <th>@lang('Deskripsi')</th>
+                                        <th>@lang('PLU IGR')</th>
+                                        <th>@lang('PLU IDM')</th>
+                                        <th>@lang('Tag')</th>
+                                        <th>@lang('Harga')</th>
+                                        <th>@lang('Renceng')</th>
+                                        <th>@lang('Minor')</th>
+                                        <th>@lang('Min')</th>
+                                        <th>@lang('Max')</th>
+                                        <th>@lang('Tgl Promo')</th>
+                                        <th>@lang('Hrg Promo')</th>
                                     </tr>
                                     </thead>
                                     <tbody class="tbodyTableSearch">
@@ -523,7 +523,7 @@
         <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Barang OMI</h5>
+                    <h5 class="modal-title">@lang('Master Barang OMI')</h5>
                     <button id="closeOmi" type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -535,16 +535,16 @@
                                 <table class="table table-sm" id="table_master_barang_omi">
                                     <thead class="theadDataTables">
                                     <tr class="font">
-                                        <td>Deskripsi</td>
-                                        <td>PLU IGR</td>
-                                        <td>PLU OMI</td>
-                                        <td>Tag</td>
-                                        <td>Renceng</td>
-                                        <td>Minor</td>
-                                        <td>Min</td>
-                                        <td>Max</td>
-                                        <td>Tgl Promo</td>
-                                        <td>Hrg Promo</td>
+                                        <td>@lang('Deskripsi')</td>
+                                        <td>@lang('PLU IGR')</td>
+                                        <td>@lang('PLU OMI')</td>
+                                        <td>@lang('Tag')</th>
+                                        <td>@lang('Renceng')</td>
+                                        <td>@lang('Minor')</td>
+                                        <td>@lang('Min')</td>
+                                        <td>@lang('Max')</td>
+                                        <td>@lang('Tgl Promo')</td>
+                                        <td>@lang('Hrg Promo')</td>
                                     </tr>
                                     </thead>
                                     <tbody class="tbodyTableSearch">

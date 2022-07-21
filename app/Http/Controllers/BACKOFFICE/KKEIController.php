@@ -243,7 +243,7 @@ class KKEIController extends Controller
         }
         else{
             $status = 'not-found';
-            $message = 'PLU tidak ada di Prodmast!';
+            $message = (__('PLU tidak ada di Prodmast!'));
             return compact(['status','message']);
         }
     }
@@ -255,11 +255,11 @@ class KKEIController extends Controller
 
         if(count($data) > 0){
             $status = 'success';
-            $message = 'Data ditemukan!';
+            $message = (__('Data ditemukan!'));
         }
         else{
             $status = 'new-data';
-            $message = 'Buat data baru!';
+            $message = (__('Buat data baru!'));
         }
 
         return compact(['status','message','data']);
@@ -279,7 +279,7 @@ class KKEIController extends Controller
                     ->whereIn('kke_prdcd',$request->deleted)
                     ->delete();
                 $status = 'success';
-                $message = 'Berhasil menghapus data!';
+                $message = (__('Berhasil menghapus data!'));
             }
 
             $reqid = DB::connection(Session::get('connection'))->selectOne("select TO_CHAR (USERENV ('SESSIONID')) reqid from dual")->reqid;
@@ -318,7 +318,7 @@ class KKEIController extends Controller
                 }
 
                 $status = 'success';
-                $message = 'Berhasil menyimpan data!';
+                $message = (__('Berhasil menyimpan data!'));
 
                 DB::connection(Session::get('connection'))->commit();
 
@@ -327,7 +327,7 @@ class KKEIController extends Controller
         }
         catch (QueryException $e){
             $status = 'failed';
-            $message = 'Gagal menyimpan data!';
+            $message = (__('Gagal menyimpan data!'));
             $error = $e->getMessage();
             dd($e->getMessage());
             DB::connection(Session::get('connection'))->rollBack();

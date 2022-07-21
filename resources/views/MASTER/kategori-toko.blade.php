@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','MASTER | MASTER KATEGORI TOKO')
+@section('title',(__('MASTER | MASTER KATEGORI TOKO')))
 @section('content')
 
     <div class="container mt-4">
@@ -8,8 +8,7 @@
                 <div class="card border-dark">
                     <div class="card-body shadow-lg cardForm">
                         <div class="form-group row">
-                            <label for="i_class_kodeigr" class="col-sm-3 col-form-label text-right">CLASS KODEIGR
-                                &nbsp;</label>
+                            <label for="i_class_kodeigr" class="col-sm-3 col-form-label text-right">@lang('CLASS KODEIGR') &nbsp;</label>
                             <div class="row col-sm-9 border border-warning rounded"
                                  style="background-color: lightyellow">
                                 <div class="row col-sm-12">
@@ -25,12 +24,11 @@
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="i_kodekategoritoko" class="col-sm-3 col-form-label text-right">Kode Kategori
-                                Toko</label>
+                            <label for="i_kodekategoritoko" class="col-sm-3 col-form-label text-right">@lang('Kode Kategori Toko')</label>
                             <input type="text" class="col-sm-1 form-control" id="i_kodekategoritoko" placeholder="...">
                         </div>
                         <div class="form-group row">
-                            <label for="i_keterangan" class="col-sm-3 col-form-label text-right">Keterangan</label>
+                            <label for="i_keterangan" class="col-sm-3 col-form-label text-right">@lang('Keterangan')</label>
                             <input style="text-transform: uppercase;" type="text" class="col-sm-5 form-control"
                                    id="i_keterangan" placeholder="...">
                         </div>
@@ -178,12 +176,12 @@
                 $('.rounded').removeClass('border-warning');
                 $('.rounded').addClass('border-danger');
                 swal({
-                    title: "Class KodeIGR Belum dipilih!",
+                    title: "{{__('Class KodeIGR Belum dipilih!')}}",
                     icon: "warning"
                 });
             } else if ($('#i_kodekategoritoko').val() == "") {
                 swal({
-                    title: "Kode Kategori Toko Belum diisi!",
+                    title: "{{__('Kode Kategori Toko Belum diisi!')}}",
                     icon: "warning"
                 }).then((createData) => {
                     if (createData) {
@@ -192,7 +190,7 @@
                 });
             } else if ($('#i_keterangan').val() == "") {
                 swal({
-                    title: "Keterangan Belum diisi!",
+                    title: "{{__('Keterangan Belum diisi!')}}",
                     icon: "warning"
                 }).then((createData) => {
                     if (createData) {
@@ -216,17 +214,17 @@
                         $('#modal-loader').modal('hide');
                         if (response == 'save') {
                             swal({
-                                title: "Data Berhasil Tersimpan!",
+                                title: "{{__('Data Berhasil Tersimpan!')}}",
                                 icon: "success"
                             });
                         } else if (response == 'update') {
                             swal({
-                                title: "Data Berhasil Terupdate!",
+                                title: "{{__('Data Berhasil Terupdate!')}}",
                                 icon: "success"
                             });
                         } else {
                             swal({
-                                title: "Data Gagal Tersimpan!",
+                                title: "{{__('Data Gagal Tersimpan!')}}",
                                 icon: "warning"
                             });
                         }

@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','PB | CETAK TOLAKAN PB')
+@section('title',(__('PB | CETAK TOLAKAN PB')))
 @section('content')
 
 
@@ -7,40 +7,40 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Cetak Tolakan PB</legend>
+                    <legend  class="w-auto ml-5">@lang('Cetak Tolakan PB')</legend>
                     <ul class="nav nav-tabs custom-color" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" id="btn-div" data-toggle="tab" href="#p_div">BY DIV</a>
+                            <a class="nav-link active" id="btn-div" data-toggle="tab" href="#p_div">@lang('BY DIV')</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="btn-sup" data-toggle="tab" href="#p_sup">BY SUP</a>
+                            <a class="nav-link" id="btn-sup" data-toggle="tab" href="#p_sup">@lang('BY SUP')</a>
                         </li>
                     </ul>
 
                     <div class="tab-content">
                         <div id="p_div" class="container-fluid tab-pane active pl-0 pr-0">
                             <fieldset class="card border-secondary m-4  fix-height">
-                                <legend  class="w-auto ml-5">** INQUIRY DAFTAR TOLAKAN PB / DIVISI / DEPT/ KATEGORI **</legend>
+                                <legend  class="w-auto ml-5">@lang('** INQUIRY DAFTAR TOLAKAN PB / DIVISI / DEPT/ KATEGORI **')</legend>
                                 <div class="card-body">
                                     <div class="row">
-                                        <label for="tanggal" class="col-sm-2 text-right col-form-label">Tanggal :</label>
+                                        <label for="tanggal" class="col-sm-2 text-right col-form-label">@lang('Tanggal :')</label>
                                         <div class="col-sm-3">
                                             <input maxlength="10" type="text" class="form-control tanggal" id="div_tanggal1">
                                         </div>
-                                        <label class="pt-1">s/d</label>
+                                        <label class="pt-1">@lang('s/d')</label>
                                         <div class="col-sm-3">
                                             <input maxlength="10" type="text" class="form-control tanggal" id="div_tanggal2">
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <label for="periode" class="col-sm-2 text-right col-form-label">Divisi :</label>
+                                        <label for="periode" class="col-sm-2 text-right col-form-label">@lang('Divisi :')</label>
                                         <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control divisi" id="div_divisi1">
                                             <button style="display: none" type="button" class="btn btn-lov p-0 divisi1" data-toggle="modal" data-target="#m_lov_divisi">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
-                                        <label class="pt-1">s/d</label>
+                                        <label class="pt-1">@lang('s/d')</label>
                                         <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control divisi" id="div_divisi2">
                                             <button style="display: none" type="button" class="btn btn-lov p-0 divisi2" data-toggle="modal" data-target="#m_lov_divisi">
@@ -49,14 +49,14 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <label for="periode" class="col-sm-2 text-right col-form-label">Departement :</label>
+                                        <label for="periode" class="col-sm-2 text-right col-form-label">@lang('Departement :')</label>
                                         <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control departement" id="div_departement1">
                                             <button style="display: none" type="button" class="btn btn-lov p-0 departement1" data-toggle="modal" data-target="#m_lov_departement">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
-                                        <label class="pt-1">s/d</label>
+                                        <label class="pt-1">@lang('s/d')</label>
                                         <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control departement" id="div_departement2">
                                             <button style="display: none" type="button" class="btn btn-lov p-0 departement2" data-toggle="modal" data-target="#m_lov_departement">
@@ -65,14 +65,14 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <label for="periode" class="col-sm-2 text-right col-form-label">Kategori :</label>
+                                        <label for="periode" class="col-sm-2 text-right col-form-label">@lang('Kategori :')</label>
                                         <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control kategori" id="div_kategori1">
                                             <button style="display: none" type="button" class="btn btn-lov p-0 kategori1" data-toggle="modal" data-target="#m_lov_kategori">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
-                                        <label class="pt-1">s/d</label>
+                                        <label class="pt-1">@lang('s/d')</label>
                                         <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control kategori" id="div_kategori2">
                                             <button style="display: none" type="button" class="btn btn-lov p-0 kategori2" data-toggle="modal" data-target="#m_lov_kategori">
@@ -81,14 +81,14 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <label for="periode" class="col-sm-2 text-right col-form-label">PLU :</label>
+                                        <label for="periode" class="col-sm-2 text-right col-form-label">@lang('PLU :')</label>
                                         <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control plu" id="div_plu1">
                                             <button style="display: none" type="button" class="btn btn-lov p-0 div_plu" data-toggle="modal" data-target="#m_lov_plu">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
-                                        <label class="pt-1">s/d</label>
+                                        <label class="pt-1">@lang('s/d')</label>
                                         <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control plu" id="div_plu2">
                                             <button style="display: none" type="button" class="btn btn-lov p-0 div_plu" data-toggle="modal" data-target="#m_lov_plu">
@@ -97,40 +97,40 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <label for="periode" class="col-sm-2 text-right col-form-label">Pilihan :</label>
+                                        <label for="periode" class="col-sm-2 text-right col-form-label">@lang('Pilihan :')</label>
                                         <div class="col-sm-3">
                                             <input maxlength="1" type="text" class="form-control" id="div_pilihan">
                                         </div>
                                         <div class="col-sm-2">
-                                            <label for="periode" class="text-right col-form-label">1 - Lain-lain</label>
+                                            <label for="periode" class="text-right col-form-label">@lang('1 - Lain-lain')</label>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label for="periode" class="text-right col-form-label">2 - Discontinue</label>
+                                            <label for="periode" class="text-right col-form-label">@lang('2 - Discontinue')</label>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-5"></div>
                                         <div class="col-sm-2">
-                                            <label class="text-right col-form-label">3 - Semua</label>
+                                            <label class="text-right col-form-label">@lang('3 - Semua')</label>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label class="text-right col-form-label">4 - Discontinue + tag T</label>
+                                            <label class="text-right col-form-label">@lang('4 - Discontinue + tag T')</label>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-5"></div>
                                         <div class="col-sm-2">
-                                            <label class="text-right col-form-label">6 - < Minor</label>
+                                            <label class="text-right col-form-label">@lang('6 - < Minor')</label>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-1"></div>
                                         <div class="col-sm-2">
-                                            <label class="text-right col-form-label">KOSONG : SEMUA</label>
+                                            <label class="text-right col-form-label">@lang('KOSONG : SEMUA')</label>
                                         </div>
                                         <div class="col-sm-7"></div>
                                         <div class="col-sm-2">
-                                            <button id="div_print" class="col-sm btn btn-success" onclick="print_by_div()">PRINT</button>
+                                            <button id="div_print" class="col-sm btn btn-success" onclick="print_by_div()">@lang('PRINT')</button>
                                         </div>
                                     </div>
                                 </div>
@@ -138,27 +138,27 @@
                         </div>
                         <div id="p_sup" class="container-fluid tab-pane pl-0 pr-0">
                             <fieldset class="card border-secondary m-4 fix-height">
-                                <legend  class="w-auto ml-5">** INQUIRY DAFTAR TOLAKAN PB / SUPPLIER **</legend>
+                                <legend  class="w-auto ml-5">@lang('** INQUIRY DAFTAR TOLAKAN PB / SUPPLIER **')</legend>
                                 <div class="card-body">
                                     <div class="row">
-                                        <label for="tanggal" class="col-sm-2 text-right col-form-label">Tanggal :</label>
+                                        <label for="tanggal" class="col-sm-2 text-right col-form-label">@lang('Tanggal :')</label>
                                         <div class="col-sm-3">
                                             <input maxlength="10" type="text" class="form-control tanggal" id="sup_tanggal1">
                                         </div>
-                                        <label class="pt-1">s/d</label>
+                                        <label class="pt-1">@lang('s/d')</label>
                                         <div class="col-sm-3">
                                             <input maxlength="10" type="text" class="form-control tanggal" id="sup_tanggal2">
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <label for="periode" class="col-sm-2 text-right col-form-label">Supplier :</label>
+                                        <label for="periode" class="col-sm-2 text-right col-form-label">@lang('Supplier :')</label>
                                         <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control" id="sup_supplier1">
                                             <button style="display: none" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_lov_supplier">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
-                                        <label class="pt-1">s/d</label>
+                                        <label class="pt-1">@lang('s/d')</label>
                                         <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control" id="sup_supplier2">
                                             <button style="display: none" type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_lov_supplier">
@@ -167,14 +167,14 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <label for="periode" class="col-sm-2 text-right col-form-label">PLU :</label>
+                                        <label for="periode" class="col-sm-2 text-right col-form-label">@lang('PLU :')</label>
                                         <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control" id="sup_plu1">
                                             <button style="display: none" type="button" class="btn btn-lov p-0 sup_plu" data-toggle="modal" data-target="#m_lov_plu_sup">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
-                                        <label class="pt-1">s/d</label>
+                                        <label class="pt-1">@lang('s/d')</label>
                                         <div class="col-sm-3 buttonInside">
                                             <input maxlength="10" type="text" class="form-control" id="sup_plu2">
                                             <button style="display: none" type="button" class="btn btn-lov p-0 sup_plu" data-toggle="modal" data-target="#m_lov_plu_sup">
@@ -183,40 +183,40 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <label for="periode" class="col-sm-2 text-right col-form-label">Pilihan :</label>
+                                        <label for="periode" class="col-sm-2 text-right col-form-label">@lang('Pilihan :')</label>
                                         <div class="col-sm-3">
                                             <input maxlength="10" type="text" class="form-control" id="sup_pilihan">
                                         </div>
                                         <div class="col-sm-2">
-                                            <label class="text-right col-form-label">1 - Lain-lain</label>
+                                            <label class="text-right col-form-label">@lang('1 - Lain-lain')</label>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label class="text-right col-form-label">2 - Discontinue</label>
+                                            <label class="text-right col-form-label">@lang('2 - Discontinue')</label>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-5"></div>
                                         <div class="col-sm-2">
-                                            <label class="text-right col-form-label">3 - Semua</label>
+                                            <label class="text-right col-form-label">@lang('3 - Semua')</label>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label class="text-right col-form-label">4 - Discontinue + tag T</label>
+                                            <label class="text-right col-form-label">@lang('4 - Discontinue + tag T')</label>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-5"></div>
                                         <div class="col-sm-2">
-                                            <label class="text-right col-form-label">6 - < Minor</label>
+                                            <label class="text-right col-form-label">@lang('6 - < Minor')</label>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-sm-1"></div>
                                         <div class="col-sm-2">
-                                            <label class="text-right col-form-label">KOSONG : SEMUA</label>
+                                            <label class="text-right col-form-label">@lang('KOSONG : SEMUA')</label>
                                         </div>
                                         <div class="col-sm-7"></div>
                                         <div class="col-sm-2">
-                                            <button id="sup_btn_print" class="col-sm btn btn-success" onclick="print_by_sup()">PRINT</button>
+                                            <button id="sup_btn_print" class="col-sm btn btn-success" onclick="print_by_sup()">@lang('PRINT')</button>
                                         </div>
                                     </div>
                                 </div>
@@ -244,8 +244,8 @@
                                 <table class="table table-sm" id="table_lov_divisi">
                                     <thead>
                                     <tr>
-                                        <td>KODE DIVISI</td>
-                                        <td>NAMA DIVISI</td>
+                                        <td>@lang('KODE DIVISI')</td>
+                                        <td>@lang('NAMA DIVISI')</td>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -282,9 +282,9 @@
                                 <table class="table table-sm" id="table_lov_departement">
                                     <thead>
                                     <tr>
-                                        <td>KODE DEPARTEMENT</td>
-                                        <td>NAMA DEPARTEMENT</td>
-                                        <td>KODE DIVISI</td>
+                                        <td>@lang('KODE DEPARTEMENT')</td>
+                                        <td>@lang('NAMA DEPARTEMENT')</td>
+                                        <td>@lang('KODE DIVISI')</td>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -322,9 +322,9 @@
                                 <table class="table table-sm" id="table_lov_kategori">
                                     <thead>
                                     <tr>
-                                        <td>KODE DEPARTEMENT</td>
-                                        <td>KODE KATEGORI</td>
-                                        <td>NAMA KATEGORI</td>
+                                        <td>@lang('KODE DEPARTEMENT')</td>
+                                        <td>@lang('KODE KATEGORI')</td>
+                                        <td>@lang('NAMA KATEGORI')</td>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -362,9 +362,9 @@
                                 <table class="table table-sm" id="table_lov_plu">
                                     <thead>
                                     <tr>
-                                        <td>PLU</td>
-                                        <td>DESKRIPSI</td>
-                                        <td>SATUAN</td>
+                                        <td>@lang('PLU')</td>
+                                        <td>@lang('DESKRIPSI')</td>
+                                        <td>@lang('SATUAN')</td>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -403,8 +403,8 @@
                                 <table class="table table-sm" id="table_lov_supplier">
                                     <thead>
                                     <tr>
-                                        <td>KODE SUPPLIER</td>
-                                        <td>NAMA SUPPLIER</td>
+                                        <td>@lang('KODE SUPPLIER')</td>
+                                        <td>@lang('NAMA SUPPLIER')</td>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -441,9 +441,9 @@
                                 <table class="table table-sm" id="table_lov_plu_sup">
                                     <thead>
                                     <tr>
-                                        <td>PLU</td>
-                                        <td>DESKRIPSI</td>
-                                        <td>SATUAN</td>
+                                        <td>@lang('PLU')</td>
+                                        <td>@lang('DESKRIPSI')</td>
+                                        <td>@lang('SATUAN')</td>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -561,7 +561,7 @@
                 }
                 else if(!checkDate($(this).val())){
                     swal({
-                        title: 'Format Tanggal Salah!',
+                        title: "{{__('Format Tanggal Salah!')}}",
                         icon: 'error'
                     }).then(function(){
                         $('#'+id).select();
@@ -584,7 +584,7 @@
 
                     if(tgl2 != '' && tgl1 > tgl2){
                         swal({
-                            title: 'Tanggal pertama tidak boleh lebih besar dari tanggal kedua!',
+                            title: "{{__('Tanggal pertama tidak boleh lebih besar dari tanggal kedua!')}}",
                             icon: 'error'
                         }).then(function(){
                             $('#'+id).select();
@@ -608,7 +608,7 @@
             id = $(this).attr('id');
             if($(this).val() != '' && !checkDate($(this).val())){
                 swal({
-                    title: 'Format Tanggal Salah!',
+                    title: "{{__('Format Tanggal Salah!')}}",
                     icon: 'error'
                 }).then(function(){
                     $('#'+id).select();
@@ -632,7 +632,7 @@
 
                 if(tgl2 != '' && tgl1 > tgl2){
                     swal({
-                        title: 'Tanggal pertama tidak boleh lebih besar dari tanggal kedua!',
+                        title: "{{__('Tanggal pertama tidak boleh lebih besar dari tanggal kedua!')}}",
                         icon: 'error'
                     }).then(function(){
                         $('#'+id).select();
@@ -655,7 +655,7 @@
                 }
                 else if($(this).val() < $('#div_divisi1').val()){
                     swal({
-                        title: 'Kode divisi kedua tidak boleh lebih kecil dari kode divisi pertama!',
+                        title: "{{__('Kode divisi kedua tidak boleh lebih kecil dari kode divisi pertama!')}}",
                         icon: 'error'
                     }).then(function(){
                         $(this).select();
@@ -680,7 +680,7 @@
                 }
                 else if($(this).val() < $('#div_departement1').val()){
                     swal({
-                        title: 'Kode departement kedua tidak boleh lebih kecil dari kode departement pertama!',
+                        title: "{{__('Kode departement kedua tidak boleh lebih kecil dari kode departement pertama!')}}",
                         icon: 'error'
                     }).then(function(){
                         $(this).select();
@@ -703,7 +703,7 @@
                 }
                 else if($(this).val() < $('#div_kategori1').val()){
                     swal({
-                        title: 'Kode kategori kedua tidak boleh lebih kecil dari kode kategori pertama!',
+                        title: "{{__('Kode kategori kedua tidak boleh lebih kecil dari kode kategori pertama!')}}",
                         icon: 'error'
                     }).then(function(){
                         $(this).select();
@@ -725,7 +725,7 @@
             }
             else if($('#div_divisi1').val() > $('#div_divisi2').val() && $('#div_divisi2').val() != ''){
                 swal({
-                    title: 'Kode divisi kedua tidak boleh lebih kecil dari kode divisi pertama!',
+                    title: "{{__('Kode divisi kedua tidak boleh lebih kecil dari kode divisi pertama!')}}",
                     icon: 'error'
                 }).then(function () {
                     $('#'+id).val('');
@@ -753,7 +753,7 @@
 
                         if(response == 'false'){
                             swal({
-                                title: 'Kode divisi tidak ditemukan!',
+                                title: "{{__('Kode divisi tidak ditemukan!')}}",
                                 icon: 'error'
                             }).then(function(){
                                 $('#'+id).select();
@@ -793,7 +793,7 @@
             }
             else if($('#div_departement1').val() > $('#div_departement2').val() && $('#div_departement2').val() != '') {
                 swal({
-                    title: 'Kode departement kedua tidak boleh lebih kecil dari kode departement pertama!',
+                    title: "{{__('Kode departement kedua tidak boleh lebih kecil dari kode departement pertama!')}}",
                     icon: 'error'
                 }).then(function () {
                     $('#'+id).val('');
@@ -817,7 +817,7 @@
                             $('#modal-loader').modal('toggle');
                         if(response == 'false'){
                             swal({
-                                title: 'Kode departement tidak ditemukan!',
+                                title: "{{__('Kode departement tidak ditemukan!')}}",
                                 icon: 'error'
                             }).then(function(){
                                 $('#'+id).select();
@@ -854,7 +854,7 @@
             }
             else if($('#div_kategori1').val() > $('#div_kategori2').val() && $('#div_kategori2').val() != '' && condition) {
                 swal({
-                    title: 'Kode kategori kedua tidak boleh lebih kecil dari kode kategori pertama!',
+                    title: "{{__('Kode kategori kedua tidak boleh lebih kecil dari kode kategori pertama!')}}",
                     icon: 'error'
                 }).then(function(){
                     $('#'+id).val('');
@@ -1000,7 +1000,7 @@
                 $('#modal-loader').modal('hide');
 
                 swal({
-                    title: 'PLU pertama tidak boleh lebih besar dari PLU kedua!',
+                    title: "{{__('PLU pertama tidak boleh lebih besar dari PLU kedua!')}}",
                     icon: 'error'
                 }).then(function(){
                     $(this).select();
@@ -1017,7 +1017,7 @@
                 pil = $(this).val();
                 if(pil < 1 || pil > 6 || pil == 5){
                     swal({
-                        title: 'Pilihan tidak sesuai!',
+                        title: "{{__('Pilihan tidak sesuai!')}}",
                         icon: 'error'
                     }).then(function(){
                         $('#div_pilihan').select();
@@ -1039,7 +1039,7 @@
                     $('#modal-loader').modal('toggle');
 
                 swal({
-                    title: 'PLU pertama tidak boleh lebih besar dari PLU kedua!',
+                    title: "{{__('PLU pertama tidak boleh lebih besar dari PLU kedua!')}}",
                     icon: 'error'
                 }).then(function(){
                     $('#'+id).select();
@@ -1071,7 +1071,7 @@
                             $('#modal-loader').modal('toggle');
                         if(response != 'true'){
                             swal({
-                                title: 'PLU tidak ditemukan!',
+                                title: "{{__('PLU tidak ditemukan!')}}",
                                 icon: 'error'
                             }).then(function(){
                                 $('#'+id).select();
@@ -1090,7 +1090,7 @@
         function print_by_div(){
             if($('#div_tanggal1').val() > $('#div_tanggal2').val()){
                 swal({
-                    title: 'Tanggal pertama tidak boleh lebih besar dari tanggal kedua!',
+                    title: "{{__('Tanggal pertama tidak boleh lebih besar dari tanggal kedua!')}}",
                     icon: 'error'
                 }).then(function(){
                     $('#div_tanggal1').select();
@@ -1145,7 +1145,7 @@
                         $('#table_lov_supplier tbody tr').remove();
 
                         if(response == 'false'){
-                            html = '<tr><td colspan="2" class="text-center">Data tidak ditemukan</td></tr>';
+                            html = '<tr><td colspan="2" class="text-center">@lang('Data tidak ditemukan')</td></tr>';
                             $('#table_lov_supplier').append(html);
                         }
                         else{
@@ -1182,7 +1182,7 @@
                         $('#table_lov_plu_sup tbody tr').remove();
 
                         if(response == 'false'){
-                            html = '<tr><td colspan="3" class="text-center">Data tidak ditemukan</td></tr>';
+                            html = '<tr><td colspan="3" class="text-center">@lang('Data tidak ditemukan')</td></tr>';
                             $('#table_lov_plu_sup').append(html);
                         }
                         else{
@@ -1245,7 +1245,7 @@
         function supplier_select(id){
             if($('#sup_supplier1').val() > $('#sup_supplier2').val() && $('#sup_supplier2').val() != ''){
                 swal({
-                    title: 'Kode supplier kedua tidak boleh lebih kecil dari kode supplier pertama!',
+                    title: "{{__('Kode supplier kedua tidak boleh lebih kecil dari kode supplier pertama!')}}",
                     icon: 'error'
                 }).then(function () {
                     $('#'+id).val('');
@@ -1276,7 +1276,7 @@
 
                         if(response == 'false'){
                             swal({
-                                title: 'Kode supplier tidak ditemukan!',
+                                title: "{{__('Kode supplier tidak ditemukan!')}}",
                                 icon: 'error'
                             }).then(function(){
                                 $('#'+id).select();
@@ -1333,7 +1333,7 @@
                     $('#modal-loader').modal('toggle');
 
                 swal({
-                    title: 'PLU pertama tidak boleh lebih besar dari PLU kedua!',
+                    title: "{{__('PLU pertama tidak boleh lebih besar dari PLU kedua!')}}",
                     icon: 'error'
                 }).then(function(){
                     $('#'+id).select();
@@ -1361,7 +1361,7 @@
                             $('#modal-loader').modal('toggle');
                         if(response != 'true'){
                             swal({
-                                title: 'PLU tidak ditemukan!',
+                                title: "{{__('PLU tidak ditemukan!')}}",
                                 icon: 'error'
                             }).then(function(){
                                 $('#'+id).select();
@@ -1380,7 +1380,7 @@
         function print_by_sup(){
             if($('#sup_tanggal1').val() > $('#sup_tanggal2').val()){
                 swal({
-                    title: 'Tanggal pertama tidak boleh lebih besar dari tanggal kedua!',
+                    title: "{{__('Tanggal pertama tidak boleh lebih besar dari tanggal kedua!')}}",
                     icon: 'error'
                 }).then(function(){
                     $('#sup_tanggal1').select();

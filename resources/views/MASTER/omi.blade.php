@@ -11,18 +11,18 @@
                             <div class="col-sm-12 col-md-5">
                                 <form class="form">
                                     <div class="form-group row">
-                                        <label for="chooseTypeOmi" class="col-sm-3 col-form-label">Kode SBU</label>
+                                        <label for="chooseTypeOmi" class="col-sm-3 col-form-label">@lang('Kode SBU')</label>
                                         <div class="col-sm-4">
                                             <select class="form-control" id="chooseTypeOmi">
-                                                <option value="M">M - MRO</option>
-                                                <option value="K">K - CHARMANT</option>
-                                                <option value="C">C - IDM CONV</option>
-                                                <option value="O" selected>O - OMI</option>
-                                                <option value="I">I - IDM</option>
+                                                <option value="M">@lang('M - MRO')</option>
+                                                <option value="K">@lang('K - CHARMANT')</option>
+                                                <option value="C">@lang('C - IDM CONV')</option>
+                                                <option value="O" selected>@lang('O - OMI')</option>
+                                                <option value="I">@lang('I - IDM')</option>
                                             </select>
                                         </div>
                                         <div class="sol-sm-3">
-                                            <button type="button" class="btn btn-primary pl-4 pr-4" onclick="getTokoOmi()">Pilih</button>
+                                            <button type="button" class="btn btn-primary pl-4 pr-4" onclick="getTokoOmi()">@lang('Pilih')</button>
                                         </div>
                                     </div>
                                 </form>
@@ -36,14 +36,14 @@
                                 <table class="table table-sm table-striped table-bordered display compact" id="tableTokoOmi">
                                     <thead style="background-color: #5AA4DD; color: white">
                                     <tr class=" thNormal">
-                                        <th>Kode</th>
-                                        <th>Nama</th>
-                                        <th>Fee</th>
-                                        <th>Kode</th>
-                                        <th>Member</th>
-                                        <th>Tgl Go</th>
-                                        <th>Tgl Tutup</th>
-                                        <th>Flag VB</th>
+                                        <th>@lang('Kode')</th>
+                                        <th>@lang('Nama')</th>
+                                        <th>@lang('Fee')</th>
+                                        <th>@lang('Kode')</th>
+                                        <th>@lang('Member')</th>
+                                        <th>@lang('Tgl Go')</th>
+                                        <th>@lang('Tgl Tutup')</th>
+                                        <th>@lang('Flag VB')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyTableOmi"></tbody>
@@ -72,16 +72,16 @@
                             <div class="col-sm-12" id="panelModalDetailTokoOmi">
                                 <ul class="nav nav-tabs" id="myTabDetailTokoOmi" role="tablist">
                                     <li class="nav-item">
-                                        <a class="nav-link" id="detailOmi-tab" data-toggle="tab" href="#detailOmi" role="tab" aria-controls="detail" aria-selected="false">Detail</a>
+                                        <a class="nav-link" id="detailOmi-tab" data-toggle="tab" href="#detailOmi" role="tab" aria-controls="detail" aria-selected="false">@lang('Detail')</a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link active" id="identityOmi-tab" data-toggle="tab" href="#identityOmi" role="tab" aria-controls="identity" aria-selected="true">Identity</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="pajakOmi-tab" data-toggle="tab" href="#pajakOmi" role="tab" aria-controls="pajak" aria-selected="false">Pajak</a>
+                                        <a class="nav-link" id="pajakOmi-tab" data-toggle="tab" href="#pajakOmi" role="tab" aria-controls="pajak" aria-selected="false">@lang('Pajak')</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="perjanjianOmi-tab" data-toggle="tab" href="#perjanjianOmi" role="tab" aria-controls="perjanjian" aria-selected="false">Perjanjian</a>
+                                        <a class="nav-link" id="perjanjianOmi-tab" data-toggle="tab" href="#perjanjianOmi" role="tab" aria-controls="perjanjian" aria-selected="false">@lang('Perjanjian')</a>
                                     </li>
                                 </ul>
 
@@ -91,15 +91,15 @@
                                             <div class="card-body border-dark cardEditTokoOmi">
                                                 <form class="form">
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Kode Member</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Kode Member')</label>
                                                         <input type="text" id="kodeDetailCust" class="form-control col-sm-2 mx-sm-1" disabled>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Nama Member</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Nama Member')</label>
                                                         <input type="text" id="namaDetailCust" class="form-control col-sm-5 mx-sm-1" disabled>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Alamat</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Alamat')</label>
                                                         <input type="text" id="alamatDetail1" class="form-control col-sm-7 mx-sm-1" disabled>
                                                     </div>
                                                     <div class="form-group row mb-0">
@@ -112,70 +112,70 @@
                                                         <input type="text" id="alamatDetail4" class="form-control col-sm-2 mx-sm-1" disabled>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Telephone</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Telepon')</label>
                                                         <input type="text" id="tlpDetail" class="form-control col-sm-5 mx-sm-1" disabled>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">NPWP</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('NPWP')</label>
                                                         <input type="text" id="npwpDetail" class="form-control col-sm-5 mx-sm-1" disabled>
                                                     </div>
 
                                                     <br>
 
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Status Toko</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Status Toko')</label>
                                                         <select class="form-control col-sm-3 mx-sm-1" id="statusToko">
-                                                            <option value="1">1 - Perumahan</option>
-                                                            <option value="2">2 - Pertokoan</option>
+                                                            <option value="1">@lang('1 - Perumahan')</option>
+                                                            <option value="2">@lang('2 - Pertokoan')</option>
                                                         </select>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Jam Buka</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Jam Buka')</label>
                                                         <input type="text" id="jamBuka" class="form-control col-sm-2 mx-sm-1" placeholder="hh:mi:ss"  onchange="converttime(this.value, this.id)">
-                                                        <label class="col-sm-1 col-form-label text-md-right">s/d</label>
+                                                        <label class="col-sm-1 col-form-label text-md-right">@lang('s/d')</label>
                                                         <input type="text" id="jamTutup" class="form-control col-sm-2 mx-sm-1" placeholder="hh:mi:ss" onchange="converttime(this.value, this.id)">
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Jadwal Kirim Barang</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Jadwal Kirim Barang')</label>
                                                         <div class="form-check mx-sm-1 mt-2">
                                                             <input class="form-check-input" type="checkbox" value="" id="hari1">
-                                                            <label class="" for="defaultCheck1">Mng</label>
+                                                            <label class="" for="defaultCheck1">@lang('Mng')</label>
                                                         </div>
                                                         <div class="form-check mx-sm-1 mt-2">
                                                             <input class="form-check-input" type="checkbox" value="" id="hari2">
-                                                            <label class="" for="defaultCheck1">Sen</label>
+                                                            <label class="" for="defaultCheck1">@lang('Sen')</label>
                                                         </div>
                                                         <div class="form-check mx-sm-1 mt-2">
                                                             <input class="form-check-input" type="checkbox" value="" id="hari3">
-                                                            <label class="" for="defaultCheck1">Sel</label>
+                                                            <label class="" for="defaultCheck1">@lang('Sel')</label>
                                                         </div>
                                                         <div class="form-check mx-sm-1 mt-2">
                                                             <input class="form-check-input" type="checkbox" value="" id="hari4">
-                                                            <label class="" for="defaultCheck1">Rab</label>
+                                                            <label class="" for="defaultCheck1">@lang('Rab')</label>
                                                         </div>
                                                         <div class="form-check mx-sm-1 mt-2">
                                                             <input class="form-check-input" type="checkbox" value="" id="hari5">
-                                                            <label class="" for="defaultCheck1">Kam</label>
+                                                            <label class="" for="defaultCheck1">@lang('Kam')</label>
                                                         </div>
                                                         <div class="form-check mx-sm-1 mt-2">
                                                             <input class="form-check-input" type="checkbox" value="" id="hari6">
-                                                            <label class="" for="defaultCheck1">Jum</label>
+                                                            <label class="" for="defaultCheck1">@lang('Jum')</label>
                                                         </div>
                                                         <div class="form-check mx-sm-1 mt-2">
                                                             <input class="form-check-input" type="checkbox" value="" id="hari7">
-                                                            <label class="" for="defaultCheck1">Sab</label>
+                                                            <label class="" for="defaultCheck1">@lang('Sab')</label>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Tgl Update Jadwal</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Tgl Update Jadwal')</label>
                                                         {{--<input type="date" id="tglUpdate" class="form-control col-sm-3 mx-sm-1">--}}
                                                         <input type="text" id="tglUpdate" class="form-control col-sm-3 mx-sm-1 tanggal" readonly>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Flag Edit PB di Toko</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Flag Edit PB di Toko')</label>
                                                         <select class="form-control col-sm-1 mx-sm-1" id="flagPB">
-                                                            <option value="Y">Y</option>
-                                                            <option value="N">N</option>
+                                                            <option value="Y">@lang('Y')</option>
+                                                            <option value="N">@lang('N')</option>
                                                         </select>
                                                     </div>
                                                 </form>
@@ -188,48 +188,48 @@
                                             <div class="card-body border-dark cardEditTokoOmi">
                                                 <form class="form">
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Kode Cabang (OMI)</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Kode Cabang (OMI)')</label>
                                                         <input type="text" id="kodeOmi" class="form-control col-sm-2 mx-sm-1" onchange="getDetailOmi(this.value)" onkeyup="convertToUpper(this.value, this.id)">
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Nama Cabang (OMI)</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Nama Cabang (OMI)')</label>
                                                         <input type="text" id="namaOmi" class="form-control col-sm-5 mx-sm-1">
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Kode IGR</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Kode IGR')</label>
                                                         <input type="text" id="kodeIgr" class="form-control col-sm-1 mx-sm-1" onchange="getBranchName(this.value)">
                                                         <input type="text" id="namaCabang" class="form-control col-sm-4 mx-sm-1" disabled>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Flag Distant Fee</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Flag Distant Fee')</label>
                                                         <select class="form-control col-sm-1 mx-sm-1" id="flagFee">
                                                             <option value=""></option>
-                                                            <option value="Y">Y</option>
+                                                            <option value="Y">@lang('Y')</option>
                                                         </select>
-                                                        <label class="col-sm-2 col-form-label text-md-right">Flag VB</label>
+                                                        <label class="col-sm-2 col-form-label text-md-right">@lang('Flag VB')</label>
                                                         <select class="form-control col-sm-1 mx-sm-1" id="flagVb">
                                                             <option value=""></option>
-                                                            <option value="Y">Y</option>
-                                                            <option value="N">N</option>
+                                                            <option value="Y">@lang('Y')</option>
+                                                            <option value="N">@lang('N')</option>
                                                         </select>
-                                                        <label class="col-sm-2 col-form-label text-md-right flagKph">Flag KPH</label>
+                                                        <label class="col-sm-2 col-form-label text-md-right flagKph">@lang('Flag KPH')</label>
                                                         <select class="form-control col-sm-1 mx-sm-1 flagKph" id="flagKph">
-                                                            <option value="Y">Y</option>
-                                                            <option value="N">N</option>
+                                                            <option value="Y">@lang('Y')</option>
+                                                            <option value="N">@lang('N')</option>
                                                         </select>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Customer</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Customer')</label>
                                                         <input type="text" id="kodeCust" class="form-control col-sm-2 mx-sm-1" onchange="getCustomerName(this.value)" onkeyup="convertToUpper(this.value, this.id)">
                                                         <input type="text" id="namaCust" class="form-control col-sm-5 mx-sm-1" disabled>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Tgl Go</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Tgl Go')</label>
                                                         {{--<input type="date" id="tglGo" class="form-control col-sm-3 mx-sm-1">--}}
                                                         <input type="text" id="tglGo" class="form-control col-sm-3 mx-sm-1 tanggal" placeholder="DD/MM/YYYY">
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Tgl Tutup</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Tgl Tutup')</label>
                                                         {{--<input type="date" id="tglTutup" class="form-control col-sm-3 mx-sm-1">--}}
                                                         <input type="text" id="tglTutup" class="form-control col-sm-3 mx-sm-1 tanggal" placeholder="DD/MM/YYYY">
                                                     </div>
@@ -243,15 +243,15 @@
                                             <div class="card-body border-dark cardEditTokoOmi">
                                                 <form class="form">
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">No. Depan FP</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('No. Depan FP')</label>
                                                         <input type="text" id="tipeOmi" class="form-control col-sm-7 mx-sm-1" disabled>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">No. NPWP</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('No. NPWP')</label>
                                                         <input type="text" id="npwp" class="form-control col-sm-7 mx-sm-1" disabled>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Tanggal Tax</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Tanggal Tax')</label>
                                                         <input type="text" id="tanggalTax" class="form-control col-sm-7 mx-sm-1" disabled>
                                                     </div>
                                                 </form>
@@ -265,23 +265,23 @@
                                             <div class="card-body border-dark cardEditTokoOmi">
                                                 <form class="form">
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Kode Perjanjian</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Kode Perjanjian')</label>
                                                         <input type="text" id="#" class="form-control col-sm-7 mx-sm-1">
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Periode Awal</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Periode Awal')</label>
                                                         <input type="date" id="#" class="form-control col-sm-7 mx-sm-1">
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Periode Akhir</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Periode Akhir')</label>
                                                         <input type="date" id="#" class="form-control col-sm-7 mx-sm-1">
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Amount</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Amount')</label>
                                                         <input type="text" id="#" class="form-control col-sm-7 mx-sm-1">
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Tgl Tagih</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Tgl Tagih')</label>
                                                         <input type="date" id="#" class="form-control col-sm-7 mx-sm-1">
                                                     </div>
                                                 </form>
@@ -295,9 +295,9 @@
                     </div> {{--Close for class "container"--}}
                 </div> {{--Close for class "modal-body"--}}
                 <div class="modal-footer">
-                    <div class="col-sm-3"><button type="button" class="btn btn-danger btn-block" data-dismiss="modal">Cancel</button></div>
-                    <div class="col-sm-3" id="btnEditTokoOmi"><button type="button" class="btn btn-primary btn-block"  onclick="editTokoOmi()">Edit</button></div>
-                    <div class="col-sm-3" id="btnTambahTokoOmi"><button type="button" class="btn btn-primary btn-block" onclick="tambahTokoOmi()">Tambah</button></div>
+                    <div class="col-sm-3"><button type="button" class="btn btn-danger btn-block" data-dismiss="modal">@lang('Cancel')</button></div>
+                    <div class="col-sm-3" id="btnEditTokoOmi"><button type="button" class="btn btn-primary btn-block"  onclick="editTokoOmi()">@lang('Edit')</button></div>
+                    <div class="col-sm-3" id="btnTambahTokoOmi"><button type="button" class="btn btn-primary btn-block" onclick="tambahTokoOmi()">@lang('Tambah')</button></div>
                 </div>
             </div>
         </div>
@@ -308,7 +308,7 @@
         <div class="modal-dialog modal-dialog-centered modal-xl modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Detail Tokoigr</h5>
+                    <h5 class="modal-title">@lang('Detail Tokoigr')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -320,14 +320,14 @@
                                 <table class="table table-striped table-bordered" id="tableModalExpand">
                                     <thead class="theadDataTables">
                                     <tr class="text-center">
-                                        <th>OMI</th>
-                                        <th  style="width: 25%">Nama</th>
-                                        <th style="width: 5%">Flag D.Fee</th>
-                                        <th>Distribution <br> Fee</th>
-                                        <th>Flag Margin</th>
-                                        <th>Subsidi Pemanjangan</th>
-                                        <th>Flag Credit Limit OMI</th>
-                                        <th  style="width: 10%">Tipe U/SPBU</th>
+                                        <th>@lang('OMI')</th>
+                                        <th style="width: 25%">@lang('Nama')</th>
+                                        <th style="width: 5%">@lang('Flag D.Fee')</th>
+                                        <th>@lang('Distribution ')<br>@lang(' Fee')</th>
+                                        <th>@lang('Flag Margin')</th>
+                                        <th>@lang('Subsidi Pemanjangan')</th>
+                                        <th>@lang('Flag Credit Limit OMI')</th>
+                                        <th style="width: 10%">@lang('Tipe U/SPBU')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyModalExpand">
@@ -342,13 +342,13 @@
                         <div class="row">
                             <div class="col-sm-8">
                                 <div class="form-group row">
-                                    <label for="staticEmail" class="col-sm-2 col-form-label">Kode OMI</label>
+                                    <label for="staticEmail" class="col-sm-2 col-form-label">@lang('Kode OMI')</label>
                                     <div class="col-sm-4">
                                         <input type="text" class="form-control" id="searchModalExpand" placeholder="...">
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-4"><p>* Tekan enter untuk konfirmasi perubahan <br> </p></div>
+                            <div class="col-sm-4"><p>@lang('* Tekan enter untuk konfirmasi perubahan ')<br> </p></div>
                         </div>
                     </div>
                 </div>
@@ -361,7 +361,7 @@
         <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Konfirmasi</h5>
+                    <h5 class="modal-title">@lang('Konfirmasi')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -369,13 +369,13 @@
                 <div class="modal-body">
                     <form>
                         <div class="form-group row">
-                            <label for="konfirmasi_user" class="col-sm-4 col-form-label text-right">Kode Pemakai</label>
+                            <label for="konfirmasi_user" class="col-sm-4 col-form-label text-right">@lang('Kode Pemakai')</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control" id="konfirmasi_user" placeholder="...">
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="konfirmasi_password" class="col-sm-4 col-form-label text-right">Password</label>
+                            <label for="konfirmasi_password" class="col-sm-4 col-form-label text-right">@lang('Password')</label>
                             <div class="col-sm-8">
                                 <input type="password" class="form-control" id="konfirmasi_password" placeholder="...">
                             </div>
@@ -383,8 +383,8 @@
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary pl-4 pr-4" onclick="confirmEditExpand()">OK</button>
-                    <button type="button" class="btn btn-danger pl-4 pr-4" data-dismiss="modal">Back</button>
+                    <button type="button" class="btn btn-primary pl-4 pr-4" onclick="confirmEditExpand()">@lang('OK')</button>
+                    <button type="button" class="btn btn-danger pl-4 pr-4" data-dismiss="modal">@lang('Back')</button>
                 </div>
             </div>
         </div>
@@ -429,7 +429,7 @@
         function editTokoOmi() {
             if(!$('#kodeOmi').val()) {
                 swal({
-                    title : "Kode OMI Tidak Boleh Kosong !!!",
+                    title : "{{__('Kode OMI Tidak Boleh Kosong !!!')}}",
                     text : '',
                     icon : 'warning',
                     timer : 1000
@@ -438,7 +438,7 @@
                 return false;
             } else if(!$('#namaOmi').val()) {
                 swal({
-                    title : "Nama OMI Tidak Boleh Kosong !!!",
+                    title : "{{__('Nama OMI Tidak Boleh Kosong !!!')}}",
                     text : '',
                     icon : 'warning',
                     timer : 1000
@@ -447,7 +447,7 @@
                 return false;
             } else if(!$('#namaCabang').val()) {
                 swal({
-                    title : "Kode IGR Tidak Boleh Kosong !!!",
+                    title : "{{__('Kode IGR Tidak Boleh Kosong !!!')}}",
                     text : '',
                     icon : 'warning',
                     timer : 1000
@@ -456,7 +456,7 @@
                 return false;
             } else if(!$('#namaCust').val()) {
                 swal({
-                    title : "Kode Member Tidak Boleh Kosong !!!",
+                    title : "{{__('Kode Member Tidak Boleh Kosong !!!')}}",
                     text : '',
                     icon : 'warning',
                     timer : 1000
@@ -509,7 +509,7 @@
         function tambahTokoOmi(){
             if(!$('#kodeOmi').val()) {
                 swal({
-                    title : "Kode OMI Tidak Boleh Kosong !!!",
+                    title : "{{__('Kode OMI Tidak Boleh Kosong !!!')}}",
                     text : '',
                     icon : 'warning',
                     timer : 1000
@@ -518,7 +518,7 @@
                 return false;
             } else if(!$('#namaOmi').val()) {
                 swal({
-                    title : "Nama OMI Tidak Boleh Kosong !!!",
+                    title : "{{__('Nama OMI Tidak Boleh Kosong !!!')}}",
                     text : '',
                     icon : 'warning',
                     timer : 1000
@@ -527,7 +527,7 @@
                 return false;
             } else if(!$('#namaCabang').val()) {
                 swal({
-                    title : "Kode IGR Tidak Boleh Kosong !!!",
+                    title : "{{__('Kode IGR Tidak Boleh Kosong !!!')}}",
                     text : '',
                     icon : 'warning',
                     timer : 1000
@@ -536,7 +536,7 @@
                 return false;
             } else if(!$('#namaCust').val()) {
                 swal({
-                    title : "Kode Member Tidak Boleh Kosong !!!",
+                    title : "{{__('Kode Member Tidak Boleh Kosong !!!')}}",
                     text : '',
                     icon : 'warning',
                     timer : 1000
@@ -574,7 +574,7 @@
         function getCustomerName(member) {
             if(!member){
                 swal({
-                    title : "Kode Member Tidak boleh Kosong",
+                    title : "{{__('Kode Member Tidak boleh Kosong')}}",
                     text : '',
                     icon : 'warning',
                     timer : 1000
@@ -589,7 +589,7 @@
                     success: function (result) {
                         if (result.length ===0){
                             swal({
-                                title : "Kode Member Tidak Terdaftar",
+                                title : "{{__('Kode Member Tidak Terdaftar')}}",
                                 text : '',
                                 icon : 'info',
                                 timer : 1000
@@ -611,7 +611,7 @@
 
         function getBranchName(kodeIgr) {
             if(!kodeIgr){
-                swal("Error","Kode Indogrosir Tidak boleh Kosong", "error");
+                swal("Error","{{__('Kode Indogrosir Tidak boleh Kosong')}}", "error");
             } else {
                 $.ajax({
                     url: '{{ url()->current() }}/getbranchname',
@@ -620,7 +620,7 @@
                     success: function (result) {
                         if (result.length ===0){
                             swal({
-                                title : "Kode Indogrosir Tidak Terdaftar",
+                                title : "{{__('Kode Indogrosir Tidak Terdaftar')}}",
                                 text : '',
                                 icon : 'info',
                                 timer : 1000
@@ -708,10 +708,10 @@
             })
 
             setTimeout(function(){
-                $("#tableTokoOmi_info").append("<br>* Klik Kode OMI untuk melihat detail")
+                $("#tableTokoOmi_info").append("<br>@lang('* Klik Kode OMI untuk melihat detail')")
                 $("#tableTokoOmi_wrapper").append(` <div class="text-center mt-3">
-                                                    <button class='btn btn-primary text-center pl-5 pr-5' data-toggle='modal' data-target='#' onclick="createNewOmi()">Buat OMI Baru</button>
-                                                    <button class='btn btn-primary text-center pl-5 pr-5' id="btnExpand" data-toggle='modal' data-target='#m_expand' >Expand Data OMI</button>
+                                                    <button class='btn btn-primary text-center pl-5 pr-5' data-toggle='modal' data-target='#' onclick="createNewOmi()">@lang('Buat OMI Baru')</button>
+                                                    <button class='btn btn-primary text-center pl-5 pr-5' id="btnExpand" data-toggle='modal' data-target='#m_expand' >@lang('Expand Data OMI')</button>
                                                 </div> `)
             }, 2000);
 
@@ -847,7 +847,7 @@
 
                 if (flagSearch < 1) {
                     swal({
-                        title: `Kode OMI ${search} Tidak Terdaftar`,
+                        title: `{{__('Kode OMI')}} ${search} {{__('Tidak Terdaftar')}}`,
                         text: ` `,
                         icon: "warning",
                         button: false,
@@ -869,7 +869,7 @@
                 if (columnEditExpand == 'tko_flagsubsidipemanjangan' || columnEditExpand == 'tko_flagcreditlimitomi' && valueEditExpand){
                     if(valueEditExpand != 'Y'){
                      swal({
-                         title: `"Hanya boleh diisi 'Y' atau biarkan kosong!!`,
+                         title: `{{__("Hanya boleh diisi 'Y' atau biarkan kosong!!")}}`,
                          text: ` `,
                          icon: "info",
                          button: false,
@@ -881,7 +881,7 @@
                 } else if(columnEditExpand == 'tko_tipeomi' && valueEditExpand){
                     if(valueEditExpand != 'HR' && valueEditExpand != 'HG' && valueEditExpand != 'HE'){
                         swal({
-                            title: `"Hanya boleh diisi 'HR' / 'HG' / 'HE' atau biarkan kosong!!`,
+                            title: `{{__("Hanya boleh diisi 'HR' / 'HG' / 'HE' atau biarkan kosong!!")}}`,
                             text: ` `,
                             icon: "info",
                             button: false,
@@ -908,12 +908,12 @@
 
             if (columnEditExpand == "tko_persendistributionfee"){
                 await swal({
-                    title: 'Update Data DF ke OMI?',
+                    title: "{{__('Update Data DF ke OMI?')}}",
                     icon: 'info',
                     buttons: {
-                        confirm: "Ya",
+                        confirm: "{{__('Ya')}}",
                         roll: {
-                            text: "Tidak",
+                            text: "{{__('Tidak')}}",
                         },
                     }
                 }).then(function (confirm) {
@@ -986,7 +986,7 @@
         }
 
         function createNewOmi(kodeomi){
-            $('#titleModalDetailTokoOmi').text("Buat Omi Baru");
+            $('#titleModalDetailTokoOmi').text("{{__('Buat Omi Baru')}}");
             $('.active').removeClass('active')
             $('#detailOmi-tab').hide();
             $('#identityOmi-tab').addClass("active");
@@ -1011,7 +1011,7 @@
         function converttime(time, id) {
             let temp = "";
             if (time.length < 6){
-                swal("Error", "Masukan 6 digit angka", "error");
+                swal("Error", "{{__('Masukan 6 digit angka')}}", "error");
                 return false;
             } else  {
                 let number = /^[0-9]+$/;
@@ -1065,16 +1065,16 @@
         function appendPaneltoModal(){
             $('#panelModalDetailTokoOmi').append(`<ul class="nav nav-tabs" id="myTabDetailTokoOmi" role="tablist">
                                     <li class="nav-item">
-                                        <a class="nav-link active" id="detailOmi-tab" data-toggle="tab" href="#detailOmi" role="tab" aria-controls="detail" aria-selected="true">Detail</a>
+                                        <a class="nav-link active" id="detailOmi-tab" data-toggle="tab" href="#detailOmi" role="tab" aria-controls="detail" aria-selected="true">@lang('Detail')</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="identityOmi-tab" data-toggle="tab" href="#identityOmi" role="tab" aria-controls="identity" aria-selected="false">Identity</a>
+                                        <a class="nav-link" id="identityOmi-tab" data-toggle="tab" href="#identityOmi" role="tab" aria-controls="identity" aria-selected="false">@lang('Identity')</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="pajakOmi-tab" data-toggle="tab" href="#pajakOmi" role="tab" aria-controls="pajak" aria-selected="false">Pajak</a>
+                                        <a class="nav-link" id="pajakOmi-tab" data-toggle="tab" href="#pajakOmi" role="tab" aria-controls="pajak" aria-selected="false">@lang('Pajak')</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" id="perjanjianOmi-tab" data-toggle="tab" href="#perjanjianOmi" role="tab" aria-controls="perjanjian" aria-selected="false">Perjanjian</a>
+                                        <a class="nav-link" id="perjanjianOmi-tab" data-toggle="tab" href="#perjanjianOmi" role="tab" aria-controls="perjanjian" aria-selected="false">@lang('Perjanjian')</a>
                                     </li>
                                 </ul>
 
@@ -1084,15 +1084,15 @@
                                             <div class="card-body border-dark cardEditTokoOmi">
                                                 <form class="form">
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Kode Member</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Kode Member')</label>
                                                         <input type="text" id="kodeDetailCust" class="form-control col-sm-2 mx-sm-1" disabled>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Nama Member</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Nama Member')</label>
                                                         <input type="text" id="namaDetailCust" class="form-control col-sm-5 mx-sm-1" disabled>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Alamat</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Alamat')</label>
                                                         <input type="text" id="alamatDetail1" class="form-control col-sm-7 mx-sm-1" disabled>
                                                     </div>
                                                     <div class="form-group row mb-0">
@@ -1105,69 +1105,69 @@
                                                         <input type="text" id="alamatDetail4" class="form-control col-sm-2 mx-sm-1" disabled>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Telephone</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Telepon')</label>
                                                         <input type="text" id="tlpDetail" class="form-control col-sm-5 mx-sm-1" disabled>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">NPWP</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('NPWP')</label>
                                                         <input type="text" id="npwpDetail" class="form-control col-sm-5 mx-sm-1" disabled>
                                                     </div>
 
                                                     <br>
 
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Status Toko</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Status Toko')</label>
                                                         <select class="form-control col-sm-3 mx-sm-1" id="statusToko">
-                                                            <option value="1">1 - Perumahan</option>
-                                                            <option value="2">2 - Pertokoan</option>
+                                                            <option value="1">@lang('1 - Perumahan')</option>
+                                                            <option value="2">@lang('2 - Pertokoan')</option>
                                                         </select>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Jam Buka</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Jam Buka')</label>
                                                         <input type="text" id="jamBuka" class="form-control col-sm-2 mx-sm-1" placeholder="hh:mi:ss"  onchange="converttime(this.value, this.id)">
                                                         <label class="col-sm-1 col-form-label text-md-right">s/d</label>
                                                         <input type="text" id="jamTutup" class="form-control col-sm-2 mx-sm-1" placeholder="hh:mi:ss" onchange="converttime(this.value, this.id)">
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Jadwal Kirim Barang</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Jadwal Kirim Barang')</label>
                                                         <div class="form-check mx-sm-1 mt-2">
                                                             <input class="form-check-input" type="checkbox" value="" id="hari1">
-                                                            <label class="" for="defaultCheck1">Mng</label>
+                                                            <label class="" for="defaultCheck1">@lang('Mng')</label>
                                                         </div>
                                                         <div class="form-check mx-sm-1 mt-2">
                                                             <input class="form-check-input" type="checkbox" value="" id="hari2">
-                                                            <label class="" for="defaultCheck1">Sen</label>
+                                                            <label class="" for="defaultCheck1">@lang('Sen')</label>
                                                         </div>
                                                         <div class="form-check mx-sm-1 mt-2">
                                                             <input class="form-check-input" type="checkbox" value="" id="hari3">
-                                                            <label class="" for="defaultCheck1">Sel</label>
+                                                            <label class="" for="defaultCheck1">@lang('Sel')</label>
                                                         </div>
                                                         <div class="form-check mx-sm-1 mt-2">
                                                             <input class="form-check-input" type="checkbox" value="" id="hari4">
-                                                            <label class="" for="defaultCheck1">Rab</label>
+                                                            <label class="" for="defaultCheck1">@lang('Rab')</label>
                                                         </div>
                                                         <div class="form-check mx-sm-1 mt-2">
                                                             <input class="form-check-input" type="checkbox" value="" id="hari5">
-                                                            <label class="" for="defaultCheck1">Kam</label>
+                                                            <label class="" for="defaultCheck1">@lang('Kam')</label>
                                                         </div>
                                                         <div class="form-check mx-sm-1 mt-2">
                                                             <input class="form-check-input" type="checkbox" value="" id="hari6">
-                                                            <label class="" for="defaultCheck1">Jum</label>
+                                                            <label class="" for="defaultCheck1">@lang('Jum')</label>
                                                         </div>
                                                         <div class="form-check mx-sm-1 mt-2">
                                                             <input class="form-check-input" type="checkbox" value="" id="hari7">
-                                                            <label class="" for="defaultCheck1">Sab</label>
+                                                            <label class="" for="defaultCheck1">@lang('Sab')</label>
                                                         </div>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Tgl Update Jadwal</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Tgl Update Jadwal')</label>
                                                         <input type="text" id="tglUpdate" class="form-control col-sm-3 mx-sm-1 tanggal" readonly>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label class="col-sm-4 col-form-label text-md-right">Flag Edit PB di Toko</label>
+                                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Flag Edit PB di Toko')</label>
                                                         <select class="form-control col-sm-1 mx-sm-1" id="flagPB">
-                                                            <option value="Y">Y</option>
-                                                            <option value="N">N</option>
+                                                            <option value="Y">@lang('Y')</option>
+                                                            <option value="N">@lang('N')</option>
                                                         </select>
                                                     </div>
                                                 </form>
@@ -1179,46 +1179,46 @@
                                                 <div class="card-body border-dark cardEditTokoOmi">
                                                     <form class="form">
                                                         <div class="form-group row mb-0">
-                                                            <label class="col-sm-4 col-form-label text-md-right">Kode Cabang (OMI)</label>
+                                                            <label class="col-sm-4 col-form-label text-md-right">@lang('Kode Cabang (OMI)')</label>
                                                             <input type="text" id="kodeOmi" class="form-control col-sm-2 mx-sm-1" onchange="getDetailOmi(this.value)" onkeyup="convertToUpper(this.value, this.id)">
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label class="col-sm-4 col-form-label text-md-right">Nama Cabang (OMI)</label>
+                                                            <label class="col-sm-4 col-form-label text-md-right">@lang('Nama Cabang (OMI)')</label>
                                                             <input type="text" id="namaOmi" class="form-control col-sm-5 mx-sm-1">
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label class="col-sm-4 col-form-label text-md-right">Kode IGR</label>
+                                                            <label class="col-sm-4 col-form-label text-md-right">@lang('Kode IGR')</label>
                                                             <input type="text" id="kodeIgr" class="form-control col-sm-1 mx-sm-1" onchange="getBranchName(this.value)">
                                                             <input type="text" id="namaCabang" class="form-control col-sm-4 mx-sm-1" disabled>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label class="col-sm-4 col-form-label text-md-right">Flag Distant Fee</label>
+                                                            <label class="col-sm-4 col-form-label text-md-right">@lang('Flag Distant Fee')</label>
                                                             <select class="form-control col-sm-1 mx-sm-1" id="flagFee">
                                                                 <option value="Y">Y</option>
                                                                 <option value="N">N</option>
                                                             </select>
-                                                            <label class="col-sm-2 col-form-label text-md-right">Flag VB</label>
+                                                            <label class="col-sm-2 col-form-label text-md-right">@lang('Flag VB')</label>
                                                             <select class="form-control col-sm-1 mx-sm-1" id="flagVb">
                                                                 <option value="Y">Y</option>
                                                                 <option value="N">N</option>
                                                             </select>
-                                                            <label class="col-sm-2 col-form-label text-md-right flagKph">Flag KPH</label>
+                                                            <label class="col-sm-2 col-form-label text-md-right flagKph">@lang('Flag KPH')</label>
                                                             <select class="form-control col-sm-1 mx-sm-1 flagKph" id="flagKph">
                                                                 <option value="Y">Y</option>
                                                                 <option value="N">N</option>
                                                             </select>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label class="col-sm-4 col-form-label text-md-right">Customer</label>
+                                                            <label class="col-sm-4 col-form-label text-md-right">@lang('Customer')</label>
                                                             <input type="text" id="kodeCust" class="form-control col-sm-2 mx-sm-1" onchange="getCustomerName(this.value)" onkeyup="convertToUpper(this.value, this.id)">
                                                             <input type="text" id="namaCust" class="form-control col-sm-5 mx-sm-1" disabled>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label class="col-sm-4 col-form-label text-md-right">Tgl Go</label>
+                                                            <label class="col-sm-4 col-form-label text-md-right">@lang('Tgl Go')</label>
                                                             <input type="text" id="tglGo" class="form-control col-sm-3 mx-sm-1 tanggal" readonly>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label class="col-sm-4 col-form-label text-md-right">Tgl Tutup</label>
+                                                            <label class="col-sm-4 col-form-label text-md-right">@lang('Tgl Tutup')</label>
                                                             <input type="text" id="tglTutup" class="form-control col-sm-3 mx-sm-1 tanggal" readonly>
                                                         </div>
                                                     </form>
@@ -1231,15 +1231,15 @@
                                                 <div class="card-body border-dark cardEditTokoOmi">
                                                     <form class="form">
                                                         <div class="form-group row mb-0">
-                                                            <label class="col-sm-4 col-form-label text-md-right">No. Depan FP</label>
+                                                            <label class="col-sm-4 col-form-label text-md-right">@lang('No. Depan FP')</label>
                                                             <input type="text" id="tipeOmi" class="form-control col-sm-7 mx-sm-1" disabled>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label class="col-sm-4 col-form-label text-md-right">No. NPWP</label>
+                                                            <label class="col-sm-4 col-form-label text-md-right">@lang('No. NPWP')</label>
                                                             <input type="text" id="npwp" class="form-control col-sm-7 mx-sm-1" disabled>
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label class="col-sm-4 col-form-label text-md-right">Tanggal Tax</label>
+                                                            <label class="col-sm-4 col-form-label text-md-right">@lang('Tanggal Tax')</label>
                                                             <input type="text" id="tanggalTax" class="form-control col-sm-7 mx-sm-1" disabled>
                                                         </div>
                                                     </form>
@@ -1252,23 +1252,23 @@
                                                 <div class="card-body border-dark cardEditTokoOmi">
                                                     <form class="form">
                                                         <div class="form-group row mb-0">
-                                                            <label class="col-sm-4 col-form-label text-md-right">Kode Perjanjian</label>
+                                                            <label class="col-sm-4 col-form-label text-md-right">@lang('Kode Perjanjian')</label>
                                                             <input type="text" id="#" class="form-control col-sm-7 mx-sm-1">
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label class="col-sm-4 col-form-label text-md-right">Periode Awal</label>
+                                                            <label class="col-sm-4 col-form-label text-md-right">@lang('Periode Awal')</label>
                                                             <input type="date" id="#" class="form-control col-sm-7 mx-sm-1">
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label class="col-sm-4 col-form-label text-md-right">Periode Akhir</label>
+                                                            <label class="col-sm-4 col-form-label text-md-right">@lang('Periode Akhir')</label>
                                                             <input type="date" id="#" class="form-control col-sm-7 mx-sm-1">
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label class="col-sm-4 col-form-label text-md-right">Amount</label>
+                                                            <label class="col-sm-4 col-form-label text-md-right">@lang('Amount')</label>
                                                             <input type="text" id="#" class="form-control col-sm-7 mx-sm-1">
                                                         </div>
                                                         <div class="form-group row mb-0">
-                                                            <label class="col-sm-4 col-form-label text-md-right">Tgl Tagih</label>
+                                                            <label class="col-sm-4 col-form-label text-md-right">@lang('Tgl Tagih')</label>
                                                             <input type="date" id="#" class="form-control col-sm-7 mx-sm-1">
                                                         </div>
                                                     </form>

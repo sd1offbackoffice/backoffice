@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','PB | KERTAS KERJA ESTIMASI KEBUTUHAN TOKO IGR')
+@section('title',(__('PB | KERTAS KERJA ESTIMASI KEBUTUHAN TOKO IGR')))
 @section('content')
 
 
@@ -7,7 +7,7 @@
         <fieldset class="card border-secondary">
             <div class="card-body shadow-lg cardForm">
                 <div class="row">
-                    <label for="periode" class="col-sm-1 col-form-label">Tanggal</label>
+                    <label for="periode" class="col-sm-1 col-form-label">@lang('Tanggal')</label>
                     <div class="col-sm-2">
                         <input maxlength="10" type="text" class="form-control tanggal" id="periode">
                     </div>
@@ -131,7 +131,7 @@
                 <div class="row">
                     <div class="col-sm-3 pr-0">
                         <fieldset class="card border-secondary">
-                            <legend class="w-auto ml-4">Detail</legend>
+                            <legend class="w-auto ml-4">@lang('Detail')</legend>
 {{--                            <div class="kiri col-sm table-wrapper-scroll-y my-custom-scrollbar scroll-y">--}}
                             <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y" style="position: sticky; overflow-x: hidden">
                                 <table id="table-detail" class="table table-sm table-bordered m-1 mb-4">
@@ -141,9 +141,9 @@
                                     </tr>
                                     <tr class="d-flex text-center">
                                         <th class="col-sm-2"></th>
-                                        <th class="col-sm-4">PLU</th>
-                                        <th class="col-sm-3">Unit</th>
-                                        <th class="col-sm-3">Frac</th>
+                                        <th class="col-sm-4">@lang('PLU')</th>
+                                        <th class="col-sm-3">@lang('Unit')</th>
+                                        <th class="col-sm-3">@lang('Frac')</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -214,41 +214,41 @@
                     </div>
                     <div class="col-sm-8 pl-0">
                         <fieldset class="card border-secondary">
-                            <legend  class="w-auto ml-4">Form</legend>
+                            <legend  class="w-auto ml-4">@lang('Form')</legend>
                             <div class="table-wrapper-scroll-y my-custom-scrollbar m-1 scroll-y" style="position: sticky">
                                 <table id="table-form" class="table table-sm table-bordered mb-3">
                                     <thead>
                                     <tr class="d-flex text-center">
                                         <th class="col-sm-4"></th>
-                                        <th class="col-sm-6">--- Sales 3 Bulan Terakhir ---</th>
-                                        <th class="col-sm-4">-- AVG Sales --</th>
+                                        <th class="col-sm-6">@lang('--- Sales 3 Bulan Terakhir ---')</th>
+                                        <th class="col-sm-4">@lang('-- AVG Sales --')</th>
                                         <th class="col-sm-4"></th>
-                                        <th class="col-sm-10">------ Breakdown PB ------</th>
-                                        <th class="col-sm-4">---- Buffer ----</th>
+                                        <th class="col-sm-10">@lang('------ Breakdown PB ------')</th>
+                                        <th class="col-sm-4">@lang('---- Buffer ----')</th>
                                         <th class="col-sm-2"></th>
-                                        <th class="col-sm-2">Outstanding PO</th>
-                                        <th class="col-sm-10">------ Tanggal Kirim ------</th>
+                                        <th class="col-sm-2">@lang('Outstanding PO')</th>
+                                        <th class="col-sm-10">@lang('------ Tanggal Kirim ------')</th>
                                     </tr>
                                     <tr class="d-flex text-center">
-                                        <th class="col-sm-2">Harga Beli</th>
-                                        <th class="col-sm-2">Discount</th>
+                                        <th class="col-sm-2">@lang('Harga Beli')</th>
+                                        <th class="col-sm-2">@lang('Discount')</th>
                                         <th class="col-sm-2">1</th>
                                         <th class="col-sm-2">2</th>
                                         <th class="col-sm-2">3</th>
-                                        <th class="col-sm-2">Bulan</th>
-                                        <th class="col-sm-2">Hari</th>
-                                        <th class="col-sm-2">Saldo Akhir</th>
-                                        <th class="col-sm-2">Estimasi in PCS</th>
-                                        <th class="col-sm-2">Minggu 1</th>
-                                        <th class="col-sm-2">Minggu 2</th>
-                                        <th class="col-sm-2">Minggu 3</th>
-                                        <th class="col-sm-2">Minggu 4</th>
-                                        <th class="col-sm-2">Minggu 5</th>
-                                        <th class="col-sm-2">Lead Time</th>
-                                        <th class="col-sm-2">Safety Stock</th>
-                                        <th class="col-sm-2">Saldo Akhir</th>
-                                        <th class="col-sm-1">Total</th>
-                                        <th class="col-sm-1">QTY</th>
+                                        <th class="col-sm-2">@lang('Bulan')</th>
+                                        <th class="col-sm-2">@lang('Hari')</th>
+                                        <th class="col-sm-2">@lang('Saldo Akhir')</th>
+                                        <th class="col-sm-2">@lang('Estimasi in PCS')</th>
+                                        <th class="col-sm-2">@lang('Minggu 1')</th>
+                                        <th class="col-sm-2">@lang('Minggu 2')</th>
+                                        <th class="col-sm-2">@lang('Minggu 3')</th>
+                                        <th class="col-sm-2">@lang('Minggu 4')</th>
+                                        <th class="col-sm-2">@lang('Minggu 5')</th>
+                                        <th class="col-sm-2">@lang('Lead Time')</th>
+                                        <th class="col-sm-2">@lang('Safety Stock')</th>
+                                        <th class="col-sm-2">@lang('Saldo Akhir')</th>
+                                        <th class="col-sm-1">@lang('Total')</th>
+                                        <th class="col-sm-1">@lang('QTY')</th>
                                         <th class="col-sm-2">1</th>
                                         <th class="col-sm-2">2</th>
                                         <th class="col-sm-2">3</th>
@@ -289,7 +289,7 @@
                                     <tfoot>
                                         <tr class="d-flex text-center">
                                             <td class="col-sm-12"></td>
-                                            <th class="col-sm-4 text-right"><h4 class="">Total Kubikasi</h4></th>
+                                            <th class="col-sm-4 text-right"><h4 class="">@lang('Total Kubikasi')</h4></th>
                                             <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_estimasi"></th>
                                             <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_breakpb01"></th>
                                             <th class="col-sm-2"><input disabled type="text" class="form-control" id="total_kke_breakpb02"></th>
@@ -305,7 +305,7 @@
                 </div>
 
                 <div class="row mt-2">
-                    <label for="periode" class="col-sm-1 col-form-label text-right pr-0">Search PLU :</label>
+                    <label for="periode" class="col-sm-1 col-form-label text-right pr-0">@lang('Search PLU :')</label>
                     <div class="col-sm-2 pr-0">
                         <input type="text" class="form-control" id="i-search" maxlength="7">
                     </div>
@@ -315,13 +315,13 @@
                         <input disabled type="text" class="form-control" id="txt_deskripsi">
                     </div>
                     <div class="col-sm-5 mb-1 text-right">
-                        <button id="btn-save" class="col-sm-3 btn btn-success" onclick="save()">SAVE</button>
-                        <button id="btn-print" class="col-sm-3 btn btn-primary" onclick="print()">PRINT</button>
+                        <button id="btn-save" class="col-sm-3 btn btn-success" onclick="save()">@lang('SAVE')</button>
+                        <button id="btn-print" class="col-sm-3 btn btn-primary" onclick="print()">@lang('PRINT')</button>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm">
-                        <h4>Kebutuhan Kontainer : 20 Feet</h4>
+                        <h4>@lang('Kebutuhan Kontainer : 20 Feet')</h4>
                     </div>
                 </div>
             </div>
@@ -337,7 +337,7 @@
                         <div class="row">
                             <div class="loader" id="loader"></div>
                             <div class="col-sm-12 text-center">
-                                <label for="">LOADING...</label>
+                                <label for="">@lang('LOADING...')</label>
                             </div>
                         </div>
                     </div>
@@ -527,7 +527,7 @@
                     thisClass = $(this).attr('class').split(' ').pop();
 
                     swal({
-                        title: 'Periksa kembali inputan tanggal!',
+                        title: "{{__('Periksa kembali inputan tanggal!')}}",
                         icon: 'error',
                     }).then(function(){
                         if(id == 'periode'){
@@ -600,7 +600,7 @@
 
                 if(thisClass != 'kke_estimasi' && parseInt(unconvertToRupiah($(this).val())) < 0){
                     swal({
-                        title: 'Nilai yang diinputkan tidak boleh kurang dari 0!',
+                        title: "{{__('Nilai yang diinputkan tidak boleh kurang dari 0!')}}",
                         icon: 'error',
                     }).then(function () {
                         $('#'+id).find('.'+thisClass).select();
@@ -621,7 +621,7 @@
 
                     if(estimasi <= 0 || parseInt(unconvertToRupiah($('#'+id).find('.kke_estimasi').val())).length == 0){
                         swal({
-                            title: 'Nilai estimasi harus lebih dari 0!',
+                            title: "{{__('Nilai estimasi harus lebih dari 0!')}}",
                             icon: 'error',
                         }).then(function () {
                             $('#'+id).find('.'+thisClass).select();
@@ -630,7 +630,7 @@
                     else if(pb > estimasi){
                         if($(this).attr('class').split(' ').pop() == 'kke_estimasi'){
                             swal({
-                                title: 'Nilai estimasi tidak boleh lebih kecil dari total Breakdown PB!',
+                                title: "{{__('Nilai estimasi tidak boleh lebih kecil dari total Breakdown PB!')}}",
                                 icon: 'error',
                             }).then(function () {
                                 $('#'+id).find('.'+thisClass).select();
@@ -638,7 +638,7 @@
                         }
                         else {
                             swal({
-                                title: 'Total Breakdown PB tidak boleh melebihi nilai estimasi!',
+                                title: "{{__('Total Breakdown PB tidak boleh melebihi nilai estimasi!')}}",
                                 icon: 'error'
                             }).then(function () {
                                 $('#'+id).find('.'+thisClass).select();
@@ -784,7 +784,7 @@
 
                                     if(nvl(response.data.panjangproduk,0) == 0 || nvl(response.data.lebarproduk,0) == 0 || nvl(response.data.tinggiproduk,0) == 0){
                                         swal({
-                                            title: 'PLU '+response.data.prd_prdcd+' tidak mempunyai dimensi!',
+                                            title: "{{__('PLU ')}}"+response.data.prd_prdcd+"{{__(' tidak mempunyai dimensi!')}}",
                                             icon: 'error'
                                         }).then(function(){
                                             // $('#row_form_'+row).find('.kke_estimasi').select();
@@ -809,7 +809,7 @@
                     }
                     else{
                         swal({
-                            title: 'Kode produk '+prdcd+' sudah ada!',
+                            title: "{{__('Kode produk ')}}"+prdcd+"{{__(' sudah ada!')}}",
                             icon: 'error'
                         }).then(function(){
                             $(event.target).select();
@@ -818,7 +818,7 @@
                 }
                 else{
                     swal({
-                        title: 'Data tidak bisa diubah!',
+                        title: "{{__('Data tidak bisa diubah!')}}",
                         icon: 'error'
                     });
                 }
@@ -1069,7 +1069,7 @@
 
                         if(response.data[0].kke_upload == 'Y'){
                             deletable = false;
-                            $('#keterangan').val('DATA SUDAH DIUPLOAD');
+                            $('#keterangan').val("{{__('DATA SUDAH DIUPLOAD')}}");
                             $('#table-detail').find('input').each(function(){
                                 if($(this).attr('class').split(' ').pop() == 'kke_prdcd')
                                     $(this).prop('readonly',true);
@@ -1086,7 +1086,7 @@
                         }
                         else{
                             deletable = true;
-                            $('#keterangan').val('DATA BELUM DIUPLOAD');
+                            $('#keterangan').val("{{__('DATA BELUM DIUPLOAD')}}");
                             $('#btn-save').prop('disabled',false);
                             $('#btn-print').prop('disabled',false);
                             edit = true;
@@ -1107,7 +1107,7 @@
 
                     if(periode.getMonth() != now.getMonth() || periode.getFullYear() != now.getFullYear()){
                         swal({
-                            title: 'Periode harus bulan berjalan!',
+                            title: "{{__('Periode harus bulan berjalan!')}}",
                             icon: 'warning'
                         }).then(function(){
                             $('#row_detail_0').find('.kke_prdcd').select();
@@ -1247,7 +1247,7 @@
             }
             else{
                 swal({
-                    title: 'Data tidak bisa didelete',
+                    title: "{{__('Data tidak bisa didelete')}}",
                     icon: 'error'
                 });
             }
@@ -1270,7 +1270,7 @@
             });
             if(!found){
                 swal({
-                    title: 'Data tidak ada!',
+                    title: "{{__('Data tidak ada!')}}",
                     icon: 'error'
                 }).then(function(){
                     $('#modal-loader').hide('toggle');

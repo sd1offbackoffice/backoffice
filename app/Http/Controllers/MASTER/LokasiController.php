@@ -137,7 +137,7 @@ class LokasiController extends Controller
 
                 if(!$produk){
                     $status = 'error';
-                    $message = 'PLU tidak terdaftar dalam master prodmast!';
+                    $message = (__('PLU tidak terdaftar dalam master prodmast!'));
                     return compact(['status','message']);
                 }
                 else{
@@ -158,7 +158,7 @@ class LokasiController extends Controller
                                 else $data_noid = 'BULKY';
 
                                 $status = 'error';
-                                $message = 'Inputan NOID untuk PLU '.$temp->lks_prdcd.' sudah ada, '.$data_noid.'!';
+                                $message = (__('Inputan NOID untuk PLU ')).$temp->lks_prdcd.(__(' sudah ada, ')).$data_noid.'!';
                                 return compact(['status','message']);
                             }
                         }
@@ -172,7 +172,7 @@ class LokasiController extends Controller
 
                             if($temp){
                                 $status = 'error';
-                                $message = 'PLU '.$temp->lks_prdcd.' sudah ada untuk rak D!';
+                                $message = 'PLU '.$temp->lks_prdcd.(__(' sudah ada untuk rak D!'));
                                 return compact(['status','message']);
                             }
                         }
@@ -186,7 +186,7 @@ class LokasiController extends Controller
 
                             if($temp){
                                 $status = 'error';
-                                $message = 'PLU '.$temp->lks_prdcd.' sudah ada untuk lokasi lain!';
+                                $message = 'PLU '.$temp->lks_prdcd.(__(' sudah ada untuk lokasi lain!'));
                                 return compact(['status','message']);
                             }
                         }
@@ -303,7 +303,7 @@ class LokasiController extends Controller
 
                 if (!$produk) {
                     $status = 'error';
-                    $message = 'PLU tidak terdaftar dalam master prodmast!';
+                    $message = (__('PLU tidak terdaftar dalam master prodmast!'));
                     return compact(['status', 'message']);
                 }
             }
@@ -348,7 +348,7 @@ class LokasiController extends Controller
                         else $data_noid = 'BULKY';
 
                         $status = 'error';
-                        $message = 'Inputan NOID untuk PLU '.$request->data['lks_prdcd'].' sudah ada, '.$data_noid.'!';
+                        $message = (__('Inputan NOID untuk PLU ')).$request->data['lks_prdcd'].(__(' sudah ada, ')).$data_noid.'!';
                         return compact(['status','message']);
                     }
                 }
@@ -408,7 +408,7 @@ class LokasiController extends Controller
             catch (QueryException $e){
                 DB::connection(Session::get('connection'))->rollBack();
                 $status = 'error';
-                $message = 'Gagal menambahkan noid!';
+                $message = (__('Gagal menambahkan noid!'));
                 return compact(['status','message']);
             }
         }
@@ -448,12 +448,12 @@ class LokasiController extends Controller
         }
         catch(QueryException $e){
             DB::connection(Session::get('connection'))->rollBack();
-            $message = 'Gagal menghapus PLU!';
+            $message = (__('Gagal menghapus PLU!'));
             $status = 'error';
         }
         finally{
             DB::connection(Session::get('connection'))->commit();
-            $message = 'Berhasil menghapus PLU!';
+            $message = (__('Berhasil menghapus PLU!'));
             $status = 'success';
         }
 
@@ -473,12 +473,12 @@ class LokasiController extends Controller
                 ->delete();
 
             DB::connection(Session::get('connection'))->commit();
-            $message = 'Berhasil menghapus lokasi!';
+            $message = (__('Berhasil menghapus lokasi!'));
             $status = 'success';
         }
         catch(QueryException $e){
             DB::connection(Session::get('connection'))->rollBack();
-            $message = 'Gagal menghapus lokasi!';
+            $message = (__('Gagal menghapus lokasi!'));
             $status = 'error';
         }
 
@@ -501,7 +501,7 @@ class LokasiController extends Controller
         if($request->tiperak == 'S'){
             if($request->prdcd == ''){
                 return response()->json([
-                    'message' => 'Kode produk tidak terdaftar!'
+                    'message' => (__('Kode produk tidak terdaftar!'))
                 ], 500);
             }
         }
@@ -522,7 +522,7 @@ class LokasiController extends Controller
 
                 if(!$plano){
                     return response()->json([
-                        'message' => 'Belum ada di Master PLU Planogram, silahkan didaftarkan jenis rak nya terlebih dahulu!'
+                        'message' => (__('Belum ada di Master PLU Planogram, silahkan didaftarkan jenis rak nya terlebih dahulu!'))
                     ], 500);
                 }
                 else{
@@ -540,7 +540,7 @@ class LokasiController extends Controller
                                 $data_noid = $temp->data_noid;
 
                                 return response()->json([
-                                    'message' => 'Inputan data noid untuk PLU '.$prdcd.' sudah ada, '.$data_noid == 'P' ? 'PCS' : 'BULKY'.'!'
+                                    'message' => (__('Inputan data noid untuk PLU ')).$prdcd.(__(' sudah ada, ')).$data_noid == 'P' ? 'PCS' : 'BULKY'.'!'
                                 ], 500);
                             }
                         }
@@ -564,7 +564,7 @@ class LokasiController extends Controller
 
             if($t_pluada){
                 return response()->json([
-                    'message' => 'PLU sudah terdaftar!'
+                    'message' => (__('PLU sudah terdaftar!'))
                 ], 500);
             }
         }
@@ -580,7 +580,7 @@ class LokasiController extends Controller
 
         if(!$prd){
             return response()->json([
-                'message' => 'Kode produk ['.$prdcd.'] tidak terdaftar!'
+                'message' => (__('Kode produk [')).$prdcd.(__('] tidak terdaftar!'))
             ], 500);
         }
         else{
@@ -663,14 +663,14 @@ class LokasiController extends Controller
 
             DB::connection(Session::get('connection'))->commit();
             $status = 'success';
-            $message = 'Berhasil tambah data!';
+            $message = (__('Berhasil tambah data!'));
         }
         catch(QueryException $e){
             DB::connection(Session::get('connection'))->rollBack();
 
             dd($e->getMessage());
             $status = 'error';
-            $message = 'Gagal tambah data!';
+            $message = (__('Gagal tambah data!'));
         }
 
         return compact(['status','message']);
@@ -705,7 +705,7 @@ class LokasiController extends Controller
             DB::connection(Session::get('connection'))->commit();
 
             $status = 'success';
-            $message = 'Nomor ID berhasil dihapus!';
+            $message = (__('Nomor ID berhasil dihapus!'));
 
             return compact(['status','message']);
         }
@@ -760,7 +760,7 @@ class LokasiController extends Controller
             DB::connection(Session::get('connection'))->commit();
 
             $status = 'success';
-            $message = 'Nomor ID berhasil disimpan!';
+            $message = (__('Nomor ID berhasil disimpan!'));
         }
         catch (QueryException $e){
             DB::connection(Session::get('connection'))->rollBack();

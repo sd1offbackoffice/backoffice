@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','MASTER | MASTER JENIS ITEM')
+@section('title',(__('MASTER | MASTER JENIS ITEM')))
 @section('content')
 
     <div class="container-fluid mt-4">
@@ -8,7 +8,7 @@
                 <div class="card border-dark">
                     <div class="card-body shadow-lg cardForm">
                         <fieldset class="card border-secondary">
-                            <legend  class="w-auto ml-3 h5 ">Input Jenis Rak Untuk PLU Planogram</legend>
+                            <legend  class="w-auto ml-3 h5 ">@lang('Input Jenis Rak Untuk PLU Planogram')</legend>
                             <div class="card-body">
                                 <div class="row ">
                                     <label for="i_pluplanogram" class="col-sm-3 col-form-label text-right">PLU Planogram</label>
@@ -24,17 +24,17 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <label for="i_unitfrac" class="col-sm-3 col-form-label text-right">Unit/Frac</label>
+                                    <label for="i_unitfrac" class="col-sm-3 col-form-label text-right">@lang('Unit/Frac')</label>
                                     <input type="text" class="col-sm-1 form-control" disabled id="i_unitfrac" >
                                 </div>
                                 <div class="row">
-                                    <label for="i_maxpalet" class="col-sm-3 col-form-label text-right">Max Palet</label>
+                                    <label for="i_maxpalet" class="col-sm-3 col-form-label text-right">@lang('Max Palet')</label>
                                     <div class="col-sm-2 row">
                                         <input type="text" class="col-sm-4 form-control" disabled id="i_maxpalet" >
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <label for="i_jenisrak" class="col-sm-3 col-form-label text-right">Jenis Rak</label>
+                                    <label for="i_jenisrak" class="col-sm-3 col-form-label text-right">@lang('Jenis Rak')</label>
                                     <div class="col-sm-2 row">
                                         <input style="text-transform: uppercase;" type="text" class="col-sm-4 form-control" id="i_jenisrak" placeholder="..." >
                                         <label id="l_jenisrak" class="col-sm-7 col-form-label text-left">D / N</label>
@@ -52,13 +52,13 @@
                                             <tr class="row theadDataTables">
                                                 <th class="col-sm-2"></th>
                                                 <th class="col-sm-4 text-center small">QTY</th>
-                                                <th class="col-sm-6 text-center small">RUPIAH</th>
+                                                <th class="col-sm-6 text-center small">@lang('RUPIAH')</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             <tr class="row justify-content-md-center p-0">
                                                 <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;">
-                                                    JAN
+                                                    @lang('JAN')
                                                 </td>
                                                 <td class="col-sm-4 p-0">
                                                     <input type="text" class="form-control text-right" disabled id="sls_qty_01">
@@ -69,7 +69,7 @@
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
                                                 <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
-                                                    FEB
+                                                @lang('FEB')
                                                 </td>
                                                 <td class="col-sm-4 p-0">
                                                     <input type="text" class="form-control text-right" disabled id="sls_qty_02">
@@ -80,7 +80,7 @@
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
                                                 <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
-                                                    MAR
+                                                @lang('MAR')
                                                 </td>
                                                 <td class="col-sm-4 p-0">
                                                     <input type="text" class="form-control text-right" disabled id="sls_qty_03">
@@ -91,7 +91,7 @@
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
                                                 <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
-                                                    APR
+                                                @lang('APR')
                                                 </td>
                                                 <td class="col-sm-4 p-0">
                                                     <input type="text" class="form-control text-right" disabled id="sls_qty_04">
@@ -102,7 +102,7 @@
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
                                                 <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
-                                                    MEI
+                                                @lang('MEI')
                                                 </td>
                                                 <td class="col-sm-4 p-0">
                                                     <input type="text" class="form-control text-right" disabled id="sls_qty_05">
@@ -113,7 +113,7 @@
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
                                                 <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
-                                                    JUN
+                                                @lang('JUN')
                                                 </td>
                                                 <td class="col-sm-4 p-0">
                                                     <input type="text" class="form-control text-right" disabled id="sls_qty_06">
@@ -124,7 +124,7 @@
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
                                                 <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
-                                                    JUL
+                                                @lang('JUL')
                                                 </td>
                                                 <td class="col-sm-4 p-0">
                                                     <input type="text" class="form-control text-right" disabled id="sls_qty_07">
@@ -135,7 +135,7 @@
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
                                                 <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
-                                                    AGU
+                                                @lang('AGU')
                                                 </td>
                                                 <td class="col-sm-4 p-0">
                                                     <input type="text" class="form-control text-right" disabled id="sls_qty_08">
@@ -146,7 +146,7 @@
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
                                                 <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
-                                                    SEP
+                                                @lang('SEP')
                                                 </td>
                                                 <td class="col-sm-4 p-0">
                                                     <input type="text" class="form-control text-right" disabled id="sls_qty_09">
@@ -157,7 +157,7 @@
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
                                                 <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
-                                                    OKT
+                                                @lang('OKT')
                                                 </td>
                                                 <td class="col-sm-4 p-0">
                                                     <input type="text" class="form-control text-right" disabled id="sls_qty_10">
@@ -168,7 +168,7 @@
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
                                                 <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
-                                                    NOV
+                                                @lang('NOV')
                                                 </td>
                                                 <td class="col-sm-4 p-0">
                                                     <input type="text" class="form-control text-right" disabled id="sls_qty_11">
@@ -179,7 +179,7 @@
                                             </tr>
                                             <tr class="row  justify-content-md-center p-0">
                                                 <td class="col-sm-2 p-0 text-center" style="padding-top: .45rem!important;" >
-                                                    DES
+                                                @lang('DES')
                                                 </td>
                                                 <td class="col-sm-4 p-0">
                                                     <input type="text" class="form-control text-right" disabled id="sls_qty_12">
@@ -195,14 +195,14 @@
                             </div>
                             <div class="col-sm-4 p-0">
                                 <fieldset class="card border-secondary">
-                                    <legend  class="w-auto ml-3 h5">Daftar PO Yang Masih Aktif</legend>
+                                    <legend  class="w-auto ml-3 h5">@lang('Daftar PO Yang Masih Aktif')</legend>
                                     <div class="card-body pt-0 pb-0 my-custom-scrollbar table-wrapper-scroll-y">
                                         <table class="table table-sm border-bottom  justify-content-md-center p-0" id="table-po">
                                             <thead>
                                             <tr class="row justify-content-md-center theadDataTables">
-                                                <th class="col-sm-5 text-center small">Nomor PO</th>
-                                                <th class="col-sm-5 text-center small">Tanggal PO</th>
-                                                <th class="col-sm-2 text-center small">Qty PO</th>
+                                                <th class="col-sm-5 text-center small">@lang('Nomor PO')</th>
+                                                <th class="col-sm-5 text-center small">@lang('Tanggal PO')</th>
+                                                <th class="col-sm-2 text-center small">@lang('Qty PO')</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -224,16 +224,16 @@
                             </div>
                             <div class="col-sm-5 p-0">
                                 <fieldset class="card border-secondary">
-                                    <legend  class="w-auto ml-3 h5">Daftar Lokasi PLU</legend>
+                                    <legend  class="w-auto ml-3 h5">@lang('Daftar Lokasi PLU')</legend>
                                     <div class="card-body pt-0 pb-0 my-custom-scrollbar table-wrapper-scroll-y">
                                         <table class="table table-sm border-bottom  justify-content-md-center p-0" id="table-lokasi-plu">
                                             <thead>
                                             <tr class="row justify-content-md-center theadDataTables">
-                                                <th class="col-sm-4 text-center small">Lokasi PLU</th>
-                                                <th class="col-sm-2 text-center small">Jenis</th>
-                                                <th class="col-sm-2 text-center small">Qty</th>
-                                                <th class="col-sm-2 text-center small">Max Plano</th>
-                                                <th class="col-sm-2 text-center small">Max Display</th>
+                                                <th class="col-sm-4 text-center small">@lang('Lokasi PLU')</th>
+                                                <th class="col-sm-2 text-center small">@lang('Jenis')</th>
+                                                <th class="col-sm-2 text-center small">@lang('Qty')</th>
+                                                <th class="col-sm-2 text-center small">@lang('Max Plano')</th>
+                                                <th class="col-sm-2 text-center small">@lang('Max Display')</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -263,20 +263,20 @@
                         <div class="row">
                             <div class="col-sm-8 p-0">
                                 <fieldset class="card border-secondary">
-                                    <legend  class="w-auto ml-3 h5 ">Stock</legend>
+                                    <legend  class="w-auto ml-3 h5 ">@lang('Stock')</legend>
                                     <div class="card-body p-1">
                                         <table class="table border-bottom  justify-content-md-center p-0" id="table-stock">
                                             <thead class="theadDataTables">
                                             <tr class="justify-content-md-center">
-                                                <th class="text-center small">LOKASI</th>
-                                                <th class="text-center small">AWAL</th>
-                                                <th class="text-center small">TERIMA</th>
-                                                <th class="text-center small">KELUAR</th>
-                                                <th class="text-center small">SALES</th>
-                                                <th class="text-center small">RETUR</th>
-                                                <th class="text-center small">ADJ</th>
-                                                <th class="text-center small">INSTRST</th>
-                                                <th class="text-center small">AKHIR</th>
+                                                <th class="text-center small">@lang('LOKASI')</th>
+                                                <th class="text-center small">@lang('AWAL')</th>
+                                                <th class="text-center small">@lang('TERIMA')</th>
+                                                <th class="text-center small">@lang('KELUAR')</th>
+                                                <th class="text-center small">@lang('SALES')</th>
+                                                <th class="text-center small">@lang('RETUR')</th>
+                                                <th class="text-center small">@lang('ADJ')</th>
+                                                <th class="text-center small">@lang('INSTRST')</th>
+                                                <th class="text-center small">@lang('AKHIR')</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -322,7 +322,7 @@
                                     <table class="table border-bottom col-sm-6 justify-content-md-center" id="table-barcode">
                                         <thead class="theadDataTables">
                                         <tr class="justify-content-md-center">
-                                            <th class="text-center">AVERAGE SALES</th>
+                                            <th class="text-center">@lang('AVERAGE SALES')</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -334,7 +334,7 @@
                                         </tbody>
                                     </table>
                                     <div class="col-sm-1 my-auto">
-                                        <button class="btn btn-primary btn-lg" id="btn-penerimaan"  data-toggle="modal" data-target="#m_penerimaan">Penerimaan</button>
+                                        <button class="btn btn-primary btn-lg" id="btn-penerimaan"  data-toggle="modal" data-target="#m_penerimaan">@lang('Penerimaan')</button>
                                     </div>
                                 </div>
                             </div>
@@ -350,7 +350,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master PLU</h5>
+                    <h5 class="modal-title">@lang('Master PLU')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -362,8 +362,8 @@
                                 <table class="table table-striped table-bordered" id="tableModalPlu">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Deskripsi</th>
-                                        <th>PLU</th>
+                                        <th>@lang('Deskripsi')</th>
+                                        <th>@lang('PLU')</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -389,7 +389,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-xl " role="document" >
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Table Penerimaan</h5>
+                    <h5 class="modal-title">@lang('Table Penerimaan')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -401,15 +401,15 @@
                                 <table class="table table-sm table-striped table-bordered display compact" id="table_penerimaan">
                                     <thead class="theadDataTables">
                                     <tr class="thNormal text-center">
-                                        <th width="20%">Supplier</th>
-                                        <th width="10%">Qty BPB</th>
-                                        <th width="7.5%">Bonus 1</th>
-                                        <th width="7.5%">Bonus 2</th>
-                                        <th width="10%">Dokumen</th>
-                                        <th width="12.5%">Tanggal</th>
-                                        <th width="10%">Top</th>
-                                        <th width="10%">Last Cost (pcs)</th>
-                                        <th width="10%">Avg Cost (pcs)</th>
+                                        <th width="20%">@lang('Supplier')</th>
+                                        <th width="10%">@lang('Qty BPB')</th>
+                                        <th width="7.5%">@lang('Bonus 1')</th>
+                                        <th width="7.5%">@lang('Bonus 2')</th>
+                                        <th width="10%">@lang('Dokumen')</th>
+                                        <th width="12.5%">@lang('Tanggal')</th>
+                                        <th width="10%">@lang('Top')</th>
+                                        <th width="10%">@lang('Last Cost (pcs)')</th>
+                                        <th width="10%">@lang('Avg Cost (pcs)')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbody_table_penerimaan">
@@ -522,7 +522,7 @@
             value = $('#i_jenisrak').val();
             if(value != 'D' && value != 'N'){
                 swal({
-                    title: 'Jenis Rak Input D/N',
+                    title: "{{__('Jenis Rak Input D/N')}}",
                     icon: 'warning'
                 }).then((createData) => {
                         $('#i_jenisrak').val('');

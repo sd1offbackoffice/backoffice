@@ -84,7 +84,7 @@
                     $('#modal-loader').modal('hide');
                     if (response == 'save') {
                         swal({
-                            title: "Data Berhasil Tersimpan!",
+                            title: "{{__('Data Berhasil Tersimpan!')}}",
                             icon: "success"
                         });
                     }

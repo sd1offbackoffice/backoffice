@@ -11,7 +11,7 @@
                         <div class="row text-right">
                             <div class="col-sm-12">
                                 <div class="form-group row mb-0">
-                                    <label for="cus_kodemember" class="col-sm-2 col-form-label">Nomor Anggota</label>
+                                    <label for="cus_kodemember" class="col-sm-2 col-form-label">@lang('Nomor Anggota')</label>
                                     <div class="col-sm-2 buttonInside">
                                         <input type="text" class="form-control diisi" id="cus_kodemember">
                                         <button id="btn-modal-member" type="button" class="btn btn-lov p-0"
@@ -37,7 +37,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group row mb-0">
-                                    <label for="cus_namamember" class="col-sm-2 col-form-label wajib">Nama Anggota<span
+                                    <label for="cus_namamember" class="col-sm-2 col-form-label wajib">@lang('Nama Anggota')<span
                                             class="wajib">*</span></label>
                                     <div class="col-sm-9">
                                         <input type="text" class="form-control diisi" id="cus_namamember">
@@ -50,25 +50,22 @@
                     <!-- Nav tabs -->
                     <ul class="nav nav-tabs custom-color" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" id="btn-p_identitas" data-toggle="tab" href="#p_identitas">Identitas</a>
+                            <a class="nav-link active" id="btn-p_identitas" data-toggle="tab" href="#p_identitas">@lang('Identitas')</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="btn-p_identitas2" data-toggle="tab" href="#p_identitas2">Identitas
-                                2</a>
+                            <a class="nav-link" id="btn-p_identitas2" data-toggle="tab" href="#p_identitas2">@lang('Identitas 2')</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="btn-p_identitas3" data-toggle="tab" href="#p_identitas3">Identitas
-                                3</a>
+                            <a class="nav-link" id="btn-p_identitas3" data-toggle="tab" href="#p_identitas3">@lang('Identitas 3')</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="btn-p_hobby" data-toggle="tab" href="#p_hobby">Hobby</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="btn-p_npwp" data-toggle="tab" href="#p_alamatnpwp">Alamat NPWP</a>
+                            <a class="nav-link" id="btn-p_npwp" data-toggle="tab" href="#p_alamatnpwp">@lang('Alamat NPWP')</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" id="btn-p_fasilitasbank" data-toggle="tab" href="#p_fasilitasbank">Fasilitas
-                                Perbankan</a>
+                            <a class="nav-link" id="btn-p_fasilitasbank" data-toggle="tab" href="#p_fasilitasbank">@lang('Fasilitas Perbankan')</a>
                         </li>
                     </ul>
 
@@ -79,25 +76,24 @@
                                 <div class="row text-right">
                                     <div class="col-sm-12">
                                         <div class="form-group row mb-0">
-                                            <label for="cus_noktp" class="col-sm-2 col-form-label">No. KTP<span
+                                            <label for="cus_noktp" class="col-sm-2 col-form-label">@lang('No. KTP')<span
                                                     class="wajib">*</span></label>
                                             <div class="col-sm-4">
                                                 <input type="text" class="form-control diisi" id="cus_noktp"
                                                        maxlength="16"
                                                        oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');">
                                             </div>
-                                            <span class="text-danger" id="message-error" style="display: none">* Nomor KTP harus 16 digit</span>
+                                            <span class="text-danger" id="message-error" style="display: none">@lang('* Nomor KTP harus 16 digit')</span>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="cus_alamatmember1" class="col-sm-2 col-form-label">Alamat
-                                                KTP<span class="wajib">*</span></label>
+                                            <label for="cus_alamatmember1" class="col-sm-2 col-form-label">@lang('Alamat KTP')<span class="wajib">*</span></label>
                                             <div class="col-sm-9">
                                                 <input type="text" class="form-control diisi" id="cus_alamatmember1">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="cus_alamatmember4"
-                                                   class="col-sm-2 col-form-label">Kelurahan<span class="wajib">*</span></label>
+                                                   class="col-sm-2 col-form-label">@lang('Kelurahan')<span class="wajib">*</span></label>
                                             <div class="col-sm-3 buttonInside">
                                                 <input type="text" class="form-control diisi" id="cus_alamatmember4">
                                                 <button id="btn-modal-ktp" type="button" class="btn btn-lov p-0"
@@ -112,34 +108,33 @@
                                             {{--                                            <div class="col-sm-1 p-0">--}}
                                             {{--                                                <button id="btn-modal-ktp" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodeposHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>--}}
                                             {{--                                            </div>--}}
-                                            <label for="i_kecamatanktp" class="col-sm-3 col-form-label">Kecamatan<span
+                                            <label for="i_kecamatanktp" class="col-sm-3 col-form-label">@lang('Kecamatan')<span
                                                     class="wajib">*</span></label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control diisi" id="i_kecamatanktp">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="cus_alamatmember3" class="col-sm-2 col-form-label">Kode Pos<span
+                                            <label for="cus_alamatmember3" class="col-sm-2 col-form-label">@lang('Kode Pos')<span
                                                     class="wajib">*</span></label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control diisi" id="cus_alamatmember3">
                                             </div>
-                                            <label for="cus_alamatmember2" class="col-sm-4 col-form-label">Kota<span
+                                            <label for="cus_alamatmember2" class="col-sm-4 col-form-label">@lang('Kota')<span
                                                     class="wajib">*</span></label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control diisi" id="cus_alamatmember2">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="cus_alamatmember5" class="col-sm-2 col-form-label">Alamat
-                                                Surat<span class="wajib">*</span></label>
+                                            <label for="cus_alamatmember5" class="col-sm-2 col-form-label">@lang('Alamat Surat')<span class="wajib">*</span></label>
                                             <div class="col-sm-9">
                                                 <input type="text" class="form-control diisi" id="cus_alamatmember5">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="cus_alamatmember8"
-                                                   class="col-sm-2 col-form-label">Kelurahan<span class="wajib">*</span></label>
+                                                   class="col-sm-2 col-form-label">@lang('Kelurahan')<span class="wajib">*</span></label>
                                             <div class="col-sm-3 buttonInside">
                                                 <input type="text" class="form-control diisi" id="cus_alamatmember8">
                                                 <button id="btn-modal-surat" type="button" class="btn btn-lov p-0"
@@ -154,31 +149,31 @@
                                             {{--                                            <div class="col-sm-1 p-0">--}}
                                             {{--                                                <button id="btn-modal-surat" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodeposHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>--}}
                                             {{--                                            </div>--}}
-                                            <label for="i_kecamatansurat" class="col-sm-3 col-form-label">Kecamatan<span
+                                            <label for="i_kecamatansurat" class="col-sm-3 col-form-label">@lang('Kecamatan')<span
                                                     class="wajib">*</span></label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control diisi" id="i_kecamatansurat">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="cus_alamatmember7" class="col-sm-2 col-form-label">Kode Pos<span
+                                            <label for="cus_alamatmember7" class="col-sm-2 col-form-label">@lang('Kode Pos')<span
                                                     class="wajib">*</span></label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control diisi" id="cus_alamatmember7">
                                             </div>
-                                            <label for="cus_alamatmember6" class="col-sm-4 col-form-label">Kota<span
+                                            <label for="cus_alamatmember6" class="col-sm-4 col-form-label">@lang('Kota')<span
                                                     class="wajib">*</span></label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control diisi" id="cus_alamatmember6">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="cus_tlpmember" class="col-sm-2 col-form-label">Telepon<span
+                                            <label for="cus_tlpmember" class="col-sm-2 col-form-label">@lang('Telepon')<span
                                                     class="wajib">*</span></label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control diisi" id="cus_tlpmember">
                                             </div>
-                                            <label for="cus_hpmember" class="col-sm-3 col-form-label">HP<span
+                                            <label for="cus_hpmember" class="col-sm-3 col-form-label">@lang('HP')<span
                                                     class="wajib">*</span></label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control diisi" id="cus_hpmember"
@@ -186,12 +181,12 @@
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="crm_tmptlahir" class="col-sm-2 col-form-label">Tempat Lahir<span
+                                            <label for="crm_tmptlahir" class="col-sm-2 col-form-label">@lang('Tempat Lahir')<span
                                                     class="wajib">*</span></label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control diisi" id="crm_tmptlahir">
                                             </div>
-                                            <label for="cus_tgllahir" class="col-sm-3 col-form-label">Tgl. Lahir<span
+                                            <label for="cus_tgllahir" class="col-sm-3 col-form-label">@lang('Tgl. Lahir')<span
                                                     class="wajib">*</span></label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control diisi" id="cus_tgllahir"
@@ -199,8 +194,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_jeniscustomer" class="col-sm-2 col-form-label">Jenis
-                                                Customer</label>
+                                            <label for="i_jeniscustomer" class="col-sm-2 col-form-label">@lang('Jenis Customer')</label>
                                             <div class="col-sm-1 buttonInside">
                                                 <input type="text" class="form-control" id="cus_jenismember">
                                                 <button id="btn-modal-surat" type="button" class="btn btn-lov p-0"
@@ -212,8 +206,7 @@
                                                 <input type="text" class="form-control" id="i_jeniscustomer2">
                                             </div>
 
-                                            <label for="i_jenisoutlet" class="col-sm-2 offset-sm-1 col-form-label">Jenis
-                                                Outlet<span class="wajib">*</span></label>
+                                            <label for="i_jenisoutlet" class="col-sm-2 offset-sm-1 col-form-label">@lang('Jenis Outlet')<span class="wajib">*</span></label>
                                             <div class="col-sm-1 buttonInside">
                                                 <input type="text" class="form-control diisi" id="cus_kodeoutlet">
                                                 <button id="btn-modal-outlet" type="button" class="btn btn-lov p-0"
@@ -226,13 +219,12 @@
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="cus_jarak" class="col-sm-2 col-form-label">Jarak</label>
+                                            <label for="cus_jarak" class="col-sm-2 col-form-label">@lang('Jarak')</label>
                                             <div class="col-sm-2">
                                                 <input type="number" min="0" class="form-control" id="cus_jarak">
                                             </div>
 
-                                            <label for="i_suboutlet" class="col-sm-2 offset-sm-2 col-form-label">Sub
-                                                Outlet<span class="wajib">*</span></label>
+                                            <label for="i_suboutlet" class="col-sm-2 offset-sm-2 col-form-label">@lang('Sub Outlet')<span class="wajib">*</span></label>
                                             <div class="col-sm-1 buttonInside">
                                                 <input type="text" class="form-control " id="cus_kodesuboutlet">
                                                 <button id="btn-modal-suboutlet" type="button" class="btn btn-lov p-0"
@@ -245,44 +237,42 @@
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="cus_flagpkp" class="col-sm-2 col-form-label">PKP</label>
+                                            <label for="cus_flagpkp" class="col-sm-2 col-form-label">@lang('PKP')</label>
                                             <div class="col-sm-1">
                                                 <input type="text" maxlength="1" class="form-control" id="cus_flagpkp">
                                             </div>
                                             <label for="cus_flagpkp" class="col-sm-1 col-form-label pl-0 text-left">[ Y
                                                 / T ]</label>
-                                            <label for="cus_npwp" class="col-sm-4 col-form-label">NPWP</label>
+                                            <label for="cus_npwp" class="col-sm-4 col-form-label">@lang('NPWP')</label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control" id="cus_npwp">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="cus_flagkredit" class="col-sm-2 col-form-label">Flag
-                                                Kredit</label>
+                                            <label for="cus_flagkredit" class="col-sm-2 col-form-label">@lang('Flag Kredit')</label>
                                             <div class="col-sm-1">
                                                 <input type="text" maxlength="1" class="form-control"
                                                        id="cus_flagkredit">
                                             </div>
                                             <label for="cus_flagkredit" class="col-sm-1 col-form-label pl-0 text-left">[
                                                 Y / T ]</label>
-                                            <label for="cus_creditlimit" class="col-sm-1 col-form-label">Limit</label>
+                                            <label for="cus_creditlimit" class="col-sm-1 col-form-label">@lang('Limit')</label>
                                             <div class="col-sm-2">
                                                 <input type="number" min="0" class="form-control" id="cus_creditlimit">
                                             </div>
-                                            <label for="cus_top" class="col-sm-1 col-form-label">TOP</label>
+                                            <label for="cus_top" class="col-sm-1 col-form-label">@lang('TOP')</label>
                                             <div class="col-sm-1">
                                                 <input type="number" min="0" class="form-control" id="cus_top">
                                             </div>
-                                            <label for="cus_creditlimit" class="col-sm-1 col-form-label text-left pl-0">Hari</label>
+                                            <label for="cus_creditlimit" class="col-sm-1 col-form-label text-left pl-0">@lang('Hari')</label>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="cus_nosalesman" class="col-sm-2 col-form-label">Salesman</label>
+                                            <label for="cus_nosalesman" class="col-sm-2 col-form-label">@lang('Salesman')</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="cus_nosalesman"
                                                        maxlength="3">
                                             </div>
-                                            <label for="cus_flagmemberkhusus" class="col-sm-4 col-form-label">Member
-                                                Khusus</label>
+                                            <label for="cus_flagmemberkhusus" class="col-sm-4 col-form-label">@lang('Member Khusus')</label>
                                             <div class="col-sm-1">
                                                 <input type="text" maxlength="1" class="form-control"
                                                        id="cus_flagmemberkhusus">
@@ -291,8 +281,7 @@
                                                 / ]</label>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="cus_flagkirimsms" class="col-sm-2 col-form-label">Kirim
-                                                SMS</label>
+                                            <label for="cus_flagkirimsms" class="col-sm-2 col-form-label">@lang('Kirim SMS')</label>
                                             <div class="col-sm-1">
                                                 <input type="text" maxlength="1" class="form-control"
                                                        id="cus_flagkirimsms">
@@ -300,8 +289,7 @@
                                             <label for="cus_flagkirimsms"
                                                    class="col-sm-1 col-form-label pl-0 text-left">[ Y / T ]</label>
                                             {{--                                            <label for="i_flag_ina" class="col-sm-4 col-form-label d-flag-ina">Flag Bank INA<span class="wajib">*</span></label>--}}
-                                            <label for="i_flag_ina" class="col-sm-4 col-form-label d-flag-ina">Flag Bank
-                                                INA</label>
+                                            <label for="i_flag_ina" class="col-sm-4 col-form-label d-flag-ina">@lang('Flag Bank INA')</label>
                                             <div class="col-sm-1 d-flag-ina">
                                                 <div class="custom-control custom-checkbox mt-2 text-left">
                                                     {{--                                                    <input type="checkbox" class="custom-control-input diisi_cb" id="cb_flag_ina">--}}
@@ -321,7 +309,7 @@
                                 <div class="row text-right">
                                     <div class="col-sm-12">
                                         <div class="form-group row mb-0">
-                                            <label for="grp_group" class="col-sm-2 col-form-label">Group<span
+                                            <label for="grp_group" class="col-sm-2 col-form-label">@lang('Group')<span
                                                     class="wajib">*</span></label>
                                             <div class="col-sm-2 buttonInside">
                                                 <input type="text" class="form-control diisi" id="grp_group">
@@ -337,45 +325,42 @@
                                             {{--                                            <div class="col-sm-1 p-0">--}}
                                             {{--                                                <button id="btn-modal-group" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_groupHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>--}}
                                             {{--                                            </div>--}}
-                                            <label for="grp_kategori" class="col-sm-4 col-form-label">Kategori</label>
+                                            <label for="grp_kategori" class="col-sm-4 col-form-label">@lang('Kategori')</label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control diisi" id="grp_kategori">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="grp_subgroup" class="col-sm-2 col-form-label">Sub Group</label>
+                                            <label for="grp_subgroup" class="col-sm-2 col-form-label">@lang('Sub Group')</label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control diisi" id="grp_subgroup">
                                             </div>
-                                            <label for="grp_subkategori" class="col-sm-3 col-form-label">Sub
-                                                Kategori</label>
+                                            <label for="grp_subkategori" class="col-sm-3 col-form-label">@lang('Sub Kategori')</label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control diisi" id="grp_subkategori">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_jenisanggota" class="col-sm-2 col-form-label">Jenis
-                                                Anggota<span class="wajib">*</span></label>
+                                            <label for="i_jenisanggota" class="col-sm-2 col-form-label">@lang('Jenis Anggota')<span class="wajib">*</span></label>
                                             <div class="col-sm">
                                                 <div class="row ml-1">
                                                     <div class="col-sm">
                                                         <div class="custom-control custom-checkbox mt-2 text-left">
                                                             <input type="checkbox" class="custom-control-input diisi_cb"
                                                                    id="cb_jenisanggotaR">
-                                                            <label class="custom-control-label" for="cb_jenisanggotaR">Regular</label>
+                                                            <label class="custom-control-label" for="cb_jenisanggotaR">@lang('Regular')</label>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm">
                                                         <div class="custom-control custom-checkbox mt-2 text-left">
                                                             <input type="checkbox" class="custom-control-input diisi_cb"
                                                                    id="cb_jenisanggotaK">
-                                                            <label class="custom-control-label" for="cb_jenisanggotaK">Khusus</label>
+                                                            <label class="custom-control-label" for="cb_jenisanggotaK">@lang('Khusus')</label>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <label for="i_jeniskelamin" class="col-sm-2 col-form-label">Jenis
-                                                Kelamin<span class="wajib">*</span></label>
+                                            <label for="i_jeniskelamin" class="col-sm-2 col-form-label">@lang('Jenis Kelamin')<span class="wajib">*</span></label>
                                             <div class="col-sm">
                                                 <div class="row ml-1">
                                                     <div class="col-sm">
@@ -383,22 +368,21 @@
                                                             <input type="checkbox"
                                                                    class="checkbox-inline custom-control-input diisi_cb"
                                                                    id="cb_jeniskelaminL">
-                                                            <label class="custom-control-label" for="cb_jeniskelaminL">Laki-laki</label>
+                                                            <label class="custom-control-label" for="cb_jeniskelaminL">@lang('Laki-laki')</label>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm">
                                                         <div class="custom-control custom-checkbox mt-2 text-left">
                                                             <input type="checkbox" class="custom-control-input diisi_cb"
                                                                    id="cb_jeniskelaminP">
-                                                            <label class="custom-control-label" for="cb_jeniskelaminP">Perempuan</label>
+                                                            <label class="custom-control-label" for="cb_jeniskelaminP">@lang('Perempuan')</label>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="crm_pic1" class="col-sm-2 col-form-label">Contact Person
-                                                1</label>
+                                            <label for="crm_pic1" class="col-sm-2 col-form-label">Contact Person 1</label>
                                             <div class="col-sm-4">
                                                 <input type="text" class="form-control" id="crm_pic1">
                                             </div>
@@ -408,8 +392,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="crm_pic2" class="col-sm-2 col-form-label">Contact Person
-                                                2</label>
+                                            <label for="crm_pic2" class="col-sm-2 col-form-label">Contact Person 2</label>
                                             <div class="col-sm-4">
                                                 <input type="text" class="form-control" id="crm_pic2">
                                             </div>
@@ -419,70 +402,67 @@
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="crm_email" class="col-sm-2 col-form-label">Alamat Email<span
+                                            <label for="crm_email" class="col-sm-2 col-form-label">@lang('Alamat Email')<span
                                                     class="wajib">*</span></label>
                                             <div class="col-sm-4">
                                                 <input type="email" class="form-control diisi" id="crm_email">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="crm_agama" class="col-sm-2 col-form-label">Agama<span
+                                            <label for="crm_agama" class="col-sm-2 col-form-label">@lang('Agama')<span
                                                     class="wajib">*</span></label>
                                             <div class="col-sm-3">
                                                 <select class="browser-default custom-select diisi" id="crm_agama">
-                                                    <option selected disabled>Pilih Agama</option>
-                                                    <option value="ISLAM">Islam</option>
-                                                    <option value="KRISTEN">Kristen</option>
-                                                    <option value="KATHOLIK">Katholik</option>
-                                                    <option value="BUDHA">Budha</option>
-                                                    <option value="HINDU">Hindu</option>
-                                                    <option value="ALIRAN">Aliran Kepercayaan</option>
+                                                    <option selected disabled>@lang('Pilih Agama')</option>
+                                                    <option value="ISLAM">@lang('Islam')</option>
+                                                    <option value="KRISTEN">@lang('Kristen')</option>
+                                                    <option value="KATHOLIK">@lang('Katholik')</option>
+                                                    <option value="BUDHA">@lang('Budha')</option>
+                                                    <option value="HINDU">@lang('Hindu')</option>
+                                                    <option value="ALIRAN">@lang('Aliran Kepercayaan')</option>
                                                 </select>
                                             </div>
-                                            <label for="crm_pekerjaan" class="col-sm-3 col-form-label crm-pekerjaan">Pekerjaan</label>
+                                            <label for="crm_pekerjaan" class="col-sm-3 col-form-label crm-pekerjaan">@lang('Pekerjaan')</label>
                                             <div class="col-sm-3 crm-pekerjaan">
                                                 <select class="browser-default custom-select" id="crm_pekerjaan">
-                                                    <option selected disabled>Pilih Pekerjaan</option>
-                                                    <option value="wiraswasta">Wiraswasta</option>
-                                                    <option value="pegawainegeri">Pegawai Negeri</option>
-                                                    <option value="pegawaiswasta">Pegawai Swasta</option>
+                                                    <option selected disabled>@lang('Pilih Pekerjaan')</option>
+                                                    <option value="wiraswasta">@lang('Wiraswasta')</option>
+                                                    <option value="pegawainegeri">@lang('Pegawai Negeri')</option>
+                                                    <option value="pegawaiswasta">@lang('Pegawai Swasta')</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="crm_namapasangan" class="col-sm-2 col-form-label">Nama Suami /
-                                                Istri</label>
+                                            <label for="crm_namapasangan" class="col-sm-2 col-form-label">@lang('Nama Suami / Istri')</label>
                                             <div class="col-sm-4">
                                                 <input type="text" class="form-control" id="crm_namapasangan">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="crm_tgllhrpasangan" class="col-sm-2 col-form-label">Tgl. Lahir
-                                                Pasangan</label>
+                                            <label for="crm_tgllhrpasangan" class="col-sm-2 col-form-label">@lang('Tgl. Lahir Pasangan')</label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control" id="crm_tgllhrpasangan"
                                                        placeholder="dd/mm/yyyy">
                                             </div>
-                                            <label for="crm_jmlanak" class="col-sm-3 col-form-label">Jumlah Anak</label>
+                                            <label for="crm_jmlanak" class="col-sm-3 col-form-label">@lang('Jumlah Anak')</label>
                                             <div class="col-sm-1">
                                                 <input type="number" min="0" class="form-control" id="crm_jmlanak">
                                             </div>
                                             <label for="crm_jmlanak"
-                                                   class="col-sm-1 pl-0 text-left col-form-label">Anak</label>
+                                                   class="col-sm-1 pl-0 text-left col-form-label">@lang('Anak')</label>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_pendidikan" class="col-sm-2 col-form-label">Pendidikan
-                                                Terakhir</label>
+                                            <label for="i_pendidikan" class="col-sm-2 col-form-label">@lang('Pendidikan Terakhir')</label>
                                             <div class="col-sm-3">
                                                 <select class="browser-default custom-select" id="i_pendidikan">
                                                     <option selected disabled>...</option>
-                                                    <option value="SD">SD</option>
-                                                    <option value="SLTP">SLTP</option>
-                                                    <option value="SLTA">SLTA</option>
-                                                    <option value="S-1">S-1</option>
-                                                    <option value="S-2">S-2</option>
-                                                    <option value="S-3">S-3</option>
-                                                    <option value="X">Lainnya</option>
+                                                    <option value="SD">@lang('SD')</option>
+                                                    <option value="SLTP">@lang('SLTP')</option>
+                                                    <option value="SLTA">@lang('SLTA')</option>
+                                                    <option value="S-1">@lang('S-1')</option>
+                                                    <option value="S-2">@lang('S-2')</option>
+                                                    <option value="S-3">@lang('S-3')</option>
+                                                    <option value="X">@lang('Lainnya')</option>
                                                 </select>
                                             </div>
                                             <div class="col-sm-4 pl-0">
@@ -496,8 +476,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_internet" class="col-sm-5 col-form-label">Apakah HP Anda
-                                                menggunakan Layanan Data / Internet<span class="wajib">*</span></label>
+                                            <label for="i_internet" class="col-sm-5 col-form-label">@lang('Apakah HP Anda menggunakan Layanan Data / Internet')<span class="wajib">*</span></label>
                                             <div class="col-sm">
                                                 <div class="row ml-1">
                                                     <div class="col-sm">
@@ -505,7 +484,7 @@
                                                             <input type="checkbox" class="custom-control-input diisi_cb"
                                                                    id="cb_internetY">
                                                             <label class="custom-control-label"
-                                                                   for="cb_internetY">Ya</label>
+                                                                   for="cb_internetY">@lang('Ya')</label>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm">
@@ -513,38 +492,35 @@
                                                             <input type="checkbox" class="custom-control-input diisi_cb"
                                                                    id="cb_internetT">
                                                             <label class="custom-control-label"
-                                                                   for="cb_internetT">Tidak</label>
+                                                                   for="cb_internetT">@lang('Tidak')</label>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="crm_tipehp" class="col-sm-5 col-form-label">Merk dan Tipe HP
-                                                yang digunakan</label>
+                                            <label for="crm_tipehp" class="col-sm-5 col-form-label">@lang('Merk dan Tipe HP yang digunakan')</label>
                                             <div class="col-sm-4">
                                                 <input type="text" class="form-control" id="crm_tipehp">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="crm_namabank" class="col-sm-5 col-form-label">Bank yang sekarang
-                                                digunakan<span class="wajib">*</span></label>
+                                            <label for="crm_namabank" class="col-sm-5 col-form-label">@lang('Bank yang sekarang digunakan')<span class="wajib">*</span></label>
                                             <div class="col-sm-4">
                                                 <input type="text" class="form-control diisi" id="crm_namabank">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="c_metodekirim" class="col-sm-5 col-form-label">Metode yang
-                                                paling disukai dalam<br> menyampaikan informasi<span
+                                            <label for="c_metodekirim" class="col-sm-5 col-form-label">@lang('Metode yang paling disukai dalam')<br>@lang(' menyampaikan informasi')<span
                                                     class="wajib">*</span></label>
                                             <div class="col-sm-3">
                                                 <select class="browser-default custom-select diisi" id="c_metodekirim">
                                                     <option selected disabled>...</option>
-                                                    <option value="POSR">Pos ke alamat rumah</option>
-                                                    <option value="POSK">Pos ke alamat tempat usaha</option>
-                                                    <option value="EMAIL">e-mail</option>
-                                                    <option value="SMS">SMS</option>
-                                                    <option value="X">Lainnya</option>
+                                                    <option value="POSR">@lang('Pos ke alamat rumah')</option>
+                                                    <option value="POSK">@lang('Pos ke alamat tempat usaha')</option>
+                                                    <option value="EMAIL">@lang('e-mail')</option>
+                                                    <option value="SMS">@lang('SMS')</option>
+                                                    <option value="X">@lang('Lainnya')</option>
                                                 </select>
                                             </div>
                                             <div class="col-sm-3 pl-0">
@@ -552,8 +528,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_koordinat" class="col-sm-5 col-form-label">Koordinat Tempat
-                                                Usaha</label>
+                                            <label for="i_koordinat" class="col-sm-5 col-form-label">@lang('Koordinat Tempat Usaha')</label>
                                             <div class="col-sm-4">
                                                 <input type="text" class="form-control" id="i_koordinat">
                                             </div>
@@ -567,14 +542,13 @@
                                 <div class="row text-right">
                                     <div class="col-sm-12">
                                         <div class="form-group row mb-0">
-                                            <label for="crm_alamatusaha1" class="col-sm-2 pl-0 col-form-label">Alamat
-                                                Tempat Usaha<span class="wajib">*</span></label>
+                                            <label for="crm_alamatusaha1" class="col-sm-2 pl-0 col-form-label">@lang('Alamat Tempat Usaha')<span class="wajib">*</span></label>
                                             <div class="col-sm-9">
                                                 <input type="text" class="form-control diisi id3" id="crm_alamatusaha1">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="crm_alamatusaha4" class="col-sm-2 col-form-label">Kelurahan<span
+                                            <label for="crm_alamatusaha4" class="col-sm-2 col-form-label">@lang('Kelurahan')<span
                                                     class="wajib">*</span></label>
                                             <div class="col-sm-3 buttonInside">
                                                 <input type="text" class="form-control diisi id3" id="crm_alamatusaha4">
@@ -590,27 +564,26 @@
                                             {{--                                            <div class="col-sm-1 p-0">--}}
                                             {{--                                                <button id="btn-modal-usaha" type="button" class="btn p-0 float-left" data-toggle="modal" data-target="#m_kodeposHelp"><img src="{{asset('image/icon/help.png')}}" width="30px"></button>--}}
                                             {{--                                            </div>--}}
-                                            <label for="pos_kecamatan" class="col-sm-3 col-form-label">Kecamatan<span
+                                            <label for="pos_kecamatan" class="col-sm-3 col-form-label">@lang('Kecamatan')<span
                                                     class="wajib">*</span></label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control diisi id3" id="pos_kecamatan">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="crm_alamatusaha3" class="col-sm-2 col-form-label">Kode Pos<span
+                                            <label for="crm_alamatusaha3" class="col-sm-2 col-form-label">@lang('Kode Pos')<span
                                                     class="wajib">*</span></label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control diisi id3" id="crm_alamatusaha3">
                                             </div>
-                                            <label for="crm_alamatusaha2" class="col-sm-4 col-form-label">Kota<span
+                                            <label for="crm_alamatusaha2" class="col-sm-4 col-form-label">@lang('Kota')<span
                                                     class="wajib">*</span></label>
                                             <div class="col-sm-3">
                                                 <input type="text" class="form-control diisi id3" id="crm_alamatusaha2">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_jenisusaha" class="col-sm-4 col-form-label">Apakah jenis
-                                                Tempat Usaha Anda?<span class="wajib">*</span></label>
+                                            <label for="i_jenisusaha" class="col-sm-4 col-form-label">@lang('Apakah jenis Tempat Usaha Anda?')<span class="wajib">*</span></label>
                                             <div class="col-sm">
                                                 <div class="row ml-1">
                                                     <div class="col-sm">
@@ -618,7 +591,7 @@
                                                             <input type="checkbox"
                                                                    class="custom-control-input diisi_cb id3"
                                                                    id="cb_jenisbangunanP">
-                                                            <label class="custom-control-label" for="cb_jenisbangunanP">Permanen</label>
+                                                            <label class="custom-control-label" for="cb_jenisbangunanP">@lang('Permanen')</label>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm">
@@ -626,8 +599,7 @@
                                                             <input type="checkbox"
                                                                    class="custom-control-input diisi_cb id3"
                                                                    id="cb_jenisbangunanS">
-                                                            <label class="custom-control-label" for="cb_jenisbangunanS">Semi
-                                                                Permanen</label>
+                                                            <label class="custom-control-label" for="cb_jenisbangunanS">@lang('Semi Permanen')</label>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm">
@@ -635,25 +607,22 @@
                                                             <input type="checkbox"
                                                                    class="custom-control-input diisi_cb id3"
                                                                    id="cb_jenisbangunanN">
-                                                            <label class="custom-control-label" for="cb_jenisbangunanN">Non
-                                                                Permanen</label>
+                                                            <label class="custom-control-label" for="cb_jenisbangunanN">@lang('Non Permanen')</label>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="crm_lamatmpt" class="col-sm-2 col-form-label">Lama
-                                                menempati<span class="wajib">*</span></label>
+                                            <label for="crm_lamatmpt" class="col-sm-2 col-form-label">@lang('Lama menempati')<span class="wajib">*</span></label>
                                             <div class="col-sm-1">
                                                 <input type="number" min="0" class="form-control diisi id3"
                                                        id="crm_lamatmpt">
                                             </div>
-                                            <label for="crm_lamatmpt" class="col-sm-1 pl-0 text-left col-form-label">Tahun</label>
+                                            <label for="crm_lamatmpt" class="col-sm-1 pl-0 text-left col-form-label">@lang('Tahun')</label>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_statusbangunan" class="col-sm-2 col-form-label">Status
-                                                Bangunan<span class="wajib">*</span></label>
+                                            <label for="i_statusbangunan" class="col-sm-2 col-form-label">@lang('Status Bangunan')<span class="wajib">*</span></label>
                                             <div class="col">
                                                 <div class="row ml-1">
                                                     <div class="col-sm">
@@ -662,7 +631,7 @@
                                                                    class="custom-control-input diisi_cb id3"
                                                                    id="cb_statusbangunanM">
                                                             <label class="custom-control-label"
-                                                                   for="cb_statusbangunanM">Milik Sendiri</label>
+                                                                   for="cb_statusbangunanM">@lang('Milik Sendiri')</label>
                                                         </div>
                                                     </div>
                                                     <div class="col-sm">
@@ -671,34 +640,31 @@
                                                                    class="custom-control-input diisi_cb id3"
                                                                    id="cb_statusbangunanS">
                                                             <label class="custom-control-label"
-                                                                   for="cb_statusbangunanS">Sewa</label>
+                                                                   for="cb_statusbangunanS">@lang('Sewa')</label>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="crm_kreditusaha" class="col-sm-2 col-form-label">Kredit
-                                                Usaha</label>
+                                            <label for="crm_kreditusaha" class="col-sm-2 col-form-label">@lang('Kredit Usaha')</label>
                                             <div class="col-sm-4">
                                                 <input type="text" class="form-control" id="crm_kreditusaha">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="crm_bankkredit" class="col-sm-2 pl-0 col-form-label">Bank
-                                                Penerima Kredit</label>
+                                            <label for="crm_bankkredit" class="col-sm-2 pl-0 col-form-label">@lang('Bank Penerima Kredit')</label>
                                             <div class="col-sm-4">
                                                 <input type="text" class="form-control" id="crm_bankkredit">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_jeniskendaraan" class="col-sm-2 col-form-label">Jenis
-                                                Kendaraan</label>
+                                            <label for="i_jeniskendaraan" class="col-sm-2 col-form-label">@lang('Jenis Kendaraan')</label>
                                             <div class="col-sm-2">
                                                 <div class="custom-control custom-checkbox mt-2 text-left">
                                                     <input type="checkbox" class="custom-control-input"
                                                            id="cb_jeniskendaraanMotor">
-                                                    <label class="custom-control-label" for="cb_jeniskendaraanMotor">Motor</label>
+                                                    <label class="custom-control-label" for="cb_jeniskendaraanMotor">@lang('Motor')</label>
                                                 </div>
                                             </div>
                                             <div class="col-sm-2 pl-0 pr-0">
@@ -708,7 +674,7 @@
                                                     <option value="YAMAHA">YAMAHA</option>
                                                     <option value="KAWASAKI">KAWASAKI</option>
                                                     <option value="SUZUKI">SUZUKI</option>
-                                                    <option value="X">LAINNYA</option>
+                                                    <option value="X">@lang('LAINNYA')</option>
                                                 </select>
                                             </div>
                                             <div class="col-sm-3 pl-0">
@@ -721,7 +687,7 @@
                                                 <div class="custom-control custom-checkbox mt-2 text-left">
                                                     <input type="checkbox" class="custom-control-input"
                                                            id="cb_jeniskendaraanMobil">
-                                                    <label class="custom-control-label" for="cb_jeniskendaraanMobil">Mobil</label>
+                                                    <label class="custom-control-label" for="cb_jeniskendaraanMobil">@lang('Mobil')</label>
                                                 </div>
                                             </div>
                                             <div class="col-sm-2 pl-0 pr-0">
@@ -732,7 +698,7 @@
                                                     <option value="MITSUBISHI">MITSUBISHI</option>
                                                     <option value="SUZUKI">SUZUKI</option>
                                                     <option value="HONDA">HONDA</option>
-                                                    <option value="X">LAINNYA</option>
+                                                    <option value="X">@lang('LAINNYA')</option>
                                                 </select>
                                             </div>
                                             <div class="col-sm-3 pl-0">
@@ -753,9 +719,9 @@
                                                 <table id="table_hobby" class="table table-sm table-bordered">
                                                     <thead>
                                                     <tr class="d-flex text-center">
-                                                        <th class="col-sm-5">Nama Hobby</th>
+                                                        <th class="col-sm-5">@lang('Nama Hobby')</th>
                                                         <th class="col-sm-1"></th>
-                                                        <th class="col-sm-6">Keterangan</th>
+                                                        <th class="col-sm-6">@lang('Keterangan')</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -796,22 +762,19 @@
                                 <div class="row text-right">
                                     <div class="col-sm-12">
                                         <div class="form-group row mb-0">
-                                            <label for="cus_tglmulai" class="col-sm-3 pl-0 col-form-label">Tanggal
-                                                Mulai</label>
+                                            <label for="cus_tglmulai" class="col-sm-3 pl-0 col-form-label">@lang('Tanggal Mulai')</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="cus_tglmulai"
                                                        placeholder="DD-MON-YYYY">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="cus_tglregistrasi" class="col-sm-3 pl-0 col-form-label">Tanggal
-                                                Registrasi</label>
+                                            <label for="cus_tglregistrasi" class="col-sm-3 pl-0 col-form-label">@lang('Tanggal Registrasi')</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="cus_tglregistrasi"
                                                        placeholder="DD-MON-YYYY">
                                             </div>
-                                            <label for="cus_flagbebasiuran" class="col-sm-4 pl-0 col-form-label">Bebas
-                                                Iuran</label>
+                                            <label for="cus_flagbebasiuran" class="col-sm-4 pl-0 col-form-label">@lang('Bebas Iuran')</label>
                                             <div class="col-sm-1">
                                                 <input type="text" class="form-control" id="cus_flagbebasiuran">
                                             </div>
@@ -819,22 +782,20 @@
                                                    class="col-sm-1 pl-0 text-left col-form-label">( Y / )</label>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="cus_alamatemail" class="col-sm-3 pl-0 col-form-label">Alamat
-                                                Email</label>
+                                            <label for="cus_alamatemail" class="col-sm-3 pl-0 col-form-label">@lang('Alamat Email')</label>
                                             <div class="col-sm-4">
                                                 <input type="text" class="form-control" id="cus_alamatemail">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="cus_nokartumember" class="col-sm-3 pl-0 col-form-label">Nomor
-                                                Kartu</label>
+                                            <label for="cus_nokartumember" class="col-sm-3 pl-0 col-form-label">@lang('Nomor Kartu')</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="cus_nokartumember">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="cus_flagblockingpengiriman"
-                                                   class="col-sm-3 pl-0 col-form-label">Blocking Pengiriman</label>
+                                                   class="col-sm-3 pl-0 col-form-label">@lang('Blocking Pengiriman')</label>
                                             <div class="col-sm-1">
                                                 <input type="text" class="form-control" id="cus_flagblockingpengiriman">
                                             </div>
@@ -843,8 +804,7 @@
                                         </div>
                                         <div class="form-group row">
                                             <label for="cus_flaginstitusipemerintah"
-                                                   class="col-sm-3 pl-0 col-form-label">Flag Institusi
-                                                Pemerintah</label>
+                                                   class="col-sm-3 pl-0 col-form-label">@lang('Flag Institusi Pemerintah')</label>
                                             <div class="col-sm-1">
                                                 <input type="text" class="form-control"
                                                        id="cus_flaginstitusipemerintah">
@@ -855,14 +815,14 @@
 
                                         <fieldset class="card border-secondary">
                                             <div class="card-header pb-0">
-                                                <h5 class="text-left">NPWP</h5>
+                                                <h5 class="text-left">@lang('NPWP')</h5>
                                             </div>
                                             <div class="card-body ">
                                                 <div class="row text-right">
                                                     <div class="col-sm-12">
                                                         <div class="form-group row mb-0">
                                                             <label for="i_alamatnpwp"
-                                                                   class="col-sm-3 pl-0 col-form-label">Alamat</label>
+                                                                   class="col-sm-3 pl-0 col-form-label">@lang('Alamat')</label>
                                                             <div class="col-sm-8 pl-0">
                                                                 <input type="text" class="form-control"
                                                                        id="i_alamatnpwp">
@@ -870,7 +830,7 @@
                                                         </div>
                                                         <div class="form-group row mb-0">
                                                             <label for="i_kelurahannpwp"
-                                                                   class="col-sm-3 pl-0 col-form-label">Kelurahan</label>
+                                                                   class="col-sm-3 pl-0 col-form-label">@lang('Kelurahan')</label>
                                                             <div class="col-sm-3 pl-0">
                                                                 <input type="text" class="form-control"
                                                                        id="i_kelurahannpwp">
@@ -878,14 +838,14 @@
                                                         </div>
                                                         <div class="form-group row mb-0">
                                                             <label for="i_kotanpwp"
-                                                                   class="col-sm-3 pl-0 col-form-label">Kota</label>
+                                                                   class="col-sm-3 pl-0 col-form-label">@lang('Kota')</label>
                                                             <div class="col-sm-3 pl-0">
                                                                 <input type="text" class="form-control" id="i_kotanpwp">
                                                             </div>
                                                         </div>
                                                         <div class="form-group row mb-0">
                                                             <label for="i_kodeposnpwp"
-                                                                   class="col-sm-3 pl-0 col-form-label">Kode Pos</label>
+                                                                   class="col-sm-3 pl-0 col-form-label">@lang('Kode Pos')</label>
                                                             <div class="col-sm-2 pl-0">
                                                                 <input type="text" class="form-control"
                                                                        id="i_kodeposnpwp">
@@ -942,46 +902,40 @@
                         <div class="row text-right">
                             <div class="col-sm-12">
                                 <div class="form-group row">
-                                    <label for="i_updateterakhir" class="col-sm-2 col-form-label">Update
-                                        Terakhir</label>
+                                    <label for="i_updateterakhir" class="col-sm-2 col-form-label">@lang('Update Terakhir')</label>
                                     <div class="col-sm-6">
                                         <input type="text" class="form-control" id="i_updateterakhir">
                                     </div>
-                                    <label for="i_harusdiisi" class="col-sm-4 text-right"><span class="wajib">*Harus diisi / ( - ) bila memang tidak memiliki data</span></label>
+                                    <label for="i_harusdiisi" class="col-sm-4 text-right"><span class="wajib">@lang('*Harus diisi / ( - ) bila memang tidak memiliki data')</span></label>
                                 </div>
                                 <div class="form-group row mb-0">
                                     <div class="col-sm-2 offset-sm-4">
-                                        <button id="btn-rekam" class="btn btn-success btn-block" disabled>SIMPAN
+                                        <button id="btn-rekam" class="btn btn-success btn-block" disabled>@lang('SIMPAN')
                                         </button>
                                     </div>
                                     <div class="col-sm-2">
-                                        <button id="btn-aktif-nonaktif" class="btn btn-primary btn-block" disabled>AKTIF
-                                            / NONAKTIF
+                                        <button id="btn-aktif-nonaktif" class="btn btn-primary btn-block" disabled>@lang('AKTIF / NONAKTIF')
                                         </button>
                                     </div>
                                     <div class="col-sm-2">
-                                        <button id="btn-quisioner" class="btn btn-info btn-block" style="display:none">
-                                            QUISIONER
+                                        <button id="btn-quisioner" class="btn btn-info btn-block" style="display:none">@lang('QUISIONER')
                                         </button>
                                     </div>
                                     <div class="col-sm-2">
-                                        <button id="btn-export-crm" class="btn btn-success btn-block" disabled>EXPORT KE
-                                            CRM
+                                        <button id="btn-export-crm" class="btn btn-success btn-block" disabled>@lang('EXPORT KE CRM')
                                         </button>
                                     </div>
                                 </div>
                                 <div class="form-group row mt-2">
                                     <div class="col-sm-2">
-                                        <button id="btn-hapus" class="btn btn-danger btn-block" disabled>HAPUS</button>
+                                        <button id="btn-hapus" class="btn btn-danger btn-block" disabled>@lang('HAPUS')</button>
                                     </div>
                                     <div class="col-sm-4 offset-sm-2">
-                                        <button id="btn-download-mktho" class="btn btn-primary btn-block" disabled>
-                                            DOWNLOAD CUSTOMER DR MKTHO
+                                        <button id="btn-download-mktho" class="btn btn-primary btn-block" disabled>@lang('DOWNLOAD CUSTOMER DR MKTHO')
                                         </button>
                                     </div>
                                     <div class="col-sm-2">
-                                        <button id="btn-check-registrasi" class="btn btn-primary btn-block" disabled>CEK
-                                            TGL REGISTRASI
+                                        <button id="btn-check-registrasi" class="btn btn-primary btn-block" disabled>@lang('CEK TGL REGISTRASI')
                                         </button>
                                     </div>
                                     <div class="col-sm-2">
@@ -1016,8 +970,8 @@
                                 <table class="table table-sm mb-0" id="table_lov_member">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Nama Member</th>
-                                        <th>Kode Member</th>
+                                        <th>@lang('Nama Member')</th>
+                                        <th>@lang('Kode Member')</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -1044,7 +998,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Kode POS</h5>
+                    <h5 class="modal-title">@lang('Master Kode POS')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1056,11 +1010,11 @@
                                 <table class="table table-sm mb-0" id="table_lov_kodepos">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Kelurahan</th>
-                                        <th>Kecamatan</th>
-                                        <th>Kota</th>
-                                        <th>Provinsi</th>
-                                        <th>Kode Pos</th>
+                                        <th>@lang('Kelurahan')</th>
+                                        <th>@lang('Kecamatan')</th>
+                                        <th>@lang('Kota')</th>
+                                        <th>@lang('Provinsi')</th>
+                                        <th>@lang('Kode Pos')</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -1090,7 +1044,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Jenis Member</h5>
+                    <h5 class="modal-title">@lang('Master Jenis Member')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1102,8 +1056,8 @@
                                 <table class="table table-sm mb-0" id="table_lov_jenismember">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Keterangan</th>
-                                        <th>Kode</th>
+                                        <th>@lang('Keterangan')</th>
+                                        <th>@lang('Kode')</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -1131,7 +1085,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Jenis Outlet</h5>
+                    <h5 class="modal-title">@lang('Master Jenis Outlet')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1143,8 +1097,8 @@
                                 <table class="table table-sm mb-0" id="table_lov_jenisoutlet">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Kode</th>
-                                        <th>Nama</th>
+                                        <th>@lang('Kode')</th>
+                                        <th>@lang('Nama')</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -1172,7 +1126,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Jenis Outlet</h5>
+                    <h5 class="modal-title">@lang('Master Jenis Outlet')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -1184,8 +1138,8 @@
                                 <table class="table table-sm mb-0" id="table_lov_suboutlet">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Kode</th>
-                                        <th>Nama</th>
+                                        <th>@lang('Kode')</th>
+                                        <th>@lang('Nama')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbody_table_lov_suboutlet">
@@ -1224,10 +1178,10 @@
                                 <table class="table table-sm mb-0" id="table_lov_group">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Group</th>
-                                        <th>Subgroup</th>
-                                        <th>Kategori</th>
-                                        <th>Subkategori</th>
+                                        <th>@lang('Group')</th>
+                                        <th>@lang('Subgroup')</th>
+                                        <th>@lang('Kategori')</th>
+                                        <th>@lang('Subkategori')</th>
                                         <th>ID Group</th>
                                     </tr>
                                     </thead>
@@ -1262,20 +1216,18 @@
                         <div class="row">
                             <div class="col-sm-12">
                                 <fieldset class="card border-secondary">
-                                    <legend class="w-auto ml-3">Quisioner Member Khusus</legend>
+                                    <legend class="w-auto ml-3">@lang('Quisioner Member Khusus')</legend>
                                     <div class="card-body">
                                         <div class="row text-right">
                                             <div class="col-sm-12">
                                                 <div class="form-group row mb-0">
-                                                    <label for="q_kodemember" class="col-sm-3 col-form-label">Kode
-                                                        Member</label>
+                                                    <label for="q_kodemember" class="col-sm-3 col-form-label">@lang('Kode Member')</label>
                                                     <div class="col-sm-3">
                                                         <input type="text" class="form-control" id="q_kodemember">
                                                     </div>
                                                 </div>
                                                 <div class="form-group row">
-                                                    <label for="q_namamember" class="col-sm-3 col-form-label wajib">Nama
-                                                        Member</label>
+                                                    <label for="q_namamember" class="col-sm-3 col-form-label wajib">@lang('Nama Member')</label>
                                                     <div class="col-sm-9">
                                                         <input type="text" class="form-control" id="q_namamember">
                                                     </div>
@@ -1287,10 +1239,10 @@
                                                 <table class="table table-sm mb-0" id="table_quisioner">
                                                     <thead>
                                                     <tr class="text-center">
-                                                        <td>Item</td>
-                                                        <td>Dijual</td>
-                                                        <td>Beli di IGR</td>
-                                                        <td>Beli Tempat Lain</td>
+                                                        <td>@lang('Item')</td>
+                                                        <td>@lang('Dijual')</td>
+                                                        <td>@lang('Beli di IGR')</td>
+                                                        <td>@lang('Beli Tempat Lain')</td>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -1336,7 +1288,7 @@
                                             <div class="col-sm-12">
                                                 <div class="form-group row mb-0">
                                                     <div class="col-sm-5 text-left">
-                                                        <label>Inputan Quisioner : [ Y / blank ]</label>
+                                                        <label>@lang('Inputan Quisioner : [ Y / blank ]')</label>
                                                     </div>
                                                     <div class="col-sm-5"></div>
                                                     <button type="submit" id="btn-q-save"
@@ -1362,8 +1314,7 @@
                 <div class="modal-body">
                     <div class="container">
                         <div class="form-group row text-center">
-                            <label for="i_username" class="col-sm-12 text-center col-form-label">Masukkan username dan
-                                password untuk melanjutkan</label>
+                            <label for="i_username" class="col-sm-12 text-center col-form-label">@lang('Masukkan username dan password untuk melanjutkan')</label>
                         </div>
                         <div class="form-group row text-center">
                             <div class="col-sm-2"></div>
@@ -1555,7 +1506,7 @@
                 if (event.which == 13) {
                     if ($(this).parent().parent().find('.dijual').val() == 'Y' && $(this).parent().parent().find('.beli-igr').val() == '' && $(this).parent().parent().find('.beli-lain').val() == '') {
                         swal({
-                            title: 'Kolom Beli di IGR atau Beli Tempat Lain harus diisi!',
+                            title: "{{__('Kolom Beli di IGR atau Beli Tempat Lain harus diisi!')}}",
                             icon: 'warning',
                             timer: 1000
                         }).then(() => {
@@ -1762,7 +1713,7 @@
             if (event.which == 13) {
                 if (this.value.length == 0) {
                     swal({
-                        title: "Isikan Nomor Anggota terlebih dahulu!",
+                        title: "{{__('Isikan Nomor Anggota terlebih dahulu!')}}",
                         icon: "error",
                         timer: 750,
                         buttons: false,
@@ -1910,7 +1861,7 @@
                 }
                 if (!found) {
                     swal({
-                        title: "Jenis Member Tidak Ditemukan",
+                        title: "{{__('Jenis Member Tidak Ditemukan')}}",
                         icon: "error"
                     }).then(function () {
                         swal.close();
@@ -1950,7 +1901,7 @@
                 }
                 if (!found) {
                     swal({
-                        title: "Jenis Outlet Tidak Ditemukan",
+                        title: "{{__('Jenis Outlet Tidak Ditemukan')}}",
                         icon: "error",
                         closeModal: false
                     }).then(function () {
@@ -1988,7 +1939,7 @@
 
                 if (!found && this.value != '') {
                     swal({
-                        title: "Jenis Sub Outlet Tidak Ditemukan",
+                        title: "{{__('Jenis Sub Outlet Tidak Ditemukan')}}",
                         icon: "error",
                         closeModal: false
                     }).then(function () {
@@ -2005,7 +1956,7 @@
                 this.value = this.value.toUpperCase();
                 if (this.value != 'Y' && this.value != 'T' && this.value != '') {
                     swal({
-                        title: "Pastikan inputan hanya berupa Y atau T",
+                        title: "{{__('Pastikan inputan hanya berupa Y atau T')}}",
                         icon: "error",
                         closeModal: false
                     }).then(function () {
@@ -2029,7 +1980,7 @@
                 this.value = this.value.toUpperCase();
                 if (this.value != 'Y' && this.value != 'T' && this.value != '') {
                     swal({
-                        title: "Pastikan inputan hanya berupa Y atau T!",
+                        title: "{{__('Pastikan inputan hanya berupa Y atau T!')}}",
                         icon: "error",
                         closeModal: false
                     }).then(function () {
@@ -2059,7 +2010,7 @@
             if (event.which == 13) {
                 if (this.value < 0) {
                     swal({
-                        title: "Pastikan nilai limit tidak kurang dari nol!",
+                        title: "{{__('Pastikan nilai limit tidak kurang dari nol!')}}",
                         icon: "error",
                         closeModal: false
                     }).then(function () {
@@ -2086,7 +2037,7 @@
             if (event.which == 13) {
                 if (this.value < 0) {
                     swal({
-                        title: "Pastikan nilai TOP tidak kurang dari nol!",
+                        title: "{{__('Pastikan nilai TOP tidak kurang dari nol!')}}",
                         icon: "error",
                         closeModal: false
                     }).then(function () {
@@ -2128,7 +2079,7 @@
                 } else {
                     if ($('#cus_flagmemberkhusus').val() != 'Y' && this.value != 'BIRU') {
                         swal({
-                            title: "Group harus diisi BIRU karena bukan member khusus",
+                            title: "{{__('Group harus diisi BIRU karena bukan member khusus')}}",
                             icon: "error",
                             closeModal: false
                         }).then(function () {
@@ -2273,7 +2224,7 @@
         $('#crm_agama').on('keydown', function (event) {
             if (this.value == null) {
                 swal({
-                    title: "Agama harus diisi!",
+                    title: "{{__('Agama harus diisi!')}}",
                     icon: "error",
                     closeModal: false
                 }).then(function () {
@@ -2308,7 +2259,7 @@
 
                     if (!found) {
                         swal({
-                            title: "Format Tanggal Salah",
+                            title: "{{__('Format Tanggal Salah')}}",
                             icon: "error",
                             closeModal: false
                         }).then(function () {
@@ -2328,7 +2279,7 @@
             if (event.which == 13) {
                 if (this.value.length > 0 && this.value < 0) {
                     swal({
-                        title: "Jumlah anak tidak boleh kurang dari nol!",
+                        title: "{{__('Jumlah anak tidak boleh kurang dari nol!')}}",
                         icon: "error",
                         closeModal: false
                     }).then(function () {
@@ -2671,7 +2622,7 @@
             if (event.which == 13) {
                 if (this.value != 'Y' && this.value != '') {
                     swal({
-                        title: "Pastikan inputan hanya berupa Y atau kosong",
+                        title: "{{__('Pastikan inputan hanya berupa Y atau kosong')}}",
                         icon: "error",
                         closeModal: false
                     }).then(function () {
@@ -2694,7 +2645,7 @@
             if (event.which == 13) {
                 if (this.value != 'Y' && this.value != '') {
                     swal({
-                        title: "Pastikan inputan hanya berupa Y atau kosong",
+                        title: "{{__('Pastikan inputan hanya berupa Y atau kosong')}}",
                         icon: "error",
                         closeModal: false
                     }).then(function () {
@@ -2711,7 +2662,7 @@
             if (event.which == 13) {
                 if (this.value != 'Y' && this.value != '') {
                     swal({
-                        title: "Pastikan inputan hanya berupa Y atau kosong",
+                        title: "{{__('Pastikan inputan hanya berupa Y atau kosong')}}",
                         icon: "error",
                         closeModal: false
                     }).then(function () {
@@ -2745,7 +2696,7 @@
                             $('#table_lov_member .row_lov').remove();
                             html = "";
                             if (response.length == 0) {
-                                html = '<tr class="not-found"><td>Member tidak ditemukan</td></tr>';
+                                html = '<tr class="not-found"><td>@lang('Member tidak ditemukan')</td></tr>';
                                 $('#table_lov_member').append(html);
                             } else {
                                 for (i = 0; i < response.length; i++) {
@@ -2996,8 +2947,8 @@
 
                     if (response == 'not-found') {
                         swal({
-                            title: "Data Member Tidak Ditemukan!",
-                            text: "Cek kembali kode member",
+                            title: "{{__('Data Member Tidak Ditemukan!')}}",
+                            text: "{{__('Cek kembali kode member')}}",
                             icon: "error",
                             buttons: false,
                             timer: 1250
@@ -3041,7 +2992,7 @@
 
                         if (ktp == null) {
                             swal({
-                                title: "Kecamatan tidak terdaftar di database!",
+                                title: "{{__('Kecamatan tidak terdaftar di database!')}}",
                                 icon: "error"
                             });
 
@@ -3343,8 +3294,8 @@
                 success: function (response) {
                     if (response == 'not-found') {
                         swal({
-                            title: "Kelurahan tidak terdaftar di database!",
-                            text: "Cek ulang inputan kelurahan",
+                            title: "{{__('Kelurahan tidak terdaftar di database!')}}",
+                            text: "{{__('Cek ulang inputan kelurahan')}}",
                             icon: "error",
                             buttons: false,
                             timer: 750
@@ -3588,7 +3539,7 @@
                 let suboutlet = $('#cus_kodesuboutlet').val();
                 if (!suboutlet) {
                     swal({
-                        title: "Sub Outlet Tidak Boleh Kosong !!!",
+                        title: "{{__('Sub Outlet Tidak Boleh Kosong !!!')}}",
                         text: '',
                         icon: 'warning',
                         timer: 1000
@@ -3600,7 +3551,7 @@
 
             if (!isApproved && member.cus_creditlimit != $('#cus_creditlimit').val()) {
                 swal({
-                    title: 'Butuh approval untuk perubahan credit limit, data belum disimpan!',
+                    title: "{{__('Butuh approval untuk perubahan credit limit, data belum disimpan!')}}",
                     icon: 'warning'
                 }).then(function () {
                     approvalMode = 'kredit';
@@ -3612,7 +3563,7 @@
                 })
             } else if (ok) {
                 swal({
-                    title: 'Yakin ingin menyimpan data?',
+                    title: "{{__('Yakin ingin menyimpan data?')}}",
                     icon: "warning",
                     buttons: true,
                     dangerMode: true,
@@ -3758,7 +3709,7 @@
                 });
             } else {
                 swal({
-                    title: 'Data  yang diinputkan belum lengkap!',
+                    title: "{{__('Data yang diinputkan belum lengkap!')}}",
                     text: ' ',
                     icon: "warning",
                     timer: 750,
@@ -3773,7 +3724,7 @@
         $('#btn-aktif-nonaktif').on('click', function () {
             if (member.cus_kodeigr != '{{Session::get('kdigr')}}') {
                 swal({
-                    title: 'Data yang akan diproses tidak sesuai dengan cabang anda!',
+                    title: "{{__('Data yang akan diproses tidak sesuai dengan cabang anda!')}}",
                     icon: 'error'
                 });
             } else {
@@ -3783,15 +3734,15 @@
 
                 if (member.cus_recordid == '1') {
                     if (member.cus_flagmemberkhusus === 'Y') {
-                        message = "Kode Anggota " + member.cus_kodemember + " merupakan member merah, tidak dapat diaktifkan kembali!";
+                        message = "{{__('Kode Anggota ')}}" + member.cus_kodemember + "{{__(' merupakan member merah, tidak dapat diaktifkan kembali!')}}";
                         status = '';
                         isValid = false;
                     } else {
-                        message = "Kode Anggota " + member.cus_kodemember + " dibuat aktif kembali?";
+                        message = "{{__('Kode Anggota ')}}" + member.cus_kodemember + "{{__(' dibuat aktif kembali?')}}";
                         status = '';
                     }
                 } else {
-                    message = "Kode Anggota " + member.cus_kodemember + " dibuat tidak aktif?";
+                    message = "{{__('Kode Anggota ')}}" + member.cus_kodemember + "{{__(' dibuat tidak aktif?')}}";
                     status = '1';
                 }
 
@@ -3832,7 +3783,7 @@
 
         $('#btn-export-crm').on('click', function () {
             swal({
-                title: 'Apabila ada perubahan data, pastikan sudah disimpan sebelum diexport ke CRM! Lanjut export?',
+                title: "{{__('Apabila ada perubahan data, pastikan sudah disimpan sebelum diexport ke CRM! Lanjut export?')}}",
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
@@ -3938,7 +3889,7 @@
 
             if (!pass) {
                 swal({
-                    title: 'Kolom Beli di IGR atau Beli Tempat Lain untuk ' + name + ' harus diisi!',
+                    title: "{{__('Kolom Beli di IGR atau Beli Tempat Lain untuk ')}}" + name + "{{__(' harus diisi!')}}",
                     icon: 'warning',
                     timer: 1000
                 }).then(() => {
@@ -3946,7 +3897,7 @@
                 });
             } else {
                 swal({
-                    title: "Yakin ingin menyimpan data?",
+                    title: "{{__('Yakin ingin menyimpan data?')}}",
                     icon: "warning",
                     buttons: true,
                     dangerMode: true
@@ -3994,12 +3945,12 @@
         $('#btn-hapus').on('click', function () {
             if (member.cus_kodeigr != '{{Session::get('kdigr')}}') {
                 swal({
-                    title: "Data yang akan diproses tidak sesuai dengan cabang anda!",
+                    title: "{{__('Data yang akan diproses tidak sesuai dengan cabang anda!')}}",
                     icon: "error"
                 });
             } else {
                 swal({
-                    title: 'Kode anggota ' + member.cus_kodemember + ' dihapus permanen?',
+                    title: "{{__('Kode anggota ')}}" + member.cus_kodemember + "{{__(' dihapus permanen?')}}",
                     icon: 'warning',
                     buttons: true,
                     dangerMode: true
@@ -4216,7 +4167,7 @@
                                     $('#m_aktifnonaktif').modal('hide');
                                     if (response == 'success') {
                                         swal({
-                                            title: "Berhasil mengubah status member!",
+                                            title: "{{__('Berhasil mengubah status member!')}}",
                                             icon: "success"
                                         }).then(function () {
                                             if (status == '') {
@@ -4229,7 +4180,7 @@
                                         });
                                     } else {
                                         swal({
-                                            title: "Gagal mengubah status member!",
+                                            title: "{{__('Gagal mengubah status member!')}}",
                                             icon: "error"
                                         });
                                     }
@@ -4239,7 +4190,7 @@
                             isApproved = true;
 
                             swal({
-                                title: 'Perubahan credit limit disetujui, silahkan menyimpan data!',
+                                title: "{{__('Perubahan credit limit disetujui, silahkan menyimpan data!')}}",
                                 icon: 'success'
                             }).then(function () {
                                 $('#m_aktifnonaktif').modal('hide');
@@ -4251,7 +4202,7 @@
                         console.log(response);
                         if (response == 'userlevel') {
                             swal({
-                                title: "Anda tidak berhak melakukan approval!",
+                                title: "{{__('Anda tidak berhak melakukan approval!')}}",
                                 icon: "error"
                             }).then(function () {
                                 $('#i_password').select();
@@ -4259,7 +4210,7 @@
                             });
                         } else {
                             swal({
-                                title: "Username atau password salah!",
+                                title: "{{__('Username atau password salah!')}}",
                                 icon: "error"
                             }).then(function () {
                                 $('#modal-loader').modal('hide');
@@ -4318,7 +4269,7 @@
                         console.log(response);
                         if (response == 'userlevel') {
                             swal({
-                                title: "Anda tidak berhak melakukan approval!",
+                                title: "{{__('Anda tidak berhak melakukan approval!')}}",
                                 icon: "error"
                             }).then(function () {
                                 $('#modal-loader').modal('hide');
@@ -4326,7 +4277,7 @@
                             });
                         } else {
                             swal({
-                                title: "Username atau password salah!",
+                                title: "{{__('Username atau password salah!')}}",
                                 icon: "error"
                             }).then(function () {
                                 $('#modal-loader').modal('hide');

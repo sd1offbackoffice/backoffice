@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','MASTER | MASTER LOKASI')
+@section('title',(__('MASTER | MASTER LOKASI')))
 @section('content')
 
 
@@ -9,34 +9,34 @@
                 <div class="card border-dark">
                     <div class="card-body shadow-lg cardForm">
                         <div class="row">
-                            <label for="lks_koderak" class="col-sm-1 col-form-label">KODE RAK</label>
+                            <label for="lks_koderak" class="col-sm-1 col-form-label">@lang('KODE RAK')</label>
                             <div class="col-sm-1 buttonInside">
                                 <input maxlength="10" type="text" class="form-control" id="lks_koderak">
                                 <button id="btn-lov" type="button" class="btn btn-lov btn-primary p-0" data-toggle="modal" data-target="#m_lov_rak">
                                     <i class="fas fa-question"></i>
                                 </button>
                             </div>
-                            <label class="col-sm-2 col-form-label" id="keterangan" style="display: none">** TAMBAH RAK **</label>
+                            <label class="col-sm-2 col-form-label" id="keterangan" style="display: none">@lang('** TAMBAH RAK **')</label>
                         </div>
                         <div class="row">
-                            <label for="lks_kodesubrak" class="col-sm-1 col-form-label">SUB RAK</label>
+                            <label for="lks_kodesubrak" class="col-sm-1 col-form-label">@lang('SUB RAK')</label>
                             <div class="col-sm-1">
                                 <input maxlength="10" type="text" class="form-control" id="lks_kodesubrak">
                             </div>
                         </div>
                         <div class="row">
-                            <label for="lks_tiperak" class="col-sm-1 col-form-label">TIPE RAK</label>
+                            <label for="lks_tiperak" class="col-sm-1 col-form-label">@lang('TIPE RAK')</label>
                             <div class="col-sm-1">
                                 <input maxlength="10" type="text" class="form-control" id="lks_tiperak">
                             </div>
                         </div>
                         <div class="row">
-                            <label for="lks_shelvingrak" class="col-sm-1 col-form-label">SHELVING</label>
+                            <label for="lks_shelvingrak" class="col-sm-1 col-form-label">@lang('SHELVING')</label>
                             <div class="col-sm-1">
                                 <input maxlength="10" type="text" class="form-control" id="lks_shelvingrak">
                             </div>
                             <div class="col-sm-4"></div>
-                            <label for="jumlahitem" class="col-sm-1 col-form-label">JUMLAH ITEM</label>
+                            <label for="jumlahitem" class="col-sm-1 col-form-label">@lang('JUMLAH ITEM')</label>
                             <div class="col-sm-1">
                                 <input disabled maxlength="10" type="text" class="form-control" id="jumlahitem">
                             </div>
@@ -50,17 +50,17 @@
                                         <thead>
                                             <tr class="text-center no-border">
                                                 <th rowspan="2" width="3%"></th>
-                                                <th rowspan="2" width="3%">NO</th>
-                                                <th rowspan="2" width="3%">D - B</th>
-                                                <th rowspan="2" width="3%">A - B</th>
-                                                <th rowspan="2" width="6%">PLU</th>
-                                                <th rowspan="2" width="3%">JENIS</th>
-                                                <th rowspan="2" width="25%">DESKRIPSI</th>
-                                                <th rowspan="2" width="5%">SATUAN</th>
-                                                <th rowspan="2" width="5%">NO ID</th>
-                                                <th colspan="3">DIMENSI</th>
-                                                <th colspan="3">T I R</th>
-                                                <th colspan="2">DISPLAY</th>
+                                                <th rowspan="2" width="3%">@lang('NO')</th>
+                                                <th rowspan="2" width="3%">@lang('D - B')</th>
+                                                <th rowspan="2" width="3%">@lang('A - B')</th>
+                                                <th rowspan="2" width="6%">@lang('PLU')</th>
+                                                <th rowspan="2" width="3%">@lang('JENIS')</th>
+                                                <th rowspan="2" width="25%">@lang('DESKRIPSI')</th>
+                                                <th rowspan="2" width="5%">@lang('SATUAN')</th>
+                                                <th rowspan="2" width="5%">@lang('NO ID')</th>
+                                                <th colspan="3">@lang('DIMENSI')</th>
+                                                <th colspan="3">@lang('T I R')</th>
+                                                <th colspan="2">@lang('DISPLAY')</th>
                                                 <th rowspan="2" width="5%">PKM</th>
                                                 <th rowspan="2">QTY<br>(PCS)</th>
                                                 <th rowspan="2">MIN PCT<br>(%)</th>
@@ -123,9 +123,9 @@
                                             <th class="align-middle" width="5%">D - B</th>
                                             <th class="align-middle" width="5%">A - B</th>
                                             <th class="align-middle" width="10%">PLU</th>
-                                            <th class="align-middle" width="10%">JENIS</th>
-                                            <th class="align-middle" width="30%">DESKRIPSI</th>
-                                            <th class="align-middle" width="7%">SATUAN</th>
+                                            <th class="align-middle" width="10%">@lang('JENIS')</th>
+                                            <th class="align-middle" width="30%">@lang('DESKRIPSI')</th>
+                                            <th class="align-middle" width="7%">@lang('SATUAN')</th>
                                             <th class="align-middle" width="7%">QTY (pcs)</th>
                                             <th class="align-middle" width="10%">EXPIRED DATE</th>
                                             <th class="align-middle" width="10%">MAX PALET (CTN)</th>
@@ -142,7 +142,7 @@
 
                         <ul class="nav nav-tabs custom-color" role="tablist">
                             <li class="nav-item">
-                                <a class="nav-link active" id="btn-tambah" data-toggle="tab" href="#p_tambah">TAMBAH</a>
+                                <a class="nav-link active" id="btn-tambah" data-toggle="tab" href="#p_tambah">@lang('TAMBAH')</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" id="btn-noid" data-toggle="tab" href="#p_input_noid">INPUT NO ID</a>
@@ -160,10 +160,10 @@
                                                         <th width="3%">NO</th>
                                                         <th width="3%">D - B</th>
                                                         <th width="3%">A - B</th>
-                                                        <th width="5%">PLU</th>
-                                                        <th width="3%">JENIS</th>
-                                                        <th width="27%">DESKRIPSI</th>
-                                                        <th width="6%">SATUAN</th>
+                                                        <th width="5%">@lang('PLU')</th>
+                                                        <th width="3%">@lang('JENIS')</th>
+                                                        <th width="27%">@lang('DESKRIPSI')</th>
+                                                        <th width="6%">@lang('SATUAN')</th>
                                                         <th width="5%">NO ID</th>
                                                         <th width="4%">P</th>
                                                         <th width="4%">L</th>
@@ -221,8 +221,8 @@
                                                 <thead>
                                                 <tr>
                                                     <th width="10%">NO.</th>
-                                                    <th width="20%">Jenis Rak</th>
-                                                    <th width="30%">MAX PALET</th>
+                                                    <th width="20%">@lang('Jenis Rak')</th>
+                                                    <th width="30%">@lang('MAX PALET')</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -236,7 +236,7 @@
                                         </div>
                                 </div>
                                     {{--                                            <p class="float-left">Flag Delete PLU hanya berlaku untuk Storage Toko</p> maksudnya??--}}
-                                    <button id="btn-tambah" class="btn btn-info float-right" onclick="tambah()">TAMBAH</button>
+                                    <button id="btn-tambah" class="btn btn-info float-right" onclick="tambah()">@lang('TAMBAH')</button>
                                     {{--<button class="btn btn-success">SIMPAN</button>--}}
                                 </div>
                             </div>
@@ -274,13 +274,13 @@
                             <legend  class="w-auto ml-5">ENTRY MASTER NO ID DPD</legend>
                             <div class="card-body shadow-lg cardForm">
                                 <div class="row">
-                                    <label for="periode" class="col-sm-3 col-form-label">NOMOR ID DPD</label>
+                                    <label for="periode" class="col-sm-3 col-form-label">@lang('NOMOR ID DPD')</label>
                                     <div class="col-sm-3">
                                         <input maxlength="5" type="text" class="form-control" id="dpd_noid">
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <label for="periode" class="col-sm-3 col-form-label">KODE RAK</label>
+                                    <label for="periode" class="col-sm-3 col-form-label">@lang('KODE RAK')</label>
                                     <div class="col-sm-3">
                                         <input maxlength="10" type="text" class="form-control" id="dpd_koderak">
                                     </div>
@@ -289,13 +289,13 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <label for="periode" class="col-sm-3 col-form-label">KODE SUB RAK</label>
+                                    <label for="periode" class="col-sm-3 col-form-label">@lang('KODE SUB RAK')</label>
                                     <div class="col-sm-3">
                                         <input maxlength="10" type="text" class="form-control" id="dpd_kodesubrak">
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <label for="periode" class="col-sm-3 col-form-label">TIPE RAK</label>
+                                    <label for="periode" class="col-sm-3 col-form-label">@lang('TIPE RAK')</label>
                                     <div class="col-sm-3">
                                         <input maxlength="10" type="text" class="form-control" id="dpd_tiperak">
                                     </div>
@@ -307,7 +307,7 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <label for="periode" class="col-sm-3 col-form-label">NOMOR URUT</label>
+                                    <label for="periode" class="col-sm-3 col-form-label">@lang('NOMOR URUT')</label>
                                     <div class="col-sm-3">
                                         <input maxlength="10" type="text" class="form-control" id="dpd_nourut">
                                     </div>
@@ -334,7 +334,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Barang</h5>
+                    <h5 class="modal-title">@lang('Master Barang')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -346,10 +346,10 @@
                                 <table class="table table-sm mb-0" id="table_lov_rak">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>RAK</th>
-                                        <th>SUB RAK</th>
-                                        <th>TIPE</th>
-                                        <th>SHELV</th>
+                                        <th>@lang('RAK')</th>
+                                        <th>@lang('SUB RAK')</th>
+                                        <th>@lang('TIPE')</th>
+                                        <th>@lang('SHELV')</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -368,7 +368,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Data Barang</h5>
+                    <h5 class="modal-title">@lang('Data Barang')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -380,8 +380,8 @@
                                 <table class="table table-sm" id="table_lov_plu">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <td>PLU</td>
-                                        <td>Deskripsi</td>
+                                        <td>@lang('PLU')</td>
+                                        <td>@lang('Deskripsi')</td>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -588,7 +588,7 @@
         function lov_rak_select(row){ //fungsi memilih rak
             if(row == 'input' && ($('#lks_koderak').val() == '' || $('#lks_kodesubrak').val() == '' || $('#lks_tiperak').val() == '' || $('#lks_shelvingrak').val() == '')){
                 swal({
-                    title: 'Inputan tidak lengkap!',
+                    title: "{{__('Inputan tidak lengkap!')}}",
                     icon: 'error'
                 }).then(function(){
                     if($('#lks_koderak').val() == '')
@@ -1276,21 +1276,21 @@
             //untuk mencegah ada value kosong dalam inputan
             titleEmpty = '';
             if(data['dpd_noid'] === '') {
-                titleEmpty = 'Nomor ID DPD';
+                titleEmpty = "{{__('Nomor ID DPD')}}";
             }else if(data['dpd_koderak'] === ''){
-                titleEmpty = 'Kode Rak';
+                titleEmpty = "{{__('Kode Rak')}}";
             }else if(data['dpd_kodesubrak'] === ''){
-                titleEmpty = 'Kode Sub Rak';
+                titleEmpty = "{{__('Kode Sub Rak')}}";
             }else if(data['dpd_tiperak'] === ''){
-                titleEmpty = 'Tipe Rak';
+                titleEmpty = "{{__('Tipe Rak')}}";
             }else if(data['dpd_shelvingrak'] === ''){
-                titleEmpty = 'Shelving';
+                titleEmpty = "{{__('Shelving')}}";
             }else if(data['dpd_nourut'] === ''){
-                titleEmpty = 'Nomor Urut';
+                titleEmpty = "{{__('Nomor Urut')}}";
             }
             if(titleEmpty !== ''){
                 swal({
-                    title: titleEmpty+' tidak boleh kosong!',
+                    title: titleEmpty+"{{__(' tidak boleh kosong!')}}",
                     icon: 'warning',
                     dangerMode: true
                 })
@@ -1340,7 +1340,7 @@
 
         function delete_dpd(){
             swal({
-                title: 'Hapus NOID?',
+                title: "{{__('Hapus NOID?')}}",
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true
@@ -1397,11 +1397,11 @@
 
         function deleteRow(row){
             swal({
-                title: 'Ingin menghapus data?',
+                title: "{{__('Ingin menghapus data?')}}",
                 icon: 'warning',
                 buttons: {
-                    plu: "Hapus PLU",
-                    lokasi: "Hapus Lokasi",
+                    plu: "{{__('Hapus PLU')}}",
+                    lokasi: "{{__('Hapus Lokasi')}}",
                     cancel: "Cancel",
                 },
             }).then(function(click){
@@ -1513,12 +1513,12 @@
             title = '';
 
             if (value < 0 || value > parseInt($('#table-all').find('.lks_nourut').last().val()) + 1) {
-                title = 'Nomor urut tidak valid!';
+                title = "{{__('Nomor urut tidak valid!')}}";
             }
             else {
                 $('#table-all').find('.lks_nourut').each(function () {
                     if ($(this).val() == value) {
-                        title = 'Nomor urut sudah dipakai untuk PLU '+$(this).parent().parent().find('.lks_prdcd').val()+'!';
+                        title = "{{__('Nomor urut sudah dipakai untuk PLU ')}}"+$(this).parent().parent().find('.lks_prdcd').val()+'!';
                     }
                 });
             }
@@ -1554,7 +1554,7 @@
             if(value < 0){
                 dbOk = false;
                 swal({
-                    title: 'Inputan tidak valid!',
+                    title: "{{__('Inputan tidak valid!')}}",
                     icon: 'error'
                 }).then(function(){
                     $('#row_tambah').find('.lks_depanbelakang').select();
@@ -1585,7 +1585,7 @@
             if(value < 0){
                 abOk = false;
                 swal({
-                    title: 'Inputan tidak valid!',
+                    title: "{{__('Inputan tidak valid!')}}",
                     icon: 'error'
                 }).then(function(){
                     $('#row_tambah').find('.lks_atasbawah').select();
@@ -1612,7 +1612,7 @@
             $('#table-all').find('.lks_prdcd').each(function(){
                 if($(this).val() == prdcd){
                     swal({
-                        title: 'PLU sudah terdaftar!',
+                        title: "{{__('PLU sudah terdaftar!')}}",
                         icon: 'error'
                     }).then(function(){
                         $('#row_tambah').find('.t_lks_prdcd').select();
@@ -1695,7 +1695,7 @@
             if($('#row_tambah').find('.lks_tirkirikanan').val() < 0){
                 tirkkOk = false;
                 swal({
-                    title: 'Inputan tidak valid!',
+                    title: "{{__('Inputan tidak valid!')}}",
                     icon: 'error'
                 }).then(function(){
                     $('#row_tambah').find('.lks_tirkirikanan').select();
@@ -1727,7 +1727,7 @@
             if($('#row_tambah').find('.lks_tirdepanbelakang').val() < 0){
                 tirdbOk = false;
                 swal({
-                    title: 'Inputan tidak valid!',
+                    title: "{{__('Inputan tidak valid!')}}",
                     icon: 'error'
                 }).then(function(){
                     $('#row_tambah').find('.lks_tirdepanbelakang').select();
@@ -1759,7 +1759,7 @@
             if($('#row_tambah').find('.lks_tiratasbawah').val() < 0){
                 tirabOk = false;
                 swal({
-                    title: 'Inputan tidak valid!',
+                    title: "{{__('Inputan tidak valid!')}}",
                     icon: 'error'
                 }).then(function(){
                     $('#row_tambah').find('.lks_tiratasbawah').select();
@@ -1797,7 +1797,7 @@
             if($('#row_tambah').find('.lks_maxdisplay').val() < 0){
                 maxdisOk = false;
                 swal({
-                    title: 'Inputan tidak valid!',
+                    title: "{{__('Inputan tidak valid!')}}",
                     icon: 'error'
                 }).then(function(){
                     $('#row_tambah').find('.lks_maxdisplay').select();
@@ -1829,7 +1829,7 @@
             if($('#row_tambah').find('.lks_minpct').val() < 0){
                 minpctOk = false;
                 swal({
-                    title: 'Inputan harus lebih dari nol!',
+                    title: "{{__('Inputan harus lebih dari nol!')}}",
                     icon: 'error'
                 }).then(function(){
                     $('#row_tambah').find('.lks_minpct').select();
@@ -1861,7 +1861,7 @@
             if($('#row_tambah').find('.lks_maxplano').val() < 0){
                 maxplanoOk = false;
                 swal({
-                    title: 'Inputan harus lebih dari nol!',
+                    title: "{{__('Inputan harus lebih dari nol!')}}",
                     icon: 'error'
                 }).then(function(){
                     $('#row_tambah').find('.lks_maxplano').select();
@@ -1961,7 +1961,7 @@
             }
             else{
                 swal({
-                    title: 'Inputan tidak sesuai!',
+                    title: "{{__('Inputan tidak sesuai!')}}",
                     icon: 'error'
                 }).then(function(){
                     if(!nourutOk)

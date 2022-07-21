@@ -218,11 +218,11 @@ class KubikasiPlanoController extends Controller
                         ->update(['kbp_volumeshell' => $request->value['volume'][$i], 'kbp_allowance' => $request->value['allowance'][$i], 'kbp_modify_dt' => Carbon::now(), 'KBP_MODIFY_BY' => 'WEB']);
                 }
             }
-            $message = 'Data Berhasil Terupdate!';
+            $message = (__('Data Berhasil Terupdate!'));
             $status = 'success';
         }
         else {
-            $message = 'Tidak Ada Data Yang Terupdate!';
+            $message = (__('Tidak Ada Data Yang Terupdate!'));
             $status = 'info';
         }
 

@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','PB | PB OTOMATIS')
+@section('title',(__('PB | PB OTOMATIS')))
 @section('content')
 
 <div class="container mt-4">
@@ -11,18 +11,18 @@
                         <div class="col-sm-12">
                             <form class="form">
                                 <div class="form-group row mb-0">
-                                    <label class="col-sm-4 col-form-label text-md-right">Jenis PB</label>
+                                    <label class="col-sm-4 col-form-label text-md-right">@lang('Jenis PB')</label>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input field jenisPB" type="radio" name="jenisPB" id="reguler" value="R" checked>
-                                        <label class="form-check-label" for="reguler">REGULER</label>
+                                        <label class="form-check-label" for="reguler">@lang('REGULER')</label>
                                     </div>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input field jenisPB" type="radio" name="jenisPB" id="gms" value="G">
-                                        <label class="form-check-label" for="gms">GMS</label>
+                                        <label class="form-check-label" for="gms">@lang('GMS')</label>
                                     </div>
                                 </div>
                                 <div class="form-group row mb-0">
-                                    <label class="col-sm-4 col-form-label text-md-right">Supplier</label>
+                                    <label class="col-sm-4 col-form-label text-md-right">@lang('Supplier')</label>
                                     <div class="col-sm-2 buttonInside">
                                         <input type="text" id="i_supp1" class="form-control field field1" field="1">
                                         <button class="btn btn-lov p-0" type="button" data-toggle="modal" onclick="showModalSupplier('i_supp1')">
@@ -37,7 +37,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group row mb-0">
-                                    <label class="col-sm-4 col-form-label text-md-right">Monitoring Supplier</label>
+                                    <label class="col-sm-4 col-form-label text-md-right">@lang('Monitoring Supplier')</label>
                                     <select class="form-control col-sm-4 ml-3 field field3" id="i_mtrSup1">
                                         <option value="" disabled selected>...</option>
                                         @foreach($mtrsup as $data)
@@ -49,7 +49,7 @@
 {{--                                    <input type="text" id="i_mtrSup2" class="form-control col-sm-4 ml-3" disabled>--}}
                                 </div>
                                 <div class="form-group row mb-0">
-                                    <label class="col-sm-4 col-form-label text-md-right">Kode Departement</label>
+                                    <label class="col-sm-4 col-form-label text-md-right">@lang('Kode Departement')</label>
 
                                     <div class="col-sm-2 buttonInside">
                                         <input type="text" id="i_dept1" class="form-control field field4" field="4">
@@ -66,7 +66,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group row mb-0">
-                                    <label class="col-sm-4 col-form-label text-md-right">Kode Kategori</label>
+                                    <label class="col-sm-4 col-form-label text-md-right">@lang('Kode Kategori')</label>
 
                                     <div class="col-sm-2 buttonInside">
                                         <input type="text" id="i_kat1" class="form-control field field6" field="6">
@@ -81,7 +81,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                <button type="button" id="btnAktifkanHrg" class="btn btn-primary pl-4 pr-4 float-right field field8" onclick="proses()" field="8">PROSES</button>
+                                <button type="button" id="btnAktifkanHrg" class="btn btn-primary pl-4 pr-4 float-right field field8" onclick="proses()" field="8">@lang('PROSES')</button>
                             </form>
                         </div>
                     </div>
@@ -100,7 +100,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Master Supplier</h5>
+                <h5 class="modal-title">@lang('Master Supplier')</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -112,8 +112,8 @@
                             <table class="table table-sm" id="tableModalSupplier">
                                 <thead class="theadDataTables">
                                 <tr>
-                                    <th>KODE SUPPLIER</th>
-                                    <th>NAMA SUPPLIER</th>
+                                    <th>@lang('KODE SUPPLIER')</th>
+                                    <th>@lang('NAMA SUPPLIER')</th>
                                 </tr>
                                 </thead>
                                 <tbody id="tbodyModalHelp"></tbody>
@@ -133,7 +133,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Master Departemen</h5>
+                <h5 class="modal-title">@lang('Master Departemen')</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -145,8 +145,8 @@
                             <table class="table table-sm" id="tableModalDepartemen">
                                 <thead class="theadDataTables">
                                 <tr>
-                                    <th>KODE DEPARTEMEN</th>
-                                    <th>NAMA DEPARTEMEN</th>
+                                    <th>@lang('KODE DEPARTEMEN')</th>
+                                    <th>@lang('NAMA DEPARTEMEN')</th>
                                 </tr>
                                 </thead>
                                 <tbody id="tbodyModalHelp">
@@ -173,7 +173,7 @@
     <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Master Kategori</h5>
+                <h5 class="modal-title">@lang('Master Kategori')</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -185,9 +185,9 @@
                             <table class="table table-sm" id="tableModalKategori">
                                 <thead class="theadDataTables">
                                 <tr>
-                                    <th>DEPT</th>
-                                    <th>KODE</th>
-                                    <th>KATEGORI</th>
+                                    <th>@lang('DEPT')</th>
+                                    <th>@lang('KODE')</th>
+                                    <th>@lang('KATEGORI')</th>
                                 </tr>
                                 </thead>
                                 <tbody id="tbodyModalHelp">
@@ -252,7 +252,7 @@
             let dept2   = $('#i_dept2').val();
 
             if(dept1.length == 0 || dept2.length == 0){
-                swal('Error', 'Input Departemen', 'error');
+                swal('Error', "{{__('Input Departemen')}}", 'error');
                 return false;
             } else {
                 tableModalKategori.destroy();

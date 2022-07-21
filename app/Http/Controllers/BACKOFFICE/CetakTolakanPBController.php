@@ -445,7 +445,7 @@ class CetakTolakanPBController extends Controller
 
 //        dd($tolakan);
 
-        $title = 'LAPORAN DAFTAR TOLAKAN PB / DIVISI / DEPT / KATEGORI';
+        $title = (__('LAPORAN DAFTAR TOLAKAN PB / DIVISI / DEPT / KATEGORI'));
 
         return view('BACKOFFICE.CetakTolakanPB-laporan-by-divisi', compact(['perusahaan','data','tgl1','tgl2','title']));
 
@@ -820,7 +820,7 @@ class CetakTolakanPBController extends Controller
 
 //        dd($tolakan);
 
-        $title = 'LAPORAN DAFTAR TOLAKAN PB / SUPPLIER';
+        $title = (__('LAPORAN DAFTAR TOLAKAN PB / SUPPLIER'));
 
         return view('BACKOFFICE.CetakTolakanPB-laporan-by-supplier', compact(['perusahaan','data','tgl1','tgl2','title']));
 

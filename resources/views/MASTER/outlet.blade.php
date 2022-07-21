@@ -10,8 +10,8 @@
                         <table class="table table-sm table-bordered shadow-sm fixed_header">
                             <thead class="theadDataTables">
                             <tr>
-                                <th class="text-center">Kode</th>
-                                <th class="thForNamaOutlet">Nama Outlet</th>
+                                <th class="text-center">@lang('Kode')</th>
+                                <th class="thForNamaOutlet">@lang('Nama Outlet')</th>
                             </tr>
                             </thead>
                             <tbody>

@@ -6,15 +6,15 @@
 @section('paper_width','1071pt')
 
 @section('page_title')
-    KERTAS KERJA ESTIMASI KEBUTUHAN TOKO IGR
+    @lang('KERTAS KERJA ESTIMASI KEBUTUHAN TOKO IGR')
 @endsection
 
 @section('title')
-    ** KERTAS KERJA ESTIMASI KEBUTUHAN TOKO IGR **
+    @lang('** KERTAS KERJA ESTIMASI KEBUTUHAN TOKO IGR **')
 @endsection
 
 @section('subtitle')
-    Periode : {{ $periode }}
+    @lang('Periode :') {{ $periode }}
 @endsection
 
 @section('content')
@@ -22,13 +22,13 @@
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
             <td colspan="5"></td>
-            <td colspan="4">--- Produk ---</td>
+            <td colspan="4">@lang('--- Produk ---')</td>
             <td></td>
-            <td colspan="4">--- Kemasan (Karton) ---</td>
+            <td colspan="4">@lang('--- Kemasan (Karton) ---')</td>
             <td colspan="3"></td>
-            <td colspan="2">Sales 3 Bulan</td>
+            <td colspan="2">@lang('Sales 3 Bulan')</td>
             <td colspan="5"></td>
-            <td colspan="5">Breakdown PB</td>
+            <td colspan="5">@lang('Breakdown PB')</td>
             <td colspan="10"></td>
         </tr>
         <tr>

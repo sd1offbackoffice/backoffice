@@ -4,30 +4,30 @@
 @section('table_font_size','7 px')
 
 @section('page_title')
-    LAPORAN DAFTAR TOLAKAN PB / SUPPLIER
+    @lang('LAPORAN DAFTAR TOLAKAN PB / SUPPLIER')
 @endsection
 
 @section('title')
-    LAPORAN DAFTAR TOLAKAN PB / SUPPLIER
+    @lang('LAPORAN DAFTAR TOLAKAN PB / SUPPLIER')
 @endsection
 
 @section('subtitle')
-    TANGGAL : {{ $date1 }} s/d {{ $date2 }}
+    @lang('TANGGAL : '){{ $date1 }} @lang('s/d') {{ $date2 }}
 @endsection
 
 @section('content')
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th class="left">PLU</th>
-            <th class="left">DESKRIPSI</th>
-            <th class="right">SATUAN</th>
-            <th class="right">TAG</th>
-            <th class="right">DIV</th>
-            <th class="right">DEPT</th>
-            <th class="right">KAT</th>
-            <th class="right padding-right">PKMT</th>
-            <th class="left" >KETERANGAN</th>
+            <th class="left">@lang('PLU')</th>
+            <th class="left">@lang('DESKRIPSI')</th>
+            <th class="right">@lang('SATUAN')</th>
+            <th class="right">@lang('TAG')</th>
+            <th class="right">@lang('DIV')</th>
+            <th class="right">@lang('DEPT')</th>
+            <th class="right">@lang('KAT')</th>
+            <th class="right padding-right">@lang('PKMT')</th>
+            <th class="left" >@lang('KETERANGAN')</th>
         </tr>
         </thead>
         <tbody>
@@ -42,7 +42,7 @@
         @for($i=0; $i<sizeof($data); $i++)
             @if($i == 0)
                 <tr>
-                    <td colspan="9" style="font-weight: bold !important; margin-top: 10px !important;" class="left">Tanggal : {{date('d-m-y', strtotime($data[$i]->tglpb))}}  Dokumen : {{$data[$i]->nopb}}</td>
+                    <td colspan="9" style="font-weight: bold !important; margin-top: 10px !important;" class="left">@lang('Tanggal : ') {{date('d-m-y', strtotime($data[$i]->tglpb))}}  @lang('Dokumen : ') {{$data[$i]->nopb}}</td>
                 </tr>
                 <tr>
                     <td  style="font-weight: bold !important;" class="left">{{$data[$i]->supco}} - {{$data[$i]->supname}}</td>
@@ -51,7 +51,7 @@
 {{--                @if(substr($data[$i]->tglpb,0,10) != substr($data[$i-1]->tglpb,0,10))--}} {{-- Rev 20/04/22 By JR -> lupa juga kenapa diisi tanggal bukan no pb--}}
                 @if($data[$i]->nopb != $data[$i-1]->nopb)
                     <tr>
-                        <td colspan="9" style="font-weight: bold !important; margin-top: 10px !important;" class="left">Tanggal : {{date('d-m-y', strtotime($data[$i]->tglpb))}}  Dokumen : {{$data[$i]->nopb}}</td>
+                        <td colspan="9" style="font-weight: bold !important; margin-top: 10px !important;" class="left">@lang('Tanggal : ') {{date('d-m-y', strtotime($data[$i]->tglpb))}}  @lang('Dokumen : ') {{$data[$i]->nopb}}</td>
                     </tr>
                     <tr>
                         <td  style="font-weight: bold !important;" class="left">{{$data[$i]->supco}} - {{$data[$i]->supname}}</td>

@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','MASTER | MASTER KUBIKASI PLANO')
+@section('title',(__('MASTER | MASTER KUBIKASI PLANO')))
 @section('content')
 
 
@@ -11,11 +11,10 @@
                         <div class="row cek">
                             <div class="col-sm-7 p-0">
                                 <fieldset class="card border-secondary">
-                                    <legend class="w-auto ml-3 h5 ">LOKASI</legend>
+                                    <legend class="w-auto ml-3 h5 ">@lang('LOKASI')</legend>
                                     <div class="card-body">
                                         <div class="row ">
-                                            <label for="i_koderak" class="col-sm-4 col-form-label text-right">KODE RAK
-                                                :</label>
+                                            <label for="i_koderak" class="col-sm-4 col-form-label text-right">@lang('KODE RAK :')</label>
                                             <div class="col-sm-4 buttonInside">
                                                 <input type="text" class="form-control" id="i_koderak" placeholder="..."
                                                        value="" readonly>
@@ -31,8 +30,7 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <label for="i_subrak" class="col-sm-4 col-form-label text-right">SUB RAK
-                                                :</label>
+                                            <label for="i_subrak" class="col-sm-4 col-form-label text-right">@lang('SUB RAK :')</label>
                                             <div class="col-sm-4 buttonInside">
                                                 <input type="text" class="form-control" id="i_subrak" placeholder="..."
                                                        value="" readonly>
@@ -43,8 +41,7 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <label for="i_shelving" class="col-sm-4 col-form-label text-right">SHELVING
-                                                :</label>
+                                            <label for="i_shelving" class="col-sm-4 col-form-label text-right">@lang('SHELVING :')</label>
                                             <div class="col-sm-4 buttonInside">
                                                 <input type="text" class="form-control" id="i_shelving"
                                                        placeholder="..." value="" readonly>
@@ -54,17 +51,16 @@
                                                 </button>
                                             </div>
                                             <div class="col-sm-3">
-                                                <label for="i_kosongsemua" class="col-form-label text-right"><small>*
-                                                        kosong = semua</small></label>
+                                                <label for="i_kosongsemua" class="col-form-label text-right"><small>@lang('*kosong = semua')</small></label>
                                             </div>
                                         </div>
                                     </div>
                                 </fieldset>
                             </div>
                             <div class="col-sm-5 p-0">
-                                <legend class="w-auto ml-3 h5 "><u>Simulasi BPB</u></legend>
+                                <legend class="w-auto ml-3 h5 "><u>@lang('Simulasi BPB')</u></legend>
                                 <div class="row ">
-                                    <label for="i_plu" class="col-sm-4 col-form-label text-right">PLU :</label>
+                                    <label for="i_plu" class="col-sm-4 col-form-label text-right">@lang('PLU :')</label>
                                     <div class="col-sm-6 buttonInside" style="margin-left: -15px">
                                         <input type="text" class="form-control" id="i_plu" onclick="validate()"
                                                placeholder="..." value="" disabled>
@@ -80,24 +76,22 @@
                                     {{--                                    </div>--}}
                                 </div>
                                 <div class="row">
-                                    <label for="i_deskripsi" class="col-sm-4 col-form-label text-right">DESKRIPSI
-                                        :</label>
+                                    <label for="i_deskripsi" class="col-sm-4 col-form-label text-right">@lang('DESKRIPSI :')</label>
                                     {{--<input type="text" class="col-sm-6 form-control" id="i_deskripsi"  value="" disabled>--}}
                                     <textarea name="" id="i_deskripsi" class="col-sm-6 form-control"
                                               disabled></textarea>
                                 </div>
                                 <div class="row">
-                                    <label for="i_satuan" class="col-sm-4 col-form-label text-right">SATUAN :</label>
+                                    <label for="i_satuan" class="col-sm-4 col-form-label text-right">@lang('SATUAN :')</label>
                                     <input type="text" class="col-sm-6 form-control" id="i_satuan" value="" disabled>
                                 </div>
                                 <div class="row">
-                                    <label for="i_volume" class="col-sm-4 col-form-label text-right">Volume
-                                        (cm<sup>3</sup>) :</label>
+                                    <label for="i_volume" class="col-sm-4 col-form-label text-right">@lang('Volume') (cm<sup>3</sup>) :</label>
                                     <input type="text" class="col-sm-6 form-control text-right" id="i_volume" value=""
                                            disabled>
                                 </div>
                                 <div class="row">
-                                    <label for="i_qty" class="col-sm-4 col-form-label text-right">QTY (CTN) :</label>
+                                    <label for="i_qty" class="col-sm-4 col-form-label text-right">@lang('QTY (CTN) :')</label>
                                     <input type="text" class="col-sm-6 form-control text-right num" id="i_qty"
                                            onclick="validate()" placeholder="..." value="" disabled>
                                 </div>
@@ -106,22 +100,22 @@
                         <div class="row">
                             <div class="col-sm-12 p-0">
                                 <fieldset class="card border-secondary">
-                                    <legend class="w-auto ml-3 h5 ">KUBIKASI</legend>
+                                    <legend class="w-auto ml-3 h5 ">@lang('KUBIKASI')</legend>
                                     <div class="card-body p-1 my-custom-scrollbar table-wrapper-scroll-y">
                                         <table class="table table-sm table-striped table-bordered display compact"
                                                id="table_kubikasi">
                                             <thead class="theadDataTables">
                                             <tr class="thNormal text-center">
-                                                <th class="text-center small">Koderak</th>
-                                                <th class="text-center small">Sub Rak</th>
-                                                <th class="text-center small">Shelving</th>
-                                                <th class="text-center small">Volume (cm<sup>3</sup>)</th>
-                                                <th class="text-center small">Allowance (%)</th>
-                                                <th class="text-center small">Vol.Real (cm<sup>3</sup>)</th>
-                                                <th class="text-center small">Vol.Exists (cm<sup>3</sup>)</th>
-                                                <th class="text-center small">Vol.Book (cm<sup>3</sup>)</th>
-                                                <th class="text-center small">Vol.BTB (cm<sup>3</sup>)</th>
-                                                <th class="text-center small">Sisa (cm<sup>3</sup>)</th>
+                                                <th class="text-center small">@lang('Koderak')</th>
+                                                <th class="text-center small">@lang('Sub Rak')</th>
+                                                <th class="text-center small">@lang('Shelving')</th>
+                                                <th class="text-center small">@lang('Volume') (cm<sup>3</sup>)</th>
+                                                <th class="text-center small">@lang('Allowance') (%)</th>
+                                                <th class="text-center small">@lang('Vol.Real') (cm<sup>3</sup>)</th>
+                                                <th class="text-center small">@lang('Vol.Exists') (cm<sup>3</sup>)</th>
+                                                <th class="text-center small">@lang('Vol.Book') (cm<sup>3</sup>)</th>
+                                                <th class="text-center small">@lang('Vol.BTB') (cm<sup>3</sup>)</th>
+                                                <th class="text-center small">@lang('Sisa') (cm<sup>3</sup>)</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -148,7 +142,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Rak</h5>
+                    <h5 class="modal-title">@lang('Master Rak')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -160,7 +154,7 @@
                                 <table class="table table-sm" id="table_lovkoderak">
                                     <thead class="theadDataTables" width="1000px">
                                     <tr>
-                                        <th>Kode Rak</th>
+                                        <th>@lang('Kode Rak')</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -186,7 +180,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Sub Rak</h5>
+                    <h5 class="modal-title">@lang('Master Sub Rak')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -198,8 +192,8 @@
                                 <table class="table table-sm" id="table_lovsubrak">
                                     <thead class="theadDataTables" width="1000px">
                                     <tr>
-                                        <th width="75%">Kode Rak</th>
-                                        <th width="25%">Sub Rak</th>
+                                        <th width="75%">@lang('Kode Rak')</th>
+                                        <th width="25%">@lang('Sub Rak')</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -220,7 +214,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Shelving</h5>
+                    <h5 class="modal-title">@lang('Master Shelving')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -232,9 +226,9 @@
                                 <table class="table table-sm" id="table_lovshelving">
                                     <thead class="theadDataTables" width="1000px">
                                     <tr>
-                                        <th>Kode Rak</th>
-                                        <th>Sub Rak</th>
-                                        <th>Shelving</th>
+                                        <th>@lang('Kode Rak')</th>
+                                        <th>@lang('Sub Rak')</th>
+                                        <th>@lang('Shelving')</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -255,7 +249,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Barang</h5>
+                    <h5 class="modal-title">@lang('Master Barang')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -267,8 +261,8 @@
                                 <table class="table" id="table_lov">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <td>Deskripsi</td>
-                                        <td>PLU</td>
+                                        <td>@lang('Deskripsi')</td>
+                                        <td>@lang('PLU')</td>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -516,7 +510,7 @@
                                 $('#i_plu').select();
                             } else {
                                 swal({
-                                    title: "Data tidak ditemukan!",
+                                    title: "{{__('Data tidak ditemukan!')}}",
                                     icon: "warning"
                                 }).then((createData) => {
                                 });
@@ -532,7 +526,7 @@
                     });
                 } else if ($('#i_koderak').val() != "" && $('#i_subrak').val() == "" && $('#i_shelving').val() == "") {
                     swal({
-                        title: 'Subrak belum diisi!',
+                        title: "{{__('Subrak belum diisi!')}}",
                         icon: 'warning'
                     }).then((createData) => {
                         if (createData) {
@@ -542,7 +536,7 @@
                     return;
                 } else if ($('#i_koderak').val() != "" && $('#i_subrak').val() != "" && $('#i_shelving').val() == "") {
                     swal({
-                        title: 'Shelving belum diisi!',
+                        title: "{{__('Shelving belum diisi!')}}",
                         icon: 'warning'
                     }).then((createData) => {
                         if (createData) {
@@ -613,7 +607,7 @@
 
             if (volume < 0) {
                 swal({
-                    title: 'Volume harus > 0',
+                    title: "{{__('Volume harus > 0')}}",
                     icon: 'warning'
                 }).then((createData) => {
                     $('.vol-' + val).focus();
@@ -627,7 +621,7 @@
             }
             if (volume == 0 && allow > 0) {
                 swal({
-                    title: 'Volume tidak boleh 0!',
+                    title: "{{__('Volume tidak boleh 0!')}}",
                     icon: 'warning'
                 }).then((createData) => {
                     $('.vol-' + val).focus();
@@ -647,7 +641,7 @@
 
             if (allow < 0 || allow > 100) {
                 swal({
-                    title: 'Persentase Allowance 0..100',
+                    title: "{{__('Persentase Allowance 0..100')}}",
                     icon: 'warning'
                 }).then((createData) => {
                     $('.allow-' + val).focus();
@@ -657,7 +651,7 @@
             if (volume + allow > 0) {
                 if (volume == 0 && allow > 0) {
                     swal({
-                        title: 'Volume tidak boleh 0!',
+                        title: "{{__('Volume tidak boleh 0!')}}",
                         icon: 'warning'
                     }).then((createData) => {
                         $('.vol-' + val).focus();
@@ -666,7 +660,7 @@
                 }
                 if (volume > 0 && allow == 0) {
                     swal({
-                        title: 'Allowance tidak boleh 0!',
+                        title: "{{__('Allowance tidak boleh 0!')}}",
                         icon: 'warning'
                     }).then((createData) => {
                         $('.allow-' + val).focus();
@@ -798,7 +792,7 @@
             if (e.keyCode == 13) {
                 if ($(this).val() == '') {
                     swal({
-                        title: 'Masukan PLU terlebih dahulu!',
+                        title: "{{__('Masukan PLU terlebih dahulu!')}}",
                         icon: 'warning'
                     }).then((createData) => {
                         if (createData) {
@@ -821,7 +815,7 @@
             if (e.keyCode == 13) {
                 if ($('#i_plu').val() == '') {
                     swal({
-                        title: 'Masukan PLU terlebih dahulu!',
+                        title: "{{__('Masukan PLU terlebih dahulu!')}}",
                         icon: 'warning'
                     }).then((createData) => {
                         if (createData) {
@@ -876,7 +870,7 @@
                     this.arr.allowance.push(allow);
                     if (volume == 0 && allow > 0) {
                         swal({
-                            title: 'Volume tidak boleh 0!',
+                            title: "{{__('Volume tidak boleh 0!')}}",
                             icon: 'warning'
                         }).then((createData) => {
                             $('.vol-' + i).focus();
@@ -884,7 +878,7 @@
                         return;
                     } else if (allow < 0 || allow > 100) {
                         swal({
-                            title: 'Persentase Allowance 0..100',
+                            title: "{{__('Persentase Allowance 0..100')}}",
                             icon: 'warning'
                         }).then((createData) => {
                             $('.allow-' + i).focus();
@@ -892,7 +886,7 @@
                         return;
                     } else if (volume > 0 && allow == 100) {
                         swal({
-                            title: 'Allowance tidak boleh 0!',
+                            title: "{{__('Allowance tidak boleh 0!')}}",
                             icon: 'warning'
                         }).then((createData) => {
                             $('.allow-' + i).focus();
@@ -953,8 +947,8 @@
                 shelvingrak = $('.sr-' + i).text();
                 if (data[i].kbp_volumeshell != volume || data[i].kbp_allowance != allow) {
                     swal({
-                        title: 'Terjadi perubahan data! ',
-                        text: "Klik OK untuk simpan!",
+                        title: "{{__('Terjadi perubahan data! ')}}",
+                        text: "{{__('Klik OK untuk simpan!')}}",
                         icon: "info",
                         buttons: true,
                         dangerMode: true,
