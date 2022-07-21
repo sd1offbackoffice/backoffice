@@ -131,7 +131,7 @@ class OmiController extends Controller
                 'tko_flagvb' => $flagVb, 'tko_kodecustomer' => $kodeCust, 'tko_tglgo' => $tglGo,
                 'tko_tgltutup' => $tglTutup, 'tko_create_by' => $user, 'tko_create_dt' => $date]);
 
-        return response()->json('Data berhasil ditambahkan');
+        return response()->json(__('Data berhasil ditambahkan'));
     }
 
     public function confirmEdit(Request $request){
@@ -154,7 +154,7 @@ class OmiController extends Controller
         $kodeigr    = Session::get('kdigr');
 
         if ($confirmUser != "OM123" || $confirmPass != $password){
-            return response()->json(['kode' => 0, 'msg' => "Anda Tidak Berhak Untuk Mengedit !!'", 'data' => '']);
+            return response()->json(['kode' => 0, 'msg' => (__('Anda Tidak Berhak Untuk Mengedit !!')), 'data' => '']);
         }
 
         if($columnEditExpand == 'tko_flagdistfee'){
@@ -187,7 +187,7 @@ class OmiController extends Controller
 //                    }
                 }
             } else {
-                 return response()->json(['kode' => 0, 'msg' => " Indomaret Tidak Ada Nilai Fee nya !!'", 'data' => '']);
+                 return response()->json(['kode' => 0, 'msg' => (__('Indomaret Tidak Ada Nilai Fee nya !!')), 'data' => '']);
             }
         }
         elseif($columnEditExpand == "tko_persenmargin"){
@@ -195,7 +195,7 @@ class OmiController extends Controller
                 DB::connection(Session::get('connection'))->table('tbmaster_tokoigr')->where('tko_kodeomi', $kodeomiEditExpand)->where('tko_kodesbu', $kodeSBU)
                     ->update(['tko_persenMargin' => $valueEditExpand, 'tko_MODIFY_BY' => $user, 'tko_MODIFY_DT' => $date]);
             } else {
-                return response()->json(['kode' => 0, 'msg' => " OMI Tidak Ada Nilai Margin nya !!'", 'data' => '']);
+                return response()->json(['kode' => 0, 'msg' => (__('OMI Tidak Ada Nilai Margin nya !!')), 'data' => '']);
             }
         }
         elseif($columnEditExpand == "tko_flagsubsidipemanjangan"){
@@ -226,7 +226,7 @@ class OmiController extends Controller
             }
         }
 
-        return response()->json(['kode' => 1, 'msg' => "Perubahan berhasil di simpan !!'", 'data' => '']);
+        return response()->json(['kode' => 1, 'msg' => (__('Perubahan berhasil di simpan !!')), 'data' => '']);
     }
 
 }

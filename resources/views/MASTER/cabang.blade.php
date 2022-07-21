@@ -51,7 +51,7 @@
                                     <input type="text" class="field field7 form-control" id="i_faximile" placeholder="..."  field="7">
                                 </div>
                                 <div class="form-group col-sm-4">
-                                    <label for="">N.P.W.P.</label>
+                                    <label for="">@lang('N.P.W.P.')</label>
                                     <input type="text" class="field field8 form-control" id="i_npwp" placeholder="..." field="8">
                                 </div>
                             </div>

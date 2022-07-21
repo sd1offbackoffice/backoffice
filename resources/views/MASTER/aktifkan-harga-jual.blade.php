@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','MASTER | AKTIFKAN HARGA JUAL PER ITEM')
+@section('title',(__('MASTER | AKTIFKAN HARGA JUAL PER ITEM')))
 @section('content')
 
     <div class="container mt-4">
@@ -9,7 +9,7 @@
                    <div class="card-body cardForm">
                        <form class="form">
                            <div class="form-group row mb-0">
-                               <label class="col-sm-4 col-form-label text-md-right">Kode Plu</label>
+                               <label class="col-sm-4 col-form-label text-md-right">@lang('Kode Plu')</label>
 {{--                               <input type="text" id="kodePlu" class="form-control col-sm-2 mx-sm-1" onchange="getDetailPlu(this.value)">--}}
 {{--                               <button class="btn ml-2" type="button" data-toggle="modal" data-target="#m_prodmast"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>--}}
 
@@ -23,31 +23,31 @@
                                <input type="text" id="namaPlu" class="form-control col-sm-5 mx-sm-1" disabled>
                            </div>
                            <div class="form-group row mb-0">
-                               <label class="col-sm-4 col-form-label text-md-right">Divisi</label>
+                               <label class="col-sm-4 col-form-label text-md-right">@lang('Divisi')</label>
                                <input type="text" id="kodeDivisi" class="form-control col-sm-1 mx-sm-3" disabled>
                                <input type="text" id="namaDivisi" class="form-control col-sm-4 mx-sm-1" disabled>
                            </div>
                            <div class="form-group row mb-0">
-                               <label class="col-sm-4 col-form-label text-md-right">Departement</label>
+                               <label class="col-sm-4 col-form-label text-md-right">@lang('Departement')</label>
                                <input type="text" id="kodeDepartement" class="form-control col-sm-1 mx-sm-3" disabled>
                                <input type="text" id="namaDepartement" class="form-control col-sm-4 mx-sm-1" disabled>
                            </div>
                            <div class="form-group row mb-0">
-                               <label class="col-sm-4 col-form-label text-md-right">Kategori Barang</label>
+                               <label class="col-sm-4 col-form-label text-md-right">@lang('Kategori Barang')</label>
                                <input type="text" id="kodeKategori" class="form-control col-sm-1 mx-sm-3" disabled>
                                <input type="text" id="namaKategori" class="form-control col-sm-4 mx-sm-1" disabled>
                            </div>
                            <div class="form-group row mb-0">
-                               <label class="col-sm-4 col-form-label text-md-right">Harga Jual Lama</label>
+                               <label class="col-sm-4 col-form-label text-md-right">@lang('Harga Jual Lama')</label>
                                <input type="text" id="hargaLama" class="form-control col-sm-2 mx-sm-3 text-right" disabled>
                            </div>
                            <div class="form-group row mb-0">
-                               <label class="col-sm-4 col-form-label text-md-right">Harga Jual Baru</label>
+                               <label class="col-sm-4 col-form-label text-md-right">@lang('Harga Jual Baru')</label>
                                <input type="text" id="hargaBaru" class="form-control col-sm-2 mx-sm-3 text-right" disabled>
                            </div>
 
                            <div class="col-sm-2 text-center offset-sm-10">
-                               <button type="button" id="btnAktifkanHrg" class="btn btn-primary pl-4 pr-4 btn-block btnAktifkanHrg" onclick="aktifkanHarga()">Aktifkan</button>
+                               <button type="button" id="btnAktifkanHrg" class="btn btn-primary pl-4 pr-4 btn-block btnAktifkanHrg" onclick="aktifkanHarga()">@lang('Aktifkan')</button>
                            </div>
                        </form>
                    </div>
@@ -61,7 +61,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered  modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">List Prodmast</h5>
+                    <h5 class="modal-title">@lang('List Prodmast')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -73,8 +73,8 @@
                                 <table class="table table-sm mb-0" id="tableModalProdmast">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Kode Barang</th>
-                                        <th>Nama Barang</th>
+                                        <th>@lang('Kode Barang')</th>
+                                        <th>@lang('Nama Barang')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyModalProdmast">
@@ -169,7 +169,7 @@
             let harga   = $('#hargaBaru').val();
 
             if (harga < 1 ){
-                swal('Warning', 'Tidak Ada Perubahan Harga', 'warning')
+                swal('Warning', "{{__('Tidak Ada Perubahan Harga')}}", 'warning')
                 clearField();
             } else {
                 ajaxSetup();
@@ -196,7 +196,7 @@
 
         function getDetailPlu(plu) {
             if (plu.length > 7){
-                swal('Warning', "Kode Plu tidak boleh lebih dari 7", 'warning')
+                swal('Warning', "{{__('Kode Plu tidak boleh lebih dari 7')}}", 'warning')
             } else {
                 let max = plu.length;
                 for (let i =0; i<(7-max); i++){
@@ -214,7 +214,7 @@
                     }, success: function (result) {
                         $('#modal-loader').modal('hide');
                         if (result.length === 0){
-                            swal('Warning', 'Data PLU Tidak Ada', 'warning')
+                            swal('Warning', "{{__('Data PLU Tidak Ada')}}", 'warning')
                             clearField()
                         } else {
                             let data = result[0];

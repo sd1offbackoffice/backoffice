@@ -4,11 +4,11 @@
 @section('table_font_size','7 px')
 
 @section('page_title')
-    DAFTAR PB / SUPPLIER
+    @lang('DAFTAR PB / SUPPLIER')
 @endsection
 
 @section('title')
-    DAFTAR PB / SUPPLIER
+    @lang('DAFTAR PB / SUPPLIER')
 @endsection
 
 @section('subtitle')
@@ -27,28 +27,28 @@
             <table class="table" style="">
                 <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
                 <tr>
-                    <th rowspan="2" class="">PLU</th>
-                    <th rowspan="2" class="">DESKRIPSI</th>
-                    <th rowspan="2" class="">SATUAN</th>
-                    <th rowspan="2" class="">TAG</th>
-                    <th colspan="2" class="">----STOK-----</th>
-                    <th colspan="2" class="">-----PKM------</th>
-                    <th rowspan="2" class="">QTY<br>PO OUT</th>
-                    <th rowspan="2" class="">QTY<br>PB OUT</th>
-                    <th colspan="2" class="">---ORDER---</th>
-                    <th rowspan="2" class="">MIN ORDER</th>
-                    <th rowspan="2" class="">JUMLAH</th>
-                    <th rowspan="2" class="">IDM</th>
-                    <th rowspan="2" class="">OMI</th>
-                    <th rowspan="2" class="">SP</th>
+                    <th rowspan="2" class="">@lang('PLU')</th>
+                    <th rowspan="2" class="">@lang('DESKRIPSI')</th>
+                    <th rowspan="2" class="">@lang('SATUAN')</th>
+                    <th rowspan="2" class="">@lang('TAG')</th>
+                    <th colspan="2" class="">@lang('----STOK-----')</th>
+                    <th colspan="2" class="">@lang('-----PKM------')</th>
+                    <th rowspan="2" class="">@lang('QTY')<br>PO OUT</th>
+                    <th rowspan="2" class="">@lang('QTY')<br>PB OUT</th>
+                    <th colspan="2" class="">@lang('---ORDER---')</th>
+                    <th rowspan="2" class="">@lang('MIN ORDER')</th>
+                    <th rowspan="2" class="">@lang('JUMLAH')</th>
+                    <th rowspan="2" class="">@lang('IDM')</th>
+                    <th rowspan="2" class="">@lang('OMI')</th>
+                    <th rowspan="2" class="">@lang('SP')</th>
                 </tr>
                 <tr>
-                    <th class="right">QTYB</th>
-                    <th class="right">K</th>
-                    <th class="right">QTYB</th>
-                    <th class="right">K</th>
-                    <th class="right">QTYB</th>
-                    <th class="right">K</th>
+                    <th class="right">@lang('QTYB')</th>
+                    <th class="right">@lang('K')</th>
+                    <th class="right">@lang('QTYB')</th>
+                    <th class="right">@lang('K')</th>
+                    <th class="right">@lang('QTYB')</th>
+                    <th class="right">@lang('K')</th>
                 </tr>
                 </thead>
                 <tbody style="border-bottom: 1px solid black; border-top: 1px solid black">
@@ -57,11 +57,11 @@
                     @if($data[$j]->pbh_nopb == $data[$i]->pbh_nopb && $data[$j]->supplier == $data[$i]->supplier)
                         @if($j == 0)
                             <tr>
-                                <td class="left">Departement</td>
+                                <td class="left">@lang('Departement')</td>
                                 <td class="left" colspan="16">: {{$data[$j]->departement}}</td>
                             </tr>
                             <tr>
-                                <td class="left">Kategori</td>
+                                <td class="left">@lang('Kategori')</td>
                                 <td class="left"  colspan="16"> : {{$data[$j]->kategori}}</td>
                             </tr>
                             {{$totalsupplier = 0}}
@@ -70,18 +70,18 @@
                         @else
                             @if($data[$j]->departement != $data[$j-1]->departement)
                                 <tr>
-                                    <td class="left">Departement</td>
+                                    <td class="left">@lang('Departement')</td>
                                     <td class="left" colspan="16">: {{$data[$j]->departement}}</td>
                                 </tr>
                                 <tr>
-                                    <td class="left">Kategori</td>
+                                    <td class="left">@lang('Kategori')</td>
                                     <td class="left" colspan="16">: {{$data[$j]->kategori}}</td>
                                 </tr>
                                 {{$totalkategori = 0}}
                                 {{$kategori = 0}}
                             @elseif($data[$j]->kategori != $data[$j-1]->kategori)
                                 <tr>
-                                    <td class="left">Kategori</td>
+                                    <td class="left">@lang('Kategori')</td>
                                     <td class="left" colspan="16">: {{$data[$j]->kategori}}</td>
                                 </tr>
                                 {{$kategori = 0}}
@@ -130,29 +130,29 @@
                         @if(isset($data[$j+1]))
                             @if($data[$i]->supplier != $data[$j+1]->supplier)
                                 <tr style="text-align: right; font-weight: bold">
-                                    <td colspan="13">Total Kategori :</td>
+                                    <td colspan="13">@lang('Total Kategori : ')</td>
                                     <td>{{number_format( $kategori ,0,',','.')}}</td>
                                 </tr>
                                 <tr style="text-align: right; font-weight: bold">
-                                    <td colspan="13">Total Departement : </td>
+                                    <td colspan="13">@lang('Total Departement : ')</td>
                                     <td>{{number_format( $totalkategori ,0,',','.')}}</td>
                                 </tr>
                                 <tr style="text-align: right; font-weight: bold">
-                                    <td colspan="13">Total Supplier : </td>
+                                    <td colspan="13">@lang('Total Supplier : ')</td>
                                     <td>{{number_format( $totalsupplier,0,',','.')}}</td>
                                 </tr>
                             @elseif($data[$j]->departement != $data[$j+1]->departement)
                                 <tr style="text-align: right; font-weight: bold">
-                                    <td colspan="13">Total Kategori :</td>
+                                    <td colspan="13">@lang('Total Kategori : ')</td>
                                     <td>{{number_format( $kategori ,0,',','.')}}</td>
                                 </tr>
                                 <tr style="text-align: right; font-weight: bold">
-                                    <td colspan="13">Total Departement : </td>
+                                    <td colspan="13">@lang('Total Departement : ')</td>
                                     <td>{{number_format( $totalkategori ,0,',','.')}}</td>
                                 </tr>
                             @elseif($data[$j]->kategori != $data[$j+1]->kategori)
                                 <tr style="text-align: right; font-weight: bold">
-                                    <td colspan="13">Total Kategori :</td>
+                                    <td colspan="13">@lang('Total Kategori : ')</td>
                                     <td>{{number_format( $kategori ,0,',','.')}}</td>
                                 </tr>
                             @endif
@@ -174,28 +174,28 @@
             <table class="table">
                 <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
                 <tr>
-                    <th rowspan="2" class="">PLU</th>
-                    <th rowspan="2" class="">DESKRIPSI</th>
-                    <th rowspan="2" class="">SATUAN</th>
-                    <th rowspan="2" class="">TAG</th>
-                    <th colspan="2" class="">----STOK-----</th>
-                    <th colspan="2" class="">-----PKM------</th>
-                    <th rowspan="2" class="">QTY<br>PO OUT</th>
-                    <th rowspan="2" class="">QTY<br>PB OUT</th>
-                    <th colspan="2" class="">---ORDER---</th>
-                    <th rowspan="2" class="">MIN ORDER</th>
-                    <th rowspan="2" class="">JUMLAH</th>
-                    <th rowspan="2" class="">IDM</th>
-                    <th rowspan="2" class="">OMI</th>
-                    <th rowspan="2" class="">SP</th>
+                    <th rowspan="2" class="">@lang('PLU')</th>
+                    <th rowspan="2" class="">@lang('DESKRIPSI')</th>
+                    <th rowspan="2" class="">@lang('SATUAN')</th>
+                    <th rowspan="2" class="">@lang('TAG</th>
+                    <th colspan="2" class="">@lang('----STOK-----')</th>
+                    <th colspan="2" class="">@lang('-----PKM------')</th>
+                    <th rowspan="2" class="">@lang('QTY')<br>PO OUT</th>
+                    <th rowspan="2" class="">@lang('QTY')<br>PB OUT</th>
+                    <th colspan="2" class="">@lang('---ORDER---')</th>
+                    <th rowspan="2" class="">@lang('MIN ORDER')</th>
+                    <th rowspan="2" class="">@lang('JUMLAH')</th>
+                    <th rowspan="2" class="">@lang('IDM')</th>
+                    <th rowspan="2" class="">@lang('OMI')</th>
+                    <th rowspan="2" class="">@lang('SP')</th>
                 </tr>
                 <tr>
-                    <th class="">QTYB</th>
-                    <th class="">K</th>
-                    <th class="">QTYB</th>
-                    <th class="">K</th>
-                    <th class="">QTYB</th>
-                    <th class="">K</th>
+                    <th class="">@lang('QTYB')</th>
+                    <th class="">@lang('K')</th>
+                    <th class="">@lang('QTYB')</th>
+                    <th class="">@lang('K')</th>
+                    <th class="">@lang('QTYB')</th>
+                    <th class="">@lang('K')</th>
                 </tr>
                 </thead>
                 <tbody style="border-bottom: 1px solid black">
@@ -203,11 +203,11 @@
                     @if($data[$j]->pbh_nopb == $data[$i]->pbh_nopb && $data[$j]->supplier == $data[$i]->supplier)
                         @if($data[$j]->supplier != $data[$j-1]->supplier || $data[$j]->pbh_nopb != $data[$j-1]->pbh_nopb)
                             <tr>
-                                <td class="left">Departement</td>
+                                <td class="left">@lang('Departement')</td>
                                 <td class="left" colspan="16">: {{$data[$j]->departement}}</td>
                             </tr>
                             <tr>
-                                <td class="left">Kategori</td>
+                                <td class="left">@lang('Kategori')</td>
                                 <td class="left" colspan="16">: {{$data[$j]->kategori}}</td>
                             </tr>
                             {{$totalsuplier = 0}}
@@ -215,18 +215,18 @@
                             {{$kategori = 0}}
                         @elseif($data[$j]->departement != $data[$j-1]->departement)
                             <tr>
-                                <td class="left">Departement</td>
+                                <td class="left">@lang('Departement')</td>
                                 <td class="left" colspan="16">: {{$data[$j]->departement}}</td>
                             </tr>
                             <tr>
-                                <td class="left">Kategori</td>
+                                <td class="left">@lang('Kategori')</td>
                                 <td class="left" colspan="16">: {{$data[$j]->kategori}}</td>
                             </tr>
                             {{$totalkategori = 0}}
                             {{$kategori = 0}}
                         @elseif($data[$j]->kategori != $data[$j-1]->kategori)
                             <tr>
-                                <td class="left">Kategori</td>
+                                <td class="left">@lang('Kategori')</td>
                                 <td class="left" colspan="16">: {{$data[$j]->kategori}}</td>
                             </tr>
                             {{$kategori = 0}}
@@ -275,47 +275,47 @@
                         @if(isset($data[$j+1]))
                             @if($data[$i]->supplier != $data[$j+1]->supplier)
                                 <tr style="text-align: right; font-weight: bold">
-                                    <td colspan="13">Total Kategori :</td>
+                                    <td colspan="13">@lang('Total Kategori : ')</td>
                                     <td>{{number_format( $kategori ,0,',','.')}}</td>
                                 </tr>
                                 <tr style="text-align: right; font-weight: bold">
-                                    <td colspan="13">Total Departement : </td>
+                                    <td colspan="13">@lang('Total Departement : ')</td>
                                     <td>{{number_format( $totalkategori ,0,',','.')}}</td>
                                 </tr>
                                 <tr style="text-align: right; font-weight: bold">
-                                    <td colspan="13">Total Supplier : </td>
+                                    <td colspan="13">@lang('Total Supplier : ')</td>
                                     <td>{{number_format( $totalsupplier,0,',','.')}}</td>
                                 </tr>
                             @elseif($data[$j]->departement != $data[$j+1]->departement)
                                 <tr style="text-align: right; font-weight: bold">
-                                    <td colspan="13">Total Kategori :</td>
+                                    <td colspan="13">@lang('Total Kategori : ')</td>
                                     <td>{{number_format( $kategori ,0,',','.')}}</td>
                                 </tr>
                                 <tr style="text-align: right; font-weight: bold">
-                                    <td colspan="13">Total Departement : </td>
+                                    <td colspan="13">@lang('Total Departement : ')</td>
                                     <td>{{number_format( $totalkategori ,0,',','.')}}</td>
                                 </tr>
                             @elseif($data[$j]->kategori != $data[$j+1]->kategori)
                                 <tr style="text-align: right; font-weight: bold">
-                                    <td colspan="13">Total Kategori :</td>
+                                    <td colspan="13">@lang('Total Kategori : ')</td>
                                     <td>{{number_format( $kategori ,0,',','.')}}</td>
                                 </tr>
                             @endif
                         @else <!-- TOTAL UNTUK DATA PALING AKHIR -->
                         <tr style="text-align: right; font-weight: bold">
-                            <td colspan="13">Total Kategori :</td>
+                            <td colspan="13">@lang('Total Kategori : ')</td>
                             <td>{{number_format( $kategori ,0,',','.')}}</td>
                         </tr>
                         <tr style="text-align: right; font-weight: bold">
-                            <td colspan="13">Total Departement : </td>
+                            <td colspan="13">@lang('Total Departement : ')</td>
                             <td>{{number_format( $totalkategori ,0,',','.')}}</td>
                         </tr>
                         <tr style="text-align: right; font-weight: bold">
-                            <td colspan="13">Total Supplier : </td>
+                            <td colspan="13">@lang('Total Supplier : ')</td>
                             <td>{{number_format( $totalsupplier,0,',','.')}}</td>
                         </tr>
                         <tr style="text-align: right; font-weight: bold">
-                            <td colspan="13">Total Akhir : </td>
+                            <td colspan="13">@lang('Total Akhir : ')</td>
                             <td>{{number_format( $totalAll,0,',','.')}}</td>
                         </tr>
                         @endif

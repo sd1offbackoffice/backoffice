@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','MASTER | MASTER HARGA BELI')
+@section('title',(__('MASTER | MASTER HARGA BELI')))
 @section('content')
 {{--    <head>--}}
 {{--        <script src="{{asset('/js/bootstrap-select.min.js')}}"></script>--}}
@@ -15,9 +15,9 @@
                             <div class="row text-right">
                                 <div class="col-sm-12">
                                     <fieldset class="card border-secondary">
-                                        <legend  class="w-auto ml-5 text-left"><small>Header Harga Beli</small></legend>
+                                        <legend  class="w-auto ml-5 text-left"><small>@lang('Header Harga Beli')</small></legend>
                                         <div class="form-group row mb-0">
-                                            <label for="i_plu" class="col-sm-2 col-form-label">PLU</label>
+                                            <label for="i_plu" class="col-sm-2 col-form-label">@lang('PLU')</label>
                                             <div class="col-sm-2 buttonInside">
                                                 <input type="text" class="form-control" id="i_plu">
                                                 <button type="button" class="btn btn-lov p-0" data-toggle="modal" data-target="#m_pluHelp" id="btn-modal-plu">
@@ -30,7 +30,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_statustag" class="col-sm-2 col-form-label">Status Tag</label>
+                                            <label for="i_statustag" class="col-sm-2 col-form-label">@lang('Status Tag')</label>
                                             <div class="col-sm-1">
                                                 <input type="text" class="form-control" id="i_statustag1">
                                             </div>
@@ -38,7 +38,7 @@
                                                 <input type="text" class="form-control" id="i_statustag2">
                                             </div>
 
-                                            <label for="i_satuanbeli" class="col-sm-1 pr-0 pl-0 col-form-label mr-3">Satuan Beli</label>
+                                            <label for="i_satuanbeli" class="col-sm-1 pr-0 pl-0 col-form-label mr-3">@lang('Satuan Beli')</label>
                                             <div class="col-sm-1 p-0">
                                                 <input type="text" class="form-control" id="i_satuanbeli1">
                                             </div>
@@ -46,7 +46,7 @@
                                                 <input type="text" class="form-control" id="i_satuanbeli2">
                                             </div>
 
-                                            <label for="i_top" class="col-sm-2 col-form-label ml-3 mr-3">TOP</label>
+                                            <label for="i_top" class="col-sm-2 col-form-label ml-3 mr-3">@lang('TOP')</label>
                                             <div class="col-sm-1">
                                                 <input type="text" class="form-control" id="i_top">
                                             </div>
@@ -57,12 +57,12 @@
                                                 <input type="text" class="form-control" id="i_bkp1">
                                             </div>
 
-                                            <label for="i_kondisi" class="col-sm-1 col-form-label mr-3">Kondisi</label>
+                                            <label for="i_kondisi" class="col-sm-1 col-form-label mr-3">@lang('Kondisi')</label>
                                             <div class="col-sm-2 p-0">
                                                 <input type="text" class="form-control" id="i_kondisi">
                                             </div>
 
-                                            <label for="i_flagbandrol" class="col-sm-2 col-form-label ml-3 mr-3">Flag Bandrol</label>
+                                            <label for="i_flagbandrol" class="col-sm-2 col-form-label ml-3 mr-3">@lang('Flag Bandrol')</label>
                                             <div class="col-sm-1">
                                                 <input type="text" class="form-control" id="i_flagbandrol">
                                             </div>
@@ -70,13 +70,13 @@
                                     </fieldset>
 
                                     <fieldset class="card border-secondary">
-                                        <legend  class="w-auto ml-5 text-left"><small>Detail Harga Beli</small></legend>
+                                        <legend  class="w-auto ml-5 text-left"><small>@lang('Detail Harga Beli')</small></legend>
                                         <div class="form-group row mb-0">
-                                            <label for="i_supplier" class="col-sm-1 col-form-label">Supplier</label>
+                                            <label for="i_supplier" class="col-sm-1 col-form-label">@lang('Supplier')</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_kodesupplier">
                                             </div>
-                                            <label for="i_pkp" class="col-sm-1 col-form-label">PKP</label>
+                                            <label for="i_pkp" class="col-sm-1 col-form-label">@lang('PKP')</label>
                                             <div class="col-sm-1">
                                                 <input type="text" class="form-control" id="i_pkp">
                                             </div>
@@ -85,65 +85,65 @@
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_jenisharga" class="col-sm-1 col-form-label">Jenis Harga</label>
+                                            <label for="i_jenisharga" class="col-sm-1 col-form-label">@lang('Jenis Harga')</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_jenisharga">
                                             </div>
-                                            <label for="i_tglupdate" class="col-sm-1 pr-0 pl-0 col-form-label">Tgl. Update</label>
+                                            <label for="i_tglupdate" class="col-sm-1 pr-0 pl-0 col-form-label">@lang('Tgl. Update')</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglupdate">
                                             </div>
-                                            <label for="i_tglberlaku" class="col-sm-2 col-form-label">Tgl. Berlaku</label>
+                                            <label for="i_tglberlaku" class="col-sm-2 col-form-label">@lang('Tgl. Berlaku')</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlaku">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_hgbhargabeli" class="col-sm-1 col-form-label">HGB Harga Beli</label>
+                                            <label for="i_hgbhargabeli" class="col-sm-1 col-form-label">@lang('HGB Harga Beli')</label>
                                             <div class="col-sm-2 number">
                                                 <input type="text" class="form-control" id="i_hgbhargabeli">
                                             </div>
-                                            <label for="i_ppn" class="col-sm-1 pr-0 pl-0 col-form-label">PPN</label>
+                                            <label for="i_ppn" class="col-sm-1 pr-0 pl-0 col-form-label">@lang('PPN')</label>
                                             <div class="col-sm-2 number">
                                                 <input type="text" class="form-control" id="i_ppn">
                                             </div>
-                                            <label for="i_hargaomi" class="col-sm-2 col-form-label">Harga OMI</label>
+                                            <label for="i_hargaomi" class="col-sm-2 col-form-label">@lang('Harga OMI')</label>
                                             <div class="col-sm-2 number">
                                                 <input type="text" class="form-control" id="i_hargaomi">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_botol" class="col-sm-1 col-form-label">Botol</label>
+                                            <label for="i_botol" class="col-sm-1 col-form-label">@lang('Botol')</label>
                                             <div class="col-sm-2 number">
                                                 <input type="text" class="form-control" id="i_botol">
                                             </div>
-                                            <label for="i_ppnbm" class="col-sm-1 pr-0 pl-0 col-form-label">PPN BM</label>
+                                            <label for="i_ppnbm" class="col-sm-1 pr-0 pl-0 col-form-label">@lang('PPN BM')</label>
                                             <div class="col-sm-2 number">
                                                 <input type="text" class="form-control" id="i_ppnbm">
                                             </div>
-                                            <label for="i_hargaomibaru" class="col-sm-2 col-form-label">Harga OMI Baru</label>
+                                            <label for="i_hargaomibaru" class="col-sm-2 col-form-label">@lang('Harga OMI Baru')</label>
                                             <div class="col-sm-2 number">
                                                 <input type="text" class="form-control" id="i_hargaomibaru">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_hgbhargabeli" class="col-sm-1 col-form-label">Hrg. Beli + PPN</label>
+                                            <label for="i_hgbhargabeli" class="col-sm-1 col-form-label">@lang('Hrg. Beli + PPN')</label>
                                             <div class="col-sm-2 number">
                                                 <input type="text" class="form-control" id="i_hgbhargabelippn">
                                             </div>
-                                            <label for="i_ppn" class="col-sm-3 pr-0 pl-0 col-form-label text-center">B - K  0 - 4</label>
-                                            <label for="i_tglberlakubaru" class="col-sm-2 col-form-label">Tgl. Berlaku Baru</label>
+                                            <label for="i_ppn" class="col-sm-3 pr-0 pl-0 col-form-label text-center">@lang('B - K  0 - 4')</label>
+                                            <label for="i_tglberlakubaru" class="col-sm-2 col-form-label">@lang('Tgl. Berlaku Baru')</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakubaru">
                                             </div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_disc1" class="col-sm-1 col-form-label">DISC 1</label>
+                                            <label for="i_disc1" class="col-sm-1 col-form-label">@lang('DISC 1')</label>
                                             <div class="col-sm-1 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc1">
                                             </div>
                                             <label for="i_disc1" class="col-form-label text-right">%</label>
-                                            <label for="i_disc1rp" class="ml-3 pr-0 col-form-label">Rp.</label>
+                                            <label for="i_disc1rp" class="ml-3 pr-0 col-form-label">@lang('Rp.')</label>
                                             <div class="col-sm-1 pl-0 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc1rp">
                                             </div>
@@ -153,23 +153,23 @@
                                             <div class="col-sm-1 pl-0">
 
                                             </div>
-                                            <label for="i_tglberlakudisc1" class="col-sm col-form-label">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc1" class="col-sm col-form-label">@lang('Tgl. Berlaku')</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc1a">
                                             </div>
-                                            <div class="mt-1">s/d</div>
+                                            <div class="mt-1">@lang('s/d')</div>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc1b">
                                             </div>
                                             <div class="col-sm-1"></div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_disc2" class="col-sm-1 col-form-label">DISC 2</label>
+                                            <label for="i_disc2" class="col-sm-1 col-form-label">@lang('DISC 2')</label>
                                             <div class="col-sm-1 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc2">
                                             </div>
                                             <label for="i_disc2" class="col-form-label text-right">%</label>
-                                            <label for="i_disc2rp" class="ml-3 pr-0 col-form-label">Rp.</label>
+                                            <label for="i_disc2rp" class="ml-3 pr-0 col-form-label">@lang('Rp.')</label>
                                             <div class="col-sm-1 pl-0 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc2rp">
                                             </div>
@@ -179,23 +179,23 @@
                                             <div class="col-sm-1 pl-0">
                                                 <input type="text" class="form-control" id="i_flagdisc2">
                                             </div>
-                                            <label for="i_tglberlakudisc2" class="col-sm col-form-label">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc2" class="col-sm col-form-label">@lang('Tgl. Berlaku')</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc2a">
                                             </div>
-                                            <div class="mt-1">s/d</div>
+                                            <div class="mt-1">@lang('s/d')</div>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc2b">
                                             </div>
                                             <div class="col-sm-1"></div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_disc2A" class="col-sm-1 col-form-label">DISC 2 A</label>
+                                            <label for="i_disc2A" class="col-sm-1 col-form-label">@lang('DISC 2 A')</label>
                                             <div class="col-sm-1 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc2A">
                                             </div>
                                             <label for="i_disc2A" class="col-form-label text-right">%</label>
-                                            <label for="i_disc2Arp" class="ml-3 pr-0 col-form-label">Rp.</label>
+                                            <label for="i_disc2Arp" class="ml-3 pr-0 col-form-label">@lang('Rp.')</label>
                                             <div class="col-sm-1 pl-0 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc2Arp">
                                             </div>
@@ -205,23 +205,23 @@
                                             <div class="col-sm-1 pl-0">
                                                 <input type="text" class="form-control" id="i_flagdisc2A">
                                             </div>
-                                            <label for="i_tglberlakudisc2A" class="col-sm col-form-label">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc2A" class="col-sm col-form-label">@lang('Tgl. Berlaku')</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc2Aa">
                                             </div>
-                                            <div class="mt-1">s/d</div>
+                                            <div class="mt-1">@lang('s/d')</div>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc2Ab">
                                             </div>
                                             <div class="col-sm-1"></div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_disc2B" class="col-sm-1 col-form-label">DISC 2 B</label>
+                                            <label for="i_disc2B" class="col-sm-1 col-form-label">@lang('DISC 2 B')</label>
                                             <div class="col-sm-1 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc2B">
                                             </div>
                                             <label for="i_disc2B" class="col-form-label text-right">%</label>
-                                            <label for="i_disc2Brp" class="ml-3 pr-0 col-form-label">Rp.</label>
+                                            <label for="i_disc2Brp" class="ml-3 pr-0 col-form-label">@lang('Rp.')</label>
                                             <div class="col-sm-1 pl-0 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc2Brp">
                                             </div>
@@ -231,23 +231,23 @@
                                             <div class="col-sm-1 pl-0">
                                                 <input type="text" class="form-control" id="i_flagdisc2B">
                                             </div>
-                                            <label for="i_tglberlakudisc2B" class="col-sm col-form-label">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc2B" class="col-sm col-form-label">@lang('Tgl. Berlaku')</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc2Ba">
                                             </div>
-                                            <div class="mt-1">s/d</div>
+                                            <div class="mt-1">@lang('s/d')</div>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc2Bb">
                                             </div>
                                             <div class="col-sm-1"></div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_disc3" class="col-sm-1 col-form-label">DISC 3</label>
+                                            <label for="i_disc3" class="col-sm-1 col-form-label">@lang('DISC 3')</label>
                                             <div class="col-sm-1 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc3">
                                             </div>
                                             <label for="i_disc3" class="col-form-label text-right">%</label>
-                                            <label for="i_disc3rp" class="ml-3 pr-0 col-form-label">Rp.</label>
+                                            <label for="i_disc3rp" class="ml-3 pr-0 col-form-label">@lang('Rp.')</label>
                                             <div class="col-sm-1 pl-0 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc3rp">
                                             </div>
@@ -257,35 +257,35 @@
                                             <div class="col-sm-1 pl-0">
 
                                             </div>
-                                            <label for="i_tglberlakudisc3" class="col-sm ml-0 col-form-label">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc3" class="col-sm ml-0 col-form-label">@lang('Tgl. Berlaku')</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc3a">
                                             </div>
-                                            <div class="mt-1">s/d</div>
+                                            <div class="mt-1">@lang('s/d')</div>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc3b">
                                             </div>
                                             <div class="col-sm-1"></div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_disc4" class="col-sm-1 col-form-label">DISC 4</label>
-                                            <label for="i_disc4" class="col-form-label pl-3 text-right">DIST. FEE</label>
+                                            <label for="i_disc4" class="col-sm-1 col-form-label">@lang('DISC 4')</label>
+                                            <label for="i_disc4" class="col-form-label pl-3 text-right">@lang('DIST. FEE')</label>
                                             <div class="col-sm-1 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc4">
                                             </div>
                                             <label for="i_disc4" class="col-form-label text-right">%</label>
-                                            <label for="i_disc4rp" class="ml-3 pr-0 col-form-label">Rp.</label>
+                                            <label for="i_disc4rp" class="ml-3 pr-0 col-form-label">@lang('Rp.')</label>
                                             <div class="col-sm-1 pl-0 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc4rp">
                                             </div>
                                             <div class="col-sm-1 pl-0">
                                                 <input type="text" class="form-control" id="i_bk4">
                                             </div>
-                                            <label for="i_tglberlakudisc4" class="col-sm ml-0 col-form-label" style="margin-left:66px">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc4" class="col-sm ml-0 col-form-label" style="margin-left:66px">@lang('Tgl. Berlaku')</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc4a">
                                             </div>
-                                            <div class="mt-1">s/d</div>
+                                            <div class="mt-1">@lang('s/d')</div>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc4b">
                                             </div>
@@ -293,46 +293,46 @@
                                         </div>
                                         <div class="form-group row mb-0">
                                             <label for="i_disc3" class="col-sm-1 col-form-label"></label>
-                                            <label for="i_disc3" class="col-form-label pl-0 text-right">CASH DISC</label>
+                                            <label for="i_disc3" class="col-form-label pl-0 text-right">@lang('CASH DISC')</label>
                                             <div class="col-sm-1 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc5">
                                             </div>
                                             <label for="i_disc5" class="col-form-label text-right">%</label>
-                                            <label for="i_disc5rp" class="ml-3 pr-0 col-form-label">Rp.</label>
+                                            <label for="i_disc5rp" class="ml-3 pr-0 col-form-label">@lang('Rp.')</label>
                                             <div class="col-sm-1 pl-0 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc5rp">
                                             </div>
                                             <div class="col-sm-1 pl-0">
                                                 <input type="text" class="form-control" id="i_bk5">
                                             </div>
-                                            <label for="i_tglberlakudisc5" class="col-sm ml-0 col-form-label" style="margin-left:66px">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc5" class="col-sm ml-0 col-form-label" style="margin-left:66px">@lang('Tgl. Berlaku')</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc5a">
                                             </div>
-                                            <div class="mt-1">s/d</div>
+                                            <div class="mt-1">@lang('s/d')</div>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc5b">
                                             </div>
                                             <div class="col-sm-1"></div>
                                         </div>
                                         <div class="form-group row mb-0">
-                                            <label for="i_disc3" class="col-sm-1 col-form-label pl-0 pr-0 text-right" style="margin-left: 83px;">NO RETURN</label>
+                                            <label for="i_disc3" class="col-sm-1 col-form-label pl-0 pr-0 text-right" style="margin-left: 83px;">@lang('NO RETURN')</label>
                                             <div class="col-sm-1 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc6">
                                             </div>
                                             <label for="i_disc6" class="col-form-label text-right">%</label>
-                                            <label for="i_disc6rp" class="ml-3 pr-0 col-form-label">Rp.</label>
+                                            <label for="i_disc6rp" class="ml-3 pr-0 col-form-label">@lang('Rp.')</label>
                                             <div class="col-sm-1 pl-0 pr-0 number">
                                                 <input type="text" class="form-control" id="i_disc6rp">
                                             </div>
                                             <div class="col-sm-1 pl-0">
                                                 <input type="text" class="form-control" id="i_bk6">
                                             </div>
-                                            <label for="i_tglberlakudisc6" class="col-sm ml-0 col-form-label" style="margin-left:66px">Tgl. Berlaku</label>
+                                            <label for="i_tglberlakudisc6" class="col-sm ml-0 col-form-label" style="margin-left:66px">@lang('Tgl. Berlaku')</label>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc6a">
                                             </div>
-                                            <div class="mt-1">s/d</div>
+                                            <div class="mt-1">@lang('s/d')</div>
                                             <div class="col-sm-2">
                                                 <input type="text" class="form-control" id="i_tglberlakudisc6b">
                                             </div>
@@ -340,8 +340,8 @@
                                         </div>
                                         <div class="form-group row mb-0">
                                             {{--<label class="col-sm col-form-label pl-0 pr-0 text-right" style="margin-left: 83px;"></label>--}}
-                                            <label for="i_totaldiscount" class="col-form-label col-sm-2 ml-5 mr-5   text-right">Total Discount</label>
-                                            <label for="i_totaldiscountrp" class="ml-3 pr-0 col-form-label">Rp.</label>
+                                            <label for="i_totaldiscount" class="col-form-label col-sm-2 ml-5 mr-5   text-right">@lang('Total Discount')</label>
+                                            <label for="i_totaldiscountrp" class="ml-3 pr-0 col-form-label">@lang('Rp.')</label>
                                             <div class="col-sm-1 pl-0 pr-0 number">
                                                 <input type="text" class="form-control" id="i_totaldiscount">
                                             </div>
@@ -355,17 +355,17 @@
                                     </fieldset>
 
                                     <fieldset class="card border-secondary">
-                                        <legend  class="w-auto ml-5 text-left"><small>Bonus</small></legend>
+                                        <legend  class="w-auto ml-5 text-left"><small>@lang('Bonus')</small></legend>
                                         <div class="container-fluid">
                                             <div class="row">
                                                 <div class="col-sm-6 border-right">
                                                     <div class="form-group row mb-0">
-                                                        <label for="i_bonus1" class="col-sm-1 pr-0 pl-0 col-form-label">Bonus 1</label>
-                                                        <label for="i_bonus1" class="col-sm-2 pr-0 pl-0 col-form-label">: Masa Berlaku</label>
+                                                        <label for="i_bonus1" class="col-sm-1 pr-0 pl-0 col-form-label">@lang('Bonus 1')</label>
+                                                        <label for="i_bonus1" class="col-sm-2 pr-0 pl-0 col-form-label">@lang(': Masa Berlaku')</label>
                                                         <div class="col-sm-4">
                                                             <input type="text" class="form-control" id="i_bonus1a">
                                                         </div>
-                                                        <div class="mt-1">s/d</div>
+                                                        <div class="mt-1">@lang('s/d')</div>
                                                         <div class="col-sm-4">
                                                             <input type="text" class="form-control" id="i_bonus1b">
                                                         </div>
@@ -377,16 +377,16 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row mb-0 text-center">
-                                                        <label for="i_flagbonus" class="col-sm-2 pr-0 pl-0 col-form-label">Flag Bonus</label>
-                                                        <label for="i_ketentuan" class="col-sm-2 pr-0 pl-0 col-form-label">Ketentuan</label>
-                                                        <label for="i_qtypembelian" class="col-sm-3 pr-0 pl-0 col-form-label">Qty Pembelian</label>
-                                                        <label for="i_qtybonus" class="col-sm-3 pr-0 pl-0 col-form-label">Qty Bonus</label>
+                                                        <label for="i_flagbonus" class="col-sm-2 pr-0 pl-0 col-form-label">@lang('Flag Bonus')</label>
+                                                        <label for="i_ketentuan" class="col-sm-2 pr-0 pl-0 col-form-label">@lang('Ketentuan')</label>
+                                                        <label for="i_qtypembelian" class="col-sm-3 pr-0 pl-0 col-form-label">@lang('Qty Pembelian')</label>
+                                                        <label for="i_qtybonus" class="col-sm-3 pr-0 pl-0 col-form-label">@lang('Qty Bonus')</label>
                                                     </div>
                                                     <div class="form-group row mb-0">
                                                         <div class="col-sm-2">
                                                             <input type="text" class="form-control text-center" id="i_flagbonus1-1">
                                                         </div>
-                                                        <label for="i_ketentuan1-1" class="col-sm-2 pr-0 pl-0 col-form-label text-center">Ke - 1</label>
+                                                        <label for="i_ketentuan1-1" class="col-sm-2 pr-0 pl-0 col-form-label text-center">@lang('Ke') - 1</label>
                                                         <div class="col-sm-3">
                                                             <input type="text" class="form-control text-right" id="i_qtypembelian1-1">
                                                         </div>
@@ -398,7 +398,7 @@
                                                         <div class="col-sm-2">
                                                             <input type="text" class="form-control text-center" id="i_flagbonus1-2">
                                                         </div>
-                                                        <label for="i_ketentuan1-2" class="col-sm-2 pr-0 pl-0 col-form-label text-center">Ke - 2</label>
+                                                        <label for="i_ketentuan1-2" class="col-sm-2 pr-0 pl-0 col-form-label text-center">@lang('Ke') - 2</label>
                                                         <div class="col-sm-3">
                                                             <input type="text" class="form-control text-right" id="i_qtypembelian1-2">
                                                         </div>
@@ -410,7 +410,7 @@
                                                         <div class="col-sm-2">
                                                             <input type="text" class="form-control text-center" id="i_flagbonus1-3">
                                                         </div>
-                                                        <label for="i_ketentuan1-3" class="col-sm-2 pr-0 pl-0 col-form-label text-center">Ke - 3</label>
+                                                        <label for="i_ketentuan1-3" class="col-sm-2 pr-0 pl-0 col-form-label text-center">@lang('Ke') - 3</label>
                                                         <div class="col-sm-3">
                                                             <input type="text" class="form-control text-right" id="i_qtypembelian1-3">
                                                         </div>
@@ -422,7 +422,7 @@
                                                         <div class="col-sm-2">
                                                             <input type="text" class="form-control text-center" id="i_flagbonus1-4">
                                                         </div>
-                                                        <label for="i_ketentuan1-4" class="col-sm-2 pr-0 pl-0 col-form-label text-center">Ke - 4</label>
+                                                        <label for="i_ketentuan1-4" class="col-sm-2 pr-0 pl-0 col-form-label text-center">@lang('Ke') - 4</label>
                                                         <div class="col-sm-3">
                                                             <input type="text" class="form-control text-right" id="i_qtypembelian1-4">
                                                         </div>
@@ -434,7 +434,7 @@
                                                         <div class="col-sm-2">
                                                             <input type="text" class="form-control text-center" id="i_flagbonus1-5">
                                                         </div>
-                                                        <label for="i_ketentuan1-5" class="col-sm-2 pr-0 pl-0 col-form-label text-center">Ke - 5</label>
+                                                        <label for="i_ketentuan1-5" class="col-sm-2 pr-0 pl-0 col-form-label text-center">@lang('Ke') - 5</label>
                                                         <div class="col-sm-3">
                                                             <input type="text" class="form-control text-right" id="i_qtypembelian1-5">
                                                         </div>
@@ -446,7 +446,7 @@
                                                         <div class="col-sm-2">
                                                             <input type="text" class="form-control text-center" id="i_flagbonus1-6">
                                                         </div>
-                                                        <label for="i_ketentuan1-6" class="col-sm-2 pr-0 pl-0 col-form-label text-center">Ke - 6</label>
+                                                        <label for="i_ketentuan1-6" class="col-sm-2 pr-0 pl-0 col-form-label text-center">@lang('Ke') - 6</label>
                                                         <div class="col-sm-3">
                                                             <input type="text" class="form-control text-right" id="i_qtypembelian1-6">
                                                         </div>
@@ -458,12 +458,12 @@
 
                                                 <div class="col-sm-6 border-left">
                                                     <div class="form-group row mb-0">
-                                                        <label for="i_bonus2" class="col-sm-1 pr-0 pl-0 col-form-label">Bonus 2</label>
-                                                        <label for="i_bonus2" class="col-sm-2 pr-0 pl-0 col-form-label">: Masa Berlaku</label>
+                                                        <label for="i_bonus2" class="col-sm-1 pr-0 pl-0 col-form-label">@lang('Bonus 2')</label>
+                                                        <label for="i_bonus2" class="col-sm-2 pr-0 pl-0 col-form-label">@lang(': Masa Berlaku')</label>
                                                         <div class="col-sm-4">
                                                             <input type="text" class="form-control" id="i_bonus2a">
                                                         </div>
-                                                        <div class="mt-1">s/d</div>
+                                                        <div class="mt-1">@lang('s/d')</div>
                                                         <div class="col-sm-4">
                                                             <input type="text" class="form-control" id="i_bonus2b">
                                                         </div>
@@ -475,16 +475,16 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row mb-0 text-center">
-                                                        <label for="i_flagbonus2" class="col-sm-2 pr-0 pl-0 col-form-label">Flag Bonus</label>
-                                                        <label for="i_ketentuan2" class="col-sm-2 pr-0 pl-0 col-form-label">Ketentuan</label>
-                                                        <label for="i_qtypembelian2" class="col-sm-3 pr-0 pl-0 col-form-label">Qty Pembelian</label>
-                                                        <label for="i_qtybonus2" class="col-sm-3 pr-0 pl-0 col-form-label">Qty Bonus</label>
+                                                        <label for="i_flagbonus2" class="col-sm-2 pr-0 pl-0 col-form-label">@lang('Flag Bonus')</label>
+                                                        <label for="i_ketentuan2" class="col-sm-2 pr-0 pl-0 col-form-label">@lang('Ketentuan')</label>
+                                                        <label for="i_qtypembelian2" class="col-sm-3 pr-0 pl-0 col-form-label">@lang('Qty Pembelian')</label>
+                                                        <label for="i_qtybonus2" class="col-sm-3 pr-0 pl-0 col-form-label">@lang('Qty Bonus')</label>
                                                     </div>
                                                     <div class="form-group row mb-0">
                                                         <div class="col-sm-2">
                                                             <input type="text" class="form-control text-center" id="i_flagbonus2-1">
                                                         </div>
-                                                        <label for="i_ketentuan2-1" class="col-sm-2 pr-0 pl-0 col-form-label text-center">Ke - 1</label>
+                                                        <label for="i_ketentuan2-1" class="col-sm-2 pr-0 pl-0 col-form-label text-center">@lang('Ke') - 1</label>
                                                         <div class="col-sm-3">
                                                             <input type="text" class="form-control text-right" id="i_qtypembelian2-1">
                                                         </div>
@@ -496,7 +496,7 @@
                                                         <div class="col-sm-2">
                                                             <input type="text" class="form-control text-center" id="i_flagbonus2-2">
                                                         </div>
-                                                        <label for="i_ketentuan2-2" class="col-sm-2 pr-0 pl-0 col-form-label text-center">Ke - 2</label>
+                                                        <label for="i_ketentuan2-2" class="col-sm-2 pr-0 pl-0 col-form-label text-center">@lang('Ke') - 2</label>
                                                         <div class="col-sm-3">
                                                             <input type="text" class="form-control text-right" id="i_qtypembelian2-2">
                                                         </div>
@@ -508,7 +508,7 @@
                                                         <div class="col-sm-2">
                                                             <input type="text" class="form-control text-center" id="i_flagbonus2-3">
                                                         </div>
-                                                        <label for="i_ketentuan2-3" class="col-sm-2 pr-0 pl-0 col-form-label text-center">Ke - 3</label>
+                                                        <label for="i_ketentuan2-3" class="col-sm-2 pr-0 pl-0 col-form-label text-center">@lang('Ke') - 3</label>
                                                         <div class="col-sm-3">
                                                             <input type="text" class="form-control text-right" id="i_qtypembelian2-3">
                                                         </div>
@@ -534,7 +534,7 @@
         <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Barang</h5>
+                    <h5 class="modal-title">@lang('Master Barang')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -546,8 +546,8 @@
                                 <table class="table table-sm table-striped table-bordered" id="table_plu">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Deskripsi</th>
-                                        <th>PLU</th>
+                                        <th>@lang('Deskripsi')</th>
+                                        <th>@lang('PLU')</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -659,7 +659,7 @@
                     lov_select(convertPlu(this.value));
                 else if(this.value.substr(-1) != '0'){
                     swal({
-                        title: 'Hanya untuk PLU kode 0!',
+                        title: "{{__('Hanya untuk PLU kode 0!')}}",
                         icon: 'warning'
                     }).then((createData) => {
                         $('#i_plu').select();
@@ -667,7 +667,7 @@
                 }
                 else{
                     swal({
-                        title: 'Cek kembali kode PLU!',
+                        title: "{{__('Cek kembali kode PLU!')}}",
                         icon: 'warning'
                     }).then((createData) => {
                         $('#i_plu').select();
@@ -691,7 +691,7 @@
                 success: function(response){
                     if(response == 'not-found'){
                         swal({
-                            title: 'Data tidak ditemukan!',
+                            title: "{{__('Data tidak ditemukan!')}}",
                             icon: 'error',
                         }).then(function(){
                             $('#i_plu').select();
@@ -724,14 +724,14 @@
                         $('#i_flagbandrol').val(prd.prd_flagbandrol);
                         $('#i_kondisi').val(prd.prd_perlakuanbarang);
                         if(prd.prd_flagbkp1 == 'Y')
-                            $('#i_bkp1').val('Kena Pajak');
-                        else $('#i_bkp1').val('Tidak Kena Pajak');
+                            $('#i_bkp1').val("{{__('Kena Pajak')}}");
+                        else $('#i_bkp1').val("{{__('Tidak Kena Pajak')}}");
 
                         if(sup != null) {
                             $('#i_kodesupplier').val(sup.sup_kodesupplier);
                             $('#i_pkp').val(sup.sup_pkp);
                             if(hgb.hgb_tipe == '2')
-                                $('#i_lastsupplier').val(sup.sup_kodesupplier + ' ADALAH SUPPLIER TERAKHIR')
+                                $('#i_lastsupplier').val(sup.sup_kodesupplier + "{{__(' ADALAH SUPPLIER TERAKHIR')}}")
                             $('#i_namasupplier').val(sup.sup_namasupplier + ' / ' + null_check(sup.sup_singkatansupplier));
                         }
 
@@ -763,17 +763,17 @@
                                 $('#i_bonus1a').val(formatDate(hgb.hgb_tglmulaibonus01));
                                 $('#i_bonus1b').val(formatDate(hgb.hgb_tglakhirbonus01));
                                 if(hgb.hgb_flagkelipatanbonus01 == 'Y')
-                                    $('#i_kel1').val('BERLAKU KELIPATAN');
+                                    $('#i_kel1').val("{{__('BERLAKU KELIPATAN')}}");
                                 else if(hgb.hgb_flagkelipatanbonus01 == 'N')
-                                    $('#i_kel1').val('TIDAK BERLAKU KELIPATAN');
+                                    $('#i_kel1').val("{{__('TIDAK BERLAKU KELIPATAN')}}");
                             }
                             if(hgb.hgb_tglmulaibonus02 != null){
                                 $('#i_bonus2a').val(formatDate(hgb.hgb_tglmulaibonus02));
                                 $('#i_bonus2b').val(formatDate(hgb.hgb_tglakhirbonus02));
                                 if(hgb.hgb_flagkelipatanbonus02 == 'Y')
-                                    $('#i_kel2').val('BERLAKU KELIPATAN');
+                                    $('#i_kel2').val("{{__('BERLAKU KELIPATAN')}}");
                                 else if(hgb.hgb_flagkelipatanbonus02 == 'N')
-                                    $('#i_kel2').val('TIDAK BERLAKU KELIPATAN');
+                                    $('#i_kel2').val("{{__('TIDAK BERLAKU KELIPATAN')}}");
                             }
 
                             if(hgb.hgb_persendisc01 != 0 || hgb.hgb_rphdisc01 != 0){

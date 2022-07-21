@@ -211,7 +211,7 @@ class barangController extends Controller
                 'brc2' => $brc2, 'userupd' => $userUpd, 'tglupd' => $tglUpd, 'margin_a' => $margin_a, 'margin_n' => $margin_n]);
         }
         else{
-            return response()->json(['message' => 'PLU tidak ditemukan!'],500);
+            return response()->json(['message' => (__('PLU tidak ditemukan!'))],500);
 
         }
     }

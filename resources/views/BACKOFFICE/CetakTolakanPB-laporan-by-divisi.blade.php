@@ -5,7 +5,7 @@
 {{--@section('paper_width','620pt')--}}
 
 @section('page_title')
-    Laporan Tolakan PB by Divisi {{ $tgl1 }} - {{ $tgl2 }}
+    @lang('Laporan Tolakan PB by Divisi') {{ $tgl1 }} - {{ $tgl2 }}
 @endsection
 
 @section('title')
@@ -13,24 +13,24 @@
 @endsection
 
 @section('subtitle')
-    TANGGAL : {{ $tgl1 }} s/d {{ $tgl2 }}
+    @lang('TANGGAL : '){{ $tgl1 }} s/d {{ $tgl2 }}
 @endsection
 
 @section('content')
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr style="font-size: 9px">
-            <td colspan="2" style="text-align: left"><strong>TANGGAL&emsp;&emsp;&emsp;&emsp;DOKUMEN</strong></td>
+            <td colspan="2" style="text-align: left"><strong>@lang('TANGGAL')&emsp;&emsp;&emsp;&emsp;@lang('DOKUMEN')</strong></td>
             <td colspan="5"></td>
         </tr>
         <tr>
-            <td class="left" width="5%">PLU</td>
-            <td class="left padding-left" width="22%">DESKRIPSI</td>
-            <td class="left" width="5%" class="kanan">SATUAN</td>
-            <td class="left" width="2%" class="tengah">TAG</td>
-            <td class="left" width="22%">SUPPLIER</td>
-            <td class="right padding-right" width="6%">PKMT</td>
-            <td class="left" width="38%">KETERANGAN</td>
+            <td class="left" width="5%">@lang('PLU')</td>
+            <td class="left padding-left" width="22%">@lang('DESKRIPSI')</td>
+            <td class="left" width="5%" class="kanan">@lang('SATUAN')</td>
+            <td class="left" width="2%" class="tengah">@lang('TAG')</td>
+            <td class="left" width="22%">@lang('SUPPLIER')</td>
+            <td class="right padding-right" width="6%">@lang('PKMT')</td>
+            <td class="left" width="38%">@lang('KETERANGAN')</td>
         </tr>
         </thead>
         <tbody>

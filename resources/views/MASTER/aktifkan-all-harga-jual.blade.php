@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','MASTER | AKTIFKAN HARGA JUAL ALL ITEM')
+@section('title',(__('MASTER | AKTIFKAN HARGA JUAL ALL ITEM')))
 @section('content')
 
     <div class="container mt-4">
@@ -10,7 +10,7 @@
                        <form class="form mb-5">
                            <div class="row justify-content-center">
                                <div class="col-sm-12 col-md-5">
-                                   <button type="button" id="btnAktifkanHrg" class="btn btn-primary btn-lg btn-block btnAktifkanHrg" onclick="aktifkanAllItem()">Aktifkan Harga Jual All Item</button>
+                                   <button type="button" id="btnAktifkanHrg" class="btn btn-primary btn-lg btn-block btnAktifkanHrg" onclick="aktifkanAllItem()">@lang('Aktifkan Harga Jual All Item')</button>
                                </div>
                            </div>
                        </form>
@@ -18,10 +18,10 @@
                        <table class="table table bordered table-sm mt-3" id="tableAktifkanAll">
                            <thead class="theadDataTables">
                            <tr class="text-center">
-                               <th class="">PLU</th>
-                               <th class="">Deskripsi</th>
-                               <th class="">Harga Lama</th>
-                               <th class="">Harga Baru</th>
+                               <th class="">@lang('PLU')</th>
+                               <th class="">@lang('Deskripsi')</th>
+                               <th class="">@lang('Harga Lama')</th>
+                               <th class="">@lang('Harga Baru')</th>
                            </tr>
                            </thead>
                            <tbdoy>

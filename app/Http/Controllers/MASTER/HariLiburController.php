@@ -42,13 +42,13 @@ class HariLiburController extends Controller
 
         if (!$cekData){
             DB::connection(Session::get('connection'))->table('tbmaster_harilibur')->insert(['lib_kodeigr' => $kodeigr, 'lib_tgllibur' => $tgllibur, 'lib_keteranganlibur' => $ketlibur, 'lib_create_by' => $user, 'lib_create_dt' => $date]);
-            $msg = "Hari Libur Berhasil di Simpan !!";
+            $msg = (__('Hari Libur Berhasil di Simpan !!'));
         } else {
             $cekData    = DB::connection(Session::get('connection'))->table('tbmaster_harilibur')
                 ->where('lib_tgllibur', $tgllibur)
                 ->update(['lib_keteranganlibur' => $ketlibur, 'lib_modify_by' => $user, 'lib_modify_dt' => $date]);
 
-            $msg = "Hari Libur Berhasil di Update !!";
+            $msg = (__('Hari Libur Berhasil di Update !!'));
         }
 
         return response()->json(['kode' => 1, 'data' => '', 'msg' => $msg]);
@@ -65,10 +65,10 @@ class HariLiburController extends Controller
             ->get()->toArray();
 
         if (!$cekData){
-            $msg = "Hari Libur Tidak Terdaftar!!";
+            $msg = (__('Hari Libur Tidak Terdaftar!!'));
         } else {
             DB::connection(Session::get('connection'))->table('tbmaster_harilibur')->where('lib_tgllibur', $tgllibur)->delete();
-            $msg = "Hari Libur Berhasil di Hapus !!";
+            $msg = (__('Hari Libur Berhasil di Hapus !!'));
         }
 
         return response()->json(['kode' => 1, 'data' => '', 'msg' => $msg]);

@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','MASTER | MASTER DIVISI')
+@section('title',(__('MASTER | MASTER DIVISI')))
 @section('content')
 
 
@@ -11,37 +11,37 @@
                         <div class="row text-right">
                             <div class="col-sm-12">
                                 <div class="form-group row mb-0">
-                                    <label for="i_kodedivisi" class="col-sm-3 col-form-label">Kode Divisi</label>
+                                    <label for="i_kodedivisi" class="col-sm-3 col-form-label">@lang('Kode Divisi')</label>
                                     <div class="col-sm-1">
                                         <input type="text" class="form-control" id="i_kodedivisi">
                                     </div>
                                 </div>
                                 <div class="form-group row mb-0">
-                                    <label for="i_kodedivisibaru" class="col-sm-3 col-form-label">Kode Divisi Baru</label>
+                                    <label for="i_kodedivisibaru" class="col-sm-3 col-form-label">@lang('Kode Divisi Baru')</label>
                                     <div class="col-sm-1">
                                         <input type="text" class="form-control" id="i_kodedivisibaru">
                                     </div>
                                 </div>
                                 <div class="form-group row mb-0">
-                                    <label for="i_namadivisi" class="col-sm-3 col-form-label">Nama Divisi</label>
+                                    <label for="i_namadivisi" class="col-sm-3 col-form-label">@lang('Nama Divisi')</label>
                                     <div class="col-sm-7">
                                         <input type="email" class="form-control" id="i_namadivisi">
                                     </div>
                                 </div>
                                 <div class="form-group row mb-0">
-                                    <label for="i_namadivisibaru" class="col-sm-3 col-form-label">Nama Divisi Baru</label>
+                                    <label for="i_namadivisibaru" class="col-sm-3 col-form-label">@lang('Nama Divisi Baru')</label>
                                     <div class="col-sm-7">
                                         <input type="email" class="form-control" id="i_namadivisibaru">
                                     </div>
                                 </div>
                                 <div class="form-group row mb-0">
-                                    <label for="i_divisimanager" class="col-sm-3 col-form-label">Divisi Manager</label>
+                                    <label for="i_divisimanager" class="col-sm-3 col-form-label">@lang('Divisi Manager')</label>
                                     <div class="col-sm-4">
                                         <input type="email" class="form-control" id="i_divisimanager">
                                     </div>
                                 </div>
                                 <div class="form-group row mb-0">
-                                    <label for="i_singkatannamadivisi" class="col-sm-3 col-form-label">Singkatan Nama Divisi</label>
+                                    <label for="i_singkatannamadivisi" class="col-sm-3 col-form-label">@lang('Singkatan Nama Divisi')</label>
                                     <div class="col-sm-4">
                                         <input type="email" class="form-control" id="i_singkatannamadivisi">
                                     </div>

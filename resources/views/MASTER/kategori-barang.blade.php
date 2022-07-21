@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','MASTER | MASTER KATEGORI BARANG')
+@section('title',(__('MASTER | MASTER KATEGORI BARANG')))
 @section('content')
 
 
@@ -16,8 +16,8 @@
                                         <table id="table_departement" class="table table-sm">
                                             <thead class="theadDataTables">
                                                 <tr class="d-flex">
-                                                    <th class="col-4">Kode</th>
-                                                    <th class="col-8">Nama Departement</th>
+                                                    <th class="col-4">@lang('Kode')</th>
+                                                    <th class="col-8">@lang('Nama Departement')</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -40,14 +40,14 @@
 
                             <div class="col-sm-12">
                                 <fieldset class="card border-secondary">
-                                    <legend  class="w-auto ml-4">Master Kategori</legend>
+                                    <legend  class="w-auto ml-4">@lang('Master Kategori')</legend>
                                     <div class="table-wrapper-scroll-y my-custom-scrollbar-kat">
                                         <table id="table_kategori" class="table table-sm">
                                             <thead class="theadDataTables">
                                                 <tr class="d-flex">
-                                                    <th class="col-1">Kode</th>
-                                                    <th class="col-9">Nama Kategori</th>
-                                                    <th class="col-2">Singkatan</th>
+                                                    <th class="col-1">@lang('Kode')</th>
+                                                    <th class="col-9">@lang('Nama Kategori')</th>
+                                                    <th class="col-2">@lang('Singkatan')</th>
                                                 </tr>
                                             </thead>
                                             <tbody>

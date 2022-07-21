@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','MASTER | MASTER HARI LIBUR')
+@section('title',(__('MASTER | MASTER HARI LIBUR')))
 @section('content')
 
     <div class="container mt-4">
@@ -10,8 +10,8 @@
                         <table class="table table-sm table-hover table-bordered" id="tableHariLibur">
                             <thead class="theadDataTables">
                             <tr>
-                                <th> TANGGAL</th>
-                                <th >KETERANGAN</th>
+                                <th>@lang('TANGGAL')</th>
+                                <th>@lang('KETERANGAN')</th>
                             </tr>
                             </thead>
                             <tbody  id="tbodyHariLibur">
@@ -19,18 +19,18 @@
                         </table>
 
                         <div class="form-group row mb-0 mt-3">
-                            <label for="i_tgl" class="col-sm-2 col-form-label text-right">TANGGAL</label>
+                            <label for="i_tgl" class="col-sm-2 col-form-label text-right">@lang('TANGGAL')</label>
                             <div class="col-sm-2">
                                 <input type="text" class="form-control" id="i_tgl" placeholder="DD-MM-YYYY">
                             </div>
-                            <label for="i_keterangan" class="col-sm-2 col-form-label text-right">KETERANGAN</label>
+                            <label for="i_keterangan" class="col-sm-2 col-form-label text-right">@lang('KETERANGAN')</label>
                             <div class="col-sm-6">
                                 <input type="text" class="form-control" id="i_keterangan" placeholder="...">
                             </div>
                         </div>
                         <div class="form-group row mb-0 mt-3 justify-content-center">
                             <div class="col-sm-2">
-                                <button class="btn btn-primary btn-block" id="btn-save" onclick="clearField()">INSERT</button>
+                                <button class="btn btn-primary btn-block" id="btn-save" onclick="clearField()">CLEAR</button>
                             </div>
                             <div class="col-sm-2">
                                 <button class="btn btn-primary btn-block" id="btn-save" onclick="saveHariLibur()">SAVE</button>
@@ -111,11 +111,11 @@
             let ket = $('#i_keterangan').val();
 
             if(!ket && !tgl){
-                swal('MOHON MENGISI TANGGAL DAN KETERANGAN', '', 'warning');
+                swal("{{__('MOHON MENGISI TANGGAL DAN KETERANGAN')}}", '', 'warning');
             } else if (!tgl) {
-                swal('MOHON MENGISI TANGGAL', '', 'warning')
+                swal("{{__('MOHON MENGISI TANGGAL')}}", '', 'warning')
             } else  if(!ket){
-                swal('MOHON MENGISI KETERANGAN', '', 'warning')
+                swal("{{__('MOHON MENGISI KETERANGAN')}}", '', 'warning')
             } else {
                 ajaxSetup();
                 $.ajax({
@@ -153,7 +153,7 @@
         function deleteHariLibur() {
             swal({
                 icon: 'warning',
-                title: 'Hari Libur Akan di Hapus?',
+                title: "{{__('Hari Libur Akan di Hapus?')}}",
                 buttons: true,
                 dangerMode: true
             }).then((response) =>{

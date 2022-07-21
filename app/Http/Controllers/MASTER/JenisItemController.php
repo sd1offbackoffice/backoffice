@@ -269,7 +269,7 @@ class JenisItemController extends Controller
                     DB::connection(Session::get('connection'))->table('TBMASTER_PLUPLANO')->insert(
                         ['PLN_KODEIGR' => Session::get('kdigr'), 'PLN_PRDCD' => $request->prdcd, 'PLN_JENISRAK' => $request->jenisrak, 'PLN_CREATE_BY' => 'WEB', 'PLN_CREATE_DT' => $date]
                     );
-                    $message = 'Data Berhasil Tersimpan!';
+                    $message = (__('Data Berhasil Tersimpan!'));
                     $status = 'success';
                     return compact(['message','status']);
                 }
@@ -277,12 +277,12 @@ class JenisItemController extends Controller
                     DB::connection(Session::get('connection'))->table('TBMASTER_PLUPLANO')
                         ->where('PLN_PRDCD', $request->prdcd)
                         ->update(['PLN_JENISRAK' => $request->jenisrak,'PLN_MODIFY_BY' => 'WEB','PLN_MODIFY_DT' => $date]);
-                    $message = 'Data Berhasil Terupdate!';
+                    $message = (__('Data Berhasil Terupdate!'));
                     $status = 'success';
                     return compact(['message','status']);
                 }
             } else {
-                $message = 'Masih Ada Storage Untuk PLU ini, SO Terlebih Dahulu !!';
+                $message = (__('Masih Ada Storage Untuk PLU ini, SO Terlebih Dahulu !!'));
                 $status = 'warning';
                 return compact(['message','status']);
             }
@@ -304,7 +304,7 @@ class JenisItemController extends Controller
                 DB::connection(Session::get('connection'))->table('TBMASTER_PLUPLANO')->insert(
                     ['PLN_KODEIGR' => Session::get('kdigr'), 'PLN_PRDCD' => $request->prdcd, 'PLN_JENISRAK' => $request->jenisrak, 'PLN_CREATE_BY' => 'WEB', 'PLN_CREATE_DT' => $date]
                 );
-                $message = 'Data Berhasil Tersimpan!';
+                $message = (__('Data Berhasil Tersimpan!'));
                 $status = 'success';
                 return compact(['message','status']);
             }
@@ -312,7 +312,7 @@ class JenisItemController extends Controller
                 DB::connection(Session::get('connection'))->table('TBMASTER_PLUPLANO')
                     ->where('PLN_PRDCD', $request->prdcd)
                     ->update(['PLN_JENISRAK' => $request->jenisrak,'PLN_MODIFY_BY' => 'WEB','PLN_MODIFY_DT' => $date]);
-                $message = 'Data Berhasil Terupdate!';
+                $message = (__('Data Berhasil Terupdate!'));
                 $status = 'success';
                 return compact(['message','status']);
             }

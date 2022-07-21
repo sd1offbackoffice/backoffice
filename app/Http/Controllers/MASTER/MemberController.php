@@ -467,18 +467,18 @@ class MemberController extends Controller
                 }
 
                 $status = 'success';
-                $message = 'Berhasil menyimpan data member!';
+                $message = (__('Berhasil menyimpan data member!'));
                 DB::connection(Session::get('connection'))->commit();
             }
             catch (QueryException $e){
                 $status = 'failed';
-                $message = 'Gagal menyimpan data member!';
+                $message = (__('Gagal menyimpan data member!'));
                 DB::connection(Session::get('connection'))->rollBack();
             }
         }
         else{
             $status = 'failed';
-            $message = 'Data member tidak ditemukan!';
+            $message = (__('Data member tidak ditemukan!'));
         }
 
         return compact(['status','message']);
@@ -628,7 +628,7 @@ class MemberController extends Controller
 
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Berhasil export ke CRM!'
+                    'message' => (__('Berhasil export ke CRM!'))
                 ], 200);
             }
             else{
@@ -636,7 +636,7 @@ class MemberController extends Controller
 
                 return response()->json([
                     'status' => 'failed',
-                    'message' => 'Gagal export ke CRM!'
+                    'message' => (__('Gagal export ke CRM!'))
                 ], 200);
             }
         }
@@ -756,13 +756,13 @@ class MemberController extends Controller
 
             DB::connection(Session::get('connection'))->commit();
             $status = 'success';
-            $message = 'Berhasil menyimpan data quisioner!';
+            $message = (__('Berhasil menyimpan data quisioner!'));
         }
         catch (QueryException $e){
             dd($e->getMessage());
             DB::connection(Session::get('connection'))->rollBack();
             $status = 'failed';
-            $message = 'Gagal menyimpan data quisioner!';
+            $message = (__('Gagal menyimpan data quisioner!'));
         }
 
         return compact(['status','message']);
@@ -846,12 +846,12 @@ class MemberController extends Controller
 
             DB::connection(Session::get('connection'))->commit();
             $status = 'success';
-            $message = 'Berhasil menghapus data member!';
+            $message = (__('Berhasil menghapus data member!'));
         }
         catch (QueryException $e){
             DB::connection(Session::get('connection'))->rollBack();
             $status = 'success';
-            $message = 'Berhasil menghapus data member!';
+            $message = (__('Berhasil menghapus data member!'));
         }
 
         return compact(['status','message']);
@@ -866,10 +866,10 @@ class MemberController extends Controller
         oci_execute($exec);
 
         if (!$sukses){
-            return response()->json(['kode' => 0, 'msg' => "Download Data Gagal", 'data' => '']);
+            return response()->json(['kode' => 0, 'msg' => (__('Download Data Gagal')), 'data' => '']);
         }
 
-        return response()->json(['kode' => 1, "msg" => "Download Data Berhasil", 'data' =>'']);
+        return response()->json(['kode' => 1, "msg" => (__('Download Data Berhasil')), 'data' =>'']);
     }
 
     public function checkRegistrasi(Request $request){
@@ -893,7 +893,7 @@ class MemberController extends Controller
             $tglmulai = (!$tglmulai->cus_tglmulai) ? $date : $tglmulai->cus_tglmulai;
 
             if ($temp){
-                return response()->json(['kode' => 1, "msg" => "Tgl registrasi sudah terisi", 'data' =>'']);
+                return response()->json(['kode' => 1, "msg" => (__('Tgl registrasi sudah terisi')), 'data' =>'']);
             } else {
                 DB::connection(Session::get('connection'))
                     ->table('tbmaster_customer')
@@ -901,9 +901,9 @@ class MemberController extends Controller
                     ->update(['cus_tglregistrasi' => $tglmulai]);
             }
 
-            return response()->json(['kode' => 1, 'msg' => "Tgl registrasi berhasil diisi", 'data' =>'']);
+            return response()->json(['kode' => 1, 'msg' => (__('Tgl registrasi berhasil diisi')), 'data' =>'']);
         }catch (\Exception $e){
-            return response()->json(['kode' => 0, 'msg' => "Gagal update : ".$e->getMessage() , 'data' =>'']);
+            return response()->json(['kode' => 0, 'msg' => (__('Gagal update : ')).$e->getMessage() , 'data' =>'']);
         }
     }
 }

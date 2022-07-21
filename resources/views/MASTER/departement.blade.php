@@ -10,12 +10,12 @@
                         <div class="row">
                             <div class="col-sm-8">
                                 <fieldset class="card border-secondary">
-                                    <legend  class="w-auto ml-4">Divisi</legend>
+                                    <legend  class="w-auto ml-4">@lang('Divisi')</legend>
                                     <table id="table_divisi" class="table table-sm">
                                         <thead class="theadDataTables">
                                             <tr class="d-flex">
-                                                <th class="col-4">Kode Divisi</th>
-                                                <th class="col-8">Nama Divisi</th>
+                                                <th class="col-4">@lang('Kode Divisi')</th>
+                                                <th class="col-8">@lang('Nama Divisi')</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -42,12 +42,12 @@
                                     <table id="table_departement" class="table table-sm">
                                         <thead class="theadDataTables">
                                         <tr class="d-flex">
-                                            <th class="col-sm-1">Kode</th>
-                                            <th class="col-sm-4">Nama</th>
-                                            <th class="col-sm-1 pl-0 pr-0">Singkatan</th>
-                                            <th class="col-sm-2">Kode Manager</th>
-                                            <th class="col-sm-2">Kode Security</th>
-                                            <th class="col-sm-2">Kode Supervisor</th>
+                                            <th class="col-sm-1">@lang('Kode')</th>
+                                            <th class="col-sm-4">@lang('Nama')</th>
+                                            <th class="col-sm-1 pl-0 pr-1">@lang('Singkatan')</th>
+                                            <th class="col-sm-2">@lang('Kode Manager')</th>
+                                            <th class="col-sm-2">@lang('Kode Security')</th>
+                                            <th class="col-sm-2">@lang('Kode Supervisor')</th>
                                         </tr>
                                         </thead>
                                         <tbody>

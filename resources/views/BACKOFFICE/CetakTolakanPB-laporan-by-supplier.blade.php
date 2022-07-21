@@ -3,7 +3,7 @@
 @section('table_font_size','7 px')
 
 @section('page_title')
-    Laporan Tolakan PB by Divisi {{ $tgl1 }} - {{ $tgl2 }}
+    @lang('Laporan Tolakan PB by Divisi') {{ $tgl1 }} - {{ $tgl2 }}
 @endsection
 
 @section('title')
@@ -11,26 +11,26 @@
 @endsection
 
 @section('subtitle')
-    TANGGAL : {{ $tgl1 }} s/d {{ $tgl2 }}
+    @lang('TANGGAL : ') {{ $tgl1 }} @lang('s/d') {{ $tgl2 }}
 @endsection
 
 @section('content')
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr style="font-size: 9px">
-            <td colspan="2" style="text-align: left"><strong>TANGGAL&nbsp;&nbsp;&nbsp;DOKUMEN</strong></td>
+            <td colspan="2" style="text-align: left"><strong>@lang('TANGGAL')&nbsp;&nbsp;&nbsp;@lang('DOKUMEN')</strong></td>
             <td colspan="7"></td>
         </tr>
         <tr>
-            <td width="5%">PLU</td>
-            <td width="27%" class="center">DESKRIPSI</td>
-            <td width="5%" class="kanan">SATUAN</td>
-            <td width="5%" class="tengah">TAG</td>
-            <td width="5%">DIV</td>
-            <td width="5%">DEPT</td>
-            <td width="5%">KAT</td>
-            <td width="5%">PKMT</td>
-            <td width="38%" class="padding-left">KETERANGAN</td>
+            <td width="5%">@lang('PLU')</td>
+            <td width="27%" class="center">@lang('DESKRIPSI')</td>
+            <td width="5%" class="kanan">@lang('SATUAN')</td>
+            <td width="5%" class="tengah">@lang('TAG')</td>
+            <td width="5%">@lang('DIV')</td>
+            <td width="5%">@lang('DEPT')</td>
+            <td width="5%">@lang('KAT')</td>
+            <td width="5%">@lang('PKMT')</td>
+            <td width="38%" class="padding-left">@lang('KETERANGAN')</td>
         </tr>
         </thead>
         <tbody>

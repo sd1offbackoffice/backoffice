@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','LAPORAN | LAPORAN MONITORING FAKTUR PAJAK SJ/NRB')
+@section('title',(__('LAPORAN | LAPORAN MONITORING FAKTUR PAJAK SJ/NRB')))
 @section('content')
 
 
@@ -10,7 +10,7 @@
                     <legend class="w-auto ml-5"></legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="row form-group">
-                            <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">NOMOR PB</label>
+                            <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('NOMOR PB')</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control text-left" id="nopb">
                                 <button id="btn_lov_nopb" type="button" class="btn btn-primary btn-lov p-0"
@@ -21,57 +21,57 @@
                             </div>
                             <div class="col-sm-2">
                                 <button class="btn btn-danger" id="btnHapusDokumen" onclick="hapusDokumen()" disabled>
-                                    Hapus Dokumen
+                                @lang('Hapus Dokumen')
                                 </button>
                             </div>
                             <div class="col-sm-2">
                                 <input type="text" class="form-control text-left" id="model" readonly>
                             </div>
-                            <label for="" class="col-sm-2 col-form-label text-right">Hg Jual</label>
+                            <label for="" class="col-sm-2 col-form-label text-right">@lang('Hg Jual')</label>
                             <div class="col-sm-2">
                                 <input type="text" class="form-control text-left" id="hgjual" disabled>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">TGL. PB</label>
+                            <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('TGL. PB')</label>
 
                             <div class="col-sm-2">
                                 <input type="text" class="form-control text-left" id="tglpb">
                             </div>
 
-                            <label for="" class="offset-4 col-sm-2 col-form-label text-right">PKM</label>
+                            <label for="" class="offset-4 col-sm-2 col-form-label text-right">@lang('PKM')</label>
                             <div class="col-sm-2">
                                 <input type="text" class="form-control text-left" id="pkm" disabled>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">FLAG</label>
+                            <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('FLAG')</label>
                             <div class="col-sm-2">
                                 <select class="form-control" id="flag">
-                                    <option value=" ">PB BIASA</option>
-                                    <option value="1">PB KHUSUS</option>
-                                    <option value="2">PB OMI</option>
+                                    <option value=" ">@lang('PB BIASA')</option>
+                                    <option value="1">@lang('PB KHUSUS')</option>
+                                    <option value="2">@lang('PB OMI')</option>
                                 </select>
                             </div>
 
                             <label class="radio-inline col-sm-1 mt-1 mr-0 pr-0">
-                                <input class="radio tipe" type="radio" name="tipe" value="R" checked> REGULER
+                                <input class="radio tipe" type="radio" name="tipe" value="R" checked>@lang('REGULER')
                             </label>
                             <label class="radio-inline col-sm-1 mt-1 ml-0 pl-0">
-                                <input class="radio tipe" type="radio" name="tipe" value="G"> GMS
+                                <input class="radio tipe" type="radio" name="tipe" value="G">@lang('GMS')
                             </label>
-                            <label for="" class="offset-2 col-sm-2 col-form-label text-right">STOCK</label>
+                            <label for="" class="offset-2 col-sm-2 col-form-label text-right">@lang('STOCK')</label>
                             <div class="col-sm-2">
                                 <input type="text" class="form-control text-left" id="stock" disabled>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">KETERANGAN</label>
+                            <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('KETERANGAN')</label>
                             <div class="col-sm-4">
                                 <input type="text" class="form-control text-left" id="keterangan">
                             </div>
 
-                            <label for="" class="offset-2 col-sm-2 col-form-label text-right">Minor</label>
+                            <label for="" class="offset-2 col-sm-2 col-form-label text-right">@lang('Minor')</label>
                             <div class="col-sm-2">
                                 <input type="text" class="form-control text-left" id="minor" disabled>
                             </div>
@@ -84,7 +84,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-dark">
-                    <legend class="w-auto ml-5"> .:: DETAIL ::.</legend>
+                    <legend class="w-auto ml-5">@lang('.:: DETAIL ::.')</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="row form-group justify-content-center">
                             <div class="tableFixedHeader" style="border-bottom: 1px solid black">
@@ -93,12 +93,13 @@
                                     <thead>
                                     <tr>
                                         <th colspan="10"></th>
-                                        <th colspan="2" class="text-center">DISC I</th>
-                                        <th colspan="2" class="text-center">DISC II</th>
+                                        <th colspan="2" class="text-center">@lang('DISC I')</th>
+                                        <th colspan="2" class="text-center">@lang('DISC II')</th>
                                         <th colspan="7"></th>
                                     </tr>
                                     <tr>
                                         <th></th>
+<<<<<<< HEAD
                                         <th>PRDCD</th>
                                         <th>SATUAN</th>
                                         <th>CTN</th>
@@ -108,16 +109,28 @@
                                         <th>Disc GO</th>
                                         <th>HRG. SATUAN</th>
                                         <th>RUPIAH</th>
+=======
+                                        <th>@lang('PRDCD')</th>
+                                        <th></th>
+                                        <th>@lang('SATUAN')</th>
+                                        <th>@lang('CTN')</th>
+                                        <th>@lang('PCs')</th>
+                                        <th>@lang('OMI')</th>
+                                        <th>@lang('IDM')</th>
+                                        <th>@lang('Disc GO')</th>
+                                        <th>@lang('HRG. SATUAN')</th>
+                                        <th>@lang('RUPIAH')</th>
+>>>>>>> 1460004ea21d0397d607301254d0f9313e26a779
                                         <th>%</th>
-                                        <th>RUPIAH</th>
+                                        <th>@lang('RUPIAH')</th>
                                         <th>%</th>
-                                        <th>BNS 1</th>
-                                        <th>BNS 2</th>
-                                        <th>NILAI</th>
-                                        <th>PPN</th>
-                                        <th>PPNBM</th>
-                                        <th>BOTOL</th>
-                                        <th>TOTAL</th>
+                                        <th>@lang('BNS 1')</th>
+                                        <th>@lang('BNS 2')</th>
+                                        <th>@lang('NILAI')</th>
+                                        <th>@lang('PPN')</th>
+                                        <th>@lang('PPNBM')</th>
+                                        <th>@lang('BOTOL')</th>
+                                        <th>@lang('TOTAL')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbody-detail">
@@ -126,7 +139,7 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">DESKRIPSI</label>
+                            <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('DESKRIPSI')</label>
                             <div class="col-sm-5">
                                 <input type="text" class="form-control text-left" id="deskripsi" disabled>
                             </div>
@@ -140,11 +153,11 @@
                                 </button>
                             </div>
                             <div class="col-sm-2">
-                                <button class="btn btn-primary" onclick="cari()">CARI</button>
+                                <button class="btn btn-primary" onclick="cari()">@lang('CARI')</button>
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">SUPPLIER</label>
+                            <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('SUPPLIER')</label>
                             <div class="col-sm-2">
                                 <input type="text" class="form-control text-left" id="kode-supplier" disabled>
                             </div>
@@ -176,9 +189,9 @@
                                 <table class="table table-sm mb-0 text-center" id="table_lov_nopb">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>NO PB</th>
-                                        <th>TGL PB</th>
-                                        <th>DOC</th>
+                                        <th>@lang('NO PB')</th>
+                                        <th>@lang('TGL PB')</th>
+                                        <th>@lang('DOC')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -205,8 +218,8 @@
                                 <table class="table table-sm mb-0 text-center" id="table_lov_plu">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>PLU</th>
-                                        <th>DESKRIPSI</th>
+                                        <th>@lang('PLU')</th>
+                                        <th>@lang('DESKRIPSI')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -234,8 +247,8 @@
                                 <table class="table table-sm mb-0 text-center" id="table_lov_plu_pb">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>PLU</th>
-                                        <th>DESKRIPSI</th>
+                                        <th>@lang('PLU')</th>
+                                        <th>@lang('DESKRIPSI')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -435,7 +448,7 @@
             if (e.which == 13) {
                 if ($('#nopb').val() == '') {
                     swal({
-                        title: 'Buat Nomor Surat Jalan Baru?',
+                        title: "{{__('Buat Nomor Surat Jalan Baru?')}}",
                         icon: 'info',
                         buttons: true,
                     }).then(function (ok) {
@@ -740,7 +753,7 @@
                 div.find('.input-plu').val(value);
                 if (!$.isNumeric(value)) {
                     swal({
-                        title: "PLU harus angka!",
+                        title: "{{__('PLU harus angka!')}}",
                         icon: "error"
                     }).then((createData) => {
                         div.find('.input-plu').val("");
@@ -960,7 +973,7 @@
                 hitung(row);
                 if (((parseFloat(div.find('.input-ctn').val()) * parseFloat(detail[row].prd_frac)) + parseFloat(div.find('.input-pcs').val())) < parseFloat(detail[row].minor)) {
                     swal({
-                        title: "QTYB + QTYK < MINOR !",
+                        title: "{{__('QTYB + QTYK < MINOR !')}}",
                         icon: "error"
                     }).then((createData) => {
                         div.find('.input-ctn').val(parseFloat(detail[row].minor) / parseFloat(detail[row].prd_frac));
@@ -970,7 +983,7 @@
                     });
                 } else if (((parseFloat(div.find('.input-ctn').val()) * parseFloat(detail[row].prd_frac)) + parseFloat(div.find('.input-pcs').val())) <= 0) {
                     swal({
-                        title: "QTYB + QTYK <= 0",
+                        title: "{{__('QTYB + QTYK <= 0')}}",
                         icon: "error"
                     }).then((createData) => {
                         div.find('.input-ctn').focus();
@@ -1061,7 +1074,7 @@
 
         function saveData() {
             swal({
-                title: 'Yakin ingin menyimpan data?',
+                title: "{{__('Yakin ingin menyimpan data?')}}",
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true
@@ -1115,7 +1128,7 @@
                         if (temp[1] != '') {
                             if ((parseFloat(temp[4]) * parseFloat(detail[id].prd_frac)) + parseFloat(temp[5]) < parseFloat(detail[id].minor)) {
                                 swal({
-                                    title: "QTYB + QTYK < MINOR !",
+                                    title: "{{__('QTYB + QTYK < MINOR !')}}",
                                     icon: "error"
                                 }).then((createData) => {
                                     div.find('.input-ctn').val(parseFloat(detail[id].minor) / parseFloat(detail[id].prd_frac));
@@ -1130,7 +1143,7 @@
                             } else if ((parseFloat(temp[4]) * parseFloat(detail[id].prd_frac)) + parseFloat(temp[5]) <= 0) {
                                 simpan = false;
                                 swal({
-                                    title: "QTYB + QTYK <= 0",
+                                    title: "{{__('QTYB + QTYK <= 0')}}",
                                     icon: "error"
                                 }).then((createData) => {
                                     div.find('.input-ctn').focus();
@@ -1219,7 +1232,7 @@
 
         function hapusDokumen() {
             swal({
-                title: 'Hapus Dokumen ini?',
+                title: "{{__('Hapus Dokumen ini?')}}",
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true

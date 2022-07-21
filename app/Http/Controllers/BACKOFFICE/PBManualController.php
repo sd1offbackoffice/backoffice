@@ -68,7 +68,7 @@ class PBManualController extends Controller
             ->where('PBH_NOPB', '=', $request->nopb)
             ->first();
         if (!isset($pb)) {
-            $message = 'Nomor Dokumen Tidak Ditemukan!';
+            $message = (__('Nomor Dokumen Tidak Ditemukan!'));
             $status = 'error';
             return compact(['message', 'status']);
         } else {
@@ -76,7 +76,7 @@ class PBManualController extends Controller
             DB::connection(Session::get('connection'))->table('tbTr_PB_H')->where('PBH_NOPB', '=', $request->nopb)->delete();
             DB::connection(Session::get('connection'))->table('tbTr_PB_D')->where('PBD_NOPB', '=', $request->nopb)->delete();
             DB::connection(Session::get('connection'))->commit();
-            $message = 'Dokumen berhasil dihapus!';
+            $message = (__('Dokumen berhasil dihapus!'));
             $status = 'success';
             return compact(['message', 'status']);
         }
@@ -498,7 +498,7 @@ class PBManualController extends Controller
                     'PBH_MODIFY_DT' => DB::connection(Session::get('connection'))->raw('sysdate')]);
         }
         DB::connection(Session::get('connection'))->commit();
-        $message = 'Data berhasil disimpan!';
+        $message = (__('Data berhasil disimpan!'));
         $status = 'success';
         return compact(['message', 'status']);
     }

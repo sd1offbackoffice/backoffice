@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','PB | CETAK PB ')
+@section('title',(__('PB | CETAK PB ')))
 @section('content')
 
     <div class="container mt-4">
@@ -11,31 +11,31 @@
                             <div class="col-sm-12">
                                 <form class="form" name="form" id="testtable">
                                     <div class="form-group row mb-0">
-                                        <label class="col-sm-4 col-form-label text-md-right">Jenis PB</label>
+                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Jenis PB')</label>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input field jenisPB" type="radio" name="jenisPB" id="reguler" value="R" checked>
-                                            <label class="form-check-label" for="reguler">REGULER</label>
+                                            <label class="form-check-label" for="reguler">@lang('REGULER')</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input field jenisPB" type="radio" name="jenisPB" id="gms" value="G">
-                                            <label class="form-check-label" for="gms">GMS</label>
+                                            <label class="form-check-label" for="gms">@lang('GMS')</label>
                                         </div>
                                     </div>
                                     <div class="form-group row mb-0">
-                                        <label class="col-sm-4 col-form-label text-md-right">Tanggal</label>
+                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Tanggal')</label>
                                         <input type="date" id="i_tgl1" class="form-control col-sm-2 mx-sm-3 field field1" field="1" name="fform">
-                                        <p class="mt-3 ml-2 mr-2 text-secondary">s/d</p>
+                                        <p class="mt-3 ml-2 mr-2 text-secondary">@lang('s/d')</p>
                                         <input type="date" id="i_tgl2" class="form-control col-sm-2 mx-sm-3 field field2" field="2" name="fform">
                                     </div>
                                     <div class="form-group row mb-0">
-                                        <label class="col-sm-4 col-form-label text-md-right">No Dokumen</label>
+                                        <label class="col-sm-4 col-form-label text-md-right">@lang('No Dokumen')</label>
                                         <div class="col-sm-2 buttonInside">
                                             <input type="text" id="i_doc1" class="form-control field field3" field="3">
                                             <button class="btn btn-lov p-0" type="button" data-toggle="modal" onclick="getDocument('i_doc1')">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
-                                        <p class="mt-3 ml-2 mr-2 text-secondary">s/d</p>
+                                        <p class="mt-3 ml-2 mr-2 text-secondary">@lang('s/d')</p>
                                         <div class="col-sm-2 buttonInside">
                                             <input type="text" id="i_doc2" class="form-control field field4" field="4">
                                             <button class="btn btn-lov p-0" type="button" data-toggle="modal" onclick="getDocument('i_doc2')">
@@ -51,14 +51,14 @@
 {{--                                        <button class="btn ml-2" type="button" data-toggle="modal" onclick="getDocument('i_doc2')"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>--}}
                                     </div>
                                     <div class="form-group row mb-0">
-                                        <label class="col-sm-4 col-form-label text-md-right">Divisi</label>
+                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Divisi')</label>
                                         <div class="col-sm-2 buttonInside">
                                             <input type="text" id="i_div1" class="form-control field field5" field="5">
                                             <button class="btn btn-lov p-0" type="button" data-toggle="modal" onclick="getDivisi('i_div1')">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
-                                        <p class="mt-3 ml-2 mr-2 text-secondary">s/d</p>
+                                        <p class="mt-3 ml-2 mr-2 text-secondary">@lang('s/d')</p>
                                         <div class="col-sm-2 buttonInside">
                                             <input type="text" id="i_div2" class="form-control field field6" field="6">
                                             <button class="btn btn-lov p-0" type="button" data-toggle="modal" onclick="getDivisi('i_div2')">
@@ -73,14 +73,14 @@
 {{--                                        <button class="btn ml-2" type="button" data-toggle="modal"onclick="getDivisi('i_div2')"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>--}}
                                     </div>
                                     <div class="form-group row mb-0">
-                                        <label class="col-sm-4 col-form-label text-md-right">Departement</label>
+                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Departement')</label>
                                         <div class="col-sm-2 buttonInside">
                                             <input type="text" id="i_dept1" class="form-control field field7" field="7">
                                             <button class="btn btn-lov p-0" type="button" data-toggle="modal" onclick="getDepartemen('i_dept1')">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
-                                        <p class="mt-3 ml-2 mr-2 text-secondary">s/d</p>
+                                        <p class="mt-3 ml-2 mr-2 text-secondary">@lang('s/d')</p>
                                         <div class="col-sm-2 buttonInside">
                                             <input type="text" id="i_dept2" class="form-control field field8" field="8">
                                             <button class="btn btn-lov p-0" type="button" data-toggle="modal" onclick="getDepartemen('i_dept2')">
@@ -95,14 +95,14 @@
 {{--                                        <button class="btn ml-2" type="button" data-toggle="modal"onclick="getDepartemen('i_dept2')"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>--}}
                                     </div>
                                     <div class="form-group row mb-0">
-                                        <label class="col-sm-4 col-form-label text-md-right">Kategori</label>
+                                        <label class="col-sm-4 col-form-label text-md-right">@lang('Kategori')</label>
                                         <div class="col-sm-2 buttonInside">
                                             <input type="text" id="i_kat1" class="form-control field field9" field="9">
                                             <button class="btn btn-lov p-0" type="button" data-toggle="modal" onclick="getKategori('i_kat1')">
                                                 <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                             </button>
                                         </div>
-                                        <p class="mt-3 ml-2 mr-2 text-secondary">s/d</p>
+                                        <p class="mt-3 ml-2 mr-2 text-secondary">@lang('s/d')</p>
                                         <div class="col-sm-2 buttonInside">
                                             <input type="text" id="i_kat2" class="form-control field field10" field="10">
                                             <button class="btn btn-lov p-0" type="button" data-toggle="modal" onclick="getKategori('i_kat2')">
@@ -116,8 +116,8 @@
 {{--                                        <input type="text" id="i_kat2" class="form-control col-sm-1 mx-sm-1 field field10" field="10">--}}
 {{--                                        <button class="btn ml-2" type="button" data-toggle="modal" onclick="getKategori('i_kat2')"> <img src="{{asset('image/icon/help.png')}}" width="20px"> </button>--}}
                                     </div>
-                                    <button type="button" id="btnAktifkanHrg" class="btn btn-primary offset-sm-7 col-sm-2 field field11" onclick="prosesCetak()" field="11">Cetak PB</button>
-                                    <button type="button" id="btnAktifkanHrg" class="btn btn-danger col-sm-2 field field12" onclick="clearField()" field="12">Batal</button>
+                                    <button type="button" id="btnAktifkanHrg" class="btn btn-primary offset-sm-7 col-sm-2 field field11" onclick="prosesCetak()" field="11">@lang('Cetak PB')</button>
+                                    <button type="button" id="btnAktifkanHrg" class="btn btn-danger col-sm-2 field field12" onclick="clearField()" field="12">@lang('Batal')</button>
                                     {{--                                    <button type="button" id="btnAktifkanHrg" class="btn btn-danger pl-4 pr-4 mr-3 float-right field field12" onclick="clearField()" field="12">Batal</button>--}}
 {{--                                    <button type="button" id="btnAktifkanHrg" class="btn btn-primary pl-4 pr-4 mr-3 float-right field field11" onclick="prosesCetak()" field="11">Cetak PB</button>--}}
                                 </form>
@@ -136,7 +136,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Supplier</h5>
+                    <h5 class="modal-title">@lang('Master Supplier')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -174,7 +174,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Document</h5>
+                    <h5 class="modal-title">@lang('Document')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -186,8 +186,8 @@
                                 <table class="table table-sm" id="tableModalHelpDocument">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Kode</th>
-                                        <th>Tanggal</th>
+                                        <th>@lang('Kode')</th>
+                                        <th>@lang('Tanggal')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodyModalHelp"></tbody>
@@ -207,7 +207,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Divisi</h5>
+                    <h5 class="modal-title">@lang('Master Divisi')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -219,8 +219,8 @@
                                 <table class="table table-sm" id="tableModalHelpDivisi">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>KODE</th>
-                                        <th>DIVISI</th>
+                                        <th>@lang('KODE')</th>
+                                        <th>@lang('DIVISI')</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -247,7 +247,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Departemen</h5>
+                    <h5 class="modal-title">@lang('Master Departemen')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -259,8 +259,8 @@
                                 <table class="table table-sm" id="tableModalHelpDepartemen">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>KODE</th>
-                                        <th>DEPARTEMEN</th>
+                                        <th>@lang('KODE')</th>
+                                        <th>@lang('DEPARTEMEN')</th>
                                     </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -280,7 +280,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Kategori</h5>
+                    <h5 class="modal-title">@lang('Master Kategori')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -292,9 +292,9 @@
                                 <table class="table table-sm" id="tableModalHelpKategori">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>DEPARTEMEN</th>
-                                        <th>KODE</th>
-                                        <th>KATEGORI</th>
+                                        <th>@lang('DEPARTEMEN')</th>
+                                        <th>@lang('KODE')</th>
+                                        <th>@lang('KATEGORI')</th>
                                     </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -347,7 +347,7 @@
             let tgl2   = $('#i_tgl2').val();
 
             if(tgl1.length === 0 || tgl2.length === 0){
-                swal('Error', 'Input Tanggal', 'error');
+                swal('Error', "{{__('Input Tanggal')}}", 'error');
                 return false;
             } else {
                 tableModalDocument.destroy();
@@ -415,7 +415,7 @@
             let div2   = $('#i_div2').val();
 
             if(div1.length === 0 || div2.length === 0){
-                swal('Error', 'Input Divisi', 'error');
+                swal('Error', "{{__('Input Divisi')}}", 'error');
                 return false;
             } else {
                 tableModalDepartemen.destroy();
@@ -470,7 +470,7 @@
             let dept2   = $('#i_dept2').val();
 
             if(dept1.length === 0 || dept2.length === 0){
-                swal('Error', 'Input Departemen', 'error');
+                swal('Error', "{{__('Input Departemen')}}", 'error');
                 return false;
             } else {
                 tableModalKategori.destroy();
@@ -696,15 +696,15 @@
             kat2 = (kat2 == '') ? '' : kat2
 
             if (!tgl1 || !tgl2) {
-                swal("Tanggal Harus Terisi !!", '', 'warning')
+                swal("{{__('Tanggal Harus Terisi !!')}}", '', 'warning')
             } else if ( (doc1 && !doc2) || (!doc1 && doc2) ) {
-                swal("No Dokumen Harus Terisi Semua !!", '', 'warning')
+                swal("{{__('No Dokumen Harus Terisi Semua !!')}}", '', 'warning')
             } else if ((!div1 && div2) || (div1 && !div2)) {
-                swal("Kode Divisi Harus Terisi Semua!!", '', 'warning')
+                swal("{{__('Kode Divisi Harus Terisi Semua!!')}}", '', 'warning')
             } else if ((!dept1 && dept2) || (dept1 && !dept2)) {
-                swal("Kode Departement Harus Terisi Semua!!", '', 'warning')
+                swal("{{__('Kode Departement Harus Terisi Semua!!')}}", '', 'warning')
             } else if ((!kat1 && kat2) || (kat1 && !kat2)) {
-                swal("Kode Kategori Harus Terisi Semua!!", '', 'warning')
+                swal("{{__('Kode Kategori Harus Terisi Semua!!')}}", '', 'warning')
             } else {
                 {{--window.open('{{ url()->current() }}/cetakreport/'+tgl1 +'/'+tgl2+'/'+doc1+'/'+doc2+'/'+div1+'/'+div2+'/'+dept1+'/'+dept2+'/'+kat1+'/'+kat2+'/'+tipePB+'/')--}}
                 window.open(`{{ url()->current() }}/cetakreport?tgl1=${tgl1}&tgl2=${tgl2}&doc1=${doc1}&doc2=${doc2}&div1=${div1}&div2=${div2}&dept1=${dept1}&dept2=${dept2}&kat1=${kat1}&kat2=${kat2}&tipePB=${tipePB}`)
