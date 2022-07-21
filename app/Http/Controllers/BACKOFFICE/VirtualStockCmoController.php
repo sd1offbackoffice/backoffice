@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
+use PhpOffice\PhpSpreadsheet\Calculation\TextData\Replace;
 use Yajra\DataTables\DataTables;
 
 class VirtualStockCmoController extends Controller
@@ -28,7 +29,7 @@ class VirtualStockCmoController extends Controller
         return view('BACKOFFICE.virtual_stock_cmo');
     }
 
-    
+
     public function GetDiv(Request $request){
 
         $datas = DB::connection(Session::get('connection'))->table('tbmaster_divisi')
@@ -80,7 +81,6 @@ class VirtualStockCmoController extends Controller
         $datas = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->selectRaw("sup_kodesupplier,sup_kodesuppliermcg,sup_namasupplier")
             ->orderBy('sup_kodesupplier')
-            ->limit(100)
             ->get();
 
         return Datatables::of($datas)->make(true);
@@ -93,7 +93,6 @@ class VirtualStockCmoController extends Controller
         $datas = DB::connection(Session::get('connection'))->table('tbmaster_supplier')
             ->selectRaw("sup_kodesupplier,sup_kodesuppliermcg,sup_namasupplier")
             ->orderBy('sup_kodesupplier')
-            ->limit(100)
             ->get();
 
         return compact(['datas']);
@@ -107,7 +106,6 @@ class VirtualStockCmoController extends Controller
             ->selectRaw("sup_kodesupplier,sup_kodesuppliermcg,sup_namasupplier")
             ->whereRaw("sup_kodesupplier LIKE '%" . $search . "%' or sup_namasupplier LIKE '%" . $search . "%'")
             ->orderBy('sup_kodesupplier')
-            ->limit(100)
             ->get();
 
         return response()->json($datas);
@@ -115,7 +113,7 @@ class VirtualStockCmoController extends Controller
 
     public function printPDF(Request $request)
     {
-        
+
         $tipevcmo = $request->tipevcmo;
         $div1 = $request->div1;
         $div2 = $request->div2;
@@ -135,7 +133,7 @@ class VirtualStockCmoController extends Controller
         $and_ksupp = '';
         $and_ksuppmcg = '';
         $and_namasupp = '';
-        
+
         if (isset($div1) && isset($div2)) {
             $and_div = " and prd_kodedivisi between '" . $div1 . "' and '" . $div2 . "'";
         }
@@ -150,8 +148,8 @@ class VirtualStockCmoController extends Controller
             $and_ksuppmcg = " and sup_kodesuppliermcg like '" . $kodemcg . "' ";
             $and_namasupp = " and sup_namasupplier like '" . $namasupplier . "' ";
         }
-        
-        // rekap 
+
+        // rekap
         if($tipevcmo == 'r1')
         {
             $data = DB::connection(Session::get('connection'))
@@ -193,17 +191,17 @@ class VirtualStockCmoController extends Controller
                                 ORDER BY pluigr, prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang");
 
             $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
-            
+
             return view('BACKOFFICE.virtual-stock-cmo-pdf-2',
-            ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1, 
-            'div2' => $div2, 'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2, 
-            'kodesupplier' => $kodesupplier,'kodemcg' => $kodemcg,'namasupplier' => $namasupplier, 
+            ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1,
+            'div2' => $div2, 'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2,
+            'kodesupplier' => $kodesupplier,'kodemcg' => $kodemcg,'namasupplier' => $namasupplier,
             'periode1' => $periode1, 'periode2' => $periode2]);
-        
+
             $pdf = PDF::loadview('BACKOFFICE.virtual-stock-cmo-pdf-2',
-            ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1, 
-            'div2' => $div2, 'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2, 
-            'kodesupplier' => $kodesupplier,'kodemcg' => $kodemcg,'namasupplier' => $namasupplier, 
+            ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1,
+            'div2' => $div2, 'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2,
+            'kodesupplier' => $kodesupplier,'kodemcg' => $kodemcg,'namasupplier' => $namasupplier,
             'periode1' => $periode1, 'periode2' => $periode2]);
             $pdf->setPaper('A4', 'potrait');
             $pdf->output();
@@ -246,17 +244,17 @@ class VirtualStockCmoController extends Controller
                     " . $and_ksuppmcg . "
                     " . $and_namasupp . "
                     ORDER BY pluigr, row_id, prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang ");
-            
-   
+
+
             $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
 
             return view('BACKOFFICE.virtual-stock-cmo-pdf-2',
-            ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1, 'div2' => $div2, 
+            ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1, 'div2' => $div2,
             'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2, 'kodesupplier' => $kodesupplier,
             'kodemcg' => $kodemcg,'namasupplier' => $namasupplier, 'periode1' => $periode1, 'periode2' => $periode2]);
-            
+
             $pdf = PDF::loadview('BACKOFFICE.virtual-stock-cmo-pdf-2',
-            ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1, 'div2' => $div2, 
+            ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1, 'div2' => $div2,
             'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2, 'kodesupplier' => $kodesupplier,
             'kodemcg' => $kodemcg,'namasupplier' => $namasupplier, 'periode1' => $periode1, 'periode2' => $periode2]);
             $pdf->setPaper('A4', 'potrait');
@@ -273,7 +271,7 @@ class VirtualStockCmoController extends Controller
 
     public function printCSV(Request $request)
     {
-        
+
         $tipevcmo = $request->tipevcmo;
         $div1 = $request->div1;
         $div2 = $request->div2;
@@ -308,8 +306,8 @@ class VirtualStockCmoController extends Controller
             $and_ksuppmcg = " and sup_kodesuppliermcg like '" . $kodemcg . "' ";
             $and_namasupp = " and sup_namasupplier like '" . $namasupplier . "' ";
         }
-        
-    
+
+
         if($tipevcmo == 'r1')
         {
             $data = DB::connection(Session::get('connection'))
@@ -373,7 +371,7 @@ class VirtualStockCmoController extends Controller
                 'PLUIDM',
                 'PLUIGR',
                 'DESKRIPSI',
-                'SALDO AWAL',
+                'SALDO_AWAL',
                 'BPB_QTY',
                 'BPBR_QTY',
                 'MPP_QTY',
@@ -381,16 +379,16 @@ class VirtualStockCmoController extends Controller
                 'DSPB_QTY',
                 'MPN_QTY',
                 'ADJM_QTY',
-                'SALDO AKHIR',
+                'SALDO_AKHIR',
             ];
 
             $i =1;
-
             $linebuffs = array();
             foreach ($data as $d) {
                 $tempdata = [
-                    $d->prc_pluidm, 
+                    $d->prc_pluidm,
                     $d->pluigr,
+                    // $d->prd_deskripsipanjang.Replace('"'," "),
                     $d->prd_deskripsipanjang,
                     $d->sta_saldoawal,
                     $d->bpb_qty,
@@ -405,6 +403,7 @@ class VirtualStockCmoController extends Controller
                 array_push($linebuffs, $tempdata);
             }
 
+            dd($linebuffs);
             $headers = [
                 "Content-type" => "text/csv",
                 "Pragma" => "no-cache",
@@ -412,10 +411,11 @@ class VirtualStockCmoController extends Controller
                 "Expires" => "0"
             ];
             $file = fopen(storage_path($filename), 'w');
-
             fputcsv($file, $columnHeader, '|');
             foreach ($linebuffs as $linebuff) {
-                fputcsv($file, $linebuff, '|');
+                fwrite($file, implode('|',$linebuff));
+                dd(fwrite($file, "\n"));
+                fwrite($file, "\n");
             }
             fclose($file);
 
@@ -454,9 +454,9 @@ class VirtualStockCmoController extends Controller
                     " . $and_ksuppmcg . "
                     " . $and_namasupp . "
                     ORDER BY pluigr, row_id ");
-            
+
             // dd($data);
-   
+
             $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
 
             $today = Carbon::now()->format('Ymd');
@@ -497,15 +497,15 @@ class VirtualStockCmoController extends Controller
                 'DSPB_NO',
                 'DSPB_TANGGAL',
                 'DSPB_QTY',
-                
+
                 'MPN_NO',
                 'MPN_TANGGAL',
                 'MPN_QTY',
-                
+
                 'ADJM_NO',
                 'ADJM_TANGGAL',
                 'ADJM_QTY',
-                
+
                 'SALDO_AKHIR'
             ];
 
@@ -516,9 +516,9 @@ class VirtualStockCmoController extends Controller
                 $tempdata = [
                     $d->prc_pluidm, // PLUIDM
                     $d->pluigr, // PLUIGR
-                    $d->prd_deskripsipanjang, // DESKRIPSI 
+                    $d->prd_deskripsipanjang, // DESKRIPSI
                     $d->awal, // SALDO AWAL
-                    
+
                     $d->sup_kodesupplier,// KODE SUPP
                     $d->sup_kodesuppliermcg,// SUPP_MCG
                     $d->sup_namasupplier, // NAMA SUPP
@@ -527,7 +527,7 @@ class VirtualStockCmoController extends Controller
                     $d->bpb_tanggal, // BPB_TANGGAL
                     $d->bpb_no, // BPB_NO
                     $d->bpb_qty, // BPB_QTY
-                    
+
                     $d->idm_toko,// BPBR_TOKO
                     $d->namaidm, // BPBR_NAMATOKO
                     $d->idm_tanggal, // BPBR_TANGGAL
@@ -610,7 +610,7 @@ class VirtualStockCmoController extends Controller
             // foreach ($data as $d) {
             //     $tempdata = [
             //         $i++,
-            //         $d->prc_pluidm, 
+            //         $d->prc_pluidm,
             //         $d->pluigr,
             //         $d->awal,
 
@@ -659,6 +659,14 @@ class VirtualStockCmoController extends Controller
                 "Expires" => "0"
             ];
             $file = fopen(storage_path($filename), 'w');
+
+            // $file = fopen(storage_path($filename), 'w');
+            // fputcsv($file, $columnHeader, '|');
+            // foreach ($linebuffs as $linebuff) {
+            //     fwrite($file, implode('|',$linebuff));
+            //     fwrite($file, "\n");
+            // }
+            // fclose($file);
 
             fputcsv($file, $columnHeader, '|');
             foreach ($linebuffs as $linebuff) {

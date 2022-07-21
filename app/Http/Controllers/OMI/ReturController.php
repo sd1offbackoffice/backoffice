@@ -1317,10 +1317,11 @@ class ReturController extends Controller
                                     $seqno++;
                                     $step = 29;
 
-                                    if(self::nvl($rec->prd_flagbkp1, 'N') != 'Y' ||
-                                        (self::nvl($rec->prd_flagbkp2, 'N') != 'P' ||
-                                        self::nvl($rec->prd_flagbkp2, 'N') != 'G' ||
-                                        self::nvl($rec->prd_flagbkp2, 'N') != 'W')
+                                    if(self::nvl($rec->prd_flagbkp1, 'N') != 'Y'
+//                                        ||
+//                                        (self::nvl($rec->prd_flagbkp2, 'N') != 'P' ||
+//                                        self::nvl($rec->prd_flagbkp2, 'N') != 'G' ||
+//                                        self::nvl($rec->prd_flagbkp2, 'N') != 'W')
                                     )
                                         $nilai = $nilai + ($hrgprd * $rec->rom_qtyselisih);
                                     else{
@@ -2632,7 +2633,7 @@ ORDER BY rom_nodokumen, rom_prdcd");
                 ->first();
 
             if($temp){
-                dd($temp);
+//                dd($temp);
 
                 DB::connection(Session::get('connection'))->table('temp_retur_omi')
                     ->where('sessid','=',$sesiproc)
@@ -2975,7 +2976,8 @@ ORDER BY rom_nodokumen, rom_prdcd");
                                                VNPPN");
 
                                 foreach($recnos as $recno){
-                                    if(in_array($recno->prd_flagbkp2, ['P','G','W','C','N'])){
+//                                    if(in_array($recno->prd_flagbkp2, ['P','G','W','C','N'])){
+                                    if(in_array($recno->prd_flagbkp2, ['C','N'])){
                                         $hrgsatuan = ($recno->gross / $recno->qty)
                                         * $recno->prc_satuanrenceng == 0 ? 1  : $recno->prc_satuanrenceng;
                                     }

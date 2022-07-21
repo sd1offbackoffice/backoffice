@@ -315,8 +315,7 @@
                             existsInMasterBarcode.push(res.data.datas)                            
                             break;
                         case 'INFO KLAIM':
-                            notExistsInMasterKlaim.push(res.data.datas)                            
-                                                                            
+                            notExistsInMasterKlaim.push(res.data.datas)                                                                                                        
                             break;
                         case 'SUCCESS':
                             existsInMasterKlaim.push(res.data.datas)    

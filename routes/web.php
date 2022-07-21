@@ -1053,15 +1053,6 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::get('/download', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\TransferSJController@download');
                     Route::get('/open', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\TransferSJController@open');
                 });
-
-                //Kingsley
-                Route::prefix('/master-ekspedisi')->group(function () {
-                    Route::get('/', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\SJEkspedisiController@index')->middleware('CheckLogin');
-                    Route::get('/get-new-no-trn', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\SJEkspedisiController@index')->middleware('CheckLogin');
-                    Route::get('/get-data-lov-trn', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\SJEkspedisiController@getDataLovTrn')->middleware('CheckLogin');
-                    Route::get('/get-data-lov-ipb', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\SJEkspedisiController@getLovIpb')->middleware('CheckLogin');
-                    Route::get('/get-data-lov-cabang', 'BACKOFFICE\TRANSAKSI\KIRIMCABANG\SJEkspedisiController@getDataLovCabang')->middleware('CheckLogin');
-                });
             });
 
             /*Leo*/
@@ -1764,6 +1755,28 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/showNaik', 'BACKOFFICE\NAIKTURUNSTATUS\StatusController@showNaik');
                 Route::get('/showTurun', 'BACKOFFICE\NAIKTURUNSTATUS\StatusController@showTurun');
                 Route::post('/sendEmail', 'BACKOFFICE\NAIKTURUNSTATUS\StatusController@sendEmail');
+                Route::get('/test', function () {
+                    $datas = DB::connection(Session::get('connection'))->select("SELECT pkm_pkmt, st_saldoakhir, st_prdcd, lks_koderak || '' || lks_kodesubrak || '' || lks_tiperak || '' || lks_shelvingrak rak, prd_deskripsipanjang
+        FROM TBMASTER_KKPKM, TBMASTER_STOCK, TBMASTER_LOKASI, TBMASTER_PRODMAST
+        WHERE st_prdcd = pkm_prdcd
+        AND st_prdcd = prd_prdcd
+        AND st_saldoakhir <= pkm_pkmt
+        AND st_prdcd = lks_prdcd
+        AND st_saldoakhir > 0
+        AND pkm_pkmt > 0
+        ORDER BY st_saldoakhir ASC");
+
+        $pdf = PDF::loadview('BACKOFFICE.NAIKTURUNSTATUS.email', ['datas' => $datas])->setPaper('a5', 'potrait');
+        $pdf->output();
+        $pdf->getDomPDF()->set_option("enable_php", true);
+                
+                    $canvas = $dompdf->get_canvas();
+                    $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
+                
+                    return $pdf->stream('email.PDF');
+                
+                    // return view('BACKOFFICE.NAIKTURUNSTATUS.email');
+                });
             });
         });
 

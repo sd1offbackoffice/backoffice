@@ -34,7 +34,7 @@ Perubahan kulakukan untuk menyamakan dengan hasil laporan sesuai dengan yang kul
         $hasil_rupiah = number_format($angka,2,'.',',');
         return $hasil_rupiah;
     }
-    $tempdep ='';
+    $temp ='';
 
 $sub_item =0;
 $sub_sawalqty =0;
@@ -83,172 +83,175 @@ $total_akhirrph =0;
         <thead style="border-top: 2px solid black;border-bottom: 2px solid black;" >
         <tr>
             <th colspan="4" class="center tengah"></th>
-            <th class="center tengah">------PENERIMAAN------</th>
-            <th class="center tengah">------PENGELUARAN------</th>
+            <th colspan="5" class="center tengah">------------------------------------------PENERIMAAN------------------------------------</th>
+            <th colspan="5" class="center tengah">------------------------------------------PENGELUARAN------------------------------------</th>
             <th colspan="8" class="center tengah"></th>
         </tr>
         <tr>
-            <th colspan="4" class="center tengah">SALDO AWAL</th>
-            <th class="center tengah">------PEMBELIAN------</th>
+            <th colspan="2" class="center tengah">SALDO AWAL</th>
+            <th colspan="2" class="center tengah">------PEMBELIAN------</th>
             <th class="center tengah">TRANSFER IN</th>
-            <th class="center tengah">RETUR PENJUALAN</th>
-            <th class="center tengah">REPACK IN (REPACK)</th>
+            <th class="center tengah">RETUR<br>PENJUALAN</th>
+            <th class="center tengah">REPACK IN<br>(REPACK)</th>
             <th class="center tengah">LAIN-LAIN</th>
             <th class="center tengah">PENJUALAN</th>
-            <th class="center tengah">TRANSFER OUT</th>
-            <th class="center tengah">REPACK OUT (PREPACK)</th>
+            <th class="center tengah">TRANSFER<br>OUT</th>
+            <th class="center tengah">REPACK OUT<br>(PREPACK)</th>
             <th class="center tengah">HILANG</th>
             <th class="center tengah">LAIN-LAIN</th>
             <th class="center tengah">SO</th>
             <th class="center tengah">INTRANSIT</th>
             <th class="center tengah">PENYESUAIAN</th>
             <th class="center tengah">KOREKSI</th>
-            <th class="center tengah">SALDO AKHIR</th>
-            <th class="center tengah">GDANG-X SRV. SUP</th>
-            <th class="center tengah">SERV TOKO</th>
-            <th class="center tengah">SALDO TOKO</th>
+            <th class="center tengah">SALDO<br>AKHIR</th>
+            <th class="center tengah">GDANG-X<br>SRV. SUP</th>
+            <th class="center tengah">SERV<br>TOKO</th>
+            <th class="center tengah">SALDO<br>TOKO</th>
+        </tr>
+        <tr>
+            <th colspan="2"></th>
+            <th>MURNI</th>
+            <th>BONUS</th>
         </tr>
         </thead>
         <tbody style="border-bottom: 3px solid black; text-align: right">
         @for($i=0;$i<sizeof($data);$i++)
-            @if($tempdep != $data[$i]->lpp_kodedepartemen)
+            @if($temp != $data[$i]->lpp_kodedepartemen.$data[$i]->lpp_kategoribrg)
                 <tr>
-                    <td class="left">DEPARTEMEN :</td>
-                    <td class="left">{{$data[$i]->lpp_kodedepartemen}}</td>
-                    <td colspan="5" class="left">{{$data[$i]->dep_namadepartement}}</td>
-                    <td class="left">KATEGORI :</td>
-                    <td class="left">{{$data[$i]->lpp_kategoribrg}}</td>
-                    <td colspan="10" class="left">{{$data[$i]->kat_namakategori}}</td>
+                    <th class="left">DEPARTEMEN :</th>
+                    <th colspan="2" class="left">{{$data[$i]->lpp_kodedepartemen}} - {{$data[$i]->dep_namadepartement}}</th>
+                    <th class="left">KATEGORI :</th>
+                    <th colspan="2" class="left">{{$data[$i]->lpp_kategoribrg}} - {{$data[$i]->kat_namakategori}}</th>
                 </tr>
                 @php
-                    $tempdep = $data[$i]->lpp_kodedepartemen;
+                    $temp = $data[$i]->lpp_kodedepartemen.$data[$i]->lpp_kategoribrg;
                     $sub_item =0;
 
                 @endphp
             @endif
             <tr>
                 <td class="left">{{$data[$i]->lpp_prdcd}}</td>
-                <td class="left">{{$data[$i]->prd_deskripsipanjang}}</td>
+                <td colspan="4" class="left">{{$data[$i]->prd_deskripsipanjang}}</td>
                 <td class="left">{{$data[$i]->kemasan}}</td>
             </tr>
             <tr>
                 <td class="left">UNIT :</td>
-                <td class="left">{{rupiah($data[$i]->sawalqty)}}</td>
-                <td class="left">{{rupiah($data[$i]->beliqty)}}</td>
-                <td class="left">{{rupiah($data[$i]->bonusqty)}}</td>
-                <td class="left">{{rupiah($data[$i]->trmcbqty)}}</td>
-                <td class="left">{{rupiah($data[$i]->retursalesqty)}}</td>
-                <td class="left">{{rupiah($data[$i]->repackqty)}}</td>
-                <td class="left">{{rupiah($data[$i]->laininqty)}}</td>
-                <td class="left">{{rupiah($data[$i]->salesqty)}}</td>
-                <td class="left">{{rupiah($data[$i]->kirimqty)}}</td>
-                <td class="left">{{rupiah($data[$i]->prepackqty)}}</td>
-                <td class="left">{{rupiah($data[$i]->hilangqty)}}</td>
-                <td class="left">{{rupiah($data[$i]->lainoutqty)}}</td>
-                <td class="left">{{rupiah($data[$i]->sel_so)}}</td>
-                <td class="left">{{rupiah($data[$i]->intrstqty)}}</td>
-                <td class="left">{{rupiah($data[$i]->adjqty)}}</td>
-                <td class="left">0</td>
-                <td class="left">{{rupiah($data[$i]->akhirqty)}}</td>
-                <td class="left">{{rupiah($data[$i]->servqsup)}}</td>
-                <td class="left">{{rupiah($data[$i]->servqtok)}}</td>
-                <td class="left">{{rupiah($data[$i]->saldotoko)}}</td>
+                <td class="right">{{rupiah($data[$i]->sawalqty)}}</td>
+                <td class="right">{{rupiah($data[$i]->beliqty)}}</td>
+                <td class="right">{{rupiah($data[$i]->bonusqty)}}</td>
+                <td class="right">{{rupiah($data[$i]->trmcbqty)}}</td>
+                <td class="right">{{rupiah($data[$i]->retursalesqty)}}</td>
+                <td class="right">{{rupiah($data[$i]->repackqty)}}</td>
+                <td class="right">{{rupiah($data[$i]->laininqty)}}</td>
+                <td class="right">{{rupiah($data[$i]->salesqty)}}</td>
+                <td class="right">{{rupiah($data[$i]->kirimqty)}}</td>
+                <td class="right">{{rupiah($data[$i]->prepackqty)}}</td>
+                <td class="right">{{rupiah($data[$i]->hilangqty)}}</td>
+                <td class="right">{{rupiah($data[$i]->lainoutqty)}}</td>
+                <td class="right">{{rupiah($data[$i]->sel_so)}}</td>
+                <td class="right">{{rupiah($data[$i]->intrstqty)}}</td>
+                <td class="right">{{rupiah($data[$i]->adjqty)}}</td>
+                <td class="right">0</td>
+                <td class="right">{{rupiah($data[$i]->akhirqty)}}</td>
+                <td class="right">{{rupiah($data[$i]->servqsup)}}</td>
+                <td class="right">{{rupiah($data[$i]->servqtok)}}</td>
+                <td class="right">{{rupiah($data[$i]->saldotoko)}}</td>
             </tr>
             <tr>
                 <td class="left">RPH :</td>
-                <td class="left">{{rupiah($data[$i]->sawalrph)}}</td>
-                <td class="left">{{rupiah($data[$i]->belirph)}}</td>
-                <td class="left">{{rupiah($data[$i]->bonusrph)}}</td>
-                <td class="left">{{rupiah($data[$i]->trmcbrph)}}</td>
-                <td class="left">{{rupiah($data[$i]->retursalesrph)}}</td>
-                <td class="left">{{rupiah($data[$i]->repackrph)}}</td>
-                <td class="left">{{rupiah($data[$i]->laininrph)}}</td>
-                <td class="left">{{rupiah($data[$i]->salesrph)}}</td>
-                <td class="left">{{rupiah($data[$i]->kirimrph)}}</td>
-                <td class="left">{{rupiah($data[$i]->prepackrph)}}</td>
-                <td class="left">{{rupiah($data[$i]->hilangrph)}}</td>
-                <td class="left">{{rupiah($data[$i]->lainoutrph)}}</td>
-                <td class="left">{{rupiah($data[$i]->rph_sel_so)}}</td>
-                <td class="left">{{rupiah($data[$i]->intrstrph)}}</td>
-                <td class="left">{{rupiah($data[$i]->adjrph)}}</td>
-                <td class="left">{{rupiah($data[$i]->sadj)}}</td>
-                <td class="left">{{rupiah($data[$i]->akhirrph)}}</td>
+                <td class="right">{{rupiah($data[$i]->sawalrph)}}</td>
+                <td class="right">{{rupiah($data[$i]->belirph)}}</td>
+                <td class="right">{{rupiah($data[$i]->bonusrph)}}</td>
+                <td class="right">{{rupiah($data[$i]->trmcbrph)}}</td>
+                <td class="right">{{rupiah($data[$i]->retursalesrph)}}</td>
+                <td class="right">{{rupiah($data[$i]->repackrph)}}</td>
+                <td class="right">{{rupiah($data[$i]->laininrph)}}</td>
+                <td class="right">{{rupiah($data[$i]->salesrph)}}</td>
+                <td class="right">{{rupiah($data[$i]->kirimrph)}}</td>
+                <td class="right">{{rupiah($data[$i]->prepackrph)}}</td>
+                <td class="right">{{rupiah($data[$i]->hilangrph)}}</td>
+                <td class="right">{{rupiah($data[$i]->lainoutrph)}}</td>
+                <td class="right">{{rupiah($data[$i]->rph_sel_so)}}</td>
+                <td class="right">{{rupiah($data[$i]->intrstrph)}}</td>
+                <td class="right">{{rupiah($data[$i]->adjrph)}}</td>
+                <td class="right">{{rupiah($data[$i]->sadj)}}</td>
+                <td class="right">{{rupiah($data[$i]->akhirrph)}}</td>
             </tr>
             @php
                 $sub_item ++;
-                $sub_sawalqty = $data[$i]->sawalqty;
-                $sub_akhirqty = $data[$i]->akhirqty;
+                $sub_sawalqty += $data[$i]->sawalqty;
+                $sub_akhirqty += $data[$i]->akhirqty;
 
-                $sub_sawalrph = $data[$i]->sawalrph;
-                $sub_belirph = $data[$i]->belirph;
-                $sub_bonusrph = $data[$i]->bonusrph;
-                $sub_trmcbrph = $data[$i]->trmcbrph;
-                $sub_returrph = $data[$i]->retursalesrph;
-                $sub_repackrph = $data[$i]->repackrph;
-                $sub_laininrph = $data[$i]->laininrph;
-                $sub_salesrph = $data[$i]->salesrph;
-                $sub_kirimrph = $data[$i]->kirimrph;
-                $sub_prepackrph = $data[$i]->prepackrph;
-                $sub_hilangrph = $data[$i]->hilangrph;
-                $sub_lainoutrph = $data[$i]->lainoutrph;
-                $sub_selso_rph = $data[$i]->rph_sel_so;
-                $sub_intrstrph = $data[$i]->intrstrph;
-                $sub_adjrph = $data[$i]->adjrph;
-                $sub_sadj = $data[$i]->sadj;
-                $sub_akhirrph = $data[$i]->akhirrph;
+                $sub_sawalrph += $data[$i]->sawalrph;
+                $sub_belirph += $data[$i]->belirph;
+                $sub_bonusrph += $data[$i]->bonusrph;
+                $sub_trmcbrph += $data[$i]->trmcbrph;
+                $sub_returrph += $data[$i]->retursalesrph;
+                $sub_repackrph += $data[$i]->repackrph;
+                $sub_laininrph += $data[$i]->laininrph;
+                $sub_salesrph += $data[$i]->salesrph;
+                $sub_kirimrph += $data[$i]->kirimrph;
+                $sub_prepackrph += $data[$i]->prepackrph;
+                $sub_hilangrph += $data[$i]->hilangrph;
+                $sub_lainoutrph += $data[$i]->lainoutrph;
+                $sub_selso_rph += $data[$i]->rph_sel_so;
+                $sub_intrstrph += $data[$i]->intrstrph;
+                $sub_adjrph += $data[$i]->adjrph;
+                $sub_sadj += $data[$i]->sadj;
+                $sub_akhirrph += $data[$i]->akhirrph;
 
                 $total_item++;
-                $total_sawalqty = $data[$i]->sawalqty;
-                $total_akhirqty = $data[$i]->akhirqty;
+                $total_sawalqty += $data[$i]->sawalqty;
+                $total_akhirqty += $data[$i]->akhirqty;
 
-                $total_sawalrph = $data[$i]->sawalrph;
-                $total_belirph = $data[$i]->belirph;
-                $total_bonusrph = $data[$i]->bonusrph;
-                $total_trmcbrph = $data[$i]->trmcbrph;
-                $total_returrph = $data[$i]->retursalesrph;
-                $total_repackrph = $data[$i]->repackrph;
-                $total_laininrph = $data[$i]->laininrph;
-                $total_salesrph = $data[$i]->salesrph;
-                $total_kirimrph = $data[$i]->kirimrph;
-                $total_prepackrph = $data[$i]->prepackrph;
-                $total_hilangrph = $data[$i]->hilangrph;
-                $total_lainoutrph = $data[$i]->lainoutrph;
-                $total_selso_rph = $data[$i]->rph_sel_so;
-                $total_intrstrph = $data[$i]->intrstrph;
-                $total_adjrph = $data[$i]->adjrph;
-                $total_sadj = $data[$i]->sadj;
-                $total_akhirrph = $data[$i]->akhirrph;
+                $total_sawalrph += $data[$i]->sawalrph;
+                $total_belirph += $data[$i]->belirph;
+                $total_bonusrph += $data[$i]->bonusrph;
+                $total_trmcbrph += $data[$i]->trmcbrph;
+                $total_returrph += $data[$i]->retursalesrph;
+                $total_repackrph += $data[$i]->repackrph;
+                $total_laininrph += $data[$i]->laininrph;
+                $total_salesrph += $data[$i]->salesrph;
+                $total_kirimrph += $data[$i]->kirimrph;
+                $total_prepackrph += $data[$i]->prepackrph;
+                $total_hilangrph += $data[$i]->hilangrph;
+                $total_lainoutrph += $data[$i]->lainoutrph;
+                $total_selso_rph += $data[$i]->rph_sel_so;
+                $total_intrstrph += $data[$i]->intrstrph;
+                $total_adjrph += $data[$i]->adjrph;
+                $total_sadj += $data[$i]->sadj;
+                $total_akhirrph += $data[$i]->akhirrph;
             @endphp
-            @if( !isset($data[$i+1]->lpp_kodedepartemen) || (isset($data[$i+1]->lpp_kodedepartemen) && $tempdep != $data[$i+1]->lpp_kodedepartemen) )
-            <tr>
-                <td class="left">{{$sub_item}}</td>
-                <td class="left">ITEM</td>
+            @if( !isset($data[$i+1]->lpp_kodedepartemen) || (isset($data[$i+1]->lpp_kodedepartemen) && $temp != $data[$i+1]->lpp_kodedepartemen.$data[$i+1]->lpp_kategoribrg) )
+            <tr style="border-top: 1px solid black">
+                <th class="left">{{$sub_item}} </th>
+                <th class="left">ITEM</th>
             </tr>
             <tr>
-                <td class="left">UNIT</td>
-                <td class="left">{{rupiah($sub_sawalqty)}}</td>
-                <td colspan="16" class="left"></td>
-                <td class="left">{{rupiah($sub_akhirqty)}}</td>
+                <th class="left">UNIT</th>
+                <th class="right">{{rupiah($sub_sawalqty)}}</th>
+                <th colspan="16" class="left"></th>
+                <th class="right">{{rupiah($sub_akhirqty)}}</th>
             </tr>
-            <tr>
-                <td class="left">RPH</td>
-                <td class="left">{{rupiah($sub_sawalrph)}}</td>
-                <td class="left">{{rupiah($sub_belirph)}}</td>
-                <td class="left">{{rupiah($sub_bonusrph)}}</td>
-                <td class="left">{{rupiah($sub_trmcbrph)}}</td>
-                <td class="left">{{rupiah($sub_returrph)}}</td>
-                <td class="left">{{rupiah($sub_repackrph)}}</td>
-                <td class="left">{{rupiah($sub_laininrph)}}</td>
-                <td class="left">{{rupiah($sub_salesrph)}}</td>
-                <td class="left">{{rupiah($sub_kirimrph)}}</td>
-                <td class="left">{{rupiah($sub_prepackrph)}}</td>
-                <td class="left">{{rupiah($sub_hilangrph)}}</td>
-                <td class="left">{{rupiah($sub_lainoutrph)}}</td>
-                <td class="left">{{rupiah($sub_selso_rph)}}</td>
-                <td class="left">{{rupiah($sub_intrstrph)}}</td>
-                <td class="left">{{rupiah($sub_adjrph)}}</td>
-                <td class="left">{{rupiah($sub_sadj)}}</td>
-                <td class="left">{{rupiah($sub_akhirrph)}}</td>
+            <tr >
+                <th class="left">RPH</th>
+                <th class="right">{{rupiah($sub_sawalrph)}}</th>
+                <th class="right">{{rupiah($sub_belirph)}}</th>
+                <th class="right">{{rupiah($sub_bonusrph)}}</th>
+                <th class="right">{{rupiah($sub_trmcbrph)}}</th>
+                <th class="right">{{rupiah($sub_returrph)}}</th>
+                <th class="right">{{rupiah($sub_repackrph)}}</th>
+                <th class="right">{{rupiah($sub_laininrph)}}</th>
+                <th class="right">{{rupiah($sub_salesrph)}}</th>
+                <th class="right">{{rupiah($sub_kirimrph)}}</th>
+                <th class="right">{{rupiah($sub_prepackrph)}}</th>
+                <th class="right">{{rupiah($sub_hilangrph)}}</th>
+                <th class="right">{{rupiah($sub_lainoutrph)}}</th>
+                <th class="right">{{rupiah($sub_selso_rph)}}</th>
+                <th class="right">{{rupiah($sub_intrstrph)}}</th>
+                <th class="right">{{rupiah($sub_adjrph)}}</th>
+                <th class="right">{{rupiah($sub_sadj)}}</th>
+                <th class="right">{{rupiah($sub_akhirrph)}}</th>
             </tr>
             @php
                 $sub_sawalqty = 0;
@@ -273,36 +276,35 @@ $total_akhirrph =0;
             @endphp
             @endif
         @endfor
-        <tr>
-            <td class="left">TOTAL :</td>
-            <td class="left">{{rupiah($total_item)}}</td>
-            <td class="left">ITEM</td>
+        <tr style="border-top: 1px solid black">
+            <th class="left">TOTAL :</th>
+            <th class="right">{{rupiah($total_item)}} ITEM</th>
         </tr>
         <tr>
-            <td class="left">UNIT</td>
-            <td class="left">{{rupiah($total_sawalqty)}}</td>
-            <td colspan="16" class="left"></td>
-            <td class="left">{{rupiah($total_akhirqty)}}</td>
+            <th class="left">UNIT</th>
+            <th class="right">{{rupiah($total_sawalqty)}}</th>
+            <th colspan="16" class="left"></th>
+            <th class="right">{{rupiah($total_akhirqty)}}</th>
         </tr>
         <tr>
-            <td class="left">RPH</td>
-            <td class="left">{{rupiah($total_sawalrph)}}</td>
-            <td class="left">{{rupiah($total_belirph)}}</td>
-            <td class="left">{{rupiah($total_bonusrph)}}</td>
-            <td class="left">{{rupiah($total_trmcbrph)}}</td>
-            <td class="left">{{rupiah($total_returrph)}}</td>
-            <td class="left">{{rupiah($total_repackrph)}}</td>
-            <td class="left">{{rupiah($total_laininrph)}}</td>
-            <td class="left">{{rupiah($total_salesrph)}}</td>
-            <td class="left">{{rupiah($total_kirimrph)}}</td>
-            <td class="left">{{rupiah($total_prepackrph)}}</td>
-            <td class="left">{{rupiah($total_hilangrph)}}</td>
-            <td class="left">{{rupiah($total_lainoutrph)}}</td>
-            <td class="left">{{rupiah($total_selso_rph)}}</td>
-            <td class="left">{{rupiah($total_intrstrph)}}</td>
-            <td class="left">{{rupiah($total_adjrph)}}</td>
-            <td class="left">{{rupiah($total_sadj)}}</td>
-            <td class="left">{{rupiah($total_akhirrph)}}</td>
+            <th class="left">RPH</th>
+            <th class="right">{{rupiah($total_sawalrph)}}</th>
+            <th class="right">{{rupiah($total_belirph)}}</th>
+            <th class="right">{{rupiah($total_bonusrph)}}</th>
+            <th class="right">{{rupiah($total_trmcbrph)}}</th>
+            <th class="right">{{rupiah($total_returrph)}}</th>
+            <th class="right">{{rupiah($total_repackrph)}}</th>
+            <th class="right">{{rupiah($total_laininrph)}}</th>
+            <th class="right">{{rupiah($total_salesrph)}}</th>
+            <th class="right">{{rupiah($total_kirimrph)}}</th>
+            <th class="right">{{rupiah($total_prepackrph)}}</th>
+            <th class="right">{{rupiah($total_hilangrph)}}</th>
+            <th class="right">{{rupiah($total_lainoutrph)}}</th>
+            <th class="right">{{rupiah($total_selso_rph)}}</th>
+            <th class="right">{{rupiah($total_intrstrph)}}</th>
+            <th class="right">{{rupiah($total_adjrph)}}</th>
+            <th class="right">{{rupiah($total_sadj)}}</th>
+            <th class="right">{{rupiah($total_akhirrph)}}</th>
         </tr>
         </tbody>
     </table>

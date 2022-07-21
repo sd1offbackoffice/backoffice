@@ -4,6 +4,7 @@ namespace App\Http\Controllers\BACKOFFICE\NAIKTURUNSTATUS;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\Facades\DataTables;
@@ -12,6 +13,11 @@ use Illuminate\Support\Facades\Storage;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
+use PDF;
+
+require '../vendor/PHPMailer/src/Exception.php';
+require '../vendor/PHPMailer/src/PHPMailer.php';
+require '../vendor/PHPMailer/src/SMTP.php';
 
 class StatusController extends Controller
 {
@@ -50,18 +56,34 @@ class StatusController extends Controller
         return DataTables::of($data)->make(true);
     }
 
-    public function get_string_between($string, $start, $end)
-    {
-        $string = ' ' . $string;
-        $ini = strpos($string, $start);
-        if ($ini == 0) return '';
-        $ini += strlen($start);
-        $len = strpos($string, $end, $ini) - $ini;
-        return substr($string, $ini, $len);
-    }
-
     public function sendEmail()
     {
+        $datas = DB::connection(Session::get('connection'))->select("SELECT pkm_pkmt, st_saldoakhir, st_prdcd, lks_koderak || '' || lks_kodesubrak || '' || lks_tiperak || '' || lks_shelvingrak rak, prd_deskripsipanjang
+        FROM TBMASTER_KKPKM, TBMASTER_STOCK, TBMASTER_LOKASI, TBMASTER_PRODMAST
+        WHERE st_prdcd = pkm_prdcd
+        AND st_prdcd = prd_prdcd
+        AND st_saldoakhir <= pkm_pkmt
+        AND st_prdcd = lks_prdcd
+        AND st_saldoakhir > 0
+        AND pkm_pkmt > 0
+        ORDER BY st_saldoakhir ASC");
+
+        $pdf = PDF::loadview('BACKOFFICE.NAIKTURUNSTATUS.email', ['datas' => $datas])->setPaper('a5', 'potrait');
+        $pdf->output();
+        $pdf->getDomPDF()->set_option("enable_php", true);
+
+        $path = 'status/';
+        if (!File::exists(storage_path($path))) {
+            File::makeDirectory(storage_path($path), 0755, true, true);
+        }
+
+        for ($i = 0; $i < sizeof($datas); $i++) {
+            $content = $pdf->download()->getOriginalContent();
+            $id = 'TURUN_STATUS' . '_' . Carbon::now()->parse('Ymd');
+            $file = storage_path($path . $id . '.PDF');
+            file_put_contents($file, $content);
+        }
+
         $msg = '';
         $mail = new PHPMailer(true);
         try {
@@ -88,45 +110,9 @@ class StatusController extends Controller
             // }
 
             //Attachments
-            $files = Storage::disk('batal')->allFiles();
+            $files = Storage::disk('status')->allFiles();
             foreach ($files as $f) {
-                $mail->addAttachment('../storage/batal/' . $f);
-                $p_nodks = $this->get_string_between($f, '_', '_');
-                $vol = DB::connection(Session::get('connection'))->select(
-                    "SELECT SUM (
-                        dks_qtypb
-                      * prd_dimensipanjang
-                      * prd_dimensilebar
-                      * prd_dimensitinggi)
-                        AS v_totalvol
-                        FROM TBTR_PB_DKS,
-                            (SELECT SUBSTR (prd_prdcd, 1, 6) || '0' plu_0,
-                                    prd_dimensipanjang,
-                                    prd_dimensilebar,
-                                    prd_dimensitinggi
-                                FROM (SELECT DENSE_RANK ()
-                                            OVER (PARTITION BY SUBSTR (prd_prdcd, 1, 6)
-                                                    ORDER BY prd_prdcd ASC)
-                                                AS plu_1,
-                                            prd_prdcd,
-                                            prd_dimensipanjang,
-                                            prd_dimensilebar,
-                                            prd_dimensitinggi
-                                        FROM tbmaster_prodmast
-                                        WHERE prd_prdcd NOT LIKE '%0')
-                                WHERE plu_1 = 1)
-                        WHERE dks_prdcd = plu_0 AND dks_nodks = '$p_nodks'"
-                );
-
-                $van = DB::connection(Session::get('connection'))->select(
-                    "SELECT van_tipe, van_volume, van_allowance
-                        FROM tbmaster_van
-                        WHERE ROWNUM = '1'"
-                );
-
-                $volume = round($vol[0]->v_totalvol / $van[0]->van_volume * 100);
-                $van_allowance = $van[0]->van_allowance;
-                $msg .= ('<br>' . $p_nodks . ' - ' . 'Persentase Volume (' . $volume . '%)' . ' - ' . 'Persentase Allowance (' . $van_allowance . '%),' . '<br>');
+                $mail->addAttachment('../storage/status/' . $f);
             }
             $mail->smtpConnect(
                 array(
@@ -138,13 +124,13 @@ class StatusController extends Controller
                 )
             );
             //Content
-            $mail->Subject = 'Laporan DKS batal terbentuk';
-            $mail->Body    = 'Laporan DKS batal terbentuk, dikarenakan adanya persentase yang invalid pada DKS berikut: <br>' . $msg . '<br>Terlampir laporan terkait pembatalan pembentukan DKS di bawah';
+            $mail->Subject = 'Laporan Barang Turun Status';
+            $mail->Body    = 'Berikut terlampir laporan barang yang perlu turun status.';
             $mail->isHTML(true);
             // $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
             $mail->send();
-            File::deleteDirectory('../storage/batal/');
+            File::deleteDirectory('../storage/status/');
             return response()->json(['kode' => 0, 'message' => 'Prosedur Sukses', 'p_keterangan' => 'Message has been sent']);
         } catch (Exception $e) {
             return response()->json(['kode' => 1, 'message' => 'Prosedur Gagal', 'p_keterangan' => $mail->ErrorInfo]);

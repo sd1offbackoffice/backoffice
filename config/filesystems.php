@@ -90,6 +90,12 @@ return [
             'root'   => '../storage/qrcode/',
         ],
 
+        // Kingsley
+        'status' => [
+            'driver' => 'local',
+            'root'   => '../storage/status/',
+        ],
+
         'nrb_nrp_backup' => [
             'driver' => 'local',
             'root'   => '../storage/nrb_nrp_backup/',

@@ -42,7 +42,7 @@
                     </table>
                 </div>
                 <div class="p-4">
-                    <button class="btn btn-primary" onclick="sendEmail()">Kirim Email</button>
+                    <button class="btn btn-primary" onclick="sendEmail()" disabled>Kirim Email</button>
                 </div>
             </fieldset>
         </div>
@@ -80,7 +80,7 @@
             },
             success: function(response) {
                 $('#modal-loader').modal('hide');
-                if (response.kode == 0) {
+                if (response.kode == 1) {
                     swal({
                         title: 'Email Gagal Terkirim',
                         text: response.p_keterangan,

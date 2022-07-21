@@ -33,8 +33,6 @@
 
 @section('content')
     @if($tipevcmo == 'r1')
-{{--        @section('paper_height','595pt')--}}
-{{--        @section('paper_width','842pt')--}}
         <table class="table table-bordered table-responsive">
             <thead style="border-top: 1px solid black;border-bottom: 1px solid black;border-left: 1px solid black;">
                 <tr style="text-align: center; vertical-align: center">
@@ -101,12 +99,12 @@
             </tr>
             </thead>
             <tbody>
-                @for($i=0; $i<100 ;$i++)
-                {{-- @for($i=0; $i<sizeof($data) ;$i++) --}}
+                {{-- @for($i=0; $i<100 ;$i++) --}}
+                @for($i=0; $i<sizeof($data) ;$i++)
                     <tr>
                         <td style="text-align: center;">{{$i+1}}</td>
-                        <td style="text-align: left;">{{ $data[$i]->prc_pluidm }}</td>
-                        <td style="text-align: left;">{{ $data[$i]->pluigr }}</td>
+                        <td style="text-align: center;">{{ $data[$i]->prc_pluidm }}</td>
+                        <td style="text-align: center;">{{ $data[$i]->pluigr }}</td>
                         <td style="text-align: left;">{{ $data[$i]->sta_saldoawal }}</td>
                         <td>{{ $data[$i]->bpb_qty }}</td>
                         <td>{{ $data[$i]->idm_qty }}</td>
@@ -136,8 +134,7 @@
             </tbody>
         </table>
     @elseif($tipevcmo == 'r2')
-{{--        @section('paper_height','595pt')--}}
-{{--        @section('paper_width','1200pt')--}}
+
         <table class="table table-bordered table-responsive" style="justify-content: center">
             <thead style="border-top: 1px solid black;border-bottom: 1px solid black;border-left: 1px solid black;">
                 <tr style="text-align: center; vertical-align: center">
@@ -241,8 +238,8 @@
                 <?php
                     $number = 0;
                 ?>
-                {{-- @for($i=0; $i<sizeof($data) ;$i++) --}}
-                @for($i=0; $i<100 ;$i++)
+                @for($i=0; $i<sizeof($data) ;$i++)
+                {{-- @for($i=0; $i<100 ;$i++) --}}
 
                     <?php
                         $temp_pluidm = '';

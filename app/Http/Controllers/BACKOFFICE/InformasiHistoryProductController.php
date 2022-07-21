@@ -47,7 +47,7 @@ class InformasiHistoryProductController extends Controller
         $showpromo = false;
         $dsi = 0;
         $to = 0;
-        $plu='';
+        $plu = '';
 
         if (ord(substr($cprdcd, 1, 1)) < 48 or ord(substr($cprdcd, 1, 1)) > 57) {
             $lCek = 2;
@@ -84,7 +84,7 @@ class InformasiHistoryProductController extends Controller
                 return $message;
             }
         }
-        $plu->prd_prdcd = substr($plu->prd_prdcd, 0, 6).'0';
+        $plu->prd_prdcd = substr($plu->prd_prdcd, 0, 6) . '0';
         $produk = DB::connection(Session::get('connection'))->table('TBMASTER_CABANG')->Join('TBMASTER_PRODMAST', function ($join) {
             $join->on('CAB_KODECABANG', '=', 'PRD_KODEIGR')->On('CAB_KODEIGR', '=', 'PRD_KODEIGR');
         })->leftJoin('TBMASTER_STOCK', function ($join) {
@@ -1750,12 +1750,14 @@ class InformasiHistoryProductController extends Controller
     {
         //STOCK CARTON
         $flagreset = DB::connection(Session::get('connection'))->table('tbmaster_setting_so')
-            ->selectRaw('nvl(mso_flagreset, \'N\')')
+            ->selectRaw('nvl(mso_flagreset, \'N\') fr')
             ->whereRaw('to_char(mso_tglso, \'yyyy-MM\') = TO_CHAR (SYSDATE , \'yyyy-MM\')')
             ->first();
 
-        if (is_null($flagreset)) {
+        if (is_null($flagreset) || !isset($flagreset) || $flagreset == null) {
             $flagreset = 'Y';
+        } else {
+            $flagreset = $flagreset->fr;
         }
 
         $qty_soic = DB::connection(Session::get('connection'))->table('tbtr_reset_soic')
@@ -1769,18 +1771,11 @@ class InformasiHistoryProductController extends Controller
             ->join('tbmaster_stock', function ($join) {
                 $join->On(DB::connection(Session::get('connection'))->raw('substr(st_prdcd, 1, 6)'), '=', DB::connection(Session::get('connection'))->raw('substr(prd_prdcd, 1, 6)'));
             })
-            ->selectRaw('prd_frac frac,
-                                    st_lokasi,
-                                    CASE
-                                       WHEN  \'' . $flagreset . '\' <> \'Y\' THEN
-                                            (st_saldoakhir - st_selisih_so)
-                                        ELSE
-                                            st_saldoakhir
-                                    END st_saldoakhir,
-                                    st_selisih_soic')
+            ->selectRaw("prd_frac frac, st_lokasi,
+                                    CASE WHEN  '" . $flagreset . "' <> 'Y' THEN (st_saldoakhir - st_selisih_so) ELSE st_saldoakhir END st_saldoakhir,
+                                    st_selisih_soic")
             ->where('prd_prdcd', '=', $request->value)
             ->get();
-
         $title = "";
         $qb_baik = "";
         $qc_baik = "";
