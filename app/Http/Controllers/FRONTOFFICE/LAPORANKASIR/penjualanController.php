@@ -1950,7 +1950,7 @@ ORDER BY omidiv, omidep");
         $pluall = $request->pluall;
 
         if ($pluall == 'N') {
-            $datas = DB::connection(Session::get('connection'))->select("SELECT prd_flagbkp1, prd_flagbkp2, prs_namaperusahaan, prs_namacabang, prs_namawilayah,
+            $datas = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, prs_namawilayah,
       fdkdiv, div_namadivisi, fdkdep, dep_namadepartement, fdkatb, kat_namakategori, fdkplu, prd_deskripsipanjang, fdksat||'/'||fdisis unit, fdfbkp,
       fdsat0, fdnam0, fdntr0,
       fdsat1, fdnam1, fdntr1,

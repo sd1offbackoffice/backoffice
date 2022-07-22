@@ -9,31 +9,15 @@
         <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
         <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
       </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
     </expand>
     <select />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fe5a705e-429e-4590-b22e-8b596c37d781" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/backovis.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/backovis.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/InformasiHistoryProductController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/InformasiHistoryProductController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/NAIKTURUNSTATUS/StatusController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/NAIKTURUNSTATUS/StatusController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/BarcodePutihController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/BarcodePutihController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/VirtualStockCmoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/VirtualStockCmoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PENERIMAAN/barcode-putih.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PENERIMAAN/barcode-putih.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/virtual-stock-cmo-pdf-2.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/virtual-stock-cmo-pdf-2.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/FRONTOFFICE/LAPORANKASIR/LAPORANPENJUALAN/lap_jual_perkasir-pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/FRONTOFFICE/LAPORANKASIR/LAPORANPENJUALAN/lap_jual_perkasir-pdf.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/FRONTOFFICE/LAPORANKASIR/penjualanController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/FRONTOFFICE/LAPORANKASIR/penjualanController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/lang/en.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/lang/en.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKDOKUMEN/cetak-dokumen.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/CETAKDOKUMEN/cetak-dokumen.blade.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -187,19 +171,19 @@
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="E:\Websites\BackOffice\app\Http\Controllers\BACKOFFICE" />
-      <recent name="E:\Websites\BackOffice\resources\views\INQUERY" />
-      <recent name="E:\Websites\BackOffice\app\Http\Controllers\INQUERY" />
-      <recent name="E:\Websites\BackOffice\resources\views\BACKOFFICE\PKM" />
-      <recent name="E:\Websites\BackOffice\app\Http\Controllers\BACKOFFICE\PKM" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\Websites\BackOffice\resources\views" />
       <recent name="E:\Websites\BackOffice\resources\views\BACKOFFICE" />
       <recent name="E:\Websites\BackOffice\app\Http\Controllers\BACKOFFICE" />
       <recent name="E:\Websites\BackOffice\resources\views\BACKOFFICE\LPP" />
       <recent name="E:\Websites\BackOffice\resources\views\OMI\LAPORAN\LAPORANREKAPITULASIREGISTERPPR" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Websites\BackOffice\app\Http\Controllers\BACKOFFICE" />
+      <recent name="E:\Websites\BackOffice\resources\views\INQUERY" />
+      <recent name="E:\Websites\BackOffice\app\Http\Controllers\INQUERY" />
+      <recent name="E:\Websites\BackOffice\resources\views\BACKOFFICE\PKM" />
+      <recent name="E:\Websites\BackOffice\app\Http\Controllers\BACKOFFICE\PKM" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -534,7 +518,7 @@
     </state>
     <state x="211" y="306" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1366.728@0.0.1366.728" timestamp="1658199915616" />
     <state x="297" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1652777451291" />
-    <state x="314" y="100" width="1055" height="924" key="find.popup" timestamp="1658392402124">
+    <state x="314" y="100" width="1055" height="924" key="find.popup" timestamp="1658459627874">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="2175" y="2" width="1180" height="1011" key="find.popup/0.0.1280.680/1920.0.1920.1040@1920.0.1920.1040" timestamp="1652411351203" />
@@ -547,7 +531,7 @@
     <state x="255" y="0" width="1180" height="1011" key="find.popup/0.0.1920.1040/-1366.0.1366.728@0.0.1920.1040" timestamp="1652704646654" />
     <state x="96" y="11" width="1275" height="1013" key="find.popup/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1654571162570" />
     <state x="99" y="10" width="1274" height="1012" key="find.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1653968436794" />
-    <state x="314" y="100" width="1055" height="924" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1658392402124" />
+    <state x="314" y="100" width="1055" height="924" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1658459627874" />
     <state x="30" y="15" width="555" height="1227" key="find.popup/0.0.600.1260@0.0.600.1260" timestamp="1654862851386" />
     <state x="830" y="412" key="publish.login" timestamp="1653966836099">
       <screen x="0" y="0" width="1920" height="1040" />
@@ -561,7 +545,7 @@
     <state x="617" y="240" key="run.anything.popup/0.0.1920.1040/-1360.0.1360.728@0.0.1920.1040" timestamp="1653887770885" />
     <state x="617" y="240" key="run.anything.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1653883483097" />
     <state x="616" y="240" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1658223412940" />
-    <state x="42" y="208" width="1044" height="678" key="search.everywhere.popup" timestamp="1658398801522">
+    <state x="42" y="208" width="1044" height="678" key="search.everywhere.popup" timestamp="1658398943982">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="95" y="150" width="672" height="444" key="search.everywhere.popup/0.0.1280.680/1920.0.1920.1040@0.0.1280.680" timestamp="1654851478310" />
@@ -575,7 +559,7 @@
     <state x="143" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-1366.0.1366.728@0.0.1920.1040" timestamp="1652691082163" />
     <state x="773" y="203" width="945" height="679" key="search.everywhere.popup/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1654589814050" />
     <state x="143" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1653970530491" />
-    <state x="42" y="208" width="1044" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1658398801522" />
+    <state x="42" y="208" width="1044" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1658398943982" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

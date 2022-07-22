@@ -138,12 +138,7 @@
                             </button>
                         </div>
                         <div class="col-sm-5">
-<<<<<<< HEAD
-                            <button type="button" class="btn btn-success" id="btnCetak" data-dismiss="modal"><i
-                                class="icon fas fa-print"></i> CETAK
-=======
                             <button type="button" class="btn btn-success" id="btnCetak" data-dismiss="modal">  {{ strtoupper(__('Cetak')) }}
->>>>>>> a911de075ebffc710af6f8e34c7cb7c4e44b383f
                             </button>
                         </div>
                     </div>
@@ -505,14 +500,14 @@
                         response.data.forEach(data => {
                             arrSupp.push(data)
                         })
-                        arrSupp.forEach(data => {                            
+                        arrSupp.forEach(data => {
                             $('#body-table-supplier').append('<tr class="table-sm">\n' +
                             '                               <td class="small nama_supplier">' + data.nama_supplier + '</td>\n' +
                             '                               <td class="small sup_kodesupplier">' + data.sup_kodesupplier + '</td>\n' +
                             '                               <td class="small action"><button type="button" class="btn btn-primary btnSignature" id="btnSignature">TANDA TANGAN</button></td>\n' +
                             '                            </tr>')
                         });
-                        
+
                     }
                 });
             }
@@ -711,7 +706,7 @@
         }
 
         function cetak() {
-            
+
             if (checked.length != 0) {
                 ajaxSetup();
                 $.ajax({
@@ -742,7 +737,7 @@
                         buttons = '';
                         if (result) {
 
-                            for (i = 0; i < result.length; i++) {                                
+                            for (i = 0; i < result.length; i++) {
                                 window.open(`{{ url()->current() }}/download?file=${result[i]}`, '_blank');
                             }
 
@@ -762,7 +757,7 @@
                                     type: "GET",
                                     url: "{{ url()->current() }}/kirim-cabang",
                                     data: {
-                                        date: docDate,                        
+                                        date: docDate,
                                     },
                                     beforeSend: function () {
                                         $('#modal-loader').modal({backdrop: 'static', keyboard: false});
@@ -772,7 +767,7 @@
                                     }
                                 });
                             }
-                            
+
                             //hapus signature
                             // deleteSignature()
                         }
@@ -794,8 +789,8 @@
                     title: `{{ __('Dokumen belum dipilih') }}!`,
                     icon: 'error'
                 });
-            }            
-            
+            }
+
         }
 
         // function deleteSignature(){
@@ -805,12 +800,12 @@
         //         url: "{{ url()->current() }}/delete-signature",
         //         data: {
         //             arrSuppSig: arrSuppSig
-        //         },               
+        //         },
         //         beforeSend: function () {
         //             $('#modal-loader').modal({backdrop: 'static', keyboard: false});
-        //         },   
+        //         },
         //         success: function (response) {
-        //             $('#modal-loader').modal('hide');                    
+        //             $('#modal-loader').modal('hide');
         //         }
         //     });
         // }
