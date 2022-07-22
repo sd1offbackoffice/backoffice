@@ -80,6 +80,7 @@
             <td style="text-align: left">{{$data[$i]->kat_namakategori}}</td>
             <td>{{rupiah($data[$i]->fdnamt)}}</td>
             <td>{{rupiah($data[$i]->fdntax)}}</td>
+
             @if($data[$i]->fdfbkp == 'Y')
                 <td class="right">{{ number_format(0,2) }}</td>
                 <td class="right">{{ number_format(0,2) }}</td>

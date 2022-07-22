@@ -2455,10 +2455,27 @@ ORDER BY sls_periode");
                END
              END
            ) fdnAmt,
-       SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sTax
+            SUM ( CASE WHEN FLAGTAX2 = 'Y' THEN
+                CASE WHEN recordid IS NULL AND tipe = 'S' THEN sTax
                    ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sTax*(0-1) END
              END
+             ELSE 0
+             END
            ) fdnTax,
+             SUM ( CASE WHEN FLAGTAX2 = 'P' THEN
+                CASE WHEN recordid IS NULL AND tipe = 'S' THEN sTax
+                   ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sTax*(0-1) END
+             END
+             ELSE 0
+             END
+           ) fdnTaxBebas,
+       SUM ( CASE WHEN FLAGTAX2 IN ('W','G') THEN
+                CASE WHEN recordid IS NULL AND tipe = 'S' THEN sTax
+                   ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sTax*(0-1) END
+             END
+             ELSE 0
+             END
+           ) fdnTaxDTP,
        SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sNet
                    ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sNet*(0-1) END
              END
@@ -2507,7 +2524,9 @@ FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_KATEGO
                        NOMINALAMT - STAX
                      END
                    ELSE
-                      NOMINALAMT - STAX
+                     CASE WHEN cBkp = 'Y' AND cObkp = 'P' OR cObkp IN ('W', 'G') THEN NOMINALAMT
+                        ELSE NOMINALAMT - STAX END
+                     /*NOMINALAMT - STAX*/
                    END
                  END
                END SNET,
@@ -2521,22 +2540,26 @@ FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_KATEGO
                      CASE WHEN ADMFEE <> 0 THEN
                        CASE WHEN KASIR = 'BKL' THEN
                          CASE WHEN (pjkO = 'Y' AND cBkp = 'Y' ) THEN
-                           CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y') THEN (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT ELSE 0 END ELSE 0 END
+                           CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y'OR cOBkp = 'P' OR cOBkp IN ('W','G')) THEN (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT ELSE 0 END ELSE 0 END
                          ELSE
-                           CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y') THEN NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100))) ELSE 0 END ELSE 0 END
+                           CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y' OR cOBkp = 'P' OR cOBkp IN ('W','G')) THEN NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100))) ELSE 0 END ELSE 0 END
                          END
                         ELSE
-                         CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT ELSE 0 END ELSE 0 END
+                         CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' OR cOBkp = 'P' OR cOBkp IN ('W','G') THEN (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT ELSE 0 END ELSE 0 END
                        END
                       ELSE
-                           CASE WHEN KASIR = 'BKL' THEN
-                         CASE WHEN (pjkO = 'Y' AND cBkp = 'Y') THEN
-                           CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT ELSE 0 END ELSE 0 END
+                          CASE WHEN KASIR = 'BKL' THEN
+                         CASE WHEN (pjkO = 'Y' AND cBkp = 'P') THEN
+                           CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' OR cOBkp = 'P' OR cOBkp IN ('W','G') THEN (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT ELSE 0 END ELSE 0 END
                           ELSE
-                            CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100)))) ELSE 0 END ELSE 0 END
+                            CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' OR cOBkp = 'P' OR cOBkp IN ('W','G') THEN (NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100)))) ELSE 0 END ELSE 0 END
                           END
                         ELSE
-                          CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100)))) ELSE 0 END ELSE 0 END
+                            CASE WHEN cEXP = 'F' THEN
+                                 CASE WHEN cBkp = 'Y' AND cObkp = 'Y' OR cObkp = 'Y' THEN (NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100))))
+                                 ELSE (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT END
+                            ELSE 0 END
+                          --CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' OR cOBkp = 'P' OR cOBkp IN ('W','G') THEN (NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100)))) ELSE 0 END ELSE 0 END
                         END
                       END
                     END STAX,

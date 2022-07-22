@@ -403,7 +403,6 @@ class VirtualStockCmoController extends Controller
                 array_push($linebuffs, $tempdata);
             }
 
-            dd($linebuffs);
             $headers = [
                 "Content-type" => "text/csv",
                 "Pragma" => "no-cache",
@@ -414,7 +413,6 @@ class VirtualStockCmoController extends Controller
             fputcsv($file, $columnHeader, '|');
             foreach ($linebuffs as $linebuff) {
                 fwrite($file, implode('|',$linebuff));
-                dd(fwrite($file, "\n"));
                 fwrite($file, "\n");
             }
             fclose($file);
@@ -454,8 +452,6 @@ class VirtualStockCmoController extends Controller
                     " . $and_ksuppmcg . "
                     " . $and_namasupp . "
                     ORDER BY pluigr, row_id ");
-
-            // dd($data);
 
             $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
 
@@ -660,19 +656,19 @@ class VirtualStockCmoController extends Controller
             ];
             $file = fopen(storage_path($filename), 'w');
 
-            // $file = fopen(storage_path($filename), 'w');
-            // fputcsv($file, $columnHeader, '|');
-            // foreach ($linebuffs as $linebuff) {
-            //     fwrite($file, implode('|',$linebuff));
-            //     fwrite($file, "\n");
-            // }
-            // fclose($file);
-
+            $file = fopen(storage_path($filename), 'w');
             fputcsv($file, $columnHeader, '|');
             foreach ($linebuffs as $linebuff) {
-                fputcsv($file, $linebuff, '|');
+                fwrite($file, implode('|',$linebuff));
+                fwrite($file, "\n");
             }
             fclose($file);
+
+            // fputcsv($file, $columnHeader, '|');
+            // foreach ($linebuffs as $linebuff) {
+            //     fputcsv($file, $linebuff, '|');
+            // }
+            // fclose($file);
 
             return response()->download(storage_path($filename))->deleteFileAfterSend(true);
         }

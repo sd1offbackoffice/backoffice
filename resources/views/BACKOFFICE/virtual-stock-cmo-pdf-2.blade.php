@@ -103,8 +103,8 @@
                 @for($i=0; $i<sizeof($data) ;$i++)
                     <tr>
                         <td style="text-align: center;">{{$i+1}}</td>
-                        <td style="text-align: center;">{{ $data[$i]->prc_pluidm }}</td>
-                        <td style="text-align: center;">{{ $data[$i]->pluigr }}</td>
+                        <td style="text-align: left;">{{ $data[$i]->prc_pluidm }}</td>
+                        <td style="text-align: left;">{{ $data[$i]->pluigr }}</td>
                         <td style="text-align: left;">{{ $data[$i]->sta_saldoawal }}</td>
                         <td>{{ $data[$i]->bpb_qty }}</td>
                         <td>{{ $data[$i]->idm_qty }}</td>
@@ -250,8 +250,8 @@
                     <tr style="text-align: right; vertical-align: right">
                         @if($temp_deskripsi != $data[$i]->prd_deskripsipanjang)
                             <td rowspan="2">{{$number+1}}</td>
-                            <td colspan="1">{{ $data[$i]->prc_pluidm }}</td>
-                            <td colspan="1">{{ $data[$i]->pluigr }}</td>
+                            <td colspan="1" style="text-align: center;">{{ $data[$i]->prc_pluidm }}</td>
+                            <td colspan="1" style="text-align: center;">{{ $data[$i]->pluigr }}</td>
                         {{-- Kalo deskripsi panjang selanjutnya tidak sama dengan yang di temp maka print,
                         setelah print maka ganti isi dari variable temp dengan index selanjutnya --}}
                         <?php

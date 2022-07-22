@@ -99,17 +99,6 @@
                                     </tr>
                                     <tr>
                                         <th></th>
-<<<<<<< HEAD
-                                        <th>PRDCD</th>
-                                        <th>SATUAN</th>
-                                        <th>CTN</th>
-                                        <th>PCs</th>
-                                        <th>OMI</th>
-                                        <th>IDM</th>
-                                        <th>Disc GO</th>
-                                        <th>HRG. SATUAN</th>
-                                        <th>RUPIAH</th>
-=======
                                         <th>@lang('PRDCD')</th>
                                         <th></th>
                                         <th>@lang('SATUAN')</th>
@@ -120,7 +109,6 @@
                                         <th>@lang('Disc GO')</th>
                                         <th>@lang('HRG. SATUAN')</th>
                                         <th>@lang('RUPIAH')</th>
->>>>>>> 1460004ea21d0397d607301254d0f9313e26a779
                                         <th>%</th>
                                         <th>@lang('RUPIAH')</th>
                                         <th>%</th>
