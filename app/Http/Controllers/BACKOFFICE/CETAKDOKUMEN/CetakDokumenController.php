@@ -2242,7 +2242,7 @@ class CetakDokumenController extends Controller
                     $filename = 'list-pengeluaran';
                     $P_PN = " AND TRBO_NODOC IN (" . $NoDoc . ") AND TRBO_TYPETRN='K'";
                     $data1 = DB::connection(Session::get('connection'))
-                        ->select("SELECT   TRBO_NODOC, to_char(TRBO_TGLDOC,'yyyymmdd') TRBO_TGLDOC, TRBO_KODESUPPLIER, TRBO_ISTYPE, TRBO_INVNO, TRBO_TGLINV,
+                        ->select("SELECT PRD_FLAGBKP1, PRD_FLAGBKP2, TRBO_NODOC, to_char(TRBO_TGLDOC,'yyyymmdd') TRBO_TGLDOC, TRBO_KODESUPPLIER, TRBO_ISTYPE, TRBO_INVNO, TRBO_TGLINV,
                                  TRBO_PRDCD, TRBO_HRGSATUAN, TRBO_KETERANGAN, TRBO_GROSS, TRBO_DISCRPH, TRBO_PPNRPH,
                                  CASE
                                      WHEN '" . $REPRINT . "' = '1'
@@ -2363,7 +2363,7 @@ class CetakDokumenController extends Controller
 
                 case  'K' :
                     $P_PN = " AND MSTH_NODOC IN (" . $NoDoc . ") AND MSTH_TYPETRN='K'";
-                    $data1 = DB::connection(Session::get('connection'))->select("SELECT msth_nodoc, to_char(msth_tgldoc,'yyyymmdd') msth_tgldoc,
+                    $data1 = DB::connection(Session::get('connection'))->select("SELECT prd_flagbkp1, prd_flagbkp2, msth_nodoc, to_char(msth_tgldoc,'yyyymmdd') msth_tgldoc,
                                   CASE WHEN '" . $REPRINT . "' = '1' THEN 'RE-PRINT' ELSE '' END AS STATUS,
                                   mstd_prdcd, mstd_unit, mstd_frac, mstd_qty, mstd_hrgsatuan,
                                   FLOOR(mstd_qty/mstd_frac) AS CTN, MOD(mstd_qty,mstd_frac) AS PCS, mstd_keterangan,

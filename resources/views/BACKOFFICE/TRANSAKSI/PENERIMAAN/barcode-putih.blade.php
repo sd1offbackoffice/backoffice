@@ -250,7 +250,8 @@
             $('#pluTable').DataTable({
                 data: plu_datas,
                 columns: [
-                    {data: 'mstd_prdcd', name: 'mstd_prdcd'},
+                    // {data: 'mstd_prdcd', name: 'mstd_prdcd'},
+                    {data: 'prd_plumcg', name: 'prd_plumcg'},
                     {data: 'prd_deskripsipanjang', name: 'prd_deskripsipanjang'},
                     // {data: 'mstd_unit', name: 'mstd_unit'},
                     // {data: 'mstd_frac', name: 'mstd_frac'},

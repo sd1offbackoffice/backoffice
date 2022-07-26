@@ -28,7 +28,7 @@ class StatusController extends Controller
 
     public function showNaik()
     {
-        $data = DB::connection(Session::get('connection'))->select("SELECT pkm_pkmt, st_saldoakhir, st_prdcd, prd_deskripsipanjang, lks_koderak || '' || lks_kodesubrak || '' || lks_tiperak || '' || lks_shelvingrak rak
+        $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT pkm_pkmt, st_saldoakhir, st_prdcd, prd_deskripsipanjang, lks_koderak || '' || lks_kodesubrak || '' || lks_tiperak || '' || lks_shelvingrak rak, lks_maxdisplay || ',' || lks_maxplano AS status_barang
         FROM TBMASTER_KKPKM, TBMASTER_STOCK, TBMASTER_LOKASI, TBMASTER_PRODMAST
         WHERE st_prdcd = pkm_prdcd
         AND st_prdcd = prd_prdcd
@@ -43,7 +43,7 @@ class StatusController extends Controller
 
     public function showTurun()
     {
-        $data = DB::connection(Session::get('connection'))->select("SELECT pkm_pkmt, st_saldoakhir, st_prdcd, lks_koderak || '' || lks_kodesubrak || '' || lks_tiperak || '' || lks_shelvingrak rak, prd_deskripsipanjang
+        $data = DB::connection(Session::get('connection'))->select("SELECT DISTINCT pkm_pkmt, st_saldoakhir, st_prdcd, lks_koderak || '' || lks_kodesubrak || '' || lks_tiperak || '' || lks_shelvingrak rak, prd_deskripsipanjang
         FROM TBMASTER_KKPKM, TBMASTER_STOCK, TBMASTER_LOKASI, TBMASTER_PRODMAST
         WHERE st_prdcd = pkm_prdcd
         AND st_prdcd = prd_prdcd
@@ -56,33 +56,33 @@ class StatusController extends Controller
         return DataTables::of($data)->make(true);
     }
 
-    public function sendEmail()
+    public function sendEmail(Request $request)
     {
-        $datas = DB::connection(Session::get('connection'))->select("SELECT pkm_pkmt, st_saldoakhir, st_prdcd, lks_koderak || '' || lks_kodesubrak || '' || lks_tiperak || '' || lks_shelvingrak rak, prd_deskripsipanjang
-        FROM TBMASTER_KKPKM, TBMASTER_STOCK, TBMASTER_LOKASI, TBMASTER_PRODMAST
-        WHERE st_prdcd = pkm_prdcd
-        AND st_prdcd = prd_prdcd
-        AND st_saldoakhir <= pkm_pkmt
-        AND st_prdcd = lks_prdcd
-        AND st_saldoakhir > 0
-        AND pkm_pkmt > 0
-        ORDER BY st_saldoakhir ASC");
+        // $datas = DB::connection(Session::get('connection'))->select("SELECT pkm_pkmt, st_saldoakhir, st_prdcd, lks_koderak || '' || lks_kodesubrak || '' || lks_tiperak || '' || lks_shelvingrak rak, prd_deskripsipanjang
+        // FROM TBMASTER_KKPKM, TBMASTER_STOCK, TBMASTER_LOKASI, TBMASTER_PRODMAST
+        // WHERE st_prdcd = pkm_prdcd
+        // AND st_prdcd = prd_prdcd
+        // AND st_saldoakhir <= pkm_pkmt
+        // AND st_prdcd = lks_prdcd
+        // AND st_saldoakhir > 0
+        // AND pkm_pkmt > 0
+        // ORDER BY st_saldoakhir ASC");
 
-        $pdf = PDF::loadview('BACKOFFICE.NAIKTURUNSTATUS.email', ['datas' => $datas])->setPaper('a5', 'potrait');
-        $pdf->output();
-        $pdf->getDomPDF()->set_option("enable_php", true);
+        // $pdf = PDF::loadview('BACKOFFICE.NAIKTURUNSTATUS.email', ['datas' => $datas])->setPaper('a5', 'potrait');
+        // $pdf->output();
+        // $pdf->getDomPDF()->set_option("enable_php", true);
 
-        $path = 'status/';
-        if (!File::exists(storage_path($path))) {
-            File::makeDirectory(storage_path($path), 0755, true, true);
-        }
+        // $path = 'status/';
+        // if (!File::exists(storage_path($path))) {
+        //     File::makeDirectory(storage_path($path), 0755, true, true);
+        // }
 
-        for ($i = 0; $i < sizeof($datas); $i++) {
-            $content = $pdf->download()->getOriginalContent();
-            $id = 'TURUN_STATUS' . '_' . Carbon::now()->parse('Ymd');
-            $file = storage_path($path . $id . '.PDF');
-            file_put_contents($file, $content);
-        }
+        // for ($i = 0; $i < sizeof($datas); $i++) {
+        //     $content = $pdf->download()->getOriginalContent();
+        //     $id = 'TURUN_STATUS' . '_' . Carbon::now()->parse('Ymd');
+        //     $file = storage_path($path . $id . '.PDF');
+        //     file_put_contents($file, $content);
+        // }
 
         $msg = '';
         $mail = new PHPMailer(true);
@@ -105,15 +105,15 @@ class StatusController extends Controller
 
             //Recipients
             $mail->setFrom('noreply.sd1@indogrosir.co.id', 'noreply.sd1@indogrosir');
-            // foreach ($recipients as $r) {
-            //     $mail->addAddress($r->eml_email, $r->eml_user);
-            // }
+            foreach ($recipients as $r) {
+                $mail->addAddress($r->eml_email, $r->eml_user);
+            }
 
             //Attachments
-            $files = Storage::disk('status')->allFiles();
-            foreach ($files as $f) {
-                $mail->addAttachment('../storage/status/' . $f);
-            }
+            // $files = Storage::disk('status')->allFiles();
+            // foreach ($files as $f) {
+            //     $mail->addAttachment('../storage/status/' . $f);
+            // }
             $mail->smtpConnect(
                 array(
                     "ssl" => array(
@@ -123,14 +123,26 @@ class StatusController extends Controller
                     )
                 )
             );
+            $list = $request->list;
+            rtrim($list, ',');
+            ltrim($list, ',');
+            $list = explode(',', $list);
+            $list = array_unique($list);
+            foreach (array_slice($list, 1) as $str) {
+                $msg .= "<li>" . $str . "</li>";
+            };
+
             //Content
             $mail->Subject = 'Laporan Barang Turun Status';
-            $mail->Body    = 'Berikut terlampir laporan barang yang perlu turun status.';
+            $mail->Body    = 'Berikut List PLU barang yang perlu diubah statusnya: <br>' . $msg;
+
+
+
             $mail->isHTML(true);
             // $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
             $mail->send();
-            File::deleteDirectory('../storage/status/');
+            // File::deleteDirectory('../storage/status/');
             return response()->json(['kode' => 0, 'message' => 'Prosedur Sukses', 'p_keterangan' => 'Message has been sent']);
         } catch (Exception $e) {
             return response()->json(['kode' => 1, 'message' => 'Prosedur Gagal', 'p_keterangan' => $mail->ErrorInfo]);

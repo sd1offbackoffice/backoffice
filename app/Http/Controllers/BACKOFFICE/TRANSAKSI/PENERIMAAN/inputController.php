@@ -1105,7 +1105,6 @@ class inputController extends Controller
         $sysdate = $help->getDateTime();
         $nisib = 1;
 
-
         foreach ($datas as $data) {
             if (!$data) {
                 break; //EXIT
@@ -2812,12 +2811,12 @@ class inputController extends Controller
             $ppn_rate = $result_detail_row[$j][13];
 
             $detail = DB::connection(Session::get('connection'))->select(
-                "SELECT PRDCD FROM tbtr_npdqr_d 
+                "SELECT PRDCD FROM tbtr_npdqr_d
                     WHERE PRDCD = '$prdcd'"
             );
 
             $npd_rte = DB::connection(Session::get('connection'))->select(
-                "SELECT PRDCD FROM tbhistory_npd_rte 
+                "SELECT PRDCD FROM tbhistory_npd_rte
                     WHERE PRDCD = '$prdcd'"
             );
 

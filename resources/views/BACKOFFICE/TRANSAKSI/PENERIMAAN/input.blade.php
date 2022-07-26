@@ -904,7 +904,7 @@
     let qrDetail = $('#qrDetail');
     let qrHeader = $('#qrHeader');
     let currurl = '{{ url()->current() }}';
-    
+
     $(document).ready(function() {
         typeTrn = 'B'
         chooseTypeBtn.click();
@@ -1467,6 +1467,10 @@
             })
             i_qty.val(0);
         } else {
+            if (jenisPenerimaan == 2 && (qty == '' || qty == null)) {
+                i_qty.val(0);
+                qty = i_qty.val(0);
+            }
             ajaxSetup();
             $.ajax({
                 url: '{{ url()->current() }}/changeqty',
@@ -1997,7 +2001,7 @@
         tableModalHelp.clear().destroy();
 
         tableModalHelp = $('#tableModalHelp').DataTable({
-            ajax:  currurl + '/showpo/',
+            ajax: currurl + '/showpo/',
             paging: true,
             lengthChange: true,
             searching: true,
@@ -2521,8 +2525,7 @@
             success: function(result) {
                 $('#modal-loader').modal('hide');
                 closePLUBtn.click();
-                $('.modal-backdrop').remove()
-                i_keterangan.focus();
+                $('.modal-backdrop').remove();
                 console.log(result);
                 if (result.kode == '0') {
                     if (jenisPenerimaan == 2) {
@@ -2530,6 +2533,9 @@
                         console.log(data);
                         tempDataPLU = data;
                         setValue(data);
+                        setTimeout(function() {
+                            i_hrgbeli.focus();
+                        }, 500);
                     } else {
                         let data = result.data;
                         console.log(data);

@@ -542,13 +542,22 @@
                                 // qtypcs = result[i].trbo_qty % result[i].prd_frac;
                                 // ppn = result[i].trbo_ppnrph * 0;
                                 console.log('in loop');
+                                data = result.data[i];
                                 var kubikase2 = parseInt(data.pbp_kubikase);
                                 var ttlkapasitas = parseInt(data.totalkapasitas);
                                 totalsup++;
                                 if(kubikase2 > ttlkapasitas){
                                     console.log('yes');
+                                    console.log('kubikase2');
+                                    console.log(kubikase2);
+                                    console.log('ttlkapasitas');
+                                    console.log(ttlkapasitas);
                                 }else{
                                     console.log('no');
+                                    console.log('kubikase2');
+                                    console.log(kubikase2);
+                                    console.log('ttlkapasitas');
+                                    console.log(ttlkapasitas);
                                 }
                                 data = result.data[i];
 
@@ -771,7 +780,7 @@
                 let qtypb = thousands_combiners($('.qtypb')[index].value);
                 let minorder = $('.minord')[index].value;
                 let isictn = $('.isictn')[index].value;
-                let dimensi = $('.dimensi')[index].value;
+                let dimensi = thousands_combiners($('.dimensi')[index].value);
                 let tempKubikase;
                 // let round = ROUND (( $pkm - $stock) / $minorder);
                 // tempKubikase = ROUND(((stock + poout + pbout + qtypb)/isictn) * dimensi);
@@ -1032,7 +1041,7 @@
                                                             alert('error');
                                                             //$('#modal-loader').modal('hide')
                                                         }
-                                                    })
+                                                    }) 
                                                 } else {
                                                     console.log('Tidak Save Doc3');
                                                 }

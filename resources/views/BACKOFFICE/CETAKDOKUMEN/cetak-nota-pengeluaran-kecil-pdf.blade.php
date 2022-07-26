@@ -115,6 +115,8 @@
                 $gross = 0;
                 $potongan = 0;
                 $ppn = 0;
+                $total_bebas = 0;
+                $total_dtp = 0;
                 $total = 0;
                 $i=1;
             @endphp
@@ -138,7 +140,31 @@
                         $total += $d->total;
                         $gross += $d->mstd_gross;
                         $potongan += $d->mstd_discrph;
-                        $ppn += $d->mstd_ppnrph;
+                        // $ppn += $d->mstd_ppnrph;
+
+                        $ppn_rph = 0;
+                        $ppn_bebas = 0;
+                        $ppn_dtp = 0;
+
+                        switch ($data['data1'][$i]->prd_flagbkp1) {
+                            case 'Y':
+                                switch ($data['data1'][$i]->prd_flagbkp2) {
+                                    case 'Y':
+                                        $ppn_rph = $data['data1'][$i]->mstd_ppnrph;
+                                        break;
+                                    case 'P':
+                                        $ppn_bebas = $data['data1'][$i]->mstd_ppnrph;
+                                        break;
+                                    case 'W' || 'G':
+                                        $ppn_dtp = $data['data1'][$i]->mstd_ppnrph;
+                                        break;                                    
+                                }
+                                break;                            
+                        }
+
+                        $ppn += $ppn_rph;
+                        $total_bebas += $ppn_bebas;
+                        $total_dtp += $ppn_dtp;
                     @endphp
                 @endforeach
             @else
@@ -167,8 +193,21 @@
             <tr>
                 <td colspan="6"></td>
                 <td style="font-weight: bold;border-bottom: solid 1px black">TOTAL PPN</td>
-                <td style="border-bottom: solid 1px black"
-                    class="right">{{ number_format(round($ppn), 0, '.', ',') }}</td>
+                <td class="right">{{ number_format(round($ppn), 0, '.', ',') }}</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="6"></td>
+                <td style="font-weight: bold;border-bottom: solid 1px black">TOTAL PPN BEBAS</td>
+                <td class="right">{{ number_format(round($total_bebas), 0, '.', ',') }}</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="6"></td>
+                <td style="font-weight: bold;border-bottom: solid 1px black">TOTAL PPN DITANGGUNG PEMERINTAH</td>
+                <td style="border-bottom: solid 1px black" class="right">{{ number_format(round($total_dtp), 0, '.', ',') }}</td>
                 <td></td>
                 <td></td>
             </tr>

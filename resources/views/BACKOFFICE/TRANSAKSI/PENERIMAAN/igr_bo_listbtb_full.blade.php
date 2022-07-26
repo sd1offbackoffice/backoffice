@@ -247,46 +247,149 @@
 
     @else
     <header>
-        <div style="float:left; margin-top: -20px; line-height: 5px !important;">
-            <p>--</p>
-            <p>--</p>
+        <div style="margin-top: -20px; line-height: 0.1px !important;">
+            <p>-</p>
+            <p>-</p>
         </div>
-        <div style="float:right; margin-top: 0px; line-height: 5px !important;">
-            <p>{{ date("d-M-y  H:i:s") }}</p>
-            <p> IGR_BO_CTKTLKNPBPSUP </p>
+        <div style="margin-top: -100px; margin-left: 620px; line-height: 0.1px !important;">
+            <p>TGL : {{ date("d-M-y  H:i:s") }}</p>
+            <p>PRG : IGR_BO_CTBTBLIST</p>
         </div>
-        <div style="line-height: 0.3 !important; text-align: center !important;">
-            <h2 style="text-align: center">LAPORAN DAFTAR TOLAKAN PB / SUPPLIER </h2>
-            <p style="font-size: 10px !important; text-align: center !important; margin-left: 100px">TANGGAL : -- s/d --</p>
+        <div style="line-height: 0.1 !important; margin-top: -50px">
+            <h2 style="text-align: center">** EDIT LIST PENERIMAAN BARANG **</h2>
         </div>
+        {{-- <div>--}}
+        {{-- <table>--}}
+        {{-- <tr style="line-height: 10px">--}}
+        {{-- <td>NOMOR TRN</td>--}}
+        {{-- <td>: -</td>--}}
+        {{-- </tr>--}}
+        {{-- <tr style="line-height: 10px">--}}
+        {{-- <td>TANGGAL</td>--}}
+        {{-- <td>: -</td>--}}
+        {{-- </tr>--}}
+        {{-- <tr style="line-height: 10px">--}}
+        {{-- <td>PO</td>--}}
+        {{-- <td>: NO. -</td>--}}
+        {{-- <td>TANGGAL</td>--}}
+        {{-- <td>: -</td>--}}
+        {{-- </tr>--}}
+        {{-- <tr style="line-height: 10px">--}}
+        {{-- <td>FAKTUR</td>--}}
+        {{-- <td>: NO. -</td>--}}
+        {{-- <td>TANGGAL</td>--}}
+        {{-- <td>: -</td>--}}
+        {{-- </tr>--}}
+        {{-- <tr style="line-height: 10px">--}}
+        {{-- <td>SUPPLIER</td>--}}
+        {{-- <td>: -</td>--}}
+        {{-- </tr>--}}
+        {{-- <tr style="line-height: 10px">--}}
+        {{-- <td>T.O.P</td>--}}
+        {{-- <td>: - HARI</td>--}}
+        {{-- </tr>--}}
+        {{-- </table>--}}
+        {{-- </div>--}}
     </header>
 
     <main>
+        <p style="color: white"></p>
+                <table>
+                    <tr style="line-height: 10px">
+                        <td>NOMOR TRN</td>
+                        <td>: -</td>
+                    </tr>
+                    <tr style="line-height: 10px">
+                        <td>TANGGAL</td>
+                        <td>: -</td>
+                    </tr>
+                    <tr style="line-height: 10px">
+                        <td>PO</td>
+                        <td>: NO. -</td>
+                        <td>TANGGAL</td>
+                        <td>: -</td>
+                    </tr>
+                    <tr style="line-height: 10px">
+                        <td>FAKTUR</td>
+                        <td>: NO. -</td>
+                        <td>TANGGAL</td>
+                        <td>: -</td>
+                    </tr>
+                    <tr style="line-height: 10px">
+                        <td>SUPPLIER</td>
+                        <td>: -</td>
+                    </tr>
+                    <tr style="line-height: 10px">
+                        <td>T.O.P</td>
+                        <td>: - HARI</td>
+                        <td style="text-align: right;"></td>
+                    </tr>
+                </table>
+            </div>
 
-        <table class="table table-bordered table-responsive" style="">
-            <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
-                <tr style="text-align: center;">
-                    <th rowspan="2" style="width: 20px">NO</th>
-                    <th rowspan="2" style="width: 40px">PLU</th>
-                    <th rowspan="2" style="width: 285px !important; text-align: left">DESKRIPSI</th>
-                    <th rowspan="2" style="width: 50px">SATUAN</th>
-                    <th colspan="2" style="width: 60px">KUANTITAS</th>
-                    <th rowspan="2" style="width: 50px">HRG SATUAN<br>IN CTN</th>
-                    <th rowspan="2" style="width: 50px">TOTAL</th>
-                    <th rowspan="2" style="width: 140px">KETERANGAN</th>
-                </tr>
-                <tr>
-                    <th style="width: 30px">QTY</th>
-                    <th style="width: 30px">FRAC</th>
-                </tr>
-            </thead>
-            <tbody style="border-bottom: 1px solid black">
-                <tr>
-                    <td colspan="8" style="text-align: center">** No Data **</td>
-                </tr>
-            </tbody>
-        </table>
-        <p style="text-align: right"> ** Akhir Dari Laporan ** </p>
+            <table class="table table-bordered table-responsive">
+                <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
+                    <tr>
+                        <th rowspan="2" style="width: 20px; text-align: center">NO</th>
+                        <th rowspan="2" style="width: 30px; text-align: center">PLU</th>
+                        <th rowspan="2" style="width: 60px !important; text-align: center">NAMA BARANG</th>
+                        <th rowspan="2" style="width: 30px; text-align: center">KEMASAN</th>
+                        <th colspan="2" style="width: 50px; text-align: center">KWANTUM</th>
+                        <th colspan="2" style="width: 50px; text-align: center">-- BONUS --</th>
+                        <th rowspan="2" style="width: 30px; text-align: center">HARGA BELI</th>
+                        <th colspan="2" style="width: 50px; text-align: center">-- POTONGAN --</th>
+                        <th rowspan="2" style="width: 20px; text-align: center">PPN</th>
+                        <th rowspan="2" style="width: 20px; text-align: center">PPN BEBAS</th>
+                        <th rowspan="2" style="width: 20px; text-align: center">PPN DITANGGUNG PEMERINTAH</th>
+                        <th rowspan="2" style="width: 20px; text-align: center">BM</th>
+                        <th rowspan="2" style="width: 20px; text-align: center">BOTOL</th>
+                        <th rowspan="2" style="width: 20px; text-align: center">TOTAL</th>
+                    </tr>
+                    <tr>
+                        <th style="width: 30px; text-align: center">BESAR</th>
+                        <th style="width: 30px; text-align: center">KECIL</th>
+                        <th style="width: 30px; text-align: center">1</th>
+                        <th style="width: 30px; text-align: center">2</th>
+                        <th style="width: 30px; text-align: center">1</th>
+                        <th style="width: 30px; text-align: center">2</th>
+                    </tr>
+                </thead>
+                <tbody style="border-bottom: 1px solid black">
+                    @for($j=$i; $j< 1; $j++) <tr>
+                        <td style="width: 20px; text-align: center">-</td>
+                        <td style="width: 30px; text-align: center">-</td>
+                        <td style="width: 60px; text-align: center">-</td>
+                        <td style="width: 30px; text-align: center">-</td>
+                        <td style="width: 30px; text-align: center">-</td>
+                        <td style="width: 30px; text-align: center">-</td>
+                        <td style="width: 30px; text-align: center">-</td>
+                        <td style="width: 30px; text-align: center">-</td>
+                        <td style="width: 30px; text-align: center">-</td>
+                        <td style="width: 30px; text-align: center">-</td>
+                        <td style="width: 30px; text-align: center">-</td>
+                        <td style="width: 20px; text-align: center">-</td>
+                        <td style="width: 20px; text-align: center">-</td>
+                        <td style="width: 20px; text-align: center">-</td>
+                        <td style="width: 20px; text-align: center">-</td>
+                        <td style="width: 20px; text-align: center">-</td>
+                        <td style="width: 20px; text-align: center">-</td>
+                        <tr>
+                            <td colspan="3"></td>
+                            <td style="width: 30px; text-align: center">DISC 3</td>
+                            <td style="width: 30px; text-align: center">-</td>
+                            <td style="width: 30px; text-align: center">DISC 4</td>
+                            <td style="width: 30px; text-align: center">-</td>
+                            <td colspan="3"></td>
+                        </tr>
+                        </tr>
+                        <tr>
+                            <td colspan="17" style="border-bottom: 1px black solid"></td>
+                        </tr>
+                        @break
+                        @endfor
+                </tbody>
+            </table>
+            <p style="text-align: right">*** AKHIR LAPORAN ***</p>
     </main>
 
     @endif

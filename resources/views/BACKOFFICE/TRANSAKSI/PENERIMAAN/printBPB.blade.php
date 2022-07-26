@@ -527,7 +527,7 @@
                         documentTemp = document;
                         if (result.list == 1) {
                             window.open(currUrl + 'viewreport/' + checked + '/' + result.data + '/' + documentTemp + '/' + result.list);
-                            setTimeout(window.location.reload(), 500);
+                            // setTimeout(window.location.reload(), 500);
                         } else {
                             if (result.nota != null || result.nota != '') {
                                 showModal();
@@ -574,7 +574,7 @@
                                                     if (result.lokasi == 1 && checked == 0) {
                                                         window.open(currUrl + 'viewreport/' + checked + '/' + 'lokasi' + '/' + documentTemp + '/' + result.lokasi);
                                                     }
-                                                    setTimeout(window.location.reload(), 500);
+                                                    // setTimeout(window.location.reload(), 500);
                                                 });
                                             },
                                             error: function(error) {

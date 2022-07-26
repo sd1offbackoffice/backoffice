@@ -115,6 +115,8 @@
             <th class="right" rowspan="2">GROSS</th>
             <th class="right" rowspan="2">POTONGAN</th>
             <th class="right" rowspan="2">PPN</th>
+            <th class="right" rowspan="2">PPN BEBAS</th>
+            <th class="right" rowspan="2">PPN <br>DITANGGUNG PEMERINTAH</th>
             <th class="right padding-right" rowspan="2">TOTAL NILAI</th>
             <th class="left" rowspan="2">NO. REF <br> BPB</th>
             <th class="left" rowspan="2">KET</th>
@@ -129,6 +131,8 @@
             $gross = 0;
             $potongan = 0;
             $ppn = 0;
+            $total_bebas = 0;
+            $total_dtp = 0;
             $total = 0;
             $i=1;
         @endphp
@@ -145,7 +149,33 @@
                     <td class="right">{{ $d->pcs }}</td>
                     <td class="right">{{ number_format(round($d->trbo_gross), 2, '.', ',') }}</td>
                     <td class="right">{{ number_format(round($d->trbo_discrph), 2, '.', ',') }}</td>
-                    <td class="right">{{ number_format(round($d->trbo_ppnrph), 2, '.', ',') }}</td>
+
+                    @php
+                        $ppn_rph = 0;
+                        $ppn_bebas = 0;
+                        $ppn_dtp = 0;
+
+                        switch ($d->prd_flagbkp1) {
+                            case 'Y':
+                                switch ($d->prd_flagbkp2) {
+                                    case 'Y':
+                                        $ppn_rph = $d->trbo_ppnrph;
+                                        break;
+                                    case 'P':
+                                        $ppn_bebas = $d->trbo_ppnrph;
+                                        break;
+                                    case 'W' || 'G':
+                                        $ppn_dtp = $d->trbo_ppnrph;
+                                        break;                                    
+                                }
+                                break;                            
+                        }
+                    @endphp
+
+                    <td class="right">{{ number_format(round($ppn_rph), 2, '.', ',') }}</td>
+                    <td class="right">{{ number_format(round($ppn_bebas), 2, '.', ',') }}</td>
+                    <td class="right">{{ number_format(round($ppn_dtp), 2, '.', ',') }}</td>
+
                     <td class="right padding-right">{{ number_format(round($d->total), 0, '.', ',') }}</td>
                     <td class="left">{{ $d->trbo_noreff }}</td>
                     <td class="left">{{ $d->trbo_keterangan }}</td>
@@ -155,7 +185,9 @@
                     $total += $d->total;
                     $gross += $d->trbo_gross;
                     $potongan += $d->trbo_discrph;
-                    $ppn += $d->trbo_ppnrph;
+                    $ppn += $ppn_rph;
+                    $total_bebas += $ppn_bebas;
+                    $total_dtp += $ppn_dtp;
                 @endphp
             @endforeach
         @else
@@ -173,6 +205,8 @@
             <th class="right">{{ number_format(round($gross), 2, '.', ',') }}</th>
             <th class="right">{{ number_format(round($potongan), 2, '.', ',') }}</th>
             <th class="right">{{ number_format(round($ppn), 2, '.', ',') }}</th>
+            <th class="right">{{ number_format(round($total_bebas), 2, '.', ',') }}</th>
+            <th class="right">{{ number_format(round($total_dtp), 2, '.', ',') }}</th>
             <th class="right padding-right">{{ number_format(round($total), 2, '.', ',') }}</th>
             <th class="left"></th>
             <th class="left"></th>

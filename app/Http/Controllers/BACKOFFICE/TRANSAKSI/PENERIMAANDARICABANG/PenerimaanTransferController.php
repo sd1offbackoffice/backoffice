@@ -912,6 +912,7 @@ class PenerimaanTransferController extends Controller
 
                 DB::connection(Session::get('connection'))->table('tbtr_to')
                     ->whereIn('docno', $nodoc)
+                    ->leftJoin('tbtr_titip', 'titip_nonota', '=', $nodoc)
                     ->delete();
 
                 foreach ($files as $file) {
@@ -919,80 +920,114 @@ class PenerimaanTransferController extends Controller
                     $data = array();
                     if (($handle = fopen($file, 'r')) !== FALSE) {
                         $dataFileDBF = new TableReader($file);
-
-                        //            dd($dataFileR->getRecordCount());
+                        // dd($dataFileR->getRecordCount());
 
                         $insert = [];
+                        $insert_titip = [];
                         while ($recs = $dataFileDBF->nextRecord()) {
-                            //                        dd($recs->get('recid'));
-                            $temp = [];
-                            $temp['recid'] = $recs->get('recid');
-                            $temp['rtype'] = $recs->get('rtype');
-                            $temp['docno'] = $recs->get('docno');
-                            $temp['dateo'] = $recs->get('dateo');
-                            $temp['noref1'] = $recs->get('noref1');
-                            $temp['tgref1'] = $recs->get('tgref1');
-                            $temp['noref2'] = $recs->get('noref2');
-                            $temp['tgref2'] = $recs->get('tgref2');
-                            $temp['docno2'] = $recs->get('docno2');
-                            $temp['date2'] = $recs->get('date2');
-                            $temp['istype'] = $recs->get('istype');
-                            $temp['invno'] = $recs->get('invno');
-                            $temp['date3'] = $recs->get('date3');
-                            $temp['nott'] = $recs->get('nott');
-                            $temp['date4'] = $recs->get('date4');
-                            $temp['supco'] = $recs->get('supco');
-                            $temp['pkp'] = $recs->get('pkp');
-                            $temp['cterm'] = $recs->get('cterm');
-                            $temp['seqno'] = $recs->get('seqno');
-                            $temp['prdcd'] = $recs->get('prdcd');
-                            $temp['desc2'] = $recs->get('desc2');
-                            $temp['div'] = $recs->get('div');
-                            $temp['dept'] = $recs->get('dept');
-                            $temp['katb'] = $recs->get('katb');
-                            $temp['bkp'] = $recs->get('bkp');
-                            $temp['fobkp'] = $recs->get('fobkp');
-                            $temp['unit'] = $recs->get('unit');
-                            $temp['frac'] = $recs->get('frac');
-                            $temp['loc'] = $recs->get('loc');
-                            $temp['loc2'] = $recs->get('loc2');
-                            $temp['qty'] = $recs->get('qty');
-                            $temp['qtyk'] = $recs->get('qtyk');
-                            $temp['qbns1'] = $recs->get('qbns1');
-                            $temp['qbns2'] = $recs->get('qbns2');
-                            $temp['price'] = $recs->get('price');
-                            $temp['discp1'] = $recs->get('discp1');
-                            $temp['discr1'] = $recs->get('discr1');
-                            $temp['fdisc1'] = $recs->get('fdisc1');
-                            $temp['discp2'] = $recs->get('discp2');
-                            $temp['discr2'] = $recs->get('discr2');
-                            $temp['fdisc2'] = $recs->get('fdisc2');
-                            $temp['gross'] = $recs->get('gross');
-                            $temp['discrp'] = $recs->get('discrp');
-                            $temp['ppnrp'] = $recs->get('ppnrp');
-                            $temp['bmrp'] = $recs->get('bmrp');
-                            $temp['btlrp'] = $recs->get('btlrp');
-                            $temp['acost'] = $recs->get('acost');
-                            $temp['keter'] = $recs->get('keter');
-                            $temp['doc'] = $recs->get('doc');
-                            $temp['doc2'] = $recs->get('doc2');
-                            $temp['fk'] = $recs->get('fk');
-                            $temp['tglfp'] = $recs->get('tglfp');
-                            $temp['mtag'] = $recs->get('mtag');
-                            $temp['gdg'] = $recs->get('gdg');
-                            $temp['tglupd'] = $recs->get('tglupd');
-                            $temp['jamupd'] = $recs->get('jamupd');
-                            $temp['usero'] = $recs->get('usero');
+                            // dd($recs->get('recid'));
+                            if (!(str_contains(substr($file, strpos($file, "_") + 1), 'titipan'))) {
+                                $temp = [];
 
-                            $insert[] = $temp;
+                                $temp['recid'] = $recs->get('recid');
+                                $temp['rtype'] = $recs->get('rtype');
+                                $temp['docno'] = $recs->get('docno');
+                                $temp['dateo'] = $recs->get('dateo');
+                                $temp['noref1'] = $recs->get('noref1');
+                                $temp['tgref1'] = $recs->get('tgref1');
+                                $temp['noref2'] = $recs->get('noref2');
+                                $temp['tgref2'] = $recs->get('tgref2');
+                                $temp['docno2'] = $recs->get('docno2');
+                                $temp['date2'] = $recs->get('date2');
+                                $temp['istype'] = $recs->get('istype');
+                                $temp['invno'] = $recs->get('invno');
+                                $temp['date3'] = $recs->get('date3');
+                                $temp['nott'] = $recs->get('nott');
+                                $temp['date4'] = $recs->get('date4');
+                                $temp['supco'] = $recs->get('supco');
+                                $temp['pkp'] = $recs->get('pkp');
+                                $temp['cterm'] = $recs->get('cterm');
+                                $temp['seqno'] = $recs->get('seqno');
+                                $temp['prdcd'] = $recs->get('prdcd');
+                                $temp['desc2'] = $recs->get('desc2');
+                                $temp['div'] = $recs->get('div');
+                                $temp['dept'] = $recs->get('dept');
+                                $temp['katb'] = $recs->get('katb');
+                                $temp['bkp'] = $recs->get('bkp');
+                                $temp['fobkp'] = $recs->get('fobkp');
+                                $temp['unit'] = $recs->get('unit');
+                                $temp['frac'] = $recs->get('frac');
+                                $temp['loc'] = $recs->get('loc');
+                                $temp['loc2'] = $recs->get('loc2');
+                                $temp['qty'] = $recs->get('qty');
+                                $temp['qtyk'] = $recs->get('qtyk');
+                                $temp['qbns1'] = $recs->get('qbns1');
+                                $temp['qbns2'] = $recs->get('qbns2');
+                                $temp['price'] = $recs->get('price');
+                                $temp['discp1'] = $recs->get('discp1');
+                                $temp['discr1'] = $recs->get('discr1');
+                                $temp['fdisc1'] = $recs->get('fdisc1');
+                                $temp['discp2'] = $recs->get('discp2');
+                                $temp['discr2'] = $recs->get('discr2');
+                                $temp['fdisc2'] = $recs->get('fdisc2');
+                                $temp['gross'] = $recs->get('gross');
+                                $temp['discrp'] = $recs->get('discrp');
+                                $temp['ppnrp'] = $recs->get('ppnrp');
+                                $temp['bmrp'] = $recs->get('bmrp');
+                                $temp['btlrp'] = $recs->get('btlrp');
+                                $temp['acost'] = $recs->get('acost');
+                                $temp['keter'] = $recs->get('keter');
+                                $temp['doc'] = $recs->get('doc');
+                                $temp['doc2'] = $recs->get('doc2');
+                                $temp['fk'] = $recs->get('fk');
+                                $temp['tglfp'] = $recs->get('tglfp');
+                                $temp['mtag'] = $recs->get('mtag');
+                                $temp['gdg'] = $recs->get('gdg');
+                                $temp['tglupd'] = $recs->get('tglupd');
+                                $temp['jamupd'] = $recs->get('jamupd');
+                                $temp['usero'] = $recs->get('usero');
 
-                            dd($temp);
+                                $insert[] = $temp;
+                                DB::connection(Session::get('connection'))->table('tbtr_to')
+                                    ->insert($temp);
+                            } else {
+                                $temp_titip = [];
 
-                            DB::connection(Session::get('connection'))->table('tbtr_to')
-                                ->insert($temp);
+                                $temp_titip['titip_alamat'] = $recs->get('alamat');
+                                $temp_titip['titip_container'] = $recs->get('cont');
+                                $temp_titip['titip_created_by'] = $recs->get('crt_by');
+                                $temp_titip['titip_create_dt'] = $recs->get('crt_dt');
+                                $temp_titip['titip_durasi'] = $recs->get('durasi');
+                                $temp_titip['titip_ekspedisi'] = $recs->get('eks');
+                                $temp_titip['titip_frac'] = $recs->get('frac');
+                                $temp_titip['titip_kapal'] = $recs->get('kapal');
+                                $temp_titip['titip_keterangan_titipan'] = $recs->get('ket');
+                                $temp_titip['titip_kode'] = $recs->get('kode');
+                                $temp_titip['titip_kodecabangtitip'] = $recs->get('kode_cab');
+                                $temp_titip['titip_kode_ekspedisi'] = $recs->get('kode_x');
+                                $temp_titip['titip_koli'] = $recs->get('koli');
+                                $temp_titip['titip_m3'] = $recs->get('m3');
+                                $temp_titip['titip_modify_dt'] = $recs->get('mod_dt');
+                                $temp_titip['titip_nama_barang'] = $recs->get('nama');
+                                $temp_titip['titip_namacabangtitip'] = $recs->get('nama_cab');
+                                $temp_titip['titip_nodoc'] = $recs->get('nodoc');
+                                $temp_titip['titip_nomobil'] = $recs->get('nomobil');
+                                $temp_titip['titip_nonota'] = $recs->get('nonota');
+                                $temp_titip['titip_nosj'] = $recs->get('nosj');
+                                $temp_titip['titip_qty'] = $recs->get('qty');
+                                $temp_titip['titip_seal'] = $recs->get('seal');
+                                $temp_titip['titip_tarif'] = $recs->get('tarif');
+                                $temp_titip['titip_tgleta'] = $recs->get('tgleta');
+                                $temp_titip['titip_tgletd'] = $recs->get('tgletd');
+                                $temp_titip['titip_ton'] = $recs->get('ton');
+
+                                $insert_titip[] = $temp_titip;
+
+                                DB::connection(Session::get('connection'))->table('tbtr_titip')
+                                    ->insert($temp_titip);
+                            }
                         }
-
-                        //                    dd($insert);
+                        // dd($insert);
 
 
                         //                    while (($row = fgetcsv($handle, 1000, '|')) !== FALSE) {
@@ -1016,22 +1051,59 @@ class PenerimaanTransferController extends Controller
                         fclose($handle);
                     }
 
-                    DB::connection(Session::get('connection'))->table('temp_to')
-                        ->insert([
-                            'to_flag' => 0,
-                            'to_nomr' => $insert[0]['docno'],
-                            'to_tagl' => Carbon::createFromFormat('Ymd', $insert[0]['dateo']),
-                            //                                DB::connection(Session::get('connection'))->raw("TO_DATE('".$insert[0]['dateo']."','yyyy-mm-dd ')"),
-                            'to_item' => count($insert)
-                        ]);
+                    if (count($insert) > 0) {
+                        DB::connection(Session::get('connection'))->table('temp_to')
+                            ->insert([
+                                'to_flag' => 0,
+                                'to_nomr' => $insert[0]['docno'],
+                                'to_tagl' => Carbon::parse($insert[0]['dateo'])->format('Ymd'),
+                                //                                DB::connection(Session::get('connection'))->raw("TO_DATE('".$insert[0]['dateo']."','yyyy-mm-dd ')"),
+                                'to_item' => count($insert)
+                            ]);
+                    } else if (count($insert_titip) > 0) {
+                        $check = DB::connection(Session::get('connection'))->table('tbtr_titip_barang')
+                            ->where('tb_nodoc', $insert_titip[0]['titip_nodoc'])
+                            ->first();
 
+                        if (!$check) {
+                            DB::connection(Session::get('connection'))->table('tbtr_titip_barang')
+                                ->insert([
+                                    'tb_nodoc' => $insert_titip[0]['titip_nodoc'],
+                                    'tb_nonota' => $insert_titip[0]['titip_nonota'],
+                                    'tb_kode' => $insert_titip[0]['titip_kode'],
+                                    'tb_kode_ekspedisi' => $insert_titip[0]['titip_kode_ekspedisi'],
+                                    'tb_nama_barang' => $insert_titip[0]['titip_nama_barang'],
+                                    'tb_frac' => $insert_titip[0]['titip_frac'],
+                                    'tb_qty' => $insert_titip[0]['titip_qty'],
+                                    'tb_m3' => $insert_titip[0]['titip_m3'],
+                                    'tb_ton' => $insert_titip[0]['titip_ton'],
+                                    'tb_keterangan' => $insert_titip[0]['titip_keterangan_titipan'],
+                                    'tb_nosj' => $insert_titip[0]['titip_nosj'],
+                                    'tb_tgletd' => $insert_titip[0]['titip_tgletd'],
+                                    'tb_tgleta' => $insert_titip[0]['titip_tgleta'],
+                                    'tb_kode_cabang' => $insert_titip[0]['titip_kodecabangtitip'],
+                                    'tb_cabang' => $insert_titip[0]['titip_namacabangtitip'],
+                                    'tb_ekspedisi' => $insert_titip[0]['titip_ekspedisi'],
+                                    'tb_seal' => $insert_titip[0]['titip_seal'],
+                                    'tb_mobil' => $insert_titip[0]['titip_nomobil'],
+                                    'tb_durasi' => $insert_titip[0]['titip_durasi'],
+                                    'tb_tarif' => $insert_titip[0]['titip_tarif'],
+                                    'tb_koli' => $insert_titip[0]['titip_koli'],
+                                    'tb_alamat' => $insert_titip[0]['titip_alamat'],
+                                    'tb_container' => $insert_titip[0]['titip_container'],
+                                    'tb_kapal' => $insert_titip[0]['titip_kapal'],
+                                    'tb_create_dt' => Carbon::parse($insert_titip[0]['titip_create_dt'])->format('Ymd'),
+                                    'tb_modify_dt' => Carbon::parse($insert_titip[0]['titip_modify_dt'])->format('Ymd'),
+                                    'tb_created_by' => $insert_titip[0]['titip_created_by']
+                                ]);
+                        }
+                    }
                     //                $result[] = [
                     //                    'docno' => $data[0]['DOCNO'],
                     //                    'tgl' => date('d/m/Y',strtotime($data[0]['DATEO'])),
                     //                    'jml' => count($data)
                     //                ];
                 }
-
                 File::delete($files);
 
                 DB::connection(Session::get('connection'))->commit();
@@ -1216,6 +1288,11 @@ class PenerimaanTransferController extends Controller
                                 oci_bind_by_name($s, ':ret', $docnoa, 32);
                                 oci_execute($s);
                             }
+
+                            // titip barang
+                            DB::connection(Session::get('connection'))->table('tbtr_titip_barang')
+                                ->where('tb_nonota', $rec->docno)
+                                ->update(['tb_noproses' => $docnoa]);
 
                             $step = 12;
 

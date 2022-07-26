@@ -16,6 +16,7 @@
                                 <th id="modalThName3"></th>
                                 <th id="modalThName4"></th>
                                 <th id="modalThName5"></th>
+                                <th id="modalThName6"></th>
                             </tr>
                         </thead>
                         <tbody id="tbodyModalHelp"></tbody>
@@ -31,24 +32,25 @@
                     <table class="table table-borderless" id="tableModalHelpTurun">
                         <thead class="theadDataTablesTurun">
                             <tr class="thColor">
-                                <th id="modalThName6"></th>
                                 <th id="modalThName7"></th>
                                 <th id="modalThName8"></th>
                                 <th id="modalThName9"></th>
                                 <th id="modalThName10"></th>
+                                <th id="modalThName11"></th>
                             </tr>
                         </thead>
                         <tbody id="tbodyModalHelp"></tbody>
                     </table>
                 </div>
                 <div class="p-4">
-                    <button class="btn btn-primary" onclick="sendEmail()" disabled>Kirim Email</button>
+                    <button class="btn btn-primary" id="emailBtn" onclick="sendEmail()" disabled>Kirim Email</button>
                 </div>
             </fieldset>
         </div>
     </div>
 </div>
 
+<input id="pluList" type="hidden"></input>
 <script>
     let currurl = '{{ url()->current() }}';
     let tableModalHelpNaik = $('#tableModalHelpNaik').DataTable();
@@ -63,6 +65,7 @@
     let modalThName8 = $('#modalThName8');
     let modalThName9 = $('#modalThName9');
     let modalThName10 = $('#modalThName10');
+    let modalThName11 = $('#modalThName11');
     $(document).ready(function() {
         showNaik();
         showTurun();
@@ -72,6 +75,9 @@
         $.ajax({
             url: currurl + '/sendEmail',
             type: 'POST',
+            data: {
+                list: $('#pluList').val()
+            },
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
@@ -112,11 +118,13 @@
             modalThName3.text('PRDCD');
             modalThName4.text('DESKRIPSI');
             modalThName5.text('LOKASI');
+            modalThName6.text('STATUS');
             modalThName1.show();
             modalThName2.show();
             modalThName3.show();
             modalThName4.show();
             modalThName5.show();
+            modalThName6.show();
         } catch (e) {
             console.log(e)
             swal({
@@ -157,6 +165,23 @@
                     data: 'rak',
                     name: 'LOKASI'
                 },
+                {
+                    data: "status_barang",
+                    render: function(data, type, row, meta) {
+                        let arr = data.split(',');
+                        let a = arr[0];
+                        let b = arr[1];
+                        if (parseInt(a) / parseInt(b) * 100 > 50) {
+                            return 'STORAGE BESAR';
+                        } else if (parseInt(a) / parseInt(b) * 100 > 25 && parseInt(a) / parseInt(b) * 100 < 50) {
+                            return 'STORAGE KECIL';
+                        } else if (parseInt(a) / parseInt(b) * 100 > 0 && parseInt(a) / parseInt(b) * 100 < 25) {
+                            return 'STORAGE CAMPUR KECIL';
+                        } else {
+                            return '-';
+                        }
+                    }
+                }
             ],
             createdRow: function(row, data, dataIndex) {
                 $(row).addClass('rowNaik');
@@ -167,16 +192,16 @@
 
     function showTurun() {
         try {
-            modalThName6.text('PKMT');
-            modalThName7.text('SALDO AKHIR');
-            modalThName8.text('PRDCD');
-            modalThName9.text('DESKRIPSI');
-            modalThName10.text('LOKASI');
-            modalThName6.show();
+            modalThName7.text('PKMT');
+            modalThName8.text('SALDO AKHIR');
+            modalThName9.text('PRDCD');
+            modalThName10.text('DESKRIPSI');
+            modalThName11.text('LOKASI');
             modalThName7.show();
             modalThName8.show();
             modalThName9.show();
             modalThName10.show();
+            modalThName11.show();
         } catch (e) {
             console.log(e)
             swal({
@@ -207,7 +232,13 @@
                 },
                 {
                     data: 'st_prdcd',
-                    name: 'PRDCD'
+                    render: function(data, type, row, meta) {
+                        $('#pluList').val(
+                            function() {
+                                return this.value + ',' + data;
+                            });
+                        return data;
+                    }
                 },
                 {
                     data: 'prd_deskripsipanjang',
@@ -223,6 +254,7 @@
             },
             "order": []
         });
+        $('#emailBtn').prop('disabled', false);
     }
 </script>
 @endsection

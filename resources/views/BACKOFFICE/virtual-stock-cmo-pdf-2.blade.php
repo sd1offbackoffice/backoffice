@@ -237,28 +237,37 @@
             <tbody>
                 <?php
                     $number = 0;
+                    $temp_pluidm = '';
+                    $temp_pluigr = '';
+                    $temp_deskripsi = '';
+
+                    $temp_saldo_awal_penerimaan = 0;
+                    $temp_qty_supplier_penerimaan = 0;
+                    $temp_qty_toko_idm_penerimaan = 0;
+                    $temp_mpp_plus_penerimaan = 0;
+                    $temp_adj_plus_penerimaan = 0;
+                    $temp_qty_toko_idm_pengeluaran = 0;
+                    $temp_mpp_minus_pengeluaran = 0;
+                    $temp_adj_minus_pengeluaran = 0;
+                    $temp_saldo_akhir_pengeluaran = 0;
                 ?>
                 @for($i=0; $i<sizeof($data) ;$i++)
-                {{-- @for($i=0; $i<100 ;$i++) --}}
-
-                    <?php
-                        $temp_pluidm = '';
-                        $temp_pluigr = '';
-                        $temp_deskripsi = '';
-                    ?>
+                {{-- @for($i=0; $i<200 ;$i++) --}}
 
                     <tr style="text-align: right; vertical-align: right">
-                        @if($temp_deskripsi != $data[$i]->prd_deskripsipanjang)
+                        @if($temp_pluidm != $data[$i]->prc_pluidm && $temp_pluigr != $data[$i]->pluigr && $temp_deskripsi != $data[$i]->prd_deskripsipanjang)
                             <td rowspan="2">{{$number+1}}</td>
                             <td colspan="1" style="text-align: center;">{{ $data[$i]->prc_pluidm }}</td>
                             <td colspan="1" style="text-align: center;">{{ $data[$i]->pluigr }}</td>
-                        {{-- Kalo deskripsi panjang selanjutnya tidak sama dengan yang di temp maka print,
+                        {{-- Kalo deskripsi panjang, plu idm dan igr selanjutnya tidak sama dengan yang di temp maka print,
                         setelah print maka ganti isi dari variable temp dengan index selanjutnya --}}
-                        <?php
+                       <?php
                             $number++;
-                            $temp_pluidm = $data[$i]->prc_pluidm;
-                            $temp_deskripsi = $data[$i]->pluigr;
-                        ?>
+                       ?>
+                        @else
+                            <td rowspan="2"></td>
+                            <td colspan="1" style="text-align: center;"></td>
+                            <td colspan="1" style="text-align: center;"></td>
                         @endif
 
                         @if($data[$i]->awal != 0)
@@ -308,78 +317,152 @@
                         <tr style="text-align: center">
                             <td colspan="2">{{ $data[$i]->prd_deskripsipanjang }}</td>
                         </tr>
-                        <?php
-                            $temp_deskripsi = $data[$i]->prd_deskripsipanjang;
-                        ?>
+                    @else
+                        <tr style="text-align: center">
+                            <td colspan="2"></td>
+                        </tr>
                     @endif
 
                     @php
-                        $temp_saldo_awal_penerimaan = $data[$i]->awal;
-                        $temp_qty_supplier_penerimaan = $data[$i]->bpb_qty;
-                        $temp_qty_toko_idm_penerimaan = $data[$i]->idm_qty;
-                        $temp_mpp_plus_penerimaan = $data[$i]->mpp_qty;
-                        $temp_adj_plus_penerimaan = $data[$i]->intp_qty;
-                        $temp_qty_toko_idm_pengeluaran = $data[$i]->dspb_qty;
-                        $temp_mpp_minus_pengeluaran = $data[$i]->mpn_qty;
-                        $temp_adj_minus_pengeluaran = $data[$i]->intn_qty;
-                        $temp_saldo_akhir_pengeluaran = $data[$i]->akhir;
+                        $temp_saldo_awal_penerimaan += $data[$i]->awal;
+                        $temp_qty_supplier_penerimaan += $data[$i]->bpb_qty;
+                        $temp_qty_toko_idm_penerimaan += $data[$i]->idm_qty;
+                        $temp_mpp_plus_penerimaan += $data[$i]->mpp_qty;
+                        $temp_adj_plus_penerimaan += $data[$i]->intp_qty;
+                        $temp_qty_toko_idm_pengeluaran += $data[$i]->dspb_qty;
+                        $temp_mpp_minus_pengeluaran += $data[$i]->mpn_qty;
+                        $temp_adj_minus_pengeluaran += $data[$i]->intn_qty;
+                        $temp_saldo_akhir_pengeluaran += $data[$i]->akhir;
                     @endphp
 
-                    <tr>
-                        <th colspan="31" style="text-align: right"><hr></th>
-                    </tr>
-                    <tr>
-                        <th colspan="3" style="text-align: right">TOTAL</th>
-                        {{-- <th colspan="5" style="text-align: right">{{ $temp_saldo_awal_penerimaan }}</th>
-                        <th colspan="5" style="text-align: right">{{ $temp_qty_supplier_penerimaan }}</th>
-                        <th colspan="3" style="text-align: right">{{ $temp_qty_toko_idm_penerimaan }}</th>
-                        <th colspan="3" style="text-align: right">{{ $temp_mpp_plus_penerimaan }}</th>
-                        <th colspan="4" style="text-align: right">{{ $temp_adj_plus_penerimaan }}</th>
-                        <th colspan="3" style="text-align: right">{{ $temp_qty_toko_idm_pengeluaran }}</th>
-                        <th colspan="3" style="text-align: right">{{ $temp_mpp_minus_pengeluaran }}</th>
-                        <th colspan="1" style="text-align: center">{{ $temp_adj_minus_pengeluaran }}</th>
-                        <th colspan="1" style="text-align: center">{{ $temp_saldo_akhir_pengeluaran }}</th> --}}
+                   
+                    {{-- Alasan di set disini karena buat tampilin total dia pake index sekarang dicompare dengan index+1 --}}
+                    {{-- Kalo temp nya diganti setelah print total dia malah bandingin index 0 dengan index 2 --}}
+                    <?php
+                        $temp_pluidm = $data[$i]->prc_pluidm;
+                        $temp_pluigr = $data[$i]->pluigr;
+                        $temp_deskripsi = $data[$i]->prd_deskripsipanjang;   
+                     ?>
+                    @if(isset($data[$i+1]) && ($temp_pluidm != $data[$i+1]->prc_pluidm) && ($temp_pluigr != $data[$i+1]->pluigr) && ($temp_deskripsi != $data[$i+1]->prd_deskripsipanjang) )
+                        <tr>
+                            <th colspan="31" style="text-align: right"><hr></th>
+                        </tr>
+                        <tr>
+                            <th colspan="3" style="text-align: right">TOTAL</th>
 
-                        <td colspan="1" style="text-align: right">{{ $temp_saldo_awal_penerimaan }}</td>
-                        <td colspan="1"></td>
-                        <td colspan="1"></td>
-                        <td colspan="1"></td>
-                        <td colspan="1"></td>
-                        <td colspan="1" style="text-align: right">{{ $temp_qty_supplier_penerimaan }}</td>
-                        <!-- Toko IDM -->
-                        <td colspan="1"></td>
-                        <td colspan="1"></td>
-                        <td colspan="1"></td>
-                        <td colspan="1"></td>
-                        <td colspan="1" style="text-align: right">{{ $temp_qty_toko_idm_penerimaan }}</td>
-                        <!-- MPP(+) -->
-                        <td colspan="1"></td>
-                        <td colspan="1"></td>
-                        <td colspan="1" style="text-align: right">{{ $temp_mpp_plus_penerimaan }}</td>
-                        <!-- ADJ (+) -->
-                        <td colspan="1"></td>
-                        <td colspan="1"></td>
-                        <td colspan="1" style="text-align: right">{{ $temp_adj_plus_penerimaan }}</td>
-                        <!-- Toko IDM -->
-                        <td colspan="1"></td>
-                        <td colspan="1"></td>
-                        <td colspan="1"></td>
-                        <td colspan="1" style="text-align: right">{{ $temp_qty_toko_idm_pengeluaran }}</td>
-                        <!-- MPP (-) -->
-                        <td colspan="1"></td>
-                        <td colspan="1" ></td>
-                        <td colspan="1" style="text-align: right">{{ $temp_mpp_minus_pengeluaran }}</td>
-                        <!-- ADJ (-) -->
-                        <td colspan="1"></td>
-                        <td colspan="1"></td>
-                        <td colspan="1" style="text-align: right">{{ $temp_adj_minus_pengeluaran }}</td>
-                        <!-- Saldo Akhir -->
-                        <td colspan="1" style="text-align: right">{{ $temp_saldo_akhir_pengeluaran }}</td>
-                    </tr>
+                            <td colspan="1" style="text-align: right">{{ $temp_saldo_awal_penerimaan }}</td>
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1" style="text-align: right">{{ $temp_qty_supplier_penerimaan }}</td>
+                            <!-- Toko IDM -->
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1" style="text-align: right">{{ $temp_qty_toko_idm_penerimaan }}</td>
+                            <!-- MPP(+) -->
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1" style="text-align: right">{{ $temp_mpp_plus_penerimaan }}</td>
+                            <!-- ADJ (+) -->
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1" style="text-align: right">{{ $temp_adj_plus_penerimaan }}</td>
+                            <!-- Toko IDM -->
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1" style="text-align: right">{{ $temp_qty_toko_idm_pengeluaran }}</td>
+                            <!-- MPP (-) -->
+                            <td colspan="1"></td>
+                            <td colspan="1" ></td>
+                            <td colspan="1" style="text-align: right">{{ $temp_mpp_minus_pengeluaran }}</td>
+                            <!-- ADJ (-) -->
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1" style="text-align: right">{{ $temp_adj_minus_pengeluaran }}</td>
+                            <!-- Saldo Akhir -->
+                            <td colspan="1" style="text-align: right">{{ $temp_saldo_akhir_pengeluaran }}</td>
+                        </tr>
 
-                    <tr>
-                        <th colspan="31" style="text-align:center"><hr></th>
-                    </tr>
+                        <tr>
+                            <th colspan="31" style="text-align:center"><hr></th>
+                        </tr>
+
+                        @php
+                            $temp_saldo_awal_penerimaan = 0;
+                            $temp_qty_supplier_penerimaan = 0;
+                            $temp_qty_toko_idm_penerimaan = 0;
+                            $temp_mpp_plus_penerimaan = 0;
+                            $temp_adj_plus_penerimaan = 0;
+                            $temp_qty_toko_idm_pengeluaran = 0;
+                            $temp_mpp_minus_pengeluaran = 0;
+                            $temp_adj_minus_pengeluaran = 0;
+                            $temp_saldo_akhir_pengeluaran = 0;
+                        @endphp
+                    @elseif(!(isset($data[$i+1])))
+                        <tr>
+                            <th colspan="31" style="text-align: right"><hr></th>
+                        </tr>
+                        <tr>
+                            <th colspan="3" style="text-align: right">TOTAL</th>
+
+                            <td colspan="1" style="text-align: right">{{ $temp_saldo_awal_penerimaan }}</td>
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1" style="text-align: right">{{ $temp_qty_supplier_penerimaan }}</td>
+                            <!-- Toko IDM -->
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1" style="text-align: right">{{ $temp_qty_toko_idm_penerimaan }}</td>
+                            <!-- MPP(+) -->
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1" style="text-align: right">{{ $temp_mpp_plus_penerimaan }}</td>
+                            <!-- ADJ (+) -->
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1" style="text-align: right">{{ $temp_adj_plus_penerimaan }}</td>
+                            <!-- Toko IDM -->
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1" style="text-align: right">{{ $temp_qty_toko_idm_pengeluaran }}</td>
+                            <!-- MPP (-) -->
+                            <td colspan="1"></td>
+                            <td colspan="1" ></td>
+                            <td colspan="1" style="text-align: right">{{ $temp_mpp_minus_pengeluaran }}</td>
+                            <!-- ADJ (-) -->
+                            <td colspan="1"></td>
+                            <td colspan="1"></td>
+                            <td colspan="1" style="text-align: right">{{ $temp_adj_minus_pengeluaran }}</td>
+                            <!-- Saldo Akhir -->
+                            <td colspan="1" style="text-align: right">{{ $temp_saldo_akhir_pengeluaran }}</td>
+                        </tr>
+
+                        <tr>
+                            <th colspan="31" style="text-align:center"><hr></th>
+                        </tr>
+
+                        @php
+                            $temp_saldo_awal_penerimaan = 0;
+                            $temp_qty_supplier_penerimaan = 0;
+                            $temp_qty_toko_idm_penerimaan = 0;
+                            $temp_mpp_plus_penerimaan = 0;
+                            $temp_adj_plus_penerimaan = 0;
+                            $temp_qty_toko_idm_pengeluaran = 0;
+                            $temp_mpp_minus_pengeluaran = 0;
+                            $temp_adj_minus_pengeluaran = 0;
+                            $temp_saldo_akhir_pengeluaran = 0;
+                        @endphp
+                    @endif
+
                 @endfor
             </tbody>
         </table>

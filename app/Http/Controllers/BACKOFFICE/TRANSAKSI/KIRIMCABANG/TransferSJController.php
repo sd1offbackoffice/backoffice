@@ -94,8 +94,8 @@ class TransferSJController extends Controller
             DB::connection(Session::get('connection'))->beginTransaction();
 
             $data = DB::connection(Session::get('connection'))->insert(
-                "INSERT INTO temp_sj 
-                SELECT mstd_recordid recid , mstd_typetrn rtype, mstd_nodoc docno, to_char(mstd_tgldoc,'yyyymmdd') DATEO, mstd_noref3 noref1, mstd_tgref3 tgref1,mstd_docno2 noref2, mstd_date2 tgref2, mstd_docno2 docno2, mstd_date2  date2, mstd_istype istype,  mstd_invno invno, mstd_date3 date3, mstd_nott nott,  mstd_tgltt date4, mstd_kodesupplier supco, mstd_pkp pkp, mstd_cterm cterm,  mstd_seqno seqno, mstd_prdcd prdcd, substr(prd_deskripsipanjang,1,45) desc2, mstd_kodedivisi div, mstd_kodedepartement dept, mstd_kodekategoribrg katb, mstd_bkp bkp, mstd_fobkp fobkp, mstd_unit unit, mstd_frac frac, msth_loc loc, msth_loc2 loc2, floor(to_number((mstd_qty/CASE WHEN mstd_unit='KG' THEN 1000 ELSE mstd_frac END))) qty_ctn, CASE WHEN mstd_unit='KG' THEN 0 ELSE nvl(mod(nvl(mstd_qty,0),nvl(mstd_frac,0)),0) END qty_pcs, nvl(mstd_qtybonus1,0) qbns1, nvl(mstd_qtybonus2,0) qbns2, mstd_hrgsatuan price, nvl(mstd_persendisc1,0) discp1, nvl(mstd_rphdisc1,0) discr1, null, nvl(mstd_persendisc2,0) discp2, nvl(mstd_rphdisc2,0) discr2, NULL, nvl(mstd_gross,0) gross, nvl(mstd_discrph,0) discrp, nvl(mstd_ppnrph,0) ppnrp, nvl(mstd_ppnbmrph,0) bmrp, nvl(mstd_ppnbtlrph,0) btlrp, nvl(mstd_avgcost,0) acost, mstd_keterangan keter, 'T' doc, 'F' doc2, 'F' fk, NULL , mstd_kodetag mtag, mstd_gdg	gdg, trunc(sysdate) tglupd, to_char(sysdate,'hh24:mi:ss') jamupd,'" . Session::get('usid') . "'	USERO
+                "INSERT INTO temp_sj
+                SELECT mstd_recordid recid, mstd_typetrn rtype, mstd_nodoc docno, to_char(mstd_tgldoc,'yyyymmdd') DATEO, mstd_noref3 noref1, mstd_tgref3 tgref1,mstd_docno2 noref2, mstd_date2 tgref2, mstd_docno2 docno2, mstd_date2  date2, mstd_istype istype,  mstd_invno invno, mstd_date3 date3, mstd_nott nott,  mstd_tgltt date4, mstd_kodesupplier supco, mstd_pkp pkp, mstd_cterm cterm,  mstd_seqno seqno, mstd_prdcd prdcd, substr(prd_deskripsipanjang,1,45) desc2, mstd_kodedivisi div, mstd_kodedepartement dept, mstd_kodekategoribrg katb, mstd_bkp bkp, mstd_fobkp fobkp, mstd_unit unit, mstd_frac frac, msth_loc loc, msth_loc2 loc2, floor(to_number((mstd_qty/CASE WHEN mstd_unit='KG' THEN 1000 ELSE mstd_frac END))) qty_ctn, CASE WHEN mstd_unit='KG' THEN 0 ELSE nvl(mod(nvl(mstd_qty,0),nvl(mstd_frac,0)),0) END qty_pcs, nvl(mstd_qtybonus1,0) qbns1, nvl(mstd_qtybonus2,0) qbns2, mstd_hrgsatuan price, nvl(mstd_persendisc1,0) discp1, nvl(mstd_rphdisc1,0) discr1, null, nvl(mstd_persendisc2,0) discp2, nvl(mstd_rphdisc2,0) discr2, NULL, nvl(mstd_gross,0) gross, nvl(mstd_discrph,0) discrp, nvl(mstd_ppnrph,0) ppnrp, nvl(mstd_ppnbmrph,0) bmrp, nvl(mstd_ppnbtlrph,0) btlrp, nvl(mstd_avgcost,0) acost, mstd_keterangan keter, 'T' doc, 'F' doc2, 'F' fk, NULL , mstd_kodetag mtag, mstd_gdg	gdg, trunc(sysdate) tglupd, to_char(sysdate,'hh24:mi:ss') jamupd,'" . Session::get('usid') . "'	USERO
 				FROM tbtr_mstran_h, tbtr_mstran_d, tbmaster_prodmast
 				WHERE msth_nodoc in " . $nodoc . "
 						AND msth_kodeigr='" . Session::get('kdigr') . "'
@@ -106,7 +106,7 @@ class TransferSJController extends Controller
             );
 
             DB::connection(Session::get('connection'))->insert(
-                "INSERT INTO temp_titip 
+                "INSERT INTO temp_titip
                 SELECT  titip_nodoc nodoc,
                         titip_nonota nonota,
                         titip_kode kode,

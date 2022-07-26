@@ -107,6 +107,9 @@ class BarcodePutihController extends Controller
                                 $d->nofaktur =  $data['mstd_nofaktur'];
                                 $d->nodoc = $data['mstd_nodoc'];
                                 $d->no_po = $data['mstd_nopo'];
+                                $d->kodeprincipal = $data_master_klaim_barcode->cnb_kodeprincipal;
+                                $d->fmtype = '1B';
+                                $d->fmsing = 'BAR';
                                 $d->prd_plumcg = $data_master_prodmast[$i]->prd_plumcg;
                                 $d->prd_prdcd = $data_master_prodmast[$i]->prd_prdcd;                            
                                 $d->prd_deskripsipanjang = $data_master_prodmast[$i]->prd_deskripsipanjang;
@@ -123,6 +126,9 @@ class BarcodePutihController extends Controller
                                     $d->nofaktur =  $data['mstd_nofaktur'];
                                     $d->nodoc = $data['mstd_nodoc'];
                                     $d->no_po = $data['mstd_nopo'];
+                                    $d->kodeprincipal = $data_master_klaim_barcode->cnb_kodeprincipal;
+                                    $d->fmtype = '1B';
+                                    $d->fmsing = 'BAR';
                                     $d->prd_plumcg = $data_master_prodmast[$i]->prd_plumcg;
                                     $d->prd_prdcd = $data_master_prodmast[$i]->prd_prdcd;                            
                                     $d->prd_deskripsipanjang = $data_master_prodmast[$i]->prd_deskripsipanjang;
@@ -139,6 +145,7 @@ class BarcodePutihController extends Controller
                             //     $d->nofaktur =  $data['mstd_nofaktur'];
                             //     $d->nodoc = $data['mstd_nodoc'];
                             //     $d->no_po = $data['mstd_nopo'];
+                            // $d->kodeprincipal = $data_master_klaim_barcode->cnb_kodeprincipal;
                             //     $d->prd_plumcg = $data_master_prodmast[$i]->prd_plumcg;
                             //     $d->prd_prdcd = $data_master_prodmast[$i]->prd_prdcd;                            
                             //     $d->prd_deskripsipanjang = $data_master_prodmast[$i]->prd_deskripsipanjang;
@@ -308,6 +315,9 @@ class BarcodePutihController extends Controller
                     'BP_NODOC' => $d['nodoc'],
                     'BP_NOPO' => $d['no_po'],
                     'BP_NOFAKTUR' => $d['nofaktur'],
+                    'BP_KODEPRINCIPAL' => $d['kodeprincipal'],
+                    'BP_FMTYPE' => $d['fmtype'],
+                    'BP_FMSING' => $d['fmsing'],
                     'BP_PLUMCG' => $d['prd_plumcg'],
                     'BP_PRDCD' => $d['prd_prdcd'],
                     'BP_DESKRIPSIPANJANG' => $d['prd_deskripsipanjang'],

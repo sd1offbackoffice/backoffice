@@ -253,18 +253,18 @@ class VirtualStockCmoController extends Controller
             'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2, 'kodesupplier' => $kodesupplier,
             'kodemcg' => $kodemcg,'namasupplier' => $namasupplier, 'periode1' => $periode1, 'periode2' => $periode2]);
 
-            $pdf = PDF::loadview('BACKOFFICE.virtual-stock-cmo-pdf-2',
-            ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1, 'div2' => $div2,
-            'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2, 'kodesupplier' => $kodesupplier,
-            'kodemcg' => $kodemcg,'namasupplier' => $namasupplier, 'periode1' => $periode1, 'periode2' => $periode2]);
-            $pdf->setPaper('A4', 'potrait');
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+            // $pdf = PDF::loadview('BACKOFFICE.virtual-stock-cmo-pdf-2',
+            // ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1, 'div2' => $div2,
+            // 'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2, 'kodesupplier' => $kodesupplier,
+            // 'kodemcg' => $kodemcg,'namasupplier' => $namasupplier, 'periode1' => $periode1, 'periode2' => $periode2]);
+            // $pdf->setPaper('A4', 'potrait');
+            // $pdf->output();
+            // $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
 
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(1450, 800, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
+            // $canvas = $dompdf->get_canvas();
+            // $canvas->page_text(1450, 800, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
-            return $pdf->stream('virtual-stock-cmo-pdf-2.pdf');
+            // return $pdf->stream('virtual-stock-cmo-pdf-2.pdf');
         }
 
     }
