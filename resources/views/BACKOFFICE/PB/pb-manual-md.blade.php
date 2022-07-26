@@ -1,16 +1,16 @@
 @extends('navbar')
-@section('title','PB | MASTER ITEM PB MANUAL')
+@section('title',(__('PB | MASTER ITEM PB MANUAL')))
 @section('content')
 
     <div id="master" class="container">
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Master Item PB Manual</legend>
+                    <legend  class="w-auto ml-5">@lang('Master Item PB Manual')</legend>
                     <div class="card-body">
                         <div class="row form-group">
                             <div class="col-sm-2"></div>
-                            <label class="col-sm-1 text-right col-form-label pl-0">Periode</label>
+                            <label class="col-sm-1 text-right col-form-label pl-0">@lang('Periode')</label>
                             <input type="text" class="col-sm-7 form-control text-center" id="tanggal" placeholder="DD/MM/YYYY - DD/MM/YYYY" readonly>
                             <div class="col-sm"></div>
                         </div>
@@ -19,9 +19,9 @@
                                 <table class="table table-sm mb-0 text-center" id="pbProductTable">
                                     <thead class="thColor">
                                     <tr>
-                                        <th width="15%">PLU</th>
-                                        <th width="65%">Deskripsi</th>
-                                        <th width="20%">Unit / Frac</th>
+                                        <th width="15%">@lang('PLU')</th>
+                                        <th width="65%">@lang('Deskripsi')</th>
+                                        <th width="20%">@lang('Unit / Frac')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -33,16 +33,16 @@
                         <div class="row form-group">
                             <div class="col-sm"></div>
                             <div class="col-sm-2">
-                                <button class="col btn btn-success" onclick="savePBData()">SIMPAN PLU</button>
+                                <button class="col btn btn-success" onclick="savePBData()">@lang('SIMPAN PLU')</button>
                             </div>
                             <div class="col-sm-2">
-                                <button class="col btn btn-secondary" onclick="showField('draft')">DRAFT PB</button>
+                                <button class="col btn btn-secondary" onclick="showField('draft')">@lang('DRAFT PB')</button>
                             </div>
                             <div class="col-sm-2">
-                                <button class="col btn btn-primary" id="btnPrintItem" onclick="printItem()">CETAK ITEM</button>
+                                <button class="col btn btn-primary" id="btnPrintItem" onclick="printItem()">@lang('CETAK ITEM')</button>
                             </div>
                             <div class="col-sm-2">
-                                <button class="col btn btn-primary" id="btnPrintPB" onclick="printPB()">CETAK PB</button>
+                                <button class="col btn btn-primary" id="btnPrintPB" onclick="printPB()">@lang('CETAK PB')</button>
                             </div>
                         </div>
                     </div>

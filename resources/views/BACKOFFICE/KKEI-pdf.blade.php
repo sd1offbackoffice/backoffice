@@ -33,57 +33,57 @@
         </tr>
         <tr>
             <td colspan="5"></td>
-            <td>Berat</td>
-            <td colspan="4">Dimensi Produk</td>
-            <td class="right">Berat</td>
-            <td colspan="4">Dimensi Ctn Luar</td>
-            <td class="right">Harga</td>
+            <td>@lang('Berat')</td>
+            <td colspan="4">@lang('Dimensi Produk')</td>
+            <td class="right">@lang('Berat')</td>
+            <td colspan="4">@lang('Dimensi Ctn Luar')</td>
+            <td class="right">@lang('Harga')</td>
             <td></td>
-            <td colspan="3">Terakhir</td>
-            <td colspan="2">Avg Sales</td>
-            <td>Saldo</td>
-            <td>Estimasi</td>
-            <td colspan="5">Minggu ke-</td>
-            <td colspan="2">Buffer</td>
-            <td>Saldo</td>
-            <td colspan="2">Outstanding PO</td>
-            <td colspan="5">Tanggal Kirim</td>
+            <td colspan="3">@lang('Terakhir')</td>
+            <td colspan="2">@lang('Avg Sales')</td>
+            <td>@lang('Saldo')</td>
+            <td>@lang('Estimasi')</td>
+            <td colspan="5">@lang('Minggu ke-')</td>
+            <td colspan="2">@lang('Buffer')</td>
+            <td>@lang('Saldo')</td>
+            <td colspan="2">@lang('Outstanding PO')</td>
+            <td colspan="5">@lang('Tanggal Kirim')</td>
         </tr>
         <tr>
-            <td>No.</td>
-            <td>PL</td>
-            <td>Nama Barang</td>
-            <td>Satuan</td>
-            <td class="right">Isi</td>
-            <td class="right">(Kg)</td>
-            <td class="right">P</td>
-            <td class="right">L</td>
-            <td class="right">T</td>
-            <td class="right">Kubikasi</td>
-            <td class="right">(Kg)</td>
-            <td class="right">P</td>
-            <td class="right">L</td>
-            <td class="right">T</td>
-            <td class="right">Kubikasi</td>
-            <td class="right">Beli</td>
-            <td class="right">Discount</td>
+            <td>@lang('No.')</td>
+            <td>@lang('PL')</td>
+            <td>@lang('Nama Barang')</td>
+            <td>@lang('Satuan')</td>
+            <td class="right">@lang('Isi')</td>
+            <td class="right">@lang('(Kg)')</td>
+            <td class="right">@lang('P')</td>
+            <td class="right">@lang('L')</td>
+            <td class="right">@lang('T')</td>
+            <td class="right">@lang('Kubikasi')</td>
+            <td class="right">@lang('(Kg)')</td>
+            <td class="right">@lang('P')</td>
+            <td class="right">@lang('L')</td>
+            <td class="right">@lang('T')</td>
+            <td class="right">@lang('Kubikasi')</td>
+            <td class="right">@lang('Beli')</td>
+            <td class="right">@lang('Discount')</td>
             <td>1</td>
             <td>2</td>
             <td>3</td>
-            <td>Bulan</td>
-            <td>Hari</td>
-            <td>Awal</td>
-            <td>Bulan</td>
+            <td>@lang('Bulan')</td>
+            <td>@lang('Hari')</td>
+            <td>@lang('Awal')</td>
+            <td>@lang('Bulan')</td>
             <td>1</td>
             <td>2</td>
             <td>3</td>
             <td>4</td>
             <td>5</td>
-            <td>LT</td>
-            <td>SS</td>
-            <td>Akhir</td>
-            <td>Total</td>
-            <td>Qty</td>
+            <td>@lang('LT')</td>
+            <td>@lang('SS')</td>
+            <td>@lang('Akhir')</td>
+            <td>@lang('Total')</td>
+            <td>@lang('Qty')</td>
             <td>1</td>
             <td>2</td>
             <td>3</td>
@@ -166,7 +166,7 @@
 
         @endforeach
             <tr style="text-align: right; border-top: 1px solid black; border-bottom: 1px solid black">
-                <td colspan="23" class="left"><strong>Kebutuhan Kontainer :</strong><br>20 Feet</td>
+                <td colspan="23" class="left"><strong>@lang('Kebutuhan Kontainer :')</strong><br>20 Feet</td>
                 <td>Total</td>
                 <td>{{ $kubik1 }}</td>
                 <td>{{ $kubik2 }}</td>
@@ -186,8 +186,8 @@
             <tr>
                 <td width="20%"><strong></strong></td>
                 <td width="66%"></td>
-                <td width="7%">Disetujui</td>
-                <td width="7%">Dibuat</td>
+                <td width="7%">@lang('Disetujui')</td>
+                <td width="7%">@lang('Dibuat')</td>
             </tr>
             <tr>
                 <td></td>
@@ -196,10 +196,10 @@
                 <td>NB :</td>
             </tr>
             <tr>
-                <td>1 Kubikase = 30 m3, 1 Tonase = 22</td>
+                <td>@lang('1 Kubikase = 30 m3, 1 Tonase = 22')</td>
             </tr>
             <tr>
-                <td>Toleransi Kubikase & Tonase adalah 5%</td>
+                <td>@lang('Toleransi Kubikase & Tonase adalah 5%')</td>
                 <td></td>
                 <td>Store Mgr</td>
                 <td>Store Jr. Mgr</td>

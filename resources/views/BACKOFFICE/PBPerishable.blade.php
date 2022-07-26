@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','PB | PB PERISHABLE')
+@section('title',(__('PB | PB PERISHABLE')))
 @section('content')
 
     <div class="container-fluid mt-2">
@@ -22,7 +22,7 @@
                                             <div class="row">
                                                 <div class="col">
                                                     <div class="form-group row mb-0">
-                                                        <label for="no-pb" class="col-sm-3 col-form-label">NOMOR PB</label>
+                                                        <label for="no-pb" class="col-sm-3 col-form-label">@lang('NOMOR PB')</label>
                                                         <div class="col-sm-4 buttonInside">
                                                             <input type="number" class="form-control" id="no-pb">
                                                             <button id="btn-no-pb" type="button" class="btn btn-lov p-0" onclick="getNmrPB()">
@@ -31,7 +31,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <label for="tgl-pb" class="col-sm-3 col-form-label">TANGGAL PB</label>
+                                                        <label for="tgl-pb" class="col-sm-3 col-form-label">@lang('TANGGAL PB')</label>
                                                         <div class="col-sm-4">
                                                             <input type="text" class="form-control" id="tgl-pb">
                                                         </div>
@@ -40,7 +40,7 @@
                                                 <div class="col">
                                                     <div class="form-group row mt-2 mb-0 mr-1">
                                                         <button class="btn btn-primary btn-lg float-left col-sm-2" id="btn-proses" onclick="prosesDoc(event)" >
-                                                           PROSES
+                                                        @lang('PROSES')
                                                        </button>
                                                        <button class="btn btn-danger btn-lg float-left ml-4" id="btn-hapus" onclick="deleteDoc(event)">
                                                            DELETE AND CLOSE
@@ -54,7 +54,7 @@
                             </div>
                     </fieldset>
                 <fieldset class="card border-secondary">
-                    <legend class="w-auto ml-5">Detail</legend>
+                    <legend class="w-auto ml-5">@lang('Detail')</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="row">
                             <div class="col-sm-4">
@@ -63,11 +63,11 @@
                                         <thead class="header-table">
                                         <tr class="d-flex text-center">
                                             {{-- <th style="width: 3%">X</th> --}}
-                                            <th style="width: 23%">SUPPLIER</th>
-                                            <th style="width: 23%">KODE SARANA</th>
-                                            <th style="width: 23%">VOLUME SARANA</th>
-                                            <th style="width: 23%">TOTAL KUBIKASE ITEM</th>
-                                            <th style="width: 8%">FLAG</th>
+                                            <th style="width: 23%">@lang('SUPPLIER')</th>
+                                            <th style="width: 23%">@lang('KODE SARANA')</th>
+                                            <th style="width: 23%">@lang('VOLUME SARANA')</th>
+                                            <th style="width: 23%">@lang('TOTAL KUBIKASE ITEM')</th>
+                                            <th style="width: 8%">@lang('FLAG')</th>
                                         </tr>
                                         </thead>
                                         <tbody id="tbody1">
@@ -90,18 +90,18 @@
                                             <thead class="header-table">
                                             <tr class="d-flex text-center">
                                                 {{-- <th style="width: 3%">X</th> --}}
-                                                <th style="width: 10%">PLU</th>
-                                                <th style="width: 10%">PKM</th>
-                                                <th style="width: 10%">AVG SALES</th>
-                                                <th style="width: 10%">ISI CTN</th>
-                                                <th style="width: 10%">STOCK</th>
-                                                <th style="width: 10%">PO OUT</th>
-                                                <th style="width: 10%">PBOUT</th>
-                                                <th style="width: 10%">MIN DISPLAY</th>
-                                                <th style="width: 10%">MIN ORDER</th>
-                                                <th style="width: 10%">QTY PB</th>
-                                                <th style="width: 10%">DIMENSI</th>
-                                                <th style="width: 10%">KUBIKASE</th>
+                                                <th style="width: 10%">@lang('PLU')</th>
+                                                <th style="width: 10%">@lang('PKM')</th>
+                                                <th style="width: 10%">@lang('AVG SALES')</th>
+                                                <th style="width: 10%">@lang('ISI CTN')</th>
+                                                <th style="width: 10%">@lang('STOCK')</th>
+                                                <th style="width: 10%">@lang('PO OUT')</th>
+                                                <th style="width: 10%">@lang('PB OUT')</th>
+                                                <th style="width: 10%">@lang('MIN DISPLAY')</th>
+                                                <th style="width: 10%">@lang('MIN ORDER')</th>
+                                                <th style="width: 10%">@lang('QTY PB')</th>
+                                                <th style="width: 10%">@lang('DIMENSI')</th>
+                                                <th style="width: 10%">@lang('KUBIKASE')</th>
                                             </tr>
                                             </thead>
                                             <tbody id="tbody2">
@@ -127,7 +127,7 @@
                                                 <td>
                                                     <input disabled type="text" class="mt-1 form-control deskripsiPanjang">
                                                     <button class="btn btn-primary btn-block" id="btn-addRow" >
-                                                        TAMBAH BARIS BARU
+                                                        @lang('TAMBAH BARIS BARU')
                                                     </button>
                                                 </td>
                                             </tr>
@@ -146,7 +146,7 @@
 
                                         </div>
                                         <div class="col-sm-4">
-                                            <p>Supplier</p>
+                                            <p>@lang('Supplier')</p>
                                         </div>
                                     </div>
                                     <div class="form-group row mb-3 d-flex flex-row-reverse ">
@@ -168,15 +168,15 @@
                                             <div class="row text-right">
                                                 <div class="col-sm-12 ml-2">
                                                     <div class="form-group row mb-0">
-                                                        <p class="col-sm-6 text-left" >DIMENSI -> dimensi in CTN</p>
+                                                        <p class="col-sm-6 text-left" >@lang('DIMENSI -> dimensi in CTN')</p>
                                                     </div>
                                                     <div class="form-group row mb-0">
-                                                        <p class="col-sm-6 text-left" >KUBIKASE -> ((STOCK + PO OUT + PB OUT + qty PB)/ ISI CTN) * DIMENSI</p>
+                                                        <p class="col-sm-6 text-left" >@lang('KUBIKASE -> ((STOCK + PO OUT + PB OUT + qty PB)/ ISI CTN) * DIMENSI')</p>
                                                     </div>
                                                     <div class="form-group row mb-0">
                                                         <div class="col-sm-10">
                                                             <button class="btn btn-primary btn-lg pl-4 pr-4 mr-4" id="btn-save" type="button">
-                                                                SIMPAN PB
+                                                                @lang('SIMPAN PB')
                                                             </button>
                                                         </div>
                                                     </div>
@@ -219,8 +219,8 @@
                                     <table class="table table-sm" id="modal-table-1">
                                         <thead class="header-modal">
                                         <tr class="font">
-                                            <td>NO. PB</td>
-                                            <td>TANGGAL PB</td>
+                                            <td>@lang('NO. PB')</td>
+                                            <td>@lang('TANGGAL PB')</td>
                                         </tr>
                                         </thead>
                                         <tbody class="tbody-modal-1">
@@ -325,7 +325,7 @@
         function nmrBaruPb(nopb){
             if(nopb == ''){
                 swal({
-                    title: 'Buat Nomor PB Baru?',
+                    title: "{{__('Buat Nomor PB Baru?')}}",
                     icon: 'info',
                     buttons: true,
                 }).then(function(confirm){
@@ -342,7 +342,7 @@
                                 clearField();
                                 $('#no-pb').val(result);
                                 $('#tgl-pb').val(formatDate('now'));
-                                $('#model').val('* TAMBAH *');
+                                $('#model').val("{{__('* TAMBAH *')}}");
                                 $('#deskripsiPanjang').val("");
                                 $('#modal-loader').modal('hide')
                                 $('#btn-hapus').attr('disabled', false);
@@ -430,7 +430,7 @@
 
                     if(result.length == 0){
                         swal({
-                            title: 'Data tidak ada!',
+                            title: "{{__('Data tidak ada!')}}",
                             icon: 'error'
                         })
                     }
@@ -513,7 +513,7 @@
                             }
                             $('#no-pb').val(data.pbp_nopb);
                             $('#tgl-pb').val(formatDate(data.pbp_tglpb));
-                            $('#model').val('* PB SUDAH DICETAK / TRANSFER *');
+                            $('#model').val("{{__('* PB SUDAH DICETAK / TRANSFER *')}}");
                             $('.qtypb')[0].focus();
                             $('#tgl-pb').prop('disabled', true);
                             $('#btn-save').attr('disabled', false);
@@ -601,10 +601,10 @@
                             $('#tgl-pb').val(formatDate(data.pbp_tglpb));
                             var item = $("#model").val();
                             console.log(item);
-                            if (item == "* TAMBAH *") {
-                                $('#model').val('* TAMBAH *');
+                            if (item == "{{__('* TAMBAH *')}}") {
+                                $('#model').val("{{__('* TAMBAH *')}}");
                             } else{
-                                $('#model').val('* KOREKSI *');
+                                $('#model').val("{{__('* KOREKSI *')}}");
                             }
                             $('#btn-save').attr('disabled', false);
                             $('.qtypb')[0].focus();
@@ -642,7 +642,7 @@
                     $('#modal-loader').modal('hide');
                     if(result.length == 0){
                         swal({
-                            title: 'Data tidak ada!',
+                            title: "{{__('Data tidak ada!')}}",
                             icon: 'error'
                         })
                     }
@@ -816,7 +816,7 @@
                             }
 
                         }
-                        else if (result.message == 'Qty PB kelipatan min order'){
+                        else if (result.message == "{{__('Qty PB kelipatan min order')}}"){
                             qtypbint = parseInt(qtypb);
                             minorderint = parseInt(minorder);
                             console.log(qtypbint % minorderint);
@@ -1007,7 +1007,7 @@
                                         }
                                         else{
                                             swal({
-                                                title: 'Simpan PB ?',
+                                                title: "{{__('Simpan PB ?')}}",
                                                 icon: 'warning',
                                                 dangerMode: true,
                                                 buttons: true,
@@ -1058,7 +1058,7 @@
                     }
                     else {
                         swal({
-                            title: 'Simpan PB ?',
+                            title: "{{__('Simpan PB ?')}}",
                             icon: 'warning',
                             dangerMode: true,
                             buttons: true,
@@ -1219,7 +1219,7 @@
             let nopb = $('#no-pb').val();
 
             swal({
-                title: 'Nomor PB Akan dihapus?',
+                title: "{{__('Nomor PB Akan dihapus?')}}",
                 icon: 'warning',
                 dangerMode: true,
                 buttons: true,
@@ -1235,9 +1235,9 @@
                         // },
                         success: function (response){
                             //$('#modal-loader').modal('hide');
-                            if (response.message == 'Draft sudah menjadi PB'){
+                            if (response.message == "{{__('Draft sudah menjadi PB')}}"){
                                 swal({
-                                    title: 'Tidak Bisa Delete',
+                                    title: "{{__('Tidak Bisa Delete')}}",
                                     text: response.message,
                                     icon: response.status,
                                 })

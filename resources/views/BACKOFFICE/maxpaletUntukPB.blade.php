@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','PB | ITEM MAXPALET PB')
+@section('title',(__('PB | ITEM MAXPALET PB')))
 @section('content')
 
     <div class="container mt-4">
@@ -11,10 +11,10 @@
                             <div class="col-sm-12">
                                 <form class="form">
                                     <div class="form-group row mb-0">
-                                        <label class="col-sm-2 col-form-label text-md-right">Kode Plu</label>
+                                        <label class="col-sm-2 col-form-label text-md-right">@lang('Kode Plu')</label>
                                         <input type="text" id="i_kodePlu" class="form-control col-sm-2 mx-sm-1">
                                         <label class="col-sm-1 col-form-label text-md-right"></label>
-                                        <label class="col-sm-3 mx-sm-5  col-form-label text-md-right">Max Palet(In CTN)</label>
+                                        <label class="col-sm-3 mx-sm-5  col-form-label text-md-right">@lang('Max Palet(In CTN)')</label>
                                         <input type="text" id="i_maxPalet" class="form-control col-sm-2 mx-sm-n3" disabled>
                                     </div>
                                     <div class="form-group row mb-0">
@@ -35,9 +35,9 @@
                                         <table class="table table-bordered table-hover" id="tableBOMaxpalet">
                                             <thead class="theadDataTables">
                                             <tr class="text-center">
-                                                <th>PLU</th>
-                                                <th>Deskripsi</th>
-                                                <th>Max Palet(In CTN)</th>
+                                                <th>@lang('PLU')</th>
+                                                <th>@lang('Deskripsi')</th>
+                                                <th>@lang('Max Palet(In CTN)')</th>
                                             </tr>
                                             </thead>
                                             <tbody></tbody>
@@ -129,7 +129,7 @@
             let kodePlu = $('#i_kodePlu').val();
 
             swal({
-                title: "Hapus PLU?",
+                title: "{{__('Hapus PLU?')}}",
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
