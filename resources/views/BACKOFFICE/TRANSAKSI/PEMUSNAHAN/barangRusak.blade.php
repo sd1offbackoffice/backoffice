@@ -224,6 +224,8 @@
         var dataKtrgn ='';
         var dataKtrgnLen = 0;
 
+        var totalRow = 0;
+
         $(document).ready(function (){
             $("#tgltrn").datepicker({
                 "dateFormat" : "dd/mm/yy"
@@ -656,6 +658,7 @@
                     index = i
                 }
             }
+            
 
             $('.plu')[index].value = kode;
             $('#modalHelpPlu').modal('hide');
@@ -836,6 +839,15 @@
 
                     if (qty < 1){
                         focusToRow(i);
+                        return false;
+                    }
+                    if ($('#input-hidden-'+i).val() == ""){
+                        swal({
+                            title: 'Terdapat Keterangan yang belum terisi!',
+                            icon: 'warning',
+                            dangerMode: true,
+                            buttons: true,
+                        })
                         return false;
                     }
                     datas.push({'plu': $('.plu')[i].value, 'qty' : qty, 'harga' : unconvertToRupiah($('.harga')[i].value), 'total' : unconvertToRupiah($('.total')[i].value), 'keterangan' : $('#input-hidden-'+i).val()})

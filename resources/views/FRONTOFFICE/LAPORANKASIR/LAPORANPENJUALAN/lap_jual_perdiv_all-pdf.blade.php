@@ -405,6 +405,8 @@
                     @endif
                     <td>{{rupiah($gross[$index])}}</td>
                     <td>{{rupiah($tax[$index])}}</td>
+                    <td>0000</td>
+                    <td>0000</td>
                     <td>{{rupiah($net[$index])}}</td>
                     <td>{{rupiah($hpp[$index])}}</td>
                     <td>{{rupiah($margin[$index])}}</td>

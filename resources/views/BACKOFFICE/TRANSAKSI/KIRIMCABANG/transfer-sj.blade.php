@@ -265,7 +265,7 @@
                     transferByBranch(++index);
                 } else {
                     if (response == 'success') {
-                        window.location.replace(currurl + '/download');
+                        window.open(currurl + '/download');
                         swal({
                             title: 'Silahkan file dikirim ke cabang yang bersangkutan!',
                             icon: 'success'

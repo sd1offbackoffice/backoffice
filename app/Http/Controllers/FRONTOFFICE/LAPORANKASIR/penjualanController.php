@@ -2462,21 +2462,21 @@ ORDER BY sls_periode");
              ELSE 0
              END
            ) fdnTax,
-             SUM ( CASE WHEN FLAGTAX2 = 'P' THEN
+               SUM ( CASE WHEN FLAGTAX2 = 'P' THEN
                 CASE WHEN recordid IS NULL AND tipe = 'S' THEN sTax
                    ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sTax*(0-1) END
              END
              ELSE 0
              END
            ) fdnTaxBebas,
-       SUM ( CASE WHEN FLAGTAX2 IN ('W','G') THEN
+      SUM ( CASE WHEN FLAGTAX2 IN ('W','G') THEN
                 CASE WHEN recordid IS NULL AND tipe = 'S' THEN sTax
                    ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sTax*(0-1) END
              END
              ELSE 0
              END
            ) fdnTaxDTP,
-       SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sNet
+         SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sNet
                    ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sNet*(0-1) END
              END
            ) fdnNet,
@@ -2602,6 +2602,8 @@ ORDER BY FDKDIV, FDKDEP");
         foreach ($arrayIndex as $index) {
             $gross[$index] = 0;
             $tax[$index] = 0;
+            $taxbebas[$index] = 0;
+            $taxdtp[$index] = 0;
             $net[$index] = 0;
             $hpp[$index] = 0;
             $margin[$index] = 0;
@@ -2628,11 +2630,28 @@ ORDER BY FDKDIV, FDKDEP");
                END
              END
            ) fdnAmt,
-       SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sTax
+            SUM ( CASE WHEN FLAGTAX2 = 'Y' THEN
+                CASE WHEN recordid IS NULL AND tipe = 'S' THEN sTax
                    ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sTax*(0-1) END
              END
+             ELSE 0
+             END
            ) fdnTax,
-       SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sNet
+               SUM ( CASE WHEN FLAGTAX2 = 'P' THEN
+                CASE WHEN recordid IS NULL AND tipe = 'S' THEN sTax
+                   ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sTax*(0-1) END
+             END
+             ELSE 0
+             END
+           ) fdnTaxBebas,
+      SUM ( CASE WHEN FLAGTAX2 IN ('W','G') THEN
+                CASE WHEN recordid IS NULL AND tipe = 'S' THEN sTax
+                   ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sTax*(0-1) END
+             END
+             ELSE 0
+             END
+           ) fdnTaxDTP,
+         SUM ( CASE WHEN recordid IS NULL AND tipe = 'S' THEN sNet
                    ELSE CASE WHEN recordid IS NULL AND tipe = 'R' THEN sNet*(0-1) END
              END
            ) fdnNet,
@@ -2655,8 +2674,7 @@ FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_KATEGO
              CASE WHEN MarkUp IS NULL THEN (5 * sNet)/100 ELSE (MarkUp * sNet) / 100 END
            ELSE
              sNet - (QUANTITY / (CASE WHEN UNIT = 'KG' THEN 1000 ELSE 1 END) * BASEPRICE )
-           END SMARGIN,
-           prd_ppn
+           END SMARGIN, prd_ppn
     FROM
     (    SELECT KDIGR, TGLTRANS, KASIR, STAT, /*TRANSNO, SEQNO,*/ PRDCD, KDIV, DIV, QUANTITY, BASEPRICE,
                KDMBR, ADMFEE, FLAGTAX2, NOMINALAMT, PJKO, CEXP, CBKP, COBKP, MARKUP, UNIT, STAX,RECORDID, TIPE,
@@ -2681,7 +2699,9 @@ FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_KATEGO
                        NOMINALAMT - STAX
                      END
                    ELSE
-                      NOMINALAMT - STAX
+                     CASE WHEN cBkp = 'Y' AND cObkp = 'P' OR cObkp IN ('W', 'G') THEN NOMINALAMT
+                        ELSE NOMINALAMT - STAX END
+                     /*NOMINALAMT - STAX*/
                    END
                  END
                END SNET,
@@ -2695,22 +2715,26 @@ FROM TBMASTER_PERUSAHAAN, TBMASTER_DIVISI, TBMASTER_DEPARTEMENT, TBMASTER_KATEGO
                      CASE WHEN ADMFEE <> 0 THEN
                        CASE WHEN KASIR = 'BKL' THEN
                          CASE WHEN (pjkO = 'Y' AND cBkp = 'Y' ) THEN
-                           CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y') THEN (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT ELSE 0 END ELSE 0 END
+                           CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y'OR cOBkp = 'P' OR cOBkp IN ('W','G')) THEN (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT ELSE 0 END ELSE 0 END
                          ELSE
-                           CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y') THEN NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100))) ELSE 0 END ELSE 0 END
+                           CASE WHEN cEXP = 'F' THEN CASE WHEN (cBkp = 'Y' AND cObkp = 'Y' OR cOBkp = 'P' OR cOBkp IN ('W','G')) THEN NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100))) ELSE 0 END ELSE 0 END
                          END
                         ELSE
-                         CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT ELSE 0 END ELSE 0 END
+                         CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' OR cOBkp = 'P' OR cOBkp IN ('W','G') THEN (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT ELSE 0 END ELSE 0 END
                        END
                       ELSE
-                           CASE WHEN KASIR = 'BKL' THEN
-                         CASE WHEN (pjkO = 'Y' AND cBkp = 'Y') THEN
-                           CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT ELSE 0 END ELSE 0 END
+                          CASE WHEN KASIR = 'BKL' THEN
+                         CASE WHEN (pjkO = 'Y' AND cBkp = 'P') THEN
+                           CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' OR cOBkp = 'P' OR cOBkp IN ('W','G') THEN (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT ELSE 0 END ELSE 0 END
                           ELSE
-                            CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100)))) ELSE 0 END ELSE 0 END
+                            CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' OR cOBkp = 'P' OR cOBkp IN ('W','G') THEN (NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100)))) ELSE 0 END ELSE 0 END
                           END
                         ELSE
-                          CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' THEN (NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100)))) ELSE 0 END ELSE 0 END
+                            CASE WHEN cEXP = 'F' THEN
+                                 CASE WHEN cBkp = 'Y' AND cObkp = 'Y' OR cObkp = 'Y' THEN (NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100))))
+                                 ELSE (NOMINALAMT * (1+(nvl(prd_ppn,10)/100))) - NOMINALAMT END
+                            ELSE 0 END
+                          --CASE WHEN cEXP = 'F' THEN CASE WHEN cBkp = 'Y' AND cObkp = 'Y' OR cOBkp = 'P' OR cOBkp IN ('W','G') THEN (NOMINALAMT - (NOMINALAMT / (1+(nvl(prd_ppn,10)/100)))) ELSE 0 END ELSE 0 END
                         END
                       END
                     END STAX,
@@ -2743,11 +2767,15 @@ WHERE PRS_KODEIGR = '$kodeigr'
 GROUP BY prs_namaperusahaan, prs_namacabang, KASIR, STAT, KDIV, div_namadivisi, SUBSTR(DIV,1,2), dep_namadepartement, SUBSTR(DIV,-2,2), kat_namakategori, FLAGTAX2, CASE WHEN cEXP = 'T' THEN 'Y' ELSE 'N' END
 ORDER BY FDKDIV, FDKDEP");
 
+//        dd($rec);
+
         for ($i = 0; $i < sizeof($rec); $i++) {
             if ($rec[$i]->fdkdiv && ($rec[$i]->fdkdep != '39' && $rec[$i]->fdkdep != '40' && $rec[$i]->fdkdep != '43')) {
                 if ($rec[$i]->fdntax != 0) {
                     $gross['p'] = $gross['p'] + $rec[$i]->fdnamt;
                     $tax['p'] = $tax['p'] + $rec[$i]->fdntax;
+                    $taxbebas['p'] = $taxbebas['p'] + $rec[$i]->fdntaxbebas;
+                    $taxdtp['p'] = $taxdtp['p'] + $rec[$i]->fdntaxdtp;
                     $net['p'] = $net['p'] + $rec[$i]->fdnnet;
                     $hpp['p'] = $hpp['p'] + $rec[$i]->fdnhpp;
                     $margin['p'] = $margin['p'] + $rec[$i]->fdnmrgn;
@@ -2755,24 +2783,32 @@ ORDER BY FDKDIV, FDKDEP");
                     if ($rec[$i]->fdfbkp == 'P') {
                         $gross['b'] = $gross['b'] + $rec[$i]->fdnamt;
                         $tax['b'] = $tax['b'] + $rec[$i]->fdntax;
+                        $taxbebas['b'] = $taxbebas['b'] + $rec[$i]->fdntaxbebas;
+                        $taxdtp['b'] = $taxdtp['b'] + $rec[$i]->fdntaxdtp;
                         $net['b'] = $net['b'] + $rec[$i]->fdnnet;
                         $hpp['b'] = $hpp['b'] + $rec[$i]->fdnhpp;
                         $margin['b'] = $margin['b'] + $rec[$i]->fdnmrgn;
                     } elseif ($rec[$i]->fdfbkp == 'C') {
                         $gross['d'] = $gross['d'] + $rec[$i]->fdnamt;
                         $tax['d'] = $tax['d'] + $rec[$i]->fdntax;
+                        $taxbebas['d'] = $taxbebas['d'] + $rec[$i]->fdntaxbebas;
+                        $taxdtp['d'] = $taxdtp['d'] + $rec[$i]->fdntaxdtp;
                         $net['d'] = $net['d'] + $rec[$i]->fdnnet;
                         $hpp['d'] = $hpp['d'] + $rec[$i]->fdnhpp;
                         $margin['d'] = $margin['d'] + $rec[$i]->fdnmrgn;
                     } elseif ($rec[$i]->fdfbkp == 'G') {
                         $gross['g'] = $gross['g'] + $rec[$i]->fdnamt;
                         $tax['g'] = $tax['g'] + $rec[$i]->fdntax;
+                        $taxbebas['g'] = $taxbebas['g'] + $rec[$i]->fdntaxbebas;
+                        $taxdtp['g'] = $taxdtp['g'] + $rec[$i]->fdntaxdtp;
                         $net['g'] = $net['g'] + $rec[$i]->fdnnet;
                         $hpp['g'] = $hpp['g'] + $rec[$i]->fdnhpp;
                         $margin['g'] = $margin['g'] + $rec[$i]->fdnmrgn;
                     } elseif ($rec[$i]->fdfbkp == 'W') {
                         $gross['g'] = $gross['g'] + $rec[$i]->fdnamt;
                         $tax['g'] = $tax['g'] + $rec[$i]->fdntax;
+                        $taxbebas['g'] = $taxbebas['g'] + $rec[$i]->fdntaxbebas;
+                        $taxdtp['g'] = $taxdtp['g'] + $rec[$i]->fdntaxdtp;
                         $net['g'] = $net['g'] + $rec[$i]->fdnnet;
                         $hpp['g'] = $hpp['g'] + $rec[$i]->fdnhpp;
                         $margin['g'] = $margin['g'] + $rec[$i]->fdnmrgn;
@@ -2780,12 +2816,16 @@ ORDER BY FDKDIV, FDKDEP");
                         if ($rec[$i]->fexpor == 'Y') {
                             $gross['e'] = $gross['e'] + $rec[$i]->fdnamt;
                             $tax['e'] = $tax['e'] + $rec[$i]->fdntax;
+                            $taxbebas['e'] = $taxbebas['e'] + $rec[$i]->fdntaxbebas;
+                            $taxdtp['e'] = $taxdtp['e'] + $rec[$i]->fdntaxdtp;
                             $net['e'] = $net['e'] + $rec[$i]->fdnnet;
                             $hpp['e'] = $hpp['e'] + $rec[$i]->fdnhpp;
                             $margin['e'] = $margin['e'] + $rec[$i]->fdnmrgn;
                         } else {
                             $gross['x'] = $gross['x'] + $rec[$i]->fdnamt;
                             $tax['x'] = $tax['x'] + $rec[$i]->fdntax;
+                            $taxbebas['x'] = $taxbebas['x'] + $rec[$i]->fdntaxbebas;
+                            $taxdtp['x'] = $taxdtp['x'] + $rec[$i]->fdntaxdtp;
                             $net['x'] = $net['x'] + $rec[$i]->fdnnet;
                             $hpp['x'] = $hpp['x'] + $rec[$i]->fdnhpp;
                             $margin['x'] = $margin['x'] + $rec[$i]->fdnmrgn;
@@ -2795,18 +2835,24 @@ ORDER BY FDKDIV, FDKDEP");
             } elseif ($rec[$i]->fdkdiv == '5' && $rec[$i]->fdkdiv == '39') {
                 $gross['c'] = $gross['c'] + $rec[$i]->fdnamt;
                 $tax['c'] = $tax['c'] + $rec[$i]->fdntax;
+                $taxbebas['c'] = $taxbebas['c'] + $rec[$i]->fdntaxbebas;
+                $taxdtp['c'] = $taxdtp['c'] + $rec[$i]->fdntaxdtp;
                 $net['c'] = $net['c'] + $rec[$i]->fdnnet;
                 $hpp['c'] = $hpp['c'] + $rec[$i]->fdnhpp;
                 $margin['c'] = $margin['c'] + $rec[$i]->fdnmrgn;
             } elseif ($rec[$i]->fdkdiv == '5' && $rec[$i]->fdkdiv == '40') {
                 $gross['f'] = $gross['f'] + $rec[$i]->fdnamt;
                 $tax['f'] = $tax['f'] + $rec[$i]->fdntax;
+                $taxbebas['f'] = $taxbebas['f'] + $rec[$i]->fdntaxbebas;
+                $taxdtp['f'] = $taxdtp['f'] + $rec[$i]->fdntaxdtp;
                 $net['f'] = $net['f'] + $rec[$i]->fdnnet;
                 $hpp['f'] = $hpp['f'] + $rec[$i]->fdnhpp;
                 $margin['f'] = $margin['f'] + $rec[$i]->fdnmrgn;
             } elseif ($rec[$i]->fdkdiv == '5' && $rec[$i]->fdkdiv == '43') {
                 $gross['h'] = $gross['h'] + $rec[$i]->fdnamt;
                 $tax['h'] = $tax['h'] + $rec[$i]->fdntax;
+                $taxbebas['h'] = $taxbebas['h'] + $rec[$i]->fdntaxbebas;
+                $taxdtp['h'] = $taxdtp['h'] + $rec[$i]->fdntaxdtp;
                 $net['h'] = $net['h'] + $rec[$i]->fdnnet;
                 $hpp['h'] = $hpp['h'] + $rec[$i]->fdnhpp;
                 $margin['h'] = $margin['h'] + $rec[$i]->fdnmrgn;
@@ -2815,12 +2861,17 @@ ORDER BY FDKDIV, FDKDEP");
         for ($i = 0; $i < sizeof($datas); $i++) {
             $gross['total'] = $gross['total'] + $datas[$i]->fdnamt;
             $tax['total'] = $tax['total'] + $datas[$i]->fdntax;
+            $taxbebas['total'] = $taxbebas['total'] + $rec[$i]->fdntaxbebas;
+            $taxdtp['total'] = $taxdtp['total'] + $rec[$i]->fdntaxdtp;
             $net['total'] = $net['total'] + $datas[$i]->fdnnet;
             $hpp['total'] = $hpp['total'] + $datas[$i]->fdnhpp;
             $margin['total'] = $margin['total'] + $datas[$i]->fdnmrgn;
         }
         $gross['total-40'] = $gross['total'] - $gross['f'];
         $tax['total-40'] = $tax['total'] - $tax['f'];
+        $tax['total-40'] = $tax['total-40'] + $tax['f'];
+        $taxbebas['total-40'] = $taxbebas['total-40'] + $taxbebas['f'];
+        $taxdtp['total-40'] = $taxdtp['total-40'] + $taxdtp['f'];
         $net['total-40'] = $net['total'] - $net['f'];
         $hpp['total-40'] = $hpp['total'] - $hpp['f'];
         $margin['total-40'] = $margin['total'] - $margin['f'];
@@ -2857,7 +2908,7 @@ ORDER BY FDKDIV, FDKDEP");
 //        $time = date('H:i:s');
         $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perkasir-pdf',
             ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'data' => $datas, 'nmarginp' => $nmarginp, 'kasir' => $kasir, 'station' => $station, 'perusahaan' => $perusahaan,
-                'periode' => $periode, 'arrayIndex' => $arrayIndex, 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp, 'margin' => $margin, 'margp' => $margp]);
+                'periode' => $periode, 'arrayIndex' => $arrayIndex, 'gross' => $gross, 'tax' => $tax, 'taxbebas' => $taxbebas, 'taxdtp' => $taxdtp, 'net' => $net, 'hpp' => $hpp, 'margin' => $margin, 'margp' => $margp]);
         $pdf->setPaper('A4', 'potrait');
         $pdf->output();
         $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);

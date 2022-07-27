@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\BACKOFFICE;
 
+use App\Http\Controllers\Auth\loginController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -127,145 +128,193 @@ class VirtualStockCmoController extends Controller
         $periode1 = $request->periode1;
         $periode2 = $request->periode2;
 
-        $and_div = '';
-        $and_dept = '';
-        $and_kat = '';
-        $and_ksupp = '';
-        $and_ksuppmcg = '';
-        $and_namasupp = '';
+//        $newDate1 = date("Ymd", strtotime($periode1));
+//        $newDate2 = date("Ymd", strtotime($periode2));
+        $newDate1 = Carbon::createFromFormat('d/m/Y',$periode1)->format('Ymd');
+        $newDate2 = Carbon::createFromFormat('d/m/Y',$periode2)->format('Ymd');
 
-        if (isset($div1) && isset($div2)) {
-            $and_div = " and prd_kodedivisi between '" . $div1 . "' and '" . $div2 . "'";
-        }
-        if (isset($dept1) && isset($dept2)) {
-            $and_dept = " and prd_kodedepartement between '" . $dept1 . "' and '" . $dept2 . "'";
-        }
-        if (isset($kat1) && isset($kat1)) {
-            $and_kat = " and prd_kodekategoribarang between '" . $kat1 . "' and '" . $kat2 . "'";
-        }
-        if (isset($kodesupplier) && isset($kodemcg) && isset($namasupplier)) {
-            $and_ksupp = " and sup_kodesupplier like '" . $kodesupplier . "' ";
-            $and_ksuppmcg = " and sup_kodesuppliermcg like '" . $kodemcg . "' ";
-            $and_namasupp = " and sup_namasupplier like '" . $namasupplier . "' ";
-        }
+        $usid = Session::get('usid');
 
-        // rekap
-        if($tipevcmo == 'r1')
+
+        // dd($div1);
+        $err='';
+
+        $c = loginController::getConnectionProcedure();
+
+        $s = oci_parse($c, "BEGIN SP_LPP_CMO (
+                nvl(:txt_div1, '0'),
+                nvl(:txt_div2, 'Z'),
+                nvl(:txt_dept1, '00'),
+                nvl(:txt_dept2, 'ZZ'),
+                nvl(:txt_kat1, '00'),
+                nvl(:txt_kat2, 'ZZ'),
+                nvl(:txt_kodesupp, 'ZZZZZ'),
+                :txt_tgl1,
+                :txt_tgl2,
+                :usid,
+                :errm); END;");
+        oci_bind_by_name($s, ':txt_div1', $div1, 100);
+        oci_bind_by_name($s, ':txt_div2', $div2, 100);
+        oci_bind_by_name($s, ':txt_dept1', $dept1, 100);
+        oci_bind_by_name($s, ':txt_dept2', $dept2, 100);
+        oci_bind_by_name($s, ':txt_kat1', $kat1, 100);
+        oci_bind_by_name($s, ':txt_kat2', $kat2, 100);
+        oci_bind_by_name($s, ':txt_kodesupp', $kodesupplier, 100);
+        oci_bind_by_name($s, ':txt_tgl1', $newDate1, 100);
+        oci_bind_by_name($s, ':txt_tgl2', $newDate2, 100);
+        oci_bind_by_name($s, ':usid', $usid, 100);
+        oci_bind_by_name($s, ':errm', $err, 100);
+        oci_execute($s);
+
+        if($err){
+            return response()->json([
+                'title' => 'Error',
+                'message' => $err
+            ], 500);
+        }
+        else
         {
-            $data = DB::connection(Session::get('connection'))
-            ->select("SELECT prs_namaperusahaan,
-                            prs_namacabang,
-                            lpp.*,
-                            sta_saldoawal,
-                            sta_saldoakhir,
-                            prc_pluidm,
-                            prd_deskripsipanjang,
-                            supp || ' - ' || nvl(sup_kodesuppliermcg, '') kodesupp
-                        FROM ( SELECT '".$kodesupplier. "' supp, pluigr,
-                                        SUM (NVL (bpb_qty, 0)) bpb_qty,
-                                        SUM (NVL (idm_qty, 0)) idm_qty,
-                                        SUM (NVL (mpp_qty, 0)) mpp_qty,
-                                        SUM (NVL (dspb_qty, 0)) dspb_qty,
-                                        SUM (NVL (mpn_qty, 0)) mpn_qty,
-                                        SUM (NVL (intp_qty, 0)) intp_qty,
-                                        SUM (NVL (intn_qty, 0)) intn_qty
-                                FROM temp_lpp_cmo
-                                GROUP BY pluigr) lpp,
-                                        tbmaster_stock_cab_anak,
-                                        tbmaster_prodcrm,
-                                        tbmaster_prodmast,
-                                        tbmaster_perusahaan,
-                                        tbmaster_supplier
-                                WHERE sta_prdcd = pluigr
-                                AND sta_lokasi = '01'
-                                AND prc_pluigr = pluigr
-                                AND prc_group = 'I'
-                                AND prd_prdcd = pluigr
-                                AND sup_kodesupplier(+) = supp
-                                " . $and_div . "
-                                " . $and_dept . "
-                                " . $and_kat . "
-                                " . $and_ksupp . "
-                                " . $and_ksuppmcg . "
-                                " . $and_namasupp . "
-                                ORDER BY pluigr, prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang");
 
-            $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
+            $and_div = '';
+            $and_dept = '';
+            $and_kat = '';
+            $and_ksupp = '';
+            $and_ksuppmcg = '';
+            $and_namasupp = '';
 
-            return view('BACKOFFICE.virtual-stock-cmo-pdf-2',
-            ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1,
-            'div2' => $div2, 'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2,
-            'kodesupplier' => $kodesupplier,'kodemcg' => $kodemcg,'namasupplier' => $namasupplier,
-            'periode1' => $periode1, 'periode2' => $periode2]);
+            if (isset($div1) && isset($div2)) {
+                $and_div = " and prd_kodedivisi between '" . $div1 . "' and '" . $div2 . "'";
+            }
+            if (isset($dept1) && isset($dept2)) {
+                $and_dept = " and prd_kodedepartement between '" . $dept1 . "' and '" . $dept2 . "'";
+            }
+            if (isset($kat1) && isset($kat1)) {
+                $and_kat = " and prd_kodekategoribarang between '" . $kat1 . "' and '" . $kat2 . "'";
+            }
+            if (isset($kodesupplier) && isset($kodemcg) && isset($namasupplier)) {
+                $and_ksupp = " and sup_kodesupplier like '" . $kodesupplier . "' ";
+                $and_ksuppmcg = " and sup_kodesuppliermcg like '" . $kodemcg . "' ";
+                $and_namasupp = " and sup_namasupplier like '" . $namasupplier . "' ";
+            }
 
-            $pdf = PDF::loadview('BACKOFFICE.virtual-stock-cmo-pdf-2',
-            ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1,
-            'div2' => $div2, 'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2,
-            'kodesupplier' => $kodesupplier,'kodemcg' => $kodemcg,'namasupplier' => $namasupplier,
-            'periode1' => $periode1, 'periode2' => $periode2]);
-            $pdf->setPaper('A4', 'potrait');
-            $pdf->output();
-            $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+            // rekap
+            if($tipevcmo == 'r1')
+            {
+                $data = DB::connection(Session::get('connection'))
+                ->select("SELECT prs_namaperusahaan,
+                                prs_namacabang,
+                                lpp.*,
+                                sta_saldoawal,
+                                sta_saldoakhir,
+                                prc_pluidm,
+                                prd_deskripsipanjang,
+                                supp || ' - ' || nvl(sup_kodesuppliermcg, '') kodesupp
+                            FROM ( SELECT '".$kodesupplier. "' supp, pluigr,
+                                            SUM (NVL (bpb_qty, 0)) bpb_qty,
+                                            SUM (NVL (idm_qty, 0)) idm_qty,
+                                            SUM (NVL (mpp_qty, 0)) mpp_qty,
+                                            SUM (NVL (dspb_qty, 0)) dspb_qty,
+                                            SUM (NVL (mpn_qty, 0)) mpn_qty,
+                                            SUM (NVL (intp_qty, 0)) intp_qty,
+                                            SUM (NVL (intn_qty, 0)) intn_qty
+                                    FROM temp_lpp_cmo
+                                    GROUP BY pluigr) lpp,
+                                            tbmaster_stock_cab_anak,
+                                            tbmaster_prodcrm,
+                                            tbmaster_prodmast,
+                                            tbmaster_perusahaan,
+                                            tbmaster_supplier
+                                    WHERE sta_prdcd = pluigr
+                                    AND sta_lokasi = '01'
+                                    AND prc_pluigr = pluigr
+                                    AND prc_group = 'I'
+                                    AND prd_prdcd = pluigr
+                                    AND sup_kodesupplier(+) = supp
+                                    " . $and_div . "
+                                    " . $and_dept . "
+                                    " . $and_kat . "
+                                    " . $and_ksupp . "
+                                    " . $and_ksuppmcg . "
+                                    " . $and_namasupp . "
+                                    ORDER BY pluigr, prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang");
 
-            $canvas = $dompdf->get_canvas();
-            $canvas->page_text(1450, 800, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
+                $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
 
-            return $pdf->stream('virtual-stock-cmo-pdf-2.pdf');
+                return view('BACKOFFICE.virtual-stock-cmo-pdf-2',
+                ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1,
+                'div2' => $div2, 'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2,
+                'kodesupplier' => $kodesupplier,'kodemcg' => $kodemcg,'namasupplier' => $namasupplier,
+                'periode1' => $periode1, 'periode2' => $periode2]);
 
+                $pdf = PDF::loadview('BACKOFFICE.virtual-stock-cmo-pdf-2',
+                ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1,
+                'div2' => $div2, 'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2,
+                'kodesupplier' => $kodesupplier,'kodemcg' => $kodemcg,'namasupplier' => $namasupplier,
+                'periode1' => $periode1, 'periode2' => $periode2]);
+                $pdf->setPaper('A4', 'potrait');
+                $pdf->output();
+                $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+                $canvas = $dompdf->get_canvas();
+                $canvas->page_text(1450, 800, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
+
+                return $pdf->stream('virtual-stock-cmo-pdf-2.pdf');
+
+            }
+            else if($tipevcmo == 'r2')
+            {
+                $data = DB::connection(Session::get('connection'))
+                ->select("SELECT prs_namaperusahaan,
+                                prs_namacabang,
+                                lpp.*,
+                                prc_pluidm,
+                                prd_deskripsipanjang,
+                                sup_kodesuppliermcg || '-' || sup_namasupplier AS sup_namasupplier,
+                                idm_toko || '-' || idm.tko_namaomi AS namaidm,
+                                dspb_toko || '-' || dspb.tko_namaomi AS namadspb
+                        FROM temp_lpp_cmo lpp,
+                                tbmaster_prodcrm,
+                                tbmaster_prodmast,
+                                tbmaster_supplier,
+                                tbmaster_tokoigr idm,
+                                tbmaster_tokoigr dspb,
+                                tbmaster_perusahaan
+                        WHERE prc_pluigr = pluigr
+                        AND prc_group = 'I'
+                        AND prd_prdcd = pluigr
+                        AND sup_kodesupplier(+) = bpb_supp
+                        AND idm.tko_kodeomi(+) = idm_toko
+                        AND dspb.tko_kodeomi(+) = dspb_toko
+                        " . $and_div . "
+                        " . $and_dept . "
+                        " . $and_kat . "
+                        " . $and_ksupp . "
+                        " . $and_ksuppmcg . "
+                        " . $and_namasupp . "
+                        ORDER BY pluigr, row_id, prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang ");
+
+                $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
+
+                return view('BACKOFFICE.virtual-stock-cmo-pdf-2',
+                ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1, 'div2' => $div2,
+                'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2, 'kodesupplier' => $kodesupplier,
+                'kodemcg' => $kodemcg,'namasupplier' => $namasupplier, 'periode1' => $periode1, 'periode2' => $periode2]);
+
+                // $pdf = PDF::loadview('BACKOFFICE.virtual-stock-cmo-pdf-2',
+                // ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1, 'div2' => $div2,
+                // 'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2, 'kodesupplier' => $kodesupplier,
+                // 'kodemcg' => $kodemcg,'namasupplier' => $namasupplier, 'periode1' => $periode1, 'periode2' => $periode2]);
+                // $pdf->setPaper('A4', 'potrait');
+                // $pdf->output();
+                // $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
+
+                // $canvas = $dompdf->get_canvas();
+                // $canvas->page_text(1450, 800, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
+
+                // return $pdf->stream('virtual-stock-cmo-pdf-2.pdf');
+            }
         }
-        else if($tipevcmo == 'r2')
-        {
-            $data = DB::connection(Session::get('connection'))
-            ->select("SELECT prs_namaperusahaan,
-                            prs_namacabang,
-                            lpp.*,
-                            prc_pluidm,
-                            prd_deskripsipanjang,
-                            sup_kodesuppliermcg || '-' || sup_namasupplier AS sup_namasupplier,
-                            idm_toko || '-' || idm.tko_namaomi AS namaidm,
-                            dspb_toko || '-' || dspb.tko_namaomi AS namadspb
-                    FROM temp_lpp_cmo lpp,
-                            tbmaster_prodcrm,
-                            tbmaster_prodmast,
-                            tbmaster_supplier,
-                            tbmaster_tokoigr idm,
-                            tbmaster_tokoigr dspb,
-                            tbmaster_perusahaan
-                    WHERE prc_pluigr = pluigr
-                    AND prc_group = 'I'
-                    AND prd_prdcd = pluigr
-                    AND sup_kodesupplier(+) = bpb_supp
-                    AND idm.tko_kodeomi(+) = idm_toko
-                    AND dspb.tko_kodeomi(+) = dspb_toko
-                    " . $and_div . "
-                    " . $and_dept . "
-                    " . $and_kat . "
-                    " . $and_ksupp . "
-                    " . $and_ksuppmcg . "
-                    " . $and_namasupp . "
-                    ORDER BY pluigr, row_id, prd_kodedivisi, prd_kodedepartement, prd_kodekategoribarang ");
 
-
-            $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')->first();
-
-            return view('BACKOFFICE.virtual-stock-cmo-pdf-2',
-            ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1, 'div2' => $div2,
-            'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2, 'kodesupplier' => $kodesupplier,
-            'kodemcg' => $kodemcg,'namasupplier' => $namasupplier, 'periode1' => $periode1, 'periode2' => $periode2]);
-
-            // $pdf = PDF::loadview('BACKOFFICE.virtual-stock-cmo-pdf-2',
-            // ['data' => $data, 'perusahaan' => $perusahaan, 'tipevcmo' => $tipevcmo, 'div1' => $div1, 'div2' => $div2,
-            // 'dept1' => $dept1, 'dept2' => $dept2, 'kat1' => $kat1, 'kat2' => $kat2, 'kodesupplier' => $kodesupplier,
-            // 'kodemcg' => $kodemcg,'namasupplier' => $namasupplier, 'periode1' => $periode1, 'periode2' => $periode2]);
-            // $pdf->setPaper('A4', 'potrait');
-            // $pdf->output();
-            // $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
-
-            // $canvas = $dompdf->get_canvas();
-            // $canvas->page_text(1450, 800, "{PAGE_NUM} / {PAGE_COUNT}", null, 7, array(0, 0, 0));
-
-            // return $pdf->stream('virtual-stock-cmo-pdf-2.pdf');
-        }
 
     }
 

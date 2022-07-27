@@ -158,7 +158,6 @@ class TransferSJController extends Controller
             ->orderBy('docno')
             ->distinct()
             ->get();
-        // dd($data);
 
         $docno = $data[0]->docno;
         $data = json_decode(json_encode($data), true);
@@ -263,7 +262,7 @@ class TransferSJController extends Controller
             ->select("select column_name, data_type FROM USER_TAB_COLUMNS WHERE table_name = 'TEMP_TITIP' order by column_id");
 
         foreach ($datas_titip as $data) {
-            $filepath = self::cleanupFiles(storage_path('TRFSJ/' . $data[0]['nonota'] . '_titipan.dbf'));
+            $filepath = self::cleanupFiles(storage_path('TRFSJ/' . $data[0]['nonota'] . '_exp.dbf'));
             //        chmod($filepath, 755);
             if (file_exists($filepath)) {
                 unlink($filepath);

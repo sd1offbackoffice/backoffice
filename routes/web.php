@@ -1769,12 +1769,12 @@ Route::middleware(['CheckLogin'])->group(function () {
         $pdf = PDF::loadview('BACKOFFICE.NAIKTURUNSTATUS.email', ['datas' => $datas])->setPaper('a5', 'potrait');
         $pdf->output();
         $pdf->getDomPDF()->set_option("enable_php", true);
-                
+
                     $canvas = $dompdf->get_canvas();
                     $canvas->page_text(514, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
-                
+
                     return $pdf->stream('email.PDF');
-                
+
                     // return view('BACKOFFICE.NAIKTURUNSTATUS.email');
                 });
             });

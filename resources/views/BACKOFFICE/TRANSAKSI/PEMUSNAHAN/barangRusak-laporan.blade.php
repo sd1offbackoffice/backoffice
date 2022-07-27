@@ -22,16 +22,20 @@
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
 
         <tr>
-            <th class="left">NO</th>
-            <th class="left">PLU</th>
-            <th class="left">DESKRIPSI</th>
-            <th class="left">SATUAN</th>
-            <th class="right">QTY</th>
-            <th class="right">FRAC</th>
-            <th class="right">HRG SATUAN IN CTN</th>
-            <th class="right padding-right">TOTAL</th>
-            <th class="left">KETERANGAN</th>
+            <th class="left tengah" rowspan="2">NO</th>
+            <th class="left tengah" rowspan="2">PLU</th>
+            <th class="left tengah" rowspan="2">DESKRIPSI</th>
+            <th class="left tengah" rowspan="2">SATUAN</th>
+            <th class="center tengah" colspan="2" rowspan="1">KUANTITAS</th>
+            <th class="right tengah" rowspan="2">HRG SATUAN IN CTN</th>
+            <th class="right tengah padding-right" rowspan="2">TOTAL</th>
+            <th class="left tengah" rowspan="2">KETERANGAN</th>
         </tr>
+        <tr>
+            <th class="right">CTN</th>
+            <th class="right">FRAC</th>            
+        </tr>
+
         </thead>
         <tbody>
         @php

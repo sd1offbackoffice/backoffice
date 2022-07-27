@@ -288,8 +288,10 @@ class CetakController extends Controller
                 }
 
                 $nodoc = "(";
+                $doc = '';
                 foreach ($lap_nodoc as $l) {
                     $nodoc .= "'" . $l . "',";
+                    $doc .= "'" . $l . "',";
                 }
                 $nodoc = substr($nodoc, 0, -1) . ')';
 
@@ -323,17 +325,22 @@ class CetakController extends Controller
                         'titip_nonota' => $vnodoc
                     ]);
 
-                $data_titip = DB::connection(Session::get('connection'))->select("SELECT DISTINCT *
+                $arr = explode(',', $doc);
+                foreach ($arr as $ar) {
+                    if ($ar != null) {
+                        $data_titip = DB::connection(Session::get('connection'))->select("SELECT DISTINCT *
                         FROM tbtr_titip
-                        WHERE titip_nonota = " . $nodoc . "");
+                        WHERE titip_nonota = $ar");
 
-                $kode_tujuan_titip = DB::connection(Session::get('connection'))->select("SELECT titip_kodecabangtitip
+                        $kode_tujuan_titip = DB::connection(Session::get('connection'))->select("SELECT titip_kodecabangtitip
                         FROM tbtr_titip
-                        WHERE titip_nonota = " . $nodoc . "");
+                        WHERE titip_nonota = $ar");
 
-                $data_tujuan = DB::connection(Session::get('connection'))->select("SELECT cab_namacabang, cab_alamat1, cab_alamat2, cab_alamat3
+                        $data_tujuan = DB::connection(Session::get('connection'))->select("SELECT cab_namacabang, cab_alamat1, cab_alamat2, cab_alamat3
                         FROM tbmaster_cabang
                         WHERE cab_kodecabang = " . $kode_tujuan_titip[0]->titip_kodecabangtitip . "");
+                    }
+                }
 
                 $data_hitung = DB::connection(Session::get('connection'))->select("SELECT DISTINCT xpd_jeniskontainer, xpd_tonase, xpd_kubikase
                 FROM tbmaster_ekspedisi, tbtr_titip
@@ -359,15 +366,6 @@ class CetakController extends Controller
             DB::connection(Session::get('connection'))->rollBack();
             dd($e->getMessage());
         }
-    }
-
-    public function cetak(Request $request)
-    {
-        $data = $request->data;
-        $reprint = $request->reprint;
-        $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
-            ->first();
-        return view('BACKOFFICE.TRANSAKSI.KIRIMCABANG.laporan-nota', compact(['data', 'reprint', 'perusahaan']));
     }
 
     public function cetakSJ(Request $request)

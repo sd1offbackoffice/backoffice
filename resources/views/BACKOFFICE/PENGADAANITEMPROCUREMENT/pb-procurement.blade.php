@@ -9,7 +9,7 @@
                     <legend class="w-auto ml-5"></legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="row form-group">
-                            <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">NOMOR PB</label>
+                            <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">NOMOR DRAFT PB</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control text-left" id="nopb">
                                 <button id="btn_lov_nopb" type="button" class="btn btn-primary btn-lov p-0"
@@ -18,28 +18,21 @@
                                     <i class="fas fa-question"></i>
                                 </button>
                             </div>
-                            <div class="col-sm-2">
-                                <button class="btn btn-danger" id="btnHapusDokumen" onclick="hapusDokumen()" disabled>
-                                    Hapus Dokumen
-                                </button>
-                            </div>
-                            <div class="col-sm-2">
-                                <input type="text" class="form-control text-left" id="model" readonly>
-                            </div>
+                            <div class="col-sm-4">
 
+                            </div>
+                            <div class="col-sm-4 d-flex justify-content-end">
+                                <input type="text" class="form-control" id="model" readonly>
+                            </div>
                         </div>
                         <div class="row form-group">
-                            <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">TGL. PB</label>
+                            <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">TGL DRAFT PB</label>
 
                             <div class="col-sm-2">
                                 <input type="text" class="form-control text-left" id="tglpb">
                             </div>
-
                         </div>
 
-
-
-                        </div>
                         <div class="row form-group">
                             <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">KETERANGAN</label>
                             <div class="col-sm-4">
@@ -74,15 +67,15 @@
                                         <th></th>
                                         <th>PRDCD</th>
                                         <th>CTN</th>
-                                        <th>PCs</th>
-                                        <th>HRG. SATUAN</th>
+                                        <th>PCS</th>
+                                        <th>HRG SATUAN</th>
                                         <th>NILAI</th>
                                         <th>PPN</th>
                                         <th>TOTAL</th>
                                         <th>PKMT (PCS)</th>
                                         <th>MINOR</th>
                                         <th>STOCK (PCS)</th>
-                                        <th>PB OUT</th>
+                                        {{-- <th>PB OUT</th> --}}
                                     </tr>
                                     </thead>
                                     <tbody id="tbody-detail">
@@ -97,9 +90,9 @@
                             </div>
 
                             <div class="row form-group">
-                                <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">BKP</label>
+                                {{-- <label for="" class="col-sm-2 col-form-label text-right pl-0 pr-0">BKP</label> --}}
                                 <div class="col-sm-5">
-                                    <input type="text" class="form-control text-left" id="bkp" disabled>
+                                    <input type="text" class="form-control text-left" id="bkp" placeholder="BKP" disabled>
                                 </div>
 
 

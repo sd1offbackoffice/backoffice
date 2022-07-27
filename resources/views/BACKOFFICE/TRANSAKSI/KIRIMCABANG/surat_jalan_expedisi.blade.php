@@ -136,6 +136,7 @@ $total_ton = 0;
         </tr>
         @endforeach
         @foreach($data_titip as $dt)
+        @if($dt->titip_nama_barang != null || $dt->titip_nama_barang != '')
         <tr>
             <td>{{ ++$j }}</td>
             <td>{{ $dt->titip_kode }}</td>
@@ -146,6 +147,8 @@ $total_ton = 0;
             <td>{{ $dt->titip_ton }}</td>
             <td style="max-width: 100px;">{{ $dt->titip_keterangan_titipan }}</td>
         </tr>
+        @endif
+
         @php
         $total_m3 += $dt->titip_m3;
         $total_ton += $dt->titip_ton;

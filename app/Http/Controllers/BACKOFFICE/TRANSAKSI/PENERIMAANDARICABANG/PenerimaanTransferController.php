@@ -926,7 +926,7 @@ class PenerimaanTransferController extends Controller
                         $insert_titip = [];
                         while ($recs = $dataFileDBF->nextRecord()) {
                             // dd($recs->get('recid'));
-                            if (!(str_contains(substr($file, strpos($file, "_") + 1), 'titipan'))) {
+                            if (!(str_contains(substr($file, strpos($file, "_") + 1), 'exp'))) {
                                 $temp = [];
 
                                 $temp['recid'] = $recs->get('recid');
