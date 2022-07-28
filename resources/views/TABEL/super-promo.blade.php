@@ -6,17 +6,17 @@
         <div class="row justify-content-center">
             <div class="col-md-5">
                 <fieldset class="card border-dark">
-                    <legend class="w-auto ml-5 text-left">Tabel Super Promo</legend>
+                    <legend class="w-auto ml-5 text-left">@lang('Tabel Super Promo')</legend>
                     <div class="card-body shadow-lg cardForm">
                         <br>
                         <div class="row">
-                            <label class="col-sm-4 col-form-label text-right">Tanggal Berlaku : </label>
+                            <label class="col-sm-4 col-form-label text-right">@lang('Tanggal Berlaku') : </label>
                             <div class="col-sm-5">
                                 <input class="text-center form-control" type="text" id="dateBerlaku">
                             </div>
                         </div>
                         <div class="row" style="padding-bottom: 20px">
-                            <label class="col-sm-4 col-form-label text-right">Tanggal Selesai : </label>
+                            <label class="col-sm-4 col-form-label text-right">@lang('Tanggal Selesai') : </label>
                             <div class="col-sm-5">
                                 <input class="text-center form-control" type="text" id="dateSelesai">
                             </div>
@@ -26,7 +26,7 @@
             </div>
             <div class="col-md-12">
                 <fieldset class="card border-dark">
-                    <legend class="w-auto ml-5 text-left">Detail Tabel Super Promo</legend>
+                    <legend class="w-auto ml-5 text-left">@lang('Detail Tabel Super Promo')</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="p-0 tableFixedHeader" style="height: 400px;">
                             <table class="table table-sm table-striped table-bordered"
@@ -34,11 +34,11 @@
                                 <thead>
                                 <tr class="table-sm text-center">
                                     <th width="3%" class="text-center small">&nbsp;&nbsp;</th>
-                                    <th width="17%" class="text-center small">PLU</th>
-                                    <th width="20%" class="text-center small">Harga Jual</th>
-                                    <th width="20%" class="text-center small">Target Qty</th>
-                                    <th width="20%" class="text-center small">Target Sales</th>
-                                    <th width="20%" class="text-center small">Target Gross Margin</th>
+                                    <th width="17%" class="text-center small">@lang('PLU')</th>
+                                    <th width="20%" class="text-center small">@lang('Harga Jual')</th>
+                                    <th width="20%" class="text-center small">@lang('Target Qty')</th>
+                                    <th width="20%" class="text-center small">@lang('Target Sales')</th>
+                                    <th width="20%" class="text-center small">@lang('Target Gross Margin')</th>
                                 </tr>
                                 </thead>
                                 <tbody id="tbodyMain" style="height: 400px;">
@@ -81,7 +81,7 @@
                             </table>
                         </div>
                         <div class="row">
-                            <label class="col-sm-2 col-form-label text-right">Deskripsi</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Deskripsi')</label>
                             <div class="col-sm-5">
                                 <input class="text-left form-control" type="text" id="deskripsiTable" readonly>
                             </div>
@@ -89,13 +89,13 @@
                                 <input class="text-left form-control" type="text" id="unitMini" readonly>
                             </div>
                             <div class="col-sm-3 d-flex justify-content-end">
-                                <button class="btn btn-primary col-sm-10 add-btn" type="button" onclick="addRow()">ADD ROW</button>&nbsp;
+                                <button class="btn btn-primary col-sm-10 add-btn" type="button" onclick="addRow()">@lang('ADD ROW')</button>&nbsp;
                             </div>
                         </div>
                     </div>
                 </fieldset>
                 <div class="row">
-                    <label class="col-sm-2 col-form-label">Ctrl + S --> Simpan Data</label>
+                    <label class="col-sm-2 col-form-label">@lang('Ctrl + S --> Simpan Data')</label>
                 </div>
             </div>
         </div>
@@ -284,7 +284,7 @@
                 },
                 success: function (response) {
                     swal({
-                        title: 'BERHASIL',
+                        title: `{{ __('BERHASIL') }}`,
                         icon: 'success'
                     }).then(() => {
                         ClearForm();
@@ -297,7 +297,7 @@
                     $('#modal-loader').modal('hide');
                     swal({
                         title: "ERROR",
-                        text: "GAGAL MENYIMPAN DATA",
+                        text: `{{ __('GAGAL MENYIMPAN DATA') }}`,
                         icon: 'error',
                     });
                     return false;
@@ -356,7 +356,7 @@
                     $('#modal-loader').modal('hide');
                     swal({
                         title: "ERROR",
-                        text: "GAGAL RETRIEVE DATA",
+                        text: `{{ __('GAGAL RETRIEVE DATA') }}`,
                         icon: 'error',
                     });
                     return false;

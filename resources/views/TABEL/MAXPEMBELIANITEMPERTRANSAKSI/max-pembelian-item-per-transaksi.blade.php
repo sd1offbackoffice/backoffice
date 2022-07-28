@@ -1,15 +1,15 @@
 @extends('navbar')
-@section('title','HADIAH PER ITEM BARANG')
+@section('title',__('Maximum Pembelian Item Per Transaksi'))
 @section('content')
 
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <fieldset class="card border-dark">
-                    <legend class="w-auto ml-5 text-left">Maximum Pembelian Item Per Transaksi</legend>
+                    <legend class="w-auto ml-5 text-left">@lang('Maximum Pembelian Item Per Transaksi')</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="row">
-                            <label class="col-sm-2 col-form-label text-right">PLU</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('PLU')</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="plu">
                                 <button id="trans" type="button" class="btn btn-lov p-0" data-target="#m_plu"
@@ -24,58 +24,58 @@
                             </div>
                         </div>
                         <div class="row">
-                            <label class="col-sm-2 col-form-label text-right">Qty Reguler Biru</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Qty Reguler Biru')</label>
                             <div class="col-sm-2">
                                 <input type="number" class="form-control" id="qtyregbiru" min="0" val="0">
                             </div>
 
-                            <label class="col-sm-2 col-form-label text-right">Qty Retailer</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Qty Retailer')</label>
                             <div class="col-sm-2">
                                 <input type="number" class="form-control" id="qtyretailer" min="0" val="0">
                             </div>
 
-                            <label class="col-sm-2 col-form-label text-right">Qty Gold 1</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Qty Gold 1')</label>
                             <div class="col-sm-2">
                                 <input type="number" class="form-control" id="qtygold1" min="0" val="0">
                             </div>
                         </div>
                         <div class="row">
-                            <label class="col-sm-2 col-form-label text-right">Qty Reguler Biru Plus</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Qty Reguler Biru Plus')</label>
                             <div class="col-sm-2">
                                 <input type="number" class="form-control" id="qtyregbiruplus" min="0" val="0">
                             </div>
 
-                            <label class="col-sm-2 col-form-label text-right">Qty Silver</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Qty Silver')</label>
                             <div class="col-sm-2">
                                 <input type="number" class="form-control" id="qtysilver" min="0" val="0">
                             </div>
 
-                            <label class="col-sm-2 col-form-label text-right">Qty Gold 2</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Qty Gold 2')</label>
                             <div class="col-sm-2">
                                 <input type="number" class="form-control" id="qtygold2" min="0" val="0">
                             </div>
                         </div>
                         <div class="row">
-                            <label class="col-sm-2 col-form-label text-right">Qty FreePass</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Qty FreePass')</label>
                             <div class="col-sm-2">
                                 <input type="number" class="form-control" id="qtyfreepass" min="0" val="0">
                             </div>
 
-                            <label class="col-sm-2 col-form-label text-right">Qty Platinum</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Qty Platinum')</label>
                             <div class="col-sm-2">
                                 <input type="number" class="form-control" id="qtyplatinum" min="0" val="0">
                             </div>
 
-                            <label class="col-sm-2 col-form-label text-right">Qty Gold 3</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Qty Gold 3')</label>
                             <div class="col-sm-2">
                                 <input type="number" class="form-control" id="qtygold3" min="0" val="0">
                             </div>
                         </div>
                         <br>
                         <div class="d-flex justify-content-end">
-                            <button class="btn btn-primary col-sm-1" type="button" onclick="simpan()">SAVE</button>&nbsp;
-                            <button class="btn btn-primary col-sm-1" type="button" onclick="hapus()">DELETE</button>&nbsp;
-                            <button class="btn btn-primary col-sm-1" type="button" onclick="cetak()">PRINT</button>
+                            <button class="btn btn-primary col-sm-1" type="button" onclick="simpan()">{{ strtoupper(__('Simpan')) }}</button>&nbsp;
+                            <button class="btn btn-primary col-sm-1" type="button" onclick="hapus()">{{ strtoupper(__('Hapus')) }}</button>&nbsp;
+                            <button class="btn btn-primary col-sm-1" type="button" onclick="cetak()">{{ strtoupper(__('Cetak')) }}</button>
                         </div>
                     </div>
                 </fieldset>
@@ -88,22 +88,22 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <fieldset class="card border-dark">
-                    <legend class="w-auto ml-5 text-left">ALL DATA Maximum Pembelian Item</legend>
+                    <legend class="w-auto ml-5 text-left">@lang('ALL DATA Maximum Pembelian Item')</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="row justify-content-center">
                             <table class="table table-striped table-bordered col-sm-12" id="tableData">
                                 <thead class="theadDataTables">
                                 <tr>
-                                    <th>PLU</th>
-                                    <th>Reg Biru</th>
-                                    <th>Reg Biru Plus</th>
-                                    <th>FreePass</th>
-                                    <th>Retailer Merah</th>
-                                    <th>Silver</th>
-                                    <th>Gold 1</th>
-                                    <th>Gold 2</th>
-                                    <th>Gold 3</th>
-                                    <th>Platinum</th>
+                                    <th>@lang('PLU')</th>
+                                    <th>@lang('Reg Biru')</th>
+                                    <th>@lang('Reg Biru Plus')</th>
+                                    <th>@lang('FreePass')</th>
+                                    <th>@lang('Retailer Merah')</th>
+                                    <th>@lang('Silver')</th>
+                                    <th>@lang('Gold 1')</th>
+                                    <th>@lang('Gold 2')</th>
+                                    <th>@lang('Gold 3')</th>
+                                    <th>@lang('Platinum')</th>
                                 </tr>
                                 </thead>
                                 <tbody id="tbodyPlu"></tbody>
@@ -111,7 +111,7 @@
                         </div>
                         <br>
                         <div class="row justify-content-center">
-                            <label class="col-sm-1 text-right">Deskripsi</label>
+                            <label class="col-sm-1 text-right">@lang('Deskripsi')</label>
                             <div class="col-sm-8">
                                 <input type="text" class="form-control" id="deskripsi" readonly>
                             </div>
@@ -127,7 +127,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Informasi Barang</h5>
+                    <h5 class="modal-title">@lang('Informasi Barang')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -139,8 +139,8 @@
                                 <table class="table table-striped table-bordered" id="tablePlu">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>PLU</th>
-                                        <th>DESKRIPSI</th>
+                                        <th>@lang('PLU')</th>
+                                        <th>{{ strtoupper(__('Deskripsi')) }}</th>
                                     </tr>
                                     </thead>
                                     <tbody></tbody>
@@ -331,11 +331,11 @@
 
         function simpan() {
             if($('#plu').val() == ''){
-                swal('Error','Mohon isi plu terlebih dahulu','error')
+                swal('Error',`{{ __('Mohon isi plu terlebih dahulu') }}`,'error')
                 return false;
             }
             swal({
-                title: 'Yakin ingin menyimpan data?',
+                title: `{{ __('Yakin ingin menyimpan data') }}?`,
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true
@@ -364,7 +364,7 @@
                             $('#modal-loader').modal('hide');
                             clearInput();
                             getDataTable('');
-                            swal('Behasil!', response.message, response.status);
+                            swal(`{{ __('Behasil') }}!`,response.message, response.status);
                         },
                         error: function (error) {
                             $('#modal-loader').modal('hide');
@@ -377,11 +377,11 @@
         }
         function hapus() {
             if($('#plu').val() == ''){
-                swal('Error','Mohon isi plu terlebih dahulu','error')
+                swal('Error',`{{ __('Mohon isi plu terlebih dahulu') }}`,'error')
                 return false;
             }
             swal({
-                title: 'Yakin ingin hapus data?',
+                title: `{{ __('Yakin ingin menghapus data') }} ?`,
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true

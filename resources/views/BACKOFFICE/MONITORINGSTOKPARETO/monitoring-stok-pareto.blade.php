@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','BO | MONITORING STOK PARETO & KKH PB MANUAL')
+@section('title',__('BO | MONITORING STOK PARETO & KKH PB MANUAL'))
 
 @section('content')
 
@@ -10,16 +10,16 @@
                 <fieldset class="card border-secondary">
                     <div class="card-body pt-0">
                         <fieldset class="card border-secondary mt-0">
-                            <legend  class="w-auto ml-3">Monitoring Stok Pareto & KKH PB Manual</legend>
+                            <legend  class="w-auto ml-3">@lang('Monitoring Stok Pareto & KKH PB Manual')</legend>
                             <div class="card-body py-0">
                                 <div class="row form-group">
-                                    <label class="col-sm-2 text-right col-form-label text-right pl-0 pr-0">Periode Proses</label>
+                                    <label class="col-sm-2 text-right col-form-label text-right pl-0 pr-0">@lang('Periode Proses')</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control text-left" id="periode" value="{{ $periode }}" disabled>
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label class="col-sm-2 text-right col-form-label text-right pl-0 pr-0">Untuk PB Tanggal</label>
+                                    <label class="col-sm-2 text-right col-form-label text-right pl-0 pr-0">@lang('Untuk PB Tanggal')</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control text-left" id="pbtgl" value="{{ $pbtgl }}" disabled>
                                     </div>
@@ -28,7 +28,7 @@
                                     </div>
                                 </div>
                                 <div class="row form-group">
-                                    <label class="col-sm-2 col-form-label text-right pl-0 pr-0">Kode Monitoring PLU</label>
+                                    <label class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('Kode Monitoring PLU')</label>
                                     <div class="col-sm-2 buttonInside">
                                         <input type="text" class="form-control text-left" id="mon_kode" disabled>
                                         <button id="btn_kodemonplu" type="button" class="btn btn-primary btn-lov p-0" onclick="showLovMonitoring()">
@@ -42,13 +42,13 @@
                                 <div class="row form-group">
                                     <div class="col-sm-3"></div>
                                     <button class="col-sm-6 btn btn-primary" id="btn_montok" onclick="printMontok()">
-                                        CETAK MONITORING STOK (MONTOK) ITEM PARETO
+                                        @lang('CETAK MONITORING STOK (MONTOK) ITEM PARETO')
                                     </button>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-sm-3"></div>
                                     <button class="col-sm-6 btn btn-primary" id="btn_kkhpb" onclick="printKKH()">
-                                        CETAK KERTAS KERJA HARIAN (KKH) PB MANUAL
+                                        @lang('CETAK KERTAS KERJA HARIAN (KKH) PB MANUAL')
                                     </button>
                                 </div>
                             </div>
@@ -70,8 +70,8 @@
                                 <table class="table table-sm mb-0 text-center" id="table_monitoring">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Kode Monitoring</th>
-                                        <th>Nama Monitoring</th>
+                                        <th>@lang('Kode Monitoring')</th>
+                                        <th>@lang('Nama Monitoring')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -199,8 +199,8 @@
 
         function printKKH(){
             swal({
-                title: 'Yakin ingin mencetak KKH PB Manual untuk kode '+$('#mon_kode').val()+'?',
-                text: 'Proses mungkin membutuhkan waktu beberapa menit',
+                title: `{{ __('Yakin ingin mencetak KKH PB Manual untuk kode') }} `+$('#mon_kode').val()+'?',
+                text: `{{ __('Proses mungkin membutuhkan waktu beberapa menit') }}`,
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true
@@ -212,8 +212,8 @@
 
         function printMontok(){
             swal({
-                title: 'Yakin ingin mencetak Monitoring Stok Item Pareto untuk kode '+$('#mon_kode').val()+'?',
-                text: 'Proses mungkin membutuhkan waktu beberapa menit',
+                title: `{{ __('Yakin ingin mencetak Monitoring Stok Item Pareto untuk kode') }}  `+$('#mon_kode').val()+'?',
+                text: `{{ __('Proses mungkin membutuhkan waktu beberapa menit') }}`,
                 icon: 'warning',
                 buttons: true,
                 dangerMode: true

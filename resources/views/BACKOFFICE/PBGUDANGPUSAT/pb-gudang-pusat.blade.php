@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','BO | PB GUDANG PUSAT')
+@section('title',__('BO | PB GUDANG PUSAT'))
 
 @section('content')
 
@@ -8,10 +8,10 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-3">PB GUDANG PUSAT</legend>
+                    <legend  class="w-auto ml-3">@lang('PB GUDANG PUSAT')</legend>
                     <div class="card-body">
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-3 text-right col-form-label">DEPARTEMENT</label>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">{{ strtoupper(__('Departemen')) }}</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="dep_kode1" disabled>
                                 <button id="btn_departement" type="button" class="btn btn-primary btn-lov p-0" onclick="showLovDep(1)">
@@ -35,7 +35,7 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-3 text-right col-form-label">KATEGORI BARANG</label>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">{{ strtoupper(__('Kategori Barang')) }}</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="kat_kode1" disabled>
                                 <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" onclick="showLovKat(1)">
@@ -59,14 +59,14 @@
                             </div>
                         </div>
                         <div class="row form-group">
-                            <label for="prdcd" class="col-sm-3 text-right col-form-label">PLU</label>
+                            <label for="prdcd" class="col-sm-3 text-right col-form-label">@lang('PLU')</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="prdcd1" disabled>
                                 <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" onclick="showLovPrdcd(1)">
                                     <i class="fas fa-question"></i>
                                 </button>
                             </div>
-                            <label for="prdcd" class="text-center col-form-label">S/D</label>
+                            <label for="prdcd" class="text-center col-form-label">{{ strtoupper(__('s/d')) }}</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="prdcd2" disabled>
                                 <button id="btn_prdcd" type="button" class="btn btn-primary btn-lov p-0" onclick="showLovPrdcd(2)">
@@ -76,7 +76,7 @@
                         </div>
                         <div class="row form-group">
                             <div class="col-sm-9"></div>
-                            <button class="col-sm-2 btn btn-primary" onclick="proses()">PROSES PB</button>
+                            <button class="col-sm-2 btn btn-primary" onclick="proses()">@lang('PROSES PB')</button>
                         </div>
                         <div class="row form-group">
                             <div class="col-sm-1"></div>
@@ -105,9 +105,9 @@
                                 <table class="table table-sm mb-0 text-center" id="table_prdcd">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Deskripsi</th>
-                                        <th>PLU</th>
-                                        <th>Unit</th>
+                                        <th>@lang('Deskripsi')</th>
+                                        <th>@lang('PLU')</th>
+                                        <th>@lang('Unit')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -134,8 +134,8 @@
                                 <table class="table table-sm mb-0 text-center" id="table_divisi">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Nama Divisi</th>
-                                        <th>Kode Divisi</th>
+                                        <th>@lang('Nama Divis')</th>
+                                        <th>@lang('Kode Divisi')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -162,10 +162,10 @@
                                 <table class="table table-sm mb-0 text-center" id="table_departement">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Nama Departement</th>
-                                        <th>Kode Departement</th>
-                                        <th>Singkatan Departement</th>
-                                        <th>Kode Divisi</th>
+                                        <th>@lang('Nama Departemen')</th>
+                                        <th>@lang('Kode Departemen')</th>
+                                        <th>@lang('Singkatan Departemen')</th>
+                                        <th>@lang('Kode Divisi')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -192,9 +192,9 @@
                                 <table class="table table-sm mb-0 text-center" id="table_kategori">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Nama Kategori</th>
-                                        <th>Kode Kategori</th>
-                                        <th>Kode Departement</th>
+                                        <th>@lang('Nama Kategori')</th>
+                                        <th>@lang('Kode Kategori')</th>
+                                        <th>@lang('Kode Departemen')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -221,8 +221,8 @@
                                 <table class="table table-sm mb-0 text-center" id="table_monitoring">
                                     <thead class="thColor">
                                     <tr>
-                                        <th>Nama Monitoring</th>
-                                        <th>Kode Monitoring</th>
+                                        <th>@lang('Nama Monitoring')</th>
+                                        <th>@lang('Kode Monitoring')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="">
@@ -422,10 +422,10 @@
             fieldPrdcd = field;
 
             if(!$('#dep_kode1').val() || !$('#dep_kode2').val()){
-                swal('Field departement belum lengkap!','','warning');
+                swal(`{{ __('Field departemen belum lengkap') }}!`,'','warning');
             }
             else if(!$('#kat_kode1').val() || !$('#kat_kode2').val()){
-                swal('Field kategori belum lengkap!','','warning');
+                swal(`{{ __('Field kategori belum lengkap') }}!`,'','warning');
             }
             else{
                 $('#m_prdcd').modal('show');
@@ -482,16 +482,16 @@
 
         function proses(){
             if(!$('#dep_kode1').val() || !$('#dep_kode2').val() || !$('#kat_kode1').val() || !$('#kat_kode2').val() || !$('#prdcd1').val() || !$('#prdcd2').val()){
-                swal('Inputan belum lengkap!','','warning');
+                swal(`{{ __('Inputan belum lengkap') }}!`,'','warning');
             }
             else if($('#dep_kode1').val() > $('#dep_kode2').val()){
-                swal('Kode Departement 1 lebih besar dari Kode Departement 2!','','warning');
+                swal(`{{ __('Kode Departemen 1 lebih besar dari Kode Departemen 2') }}!`,'','warning');
             }
             else if($('#kat_kode1').val() > $('#kat_kode2').val()){
-                swal('Kode Kategori 1 lebih besar dari Kode Kategori 2!','','warning');
+                swal(`{{ __('Kode Kategori 1 lebih besar dari Kode Kategori 2') }}!`,'','warning');
             }
             else if($('#prdcd1').val() > $('#prdcd2').val()){
-                swal('Kode PLU 1 lebih besar dari Kode PLU 2!','','warning');
+                swal(`{{ __('Kode PLU 1 lebih besar dari Kode PLU 2') }}!`,'','warning');
             }
             else{
                 $.ajax({
@@ -519,7 +519,7 @@
                     error: function (error) {
                         $('#modal-loader').modal('hide');
                         swal({
-                            title: 'Terjadi kesalahan!',
+                            title: `{{ __('Terjadi kesalahan') }}!`,
                             text: error.responseJSON.message,
                             icon: 'error',
                         });

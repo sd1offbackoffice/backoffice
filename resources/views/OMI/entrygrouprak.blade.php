@@ -1,12 +1,12 @@
 @extends('navbar')
-@section('title','Entry Group Rak')
+@section('title',__('Entry Group Rak'))
 @section('content')
 
     <div class="container-fluid">
         <div class="row">
             <div class="offset-1 col-sm-11 row">
                 <fieldset class="card border-secondary col-sm-4" id="data-field">
-                    <legend class="w-auto ml-5">Header Group rak</legend>
+                    <legend class="w-auto ml-5">Header Group Rak</legend>
                     <div class="card-body">
                         <table class="table table bordered table-sm mt-3" id="table_data_header">
                             <thead class="theadDataTables">

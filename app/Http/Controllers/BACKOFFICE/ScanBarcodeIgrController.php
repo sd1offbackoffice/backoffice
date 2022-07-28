@@ -29,7 +29,7 @@ class ScanBarcodeIgrController extends Controller
             if(!$temp){
                 return [
                     'status' => 'error',
-                    'title' => 'Kode Barcode tidak terdaftar!'
+                    'title' =>  __('Kode Barcode tidak terdaftar').'!'
                 ];
             }
 

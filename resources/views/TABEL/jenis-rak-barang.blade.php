@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','TABEL | Jenis Rak Barang')
+@section('title',__('TABEL | Jenis Rak Barang'))
 
 @section('content')
 
@@ -9,11 +9,10 @@
             <div class="col-sm-12">
                 <div class="card-body pt-0">
                     <fieldset class="card border-secondary mt-0">
-                        <legend class="w-auto ml-3">Jenis Rak Barang</legend>
+                        <legend class="w-auto ml-3">@lang('Jenis Rak Barang')</legend>
                         <div class="card-body py-0" id="top_field">
                             <div class="row form-group">
-                                <label for="kode-rak" class="col-sm-2 col-form-label text-right pl-0 pr-0">Kode
-                                    Rak</label>
+                                <label for="kode-rak" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('Kode Rak')</label>
                                 <div class="col-sm-2 buttonInside">
                                     <input type="text" class="form-control text-left" maxlength="1" id="kode-rak">
                                     <button type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal"
@@ -23,15 +22,13 @@
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label for="nama-rak" class="col-sm-2 col-form-label text-right pl-0 pr-0">Nama
-                                    Rak</label>
+                                <label for="nama-rak" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('Rack Name')</label>
                                 <div class="col-sm-4">
                                     <input type="text" class="form-control text-left" id="nama-rak" maxlength="20">
                                 </div>
                             </div>
                             <div class="row form-group">
-                                <label for="minimal-display" class="col-sm-2 col-form-label text-right pl-0 pr-0">Minimal
-                                    Display</label>
+                                <label for="minimal-display" class="col-sm-2 col-form-label text-right pl-0 pr-0">@lang('Minimal Display')</label>
                                 <div class="col-sm-1">
                                     <input type="text" maxlength="1" class="form-control text-left"
                                            id="minimal-display">
@@ -40,17 +37,16 @@
                             </div>
                             <br>
                             <div class="row form-group">
-                                <label class="col-sm-3 col-form-label text-right pl-0 pr-0">Pg Up
-                                    - Isian sebelumnya <br>Pg Dn - Isian sesudahnya</label>
+                                <label class="col-sm-3 col-form-label text-right pl-0 pr-0">@lang('Pg Up - Isian sebelumnya')<br>@lang('Pg Dn - Isian sesudahnya')</label>
                                 <div class="offset-3 col-sm-2">
-                                    <button class="col-sm btn btn-primary" id="" onclick="gantiTipe('')">Ganti Tipe
+                                    <button class="col-sm btn btn-primary" id="" onclick="gantiTipe('')">@lang('Ganti Tipe')
                                     </button>
                                 </div>
                                 <div class="col-sm-2">
-                                    <button class="col-sm btn btn-danger" id="" onclick="hapus()">Hapus</button>
+                                    <button class="col-sm btn btn-danger" id="" onclick="hapus()">@lang('Hapus')</button>
                                 </div>
                                 <div class="col-sm-2">
-                                    <button class="col-sm btn btn-primary" id="" onclick="simpan()">Save</button>
+                                    <button class="col-sm btn btn-primary" id="" onclick="simpan()">@lang('Save')</button>
                                 </div>
                             </div>
                         </div>
@@ -65,7 +61,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">LOV Kode Rak</h5>
+                    <h5 class="modal-title">@lang('LOV Kode Rak')</h5>
                 </div>
                 <div class="modal-body">
                     <div class="container">
@@ -74,8 +70,8 @@
                                 <table class="table table-striped table-bordered" id="table_lov">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Kode Rak</th>
-                                        <th>Nama Rak</th>
+                                        <th>@lang('Kode Rak')</th>
+                                        <th>@lang('Nama Rak')</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -219,14 +215,14 @@
         function hapus() {
             if ($('#kode-rak').val() == '') {
                 swal({
-                    title: 'Inputan Kode Rak tidak boleh kosong!',
+                    title: `{{ __('Inputan Kode Rak tidak boleh kosong') }}!`,
                     icon: 'error'
                 }).then(() => {
                     $('#kode-rak').select();
                 });
             } else {
                 swal({
-                    title: 'Yakin ingin menghapus Kode Rak ' + $('#kode-rak').val() + '?',
+                    title: `{{ __('Yakin ingin menghapus Kode Rak') }} ` + $('#kode-rak').val() + '?',
                     icon: 'warning',
                     buttons: true,
                     dangerMode: true
@@ -280,7 +276,7 @@
         function gantiTipe() {
             $('input').val('');
             swal({
-                title: 'Masukan Kode Rak barang !',
+                title: `{{ __('Masukan Kode Rak barang') }} !`,
                 icon: 'info',
             }).then(() => {
 
@@ -393,7 +389,7 @@
 
         function simpan() {
             swal({
-                title: 'Anda Yakin Simpan Data?',
+                title: `{{ __('Anda Yakin Simpan Data') }}?`,
                 icon: 'info',
                 buttons: true,
             }).then(function (confirm) {

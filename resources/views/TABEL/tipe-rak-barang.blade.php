@@ -1,22 +1,22 @@
 @extends('navbar')
-@section('title','Tipe Rak Barang')
+@section('title',__('Tipe Rak Barang'))
 @section('content')
 
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <fieldset class="card border-dark">
-                    <legend class="w-auto ml-5 text-left">Tipe Rak Barang</legend>
+                    <legend class="w-auto ml-5 text-left">@lang('Tipe Rak Barang')</legend>
                     <div class="card-body shadow-lg cardForm">
                         <br>
                         <div class="row">
-                            <label class="col-sm-4 col-form-label text-right">Tipe Rak : </label>
+                            <label class="col-sm-4 col-form-label text-right">@lang('Tipe Rak') : </label>
                             <div class="col-sm-3">
                                 <input type="text" class="form-control" id="tipeRak" maxlength="1">
                             </div>
                         </div>
                         <div class="row">
-                            <label class="col-sm-4 col-form-label text-right">Nama Rak : </label>
+                            <label class="col-sm-4 col-form-label text-right">@lang('Nama Rak') : </label>
                             <div class="col-sm-5">
                                 <input type="text" class="form-control" id="namaRak" maxlength="20">
                             </div>
@@ -25,18 +25,18 @@
                         <div class="row">
                             <div class="col-sm-4">
                                 <div class="row">
-                                    <label class="col-sm-12 col-form-label text-left">Pg Up - Isian sebelumnya</label>
+                                    <label class="col-sm-12 col-form-label text-left">@lang('Pg Up - Isian sebelumnya')</label>
                                 </div>
                                 <div class="row">
-                                    <label class="col-sm-12 col-form-label text-left">Pg Dn - Isian sesudahnya</label>
+                                    <label class="col-sm-12 col-form-label text-left">@lang('Pg Dn - Isian sesudahnya')</label>
                                 </div>
                             </div>
                             <div class="col-sm-8 ">
                                 <br>
                                 <div class="row d-flex justify-content-end">
-                                    <button class="btn btn-primary col-sm-3" type="button" onclick="GantiTipe()">GANTI TIPE</button>
-                                    <button class="btn btn-danger col-sm-3" type="button" onclick="Hapus()">HAPUS</button>
-                                    <button class="btn btn-primary col-sm-3" type="button" onclick="Save()">SAVE</button>
+                                    <button class="btn btn-primary col-sm-3" type="button" onclick="GantiTipe()">{{ __('Ganti Tipe') }}</button>
+                                    <button class="btn btn-danger col-sm-3" type="button" onclick="Hapus()">{{ __('Hapus') }}</button>
+                                    <button class="btn btn-primary col-sm-3" type="button" onclick="Save()">{{ __('Simpan') }}</button>
                                 </div>
                             </div>
                         </div>
@@ -64,7 +64,7 @@
                     $('#namaRak').val(nama[cursor]);
                 }else {
                     swal({
-                        title: 'Sudah pada data pertama !',
+                        title: `{{ __('Sudah pada data pertama') }} !`,
                         icon: 'warning'
                     });
                 }
@@ -76,7 +76,7 @@
                     $('#namaRak').val(nama[cursor]);
                 }else {
                     swal({
-                        title: 'Sudah pada data terakhir !',
+                        title: `{{ __('Sudah pada data terakhir') }} !`,
                         icon: 'warning'
                     });
                 }
@@ -148,7 +148,7 @@
 
         function Hapus(){
             swal({
-                title: 'DATA akan dihapus ?',
+                title: `{{ __('DATA akan dihapus') }} ?`,
                 icon: 'warning',
                 dangerMode: true,
                 buttons: true,
@@ -177,7 +177,7 @@
                             success: function () {
                                 LoadData();
                                 swal({
-                                    title: 'Dihapus!',
+                                    title: `{{ __('Dihapus') }}!`,
                                     icon: 'info'
                                 });
                             },
@@ -196,7 +196,7 @@
                         });
                     }else{
                         swal({
-                            title: 'Tidak Ada Data Yg Dihapus',
+                            title: `{{ __('Tidak Ada Data Yg Dihapus') }}`,
                             icon: 'info'
                         });
                     }
@@ -210,13 +210,13 @@
         function Save(){
             if($('#tipeRak').val() == ''){
                 swal({
-                    title: 'Kode Rak Harus Diisi',
+                    title: `{{ __('Kode Rak Harus Diisi') }}`,
                     icon: 'warning'
                 });
                 return false;
             }
             swal({
-                title: 'DATA sudah benar ?',
+                title: `{{ __('DATA sudah benar') }} ?`,
                 icon: 'warning',
                 buttons: true,
             }).then(function (confirm) {
@@ -230,14 +230,14 @@
                     }
                     if($('#tipeRak').val().length > 1){
                         swal({
-                            title: 'Tipe Rak tidak boleh lebih dari 1 character',
+                            title: `{{ __('Tipe Rak tidak boleh lebih dari 1 character') }}`,
                             icon: 'warning'
                         });
                         return false;
                     }
                     if($('#namaRak').val().length > 20){
                         swal({
-                            title: 'Nama Rak tidak boleh lebih dari 20 character',
+                            title: `{{ __('Nama Rak tidak boleh lebih dari 20 character') }}`,
                             icon: 'warning'
                         });
                         return false;
