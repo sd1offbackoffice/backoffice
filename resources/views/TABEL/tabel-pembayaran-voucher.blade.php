@@ -1,16 +1,16 @@
 @extends('navbar')
-@section('title','Tabel Pembayaran Voucher ( Supplier )')
+@section('title',__('Tabel Pembayaran Voucher ( Supplier )'))
 @section('content')
 
     <div class="container-fluid mt-4">
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <fieldset class="card border-dark">
-                    <legend class="w-auto ml-5 text-left">Tabel Pembayaran Voucher ( Supplier )</legend>
+                    <legend class="w-auto ml-5 text-left">@lang('Tabel Pembayaran Voucher ( Supplier )')</legend>
                     <div class="card-body shadow-lg cardForm">
                         <br>
                         <div class="row">
-                            <label class="col-sm-3 col-form-label text-right">Supplier</label>
+                            <label class="col-sm-3 col-form-label text-right">@lang('Supplier')</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="inputSupp">
                                 <button id="btnSupp" type="button" class="btn btn-lov p-0" onclick="ToggleData(this)">
@@ -20,29 +20,29 @@
                             <input type="text" class="col-sm-4 form-control" id="deskSupp" disabled>
                         </div>
                         <div class="row">
-                            <label class="col-sm-3 col-form-label text-right">Singkatan Supplier</label>
+                            <label class="col-sm-3 col-form-label text-right">@lang('Singkatan Supplier')</label>
                             <div class="col-sm-2 buttonInside">
                                 <input type="text" class="form-control" id="inputSingkatan">
                                 <button id="btnSingkatan" type="button" class="btn btn-lov p-0" onclick="ToggleData(this)">
                                     <img src="{{ (asset('image/icon/help.png')) }}" width="30px">
                                 </button>
                             </div>
-                            <label class="col-sm-6 col-form-label text-left">( Harus Sama Dengan Tabel Voucher Supplier )</label>
+                            <label class="col-sm-6 col-form-label text-left">( @lang('Harus Sama Dengan Tabel Voucher Supplier') )</label>
                         </div>
                         <div class="row">
-                            <label class="col-sm-3 col-form-label text-right">Tanggal</label>
+                            <label class="col-sm-3 col-form-label text-right">@lang('Tanggal')</label>
                             <div class="col-sm-5">
                                 <input class="text-center form-control" type="text" id="daterangepicker">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12 d-flex justify-content-end">
-                                <button class="btn btn-primary col-sm-2" type="button" onclick="Save()">SAVE</button>
+                                <button class="btn btn-primary col-sm-2" type="button" onclick="Save()">{{ strtoupper(__('Simpan')) }}</button>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-12 d-flex justify-content-end">
-                                <button class="btn btn-danger col-sm-2" type="button" onclick="Hapus()">DELETE</button>
+                                <button class="btn btn-danger col-sm-2" type="button" onclick="Hapus()">{{ strtoupper(__('Hapus')) }}</button>
                             </div>
                         </div>
                     </div>
@@ -57,10 +57,10 @@
                                 <thead>
                                 <tr class="table-sm text-center">
                                     <th width="3%" class="text-center small">&nbsp;&nbsp;</th>
-                                    <th width="17%" class="text-center small">PLU</th>
-                                    <th width="50%" class="text-center small">Deskripsi</th>
-                                    <th width="20%" class="text-center small">Max Voucher</th>
-                                    <th width="10%" class="text-center small">Pilihan</th>
+                                    <th width="17%" class="text-center small">@lang('PLU')</th>
+                                    <th width="50%" class="text-center small">@lang('Deskripsi')</th>
+                                    <th width="20%" class="text-center small">@lang('Max Voucher')</th>
+                                    <th width="10%" class="text-center small">@lang('Pilihan')</th>
                                 </tr>
                                 </thead>
                                 <tbody id="tbodyMain" style="height: 400px;">
@@ -95,10 +95,10 @@
                             <div class="col-sm-4">
                                 <input id="checkAll" value="" style=""
                                        type="checkbox">
-                                <label class="col-form-label text-left">SELECT ALL</label>
+                                <label class="col-form-label text-left">@lang('SELECT ALL')</label>
                             </div>
                             <div class="col-sm-8 d-flex justify-content-end">
-                                <button class="btn btn-primary col-sm-2 add-btn" type="button" onclick="addRow()">ADD ROW</button>&nbsp;
+                                <button class="btn btn-primary col-sm-2 add-btn" type="button" onclick="addRow()">@lang('ADD ROW')</button>&nbsp;
                             </div>
                         </div>
                     </div>
@@ -112,7 +112,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Data Supplier</h5>
+                    <h5 class="modal-title">@lang('Data Supplier')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -124,8 +124,8 @@
                                 <table class="table table-striped table-bordered" id="tableSupp">
                                     <thead class="theadSupp">
                                     <tr>
-                                        <th>Nama Supplier</th>
-                                        <th>Kode Supplier</th>
+                                        <th>@lang('Nama Supplier')</th>
+                                        <th>@lang('Kode Supplier')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodySupp"></tbody>
@@ -145,7 +145,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Master Voucher Supplier</h5>
+                    <h5 class="modal-title">@lang('Master Voucher Supplier')</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -157,8 +157,8 @@
                                 <table class="table table-striped table-bordered" id="tableSingkatan">
                                     <thead class="theadSingkatan">
                                     <tr>
-                                        <th>Nama Supplier</th>
-                                        <th>Nilai Voucher</th>
+                                        <th>@lang('Nama Supplier')</th>
+                                        <th>@lang('Nilai Voucher')</th>
                                     </tr>
                                     </thead>
                                     <tbody id="tbodySingkatan"></tbody>
@@ -325,7 +325,7 @@
             if($('#inputSupp').val() != '' && $('#inputSingkatan').val() != ''){
                 let date = $('#daterangepicker').val();
                 if(date == null || date == ""){
-                    swal('Periode tidak boleh kosong','','warning');
+                    swal(`{{ __('Periode tidak boleh kosong') }}`,'','warning');
                     return false;
                 }
                 let dateA = date.substr(0,10);
@@ -420,7 +420,7 @@
         function Save(){
             let date = $('#daterangepicker').val();
             if(date == null || date == ""){
-                swal('Periode tidak boleh kosong','','warning');
+                swal(`{{ __('Periode tidak boleh kosong') }}`,'','warning');
                 return false;
             }
             let dateA = date.substr(0,10);
@@ -486,7 +486,7 @@
 
         function Hapus(){
             swal({
-                title: 'Data Voucher Akan Didelete ?',
+                title: `{{ __('Data Voucher Akan Didelete') }} ?`,
                 icon: 'warning',
                 dangerMode: true,
                 buttons: true,
@@ -553,7 +553,7 @@
                 }else{
                     swal({
                         // title: "",
-                        text: "Data Supplier "+$('#inputSupp').val()+" Tidak Ada !!",
+                        text: `{{ __('Data Supplier') }} `+$('#inputSupp').val()+` {{ __('Tidak Ada') }}  !!`,
                         icon: 'warning',
                     }).then(() => {
                         $('#inputSupp').val('').focus();
@@ -567,7 +567,7 @@
                 if(($('#inputSingkatan').val()).substr(0,3) === 'IGR'){
                     swal({
                         // title: "",
-                        text: "Voucher Supplier Salah !!",
+                        text: `{{ __('Voucher Supplier Salah') }} !!`,
                         icon: 'warning',
                     }).then(() => {
                         $('#inputSingkatan').val('').focus();
@@ -581,7 +581,7 @@
                     }else{
                         swal({
                             // title: "",
-                            text: "Voucher Supplier Tidak Terdaftar !!",
+                            text: `{{ __('Voucher Supplier Tidak Terdaftar') }} !!`,
                             icon: 'warning',
                         }).then(() => {
                             $('#inputSingkatan').val('').focus();

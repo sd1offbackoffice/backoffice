@@ -1,6 +1,6 @@
 @extends('navbar')
 
-@section('title','BO | SCAN BARCODE IGR')
+@section('title',__('BO | SCAN BARCODE IGR'))
 
 @section('content')
 
@@ -10,17 +10,17 @@
                 <fieldset class="card border-secondary">
                     <div class="card-body">
                         <fieldset class="card border-secondary">
-                            <legend  class="w-auto text-center">SCAN BARCODE BARANG / INPUT PLU</legend>
+                            <legend  class="w-auto text-center">@lang('SCAN BARCODE BARANG / INPUT PLU')</legend>
                             <div class="card-body">
                                 <div class="row form-group">
                                     <div class="col-sm-4"></div>
                                     <div class="custom-control custom-checkbox col-sm-2 ml-3">
                                         <input type="checkbox" class="custom-control-input" id="cb_barcode" onchange="switchField('barcode')">
-                                        <label for="cb_barcode" class="custom-control-label">SCAN BARCODE</label>
+                                        <label for="cb_barcode" class="custom-control-label">@lang('SCAN BARCODE')</label>
                                     </div>
                                     <div class="custom-control custom-checkbox col-sm-2 ml-3">
                                         <input type="checkbox" class="custom-control-input" id="cb_plu"  onchange="switchField('plu')">
-                                        <label for="cb_plu" class="custom-control-label">INPUT PLU</label>
+                                        <label for="cb_plu" class="custom-control-label">@lang('INPUT PLU')</label>
                                     </div>
                                 </div>
                                 <div class="row form-group" id="barcode-field">
@@ -42,7 +42,7 @@
                         <fieldset class="card border-secondary mt-3" id="data-field">
                             <div class="card-body">
                                 <div class="row form-group">
-                                    <label for="prdcd" class="col-sm-1 text-right col-form-label">PLU</label>
+                                    <label for="prdcd" class="col-sm-1 text-right col-form-label">@lang('PLU')</label>
                                     <div class="col-sm-2">
                                         <input type="text" class="form-control text-center" id="det_plu" disabled>
                                     </div>
@@ -52,10 +52,10 @@
                                 </div>
                                 <div class="row form-group mb-0">
                                     <div class="col-sm-2"></div>
-                                    <label for="prdcd" class="col-sm-4 text-center col-form-label pr-1">HARGA JUAL</label>
-                                    <label for="prdcd" class="col-sm-1 text-center pl-0 pr-0 col-form-label">SATUAN</label>
-                                    <label for="prdcd" class="col-sm-1 text-center pl-0 pr-0 col-form-label">TAG</label>
-                                    <label for="prdcd" class="col-sm-4 text-center col-form-label pr-1">HARGA PROMOSI</label>
+                                    <label for="prdcd" class="col-sm-4 text-center col-form-label pr-1">{{ strtoupper(__('Harga Jual')) }}</label>
+                                    <label for="prdcd" class="col-sm-1 text-center pl-0 pr-0 col-form-label">{{ strtoupper(__('Satuan')) }}</label>
+                                    <label for="prdcd" class="col-sm-1 text-center pl-0 pr-0 col-form-label">@lang('TAG')</label>
+                                    <label for="prdcd" class="col-sm-4 text-center col-form-label pr-1">@lang('HARGA PROMOSI')</label>
                                 </div>
                                 @for($i=0;$i<4;$i++)
                                     <div class="row form-group">
@@ -86,20 +86,20 @@
                                 @endfor
                                 <div class="row form-group mb-0">
                                     <div class="col-sm-5"></div>
-                                    <label for="prdcd" class="col-sm-2 text-center col-form-label pr-1">RAK</label>
-                                    <label for="prdcd" class="col-sm-1 text-center pl-0 pr-0 col-form-label">SUB RAK</label>
-                                    <label for="prdcd" class="col-sm-1 text-center pl-0 pr-0 col-form-label">TIPE</label>
-                                    <label for="prdcd" class="col-sm-2 text-center col-form-label pr-1">SHELVING</label>
-                                    <label for="prdcd" class="col-sm-1 text-center col-form-label pl-0 pr-0">NO. URUT</label>
+                                    <label for="prdcd" class="col-sm-2 text-center col-form-label pr-1">@lang('RAK')</label>
+                                    <label for="prdcd" class="col-sm-1 text-center pl-0 pr-0 col-form-label">{{ strtoupper(__('Sub Rak')) }}</label>
+                                    <label for="prdcd" class="col-sm-1 text-center pl-0 pr-0 col-form-label">@lang('TIPE')</label>
+                                    <label for="prdcd" class="col-sm-2 text-center col-form-label pr-1">{{ strtoupper(__('Shelving')) }}</label>
+                                    <label for="prdcd" class="col-sm-1 text-center col-form-label pl-0 pr-0">{{ strtoupper(__('No Urut')) }}</label>
                                 </div>
                                 @for($i=0;$i<4;$i++)
                                     <div class="row form-group @if($i==3) mb-0 @endif">
                                         @if($i == 0)
-                                            <label for="prdcd" class="col-sm-2 text-right col-form-label pr-1">STOCK AKHIR</label>
+                                            <label for="prdcd" class="col-sm-2 text-right col-form-label pr-1">@lang('STOCK AKHIR')</label>
                                             <div class="col-sm-2 pr-1 pl-1">
                                                 <input type="text" class="form-control text-right" id="stockakhir" disabled>
                                             </div>
-                                            <label for="prdcd" class="col-sm-1 text-right col-form-label pr-1">LOKASI</label>
+                                            <label for="prdcd" class="col-sm-1 text-right col-form-label pr-1">@lang('LOKASI')</label>
                                         @else
                                             <div class="col-sm-5"></div>
                                         @endif
@@ -253,7 +253,7 @@
                     error: function (error) {
                         $('#modal-loader').modal('hide');
                         swal({
-                            title: 'Terjadi kesalahan!',
+                            title: `{{ __('Terjadi kesalahan') }}!`,
                             text: error.responseJSON.message,
                             icon: 'error',
                         });
