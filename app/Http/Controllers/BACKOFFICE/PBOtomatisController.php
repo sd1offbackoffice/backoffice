@@ -246,7 +246,7 @@ ORDER BY PRD_PRDCD");
 //        $canvas->page_text(490, 10, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 10, array(0, 0, 0));
         $canvas->page_text(507, 77.75, "{PAGE_NUM} dari {PAGE_COUNT}", null, 7, array(0, 0, 0));
 
-        return $pdf->stream('PBOtomatis-laporan.pdf');
+        return $pdf->stream((__('PBOtomatis-laporan.pdf')));
 
     }
 }

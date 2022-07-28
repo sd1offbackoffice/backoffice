@@ -6,51 +6,51 @@
 @section('table_font_size','7 px')
 
 @section('page_title')
-    LAPORAN PEMBENTUKAN M PLUS.I DAN M PLUS.O
+    @lang('LAPORAN PEMBENTUKAN M PLUS.I DAN M PLUS.O')
 @endsection
 
 @section('title')
-    LAPORAN PEMBENTUKAN M PLUS.I DAN M PLUS.O
+    @lang('LAPORAN PEMBENTUKAN M PLUS.I DAN M PLUS.O')
 @endsection
 
 @section('subtitle')
-    Periode : {{date('m-Y', strtotime($periode)) }}
+    @lang('Periode : '){{date('m-Y', strtotime($periode)) }}
 @endsection
 
 @section('content')
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr style="text-align: center;">
-            <th rowspan="3" style="width: 10px">NO</th>
-            <th colspan="2" rowspan="1">-----------PLU-----------</th>
-            <th rowspan="3" style="width: 90px">DESKRIPSI</th>
-            <th colspan="2" rowspan="1">BULAN SEBELUMNYA</th>
-            <th colspan="4" rowspan="1">----------------BULAN BERJALAN----------------</th>
-            <th rowspan="3" style="text-align: right; width: 40px">AVG <br> PB <br> OMI</th>
-            <th rowspan="3" style="width: 30px">TAG <br> IGR</th>
-            <th rowspan="3" style="width: 30px">TAG <br> IDM</th>
-            <th rowspan="3" style="text-align: right; width: 30px">QTY <br> Frac <br> IGR</th>
-            <th rowspan="3" style="text-align: right; width: 40px">S/L <br> Supp <br>(%)</th>
-            <th colspan="2" rowspan="1" style="text-align: right">MINOR/FRAC</th>
-            <th rowspan="3" style="width: 50px">NAIK/<br>TURUN <br> MINOR</th>
-            <th rowspan="3" style="width: 50px">KETERANGAN</th>
+            <th rowspan="3" style="width: 10px">@lang('NO')</th>
+            <th colspan="2" rowspan="1">@lang('-----------PLU-----------')</th>
+            <th rowspan="3" style="width: 90px">@lang('DESKRIPSI)</th>
+            <th colspan="2" rowspan="1">@lang('BULAN SEBELUMNYA)</th>
+            <th colspan="4" rowspan="1">@lang('----------------BULAN BERJALAN----------------')</th>
+            <th rowspan="3" style="text-align: right; width: 40px">@lang('AVG ')<br>@lang(' PB ')<br>@lang(' OMI')</th>
+            <th rowspan="3" style="width: 30px">@lang('TAG ')<br>@lang(' IGR')</th>
+            <th rowspan="3" style="width: 30px">@lang('TAG ')<br>@lang(' IDM')</th>
+            <th rowspan="3" style="text-align: right; width: 30px">@lang('QTY ')<br>@lang(' Frac ')<br>@lang(' IGR')</th>
+            <th rowspan="3" style="text-align: right; width: 40px">@lang('S/L ')<br>@lang(' Supp ')<br>(%)</th>
+            <th colspan="2" rowspan="1" style="text-align: right">@lang('MINOR/FRAC')</th>
+            <th rowspan="3" style="width: 50px">@lang('NAIK/')<br>@lang('TURUN ')<br>@lang(' MINOR')</th>
+            <th rowspan="3" style="width: 50px">@lang('KETERANGAN')</th>
             <th rowspan="3" style="text-align: right;width: 20px">n*</th>
-            <th colspan="2" rowspan="1">-----QTY M PLUS.I-----</th>
-            <th colspan="2" rowspan="1">-----QTY M PLUS.0-----</th>
+            <th colspan="2" rowspan="1">@lang('-----QTY M PLUS.I-----')</th>
+            <th colspan="2" rowspan="1">@lang('-----QTY M PLUS.0-----')</th>
         </tr>
         <tr>
-            <th rowspan="2" style="width: 20px">IDM</th>
-            <th rowspan="2" style="width: 20px">IGR</th>
-            <th rowspan="2" style="width: 30px;text-align: right">QTY KPH <br> MEAN</th>
-            <th rowspan="2" style="width: 30px;text-align: right">QTY <br> MINOR</th>
-            <th colspan="3" rowspan="1" style="text-align: center">------------QTY KPH MEAN------------</th>
-            <th rowspan="2" style="text-align: right; width: 30px">QTY <br> MINOR</th>
-            <th rowspan="2" style="text-align: right; width: 30px">B-2</th>
-            <th rowspan="2" style="text-align: right; width: 30px">B-1</th>
-            <th rowspan="2" style="text-align: right; width: 50px">EXISTING</th>
-            <th rowspan="2" style="text-align: right; width: 50px">USULAN</th>
-            <th rowspan="2" style="text-align: right; width: 50px">EXISTING</th>
-            <th rowspan="2" style="text-align: right; width: 50px">USULAN</th>
+            <th rowspan="2" style="width: 20px">@lang('IDM')</th>
+            <th rowspan="2" style="width: 20px">@lang('IGR')</th>
+            <th rowspan="2" style="width: 30px;text-align: right">@lang('QTY KPH ')<br>@lang(' MEAN')</th>
+            <th rowspan="2" style="width: 30px;text-align: right">@lang('QTY ')<br>@lang(' MINOR')</th>
+            <th colspan="3" rowspan="1" style="text-align: center">@lang('------------QTY KPH MEAN------------')</th>
+            <th rowspan="2" style="text-align: right; width: 30px">@lang('QTY ')<br>@lang(' MINOR')</th>
+            <th rowspan="2" style="text-align: right; width: 30px">@lang('B-2')</th>
+            <th rowspan="2" style="text-align: right; width: 30px">@lang('B-1')</th>
+            <th rowspan="2" style="text-align: right; width: 50px">@lang('EXISTING')</th>
+            <th rowspan="2" style="text-align: right; width: 50px">@lang('USULAN')</th>
+            <th rowspan="2" style="text-align: right; width: 50px">@lang('EXISTING')</th>
+            <th rowspan="2" style="text-align: right; width: 50px">@lang('USULAN')</th>
         </tr>
         <tr>
             <th style="width: 50px;text-align: right">1x</th>
@@ -94,7 +94,7 @@
         <tfoot>
         </tfoot>
     </table>
-    <p><strong>*n merupakan koefisien yang besarannya tergantung dari tingkat service level Supplier untuk PLU tsb</strong></p>
+    <p><strong>@lang('*n merupakan koefisien yang besarannya tergantung dari tingkat service level Supplier untuk PLU tsb')</strong></p>
 @endsection
 
 

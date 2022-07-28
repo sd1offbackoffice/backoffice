@@ -23,7 +23,7 @@ class ReorderPBGOController extends Controller
             ->first();
 
         if(($data->isi_toko != 'Y') || (Carbon::now() < Carbon::createFromFormat('d/m/Y',$data->per_awal_reorder) || Carbon::now() > Carbon::createFromFormat('d/m/Y',$data->per_akhir_reorder))){
-            $message = 'Program tidak bisa dijalankan, sudah lewat masa GO!';
+            $message = (__('Program tidak bisa dijalankan, sudah lewat masa GO!'));
         }
         else $message = null;
 
@@ -42,7 +42,7 @@ class ReorderPBGOController extends Controller
 
         if($cek->isi_toko != 'Y' || ($cek->isi_toko == 'Y' && ($now < $cek->per_awal_reorder || $now > $cek->per_akhir_reorder))){
             $status = 'error';
-            $title = 'Program tidak bisa dijalankan, sudah lewat masa GO!';
+            $title = (__('Program tidak bisa dijalankan, sudah lewat masa GO!'));
             $message = '';
             return compact(['status','title','message']);
         }
@@ -101,7 +101,7 @@ class ReorderPBGOController extends Controller
 
         if(count($pb) == 0){
             $status = 'error';
-            $title = 'Gagal melakukan proses reorder GO!';
+            $title = (__('Gagal melakukan proses reorder GO!'));
             $message = 'Data tidak ditemukan!';
             return compact(['status','title','message']);
         }
@@ -361,7 +361,7 @@ class ReorderPBGOController extends Controller
         }
         catch (QueryException $e){
             DB::connection(Session::get('connection'))->rollBack();
-            $title = 'Gagal melakukan proses reorder GO!';
+            $title = (__('Gagal melakukan proses reorder GO!'));
             $status = 'error';
             $message = $e->getMessage();
             return compact(['status','title','message']);
@@ -376,7 +376,7 @@ class ReorderPBGOController extends Controller
 
         if(!$pbprint){
             $status = 'error';
-            $message = 'Tidak ada yang dapat diproses!';
+            $message = (__('Tidak ada yang dapat diproses!'));
             return compact(['status','message']);
         }
         else{
@@ -494,7 +494,7 @@ class ReorderPBGOController extends Controller
         }
         catch(QueryException $e){
             DB::connection(Session::get('connection'))->rollBack();
-            $title = 'Gagal melakukan proses reorder GO!';
+            $title = (__('Gagal melakukan proses reorder GO!'));
             $status = 'error';
             $message = $e->getMessage();
             return compact(['status','title','message']);
@@ -513,8 +513,8 @@ class ReorderPBGOController extends Controller
         if($oke == true){
 //            DB::connection(Session::get('connection'))->commit();
             $status = 'success';
-            $title = 'Berhasil melakukan reorder GO!';
-            $message = 'No. Dokumen ini adalah : '.$NOPB;
+            $title = (__('Berhasil melakukan reorder GO!'));
+            $message = (__('No. Dokumen ini adalah : ')).$NOPB;
 
             if(count($temp_tolak2) > 0)
                 $tolak2 = true;
@@ -579,7 +579,7 @@ class ReorderPBGOController extends Controller
 
         if($cek->isi_toko != 'Y' || ($cek->isi_toko == 'Y' && ($now < $cek->per_awal_reorder || $now > $cek->per_akhir_reorder))){
             $status = 'error';
-            $title = 'Program tidak bisa dijalankan, sudah lewat masa GO!';
+            $title = (__('Program tidak bisa dijalankan, sudah lewat masa GO!'));
             $message = '';
             return compact(['status','title','message']);
         }
@@ -631,8 +631,8 @@ class ReorderPBGOController extends Controller
 
         if(count($pb) == 0){
             $status = 'error';
-            $title = 'Gagal melakukan proses reorder GO!';
-            $message = 'Data tidak ditemukan!';
+            $title = (__('Gagal melakukan proses reorder GO!'));
+            $message = (__('Data tidak ditemukan!'));
             return compact(['status','title','message']);
         }
 
@@ -891,7 +891,7 @@ class ReorderPBGOController extends Controller
         }
         catch (QueryException $e){
             DB::connection(Session::get('connection'))->rollBack();
-            $title = 'Gagal melakukan proses reorder GO!';
+            $title = (__('Gagal melakukan proses reorder GO!'));
             $status = 'error';
             $message = $e->getMessage();
             return compact(['status','title','message']);
@@ -912,7 +912,7 @@ class ReorderPBGOController extends Controller
 
         if(!$pbprint){
             $status = 'error';
-            $message = 'Tidak ada yang dapat diproses!';
+            $message = (__('Tidak ada yang dapat diproses!'));
             return compact(['status','message']);
         }
         else{
@@ -1030,7 +1030,7 @@ class ReorderPBGOController extends Controller
         }
         catch(QueryException $e){
             DB::connection(Session::get('connection'))->rollBack();
-            $title = 'Gagal melakukan proses reorder GO!';
+            $title = (__('Gagal melakukan proses reorder GO!'));
             $status = 'error';
             $message = $e->getMessage();
             return compact(['status','title','message']);
@@ -1049,7 +1049,7 @@ class ReorderPBGOController extends Controller
         if($oke == true){
 //            DB::connection(Session::get('connection'))->commit();
             $status = 'success';
-            $title = 'Berhasil melakukan reorder GO!';
+            $title = (__('Berhasil melakukan reorder GO!'));
             $message = 'No. Dokumen ini adalah : '.$NOPB;
 
             if(count($temp_tolak2) > 0)
@@ -1071,10 +1071,10 @@ class ReorderPBGOController extends Controller
         $nopb = $request->nopb;
 
         if($recid == 2){
-            $title = '** DAFTAR TOLAKAN P.B. YANG DIBAWAH MINIMUM ORDER **';
+            $title = (__('** DAFTAR TOLAKAN P.B. YANG DIBAWAH MINIMUM ORDER **'));
         }
         else if($recid == 3){
-            $title = '** DAFTAR TOLAKAN P.B. YANG DIBAWAH MINIMUM RUPIAH/CARTON **';
+            $title = (__('** DAFTAR TOLAKAN P.B. YANG DIBAWAH MINIMUM RUPIAH/CARTON **'));
         }
 
         $perusahaan = DB::connection(Session::get('connection'))->table('tbmaster_perusahaan')
@@ -1133,7 +1133,7 @@ class ReorderPBGOController extends Controller
 
         // Render the HTML as PDF
 
-        return $dompdf->stream('Laporan Tolakan PB ' . $nopb . '.pdf');
+        return $dompdf->stream((__('Laporan Tolakan PB ')) . $nopb . '.pdf');
     }
 
     public function nvl($value, $defaultvalue){

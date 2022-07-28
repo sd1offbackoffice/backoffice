@@ -3,32 +3,32 @@
 @section('table_font_size','7 px')
 
 @section('page_title')
-    LISTING ITEM(S) YANG DAPAT DIBENTUK PB MANUAL DI TOKO IGR
+    @lang('LISTING ITEM(S) YANG DAPAT DIBENTUK PB MANUAL DI TOKO IGR')
 @endsection
 
 @section('title')
-    LISTING ITEM(S) YANG DAPAT DIBENTUK PB MANUAL DI TOKO IGR
+    @lang('LISTING ITEM(S) YANG DAPAT DIBENTUK PB MANUAL DI TOKO IGR')  
 @endsection
 
 @section('subtitle')
-    Tgl : {{ $tgl1 }} s/d {{ $tgl2 }}
+    @lang('Tgl : '){{ $tgl1 }} @lang('s/d') {{ $tgl2 }}
 @endsection
 
 @section('content')
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th rowspan="2" class="tengah">No.</th>
-            <th colspan="2" class="center">------------------------------------------- BARANG DAGANGAN -------------------------------------------</th>
-            <th colspan="2" class="center">--------------- PERIODE BERLAKU ---------------</th>
-            <th rowspan="2" class="tengah">Tgl. Input</th>
-            <th rowspan="2" class="tengah">User ID</th>
+            <th rowspan="2" class="tengah">@lang('No.')</th>
+            <th colspan="2" class="center">@lang('------------------------------------------- BARANG DAGANGAN -------------------------------------------')</th>
+            <th colspan="2" class="center">@lang('--------------- PERIODE BERLAKU ---------------')</th>
+            <th rowspan="2" class="tengah">@lang('Tgl. Input')</th>
+            <th rowspan="2" class="tengah">@lang('User ID')</th>
         </tr>
         <tr>
-            <th class="center">PLU</th>
-            <th class="center">Deskripsi</th>
-            <th class="center">Tgl. Awal</th>
-            <th class="center">Tgl. Akhir</th>
+            <th class="center">@lang('PLU')</th>
+            <th class="center">@lang('Deskripsi')</th>
+            <th class="center">@lang('Tgl. Awal')</th>
+            <th class="center">@lang('Tgl. Akhir')</th>
         </tr>
         </thead>
         <tbody>

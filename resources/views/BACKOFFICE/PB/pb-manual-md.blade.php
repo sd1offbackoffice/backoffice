@@ -55,10 +55,10 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Inputan Draft PB Manual</legend>
+                    <legend  class="w-auto ml-5">@lang('Inputan Draft PB Manual')</legend>
                     <div class="card-body">
                         <div class="row form-group">
-                            <label class="col-sm-2 text-right col-form-label pl-0">Nomor Draft PB</label>
+                            <label class="col-sm-2 text-right col-form-label pl-0">@lang('Nomor Draft PB')</label>
                             <div class="buttonInside">
                                 <input type="text" class="form-control" autocomplete="off" maxlength="" id="draftNo">
                                 <button type="button" class="btn btn-primary btn-lov p-0" data-toggle="modal" data-target="#m_pbDraftList">
@@ -69,57 +69,57 @@
                             <input type="text" class="col-sm-3 form-control text-right" id="info" disabled>
                         </div>
                         <div class="row form-group">
-                            <label class="col-sm-2 text-right col-form-label pl-0">Tgl Draft PB</label>
+                            <label class="col-sm-2 text-right col-form-label pl-0">@lang('Tgl Draft PB')</label>
                             <input type="text" class="col-sm-1 form-control text-right" id="draftDate" disabled>
                         </div>
                         <div class="row form-group">
-                            <label class="col-sm-2 text-right col-form-label pl-0">Keterangan</label>
+                            <label class="col-sm-2 text-right col-form-label pl-0">@lang('Keterangan')</label>
                             <input type="text" class="col-sm-3 form-control text-left" id="draftInfo">
                         </div>
                         <div class="row form-group">
-                            <label class="col-sm-2 text-right col-form-label pl-0">Autorisasi Tertinggi</label>
+                            <label class="col-sm-2 text-right col-form-label pl-0">@lang('Autorisasi Tertinggi')</label>
                             <input type="text" class="col-sm-2 form-control text-left" id="draftHighestAuth" disabled>
                             <div class="col-sm"></div>
                             <div class="col-sm-2">
-                                <button class="col btn btn-danger" onclick="deletePBDraft()">DELETE DRAFT PB</button>
+                                <button class="col btn btn-danger" onclick="deletePBDraft()">@lang('DELETE DRAFT PB')</button>
                             </div>
                             <div class="col-sm-2">
-                                <button class="col btn btn-success" onclick="checkProcessDraft()">PROSES PB</button>
+                                <button class="col btn btn-success" onclick="checkProcessDraft()">@lang('PROSES PB')</button>
                             </div>
                             <div class="col-sm-2">
-                                <button class="col btn btn-primary" onclick="showField('master')">BACK</button>
+                                <button class="col btn btn-primary" onclick="showField('master')">@lang('BACK')</button>
                             </div>
                         </div>
                         <fieldset class="card border-secondary">
-                            <legend  class="w-auto ml-5">Detail Draft PB Manual</legend>
+                            <legend  class="w-auto ml-5">@lang('Detail Draft PB Manual')</legend>
                             <div class="card-body">
                                 <div class="row form-group">
                                     <div class="col">
                                         <table class="table table-sm mb-0 text-center" id="pbDraftTable">
                                             <thead class="thColor">
                                             <tr>
-                                                <th rowspan="2">PRDCD</th>
-                                                <th rowspan="2" class="text-right">MINOR QTY<br>in PCS</th>
-                                                <th rowspan="2" class="text-right">MINOR QTY<br>in CTN</th>
-                                                <th rowspan="2" class="text-right">MINOR RPH<br>PER SUPP</th>
-                                                <th rowspan="2" class="text-right">MAX<br>PALET</th>
-                                                <th rowspan="2" class="text-right">CTN</th>
-                                                <th rowspan="2" class="text-right">PCS</th>
-                                                <th rowspan="2" class="text-right">Hrg. Satuan</th>
-                                                <th colspan="2" class="text-right">DICS. I</th>
-                                                <th colspan="2" class="text-right">DICS. II</th>
-                                                <th rowspan="2" class="text-right">BNS 1</th>
-                                                <th rowspan="2" class="text-right">BNS 2</th>
-                                                <th rowspan="2" class="text-right">NILAI</th>
-                                                <th rowspan="2" class="text-right">PPN</th>
-                                                <th rowspan="2" class="text-right">PPNBM</th>
-                                                <th rowspan="2" class="text-right">BOTOL</th>
-                                                <th rowspan="2" class="text-right">TOTAL</th>
+                                                <th rowspan="2">@lang('PRDCD')</th>
+                                                <th rowspan="2" class="text-right">@lang('MINOR QTY')<br>@lang('in PCS')</th>
+                                                <th rowspan="2" class="text-right">@lang('MINOR QTY')<br>@lang('in CTN')</th>
+                                                <th rowspan="2" class="text-right">@lang('MINOR RPH')<br>@lang('PER SUPP')</th>
+                                                <th rowspan="2" class="text-right">@lang('MAX')<br>@lang('PALET')</th>
+                                                <th rowspan="2" class="text-right">@lang('CTN')</th>
+                                                <th rowspan="2" class="text-right">@lang('PCS')</th>
+                                                <th rowspan="2" class="text-right">@lang('Hrg. Satuan')</th>
+                                                <th colspan="2" class="text-right">@lang('DICS. I')</th>
+                                                <th colspan="2" class="text-right">@lang('DICS. II')</th>
+                                                <th rowspan="2" class="text-right">@lang('BNS 1')</th>
+                                                <th rowspan="2" class="text-right">@lang('BNS 2')</th>
+                                                <th rowspan="2" class="text-right">@lang('NILAI')</th>
+                                                <th rowspan="2" class="text-right">@lang('PPN')</th>
+                                                <th rowspan="2" class="text-right">@lang('PPNBM')</th>
+                                                <th rowspan="2" class="text-right">@lang('BOTOL')</th>
+                                                <th rowspan="2" class="text-right">@lang('TOTAL')</th>
                                             </tr>
                                             <tr>
-                                                <th class="text-right">RPH</th>
+                                                <th class="text-right">@lang('RPH')</th>
                                                 <th class="text-right">%</th>
-                                                <th class="text-right">RPH</th>
+                                                <th class="text-right">@lang('RPH')</th>
                                                 <th class="text-right">%</th>
                                             </tr>
                                             </thead>
@@ -133,18 +133,18 @@
                         </fieldset>
                         <div id="draftDetail">
                             <div class="row form-group mt-3">
-                                <label class="col-sm-1 text-right col-form-label pl-0">DESKRIPSI</label>
+                                <label class="col-sm-1 text-right col-form-label pl-0">@lang('DESKRIPSI')</label>
                                 <input type="text" class="col-sm-3 form-control text-left" id="draftDesc" disabled>
                                 <input type="text" class="col-sm-1 form-control text-left" id="draftUnit" disabled>
                                 <div class="col-sm"></div>
-                                <label class="col-sm-1 text-center col-form-label pl-0">OMI</label>
-                                <label class="col-sm-1 text-center col-form-label pl-0">IDM</label>
-                                <label class="col-sm-1 text-center col-form-label pl-0">HARGA JUAL</label>
-                                <label class="col-sm-1 text-center col-form-label pl-0">PKMT (PCS)</label>
-                                <label class="col-sm-1 text-center col-form-label pl-0">STOCK (PCS)</label>
+                                <label class="col-sm-1 text-center col-form-label pl-0">@lang('OMI')</label>
+                                <label class="col-sm-1 text-center col-form-label pl-0">@lang('IDM')</label>
+                                <label class="col-sm-1 text-center col-form-label pl-0">@lang('HARGA JUAL')</label>
+                                <label class="col-sm-1 text-center col-form-label pl-0">@lang('PKMT (PCS)')</label>
+                                <label class="col-sm-1 text-center col-form-label pl-0">@lang('STOCK (PCS)')</label>
                             </div>
                             <div class="row form-group">
-                                <label class="col-sm-1 text-right col-form-label pl-0">SUPPLIER</label>
+                                <label class="col-sm-1 text-right col-form-label pl-0">@lang('SUPPLIER')</label>
                                 <input type="text" class="col-sm-1 form-control text-left" id="draftSupplierCode" disabled>
                                 <input type="text" class="col-sm-3 form-control text-left" id="draftSupplierName" disabled>
                                 <div class="col-sm"></div>
@@ -157,15 +157,15 @@
                             <div class="row form-group">
                                 <div class="col-sm-4">
                                     <div class="col-sm-6">
-                                        <button id="btnSaveDraft" class="col btn btn-success" onclick="saveDraft()">SIMPAN DATA</button>
+                                        <button id="btnSaveDraft" class="col btn btn-success" onclick="saveDraft()">@lang('SIMPAN DATA')</button>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="row form-group">
-                                        <label class="col-sm-3 text-right col-form-label pl-0">BONUS 1 :</label>
-                                        <label class="col-sm-2 text-left col-form-label pl-0">Masa berlaku</label>
+                                        <label class="col-sm-3 text-right col-form-label pl-0">@lang('BONUS 1 :')</label>
+                                        <label class="col-sm-2 text-left col-form-label pl-0">@lang('Masa berlaku')</label>
                                         <input type="text" class="col-sm-3 form-control text-center" id="bonus1date1" disabled>
-                                        <label class="col-sm-1 text-center col-form-label pl-0">s/d</label>
+                                        <label class="col-sm-1 text-center col-form-label pl-0">@lang('s/d')</label>
                                         <input type="text" class="col-sm-3 form-control text-center" id="bonus1date2" disabled>
                                     </div>
                                     <div class="row form-group">
@@ -173,17 +173,17 @@
                                         <input type="text" class="col-sm form-control text-center" id="bonus1info" disabled>
                                     </div>
                                     <div class="row form-group">
-                                        <label class="col-sm-3 text-center col-form-label pl-0">Flag Bonus</label>
-                                        <label class="col-sm-3 text-center col-form-label pl-0">Ketentuan</label>
-                                        <label class="col-sm-3 text-center col-form-label pl-0">Qty Pembelian</label>
-                                        <label class="col-sm-3 text-center col-form-label pl-0">Qty Bonus</label>
+                                        <label class="col-sm-3 text-center col-form-label pl-0">@lang('Flag Bonus')</label>
+                                        <label class="col-sm-3 text-center col-form-label pl-0">@lang('Ketentuan')</label>
+                                        <label class="col-sm-3 text-center col-form-label pl-0">@lang('Qty Pembelian')</label>
+                                        <label class="col-sm-3 text-center col-form-label pl-0">@lang('Qty Bonus')</label>
                                     </div>
                                     @for($i=0;$i<6;$i++)
                                         <div class="row form-group">
                                             <div class="col-sm-1"></div>
                                             <input type="text" class="col-sm-1 form-control text-center" id="bonus1flag{{ $i+1 }}" disabled>
                                             <div class="col-sm-1"></div>
-                                            <label class="col-sm-3 text-center col-form-label pl-0">Ke - {{ $i+1 }}</label>
+                                            <label class="col-sm-3 text-center col-form-label pl-0">@lang('Ke - '){{ $i+1 }}</label>
                                             <input type="text" class="col-sm-3 form-control text-right" id="bonus1qtybeli{{ $i+1 }}" disabled>
                                             <input type="text" class="col-sm-3 form-control text-right" id="bonus1qtybonus{{ $i+1 }}" disabled>
                                         </div>
@@ -191,10 +191,10 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="row form-group">
-                                        <label class="col-sm-3 text-right col-form-label pl-0">BONUS 2 :</label>
-                                        <label class="col-sm-2 text-left col-form-label pl-0">Masa berlaku</label>
+                                        <label class="col-sm-3 text-right col-form-label pl-0">@lang('BONUS 2 :')</label>
+                                        <label class="col-sm-2 text-left col-form-label pl-0">@lang('Masa berlaku')</label>
                                         <input type="text" class="col-sm-3 form-control text-center" id="bonus2date1" disabled>
-                                        <label class="col-sm-1 text-center col-form-label pl-0">s/d</label>
+                                        <label class="col-sm-1 text-center col-form-label pl-0">@lang('s/d')</label>
                                         <input type="text" class="col-sm-3 form-control text-center" id="bonus2date2" disabled>
                                     </div>
                                     <div class="row form-group">
@@ -202,17 +202,17 @@
                                         <input type="text" class="col-sm form-control text-center" id="bonus2info" disabled>
                                     </div>
                                     <div class="row form-group">
-                                        <label class="col-sm-3 text-center col-form-label pl-0">Flag Bonus</label>
-                                        <label class="col-sm-3 text-center col-form-label pl-0">Ketentuan</label>
-                                        <label class="col-sm-3 text-center col-form-label pl-0">Qty Pembelian</label>
-                                        <label class="col-sm-3 text-center col-form-label pl-0">Qty Bonus</label>
+                                        <label class="col-sm-3 text-center col-form-label pl-0">@lang('Flag Bonus')</label>
+                                        <label class="col-sm-3 text-center col-form-label pl-0">@lang('Ketentuan')</label>
+                                        <label class="col-sm-3 text-center col-form-label pl-0">@lang('Qty Pembelian')</label>
+                                        <label class="col-sm-3 text-center col-form-label pl-0">@lang('Qty Bonus')</label>
                                     </div>
                                     @for($i=0;$i<3;$i++)
                                         <div class="row form-group">
                                             <div class="col-sm-1"></div>
                                             <input type="text" class="col-sm-1 form-control text-center" id="bonus2flag{{ $i+1 }}" disabled>
                                             <div class="col-sm-1"></div>
-                                            <label class="col-sm-3 text-center col-form-label pl-0">Ke - {{ $i+1 }}</label>
+                                            <label class="col-sm-3 text-center col-form-label pl-0">@lang('Ke - '){{ $i+1 }}</label>
                                             <input type="text" class="col-sm-3 form-control text-right" id="bonus2qtybeli{{ $i+1 }}" disabled>
                                             <input type="text" class="col-sm-3 form-control text-right" id="bonus2qtybonus{{ $i+1 }}" disabled>
                                         </div>
@@ -230,7 +230,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">LOV PLU</h5>
+                    <h5 class="modal-title">@lang('LOV PLU')</h5>
                 </div>
                 <div class="modal-body">
                     <div class="container">
@@ -239,8 +239,8 @@
                                 <table class="table table-striped table-bordered" id="productListTable">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Deskripsi</th>
-                                        <th>PLU</th>
+                                        <th>@lang('Deskripsi')</th>
+                                        <th>@lang('PLU')</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -260,7 +260,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">LOV PLU</h5>
+                    <h5 class="modal-title">@lang('LOV PLU')</h5>
                 </div>
                 <div class="modal-body">
                     <div class="container">
@@ -269,8 +269,8 @@
                                 <table class="table table-striped table-bordered" id="draftProductListTable">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>Deskripsi</th>
-                                        <th>PLU</th>
+                                        <th>@lang('Deskripsi')</th>
+                                        <th>@lang('PLU')</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -298,12 +298,12 @@
                                 <table class="table table-striped table-bordered" id="pbDraftListTable">
                                     <thead class="theadDataTables">
                                     <tr>
-                                        <th>No Draft</th>
-                                        <th>Tgl Draft</th>
-                                        <th>Keterangan</th>
-                                        <th>No PB</th>
-                                        <th>Tgl PB</th>
-                                        <th>Approval</th>
+                                        <th>@lang('No Draft')</th>
+                                        <th>@lang('Tgl Draft')</th>
+                                        <th>@lang('Keterangan')</th>
+                                        <th>@lang('No PB')</th>
+                                        <th>@lang('Tgl PB')</th>
+                                        <th>@lang('Approval')</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -325,7 +325,7 @@
                 <div class="modal-body">
                     <div class="container">
                         <div class="form-group row text-center">
-                            <label for="i_username" class="col-sm-12 text-center col-form-label">APPROVAL PB SESUAI PKM - OTP</label>
+                            <label for="i_username" class="col-sm-12 text-center col-form-label">@lang('APPROVAL PB SESUAI PKM - OTP')</label>
                         </div>
                         <div class="form-group row text-center">
                             <div class="col-sm-1"></div>
@@ -344,7 +344,7 @@
                         <div class="form-group row text-center">
                             <div class="col-sm-2"></div>
                             <div class="col-sm-4">
-                                <button id="btnSendOTP" class="col btn btn-primary" onclick="sendOTP()">KIRIM OTP</button>
+                                <button id="btnSendOTP" class="col btn btn-primary" onclick="sendOTP()">@lang('KIRIM OTP')</button>
                             </div>
                             <div class="col-sm-4">
                                 <input type="password" class="form-control text-center" id="appOTP" placeholder="OTP">
@@ -357,10 +357,10 @@
                             <div class="form-group row text-center">
                                 <div class="col-sm"></div>
                                 <div class="col-sm-4">
-                                    <button id="btnProcessDraft()" class="btn btn-danger col" onclick="processDraft()">OK</button>
+                                    <button id="btnProcessDraft()" class="btn btn-danger col" onclick="processDraft()">@lang('OK')</button>
                                 </div>
                                 <div class="col-sm-4">
-                                    <button id="btn-hapus-ok" class="btn btn-secondary col" data-dismiss="modal">BACK</button>
+                                    <button id="btn-hapus-ok" class="btn btn-secondary col" data-dismiss="modal">@lang('BACK')</button>
                                 </div>
                             </div>
                         </div>
@@ -760,7 +760,7 @@
 
                 if(count == 2){
                     swal({
-                        title: 'PLU '+convertPlu($('#pb-product-row-'+row).find('.plu').val())+' sudah ada!',
+                        title: 'PLU '+convertPlu($('#pb-product-row-'+row).find('.plu').val())+"{{__(' sudah ada!')}}",
                         icon: 'warning'
                     }).then(() => {
                         $('#pb-product-row-'+row).find('.plu').select();
@@ -815,7 +815,7 @@
 
         function savePBData(){
             swal({
-                title: 'Yakin ingin menyimpan data?',
+                title: "{{__('Yakin ingin menyimpan data?')}}",
                 icon: 'warning',
                 dangerMode: true,
                 buttons: true
@@ -1078,7 +1078,7 @@
             if(event.which == 13){
                 if(!$(this).val()){
                     swal({
-                        title: 'Kolom keterangan tidak boleh kosong!',
+                        title: "{{__('Kolom keterangan tidak boleh kosong!')}}",
                         icon: 'warning',
                     }).then(() => {
                         $('#draftInfo').select();
@@ -1180,14 +1180,14 @@
 
                 if(d.hgb_tglmulaibonus01){
                     if(d.hgb_flagkelipatanbonus01 == 'Y')
-                        $('#bonus1info').val('BERLAKU KELIPATAN');
-                    else $('#bonus1info').val('TIDAK BERLAKU KELIPATAN');
+                        $('#bonus1info').val("{{__('BERLAKU KELIPATAN')}}");
+                    else $('#bonus1info').val("{{__('TIDAK BERLAKU KELIPATAN')}}");
                 }
 
                 if(d.hgb_tglmulaibonus02){
                     if(d.hgb_flagkelipatanbonus02 == 'Y')
-                        $('#bonus2info').val('BERLAKU KELIPATAN');
-                    else $('#bonus2info').val('TIDAK BERLAKU KELIPATAN');
+                        $('#bonus2info').val("{{__('BERLAKU KELIPATAN')}}");
+                    else $('#bonus2info').val("{{__('TIDAK BERLAKU KELIPATAN')}}");
                 }
 
                 $('#bonus1date1').val(d.hgb_tglmulaibonus01);
@@ -1259,7 +1259,7 @@
         function deletePBDraft(){
             if(!$('#draftNo').val()){
                 swal({
-                    title: 'Nomor Draft PB tidak boleh kosong!',
+                    title: "{{__('Nomor Draft PB tidak boleh kosong!')}}",
                     icon: 'warning'
                 }).then(() => {
                     $('#draftNo').select();
@@ -1267,7 +1267,7 @@
             }
             else{
                 swal({
-                    title: 'Yakin ingin menghapus data?',
+                    title: "{{__('Yakin ingin menghapus data?')}}",
                     icon: 'warning',
                     dangerMode: true,
                     buttons: true
@@ -1323,7 +1323,7 @@
 
                 if(count == 2){
                     swal({
-                        title: 'PLU '+convertPlu($('#pb-draft-row-'+row).find('.plu').val())+' sudah ada!',
+                        title: 'PLU '+convertPlu($('#pb-draft-row-'+row).find('.plu').val())+"{{__(' sudah ada!')}}",
                         icon: 'warning'
                     }).then(() => {
                         $('#pb-draft-row-'+row).find('.plu').select();
@@ -1415,7 +1415,7 @@
                 < nvl(nvl(data.prd_minorder,0),nvl(data.prd_isibeli,1)))){
             // if(false){
                 swal({
-                    title: 'QTYB + QTYK < MINOR!',
+                    title: "{{__('QTYB + QTYK < MINOR!')}}",
                     icon: 'warning'
                 }).then(() => {
                     tr.find('.'+field).select();
@@ -1462,7 +1462,7 @@
                             if(nvl(data.pdm_recordid,9) != 2){
                                 if(tr.find('.qtyctn').val() < 0){
                                     swal({
-                                        title: 'Quantity Carton < 0',
+                                        title: "{{__('Quantity Carton < 0')}}",
                                         icon: 'warning'
                                     }).then(() => {
                                         tr.find('.qtyctn').select();
@@ -1590,7 +1590,7 @@
 
             if(tempDraft.length == 0){
                 swal({
-                    title: 'Tidak ada data yang akan disimpan!',
+                    title: "{{__('Tidak ada data yang akan disimpan!')}}",
                     icon: 'error'
                 }).then(() => {
                     $('#draftNo').select();
@@ -1598,7 +1598,7 @@
             }
             else{
                 swal({
-                    title: 'Yakin ingin menyimpan data draft?',
+                    title: "{{__('Yakin ingin menyimpan data draft?')}}",
                     icon: 'warning',
                     dangerMode: true,
                     buttons: true
@@ -1649,7 +1649,7 @@
         function checkProcessDraft(){
             if(!$('#draftNo').val()){
                 swal({
-                    title: 'Nomor Draft PB tidak boleh kosong!',
+                    title: "{{__('Nomor Draft PB tidak boleh kosong!')}}",
                     icon: 'warning',
                 }).then(() => {
                     $('#draftNo').select();
@@ -1657,7 +1657,7 @@
             }
             else{
                 swal({
-                    title: 'Yakin ingin proses Draft PB menjadi PB Manual?',
+                    title: "{{__('Yakin ingin proses Draft PB menjadi PB Manual?')}}",
                     icon: 'warning',
                     dangerMode: true,
                     buttons: true
@@ -1779,7 +1779,7 @@
         function processDraft(){
             if(!$('#appOTP').val()){
                 swal({
-                    title: 'Harap isi OTP!',
+                    title: "{{__('Harap isi OTP!')}}",
                     icon: 'warning'
                 }).then(() => {
                     $('#appOTP').select();

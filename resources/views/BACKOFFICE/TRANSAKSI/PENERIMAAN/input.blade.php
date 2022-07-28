@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','PENERIMAAN | INPUT')
+@section('title',(__('PENERIMAAN | INPUT')))
 @section('content')
 
 <div class="container" style="max-width: max-content;">
@@ -675,17 +675,17 @@
         <div class="modal-content">
             <div class="modal-body">
                 <div class="row align-items-center">
-                    <h4><span class="badge badge-success"> Jenis Penerimaan?</span></h4>
+                    <h4><span class="badge badge-success">@lang('Jenis Penerimaan?')</span></h4>
                 </div>
                 <div class="row">
                     <div class="col-sm">
-                        <button type="button" id="pembelianBtn" class="btn btn-primary btn-lg btn-block" onclick=setJenisPenerimaan(0) data-dismiss="modal">Pembelian</button>
+                        <button type="button" id="pembelianBtn" class="btn btn-primary btn-lg btn-block" onclick=setJenisPenerimaan(0) data-dismiss="modal">@lang('Pembelian')</button>
                     </div>
                     <div class="col-sm">
-                        <button type="button" id="lainlainBtn" class="btn btn-info btn-lg btn-block" onclick=setJenisPenerimaan(1) data-dismiss="modal">Lain-lain</button>
+                        <button type="button" id="lainlainBtn" class="btn btn-info btn-lg btn-block" onclick=setJenisPenerimaan(1) data-dismiss="modal">@lang('Lain-lain')</button>
                     </div>
                     <div class="col-sm">
-                        <button type="button" id="rteBtn" class="btn btn-warning btn-lg btn-block" onclick=setJenisPenerimaan(2) data-dismiss="modal">RTE</button>
+                        <button type="button" id="rteBtn" class="btn btn-warning btn-lg btn-block" onclick=setJenisPenerimaan(2) data-dismiss="modal">@lang('RTE')</button>
                     </div>
                 </div>
             </div>

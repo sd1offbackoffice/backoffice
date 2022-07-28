@@ -138,13 +138,13 @@ class PBManualMDController extends Controller
 
         if(!$data){
             return response()->json([
-                'message' => 'Data Master Produk tidak ada!'
+                'message' => (__('Data Master Produk tidak ada!'))
             ], 500);
         }
 
         if(in_array($data->prd_kodetag, ['H','A','G','I','B','Q','U','N','X','O','T'])){
             return response()->json([
-                'message' => 'Tag '.$data->prd_kodetag.', tidak bisa order!'
+                'message' => (__('Tag ')).$data->prd_kodetag.(__(', tidak bisa order!'))
             ], 500);
         }
 
@@ -158,7 +158,7 @@ class PBManualMDController extends Controller
 
         if($pb){
             return response()->json([
-                'message' => 'Data Master Produk PB sudah ada!'
+                'message' => (__('Data Master Produk PB sudah ada!'))
             ], 500);
         }
 
@@ -182,13 +182,13 @@ class PBManualMDController extends Controller
 
                 if(!$temp){
                     return response()->json([
-                        'message' => 'Data Master Produk '.$p.' tidak ada!'
+                        'message' => (__('Data Master Produk ')).$p.(__(' tidak ada!'))
                     ], 500);
                 }
 
                 if(in_array($temp->prd_kodetag, ['H','A','G','I','B','Q','U','N','X','O','T'])){
                     return response()->json([
-                        'message' => 'Tag '.$temp->prd_kodetag.', tidak bisa order!'
+                        'message' => (__('Tag ')).$temp->prd_kodetag.(__(', tidak bisa order!'))
                     ], 500);
                 }
             }
@@ -217,7 +217,7 @@ class PBManualMDController extends Controller
             DB::connection(Session::get('connection'))->commit();
 
             return response()->json([
-                'message' => 'Data PLU sudah disimpan!'
+                'message' => (__('Data PLU sudah disimpan!'))
             ], 200);
         }
         catch (\Exception $e){
@@ -506,13 +506,13 @@ class PBManualMDController extends Controller
             if($temp){
                 if($temp->phm_flagdoc == '2'){
                     return response()->json([
-                        'message' => 'Nomor Draft PB sudah menjadi PB Manual, Data tidak dapat dihapus!'
+                        'message' => (__('Nomor Draft PB sudah menjadi PB Manual, Data tidak dapat dihapus!'))
                     ], 500);
                 }
 
                 if($temp->phm_recordid == 1){
                     return response()->json([
-                        'message' => 'Nomor Draft PB sudah dihapus!'
+                        'message' => (__('Nomor Draft PB sudah dihapus!'))
                     ], 500);
                 }
 
@@ -533,12 +533,12 @@ class PBManualMDController extends Controller
                 DB::connection(Session::get('connection'))->commit();
 
                 return response()->json([
-                    'message' => 'Nomor Draft PB berhasil dihapus!'
+                    'message' => (__('Nomor Draft PB berhasil dihapus!'))
                 ], 200);
             }
             else{
                 return response()->json([
-                    'message' => 'Nomor Draft PB tidak ada!'
+                    'message' => (__('Nomor Draft PB tidak ada!'))
                 ], 500);
             }
         }
@@ -576,7 +576,7 @@ class PBManualMDController extends Controller
 
         if($plu == '0000000'){
             return response()->json([
-                'message' => 'Salah inputan PLU!'
+                'message' => (__('Salah inputan PLU!'))
             ], 500);
         }
 
@@ -591,7 +591,7 @@ class PBManualMDController extends Controller
 
         if(!$temp){
             return response()->json([
-                'message' => 'Data PLU '.$plu.' tidak sesuai dengan periode aktif!'
+                'message' => (__('Data PLU ')).$plu.(__(' tidak sesuai dengan periode aktif!'))
             ], 500);
         }
         else{
@@ -952,7 +952,7 @@ class PBManualMDController extends Controller
             DB::connection(Session::get('connection'))->commit();
 
             return response()->json([
-                'message' => 'Draft dengan nomor '.$draftNo.' berhasil disimpan!'
+                'message' => (__('Draft dengan nomor ')).$draftNo.(__(' berhasil disimpan!'))
             ], 200);
         }
         catch (\Exception $e){
@@ -979,18 +979,18 @@ class PBManualMDController extends Controller
         if($temp){
             if($temp->phm_flagdoc == '2'){
                 return response()->json([
-                    'message' => 'Nomor Draft PB sudah menjadi PB Manual!'
+                    'message' => (__('Nomor Draft PB sudah menjadi PB Manual!'))
                 ], 500);
             }
 
             if($temp->phm_recordid == '1'){
                 return response()->json([
-                    'message' => 'Nomor Draft PB sudah dihapus!'
+                    'message' => (__('Nomor Draft PB sudah dihapus!'))
                 ], 500);
             }
 
             return response()->json([
-                'message' => 'OK'
+                'message' => (__('OK'))
             ], 200);
         }
     }
@@ -1012,7 +1012,7 @@ class PBManualMDController extends Controller
 
             if(!$temp){
                 return response()->json([
-                    'message' => 'User dengan '.$auth.' tidak terdaftar!'
+                    'message' => (__('User dengan ')).$auth.(__(' tidak terdaftar!'))
                 ], 500);
             }
 
@@ -1025,7 +1025,7 @@ class PBManualMDController extends Controller
 
             if(!$temp){
                 return response()->json([
-                    'message' => 'User dengan '.$auth.' belum didaftarkan emailnya!'
+                    'message' => (__('User dengan ')).$auth.(__(' belum didaftarkan emailnya!'))
                 ], 500);
             }
 
@@ -1040,7 +1040,7 @@ class PBManualMDController extends Controller
             if($temp){
                 if(in_array($temp->email,['',' ',null])){
                     return response()->json([
-                        'message' => 'User pembuat belum didaftarkan emailnya!'
+                        'message' => (__('User pembuat belum didaftarkan emailnya!'))
                     ], 500);
                 }
                 else{
@@ -1058,19 +1058,19 @@ class PBManualMDController extends Controller
 
                     if($lok == 'FALSE'){
                         return response()->json([
-                            'message' => 'OTP dan data Draft PB tidak dapat di email - '.$v_message
+                            'message' => (__('OTP dan data Draft PB tidak dapat di email - ')).$v_message
                         ], 500);
                     }
                     else{
                         return response()->json([
-                            'message' => 'OTP dan data Draft PB sudah di email ke user terkait!'
+                            'message' => (__('OTP dan data Draft PB sudah di email ke user terkait!'))
                         ], 200);
                     }
                 }
             }
             else{
                 return response()->json([
-                    'message' => 'User pembuat tidak ada!'
+                    'message' => (__('User pembuat tidak ada!'))
                 ], 500);
             }
         }
@@ -1112,7 +1112,7 @@ class PBManualMDController extends Controller
 
                 if(!$temp){
                     return response()->json([
-                        'message' => 'User approval tidak sesuai / tidak ditemukan!'
+                        'message' => (__('User approval tidak sesuai / tidak ditemukan!'))
                     ], 500);
                 }
                 else{
@@ -1238,7 +1238,7 @@ class PBManualMDController extends Controller
 
                     $responses = [];
                     $responses[] = [
-                        'message' => 'Draft PB sudah menjadi PB Manual nomor '.$noPB,
+                        'message' => (__('Draft PB sudah menjadi PB Manual nomor ')).$noPB,
                         'status' => 'success'
                     ];
 
@@ -1249,13 +1249,13 @@ class PBManualMDController extends Controller
 
                     if($lok == 'FALSE'){
                         $responses[] = [
-                            'message' => 'Data Draft PB tidak dapat di email - '.$v_message,
+                            'message' => (__('Data Draft PB tidak dapat di email - ')).$v_message,
                             'status' => 'error'
                         ];
                     }
                     else{
                         $responses[] = [
-                            'message' => 'Data Draft PB sudah di email!',
+                            'message' => (__('Data Draft PB sudah di email!')),
                             'status' => 'success'
                         ];
                     }
