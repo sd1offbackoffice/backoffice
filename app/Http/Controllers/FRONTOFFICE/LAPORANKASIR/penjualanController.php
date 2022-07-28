@@ -2074,6 +2074,8 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         foreach ($arrayIndex as $index) {
             $gross[$index] = 0;
             $tax[$index] = 0;
+            $taxbebas[$index] = 0;
+            $taxdtp[$index] = 0;
             $net[$index] = 0;
             $hpp[$index] = 0;
             $margin[$index] = 0;
@@ -2142,14 +2144,16 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
       fdsat1, fdnam1, fdntr1,
       fdsat2, fdnam2, fdntr2,
       fdsat3, fdnam3, fdntr3,
-      fdjqty, fdfqty, fdntrn, fdnamt, fdntax, fdnnet, fdnhpp,
-      fdmrgn, fdfnam, fdftax, fdfnet, fdfhpp, fdfmgn, cexp,
+      fdjqty, fdfqty, fdntrn, fdnamt, fdntax, fdntaxbebas,fdntaxdtp, fdnnet, fdnhpp,
+      fdmrgn, fdfnam, fdftax, fdftaxbebas, fdftaxdtp, fdfnet, fdfhpp, fdfmgn, cexp,
       CASE WHEN fdksat = 'KG' THEN fdfqty/1000 ELSE fdfqty END + CASE WHEN fdksat = 'KG' THEN fdjqty/1000 ELSE fdjqty  END tot1,
       (fdnamt + fdfnam) tot2,
      (fdntax + fdftax) tot3,
-     (fdnnet + fdfnet) tot4,
-      (fdnhpp + fdfhpp) tot5,
-      (fdmrgn + fdfmgn) tot6,
+     (fdntaxbebas + fdftaxbebas) tot4,
+     (fdntaxdtp + fdftaxdtp) tot5,
+     (fdnnet + fdfnet) tot6,
+      (fdnhpp + fdfhpp) tot7,
+      (fdmrgn + fdfmgn) tot8,
       CASE WHEN (fdnnet+fdfnet) <> 0 THEN  (((fdmrgn+fdfmgn)*100)/(fdnnet+fdfnet)) ELSE
          CASE WHEN (fdmrgn+fdfmgn) <> 0 THEN 100 ELSE 0 END END nMarginp,
       PRD_KODETAG
@@ -2198,6 +2202,8 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
                             if ($rec[$i]->fdntax != 0 || $rec[$i]->fdftax != 0) {
                                 $gross['p'] = $gross['p'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
                                 $tax['p'] = $tax['p'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                                $taxbebas['p'] = $taxbebas['p'] + ($rec[$i]->fdntaxbebas + $rec[$i]->fdftaxbebas);
+                                $taxdtp['p'] = $taxdtp['p'] + ($rec[$i]->fdntaxdtp + $rec[$i]->fdftaxdtp);
                                 $net['p'] = $net['p'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                                 $hpp['p'] = $hpp['p'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                                 $margin['p'] = $margin['p'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
@@ -2205,24 +2211,32 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
                                 if ($rec[$i]->fdfbkp == 'C') {
                                     $gross['i'] = $gross['i'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
                                     $tax['i'] = $tax['i'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                                    $taxbebas['i'] = $taxbebas['i'] + ($rec[$i]->fdntaxbebas + $rec[$i]->fdftaxbebas);
+                                    $taxdtp['i'] = $taxdtp['i'] + ($rec[$i]->fdntaxdtp + $rec[$i]->fdftaxdtp);
                                     $net['i'] = $net['i'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                                     $hpp['i'] = $hpp['i'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                                     $margin['i'] = $margin['i'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
                                 } elseif ($rec[$i]->fdfbkp == 'P') {
                                     $gross['b'] = $gross['b'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
                                     $tax['b'] = $tax['b'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                                    $taxbebas['b'] = $taxbebas['b'] + ($rec[$i]->fdntaxbebas + $rec[$i]->fdftaxbebas);
+                                    $taxdtp['b'] = $taxdtp['b'] + ($rec[$i]->fdntaxdtp + $rec[$i]->fdftaxdtp);
                                     $net['b'] = $net['b'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                                     $hpp['b'] = $hpp['b'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                                     $margin['b'] = $margin['b'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
                                 } elseif ($rec[$i]->fdfbkp == 'G') {
                                     $gross['g'] = $gross['g'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
                                     $tax['g'] = $tax['g'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                                    $taxbebas['g'] = $taxbebas['g'] + ($rec[$i]->fdntaxbebas + $rec[$i]->fdftaxbebas);
+                                    $taxdtp['g'] = $taxdtp['g'] + ($rec[$i]->fdntaxdtp + $rec[$i]->fdftaxdtp);
                                     $net['g'] = $net['g'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                                     $hpp['g'] = $hpp['g'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                                     $margin['g'] = $margin['g'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
                                 } elseif ($rec[$i]->fdfbkp == 'W') {
                                     $gross['g'] = $gross['g'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
                                     $tax['g'] = $tax['g'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                                    $taxbebas['g'] = $taxbebas['g'] + ($rec[$i]->fdntaxbebas + $rec[$i]->fdftaxbebas);
+                                    $taxdtp['g'] = $taxdtp['g'] + ($rec[$i]->fdntaxdtp + $rec[$i]->fdftaxdtp);
                                     $net['g'] = $net['g'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                                     $hpp['g'] = $hpp['g'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                                     $margin['g'] = $margin['g'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
@@ -2230,12 +2244,16 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
                                     if ($rec[$i]->cexp == 'Y') {
                                         $gross['e'] = $gross['e'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
                                         $tax['e'] = $tax['e'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                                        $taxbebas['e'] = $taxbebas['e'] + ($rec[$i]->fdntaxbebas + $rec[$i]->fdftaxbebas);
+                                        $taxdtp['e'] = $taxdtp['e'] + ($rec[$i]->fdntaxdtp + $rec[$i]->fdftaxdtp);
                                         $net['e'] = $net['e'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                                         $hpp['e'] = $hpp['e'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                                         $margin['e'] = $margin['e'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
                                     } else {
                                         $gross['x'] = $gross['x'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
                                         $tax['x'] = $tax['x'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                                        $taxbebas['x'] = $taxbebas['x'] + ($rec[$i]->fdntaxbebas + $rec[$i]->fdftaxbebas);
+                                        $taxdtp['x'] = $taxdtp['x'] + ($rec[$i]->fdntaxdtp + $rec[$i]->fdftaxdtp);
                                         $net['x'] = $net['x'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                                         $hpp['x'] = $hpp['x'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                                         $margin['x'] = $margin['x'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
@@ -2245,18 +2263,24 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
                         } elseif ($rec[$i]->fdkdiv == '5' && $rec[$i]->fdkdep == '39') {
                             $gross['c'] = $gross['c'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
                             $tax['c'] = $tax['c'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                            $taxbebas['c'] = $taxbebas['c'] + ($rec[$i]->fdntaxbebas + $rec[$i]->fdftaxbebas);
+                            $taxdtp['c'] = $taxdtp['c'] + ($rec[$i]->fdntaxdtp + $rec[$i]->fdftaxdtp);
                             $net['c'] = $net['c'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                             $hpp['c'] = $hpp['c'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                             $margin['c'] = $margin['c'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
                         } elseif ($rec[$i]->fdkdiv == '5' && $rec[$i]->fdkdep == '40') {
                             $gross['f'] = $gross['f'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
                             $tax['f'] = $tax['f'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                            $taxbebas['f'] = $taxbebas['f'] + ($rec[$i]->fdntaxbebas + $rec[$i]->fdftaxbebas);
+                            $taxdtp['f'] = $taxdtp['f'] + ($rec[$i]->fdntaxdtp + $rec[$i]->fdftaxdtp);
                             $net['f'] = $net['f'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                             $hpp['f'] = $hpp['f'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                             $margin['f'] = $margin['f'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
                         } elseif ($rec[$i]->fdkdiv == '5' && $rec[$i]->fdkdep == '43') {
                             $gross['h'] = $gross['h'] + ($rec[$i]->fdnamt + $rec[$i]->fdfnam);
                             $tax['h'] = $tax['h'] + ($rec[$i]->fdntax + $rec[$i]->fdftax);
+                            $taxbebas['h'] = $taxbebas['h'] + ($rec[$i]->fdntaxbebas + $rec[$i]->fdftaxbebas);
+                            $taxdtp['h'] = $taxdtp['h'] + ($rec[$i]->fdntaxdtp + $rec[$i]->fdftaxdtp);
                             $net['h'] = $net['h'] + ($rec[$i]->fdnnet + $rec[$i]->fdfnet);
                             $hpp['h'] = $hpp['h'] + ($rec[$i]->fdnhpp + $rec[$i]->fdfhpp);
                             $margin['h'] = $margin['h'] + ($rec[$i]->fdmrgn + $rec[$i]->fdfmgn);
@@ -2268,12 +2292,16 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         for ($i = 0; $i < sizeof($datas); $i++) {
             $gross['total'] = $gross['total'] + $datas[$i]->tot2;
             $tax['total'] = $tax['total'] + $datas[$i]->tot3;
-            $net['total'] = $net['total'] + $datas[$i]->tot4;
-            $hpp['total'] = $hpp['total'] + $datas[$i]->tot5;
-            $margin['total'] = $margin['total'] + $datas[$i]->tot6;
+            $taxbebas['total'] = $taxbebas['total'] + $datas[$i]->tot4;
+            $taxdtp['total'] = $taxdtp['total'] + $datas[$i]->tot5;
+            $net['total'] = $net['total'] + $datas[$i]->tot6;
+            $hpp['total'] = $hpp['total'] + $datas[$i]->tot7;
+            $margin['total'] = $margin['total'] + $datas[$i]->tot8;
         }
         $gross['total-40'] = $gross['total'] - $gross['f'];
         $tax['total-40'] = $tax['total'] - $tax['f'];
+        $taxbebas['total-40'] = $taxbebas['total'] - $taxbebas['f'];
+        $taxdtp['total-40'] = $taxdtp['total'] - $taxdtp['f'];
         $net['total-40'] = $net['total'] - $net['f'];
         $hpp['total-40'] = $hpp['total'] - $hpp['f'];
         $margin['total-40'] = $margin['total'] - $margin['f'];
@@ -2297,7 +2325,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         if ($pluall == 'N') {
             $pdf = PDF::loadview('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perdiv-pdf',
                 ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'mon' => $mon, 'margin1' => $margin1, 'margin2' => $margin2, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan,
-                    'arrayIndex' => $arrayIndex, 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp, 'margin' => $margin, 'margp' => $margp]);
+                    'arrayIndex' => $arrayIndex, 'gross' => $gross, 'tax' => $tax, 'taxbebas' => $taxbebas, 'taxdtp' => $taxdtp, 'net' => $net, 'hpp' => $hpp, 'margin' => $margin, 'margp' => $margp]);
             $pdf->setPaper('A4', 'landscape');
             $pdf->output();
             $dompdf = $pdf->getDomPDF()->set_option("enable_php", true);
@@ -2309,7 +2337,7 @@ ORDER BY fdkdiv, fdkdep, fdkatb");
         } else {
             return view('FRONTOFFICE.LAPORANKASIR.LAPORANPENJUALAN.lap_jual_perdiv_all-pdf',
                 ['kodeigr' => $kodeigr, 'date1' => $dateA, 'date2' => $dateB, 'margin1' => $margin1, 'margin2' => $margin2, 'data' => $datas, 'today' => $today, 'time' => $time, 'perusahaan' => $perusahaan,
-                    'arrayIndex' => $arrayIndex, 'gross' => $gross, 'tax' => $tax, 'net' => $net, 'hpp' => $hpp, 'margin' => $margin, 'margp' => $margp]);
+                    'arrayIndex' => $arrayIndex, 'gross' => $gross, 'tax' => $tax, 'taxbebas' => $taxbebas, 'taxdtp' => $taxdtp, 'net' => $net, 'hpp' => $hpp, 'margin' => $margin, 'margp' => $margp]);
         }
     }
 
@@ -2596,7 +2624,7 @@ ORDER BY FDKDIV, FDKDEP");
         }
 
         //CALCULATE GRAND TOTAL
-        $arrayIndex = ['c', 'p', 'x', 'b', 'e', 'g', 'r', 'h', 'total-40', 'total', 'f', 'd']; //tersusun, f merupakan departemen 40, hanya dipakai untuk mendapatkan total-40, tidak untuk ditampilkan
+        $arrayIndex = ['c', 'p', 'x', 'b', 'e', 'g', 'h', 'total-40', 'total', 'f', 'd']; //tersusun, f merupakan departemen 40, hanya dipakai untuk mendapatkan total-40, tidak untuk ditampilkan
         //sedangkan d, ga tau kenapa muncul padahal ga dipakai di laporan, jadi tidak ditampilkan juga
 
         foreach ($arrayIndex as $index) {
@@ -2609,6 +2637,15 @@ ORDER BY FDKDIV, FDKDEP");
             $margin[$index] = 0;
             $margp[$index] = 0;
         }
+
+        // dd($gross[$index] ,
+        // $tax[$index] ,
+        // $taxbebas[$index] ,
+        // $taxdtp[$index] ,
+        // $net[$index] ,
+        // $hpp[$index] ,
+        // $margin[$index] ,
+        // $margp[$index]);
         $rec = DB::connection(Session::get('connection'))->select("SELECT prs_namaperusahaan, prs_namacabang, KASIR, STAT,
        KDIV fdkdiv, div_namadivisi, SUBSTR(DIV,1,2) FDKDEP, dep_namadepartement, SUBSTR(DIV,-2,2) FDKATB, kat_namakategori, FLAGTAX2 Fdfbkp,
        CASE WHEN cEXP = 'T' THEN 'Y' ELSE 'N' END fexpor,

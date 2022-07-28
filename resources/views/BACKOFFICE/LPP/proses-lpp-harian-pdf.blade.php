@@ -120,8 +120,9 @@ $total_akhirrph =0;
                 <tr>
                     <th class="left">DEPARTEMEN :</th>
                     <th colspan="2" class="left">{{$data[$i]->lpp_kodedepartemen}} - {{$data[$i]->dep_namadepartement}}</th>
+                    <th colspan="2"></th>
                     <th class="left">KATEGORI :</th>
-                    <th colspan="2" class="left">{{$data[$i]->lpp_kategoribrg}} - {{$data[$i]->kat_namakategori}}</th>
+                    <th colspan="4" class="left">{{$data[$i]->lpp_kategoribrg}} - {{$data[$i]->kat_namakategori}}</th>
                 </tr>
                 @php
                     $temp = $data[$i]->lpp_kodedepartemen.$data[$i]->lpp_kategoribrg;

@@ -1117,7 +1117,7 @@ class inputController extends Controller
             if ($noPo) {
                 if (!$data->tpod_prdcd) {
                     $this->param_error = 0;
-                    return (['kode' => 2, 'msg' => "Kode Produk tidak terdaftar dalam No.PO ini :" . $noPo . " !!!", 'data' => '']);
+                    return (['kode' => 2, 'msg' => "Kode Produk tidak terdaftar dalam No.PO ini: " . $noPo . " !!!", 'data' => '']);
                 }
             }
 

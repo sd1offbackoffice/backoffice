@@ -10,6 +10,8 @@
 |
 */
 
+use Illuminate\Support\Facades\Storage;
+
 Route::get('/', function () {
     return view('index');
 })->middleware('CheckLogin');
@@ -853,6 +855,10 @@ Route::middleware(['CheckLogin'])->group(function () {
                     Route::post('/save', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputSignatureController@save')->middleware('CheckLogin');
                     Route::get('/getName', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputSignatureController@getName')->middleware('CheckLogin');
                     Route::get('/otorisasi', 'BACKOFFICE\TRANSAKSI\PENERIMAAN\inputSignatureController@otorisasi')->middleware('CheckLogin');
+                    Route::get('/storage/{filename}', function ($filename) {
+                        $userid = session()->get('user')->id;
+                        return Storage::get('signature/' . $filename);
+                    });
                 });
 
                 Route::prefix('/data-rte')->group(function () {
@@ -1754,7 +1760,8 @@ Route::middleware(['CheckLogin'])->group(function () {
                 Route::get('/', 'BACKOFFICE\NAIKTURUNSTATUS\StatusController@index');
                 Route::get('/showNaik', 'BACKOFFICE\NAIKTURUNSTATUS\StatusController@showNaik');
                 Route::get('/showTurun', 'BACKOFFICE\NAIKTURUNSTATUS\StatusController@showTurun');
-                Route::post('/sendEmail', 'BACKOFFICE\NAIKTURUNSTATUS\StatusController@sendEmail');
+                Route::post('/sendEmailTurun', 'BACKOFFICE\NAIKTURUNSTATUS\StatusController@sendEmailTurun');
+                Route::post('/sendEmailNaik', 'BACKOFFICE\NAIKTURUNSTATUS\StatusController@sendEmailNaik');
                 Route::get('/test', function () {
                     $datas = DB::connection(Session::get('connection'))->select("SELECT pkm_pkmt, st_saldoakhir, st_prdcd, lks_koderak || '' || lks_kodesubrak || '' || lks_tiperak || '' || lks_shelvingrak rak, prd_deskripsipanjang
         FROM TBMASTER_KKPKM, TBMASTER_STOCK, TBMASTER_LOKASI, TBMASTER_PRODMAST

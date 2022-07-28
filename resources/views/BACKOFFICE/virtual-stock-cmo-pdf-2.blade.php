@@ -1,7 +1,7 @@
 {{-- @extends('virtual-stock-cmo-pdf-template') --}}
 @extends('html-template')
 
-@section('table_font_size','7px')
+@section('table_font_size','10px')
 
 @section('page_title')
     @if($tipevcmo == 'r1')
@@ -80,15 +80,15 @@
             <thead style="border-top: 1px solid black;border-bottom: 1px solid black;border-left: 1px solid black;">
             <tr style="text-align: center; vertical-align: center">
                 <th rowspan="2" style="width:15px;border: 1px solid black">No.</th>
-                <th colspan="1" style="width:20px;border: 1px solid black;">plu IDM</th>
-                <th colspan="1" style="width:20px;border: 1px solid black;">plu IGR</th>
+                <th colspan="1" style="width:15px;border: 1px solid black;">plu IDM</th>
+                <th colspan="1" style="width:15px;border: 1px solid black;">plu IGR</th>
                 <th rowspan="2" style="width:20px;border: 1px solid black;">saldo awal</th>
                 <th colspan="4" style="width:100px; border: 1px solid black">PENERIMAAN</th>
                 <th colspan="3" style="width:150px; border: 1px solid black">PENGELUARAN</th>
                 <th rowspan="2" style="width:25px;border: 1px solid black;">Saldo Akhir</th>
             </tr>
             <tr style="text-align: center; vertical-align: center">
-                <th colspan="2" style="width: 40px; border-right: 1px solid black; border-top: 1px solid black;">Deskripsi</th>
+                <th colspan="2" style="width: 30px; border-right: 1px solid black; border-top: 1px solid black;">Deskripsi</th>
                 <th style="border:1px solid black; width: 25px; text-align: center">BPB</th>
                 <th style="border:1px solid black; width: 25px; text-align: center">BPBR</th>
                 <th style="border:1px solid black; width: 25px; text-align: center">MPP (+)</th>
@@ -103,9 +103,9 @@
                 @for($i=0; $i<sizeof($data) ;$i++)
                     <tr>
                         <td style="text-align: center;">{{$i+1}}</td>
-                        <td style="text-align: left;">{{ $data[$i]->prc_pluidm }}</td>
-                        <td style="text-align: left;">{{ $data[$i]->pluigr }}</td>
-                        <td style="text-align: left;">{{ $data[$i]->sta_saldoawal }}</td>
+                        <td style="text-align: center;">{{ $data[$i]->prc_pluidm }}</td>
+                        <td style="text-align: center;">{{ $data[$i]->pluigr }}</td>
+                        <td style="text-align: center;">{{ $data[$i]->sta_saldoawal }}</td>
                         <td>{{ $data[$i]->bpb_qty }}</td>
                         <td>{{ $data[$i]->idm_qty }}</td>
                         <td>{{ $data[$i]->mpp_qty }}</td>
@@ -181,16 +181,16 @@
         <table class="table table-bordered table-responsive" style="border-collapse: collapse">
             <thead style="border-top: 1px solid black;border-bottom: 1px solid black;border-left: 1px solid black;">
             <tr>
-            <th rowspan="3"  style="width:50px;border: 1px solid black;text-align: center;vertical-align: middle;">No.</th>
-            <th colspan="1"  style="width:20px;border: 1px solid black; text-align: center">plu IDM</th>
-            <th colspan="1"  style="width:20px;border: 1px solid black;text-align: center">plu IGR</th>
-            <th rowspan="3"  style="width: 20px;border: 1px solid black;text-align: center;vertical-align: middle;">saldo awal</th>
+            <th rowspan="3"  style="width:30px;border: 1px solid black;text-align: center;vertical-align: middle;">No.</th>
+            <th colspan="1"  style="width:10px;border: 1px solid black; text-align: center">plu IDM</th>
+            <th colspan="1"  style="width:10px;border: 1px solid black;text-align: center">plu IGR</th>
+            <th rowspan="3"  style="width:20px;border: 1px solid black;text-align: center;vertical-align: middle;">saldo awal</th>
             <th colspan="16" style="width:150px;border: 1px solid black">PENERIMAAN</th>
             <th colspan="10" style="width:150px;border: 1px solid black">PENGELUARAN</th>
             <th rowspan="3"  style="width:25px;border: 1px solid black;">Saldo Akhir</th>
             </tr>
             <tr style="text-align: center; vertical-align: center">
-                <th colspan="2" rowspan="2" style="width: 30px; border-right: 1px solid black; border-top: 1px solid black;text-align: center;vertical-align: middle;">Deskripsi</th>
+                <th colspan="2" rowspan="2" style="width: 20px; border-right: 1px solid black; border-top: 1px solid black;text-align: center;vertical-align: middle;">Deskripsi</th>
                 <th colspan="5" style="width:30px;border-top: 1px solid black; border-right: 1px solid black; width: 25px; text-align: center">Supplier</th>
                 <th colspan="5" style="width:30px;border-top: 1px solid black; border-right: 1px solid black; width: 25px; text-align: center">Toko IDM</th>
                 <th colspan="3" style="width:30px;border-top: 1px solid black; border-right: 1px solid black; width: 25px; text-align: center">MPP (+)</th>
@@ -270,14 +270,16 @@
                             <td colspan="1" style="text-align: center;"></td>
                         @endif
 
-                        @if($data[$i]->awal != 0)
+                        <td colspan="1">-</td>
+
+                        {{-- @if($data[$i]->awal != 0)
                             <td colspan="1">{{ $data[$i]->awal }}</td>
                         @else
                             <td colspan="1">-</td>
-                        @endif
+                        @endif --}}
 
                         <!-- Supplier -->
-                        <td colspan="1">{{ $data[$i]->sup_namasupplier }}</td>
+                        <td colspan="1" style="text-align: center;">{{ $data[$i]->sup_namasupplier }}</td>
                         <td colspan="1">{{ $data[$i]->bpb_nopo }}</td>
                         <td colspan="1">{{ $data[$i]->bpb_tanggal }}</td>
                         <td colspan="1">{{ $data[$i]->bpb_no }}</td>
@@ -297,7 +299,7 @@
                         <td colspan="1">{{ $data[$i]->intp_no }}</td>
                         <td colspan="1">{{ $data[$i]->intp_qty }}</td>
                         <!-- Toko IDM -->
-                        <td colspan="1">{{ $data[$i]->namadspb }}</td>
+                        <td colspan="1" style="text-align: center;">{{ $data[$i]->namadspb }}</td>
                         <td colspan="1">{{ $data[$i]->dspb_tanggal }}</td>
                         <td colspan="1">{{ $data[$i]->dspb_no }}</td>
                         <td colspan="1">{{ $data[$i]->dspb_qty }}</td>
@@ -310,7 +312,8 @@
                         <td colspan="1">{{ $data[$i]->intn_no }}</td>
                         <td colspan="1">{{ $data[$i]->intn_qty }}</td>
                         <!-- Saldo Akhir -->
-                        <td colspan="1">{{ $data[$i]->akhir }}</td>
+                        {{-- {{ $data[$i]->akhir }} --}}
+                        <td colspan="1"></td>
                     </tr>
 
                     @if($temp_deskripsi != $data[$i]->prd_deskripsipanjang)

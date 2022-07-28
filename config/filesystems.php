@@ -70,6 +70,7 @@ return [
         'signature' => [
             'driver' => 'local',
             'root'   => '../storage/signature/',
+            'visibility' => 'public',
         ],
 
         // Kingsley

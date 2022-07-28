@@ -401,21 +401,6 @@ class VirtualStockCmoController extends Controller
 
             $today = Carbon::now()->format('Ymd');
             $filename = 'LPPCMO_RKP_'.$today.'.csv';
-            // $filename = 'laporan-virtual-stock-cmo-rekap.csv';
-            // $columnHeader = [
-            //     'NO',
-            //     'PLU IDM',
-            //     'PLU IGR',
-            //     'SALDO AWAL',
-            //     'BPB',
-            //     'BPBR',
-            //     'MPP (+)',
-            //     'ADJ (+)',
-            //     'DSPB',
-            //     'MPP (-)',
-            //     'ADJ (-)',
-            //     'SALDO AKHIR',
-            // ];
             $columnHeader = [
                 'PLUIDM',
                 'PLUIGR',
@@ -437,7 +422,6 @@ class VirtualStockCmoController extends Controller
                 $tempdata = [
                     $d->prc_pluidm,
                     $d->pluigr,
-                    // $d->prd_deskripsipanjang.Replace('"'," "),
                     $d->prd_deskripsipanjang,
                     $d->sta_saldoawal,
                     $d->bpb_qty,
@@ -479,8 +463,8 @@ class VirtualStockCmoController extends Controller
                             sup_kodesuppliermcg || '-' || sup_namasupplier AS sup_namasupplier,
                             sup_kodesuppliermcg,
                             sup_kodesupplier,
-                            idm_toko || '-' || idm.tko_namaomi AS namaidm,
-                            dspb_toko || '-' || dspb.tko_namaomi AS namadspb
+                            idm.tko_namaomi AS namaidm,
+                            dspb.tko_namaomi AS namadspb
                     FROM temp_lpp_cmo lpp,
                             tbmaster_prodcrm,
                             tbmaster_prodmast,

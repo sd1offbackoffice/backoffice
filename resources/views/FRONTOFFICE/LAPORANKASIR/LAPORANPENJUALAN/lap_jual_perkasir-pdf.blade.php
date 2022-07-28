@@ -212,7 +212,7 @@
         @foreach($arrayIndex as $index)
             @if($index != 'f' && $index != 'd')
                 <tr style="font-weight: bold;">
-                    ['c','p','x','i','b','e','g','r','h','total-40','total','f']
+                    {{-- ['c','p','x','i','b','e','g','r','h','total-40','total','f'] --}}
                     @if($index == 'c')
                         <td colspan="2">TOTAL COUNTER</td>
                     @elseif($index == 'p')
@@ -233,6 +233,7 @@
                         <td colspan="2">GRAND TOTAL (+ DEPT 40)</td>
                     @endif
                     <td>{{rupiah($gross[$index])}}</td>
+                    {{-- <td>gross</td> --}}
                     <td>{{rupiah($tax[$index])}}</td>
                     <td>{{rupiah($taxbebas[$index])}}</td>
                     <td>{{rupiah($taxdtp[$index])}}</td>

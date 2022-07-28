@@ -93,6 +93,10 @@
             if (periode1 == "" || periode2 == "") {
                 swal('Mohon isi periode dengan benar !!', '', 'warning');
             } else {
+                swal("Proses ini akan menjalankan procedure, mohon bersabar!", {
+                    buttons: false,
+                    timer: 2,
+                });
                 ajaxSetup();
                 $.ajax({
                     url: "{{ url('/bo/lpp/proses-lpp-harian/proses') }}",

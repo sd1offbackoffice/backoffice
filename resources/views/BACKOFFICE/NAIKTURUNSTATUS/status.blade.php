@@ -22,6 +22,9 @@
                         <tbody id="tbodyModalHelp"></tbody>
                     </table>
                 </div>
+                <div class="p-4">
+                    <!-- <button class="btn btn-primary" id="emailBtnNaik" onclick="sendEmailNaik()" disabled>Kirim Email</button> -->
+                </div>
             </fieldset>
         </div>
         <hr>
@@ -43,14 +46,15 @@
                     </table>
                 </div>
                 <div class="p-4">
-                    <button class="btn btn-primary" id="emailBtn" onclick="sendEmail()" disabled>Kirim Email</button>
+                    <button class="btn btn-primary" id="emailBtnTurun" onclick="sendEmail()" disabled>Kirim Email</button>
                 </div>
             </fieldset>
         </div>
     </div>
 </div>
 
-<input id="pluList" type="hidden"></input>
+<input id="pluListTurun" type="hidden"></input>
+<input id="pluListNaik" type="hidden"></input>
 <script>
     let currurl = '{{ url()->current() }}';
     let tableModalHelpNaik = $('#tableModalHelpNaik').DataTable();
@@ -73,10 +77,48 @@
 
     function sendEmail() {
         $.ajax({
-            url: currurl + '/sendEmail',
+            url: currurl + '/sendEmailTurun',
             type: 'POST',
             data: {
-                list: $('#pluList').val()
+                list: $('#pluListTurun').val()
+            },
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            beforeSend: function() {
+                $('#modal-loader').modal('show');
+            },
+            success: function(response) {
+                $('#modal-loader').modal('hide');
+                if (response.kode == 1) {
+                    swal({
+                        title: 'Email Gagal Terkirim',
+                        text: response.p_keterangan,
+                        icon: 'danger'
+                    })
+                } else if (response.kode == 0) {
+                    swal({
+                        title: 'Email Terkirim',
+                        text: response.p_keterangan,
+                        icon: 'info'
+                    })
+                }
+            },
+            error: function(error) {
+                $('#modal-loader').modal('hide');
+                swal({
+                    title: 'Terjadi kesalahan!',
+                    text: error.responseJSON.message,
+                    icon: 'error',
+                });
+            }
+        });
+
+        $.ajax({
+            url: currurl + '/sendEmailNaik',
+            type: 'POST',
+            data: {
+                list: $('#pluListNaik').val()
             },
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -155,7 +197,13 @@
                 },
                 {
                     data: 'st_prdcd',
-                    name: 'PRDCD'
+                    render: function(data, type, row, meta) {
+                        $('#pluListNaik').val(
+                            function() {
+                                return this.value + ',' + data;
+                            });
+                        return data;
+                    }
                 },
                 {
                     data: 'prd_deskripsipanjang',
@@ -188,6 +236,7 @@
             },
             "order": []
         });
+        // $('#emailBtnNaik').prop('disabled', false);
     }
 
     function showTurun() {
@@ -233,7 +282,7 @@
                 {
                     data: 'st_prdcd',
                     render: function(data, type, row, meta) {
-                        $('#pluList').val(
+                        $('#pluListTurun').val(
                             function() {
                                 return this.value + ',' + data;
                             });
@@ -254,7 +303,7 @@
             },
             "order": []
         });
-        $('#emailBtn').prop('disabled', false);
+        $('#emailBtnTurun').prop('disabled', false);
     }
 </script>
 @endsection

@@ -73,6 +73,8 @@ class BarcodePutihController extends Controller
     }
 
     public function checkPluBarcode(Request $request) {
+        $kodeigr = Session::get('kdigr');
+        $data_print = [];
         $data = $request->data;        
         
         $prd_plumcg = $data['prd_plumcg'];       
@@ -95,10 +97,11 @@ class BarcodePutihController extends Controller
                 $status = 'SUCCESS';
                 $message = 'Data PLUMCG ' . $prd_plumcg . ' sudah ada di Master Klaim Barcode';
 
-                $data_master_prodmast = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')                                        
+                $data_master_prodmast = DB::connection(Session::get('connection'))->table('TBMASTER_PRODMAST')
+                                        ->where('PRD_KODEIGR', '=', $kodeigr)
                                         ->where('PRD_PLUMCG', '=', $prd_plumcg)                                        
                                         ->get();
-                $data_print = [];
+                
                 for ($i=0; $i < sizeof($data_master_prodmast); $i++) {                                                           
                     if($data['mstd_qty'] >= $data_master_prodmast[$i]->prd_frac){
                         switch ($data_master_prodmast[$i]->prd_unit) {
@@ -178,8 +181,7 @@ class BarcodePutihController extends Controller
             'mstd_nofaktur' => $data['mstd_nofaktur'],
             'mstd_tgldoc' => $data['mstd_tgldoc'],
             'keterangan' => $keterangan
-        ];        
-
+        ];                
         return response()->json([
             'status' => $status,
             'message' => $message,
@@ -191,9 +193,11 @@ class BarcodePutihController extends Controller
     }
 
     public function sendEmail(Request $request) {
+        $kodeigr = Session::get('kdigr');
         $notExistsInMasterKlaim = $request->notExistsInMasterKlaim;
 
-        $receivers = DB::connection(Session::get('connection'))->table('TBMASTER_EMAIL')                                        
+        $receivers = DB::connection(Session::get('connection'))->table('TBMASTER_EMAIL')
+                    ->where('EML_KODEIGR', '=', $kodeigr)                                        
                     ->where('EML_USER', '=', 'INVENTORY HO')                                        
                     ->get();
 

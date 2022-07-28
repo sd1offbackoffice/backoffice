@@ -33,7 +33,7 @@
         </tr>
         <tr>
             <th class="right">CTN</th>
-            <th class="right">FRAC</th>            
+            <th class="right">PCS</th>            
         </tr>
 
         </thead>

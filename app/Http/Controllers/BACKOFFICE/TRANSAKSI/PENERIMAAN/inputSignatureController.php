@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Exception;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use OCILob;
 use Yajra\DataTables\DataTables;
@@ -30,6 +32,7 @@ class inputSignatureController extends Controller
         $user = Session::get('usid');
         $kodeigr = Session::get('kdigr');
         $sysdate = Carbon::now()->format('Y-m-d');
+
         try {
             $path = "signature/";
             File::deleteDirectory(storage_path($path), 0755, true, true);
@@ -47,6 +50,24 @@ class inputSignatureController extends Controller
             $img4 = $this->dataURLtoImage($request->signed4);
             $file4 = storage_path($path . 'ljm.' . $img4['image_type']);
             file_put_contents($file4, $img4['image_base64']);
+
+            $path = base_path('public/signature/');
+            File::deleteDirectory(($path), 0755, true, true);
+            if (!File::exists(($path))) {
+                File::makeDirectory(($path), 0755, true, true);
+            }
+            $img2 = $this->dataURLtoImage($request->signed2);
+            $file2 = ($path . 'srclerk.' . $img2['image_type']);
+            file_put_contents($file2, $img2['image_base64']);
+
+            $img3 = $this->dataURLtoImage($request->signed3);
+            $file3 = ($path . 'clerk.' . $img3['image_type']);
+            file_put_contents($file3, $img3['image_base64']);
+
+            $img4 = $this->dataURLtoImage($request->signed4);
+            $file4 = ($path . 'ljm.' . $img4['image_type']);
+            file_put_contents($file4, $img4['image_base64']);
+
 
             $root = "names/";
             File::deleteDirectory(storage_path($root), 0755, true, true);
@@ -84,7 +105,8 @@ class inputSignatureController extends Controller
             //Kirim file ttd
             try {
                 $conn_id = ftp_connect($ftp_server);
-                ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+                ftp_login($conn_id, $ftp_user_name, $ftp_user_pass) or die("Cannot login");
+                ftp_pasv($conn_id, true) or die("Cannot switch to passive mode");
                 $sigfiles = Storage::disk('signature')->allFiles();
                 if (count($sigfiles) > 0) {
                     foreach ($sigfiles as $file => $value) {
@@ -104,7 +126,8 @@ class inputSignatureController extends Controller
             //Kirim file nama ttd
             try {
                 $conn_id = ftp_connect($ftp_server);
-                ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+                ftp_login($conn_id, $ftp_user_name, $ftp_user_pass) or die("Cannot login");
+                ftp_pasv($conn_id, true) or die("Cannot switch to passive mode");
                 $namefiles = Storage::disk('names')->allFiles();
                 if (count($namefiles) > 0) {
                     foreach ($namefiles as $file => $value) {
@@ -148,8 +171,10 @@ class inputSignatureController extends Controller
             $data[] = basename($d);
         }
 
+
         return compact(['data']);
     }
+
 
     public function getName()
     {

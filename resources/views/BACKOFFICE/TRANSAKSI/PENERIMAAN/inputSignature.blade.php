@@ -501,7 +501,7 @@
                         <table class="table table-borderless">
                             <tbody>
                                 <tr>
-                                    <td><img style="text-align: center;" src="../../../../storage/signature/` + response.data[1] + '?' + Math.random() + `"></td>
+                                    <td><img style="text-align: center;" src="{{URL::asset('/signature/ljm.png')}}"></td>
                                 </tr>
                                 <tr>
                                     <td><p><b>` + ljmname + `</b></p></td>
@@ -514,8 +514,8 @@
                         <table class="table table-borderless">
                             <tbody>
                                 <tr>
-                                    <td><img  src="../../../../storage/signature/` + response.data[2] + '?' + Math.random() + `"></td>
-                                    <td><img src="../../../../storage/signature/` + response.data[0] + '?' + Math.random() + `"></td>
+                                    <td><img  src="{{URL::asset('/signature/srclerk.png')}}"></td>
+                                    <td><img src="{{URL::asset('/signature/clerk.png')}}"></td>
                                 </tr>
                             </tbody>
                         </table>

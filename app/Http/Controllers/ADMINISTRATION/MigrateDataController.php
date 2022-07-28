@@ -76,6 +76,7 @@ class MigrateDataController extends Controller
             $user = DB::connection('igrsmg')
                 ->table('tbmaster_user')
                 ->where('userid', 'like', 'DV%')
+                ->select('kodeigr','recordid','userid','userpassword','userlevel','station','username','email')
                 ->get();
 
             foreach ($user as $u) {
@@ -114,8 +115,6 @@ class MigrateDataController extends Controller
                   ACC_STATUS     CHAR(1 BYTE),
                   ACC_ORDER      NUMBER
                 )");
-            } else {
-                return 'Table TBMASTER_ACCESS_MIGRASI : EXISTS!';
             }
 
             $access = DB::connection('igrsmg')

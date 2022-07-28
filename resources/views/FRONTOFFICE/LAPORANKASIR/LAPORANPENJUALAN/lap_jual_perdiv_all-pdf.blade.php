@@ -71,7 +71,7 @@
     $listIndex = ['div','dep','kat'];
     foreach ($listIndex as $index){
         $sumNilai1[$index] = 0; $sumNilai2[$index] = 0; $sumNilai3[$index] = 0; $sumNilai4[$index] = 0;
-        $sumKwantum[$index] = 0; $sumGross[$index] = 0; $sumTax[$index] = 0; $sumNet[$index] = 0; $sumHpp[$index] = 0; $sumMargin[$index] = 0;
+        $sumKwantum[$index] = 0; $sumGross[$index] = 0; $sumTax[$index] = 0; $sumTaxBebas[$index] = 0; $sumTaxDtp[$index] = 0; $sumNet[$index] = 0; $sumHpp[$index] = 0; $sumMargin[$index] = 0;
     }
     ?>
     <tbody style="text-align: right;">
@@ -116,25 +116,12 @@
             <td>{{rupiah($data[$i]->tot3)}}</td>
 
 
-            @if($data[$i]->fdfbkp == 'Y')
-                <td class="right">{{ number_format(0,2) }}</td>
-                <td class="right">{{ number_format(0,2) }}</td>
-            @elseif($data[$i]->fdfbkp == 'P')
-                <td class="right ">{{ number_format(0,2) }}</td>
-                <td class="right ">{{ number_format(0,2) }}</td>
-            @elseif($data[$i]->fdfbkp == 'G' || $data[$i]->fdfbkp == 'W')
-                <td class="right">{{ number_format(0,2) }}</td>
-                <td class="right " >{{ number_format(0,2) }}</td>
-            @else
-                <td class="right">{{ number_format(0,2) }}</td>
-                <td class="right">{{ number_format(0,2) }}</td>
-            @endif
-
-
 
             <td>{{rupiah($data[$i]->tot4)}}</td>
             <td>{{rupiah($data[$i]->tot5)}}</td>
-            <td style="width: 11%">{{rupiah($data[$i]->tot6)}}</td>
+            <td>{{rupiah($data[$i]->tot6)}}</td>
+            <td style="width: 11%">{{rupiah($data[$i]->tot7)}}</td>
+            <td style="width: 11%">{{rupiah($data[$i]->tot8)}}</td>
             <td style="width: 4%">{{round(($data[$i]->nmarginp), 2)}}</td>
 
             <td style="text-align: center">{{$data[$i]->prd_kodetag}}</td>
@@ -152,9 +139,11 @@
             $sumKwantum[$index] = $sumKwantum[$index] + $data[$i]->tot1;
             $sumGross[$index] = $sumGross[$index] + $data[$i]->tot2;
             $sumTax[$index] = $sumTax[$index] + $data[$i]->tot3;
-            $sumNet[$index] = $sumNet[$index] + $data[$i]->tot4;
-            $sumHpp[$index] = $sumHpp[$index] + $data[$i]->tot5;
-            $sumMargin[$index] = $sumMargin[$index] + $data[$i]->tot6;
+            $sumTaxBebas[$index] = $sumTaxBebas[$index] + $data[$i]->tot4;
+            $sumTaxDtp[$index] = $sumTaxDtp[$index] + $data[$i]->tot5;
+            $sumNet[$index] = $sumNet[$index] + $data[$i]->tot6;
+            $sumHpp[$index] = $sumHpp[$index] + $data[$i]->tot7;
+            $sumMargin[$index] = $sumMargin[$index] + $data[$i]->tot8;
         }
         ?>
 
@@ -172,7 +161,8 @@
                     <td>{{rupiah($sumKwantum['kat'])}}</td>
                     <td>{{rupiah($sumGross['kat'])}}</td>
                     <td>{{rupiah($sumTax['kat'])}}</td>
-
+                    <td>{{rupiah($sumTaxBebas['kat'])}}</td>
+                    <td>{{rupiah($sumTaxDtp['kat'])}}</td>
                     <td>{{rupiah($sumNet['kat'])}}</td>
                     <td>{{rupiah($sumHpp['kat'])}}</td>
                     <td>{{rupiah($sumMargin['kat'])}}</td>
@@ -206,7 +196,8 @@
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td>{{rupiah($sumGross['dep'])}}</td>
                     <td>{{rupiah($sumTax['dep'])}}</td>
-
+                    <td>{{rupiah($sumTaxBebas['dep'])}}</td>
+                    <td>{{rupiah($sumTaxDtp['dep'])}}</td>
                     <td>{{rupiah($sumNet['dep'])}}</td>
                     <td>{{rupiah($sumHpp['dep'])}}</td>
                     <td>{{rupiah($sumMargin['dep'])}}</td>
@@ -224,7 +215,7 @@
                 </tr>
                 <?php
                 $sumNilai1['dep'] = 0; $sumNilai2['dep'] = 0; $sumNilai3['dep'] = 0; $sumNilai4['dep'] = 0;
-                $sumKwantum['dep'] = 0; $sumGross['dep'] = 0; $sumTax['dep'] = 0; $sumNet['dep'] = 0; $sumHpp['dep'] = 0; $sumMargin['dep'] = 0;
+                $sumKwantum['dep'] = 0; $sumGross['dep'] = 0; $sumTax['dep'] = 0; $sumTaxBebas['dep'] = 0; $sumTaxDtp['dep'] = 0; $sumNet['dep'] = 0; $sumHpp['dep'] = 0; $sumMargin['dep'] = 0;
                 ?>
             @endif
             @if($divisi != $data[$i+1]->fdkdiv)
@@ -240,6 +231,8 @@
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
                     <td>{{rupiah($sumGross['div'])}}</td>
                     <td>{{rupiah($sumTax['div'])}}</td>
+                    <td>{{rupiah($sumTaxBebas['div'])}}</td>
+                    <td>{{rupiah($sumTaxDtp['div'])}}</td>
                     <td>{{rupiah($sumNet['div'])}}</td>
                     <td>{{rupiah($sumHpp['div'])}}</td>
                     <td>{{rupiah($sumMargin['div'])}}</td>
@@ -257,7 +250,7 @@
                 </tr>
                 <?php
                 $sumNilai1['div'] = 0; $sumNilai2['div'] = 0; $sumNilai3['div'] = 0; $sumNilai4['div'] = 0;
-                $sumKwantum['div'] = 0; $sumGross['div'] = 0; $sumTax['div'] = 0; $sumNet['div'] = 0; $sumHpp['div'] = 0; $sumMargin['div'] = 0;
+                $sumKwantum['div'] = 0; $sumGross['div'] = 0; $sumTax['div'] = 0; $sumTaxBebas['dep'] = 0; $sumTaxDtp['dep'] = 0; $sumNet['div'] = 0; $sumHpp['div'] = 0; $sumMargin['div'] = 0;
                 ?>
             @endif
         @endif
@@ -276,13 +269,8 @@
             <td>{{rupiah($sumKwantum['kat'])}}</td>
             <td>{{rupiah($sumGross['kat'])}}</td>
             <td>{{rupiah($sumTax['kat'])}}</td>
-
-
-
-                <td class="right">{{ number_format(0,2) }}</td>
-                <td class="right">{{ number_format(0,2) }}</td>
-
-
+            <td>{{rupiah($sumTaxBebas['kat'])}}</td>
+            <td>{{rupiah($sumTaxDtp['kat'])}}</td>
             <td>{{rupiah($sumNet['kat'])}}</td>
             <td>{{rupiah($sumHpp['kat'])}}</td>
             <td>{{rupiah($sumMargin['kat'])}}</td>
@@ -300,7 +288,7 @@
         </tr>
         <?php
         $sumNilai1['kat'] = 0; $sumNilai2['kat'] = 0; $sumNilai3['kat'] = 0; $sumNilai4['kat'] = 0;
-        $sumKwantum['kat'] = 0; $sumGross['kat'] = 0; $sumTax['kat'] = 0; $sumNet['kat'] = 0; $sumHpp['kat'] = 0; $sumMargin['kat'] = 0;
+        $sumKwantum['kat'] = 0; $sumGross['kat'] = 0; $sumTax['kat'] = 0; $sumTaxBebas['dep'] = 0; $sumTaxDtp['dep'] = 0; $sumNet['kat'] = 0; $sumHpp['kat'] = 0; $sumMargin['kat'] = 0;
         ?>
 
 <!--OUT OF LOOP DEPARTEMEN-->
@@ -316,9 +304,8 @@
             <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
             <td>{{rupiah($sumGross['dep'])}}</td>
             <td>{{rupiah($sumTax['dep'])}}</td>
-
-            <td class="right">{{ number_format(0,2) }}</td>
-            <td class="right">{{ number_format(0,2) }}</td>
+            <td>{{rupiah($sumTaxBebas['dep'])}}</td>
+            <td>{{rupiah($sumTaxDtp['dep'])}}</td>
 
             <td>{{rupiah($sumNet['dep'])}}</td>
             <td>{{rupiah($sumHpp['dep'])}}</td>
@@ -337,7 +324,7 @@
         </tr>
         <?php
         $sumNilai1['dep'] = 0; $sumNilai2['dep'] = 0; $sumNilai3['dep'] = 0; $sumNilai4['dep'] = 0;
-        $sumKwantum['dep'] = 0; $sumGross['dep'] = 0; $sumTax['dep'] = 0; $sumNet['dep'] = 0; $sumHpp['dep'] = 0; $sumMargin['dep'] = 0;
+        $sumKwantum['dep'] = 0; $sumGross['dep'] = 0; $sumTax['dep'] = 0; $sumTaxBebas['dep'] = 0; $sumTaxDtp['dep'] = 0; $sumNet['dep'] = 0; $sumHpp['dep'] = 0; $sumMargin['dep'] = 0;
         ?>
 
 <!--OUT OF LOOP DIVISI-->
@@ -353,10 +340,8 @@
             <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
             <td>{{rupiah($sumGross['div'])}}</td>
             <td>{{rupiah($sumTax['div'])}}</td>
-
-
-            <td class="right">{{ number_format(0,2) }}</td>
-            <td class="right">{{ number_format(0,2) }}</td>
+            <td>{{rupiah($sumTaxBebas['div'])}}</td>
+            <td>{{rupiah($sumTaxDtp['div'])}}</td>
 
             <td>{{rupiah($sumNet['div'])}}</td>
             <td>{{rupiah($sumHpp['div'])}}</td>
@@ -375,7 +360,7 @@
         </tr>
         <?php
         $sumNilai1['div'] = 0; $sumNilai2['div'] = 0; $sumNilai3['div'] = 0; $sumNilai4['div'] = 0;
-        $sumKwantum['div'] = 0; $sumGross['div'] = 0; $sumTax['div'] = 0; $sumNet['div'] = 0; $sumHpp['div'] = 0; $sumMargin['div'] = 0;
+        $sumKwantum['div'] = 0; $sumGross['div'] = 0; $sumTax['div'] = 0; $sumTaxBebas['dep'] = 0; $sumTaxDtp['dep'] = 0; $sumNet['div'] = 0; $sumHpp['div'] = 0; $sumMargin['div'] = 0;
         ?>
         @foreach($arrayIndex as $index)
             @if($index != 'f')
@@ -393,9 +378,7 @@
                     @elseif($index == 'e')
                         <td colspan="16">TOTAL BARANG EXPORT)</td>
                     @elseif($index == 'g')
-                        <td colspan="16">TOTAL BRG PPN DIBYR PMRINTH (MINYAK)</td>
-                    @elseif($index == 'r')
-                        <td colspan="16">TOTAL BRG PPN DIBYR PMRINTH (TEPUNG)</td>
+                        <td colspan="16">TOTAL BARANG PPN DIBAYAR PEMERINTAH</td>
                     @elseif($index == 'h')
                         <td colspan="16">TOTAL DEPARTEMEN 43</td>
                     @elseif($index == 'total-40')
@@ -405,8 +388,8 @@
                     @endif
                     <td>{{rupiah($gross[$index])}}</td>
                     <td>{{rupiah($tax[$index])}}</td>
-                    <td>0000</td>
-                    <td>0000</td>
+                    <td>{{rupiah($taxbebas[$index])}}</td>
+                    <td>{{rupiah($taxdtp[$index])}}</td>
                     <td>{{rupiah($net[$index])}}</td>
                     <td>{{rupiah($hpp[$index])}}</td>
                     <td>{{rupiah($margin[$index])}}</td>

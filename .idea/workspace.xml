@@ -14,22 +14,36 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fe5a705e-429e-4590-b22e-8b596c37d781" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/LAPORAN/laporan-history-harga-xlxs.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/KIRIMCABANG/CetakController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/KIRIMCABANG/CetakController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/KIRIMCABANG/InputController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/KIRIMCABANG/InputController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/KIRIMCABANG/TransferSJController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/KIRIMCABANG/TransferSJController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAANDARICABANG/PenerimaanTransferController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAANDARICABANG/PenerimaanTransferController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ADMINISTRATION/MigrateDataController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ADMINISTRATION/MigrateDataController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/LAPORAN/LaporanHistoryHargaController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/LAPORAN/LaporanHistoryHargaController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/NAIKTURUNSTATUS/StatusController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/NAIKTURUNSTATUS/StatusController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/BarcodePutihController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/BarcodePutihController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/inputController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/inputController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/inputSignatureController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/inputSignatureController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/VirtualStockCmoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/VirtualStockCmoController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ExcelController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ExcelController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/FRONTOFFICE/LAPORANKASIR/penjualanController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/FRONTOFFICE/LAPORANKASIR/penjualanController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Middleware/CheckLogin.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Middleware/CheckLogin.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config/filesystems.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/filesystems.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/LPP/proses-lpp-harian-pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/LPP/proses-lpp-harian-pdf.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/LPP/proses-lpp-harian.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/LPP/proses-lpp-harian.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/NAIKTURUNSTATUS/status.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/NAIKTURUNSTATUS/status.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/PENGADAANITEMPROCUREMENT/pb-procurement.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/PENGADAANITEMPROCUREMENT/pb-procurement.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/KIRIMCABANG/surat_jalan_expedisi.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/KIRIMCABANG/surat_jalan_expedisi.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/KIRIMCABANG/transfer-sj.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/KIRIMCABANG/transfer-sj.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PEMUSNAHAN/barangRusak-laporan.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PEMUSNAHAN/barangRusak-laporan.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PEMUSNAHAN/barangRusak.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PEMUSNAHAN/barangRusak.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PENERIMAAN/inputSignature.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/TRANSAKSI/PENERIMAAN/inputSignature.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/BACKOFFICE/virtual-stock-cmo-pdf-2.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/BACKOFFICE/virtual-stock-cmo-pdf-2.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/FRONTOFFICE/LAPORANKASIR/LAPORANPENJUALAN/lap_jual_perdiv_all-pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/FRONTOFFICE/LAPORANKASIR/LAPORANPENJUALAN/lap_jual_perdiv_all-pdf.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/FRONTOFFICE/LAPORANKASIR/LAPORANPENJUALAN/lap_jual_perkasir-pdf.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/FRONTOFFICE/LAPORANKASIR/LAPORANPENJUALAN/lap_jual_perkasir-pdf.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/app/public/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/names/clerk.txt" beforeDir="false" afterPath="$PROJECT_DIR$/storage/names/clerk.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/names/ljm.txt" beforeDir="false" afterPath="$PROJECT_DIR$/storage/names/ljm.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/names/srclerk.txt" beforeDir="false" afterPath="$PROJECT_DIR$/storage/names/srclerk.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/signature/62df6462d6a90.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/signature/clerk.png" beforeDir="false" afterPath="$PROJECT_DIR$/storage/signature/clerk.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/signature/ljm.png" beforeDir="false" afterPath="$PROJECT_DIR$/storage/signature/ljm.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage/signature/srclerk.png" beforeDir="false" afterPath="$PROJECT_DIR$/storage/signature/srclerk.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -170,7 +184,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SearchEverywhereHistoryKey" value="na&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/navbar.blade.php&#10;tem&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/template.blade.php&#10;in&#9;FILE&#9;file://D:/Websites/BackOffice/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/inputController.php&#10;input&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/TRANSAKSI/PENERIMAAN/input.blade.php&#10;inq&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/TRANSAKSI/PENERIMAAN/inquery.blade.php&#10;batal&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/TRANSAKSI/PENERIMAAN/pembatalan.blade.php&#10;bapb&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/CETAKREGISTER/regbtlbapb-pdf.blade.php&#10;cetak&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/CETAKREGISTER/cetak-register.blade.php&#10;regn&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/CETAKREGISTER/regnbh-pdf.blade.php&#10;web&#9;FILE&#9;file://D:/Websites/BackOffice/routes/web.php&#10;bata&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/TRANSAKSI/PENERIMAAN/pembatalan.blade.php&#10;cetakr&#9;FILE&#9;file://D:/Websites/BackOffice/app/Http/Controllers/BACKOFFICE/CETAKREGISTER/CetakRegisterController.php&#10;reg&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/CETAKREGISTER/regdbr-pdf.blade.php&#10;regte&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/CETAKREGISTER/regterima-pdf.blade.php&#10;repack&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/TRANSAKSI/REPACKING/repack.blade.php&#10;temp&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/template.blade.php&#10;nav&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/navbar.blade.php&#10;sty&#9;FILE&#9;file://D:/Websites/BackOffice/public/css/stylee.css&#10;mon&#9;FILE&#9;file://D:/Websites/BackOffice/app/Http/Controllers/BACKOFFICE/PKM/MonitoringController.php&#10;moni&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/PKM/monitoring-pdf.blade.php&#10;inde&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/index.blade.php&#10;i&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/TRANSAKSI/PENERIMAAN/input.blade.php&#10;inpu&#9;FILE&#9;file://D:/Websites/BackOffice/app/Http/Controllers/BACKOFFICE/TRANSAKSI/PENERIMAAN/inputController.php&#10;te&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/template.blade.php&#10;pdf&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/LAPORAN/penerimaan-rincian-pdf.blade.php&#10;sj&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/TRANSAKSI/KIRIMCABANG/sj-packlist.blade.php&#10;we&#9;FILE&#9;file://D:/Websites/BackOffice/routes/web.php&#10;m&#9;FILE&#9;file://D:/Websites/BackOffice/app/Http/Controllers/BACKOFFICE/PKM/MonitoringController.php&#10;pbot&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/PBOtomatis.blade.php&#10;pb&#9;FILE&#9;file://D:/Websites/BackOffice/app/Http/Controllers/BACKOFFICE/PBOtomatisController.php&#10;entry&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/PKM/entry-inquery.blade.php&#10;navb&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/navbar.blade.php&#10;sett&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/PROSES/settingPagiHari.blade.php&#10;set&#9;FILE&#9;file://D:/Websites/BackOffice/app/Http/Controllers/BACKOFFICE/PROSES/settingPagiHariController.php&#10;transfer&#9;null&#9;null&#10;logi&#9;FILE&#9;file://D:/Websites/BackOffice/app/Http/Controllers/Auth/loginController.php&#10;scri&#9;FILE&#9;file://D:/Websites/BackOffice/public/js/script.js&#10;log&#9;FILE&#9;file://D:/Websites/BackOffice/app/Http/Controllers/Auth/loginController.php&#10;login&#9;FILE&#9;file://D:/Websites/BackOffice/app/Http/Controllers/Auth/loginController.php&#10;ker&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/PKM/kertas-kerja.blade.php&#10;ke&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/PKM/kertas-kerja.blade.php&#10;setting&#9;null&#9;null&#10;pboto&#9;FILE&#9;file://D:/Websites/BackOffice/app/Http/Controllers/BACKOFFICE/PBOtomatisController.php&#10;barang&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/TRANSAKSI/BARANGHILANG/BarangHilangInput.blade.php&#10;baranghi&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/BACKOFFICE/TRANSAKSI/BARANGHILANG/BarangHilangInput.blade.php&#10;index&#9;FILE&#9;file://D:/Websites/BackOffice/resources/views/index.blade.php" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../BackOfficeLeo2" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/resources/views/BACKOFFICE/LAPORAN" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -184,11 +198,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Websites\BackOffice\resources\views\BACKOFFICE\LAPORAN" />
       <recent name="E:\Websites\BackOffice\resources\views" />
       <recent name="E:\Websites\BackOffice\resources\views\BACKOFFICE" />
       <recent name="E:\Websites\BackOffice\app\Http\Controllers\BACKOFFICE" />
       <recent name="E:\Websites\BackOffice\resources\views\BACKOFFICE\LPP" />
-      <recent name="E:\Websites\BackOffice\resources\views\OMI\LAPORAN\LAPORANREKAPITULASIREGISTERPPR" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\Websites\BackOffice\app\Http\Controllers\BACKOFFICE" />
@@ -445,19 +459,19 @@
     <option name="LAST_COMMIT_MESSAGE" value="" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="392" y="45" key="#Deployment" timestamp="1658204359000">
-      <screen x="0" y="0" width="1366" height="728" />
+    <state x="551" y="183" key="#Deployment" timestamp="1658998612612">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="392" y="45" key="#Deployment/0.0.1366.728@0.0.1366.728" timestamp="1658204359000" />
     <state x="551" y="183" key="#Deployment/0.0.1920.1040/-1360.0.1360.728@0.0.1920.1040" timestamp="1653887112216" />
     <state x="551" y="183" key="#Deployment/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1653966824064" />
-    <state x="551" y="183" key="#Deployment/0.0.1920.1040@0.0.1920.1040" timestamp="1655705847431" />
-    <state x="637" y="201" key="#Options" timestamp="1655363798341">
+    <state x="551" y="183" key="#Deployment/0.0.1920.1040@0.0.1920.1040" timestamp="1658998612612" />
+    <state x="637" y="201" key="#Options" timestamp="1658998575308">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="637" y="201" key="#Options/0.0.1920.1040/-1360.0.1360.728@0.0.1920.1040" timestamp="1653279866793" />
     <state x="637" y="201" key="#Options/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1653966791704" />
-    <state x="637" y="201" key="#Options/0.0.1920.1040@0.0.1920.1040" timestamp="1655363798341" />
+    <state x="637" y="201" key="#Options/0.0.1920.1040@0.0.1920.1040" timestamp="1658998575308" />
     <state x="535" y="170" key="#SSH_Configurations" timestamp="1655363852337">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -482,7 +496,6 @@
     </state>
     <state x="491" y="193" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1366.728@0.0.1366.728" timestamp="1657599308790" />
     <state x="690" y="275" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1920.1040/-1360.0.1360.728@0.0.1920.1040" timestamp="1653029870684" />
-    <state x="690" y="275" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1920.1040/-1366.0.1366.728@0.0.1920.1040" timestamp="1650249959622" />
     <state x="690" y="275" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1653469502509" />
     <state x="690" y="275" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1657514160107" />
     <state x="174" y="0" key="CommitChangelistDialog2" timestamp="1656665212236">
@@ -526,7 +539,7 @@
     </state>
     <state x="211" y="306" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1366.728@0.0.1366.728" timestamp="1658199915616" />
     <state x="297" y="437" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1652777451291" />
-    <state x="314" y="100" width="1055" height="924" key="find.popup" timestamp="1658473574443">
+    <state x="314" y="100" width="1055" height="924" key="find.popup" timestamp="1658998558413">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="2175" y="2" width="1180" height="1011" key="find.popup/0.0.1280.680/1920.0.1920.1040@1920.0.1920.1040" timestamp="1652411351203" />
@@ -538,12 +551,13 @@
     <state x="255" y="0" width="1180" height="1011" key="find.popup/0.0.1920.1040/-1366.0.1366.728@0.0.1920.1040" timestamp="1652704646654" />
     <state x="96" y="11" width="1275" height="1013" key="find.popup/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1654571162570" />
     <state x="99" y="10" width="1274" height="1012" key="find.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1653968436794" />
-    <state x="314" y="100" width="1055" height="924" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1658473574443" />
+    <state x="314" y="100" width="1055" height="924" key="find.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1658998558413" />
     <state x="30" y="15" width="555" height="1227" key="find.popup/0.0.600.1260@0.0.600.1260" timestamp="1654862851386" />
-    <state x="830" y="412" key="publish.login" timestamp="1653966836099">
+    <state x="830" y="412" key="publish.login" timestamp="1658998561633">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="830" y="412" key="publish.login/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1653966836099" />
+    <state x="830" y="412" key="publish.login/0.0.1920.1040@0.0.1920.1040" timestamp="1658998561633" />
     <state x="616" y="240" key="run.anything.popup" timestamp="1658223412940">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -552,8 +566,8 @@
     <state x="617" y="240" key="run.anything.popup/0.0.1920.1040/-1360.0.1360.728@0.0.1920.1040" timestamp="1653887770885" />
     <state x="617" y="240" key="run.anything.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1653883483097" />
     <state x="616" y="240" key="run.anything.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1658223412940" />
-    <state x="550" y="142" width="672" height="475" key="search.everywhere.popup" timestamp="1658832075331">
-      <screen x="0" y="0" width="1366" height="728" />
+    <state x="42" y="208" width="1044" height="678" key="search.everywhere.popup" timestamp="1658998622603">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="95" y="150" width="672" height="444" key="search.everywhere.popup/0.0.1280.680/1920.0.1920.1040@0.0.1280.680" timestamp="1654851478310" />
     <state x="2063" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1280.680/1920.0.1920.1040@1920.0.1920.1040" timestamp="1655257612227" />
@@ -566,23 +580,7 @@
     <state x="143" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/-1366.0.1366.728@0.0.1920.1040" timestamp="1652691082163" />
     <state x="773" y="203" width="945" height="679" key="search.everywhere.popup/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1654589814050" />
     <state x="143" y="230" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.0.1920.1040@0.0.1920.1040" timestamp="1653970530491" />
-    <state x="42" y="208" width="1044" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1658823219385" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/PKM/ProsesKertasKerjaPKMController.php</url>
-          <line>540</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="php">
-          <url>file://$PROJECT_DIR$/app/Http/Controllers/BACKOFFICE/VirtualStockCmoController.php</url>
-          <line>448</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <state x="42" y="208" width="1044" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1658998622603" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

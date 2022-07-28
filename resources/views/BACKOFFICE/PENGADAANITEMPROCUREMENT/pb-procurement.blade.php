@@ -55,12 +55,12 @@
         <div class="row">
             <div class="col-sm-12">
                 <fieldset class="card border-dark">
-                    <legend class="w-auto ml-5"> .:: DETAIL ::.</legend>
+                    <legend class="w-auto ml-5"> Detail PB Procurement </legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="row form-group justify-content-center">
                             <div class="tableFixedHeader" style="border-bottom: 1px solid black">
                                 <table class="table table-striped table-bordered" id="table-detail"
-                                       style="table-layout:fixed;width: 100%;  ">
+                                       style="table-layout:fixed;width: 100%;">
                                     <thead>
 
                                     <tr>
@@ -234,7 +234,6 @@
             $('#tanggal-1').val('');
             $('#tanggal-2').val('');
         });
-
 
         function getLovNoPB(val) {
             $('#btn_lov_npbp').empty().append('<i class="fas fa-spinner fa-spin"></i>').prop('disabled', true);
