@@ -11,7 +11,7 @@
                 <div class="container">
                     <div class="row align-items-center">
                         <div class="col-2">
-                            <label for="btb_number" class="col-form-label">No. BTB</label>
+                            <label for="btb_number" class="col-form-label">@lang('No. BTB')</label>
                         </div>
                         <div class="col-4">
                             <div class="input-group mb">
@@ -20,7 +20,7 @@
                             </div>
                         </div>
                         <div class="col-2">
-                            <label for="btb_date" class="col-form-label">Tgl. BTB</label>
+                            <label for="btb_date" class="col-form-label">@lang('Tgl. BTB')</label>
                         </div>
                         <div class="col-4">
                             <input type="text" class="form-control nullPermission" id="btb_date" placeholder="dd/mm/yyyy">
@@ -59,7 +59,7 @@
 
                     <div class="row align-items-center">
                         <div class="col-2">
-                            <label for="po_number" class="col-form-label">No. PO</label>
+                            <label for="po_number" class="col-form-label">@lang('No. PO')</label>
                         </div>
                         <div class="col-4">
                             <div class="input-group mb">
@@ -68,7 +68,7 @@
                             </div>
                         </div>
                         <div class="col-2">
-                            <label for="po_date" class="col-form-label">Tgl. PO</label>
+                            <label for="po_date" class="col-form-label">@lang('Tgl. PO')</label>
                         </div>
                         <div class="col-4">
                             <input type="text" class="form-control nullPermission" id="po_date" placeholder="dd/mm/yyyy" disabled>
@@ -76,7 +76,7 @@
                     </div>
                     <div class="row align-items-center">
                         <div class="col-2">
-                            <label for="supplier_code" class="col-form-label">Supplier</label>
+                            <label for="supplier_code" class="col-form-label">@lang('Supplier')</label>
                         </div>
                         <div class="col-4">
                             <div class="input-group mb">
@@ -90,13 +90,13 @@
                     </div>
                     <div class="row align-items-center">
                         <div class="col-2">
-                            <label for="fracture" class="col-form-label">No Faktur</label>
+                            <label for="fracture" class="col-form-label">@lang('No Faktur')</label>
                         </div>
                         <div class="col-4">
                             <input autocomplete="off" type="text" id="fracture" class="form-control" aria-describedby="factureAmt">
                         </div>
                         <div class="col-2">
-                            <label for="fracture_date" class="col-form-label">Tgl Faktur</label>
+                            <label for="fracture_date" class="col-form-label">@lang('Tgl Faktur')</label>
                         </div>
                         <div class="col-4">
                             <input type="text" class="form-control nullPermission" id="fracture_date" placeholder="dd/mm/yyyy">
@@ -104,14 +104,14 @@
                     </div>
                     <div class="row align-items-center">
                         <div class="col-2">
-                            <label for="top_amt" class="col-form-label">TOP</label>
+                            <label for="top_amt" class="col-form-label">@lang('TOP')</label>
                         </div>
                         <div class="col-2">
                             <input autocomplete="off" type="text" id="top_amt" class="form-control" aria-describedby="topAmt">
                         </div>
                         <div class="col-2"></div>
                         <div class="col-2">
-                            <label for="pkp_amt" class="col-form-label">PKP</label>
+                            <label for="pkp_amt" class="col-form-label">@lang('PKP')</label>
                         </div>
                         <div class="col-2">
                             <input autocomplete="off" type="text" id="pkp_amt" class="form-control" aria-describedby="pkpAmt" disabled>
@@ -125,7 +125,7 @@
                 <div class="container">
                     <div class="row align-items-center">
                         <div class="col-4" id="right_col">
-                            <label for="gross_amt" class="col-form-label">Gross</label>
+                            <label for="gross_amt" class="col-form-label">@lang('Gross')</label>
                         </div>
                         <div class="col-8">
                             <input autocomplete="off" type="text" id="gross_amt" class="form-control" aria-describedby="grossAmt" disabled>
@@ -133,7 +133,7 @@
                     </div>
                     <div class="row align-items-center">
                         <div class="col-4" id="right_col">
-                            <label for="disc_amt" class="col-form-label">Discount</label>
+                            <label for="disc_amt" class="col-form-label">@lang('Discount')</label>
                         </div>
                         <div class="col-8">
                             <input autocomplete="off" type="text" id="disc_amt" class="form-control" aria-describedby="discAmt" disabled>
@@ -141,7 +141,7 @@
                     </div>
                     <div class="row align-items-center">
                         <div class="col-4" id="right_col">
-                            <label for="ppn_amt" class="col-form-label">PPN</label>
+                            <label for="ppn_amt" class="col-form-label">@lang('PPN')</label>
                         </div>
                         <div class="col-8">
                             <input autocomplete="off" type="text" id="ppn_amt" class="form-control" aria-describedby="ppnAmt" disabled>
@@ -149,7 +149,7 @@
                     </div>
                     <div class="row align-items-center">
                         <div class="col-4" id="right_col">
-                            <label for="ppn_bm_amt" class="col-form-label">PPN BM</label>
+                            <label for="ppn_bm_amt" class="col-form-label">@lang('PPN BM')</label>
                         </div>
                         <div class="col-8">
                             <input autocomplete="off" type="text" id="ppn_bm_amt" class="form-control" aria-describedby="ppnBMAmt" disabled>
@@ -157,7 +157,7 @@
                     </div>
                     <div class="row align-items-center">
                         <div class="col-4" id="right_col">
-                            <label for="ppn_botol_amt" class="col-form-label">PPN Botol</label>
+                            <label for="ppn_botol_amt" class="col-form-label">@lang('PPN Botol')</label>
                         </div>
                         <div class="col-8">
                             <input autocomplete="off" type="text" id="ppn_botol_amt" class="form-control" aria-describedby="ppnBotolAmt" disabled>
@@ -165,7 +165,7 @@
                     </div>
                     <div class="row align-items-center">
                         <div class="col-4" id="right_col">
-                            <label for="total_amt" class="col-form-label">Grant Total</label>
+                            <label for="total_amt" class="col-form-label">@lang('Grant Total')</label>
                         </div>
                         <div class="col-8">
                             <input autocomplete="off" type="text" id="total_amt" class="form-control" aria-describedby="totalAmt" disabled>
@@ -177,9 +177,9 @@
         <div class="col-sm-2">
             <div class="card border-dark cardForm">
                 <span style="display: block; height: 95px;"></span>
-                <button class="btn btn-primary" id="downloadNPDBtn" onclick="downloadNPD()" disabled>Download NPD</button>
+                <button class="btn btn-primary" id="downloadNPDBtn" onclick="downloadNPD()" disabled>@lang('Download NPD')</button>
                 <span style="display: block; height: 20px;"></span>
-                <button class="btn btn-info" id="scanQRBtn" data-toggle="modal" data-target="#qrModal" disabled>Scan QR Code</button>
+                <button class="btn btn-info" id="scanQRBtn" data-toggle="modal" data-target="#qrModal" disabled>@lang('Scan QR Code')</button>
                 <span style="display: block; height: 95px;"></span>
             </div>
         </div>
@@ -189,7 +189,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="qrModalLongTitle">Scan QR Code</h5>
+                        <h5 class="modal-title" id="qrModalLongTitle">@lang('Scan QR Code')</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -197,20 +197,20 @@
                     <div class="modal-body">
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text" id="header" style="padding-right: 15px;">Header</span>
+                                <span class="input-group-text" id="header" style="padding-right: 15px;">@lang('Header')</span>
                             </div>
                             <input type="text" id="qrHeader" class="form-control" aria-describedby="header">
                         </div>
                         <div class="input-group mb-3">
                             <div class="input-group-prepend">
-                                <span class="input-group-text" id="detail" style="padding-right: 25px;">Detail</span>
+                                <span class="input-group-text" id="detail" style="padding-right: 25px;">@lang('Detail')</span>
                             </div>
                             <input type="text" id="qrDetail" class="form-control" aria-describedby="detail">
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                        <button type="button" class="btn btn-primary" onclick="scanQR()">Proses</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">@lang('Tutup')</button>
+                        <button type="button" class="btn btn-primary" onclick="scanQR()">@lang('Proses')</button>
                     </div>
                 </div>
             </div>
@@ -219,12 +219,12 @@
     </div>
     <div class="card border-dark cardForm" id="input_new_trn">
         <span class="space"></span>
-        <h4><span class="badge badge-dark">Input Transaksi Pembelian/ Penerimaan Barang</span></h4>
+        <h4><span class="badge badge-dark">@lang('Input Transaksi Pembelian/ Penerimaan Barang')</span></h4>
         <span class="space"></span>
         <div class="container-fluid">
             <div class="row align-items-center">
                 <div class="col-1">
-                    <label for="i_plu" class="col-form-label">PLU</label>
+                    <label for="i_plu" class="col-form-label">@lang('PLU')</label>
                 </div>
                 <div class="col-2">
                     <div class="input-group mb">
@@ -265,25 +265,25 @@
             </div>
             <div class="row align-items-center">
                 <div class="col-1">
-                    <label for="i_kemasan" class="col-form-label">Kemasan</label>
+                    <label for="i_kemasan" class="col-form-label">@lang('Kemasan')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_kemasan" class="form-control" aria-describedby="packagingAmt" disabled>
                 </div>
                 <div class="col-1">
-                    <label for="i_tag" class="col-form-label">Status</label>
+                    <label for="i_tag" class="col-form-label">@lang('Status')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_tag" class="form-control" aria-describedby="statusAmt" disabled>
                 </div>
                 <div class="col-1">
-                    <label for="i_bkp" class="col-form-label">BKP</label>
+                    <label for="i_bkp" class="col-form-label">@lang('BKP')</label>
                 </div>
                 <div class="col-1">
                     <input autocomplete="off" type="text" id="i_bkp" class="form-control" aria-describedby="bkpAmt" disabled>
                 </div>
                 <div class="col-1">
-                    <label for="i_bandrol" class="col-form-label">Bandrol</label>
+                    <label for="i_bandrol" class="col-form-label">@lang('Bandrol')</label>
                 </div>
                 <div class="col-1">
                     <input autocomplete="off" type="text" id="i_bandrol" class="form-control" aria-describedby="bulkAmt" disabled>
@@ -291,20 +291,20 @@
             </div>
             <div class="row align-items-center">
                 <div class="col-1">
-                    <label for="i_hrgbeli" class="col-form-label">Harga Beli</label>
+                    <label for="i_hrgbeli" class="col-form-label">@lang('Harga Beli')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_hrgbeli" class="form-control" aria-describedby="buyPriceAmt">
                 </div>
                 <div class="col-1">
-                    <label for="i_lcost" class="col-form-label">Lcost</label>
+                    <label for="i_lcost" class="col-form-label">@lang('Lcost')</label>
                 </div>
                 <div class="col-2">
                     <input type="text" id="i_lcost" class="form-control" aria-describedby="LcostAmt" disabled>
                 </div>
                 <div class="col-2"></div>
                 <div class="col-1">
-                    <label for="i_acost" class="col-form-label">ACost</label>
+                    <label for="i_acost" class="col-form-label">@lang('ACost')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_acost" class="form-control" aria-describedby="AcostAmt" disabled>
@@ -312,19 +312,19 @@
             </div>
             <div class="row align-items-center">
                 <div class="col-1">
-                    <label for="i_qty" class="col-form-label">Kuantum</label>
+                    <label for="i_qty" class="col-form-label">@lang('Kuantum')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_qty" class="form-control" aria-describedby="quantumAmt">
                 </div>
                 <div class="col-1">
-                    <label for="i_qtyk" class="col-form-label">Qtyk</label>
+                    <label for="i_qtyk" class="col-form-label">@lang('Qtyk')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_qtyk" class="form-control" aria-describedby="qtyAmt">
                 </div>
                 <div class="col-1" hidden>
-                    <label for="i_isibeli" class="col-form-label">Isi Beli</label>
+                    <label for="i_isibeli" class="col-form-label">@lang('Isi Beli')</label>
                 </div>
                 <div class="col-2" hidden>
                     <input autocomplete="off" type="text" id="i_isibeli" class="form-control" aria-describedby="i_isibeli">
@@ -332,27 +332,27 @@
             </div>
             <div class="row align-items-center">
                 <div class="col-1">
-                    <label for="i_bonus1" class="col-form-label">Bonus I</label>
+                    <label for="i_bonus1" class="col-form-label">@lang('Bonus I')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_bonus1" class="form-control" aria-describedby="bonus1Amt">
                 </div>
                 <div class="col-1">
-                    <label for="i_bonus2" class="col-form-label">Bonus II</label>
+                    <label for="i_bonus2" class="col-form-label">@lang('Bonus II')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_bonus2" class="form-control" aria-describedby="bonus2Amt" disabled>
                 </div>
                 <div class="col-2"></div>
                 <div class="col-1">
-                    <label for="i_gross" class="col-form-label">= Rp. </label>
+                    <label for="i_gross" class="col-form-label">@lang('= Rp. ')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_gross" class="form-control" aria-describedby="bonusAmt" disabled>
                 </div>
             </div>
             <span class="space"></span>
-            <h4><span class="badge badge-dark">Potongan</span></h4>
+            <h4><span class="badge badge-dark">@lang('Potongan')</span></h4>
             <span class="space"></span>
             <div class="row align-items-center">
                 <div class="col-1">
@@ -362,19 +362,19 @@
                     <input autocomplete="off" type="text" id="i_persendis1" class="form-control" aria-describedby="cut1Amt" disabled>
                 </div>
                 <div class="col-1">
-                    <label for="i_rphdisc1" class="col-form-label">Rp.</label>
+                    <label for="i_rphdisc1" class="col-form-label">@lang('Rp.')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_rphdisc1" class="form-control" aria-describedby="cut1Val">
                 </div>
                 <div class="col-1">
-                    <label for="i_flagdisc1" class="col-form-label">SAT</label>
+                    <label for="i_flagdisc1" class="col-form-label">@lang('SAT')</label>
                 </div>
                 <div class="col-1">
                     <input autocomplete="off" type="text" id="i_flagdisc1" class="form-control" aria-describedby="sat1Amt" disabled>
                 </div>
                 <div class="col-1">
-                    <label for="i_disc1" class="col-form-label">= Rp.</label>
+                    <label for="i_disc1" class="col-form-label">@lang('= Rp.')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_disc1" class="form-control" aria-describedby="cut1Final" disabled>
@@ -388,19 +388,19 @@
                     <input autocomplete="off" type="text" id="i_persendis4" class="form-control" aria-describedby="cut4Amt" disabled>
                 </div>
                 <div class="col-1">
-                    <label for="i_rphdisc4" class="col-form-label">Rp.</label>
+                    <label for="i_rphdisc4" class="col-form-label">@lang('Rp.')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_rphdisc4" class="form-control" aria-describedby="cut4Val">
                 </div>
                 <div class="col-1">
-                    <label for="i_flagdisc4" class="col-form-label">SAT</label>
+                    <label for="i_flagdisc4" class="col-form-label">@lang('SAT')</label>
                 </div>
                 <div class="col-1">
                     <input autocomplete="off" type="text" id="i_flagdisc4" class="form-control" aria-describedby="sat4Amt" disabled>
                 </div>
                 <div class="col-1">
-                    <label for="i_disc4" class="col-form-label">= Rp.</label>
+                    <label for="i_disc4" class="col-form-label">@lang('= Rp.')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_disc4" class="form-control" aria-describedby="cut4Final" disabled>
@@ -414,19 +414,19 @@
                     <input autocomplete="off" type="text" id="i_persendis2" class="form-control" aria-describedby="cut2Amt" disabled>
                 </div>
                 <div class="col-1">
-                    <label for="i_rphdisc2" class="col-form-label">Rp.</label>
+                    <label for="i_rphdisc2" class="col-form-label">@lang('Rp.')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_rphdisc2" class="form-control" aria-describedby="cut2Val">
                 </div>
                 <div class="col-1">
-                    <label for="i_flagdisc2" class="col-form-label">SAT</label>
+                    <label for="i_flagdisc2" class="col-form-label">@lang('SAT')</label>
                 </div>
                 <div class="col-1">
                     <input autocomplete="off" type="text" id="i_flagdisc2" class="form-control" aria-describedby="sat2Amt" disabled>
                 </div>
                 <div class="col-1">
-                    <label for="i_disc2" class="col-form-label">= Rp.</label>
+                    <label for="i_disc2" class="col-form-label">@lang('= Rp.')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_disc2" class="form-control" aria-describedby="cut2Final" disabled>
@@ -440,7 +440,7 @@
                     <input autocomplete="off" type="text" id="i_persendis2a" class="form-control" aria-describedby="cut2AAmt" disabled>
                 </div>
                 <div class="col-1">
-                    <label for="i_rphdisc2" class="col-form-label">Rp.</label>
+                    <label for="i_rphdisc2" class="col-form-label">@lang('Rp.')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_rphdisc2a" class="form-control" aria-describedby="cut2AVal">
@@ -449,7 +449,7 @@
                     <label for="sat_2_a_amt" class="col-form-label"></label>
                 </div>
                 <div class="col-1">
-                    <label autocomplete="off" for="i_disc2a" class="col-form-label">= Rp.</label>
+                    <label autocomplete="off" for="i_disc2a" class="col-form-label">@lang('= Rp.')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_disc2a" class="form-control" aria-describedby="cut2AFinal" disabled>
@@ -463,7 +463,7 @@
                     <input autocomplete="off" type="text" id="i_persendis2b" class="form-control" aria-describedby="cut2BAmt" disabled>
                 </div>
                 <div class="col-1">
-                    <label for="i_rphdisc2b" class="col-form-label">Rp.</label>
+                    <label for="i_rphdisc2b" class="col-form-label">@lang('Rp.')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_rphdisc2b" class="form-control" aria-describedby="cut2BVal">
@@ -472,7 +472,7 @@
                     <label for="sat_2_b_amt" class="col-form-label"></label>
                 </div>
                 <div class="col-1">
-                    <label for="i_disc2b" class="col-form-label">= Rp.</label>
+                    <label for="i_disc2b" class="col-form-label">@lang('= Rp.')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_disc2b" class="form-control" aria-describedby="cut2BFinal" disabled>
@@ -486,19 +486,19 @@
                     <input autocomplete="off" type="text" id="i_persendis3" class="form-control" aria-describedby="cut3Amt" disabled>
                 </div>
                 <div class="col-1">
-                    <label for="i_rphdisc3" class="col-form-label">Rp.</label>
+                    <label for="i_rphdisc3" class="col-form-label">@lang('Rp.')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_rphdisc3" class="form-control" aria-describedby="cut3Val">
                 </div>
                 <div class="col-1">
-                    <label for="i_flagdisc3" class="col-form-label">SAT</label>
+                    <label for="i_flagdisc3" class="col-form-label">@lang('SAT')</label>
                 </div>
                 <div class="col-1">
                     <input autocomplete="off" type="text" id="i_flagdisc3" class="form-control" aria-describedby="sat3Amt" disabled>
                 </div>
                 <div class="col-1">
-                    <label for="i_disc3" class="col-form-label">= Rp.</label>
+                    <label for="i_disc3" class="col-form-label">@lang('= Rp.')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_disc3" class="form-control" aria-describedby="cut3Final" disabled>
@@ -507,13 +507,13 @@
             <div class="row align-items-center">
                 <div class="col-6"></div>
                 <div class="col-1">
-                    <label for="i_ppn_persen" class="col-form-label">%PPN</label>
+                    <label for="i_ppn_persen" class="col-form-label">@lang('%PPN')</label>
                 </div>
                 <div class="col-1">
                     <input autocomplete="off" type="text" id="i_ppn_persen" class="form-control" disabled>
                 </div>
                 <div class="col-1">
-                    <label for="i_ppn" class="col-form-label">PPN</label>
+                    <label for="i_ppn" class="col-form-label">@lang('PPN')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_ppn" class="form-control" aria-describedby="ppnTotalAmt" disabled>
@@ -522,13 +522,13 @@
             <span class="space"></span>
             <div class="row align-items-center">
                 <div class="col-1">
-                    <label for="i_keterangan" class="col-form-label">Keterangan</label>
+                    <label for="i_keterangan" class="col-form-label">@lang('Keterangan')</label>
                 </div>
                 <div class="col-7">
                     <input autocomplete="off" type="text" id="i_keterangan" class="form-control" placeholder="TEKAN ENTER UNTUK REKAM">
                 </div>
                 <div class="col-1">
-                    <label class="col-form-label">Botol</label>
+                    <label class="col-form-label">@lang('Botol')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_botol" class="form-control" aria-describedby="botolTotalAmt" disabled>
@@ -537,7 +537,7 @@
             <div class="row align-items-center">
                 <div class="col-8"></div>
                 <div class="col-1">
-                    <label for="i_bm" class="col-form-label">BM</label>
+                    <label for="i_bm" class="col-form-label">@lang('BM')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="i_bm" class="form-control" aria-describedby="bmTotalAmt" disabled>
@@ -545,20 +545,20 @@
             </div>
             <div class="row align-items-center">
                 <div class="col-1">
-                    <label for="sum_item" class="col-form-label">Jumlah Item</label>
+                    <label for="sum_item" class="col-form-label">@lang('Jumlah Item')</label>
                 </div>
                 <div class="col-1">
                     <input autocomplete="off" type="text" id="sum_item" class="form-control" aria-describedby="itemTotalAmt" disabled>
                 </div>
                 <div class="col-1"></div>
                 <div class="col-1">
-                    <label for="po_total_amt" class="col-form-label">Total PO</label>
+                    <label for="po_total_amt" class="col-form-label">@lang('Total PO')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="po_total_amt" class="form-control" aria-describedby="poTotalAmt" disabled>
                 </div>
                 <div class="col-1">
-                    <label for="grand_total" class="col-form-label">Total</label>
+                    <label for="grand_total" class="col-form-label">@lang('Total')</label>
                 </div>
                 <div class="col-2">
                     <input autocomplete="off" type="text" id="grand_total" class="form-control" aria-describedby="grandTotal" disabled>
@@ -570,16 +570,16 @@
         <div class="container">
             <div class="row">
                 <div class="col-sm">
-                    <button id="rekamRecBtn" type="button" class="btn btn-primary btn-lg btn-block" onclick="checkFlag()"><b>Rekam Record</b></button>
+                    <button id="rekamRecBtn" type="button" class="btn btn-primary btn-lg btn-block" onclick="checkFlag()"><b>@lang('Rekam Record')</b></button>
                 </div>
                 <div class="col-sm">
-                    <button id="trfPOBtn" type="button" class="btn btn-info btn-lg btn-block" onclick="transferPO()"><b>Transfer PO</b></button>
+                    <button id="trfPOBtn" type="button" class="btn btn-info btn-lg btn-block" onclick="transferPO()"><b>@lang('Transfer PO')</b></button>
                 </div>
                 <div class="col-sm">
-                    <button id="viewListBtn" type="button" class="btn btn-warning btn-lg btn-block" onclick="viewList()"><b>List/Hapus Record</b></button>
+                    <button id="viewListBtn" type="button" class="btn btn-warning btn-lg btn-block" onclick="viewList()"><b>@lang('List/Hapus Record')</b></button>
                 </div>
                 <div class="col-sm">
-                    <button id="saveRecBtn" type="button" class="btn btn-success btn-lg btn-block" onclick="saveData()"><b>Simpan Data</b></button>
+                    <button id="saveRecBtn" type="button" class="btn btn-success btn-lg btn-block" onclick="saveData()"><b>@lang('Simpan Data')</b></button>
                 </div>
             </div>
             <br><br>
@@ -587,24 +587,24 @@
         <div id="badgeContainer" class="container">
             <div class="row">
                 <div class="col-sm">
-                    <h4><span class="badge badge-primary">ALT + R - Rekam Record</span></h4>
+                    <h4><span class="badge badge-primary">@lang('ALT + R - Rekam Record')</span></h4>
                 </div>
                 <div class="col-sm">
-                    <h4><span class="badge badge-info">ALT + T - Transfer PO</span></h4>
+                    <h4><span class="badge badge-info">@lang('ALT + T - Transfer PO')</span></h4>
                 </div>
                 <div class="col-sm">
-                    <h4><span class="badge badge-warning">ALT + L - Buka List</span></h4>
+                    <h4><span class="badge badge-warning">@lang('ALT + L - Buka List')</span></h4>
                 </div>
                 <div class="col-sm">
-                    <h4><span class="badge badge-success">ALT + S - Simpan Data</span></h4>
+                    <h4><span class="badge badge-success">@lang('ALT + S - Simpan Data')</span></h4>
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm">
-                    <h4><span class="badge badge-secondary">ALT + C - Tutup List</span></h4>
+                    <h4><span class="badge badge-secondary">@lang('ALT + C - Tutup List')</span></h4>
                 </div>
                 <div class="col-sm">
-                    <h4><span class="badge badge-danger">ALT + H - Hapus Data</span></h4>
+                    <h4><span class="badge badge-danger">@lang('ALT + H - Hapus Data')</span></h4>
                 </div>
             </div>
         </div>
@@ -617,32 +617,32 @@
                         <thead class="text-center">
                             <tr class="sticky-header">
                                 <!-- <th class="sticky-cell" scope="col" style="min-width: 100px;">Actions</th> -->
-                                <th class="sticky-cell" scope="col" style="min-width: 100px;">PLU</th>
-                                <th scope="col" style="min-width: 500px;">Deskripsi</th>
-                                <th scope="col" style="min-width: 70px">Qty</th>
-                                <th scope="col" style="min-width: 70px">QtyK</th>
-                                <th scope="col" style="min-width: 150px">Hrg Satuan</th>
-                                <th scope="col" style="min-width: 70px">Kemasan</th>
-                                <th scope="col" class="text-center" style="min-width: 70px">Tag</th>
-                                <th scope="col" class="text-center" style="min-width: 70px">BKP</th>
-                                <th scope="col" class="text-center" style="min-width: 100px">Bonus 1</th>
-                                <th scope="col" class="text-center" style="min-width: 100px">Bonus 2</th>
-                                <th scope="col" class="text-center" style="min-width: 100px">%Disc 1</th>
-                                <th scope="col" class="text-center" style="min-width: 100px">Disc 1</th>
-                                <th scope="col" class="text-center" style="min-width: 100px">%Disc 2</th>
-                                <th scope="col" class="text-center" style="min-width: 100px">Disc 2</th>
-                                <th scope="col" class="text-center" style="min-width: 100px">%Disc 2II</th>
-                                <th scope="col" class="text-center" style="min-width: 100px">Disc 2II</th>
-                                <th scope="col" class="text-center" style="min-width: 100px">%Disc 2III</th>
-                                <th scope="col" class="text-center" style="min-width: 100px">Disc 2III</th>
-                                <th scope="col" class="text-center" style="min-width: 100px">%Disc 3</th>
-                                <th scope="col" class="text-center" style="min-width: 100px">Disc 3</th>
-                                <th scope="col" class="text-center" style="min-width: 100px">%Disc 4</th>
-                                <th scope="col" class="text-center" style="min-width: 100px">Disc 4</th>
-                                <th scope="col" class="text-center" style="min-width: 150px">Gross</th>
-                                <th scope="col" class="text-center" style="min-width: 70px">PPN</th>
-                                <th scope="col" class="text-center" style="min-width: 150px">Average Cost</th>
-                                <th scope="col" class="text-center" style="min-width: 150px">Last Cost</th>
+                                <th class="sticky-cell" scope="col" style="min-width: 100px;">@lang('PLU')</th>
+                                <th scope="col" style="min-width: 500px;">@lang('Deskripsi')</th>
+                                <th scope="col" style="min-width: 70px">@lang('Qty')</th>
+                                <th scope="col" style="min-width: 70px">@lang('QtyK')</th>
+                                <th scope="col" style="min-width: 150px">@lang('Hrg Satuan')</th>
+                                <th scope="col" style="min-width: 70px">@lang('Kemasan')</th>
+                                <th scope="col" class="text-center" style="min-width: 70px">@lang('Tag')</th>
+                                <th scope="col" class="text-center" style="min-width: 70px">@lang('BKP')</th>
+                                <th scope="col" class="text-center" style="min-width: 100px">@lang('Bonus 1')</th>
+                                <th scope="col" class="text-center" style="min-width: 100px">@lang('Bonus 2')</th>
+                                <th scope="col" class="text-center" style="min-width: 100px">@lang('%Disc 1')</th>
+                                <th scope="col" class="text-center" style="min-width: 100px">@lang('Disc 1')</th>
+                                <th scope="col" class="text-center" style="min-width: 100px">@lang('%Disc 2')</th>
+                                <th scope="col" class="text-center" style="min-width: 100px">@lang('Disc 2')</th>
+                                <th scope="col" class="text-center" style="min-width: 100px">@lang('%Disc 2II')</th>
+                                <th scope="col" class="text-center" style="min-width: 100px">@lang('Disc 2II')</th>
+                                <th scope="col" class="text-center" style="min-width: 100px">@lang('%Disc 2III')</th>
+                                <th scope="col" class="text-center" style="min-width: 100px">@lang('Disc 2III')</th>
+                                <th scope="col" class="text-center" style="min-width: 100px">@lang('%Disc 3')</th>
+                                <th scope="col" class="text-center" style="min-width: 100px">@lang('Disc 3')</th>
+                                <th scope="col" class="text-center" style="min-width: 100px">@lang('%Disc 4')</th>
+                                <th scope="col" class="text-center" style="min-width: 100px">@lang('Disc 4')</th>
+                                <th scope="col" class="text-center" style="min-width: 150px">@lang('Gross')</th>
+                                <th scope="col" class="text-center" style="min-width: 70px">@lang('PPN')</th>
+                                <th scope="col" class="text-center" style="min-width: 150px">@lang('Average Cost')</th>
+                                <th scope="col" class="text-center" style="min-width: 150px">@lang('Last Cost')</th>
                             </tr>
                         <tbody id="display_data">
                         </tbody>
@@ -653,13 +653,13 @@
             <span class="space"></span>
             <div class="row align-items-center">
                 <div class="col">
-                    <button class="btn btn-danger btn-lg" onclick="closeTab()">Tutup Daftar</button>
+                    <button class="btn btn-danger btn-lg" onclick="closeTab()">@lang('Tutup Daftar')</button>
                 </div>
                 <div class="col">
-                    <input autocomplete="off" type="text" id="inPluTable" class="form-control" placeholder="ALT+C - Tutup List | Klik Baris Tabel yang ingin di koreksi/hapus">
+                    <input autocomplete="off" type="text" id="inPluTable" class="form-control" placeholder="{{__('ALT+C - Tutup List | Klik Baris Tabel yang ingin di koreksi/hapus')}}">
                 </div>
                 <div class="col-2">
-                    <caption>* Klik Plu untuk koreksi atau hapus</caption>
+                    <caption>@lang('* Klik Plu untuk koreksi atau hapus')</caption>
                 </div>
             </div>
         </div>
@@ -702,16 +702,16 @@
         <div class="modal-content">
             <div class="modal-body">
                 <fieldset class="card border-dark">
-                    <legend class="w-auto ml-5">Otorisasi Penolakan PO</legend>
+                    <legend class="w-auto ml-5">@lang('Otorisasi Penolakan PO')</legend>
                     <div class="form-group">
-                        <label for="otoUser">User</label>
+                        <label for="otoUser">@lang('User')</label>
                         <input type="email" class="form-control" id="otoUser" aria-describedby="emailHelp">
                     </div>
                     <div class="form-group">
-                        <label for="otoPass">Password</label>
+                        <label for="otoPass">@lang('Password')</label>
                         <input type="password" class="form-control" id="otoPass">
                     </div>
-                    <button type="button" onclick="otorisasi()" class="btn btn-primary">Submit</button>
+                    <button type="button" onclick="otorisasi()" class="btn btn-primary">@lang('Submit')</button>
                 </fieldset>
             </div>
         </div>
@@ -936,7 +936,7 @@
                     lotorisasiModal.modal('hide')
                     swal({
                         icon: 'success',
-                        title: 'Otorisasi Sukses',
+                        title: "{{__('Otorisasi Sukses')}}",
                         text: result.msg,
                         timer: 2000
                     });
@@ -944,7 +944,7 @@
                     lotorisasiModal.modal('hide')
                     swal({
                         icon: 'warning',
-                        title: 'Otorisasi Gagal',
+                        title: "{{__('Otorisasi Gagal')}}",
                         text: result.msg,
                         timer: 2000
                     });
@@ -954,7 +954,7 @@
                 lotorisasiModal.modal('hide')
                 swal({
                     icon: 'warning',
-                    title: 'Otorisasi Gagal',
+                    title: "{{__('Otorisasi Gagal')}}",
                     text: error,
                     timer: 2000
                 });
@@ -976,12 +976,12 @@
             i_hrgbeli.attr('disabled', true);
             i_qty.attr('disabled', true);
             i_qtyk.attr('disabled', true);
-            $('#statusJenisPenerimaan').text('Lain-lain');
+            $('#statusJenisPenerimaan').text("{{__('Lain-lain')}}");
             typeTrn = 'L';
             btb_number.focus();
         } else if (flag == 0) {
             jenisPenerimaan = 0;
-            $('#statusJenisPenerimaan').text('Pembelian');
+            $('#statusJenisPenerimaan').text("{{__('Pembelian')}}");
             btb_number.focus();
         } else {
             jenisPenerimaan = 2;
@@ -989,7 +989,7 @@
             console.log(rte)
             downloadNPDBtn.removeAttr('disabled');
             scanQRBtn.removeAttr('disabled');
-            $('#statusJenisPenerimaan').text('RTE');
+            $('#statusJenisPenerimaan').text("{{__('RTE')}}");
             btb_number.focus();
         }
 
@@ -997,12 +997,12 @@
 
     function startAlert() {
         swal({
-            title: 'Jenis Penerimaan?',
+            title: "{{__('Jenis Penerimaan?')}}",
             icon: 'info',
             buttons: {
-                confirm: "Penerimaan",
+                confirm: "{{__('Penerimaan')}}",
                 roll: {
-                    text: "Lain-lain",
+                    text: "{{__('Lain-lain')}}",
                     value: "lain",
                 },
             }
@@ -1031,7 +1031,7 @@
                     openTab();
                 } else {
                     swal({
-                        title: 'Buat Nomor Penerimaan Baru?',
+                        title: "{{__('Buat Nomor Penerimaan Baru?')}}",
                         icon: 'info',
                         buttons: true,
                     }).then((confirm) => {
@@ -1082,17 +1082,17 @@
 
         try {
             modalHelp.modal('show');
-            modalHelpTitle.text("Daftar BTB");
-            modalThName1.text('No Dokumen');
-            modalThName2.text('No PO');
-            modalThName3.text('Tgl BTB');
+            modalHelpTitle.text("{{__('Daftar BTB')}}");
+            modalThName1.text("{{__('No Dokumen')}}");
+            modalThName2.text("{{__('No PO')}}");
+            modalThName3.text("{{__('Tgl BTB')}}");
             modalThName3.show();
             modalThName4.hide();
         } catch (e) {
             swal({
                 icon: 'info',
-                title: 'Data Sama',
-                text: 'Data Tidak Ditemukan!',
+                title: "{{__('Data Sama')}}",
+                text: "{{__('Data Tidak Ditemukan!')}}",
                 timer: 2000
             });
         }
@@ -1107,15 +1107,15 @@
             autoWidth: false,
             columns: [{
                     data: 'trbo_nodoc',
-                    name: 'No Dokumen'
+                    name: "{{__('No Dokumen')}}"
                 },
                 {
                     data: 'trbo_nopo',
-                    name: 'No Po'
+                    name: "{{__('No Po')}}"
                 },
                 {
                     data: 'trbo_tglreff',
-                    name: 'Tgl BTB'
+                    name: "{{__('Tgl BTB')}}"
                 },
             ],
             createdRow: function(row, data, dataIndex) {
@@ -1215,28 +1215,28 @@
         if (flagRecordId == 'Y') {
             swal({
                 icon: 'warning',
-                title: 'Data terdaftar',
-                text: 'Nomor Transaksi Ini sudah Dibuatkan Nota',
+                title: "{{__('Data terdaftar')}}",
+                text: "{{__('Nomor Transaksi Ini sudah Dibuatkan Nota')}}",
                 timer: 2000
             });
             return false;
         }
-        swal("Koreksi atau Hapus Plu " + plu + " ?", {
+        swal("{{__('Koreksi atau Hapus Plu ')}}" + plu + " ?", {
             icon: "warning",
             buttons: {
                 cancel: {
-                    text: "Close",
+                    text: "{{__('Close')}}",
                     value: 'close',
                     visible: true,
                     className: ""
                 },
                 confirm: {
-                    text: "Koreksi",
+                    text: "{{__('Koreksi')}}",
                     value: 'koreksi',
                     visible: true
                 },
                 delete: {
-                    text: "Hapus",
+                    text: "{{__('Hapus')}}",
                     value: 'delete',
                     visible: true,
                     className: ""
@@ -1247,11 +1247,11 @@
                 koreksiPlu(data);
             } else if (value === 'delete') {
                 swal({
-                    title: "Hapus No Transaksi ini ?",
+                    title: "{{__('Hapus No Transaksi ini ?')}}",
                     icon: "warning",
                     buttons: true,
                     dangerMode: true,
-                    buttons: ['Tidak', 'Ya']
+                    buttons: ["{{__('Tidak')}}", "{{__('Ya')}}"]
                 }).then((willDelete) => {
                     if (willDelete) {
                         deletePlu(data)
@@ -1398,7 +1398,7 @@
         if (!po_number.val() && !supplier_code.val()) {
             swal({
                 icon: 'warning',
-                text: 'Nilai Harga Beli Untuk Penerimaan Lain Lain Harus 0 !',
+                text: "{{__('Nilai Harga Beli Untuk Penerimaan Lain Lain Harus 0 !')}}",
                 timer: 2000
             });
             i_hrgbeli.val('0');
@@ -1407,7 +1407,7 @@
         } else if (hrgBeli <= 0) {
             swal({
                 icon: 'warning',
-                text: 'Nilai Harga Beli Tidak Boleh <= 0 !',
+                text: "{{__('Nilai Harga Beli Tidak Boleh <= 0 !')}}",
                 timer: 2000
             });
             i_hrgbeli.val('0');
@@ -1461,7 +1461,7 @@
 
         if (!btb_number.val() && !supplier_code.val() && qty != 0) {
             swal({
-                text: 'Untuk BPB Lain Lain, Kolom Qty tidak boleh 0',
+                text: "{{__('Untuk BPB Lain Lain, Kolom Qty tidak boleh 0')}}",
                 icon: 'info',
                 timer: 2000
             })
@@ -1516,7 +1516,7 @@
     function changeBonus1(bonus1) {
         if ((bonus1 == 0 || !bonus1) && !po_number.val() && !supplier_code.val()) {
             swal({
-                text: 'Pada Transaksi Bonus, Qty Bonus Harus Diisi !!',
+                text: "{{__('Pada Transaksi Bonus, Qty Bonus Harus Diisi !!')}}",
                 icon: 'warning',
                 timer: 2000,
             });
@@ -1688,8 +1688,8 @@
             if ($('#display_data tr').length == 0 || tempDataSave == '' || tempDataSave == null) {
                 swal({
                     icon: 'info',
-                    title: 'Data Kosong',
-                    text: 'Data Tidak Ditemukan!',
+                    title: "{{__('Data Kosong')}}",
+                    text: "{{__('Data Tidak Ditemukan!')}}",
                     timer: 2000
                 });
             } else {
@@ -1982,19 +1982,19 @@
 
         try {
             modalHelp.modal('show');
-            modalHelpTitle.text("Daftar PO");
-            modalThName1.text('No PO');
-            modalThName2.text('Tgl PO');
-            modalThName3.text('Kode Supplier');
-            modalThName4.text('Nama Supplier');
+            modalHelpTitle.text("{{__('Daftar PO')}}");
+            modalThName1.text("{{__('No PO')}}");
+            modalThName2.text("{{__('Tgl PO')}}");
+            modalThName3.text("{{__('Kode Supplier')}}");
+            modalThName4.text("{{__('Nama Supplier')}}");
             modalThName3.show();
             modalThName4.show();
         } catch (e) {
             console.log(e)
             swal({
                 icon: 'info',
-                title: 'Data Kosong',
-                text: 'Data Tidak Ditemukan!',
+                title: "{{__('Data Kosong')}}",
+                text: "{{__('Data Tidak Ditemukan!')}}",
                 timer: 2000
             });
         }
@@ -2011,19 +2011,19 @@
             responsive: true,
             columns: [{
                     data: 'tpoh_nopo',
-                    name: 'No PO'
+                    name: "{{__('No PO')}}"
                 },
                 {
                     data: 'tpoh_tglpo',
-                    name: 'Tgl PO'
+                    name: "{{__('Tgl PO')}}"
                 },
                 {
                     data: 'tpoh_kodesupplier',
-                    name: 'Kode Supplier'
+                    name: "{{__('Kode Supplier')}}"
                 },
                 {
                     data: 'sup_namasupplier',
-                    name: 'Nama Supplier'
+                    name: "{{__('Nama Supplier')}}"
                 },
             ],
             createdRow: function(row, data, dataIndex) {
@@ -2042,19 +2042,19 @@
 
         try {
             modalHelp.modal('show');
-            modalHelpTitle.text("Dokumen NPD");
-            modalThName1.text('No Dokumen');
-            modalThName2.text('Tgl NPD');
-            modalThName3.text('Kode Supplier');
-            modalThName4.text('Nama Supplier');
+            modalHelpTitle.text("{{__('Dokumen NPD')}}");
+            modalThName1.text("{{__('No Dokumen')}}");
+            modalThName2.text("{{__('Tgl NPD')}}");
+            modalThName3.text("{{__('Kode Supplier')}}");
+            modalThName4.text("{{__('Nama Supplier')}}");
             modalThName3.show();
             modalThName4.show();
         } catch (e) {
             console.log(e)
             swal({
                 icon: 'info',
-                title: 'Data Kosong',
-                text: 'Data Tidak Ditemukan!',
+                title: "{{__('Data Kosong')}}",
+                text: "{{__('Data Tidak Ditemukan!')}}",
                 timer: 2000
             });
         }
@@ -2071,19 +2071,19 @@
             responsive: true,
             columns: [{
                     data: 'docno',
-                    name: 'No Dokumen'
+                    name: "{{__('No Dokumen')}}"
                 },
                 {
                     data: 'pictgl',
-                    name: 'Tgl NPD'
+                    name: "{{__('Tgl NPD')}}"
                 },
                 {
                     data: 'kirim',
-                    name: 'Kode Supplier'
+                    name: "{{__('Kode Supplier')}}"
                 },
                 {
                     data: 'sup_namasupplier',
-                    name: 'Nama Supplier'
+                    name: "{{__('Nama Supplier')}}"
                 },
             ],
             createdRow: function(row, data, dataIndex) {
@@ -2195,11 +2195,11 @@
 
     function showSupplierRTE() {
         modalHelp.modal('show');
-        modalHelpTitle.text("Daftar Supplier");
-        modalThName1.text('Nama Supplier');
-        modalThName2.text('Kode Supplier');
-        modalThName3.text('PKP');
-        modalThName4.text('TOP');
+        modalHelpTitle.text("{{__('Daftar Supplier')}}");
+        modalThName1.text("{{__('Nama Supplier')}}");
+        modalThName2.text("{{__('Kode Supplier')}}");
+        modalThName3.text("{{__('PKP')}}");
+        modalThName4.text("{{__('TOP')}}");
         modalThName3.show();
         modalThName4.show();
         tableModalHelp.clear().destroy();
@@ -2214,19 +2214,19 @@
             responsive: true,
             columns: [{
                     data: 'sup_namasupplier',
-                    name: 'Nama Supplier'
+                    name: "{{__('Nama Supplier')}}"
                 },
                 {
                     data: 'sup_kodesupplier',
-                    name: 'Kode Supplier'
+                    name: "{{__('Kode Supplier')}}"
                 },
                 {
                     data: 'sup_pkp',
-                    name: 'PKP'
+                    name: "{{__('PKP')}}"
                 },
                 {
                     data: 'sup_top',
-                    name: 'TOP'
+                    name: "{{__('TOP')}}"
                 },
             ],
             createdRow: function(row, data, dataIndex) {
@@ -2238,11 +2238,11 @@
 
     function showSupplier() {
         modalHelp.modal('show');
-        modalHelpTitle.text("Daftar Supplier");
-        modalThName1.text('Nama Supplier');
-        modalThName2.text('Kode Supplier');
-        modalThName3.text('PKP');
-        modalThName4.text('TOP');
+        modalHelpTitle.text("{{__('Daftar Supplier')}}");
+        modalThName1.text("{{__('Nama Supplier')}}");
+        modalThName2.text("{{__('Kode Supplier')}}");
+        modalThName3.text("{{__('PKP')}}");
+        modalThName4.text("{{__('TOP')}}");
         modalThName3.show();
         modalThName4.show();
         tableModalHelp.clear().destroy();
@@ -2257,19 +2257,19 @@
             responsive: true,
             columns: [{
                     data: 'sup_namasupplier',
-                    name: 'Nama Supplier'
+                    name: "{{__('Nama Supplier')}}"
                 },
                 {
                     data: 'sup_kodesupplier',
-                    name: 'Kode Supplier'
+                    name: "{{__('Kode Supplier')}}"
                 },
                 {
                     data: 'sup_pkp',
-                    name: 'PKP'
+                    name: "{{__('PKP')}}"
                 },
                 {
                     data: 'sup_top',
-                    name: 'TOP'
+                    name: "{{__('TOP')}}"
                 },
             ],
             createdRow: function(row, data, dataIndex) {
@@ -2283,7 +2283,7 @@
         if (typeTrn == 'L') {
             swal({
                 icon: 'warning',
-                text: 'Kode Supplier Tidak Boleh Diisi!',
+                text: "{{__('Kode Supplier Tidak Boleh Diisi!')}}",
                 timer: 2000
             });
             supplier_code.val('');
@@ -2307,7 +2307,7 @@
             headRowPLU.empty();
             headRowPLU.append(`
                 <th>PLU</th>
-                <th style="min-width: 300px !important;">Barang</th>
+                <th style="min-width: 300px !important;">@lang('Barang')</th>
             `)
             if ($('#tbodyModalHelpPLU').contents().length == 0) {
                 ajaxSetup();
@@ -2355,7 +2355,7 @@
             headRowPLU.append(`
                 <th>No Dokumen</th>
                 <th>PLU</th>
-                <th style="min-width: 300px !important;">Barang</th>
+                <th style="min-width: 300px !important;">@lang('Barang')</th>
             `)
             if ($('#tbodyModalHelpPLU').contents().length == 0) {
                 ajaxSetup();
@@ -2400,28 +2400,28 @@
             let typeLov = '';
             headRowPLU.empty();
             headRowPLU.append(`
-            <th style="min-width: 300px !important;">Barang</th>
-                <th>PLU</th>
-                <th>Kemasan</th>
-                <th>Qty Ctn</th>
-                <th>QtyK</th>
-                <th>Bonus1</th>
-                <th>Bonus2</th>
-                <th>Persen disc1</th>
-                <th>Disc Rph1</th>
-                <th>Persen disc2</th>
-                <th>Disc Rph2</th>
-                <th>Persen disc3</th>
-                <th>Disc Rph3</th>
-                <th>Disc Rph4</th>
-                <th>No PO</th>
+            <th style="min-width: 300px !important;">@lang('Barang')</th>
+                <th>@lang('PLU')</th>
+                <th>@lang('Kemasan')</th>
+                <th>@lang('Qty Ctn')</th>
+                <th>@lang('QtyK')</th>
+                <th>@lang('Bonus1')</th>
+                <th>@lang('Bonus2')</th>
+                <th>@lang('Persen disc1')</th>
+                <th>@lang('Disc Rph1')</th>
+                <th>@lang('Persen disc2')</th>
+                <th>@lang('Disc Rph2')</th>
+                <th>@lang('Persen disc3')</th>
+                <th>@lang('Disc Rph3')</th>
+                <th>@lang('Disc Rph4')</th>
+                <th>@lang('No PO')</th>
             `)
             if (typeTrn == 'B') {
                 if (btb_number == '') {
                     if (supplier == '') {
                         swal({
                             icon: 'info',
-                            title: "Mohon isi Supplier",
+                            title: "{{__('Mohon isi Supplier')}}",
                             timer: 2000
                         });
 
@@ -2684,7 +2684,7 @@
     function rekamData(flag) {
         if (!i_plu.val()) {
             swal({
-                text: 'Mohon isi PLU!',
+                text: "{{__('Mohon isi PLU!')}}",
                 icon: 'warning',
                 timer: 2000,
             });
@@ -2694,7 +2694,7 @@
         if (jenisPenerimaan == 1) {
             if (!i_bonus1.val()) {
                 swal({
-                    text: 'Mohon isi Bonus 1!',
+                    text: "{{__('Mohon isi Bonus 1!')}}",
                     icon: 'warning',
                     timer: 2000,
                 });
@@ -2780,8 +2780,8 @@
         if (tempDataSave == '' || tempDataSave == null) {
             swal({
                 icon: 'info',
-                title: 'Data Kosong',
-                text: 'Data Tidak Ditemukan!',
+                title: "{{__('Data Kosong')}}",
+                text: "{{__('Data Tidak Ditemukan!')}}",
                 timer: 2000
             });
         } else {
@@ -2842,8 +2842,8 @@
         if (tempDataSave == '' || tempDataSave == null) {
             swal({
                 icon: 'info',
-                title: 'Data Sama',
-                text: 'Tidak ada Perubahan data!',
+                title: "{{__('Data Sama')}}",
+                text: "{{__('Tidak ada Perubahan data!')}}",
                 timer: 2000
             });
         } else {
@@ -2871,7 +2871,7 @@
                     if (result.kode == 1) {
                         swal({
                             icon: 'success',
-                            title: 'Sukses',
+                            title: "{{__('Sukses')}}",
                             text: result.msg,
                             timer: 2000
                         });
@@ -2935,13 +2935,13 @@
                     )
                 } else if (result.kode == 2) {
                     swal(
-                        'Gagal Membaca',
+                        "{{__('Gagal Membaca')}}",
                         result.msg,
                         'warning'
                     )
                 } else {
                     swal(
-                        'Proses Berhasil',
+                        "{{__('Proses Berhasil')}}",
                         result.msg,
                         'info'
                     )
@@ -2982,7 +2982,7 @@
                 if (supplier_code.val().length > 0) {
                     swal(
                         '',
-                        'Kode Supplier Tidak Boleh Diisi!',
+                        "{{__('Kode Supplier Tidak Boleh Diisi!')}}",
                         'warning'
                     )
                     supplier_code.val('');

@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','PENERIMAAN | CETAK BPB')
+@section('title',(__('PENERIMAAN | CETAK BPB')))
 @section('content')
 
 <div class="container-fluid mt-4">
@@ -9,45 +9,45 @@
                 <div class="card-body cardForm">
                     <form>
                         <div class="form-group row mb-1 pt-4">
-                            <label class="col-sm-2 col-form-label text-right">Tanggal</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Tanggal')</label>
                             <div class="col-sm-2">
                                 <input type="date" class="form-control" id="startDate" value="{{\Carbon\Carbon::today()->format('Y-m-d')}}">
                             </div>
-                            <label class="col-form-label text-center">sd</label>
+                            <label class="col-form-label text-center">@lang('sd')</label>
                             <div class="col-sm-2">
                                 <input type="date" class="form-control" id="endDate" value="{{\Carbon\Carbon::today()->format('Y-m-d')}}">
                             </div>
                         </div>
 
                         <div class="form-group row mb-1">
-                            <label class="col-sm-2 col-form-label text-right">Jenis Laporan</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Jenis Laporan')</label>
                             <div class="col-sm-1">
                                 <select class="form-control" id="type">
-                                    <option value="1">List</option>
-                                    <option value="2">Nota</option>
+                                    <option value="1">@lang('List')</option>
+                                    <option value="2">@lang('Nota')</option>
                                 </select>
                             </div>
                             <div class="col-sm-1 mt-3">
                                 <input type="checkbox" class="form-check-input" id="re-print" name="re-print" value="1">
-                                <label class="form-check-label" id="re-print" for="re-print">Re-Print</label>
+                                <label class="form-check-label" id="re-print" for="re-print">@lang('Re-Print')</label>
                             </div>
                         </div>
 
                         <div class="form-group row mb-1">
-                            <label class="col-sm-2 col-form-label text-right">Ukuran Kertas</label>
+                            <label class="col-sm-2 col-form-label text-right">@lang('Ukuran Kertas')</label>
                             <div class="col-sm-1">
                                 <select class="form-control" id="size">
-                                    <option value="1">Kecil</option>
-                                    <option value="2">Biasa</option>
+                                    <option value="1">@lang('Kecil')</option>
+                                    <option value="2">@lang('Biasa')</option>
                                 </select>
                             </div>
                         </div>
 
                         <div class="form-group row mb-0">
-                            <button class="btn btn-primary offset-sm-7 col-sm-1 btn-block mr-3" type="button" onclick="viewData()">View Data</button>
-                            <button class="btn btn-primary col-sm-1 mr-3" type="button" onclick="cetakData()" id="btnCetak">Cetak BPB</button>
-                            <button class="btn btn-danger col-sm-1 mr-3" type="button" onclick="batalCetak()">Batal</button>
-                            <button class="btn btn-info col-sm-1 mr-3" type="button" onclick="showFtp()" data-target="#ftpModal" data-toggle="modal">Kirim Report</button>
+                            <button class="btn btn-primary offset-sm-7 col-sm-1 btn-block mr-3" type="button" onclick="viewData()">@lang('View Data')</button>
+                            <button class="btn btn-primary col-sm-1 mr-3" type="button" onclick="cetakData()" id="btnCetak">@lang('Cetak BPB')</button>
+                            <button class="btn btn-danger col-sm-1 mr-3" type="button" onclick="batalCetak()">@lang('Batal')</button>
+                            <button class="btn btn-info col-sm-1 mr-3" type="button" onclick="showFtp()" data-target="#ftpModal" data-toggle="modal">@lang('Kirim Report')</button>
                         </div>
                     </form>
                 </div>
