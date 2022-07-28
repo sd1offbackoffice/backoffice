@@ -61,7 +61,7 @@ class inputController extends Controller
                                     WHERE TRBO_KODEIGR = '$kodeigr' AND TRBO_NODOC = '$noDoc' AND TRBO_NOPO = NVL('$noPO', '123') AND NVL(TRBO_RECORDID, '0') <> 1");
 
         if ($temp[0]->temp == '0') {
-            $msg = "Nomor Dokumen Ini Sudah Terdapat di TBTR_BACKOFFICE";
+            $msg = (__('Nomor Dokumen Ini Sudah Terdapat di TBTR_BACKOFFICE'));
 
             return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
         }
@@ -87,7 +87,7 @@ class inputController extends Controller
 
             if ($recId) {
                 if ($recId[0]->trbo_recordid == '2') {
-                    $msg = "Data BTB ini sudah Cetak NOTA, silakan dilihat di Menu INQUERY BTB";
+                    $msg = (__('Data BTB ini sudah Cetak NOTA, silakan dilihat di Menu INQUERY BTB'));
 
                     return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
                 }
@@ -110,7 +110,7 @@ class inputController extends Controller
 
 
         if (!$data) {
-            $msg = "Data tidak ada";
+            $msg = (__('Data tidak ada'));
 
             return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
         } else {
@@ -150,7 +150,7 @@ class inputController extends Controller
         if ($p_sukses == 'N') { //FALSE
             return response()->json(['kode' => '1', 'message' => $hasil, 'p_sukses' => $p_sukses]);
         } else {
-            return response()->json(['kode' => '0', 'message' => 'Data NPD sudah di download', 'hasil' => $hasil]);
+            return response()->json(['kode' => '0', 'message' => (__('Data NPD sudah di download')), 'hasil' => $hasil]);
         }
     }
 
@@ -202,7 +202,7 @@ class inputController extends Controller
         FROM  TBMASTER_USER
         WHERE USERID = '$otoUser'");
         if (!isset($user)) {
-            return response()->json(['kode' => 0, 'msg' => 'User tidak ditemukan']);
+            return response()->json(['kode' => 0, 'msg' => (__('User tidak ditemukan'))]);
         } else {
             $username = $user[0]->userid;
             $pass = DB::connection(Session::get('connection'))->select("SELECT USERID, USERPASSWORD
@@ -210,7 +210,7 @@ class inputController extends Controller
             WHERE USERID = '$username'
             AND   USERPASSWORD = '$otoPass'");
             if (!isset($pass)) {
-                return response()->json(['kode' => 0, 'msg' => 'User tidak ditemukan']);
+                return response()->json(['kode' => 0, 'msg' => (__('User tidak ditemukan'))]);
             } else {
                 $result = DB::connection(Session::get('connection'))->select("SELECT USERLEVEL
                 FROM  TBMASTER_USER
@@ -227,12 +227,12 @@ class inputController extends Controller
                             ->where('tpoh_nopo', $noPO)
                             ->update(['tpoh_recordid' => 2]);
 
-                        return response()->json(['kode' => 0, 'msg' => 'Otorisasi Sukses']);
+                        return response()->json(['kode' => 0, 'msg' => (__('Otorisasi Sukses'))]);
                     } catch (Exception $e) {
                         return response()->json(['kode' => 1, 'msg' => $e]);
                     }
                 } else {
-                    return response()->json(['kode' => 1, 'msg' => 'Kode Otorisasi MGR Tidak Terdaftar !!']);
+                    return response()->json(['kode' => 1, 'msg' => (__('Kode Otorisasi MGR Tidak Terdaftar !!'))]);
                 }
             }
         }
@@ -318,12 +318,12 @@ class inputController extends Controller
                 AND   NVL (MSTD_RECORDID, '0') <> 1");
 
         if ($temp1[0]->temp1 != 0 || $temp2[0]->temp2 != 0) {
-            $msg = "Nomor Dokumen Ini Sudah Terdapat di TBTR_BACKOFFICE / TBTR_MSTRAN_D";
+            $msg = (__('Nomor Dokumen Ini Sudah Terdapat di TBTR_BACKOFFICE / TBTR_MSTRAN_D'));
 
             return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
         } else {
             if ($noPO == null || $noPO == '') {
-                $msg = "Nomor PO Kosong";
+                $msg = (__('Nomor PO Kosong'));
 
                 return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
             } else {
@@ -333,7 +333,7 @@ class inputController extends Controller
                         FROM  TBHISTORY_NPD_RTE
                         WHERE docno = '$noPO'");
                     if ($temp[0]->temp == 0) {
-                        $msg = "No NPD Tidak Ada, Berita Acara Gagal Proses akan dikirimkan ke email EDP !!";
+                        $msg = (__('No NPD Tidak Ada, Berita Acara Gagal Proses akan dikirimkan ke email EDP !!'));
                         $batal = 'N';
                         $connect = loginController::getConnectionProcedure();
                         try {
@@ -349,7 +349,7 @@ class inputController extends Controller
                                 WHERE docno = '$noPO'
                                 AND NVL (TRIM (no_bpb), '0') = '0'");
                     if ($temp1[0]->temp == 0) {
-                        $msg = "No NPD Tidak Terdaftar / Kuantitas NPD sudah dipenuhi";
+                        $msg = (__('No NPD Tidak Terdaftar / Kuantitas NPD sudah dipenuhi'));
 
                         $batal = 'N';
                         return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
@@ -379,7 +379,7 @@ class inputController extends Controller
                                 AND NVL (TRIM (TPOH_RECORDID), '0') != '2'
                                 AND NVL (TRIM (TPOH_RECORDID), '0') != '1'");
                     if ($temp[0]->temp == 0) {
-                        $msg = "No PO Tidak Terdaftar / Kuantitas PO sudah dipenuhi";
+                        $msg = (__('No PO Tidak Terdaftar / Kuantitas PO sudah dipenuhi'));
                         $batal = 'N';
                         return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
                     } else {
@@ -401,12 +401,12 @@ class inputController extends Controller
                                     AND   NVL (TRIM (TPOD_QTYPB), 0) = 0
                                     AND   NVL (TRIM (TPOD_RECORDID), '0') != '1'");
                             if ($temp1[0]->temp1 == 0) {
-                                $msg = "Kuantitas PO sudah dipenuhi Semua";
+                                $msg = (__('Kuantitas PO sudah dipenuhi Semua'));
                                 $batal = 'N';
                                 return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
                             } else {
                                 if ($recid == 'X') {
-                                    $msg = "PO Sedang Dipakai di DCP";
+                                    $msg = (__('PO Sedang Dipakai di DCP'));
                                     $batal = 'N';
                                     return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
                                     /* front end
@@ -437,7 +437,7 @@ class inputController extends Controller
                                     date_sub($sysdate, date_interval_create_from_date_string("1 day"));
 
                                     if (!(($tglpo >= $awalgo) && ($tglpo <= $akhirgo))) {
-                                        $msg = "Umur P.O. untuk GO sudah melampaui Tanggal hari ini";
+                                        $msg = (__('Umur P.O. untuk GO sudah melampaui Tanggal hari ini'));
                                         $lotorisasi = true;
 
                                         return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
@@ -445,7 +445,7 @@ class inputController extends Controller
                                         $diff = date_diff(date_create($temp[0]->tglpo), date_create($sysdate));
 
                                         if ($diff->d > 7) {
-                                            $msg = "Tanggal P.O. sudah melampaui 1 minggu";
+                                            $msg = (__('Tanggal P.O. sudah melampaui 1 minggu'));
                                             $lotorisasi = true;
 
                                             return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
@@ -453,7 +453,7 @@ class inputController extends Controller
                                     }
 
                                     if ($lotorisasi == true) {
-                                        $msg = "Show Lotorisasi";
+                                        $msg = (__('Show Lotorisasi'));
 
                                         return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
                                     } else {
@@ -468,12 +468,12 @@ class inputController extends Controller
                                 AND  TPOH_KODEIGR = '$kodeigr'");
 
                             if ($temp[0]->recid == 2) {
-                                $msg = "Kuantitas PO sudah dipenuhi";
+                                $msg = (__('Kuantitas PO sudah dipenuhi'));
                                 $batal = 'N';
                                 return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
                             } else {
                                 if ($temp[0]->recid == 'X') {
-                                    $msg = "PO Sedang Dipakai di DCP";
+                                    $msg = (__('PO Sedang Dipakai di DCP'));
                                     $batal = 'N';
                                     /* front end
                                     SET_ITEM_PROPERTY ('KD_SUPPLIER',
@@ -498,20 +498,20 @@ class inputController extends Controller
                                     date_sub($sysdate, date_interval_create_from_date_string("1 day"));
 
                                     if ($tglpo < $sysdate) {
-                                        $msg = "Umur P.O. sudah melampaui Tanggal hari ini";
+                                        $msg = (__('Umur P.O. sudah melampaui Tanggal hari ini'));
                                         $lotorisasi = true;
                                     } else {
                                         $tglpo = date_create($temp[0]->tglpo);
                                         $diff = date_diff($tglpo, $sysdate);
 
                                         if ($diff->d > 7) {
-                                            $msg = "Tanggal P.O. sudah melampaui 1 minggu";
+                                            $msg = (__('Tanggal P.O. sudah melampaui 1 minggu'));
                                             $lotorisasi = true;
                                         }
                                     }
 
                                     if ($lotorisasi == true) {
-                                        $data = "Lotorisasi";
+                                        $data = (__('Lotorisasi'));
 
                                         return response()->json(['kode' => 0, 'msg' => $msg, 'data' => $data]);
                                     } else {
@@ -537,7 +537,7 @@ class inputController extends Controller
         $recid = '';
 
         if ($typeTrn == 'L' && $noPO != null) {
-            $msg = "Nomor PO tidak boleh diisi";
+            $msg = (__('Nomor PO tidak boleh diisi'));
             return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
         }
 
@@ -557,7 +557,7 @@ class inputController extends Controller
                                                     WHERE tpoh_nopo = '$noPO' AND tpoh_kodeigr = '$kodeigr'");
 
                 if (!$temp) {
-                    $msg = "No PO Tidak Terdaftar / Kuantitas PO sudah dipenuhi";
+                    $msg = (__('No PO Tidak Terdaftar / Kuantitas PO sudah dipenuhi'));
                     return (['kode' => 0, 'msg' => $msg, 'data' => '']);
                 }
             } else {
@@ -568,13 +568,13 @@ class inputController extends Controller
                                                     AND NVL (TRIM(tpoh_recordid), '0') != '2'");
 
                 if (!$temp) {
-                    $msg = "No PO Tidak Terdaftar / Kuantitas PO sudah dipenuhi";
+                    $msg = (__('No PO Tidak Terdaftar / Kuantitas PO sudah dipenuhi'));
                     return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
                 }
                 $recid = $temp[0]->recid;
 
                 if ($recid == '2') {
-                    $msg = "Kuantitas PO sudah dipenuhi";
+                    $msg = (__('Kuantitas PO sudah dipenuhi'));
                     return response()->json(['kode' => 0, 'msg' => $msg, 'data' => '']);
                 }
                 $temp = DB::connection(Session::get('connection'))->select("SELECT tpoh_nopo, tpoh_tglpo, tpoh_kodesupplier, sup_namasupplier, sup_singkatansupplier, tpoh_top, sup_pkp
@@ -624,9 +624,9 @@ class inputController extends Controller
 	                            WHERE SUP_KODESUPPLIER = '$kodeSupplier' AND SUP_KODEIGR = '$kodeigr'");
 
         if ($data) {
-            return response()->json(['kode' => 1, 'message' => "Supplier Terdaftar", 'data' => $data[0]]);
+            return response()->json(['kode' => 1, 'message' => (__('Supplier Terdaftar')), 'data' => $data[0]]);
         } else {
-            return response()->json(['kode' => 0, 'message' => "Supplier Tidak Terdaftar", 'data' => '']);
+            return response()->json(['kode' => 0, 'message' => (__('Supplier Tidak Terdaftar')), 'data' => '']);
         }
     }
 
@@ -740,7 +740,7 @@ class inputController extends Controller
                                         AND MSTD_PRDCD = '$prdcd' AND NVL(MSTD_RECORDID, '0') <> 1");
 
             if ($temp2[0]->temp2 != '0') {
-                $msg = "PLU Sudah di BTB !!";
+                $msg = (__('PLU Sudah di BTB !!'));
 
                 return response()->json(['kode' => 2, 'msg' => $msg, 'data' => '']);
             }
@@ -751,7 +751,7 @@ class inputController extends Controller
                                         WHERE TPOH_NOPO = '$noPo' AND TPOH_KODEIGR = '$kodeigr'");
 
                 if ($temp[0]->recid == 'X') {
-                    $msg = "PO Sedang Dipakai di DCP";
+                    $msg = (__('PO Sedang Dipakai di DCP'));
 
                     return response()->json(['kode' => 2, 'msg' => $msg, 'data' => '']);
                 }
@@ -761,7 +761,7 @@ class inputController extends Controller
             if ($tempData) {
                 for ($i = 0; $i < sizeof($tempData); $i++) {
                     if ($tempData[$i]['trbo_prdcd'] == $prdcd) {
-                        $msg = "PLU " . $prdcd . " Sudah Ada, Silakan Edit !!";
+                        $msg = (__('PLU ')) . $prdcd . (__(' Sudah Ada, Silakan Edit !!'));
 
                         return response()->json(['kode' => 2, 'msg' => $msg, 'data' => $prdcd]);
                     }
@@ -816,7 +816,7 @@ class inputController extends Controller
             $data = $this->query1($supplier, $prdcd, $kodeigr);
 
             if (!$data) {
-                return (['2', "PLU " . $prdcd . " tidak sesuai kategori-nya", ""]);
+                return (['2', "PLU " . $prdcd . (__(' tidak sesuai kategori-nya')), ""]);
             }
 
             $data = $data[0];
@@ -841,17 +841,17 @@ class inputController extends Controller
             }
 
             if (!$data->kttk && !$data->kcab) {
-                return (['2', "PLU " . $prdcd . " tidak sesuai kategori-nya", ""]);
+                return (['2', "PLU " . $prdcd . (__(' tidak sesuai kategori-nya')), ""]);
             }
 
             if ($data->i_tag) {
                 if ($data->i_tag != 'T' && $data->i_tag != 'G' && $data->i_tag != 'Q' && $data->i_tag != 'U') {
                     if ($data->ftftbo == 'Y') {
-                        return (['2', "PLU " . $prdcd . " DISCONTINUE ( Flag Tidak Boleh Order )", ""]);
+                        return (['2', "PLU " . $prdcd . (__(' DISCONTINUE ( Flag Tidak Boleh Order )')), ""]);
                     }
 
                     if ($data->ftftbo == 'Y' && !$noPo && $supplier) {
-                        return (['2', "PLU " . $prdcd . " harus menggunakan PO", ""]);
+                        return (['2', "PLU " . $prdcd . (__(' harus menggunakan PO')), ""]);
                     }
                 }
             }
@@ -860,12 +860,12 @@ class inputController extends Controller
                 $ndivcost = abs($data->v_lastcost - ($data->i_acost * $data->i_frac)) / $data->v_lastcost;
 
                 if ($ndivcost >= '0.20') {
-                    return (['2', "Selisih cost terlalu besar", ""]);
+                    return (['2', (__('Selisih cost terlalu besar')), ""]);
                 }
             }
 
             if (!$noPo && !$supplier && $data->st_saldoakhir <= 0) {
-                return (['2', "Stok Barang <= 0, tidak dapat menginput BPB Lain Lain ( " . $prdcd . " )", ""]);
+                return (['2', (__('Stok Barang <= 0, tidak dapat menginput BPB Lain Lain ( ' . $prdcd . ' )')), ""]);
             }
 
             if ($data->i_unit == 'KG') {
@@ -884,7 +884,7 @@ class inputController extends Controller
             $data->i_lcost = $data->v_lastcost;
 
             if (!($data->i_barang)) {
-                return (['2', "Item Tidak Terdaftar", $data]);
+                return (['2', (__('Item Tidak Terdaftar')), $data]);
             }
         }
 
@@ -958,7 +958,7 @@ class inputController extends Controller
 
         $data = $this->query2($noPo, $kodeigr, $prdcd);
         if (!$data) {
-            return (['2', "Kode Produk tidak terdaftar dalam No.PO ini !!!", ""]);
+            return (['2', (__('Kode Produk tidak terdaftar dalam No.PO ini !!!')), ""]);
         }
 
         $data = $data[0];
@@ -1019,7 +1019,7 @@ class inputController extends Controller
         $data->i_total = 0;
 
         if ($flag_update == 0) {
-            return (['2', "Kode Produk tidak terdaftar dalam No.PO ini !!!", ""]);
+            return (['2', (__('Kode Produk tidak terdaftar dalam No.PO ini !!!')), ""]);
         } else {
             return (['0', "", $data]);
         }
@@ -1117,13 +1117,14 @@ class inputController extends Controller
             if ($noPo) {
                 if (!$data->tpod_prdcd) {
                     $this->param_error = 0;
-                    return (['kode' => 2, 'msg' => "Kode Produk tidak terdaftar dalam No.PO ini: " . $noPo . " !!!", 'data' => '']);
+
+                    return (['kode' => 2, 'msg' => (__('Kode Produk tidak terdaftar dalam No.PO ini :')) . $noPo . " !!!", 'data' => '']);
                 }
             }
 
             if (!$data->prd_prdcd) {
                 $this->param_error = 0;
-                return (['kode' => 2, 'msg' => "Kode Produk tidak terdaftar", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Kode Produk tidak terdaftar')), 'data' => '']);
             }
 
             $nsvlcost = $data->prd_lastcost;
@@ -1133,20 +1134,20 @@ class inputController extends Controller
 
             if (!$data->prd_kategoritoko && !$data->prd_kodecabang) {
                 $this->param_error = 0;
-                return (['kode' => 2, 'msg' => "Produk ini tidak sesuai kategory-nya", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Produk ini tidak sesuai kategory-nya')), 'data' => '']);
                 break; //EXIT
             }
 
             if ($data->prd_kodetag != 'T' && $data->prd_kodetag != 'G' && $data->prd_kodetag != 'Q' && $data->prd_kodetag != 'U') {
                 if ($data->tag_tidakbolehorder == 'Y') {
                     $this->param_error = 0;
-                    return (['kode' => 2, 'msg' => "Produk DISCONTINUE", 'data' => '']);
+                    return (['kode' => 2, 'msg' => (__('Produk DISCONTINUE')), 'data' => '']);
                     break; //EXIT
                 }
 
                 if ($data->prd_flagbarangordertoko != 'Y' && !$noPo && $supplier) {
                     $this->param_error = 0;
-                    return (['kode' => 2, 'msg' => "Produk ini harus menggunakan PO", 'data' => '']);
+                    return (['kode' => 2, 'msg' => (__('Produk ini harus menggunakan PO')), 'data' => '']);
                     break; //EXIT
                 }
 
@@ -1162,7 +1163,7 @@ class inputController extends Controller
 
                 if (!$noPo && !$supplier && $data->st_saldoakhir <= 0) {
                     $this->param_error = 0;
-                    return (['kode' => 2, 'msg' => "Stok Barang <= 0, tidak dapat menginput BPB Lain Lain", 'data' => '']);
+                    return (['kode' => 2, 'msg' => (__('Stok Barang <= 0, tidak dapat menginput BPB Lain Lain')), 'data' => '']);
                     break;
                 }
             }
@@ -1194,7 +1195,7 @@ class inputController extends Controller
 
                 if ($lhigh == true) {
                     $this->param_error = 3;
-                    return (['kode' => 2, 'msg' => "Harga Satuan Barang melebihi PO", 'data' => '']);
+                    return (['kode' => 2, 'msg' => (__('Harga Satuan Barang melebihi PO')), 'data' => '']);
                 }
 
                 $nsvlcost = $data->prd_lastcost;
@@ -1207,7 +1208,7 @@ class inputController extends Controller
                     if ($ndivprice >= 0.20) {
                         if ($this->param_cek == 'Y') {
                             $this->param_cek = 'N';
-                            return (['kode' => 2, 'msg' => "Selisih cost - price terlalu besar", 'data' => '']);
+                            return (['kode' => 2, 'msg' => (__('Selisih cost - price terlalu besar')), 'data' => '']);
                         }
                     }
                 }
@@ -1225,13 +1226,13 @@ class inputController extends Controller
                     null;
                 } else {
                     if ($data->hgb_prdcd == null || $data->hgb_prdcd == '') {
-                        return (['kode' => 2, 'msg' => "Produk ini tidak terdaftar pada Master Harga Beli", 'data' => '']);
+                        return (['kode' => 2, 'msg' => (__('Produk ini tidak terdaftar pada Master Harga Beli')), 'data' => '']);
                     }
                 }
 
                 if (($data->hgb_hrgbeli * $getDataPlu->i_frac) < $getDataPlu->i_hrgbeli) {
                     $this->param_error = '3';
-                    return (['kode' => 2, 'msg' => "Harga Produk ini lebih besar dari harga beli di Master", 'data' => '']);
+                    return (['kode' => 2, 'msg' => (__('Harga Produk ini lebih besar dari harga beli di Master')), 'data' => '']);
                 }
 
                 if (!isset($getDataPlu->i_bonus1)) {
@@ -1303,7 +1304,7 @@ class inputController extends Controller
 
             if ($getDataPlu->i_hrgbeli < $data->hgb_hrgbeli && $getDataPlu->i_hrgbeli < ($getDataPlu->i_hrgbeli * (1 - ($data->prs_toleransihrg / 100))) && $data->prd_toleransihrg != 0) {
                 $this->param_error = 0;
-                return (['kode' => 2, 'msg' => "Total Nilai melebihi toleransi harga yang sudah ditentukan", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Total Nilai melebihi toleransi harga yang sudah ditentukan')), 'data' => '']);
             }
 
             if (!$noPo) {
@@ -1325,12 +1326,12 @@ class inputController extends Controller
             if (!$noPo && !$supplier && $getDataPlu->i_qty != 0) {
                 $getDataPlu->i_qty = 0;
                 $this->param_error = 5;
-                return (['kode' => 2, 'msg' => "Pada Transaksi Bonus, Qty tidak boleh diisi !", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Pada Transaksi Bonus, Qty tidak boleh diisi !')), 'data' => '']);
             }
 
             if ($getDataPlu->i_qty < 0) {
                 $this->param_error = 0;
-                return (['kode' => 2, 'msg' => "Jml Qty Tidak Boleh < 0", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Jml Qty Tidak Boleh < 0')), 'data' => '']);
             }
 
             if ($noPo && $getDataPlu->i_prdcd) {
@@ -1338,7 +1339,7 @@ class inputController extends Controller
                     $getDataPlu->i_qty = floor($data->tpod_qtypo / $data->tpod_isibeli);
                     $getDataPlu->i_qtyk = (int) fmod($data->tpod_qtypo, $data->tpod_isibeli);
                     $this->param_error = 0;
-                    return (['kode' => 2, 'msg' => "Kuantum melebihi PO Line 1040", 'data' => '']);
+                    return (['kode' => 2, 'msg' => (__('Kuantum melebihi PO Line 1040')), 'data' => '']);
                 }
 
                 //--- LINE 575 di oracle
@@ -1421,19 +1422,19 @@ class inputController extends Controller
             if (!$noPo && !$supplier && $getDataPlu->i_qty != 0) {
                 $getDataPlu->i_qty = 0;
                 $this->param_error = 5;
-                return (['kode' => 2, 'msg' => "Pada Transaksi Bonus, Qty tidak boleh diisi !", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Pada Transaksi Bonus, Qty tidak boleh diisi !')), 'data' => '']);
             }
 
             if ($getDataPlu->i_qty < 0) {
                 $this->param_error = 0;
-                return (['kode' => 2, 'msg' => "Jml Qty Tidak Boleh < 0", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Jml Qty Tidak Boleh < 0')), 'data' => '']);
             }
 
             if (!$noPo && $supplier) {
                 if (($getDataPlu->i_qty * $getDataPlu->i_frac + $getDataPlu->i_qtyk) <= 0) {
                     $getDataPlu->i_qty = 0;
                     $this->param_error = 5;
-                    return (['kode' => 3, 'msg' => "Pada Transaksi Non PO / Barang BKL , Qty Harus di Isi !!", 'data' => '']);
+                    return (['kode' => 3, 'msg' => (__('Pada Transaksi Non PO / Barang BKL , Qty Harus di Isi !!')), 'data' => '']);
                 }
             }
 
@@ -1456,7 +1457,7 @@ class inputController extends Controller
                     //                    $getDataPlu->i_qtyk = ($data->tpod_qtypo / $data->tpod_isibeli);
                     $getDataPlu->i_qtyk = (int) fmod($data->tpod_qtypo, $data->tpod_isibeli);
                     $this->param_error = 0;
-                    return (['kode' => 2, 'msg' => "Kuantum melebihi PO", 'data' => '']);
+                    return (['kode' => 2, 'msg' => (__('Kuantum melebihi PO')), 'data' => '']);
                 }
 
                 $getDataPlu->i_gross = ($getDataPlu->i_qty * $getDataPlu->i_hrgbeli) + (($getDataPlu->i_qtyk * $getDataPlu->i_hrgbeli) / $data->tpod_isibeli);
@@ -1532,12 +1533,12 @@ class inputController extends Controller
             if ($getDataPlu->i_bonus1 < 0) {
                 $getDataPlu->i_bonus1 = 0;
                 $this->param_error = 0;
-                return (['kode' => 2, 'msg' => "Bonus 1 harus >= 0", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Bonus 1 harus >= 0')), 'data' => '']);
             }
 
             if (!$noPo && !$supplier && $getDataPlu->i_bonus1 == 0) {
                 $this->param_error = 5;
-                return (['kode' => 2, 'msg' => "Pada Transaksi Bonus, Qty Bonus harus diisi !", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Pada Transaksi Bonus, Qty Bonus harus diisi !')), 'data' => '']);
             }
 
             if (!$noPo && !$supplier) {
@@ -1557,7 +1558,7 @@ class inputController extends Controller
 
             if ($getDataPlu->i_rphdisc1 < 0) {
                 $this->param_error = 0;
-                return (['kode' => 2, 'msg' => "Potongan 1 (Rp) harus >= 0", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Potongan 1 (Rp) harus >= 0')), 'data' => '']);
             }
 
             if (!$noPo && !$supplier && $getDataPlu->i_rphdisc1 != 0) {
@@ -1567,7 +1568,7 @@ class inputController extends Controller
                 $getDataPlu->i_botol    = 0;
                 $getDataPlu->i_bm       = 0;
                 $getDataPlu->i_total    = 0;
-                return (['kode' => 2, 'msg' => "Pada Transaksi BTB Lain2, Discount 1 tidak boleh diisi !", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Pada Transaksi BTB Lain2, Discount 1 tidak boleh diisi !')), 'data' => '']);
             }
 
             $getDataPlu->i_disc1 = $getDataPlu->i_rphdisc1;
@@ -1590,15 +1591,15 @@ class inputController extends Controller
 
             if ($getDataPlu->i_rphdisc2 < 0) {
                 $this->param_error = 0;
-                return (['kode' => 2, 'msg' => "Potongan 2 (Rp) harus >= 0", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Potongan 2 (Rp) harus >= 0')), 'data' => '']);
             }
             if ($getDataPlu->i_rphdisc2a < 0) {
                 $this->param_error = 0;
-                return (['kode' => 2, 'msg' => "Potongan 2 A (Rp) harus >= 0", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Potongan 2 A (Rp) harus >= 0')), 'data' => '']);
             }
             if ($getDataPlu->i_rphdisc2b < 0) {
                 $this->param_error = 0;
-                return (['kode' => 2, 'msg' => "Potongan 2 B (Rp) harus >= 0", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Potongan 2 B (Rp) harus >= 0')), 'data' => '']);
             }
 
             if (!$noPo && !$supplier && $getDataPlu->i_rphdisc2 != 0) { //Line 1152
@@ -1608,7 +1609,7 @@ class inputController extends Controller
                 $getDataPlu->i_botol    = 0;
                 $getDataPlu->i_bm       = 0;
                 $getDataPlu->i_total    = 0;
-                return (['kode' => 2, 'msg' => "Pada Transaksi BTB Lain2, Discount 2 tidak boleh diisi !", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Pada Transaksi BTB Lain2, Discount 2 tidak boleh diisi !')), 'data' => '']);
             }
             if (!$noPo && !$supplier && $getDataPlu->i_rphdisc2a != 0) { //Line 1152
                 $getDataPlu->i_rphdisc2a = 0;
@@ -1617,7 +1618,7 @@ class inputController extends Controller
                 $getDataPlu->i_botol    = 0;
                 $getDataPlu->i_bm       = 0;
                 $getDataPlu->i_total    = 0;
-                return (['kode' => 2, 'msg' => "Pada Transaksi BTB Lain2, Discount 2 A tidak boleh diisi !", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Pada Transaksi BTB Lain2, Discount 2 A tidak boleh diisi !')), 'data' => '']);
             }
             if (!$noPo && !$supplier && $getDataPlu->i_rphdisc2b != 0) { //Line 1152
                 $getDataPlu->i_rphdisc2b = 0;
@@ -1626,7 +1627,7 @@ class inputController extends Controller
                 $getDataPlu->i_botol    = 0;
                 $getDataPlu->i_bm       = 0;
                 $getDataPlu->i_total    = 0;
-                return (['kode' => 2, 'msg' => "Pada Transaksi BTB Lain2, Discount 2 B tidak boleh diisi !", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Pada Transaksi BTB Lain2, Discount 2 B tidak boleh diisi !')), 'data' => '']);
             }
 
             $getDataPlu->i_disc2  = $getDataPlu->i_rphdisc2;
@@ -1654,7 +1655,7 @@ class inputController extends Controller
 
             if ($getDataPlu->i_rphdisc3 < 0) {
                 $this->param_error = 0;
-                return (['kode' => 2, 'msg' => "Potongan 3 (Rp) harus >= 0", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Potongan 3 (Rp) harus >= 0')), 'data' => '']);
             }
 
             if (!$noPo && !$supplier && $getDataPlu->i_rphdisc3 != 0) { //Line 1269
@@ -1664,7 +1665,7 @@ class inputController extends Controller
                 $getDataPlu->i_botol    = 0;
                 $getDataPlu->i_bm       = 0;
                 $getDataPlu->i_total    = 0;
-                return (['kode' => 2, 'msg' => "Pada Transaksi BTB Lain2, Discount 3 tidak boleh diisi !", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Pada Transaksi BTB Lain2, Discount 3 tidak boleh diisi !')), 'data' => '']);
             }
 
             $getDataPlu->i_disc3  = $getDataPlu->i_rphdisc3;
@@ -1687,7 +1688,7 @@ class inputController extends Controller
             $getDataPlu->i_disc3 = (!$noPo) ? $getDataPlu->i_rphdisc3 * ($getDataPlu->i_qty * $getDataPlu->i_frac + $getDataPlu->i_qtyk)  : $getDataPlu->i_rphdisc3;
 
             if ($getDataPlu->i_rphdisc4 < 0) {
-                return (['kode' => 2, 'msg' => "Potongan 4 (Rp) harus >= 0", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Potongan 4 (Rp) harus >= 0')), 'data' => '']);
             }
 
             if (!$noPo && !$supplier && $getDataPlu->i_rphdisc4 != 0) { //Line 1352
@@ -1697,7 +1698,7 @@ class inputController extends Controller
                 $getDataPlu->i_botol    = 0;
                 $getDataPlu->i_bm       = 0;
                 $getDataPlu->i_total    = 0;
-                return (['kode' => 2, 'msg' => "Pada Transaksi BTB Lain2, Discount 4 tidak boleh diisi !", 'data' => '']);
+                return (['kode' => 2, 'msg' => (__('Pada Transaksi BTB Lain2, Discount 4 tidak boleh diisi !')), 'data' => '']);
             }
 
             $getDataPlu->i_disc4  = $getDataPlu->i_rphdisc4;
@@ -1720,7 +1721,7 @@ class inputController extends Controller
             $getDataPlu->i_disc4 = (!$noPo) ? $getDataPlu->i_rphdisc4 * ($getDataPlu->i_qty * $getDataPlu->i_frac + $getDataPlu->i_qtyk)  : $getDataPlu->i_rphdisc4;
         } //end for each
 
-        return (['kode' => '0', 'msg' => "Procedure success", 'data' => '']);
+        return (['kode' => '0', 'msg' => (__('Procedure success')), 'data' => '']);
     }
 
     public function query3($prdcd, $kodeigr, $supplier, $noPo)
@@ -1835,7 +1836,7 @@ class inputController extends Controller
             if ($this->param_error == 0) {
                 $msg = $chkGets['msg'];
             } elseif ($this->param_error == 2) {
-                $msg = " Selisih cost terlalu besar";
+                $msg = (__(' Selisih cost terlalu besar'));
             } elseif ($this->param_error == 3) {
                 $msg = $chkGets['msg'];
             }
@@ -1980,7 +1981,7 @@ class inputController extends Controller
                 //            SET TPOD_RECORDID = NULL
                 //            WHERE  TPOD_NOPO = :NO_PO AND NVL (TPOD_RECORDID, '9') <> 'X' AND NVL (TPOD_QTYPB, 0) = 0;
 
-                $msg = "Nomor BPB " . $noBtb . " Sudah Ada di TBTR_BACKOFFICE !! Hubungi EDP !!";
+                $msg = (__('Nomor BPB ')) . $noBtb . (__(' Sudah Ada di TBTR_BACKOFFICE !! Hubungi EDP !!'));
 
                 return response()->json(['kode' => 0, 'msg' => $msg, 'data' => $data]);
             } else {
@@ -2061,7 +2062,7 @@ class inputController extends Controller
                     $data->i_qty = floor($data->qty_po / $data->tpod_isibeli);
                     $data->i_qtyk = $data->qty_po - ($data->i_qty * $data->tpod_isibeli);
 
-                    return response()->json(['kode' => 0, 'msg' => "Kuantum melebihi PO", 'data' => $data]);
+                    return response()->json(['kode' => 0, 'msg' => (__('Kuantum melebihi PO')), 'data' => $data]);
                 } else {
                     //               --- Part dimana cek parameter.arr_plu di hilangkan karena bisa pakai tempDataSave
 
@@ -2196,7 +2197,7 @@ class inputController extends Controller
                 $qtypb = ($data->i_qty * $data->i_frac) + $data->i_qtyk;
             }
         }
-        return response()->json(['kode' => 1, 'msg' => "Rekam Data Berhasil", 'data' => $this->tempDataSave]);
+        return response()->json(['kode' => 1, 'msg' => (__('Rekam Data Berhasil')), 'data' => $this->tempDataSave]);
     }
 
     public function transferPO(Request $request)
@@ -2216,11 +2217,11 @@ class inputController extends Controller
                                      WHERE MSTD_KODEIGR = '$kodeigr' AND MSTD_NOPO = NVL('$noPo', '123') AND MSTD_TYPETRN = 'B'  AND NVL(MSTD_RECORDID, '0') <> 1");
 
         if ($temp1[0]->temp1 != 0 || $temp2[0]->temp2 != 0) {
-            return response()->json(['kode' => 2, 'msg' => "Nomor Dokumen Ini Sudah Terdapat di TBTR_BACKOFFICE / TBTR_MSTRAN_D, Program Akan Keluar Otomatis !!", 'data' => '']);
+            return response()->json(['kode' => 2, 'msg' => (__('Nomor Dokumen Ini Sudah Terdapat di TBTR_BACKOFFICE / TBTR_MSTRAN_D, Program Akan Keluar Otomatis !!')), 'data' => '']);
         }
 
         if ($noPo == '' || !$noPo) {
-            return response()->json(['kode' => 2, 'msg' => "Check No PO", 'data' => '']);
+            return response()->json(['kode' => 2, 'msg' => (__('Check No PO')), 'data' => '']);
         }
 
         $recID  = DB::connection(Session::get('connection'))->select("SELECT NVL (TPOH_RECORDID, 0)
@@ -2228,7 +2229,7 @@ class inputController extends Controller
                                      WHERE TPOH_NOPO = '$noPo' AND TPOH_KODEIGR = '$kodeigr'");
 
         if ($recID == 'X') {
-            return response()->json(['kode' => 2, 'msg' => "PO Sedang Dipakai di DCP", 'data' => '']);
+            return response()->json(['kode' => 2, 'msg' => (__('PO Sedang Dipakai di DCP')), 'data' => '']);
         }
 
         $getPOData  = $this->getPOData($kodeigr, $supplier, $noPo);
@@ -2241,7 +2242,7 @@ class inputController extends Controller
         $query4 = $this->query4($kodeigr, $supplier, $noPo);
         $query5 = $this->query5($kodeigr, $supplier, $noPo);
         if (!$query4) {
-            return (['kode' => 2, 'msg' => "Data tidak ada !!", 'data' => '']);
+            return (['kode' => 2, 'msg' => (__('Data tidak ada !!')), 'data' => '']);
         }
         $this->tempDataSave = [];
 
@@ -2345,7 +2346,7 @@ class inputController extends Controller
             $temp->item = 1;
             array_push($this->tempDataSave, $temp);
         }
-        return (['kode' => '0', 'msg' => "Procedure success", 'data' => '']);
+        return (['kode' => '0', 'msg' => (__('Procedure success')), 'data' => '']);
     }
     public function query5($kodeigr, $supplier, $noPo)
     {
@@ -2633,7 +2634,7 @@ class inputController extends Controller
                     ]);
                 }
             }
-            return response()->json(['kode' => 1, 'msg' => "Simpan Data Berhasil !!", 'data' => '']);
+            return response()->json(['kode' => 1, 'msg' => (__('Simpan Data Berhasil !!')), 'data' => '']);
         } catch (\Exception $catch) {
             return response()->json(['kode' => 0, 'msg' => $catch->getMessage(), 'data' => '']);
         }
@@ -2655,7 +2656,7 @@ class inputController extends Controller
         chmod(storage_path($path . 'HEADER.zip'), 755);
         chmod(storage_path($path . 'DETAIL.zip'), 755);
         if (!(isset($request->header))) {
-            return response()->json(['kode' => 0, 'msg' => 'HEADER Kosong!', 'data' => '']);
+            return response()->json(['kode' => 0, 'msg' => (__('HEADER Kosong!')), 'data' => '']);
         } else {
             $header = substr($request->header, 0, -1);
             $header = strstr($header, '504B'); //remove all trash before PK Ext.
@@ -2678,7 +2679,7 @@ class inputController extends Controller
         }
 
         if (!(isset($request->detail))) {
-            return response()->json(['kode' => 0, 'msg' => 'DETAIL Kosong!', 'data' => '']);
+            return response()->json(['kode' => 0, 'msg' => (__('DETAIL Kosong!')), 'data' => '']);
         } else {
             $detail = substr($request->detail, 0, -1);
             $detail = strstr($detail, '504B'); //remove all trash before PK Ext.
@@ -2704,14 +2705,14 @@ class inputController extends Controller
         $header_name_file = $this->get_string_between(strtoupper($hex_array_header), 'HEADER_', '.CSV');
         $name_header = 'HEADER_' . $header_name_file . '.CSV';
         if ($header_name_file == '') {
-            return response()->json(['kode' => 2, 'msg' => 'Gagal Membaca File Header, Pastikan String QR adalah Header']);
+            return response()->json(['kode' => 2, 'msg' => (__('Gagal Membaca File Header, Pastikan String QR adalah Header'))]);
         }
 
         $hex_array_detail = pack("H*", $detail);
         $detail_name_file = $this->get_string_between(strtoupper($hex_array_detail), 'DETAIL_', '.CSV');
         $name_detail = 'DETAIL_' . $detail_name_file . '.CSV';
         if ($detail_name_file == '') {
-            return response()->json(['kode' => 2, 'msg' => 'Gagal Membaca File Detail, Pastikan String QR adalah Detail']);
+            return response()->json(['kode' => 2, 'msg' => (__('Gagal Membaca File Detail, Pastikan String QR adalah Detail'))]);
         }
 
 
@@ -2724,11 +2725,11 @@ class inputController extends Controller
             $result_header = file_get_contents('../storage/qrcode/' . $name_header);
             $zip->close();
             $code = 0;
-            $msg .= 'Berhasil membaca File Header | ';
+            $msg .= (__('Berhasil membaca File Header | '));
         } else {
-            $result_header = 'Gagal Baca Header';
+            $result_header = (__('Gagal Baca Header'));
             $code = 1;
-            $msg .= 'Gagal Membaca File Header | ';
+            $msg .= (__('Gagal Membaca File Header | '));
         }
 
         $result_header = explode("\r\n", $result_header);
@@ -2742,11 +2743,11 @@ class inputController extends Controller
             $result_detail = file_get_contents('../storage/qrcode/' . $name_detail);
             $zip->close();
             $code = 0;
-            $msg .= 'Berhasil membaca File Detail';
+            $msg .= (__('Berhasil membaca File Detail'));
         } else {
             $result_detail = $zip->open('../storage/qrcode/DETAIL.zip');
             $code = 1;
-            $msg .= 'Gagal Membaca File Detail';
+            $msg .= (__('Gagal Membaca File Detail'));
         }
 
         $result_detail = explode("\r\n", $result_detail);

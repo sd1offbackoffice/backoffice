@@ -175,7 +175,7 @@ class PBPerishableController extends Controller
         // END IF;
 
         if($temp[0]->temp <=0){
-            $message = 'Tidak ada qty yang akan diPB';
+            $message = (__('Tidak ada qty yang akan diPB'));
             $status = 'info';
             $errflag = '1';
             return response()->json(['message' => $message, 'status' => $status, 'errflag' => $errflag]);
@@ -231,7 +231,7 @@ class PBPerishableController extends Controller
         // END IF;
 
         if($temp[0]->temp > 0){
-            $message = 'Terdapat Total Kubikase Item yang melebihi volume sarana. Qty PB harus dilakukan pengurangan!!';
+            $message = (__('Terdapat Total Kubikase Item yang melebihi volume sarana. Qty PB harus dilakukan pengurangan!!'));
             $status = 'info';
             $errflag = '1';
             return response()->json(['message' => $message, 'status' => $status, 'errflag' => $errflag]);
@@ -254,7 +254,7 @@ class PBPerishableController extends Controller
         ->get();
 
         if ($temp[0]->temp > 0){
-            $message = 'No.PB sudah terpakai, akan diganti dengan nomor baru';
+            $message = (__('No.PB sudah terpakai, akan diganti dengan nomor baru'));
             $status = 'info';
             $errflag = 2;
             return response()->json(['message' => $message, 'status' => $status, 'errflag' => $errflag]);
@@ -307,7 +307,7 @@ class PBPerishableController extends Controller
                     WHERE pbp_nopb = '$nopb'");
 
         //     FORMS_DDL ('commit');
-        return response()->json(['message' => 'ganti nomor', 'status' => 'info', 'nopbnew' => $no_pb]);
+        return response()->json(['message' => (__('ganti nomor')), 'status' => 'info', 'nopbnew' => $no_pb]);
         //     --dc_alert.ok ('ganti nomor');
         // ELSE
         //     RETURN;
@@ -360,7 +360,7 @@ class PBPerishableController extends Controller
             $status = 'error';
 
         }else{
-            $message = 'PB berhasil disimpan';
+            $message = (__('PB berhasil disimpan'));
             $status = 'info';
         }
         return  response()->json(['status' => $status, 'message' => $message]);
@@ -440,7 +440,7 @@ class PBPerishableController extends Controller
     //    END IF;
 
         if($qtypb == 0 && $stock == 0 && $poout == 0){
-            $message = 'PLU ' . $plu . ' Sarana ' . $kodesar . ' Stock 0, PB harus >= 1';
+            $message = (__('PLU ')) . $plu . (__(' Sarana ')) . $kodesar . (__(' Stock 0, PB harus >= 1'));
 
             return response()->json(['message' => $message]);
         }
@@ -451,7 +451,7 @@ class PBPerishableController extends Controller
         // END IF;
 
         if($qtypb % $minorder > 0){
-            $message = ('Qty PB kelipatan min order');
+            $message = (__('Qty PB kelipatan min order'));
             
             return response()->json(['message' => $message]);
         }
@@ -548,7 +548,7 @@ class PBPerishableController extends Controller
         WHERE pbp_nopb = '$nopb'");
 
         if($temp[0]->temp > 0){
-            $message = 'No PB sudah diproses, silahkan edit';
+            $message = (__('No PB sudah diproses, silahkan edit'));
             $status = 'info';
             $flag = 1;
             return response()->json(['status' => $status, 'message' => $message, 'flag' => $flag, 'temp' => $temp[0]->temp]);
@@ -576,7 +576,7 @@ class PBPerishableController extends Controller
         WHERE pbp_nopb = '$nopb'");
 
         if($temp[0]->temp == 0) {
-            $message = 'Tidak ada PLU yang bisa di PB untuk tgl ' . $tglpb;
+            $message = (__('Tidak ada PLU yang bisa di PB untuk tgl ')) . $tglpb;
             $status = 'error';
             $flag = 1;
             return response()->json(['status' => $status, 'message' => $message, 'flag' => $flag, 'temp' => $temp[0]->temp]);
@@ -598,7 +598,7 @@ class PBPerishableController extends Controller
 
         // if :no_pb is null then return; end if;
         if (!$nopb){
-            $message = 'Tidak ada nomor PB';
+            $message = (__('Tidak ada nomor PB'));
             $status = 'error';
             return response()->json(['status' => $status, 'message' => $message]);
         }
@@ -617,7 +617,7 @@ class PBPerishableController extends Controller
         // end if;
 
         if ($temp[0]->temp > 0){
-            $message = 'Draft sudah menjadi PB';
+            $message = (__('Draft sudah menjadi PB'));
             $status = 'info';
             return response()->json(['status' => $status, 'message' => $message]);
         }

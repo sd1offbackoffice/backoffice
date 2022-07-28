@@ -3,7 +3,7 @@
 @section('table_font_size','7 px')
 
 @section('page_title')
-    Laporan Tolakan PB
+    @lang('Laporan Tolakan PB')
 @endsection
 
 @section('title')
@@ -15,30 +15,30 @@
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
             <td colspan="4"></td>
-            <td colspan="2">STOK</td>
-            <td colspan="2">MIN ORDER</td>
-            <td colspan="2">MAX</td>
-            <td colspan="2">MIN</td>
-            <td colspan="2">PO OUT</td>
-            <td colspan="2">PB OUT</td>
+            <td colspan="2">@lang('STOK')</td>
+            <td colspan="2">@lang('MIN ORDER')</td>
+            <td colspan="2">@lang('MAX')</td>
+            <td colspan="2">@lang('MIN')</td>
+            <td colspan="2">@lang('PO OUT')</td>
+            <td colspan="2">@lang('PB OUT')</td>
         </tr>
         <tr>
-            <td width="3%">PLU</td>
-            <td width="8%">DESKRIPSI</td>
-            <td width="2%" class="kanan">SATUAN</td>
-            <td width="2%">TAG</td>
-            <td width="2%" class="kanan">QTY B</td>
-            <td width="2%" class="kanan">------K</td>
-            <td width="2%" class="kanan">QTY B</td>
-            <td width="2%" class="kanan">------K</td>
-            <td width="2%" class="kanan">QTY B</td>
-            <td width="2%" class="kanan">------K</td>
-            <td width="2%" class="kanan">QTY B</td>
-            <td width="2%" class="kanan">------K</td>
-            <td width="2%" class="kanan">QTY B</td>
-            <td width="2%" class="kanan">------K</td>
-            <td width="2%" class="kanan">QTY B</td>
-            <td width="2%" class="kanan">------K</td>
+            <td width="3%">@lang('PLU')</td>
+            <td width="8%">@lang('DESKRIPSI')</td>
+            <td width="2%" class="kanan">@lang('SATUAN')</td>
+            <td width="2%">@lang('TAG')</td>
+            <td width="2%" class="kanan">@lang('QTY B')</td>
+            <td width="2%" class="kanan">@lang('------K')</td>
+            <td width="2%" class="kanan">@lang('QTY B')</td>
+            <td width="2%" class="kanan">@lang('------K')</td>
+            <td width="2%" class="kanan">@lang('QTY B')</td>
+            <td width="2%" class="kanan">@lang('------K')</td>
+            <td width="2%" class="kanan">@lang('QTY B')</td>
+            <td width="2%" class="kanan">@lang('------K')</td>
+            <td width="2%" class="kanan">@lang('QTY B')</td>
+            <td width="2%" class="kanan">@lang('------K')</td>
+            <td width="2%" class="kanan">@lang('QTY B')</td>
+            <td width="2%" class="kanan">@lang('------K')</td>
         </tr>
         </thead>
         <tbody>

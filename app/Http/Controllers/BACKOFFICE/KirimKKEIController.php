@@ -84,7 +84,7 @@ class KirimKKEIController extends Controller
                 DB::connection(Session::get('connection'))->commit();
 
                 return response()->json([
-                    'message' => 'Berhasil upload data KKEI!'
+                    'message' => (__('Berhasil upload data KKEI!'))
                 ], 200);
             }
             else{
@@ -99,7 +99,7 @@ class KirimKKEIController extends Controller
             DB::connection(Session::get('connection'))->rollBack();
 
             return response()->json([
-                'message' => 'Gagal upload data KKEI!',
+                'message' => (__('Gagal upload data KKEI!')),
                 'error' => $e->getMessage()
             ], 500);
         }

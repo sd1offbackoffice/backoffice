@@ -13,7 +13,7 @@
                             <div class="col-sm-12">
                                 <div class="form-group row mb-0">
                                     <div class="col-sm-3"></div>
-                                    <button id="btn-reorder" class="btn btn-info col-sm-6">Proses Re-order PB GO</button>
+                                    <button id="btn-reorder" class="btn btn-info col-sm-6">@lang('Proses Re-order PB GO')</button>
                                     <div class="col-sm-3"></div>
                                 </div>
                             </div>
@@ -31,22 +31,22 @@
                     <div class="container">
                         <div class="row">
                             <div class="col lov text-center">
-                                <h3>Terdapat barang yang ditolak</h3>
+                                <h3>@lang('Terdapat barang yang ditolak')</h3>
                                 <br>
                                 <div class="col-sm">
                                     <a id="btn-order" href="" target="_blank">
-                                        <button class="btn col-sm btn-success">Tolakan P.B. yang dibawah minimum order</button>
+                                        <button class="btn col-sm btn-success">@lang('Tolakan P.B. yang dibawah minimum order')</button>
                                     </a>
                                 </div>
                                 <br>
                                 <div class="col-sm">
                                     <a id="btn-rupiah" href="" target="_blank">
-                                        <button class="btn col-sm btn-success">Tolakan P.B. yang dibawah minimum rupiah / carton</button>
+                                        <button class="btn col-sm btn-success">@lang('Tolakan P.B. yang dibawah minimum rupiah / carton')</button>
                                     </a>
                                 </div>
                                 <br>
                                 <div class="col-sm">
-                                    <button class="btn btn-info col-sm-4" onclick="$('#modal-tolakan').modal('hide')">Tutup</button>
+                                    <button class="btn btn-info col-sm-4" onclick="$('#modal-tolakan').modal('hide')">@lang('Tutup')</button>
                                 </div>
                             </div>
                         </div>
@@ -104,8 +104,8 @@
         $('#btn-reorder').on('click',function(){
             swal({
                 icon: 'warning',
-                title: 'Proses akan dilakukan?',
-                text: 'Proses mungkin membutuhkan waktu beberapa saat',
+                title: "{{__('Proses akan dilakukan?')}}",
+                text: "{{__('Proses mungkin membutuhkan waktu beberapa saat')}}",
                 buttons: true,
                 dangerMode: true
             }).then(function(ok){
@@ -138,7 +138,7 @@
 
                     if(response.status == 'TRUE'){
                         swal({
-                            title: 'Proses berhasil!',
+                            title: "{{__('Proses berhasil!')}}",
                             text: response.result,
                             icon: 'success',
                         }).then(() => {
@@ -157,7 +157,7 @@
 
                                 swal({
                                     icon: 'warning',
-                                    title: 'Terdapat barang tolakan!',
+                                    title: "{{__('Terdapat barang tolakan!')}}",
                                 }).then(function(){
                                     $('#modal-tolakan').modal('show');
                                 });
@@ -167,7 +167,7 @@
                     else{
                         swal({
                             icon: 'error',
-                            title: 'Terjadi kesalahan!',
+                            title: "{{__('Terjadi kesalahan!')}}",
                             text: response.result,
                         }).then(function(){
 
@@ -237,7 +237,7 @@
 
                                 swal({
                                     icon: 'warning',
-                                    title: 'Terdapat barang tolakan!',
+                                    title: "{{__('Terdapat barang tolakan!')}}",
                                 }).then(function(){
                                     $('#modal-tolakan').modal('show');
                                 });

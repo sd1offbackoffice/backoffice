@@ -110,7 +110,7 @@ class PBManualController extends Controller
                 ->first();
 
             if (is_null($pb)) {
-                $message = 'Nomor PB tidak ditemukan!';
+                $message = (__('Nomor PB tidak ditemukan!'));
                 $status = 'error';
                 return compact(['message', 'status']);
             }
@@ -122,9 +122,9 @@ class PBManualController extends Controller
             $TGLTRF = $pb->pbh_tgltransfer;
 
             if (($FLAG == '*') || !is_null($TGLTRF)) {
-                $MODEL = 'PB SUDAH DICETAK / TRANSFER';
+                $MODEL = (__('PB SUDAH DICETAK / TRANSFER'));
             } else {
-                $MODEL = 'KOREKSI';
+                $MODEL = (__('KOREKSI'));
             }
 
             $pluomi = DB::connection(Session::get('connection'))->table('tbmaster_prodcrm')

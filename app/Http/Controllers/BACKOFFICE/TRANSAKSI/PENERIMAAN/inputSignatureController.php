@@ -35,9 +35,9 @@ class inputSignatureController extends Controller
 
         try {
             $path = "signature/";
-            File::deleteDirectory(storage_path($path), 0755, true, true);
+            File::deleteDirectory(storage_path($path), 0777, true, true);
             if (!File::exists(storage_path($path))) {
-                File::makeDirectory(storage_path($path), 0755, true, true);
+                File::makeDirectory(storage_path($path), 0777, true, true);
             }
             $img2 = $this->dataURLtoImage($request->signed2);
             $file2 = storage_path($path . 'srclerk.' . $img2['image_type']);
@@ -51,28 +51,32 @@ class inputSignatureController extends Controller
             $file4 = storage_path($path . 'ljm.' . $img4['image_type']);
             file_put_contents($file4, $img4['image_base64']);
 
-            $path = base_path('public/signature/');
-            File::deleteDirectory(($path), 0755, true, true);
-            if (!File::exists(($path))) {
-                File::makeDirectory(($path), 0755, true, true);
+            try{
+                $path = base_path('public/signature/');
+                File::deleteDirectory(($path), 0777, true, true);
+                if (!File::exists(($path))) {
+                    File::makeDirectory(($path), 0777, true, true);
+                }
+                $img2 = $this->dataURLtoImage($request->signed2);
+                $file2 = ($path . 'srclerk.' . $img2['image_type']);
+                file_put_contents($file2, $img2['image_base64']);
+
+                $img3 = $this->dataURLtoImage($request->signed3);
+                $file3 = ($path . 'clerk.' . $img3['image_type']);
+                file_put_contents($file3, $img3['image_base64']);
+
+                $img4 = $this->dataURLtoImage($request->signed4);
+                $file4 = ($path . 'ljm.' . $img4['image_type']);
+                file_put_contents($file4, $img4['image_base64']);
+            } catch (Exception $e) {
+                $message = 'Proses kirim file gagal (error sig)';
+                return response()->json(['kode' => 0, 'message' => $message]);
             }
-            $img2 = $this->dataURLtoImage($request->signed2);
-            $file2 = ($path . 'srclerk.' . $img2['image_type']);
-            file_put_contents($file2, $img2['image_base64']);
-
-            $img3 = $this->dataURLtoImage($request->signed3);
-            $file3 = ($path . 'clerk.' . $img3['image_type']);
-            file_put_contents($file3, $img3['image_base64']);
-
-            $img4 = $this->dataURLtoImage($request->signed4);
-            $file4 = ($path . 'ljm.' . $img4['image_type']);
-            file_put_contents($file4, $img4['image_base64']);
-
 
             $root = "names/";
-            File::deleteDirectory(storage_path($root), 0755, true, true);
+            File::deleteDirectory(storage_path($root), 0777, true, true);
             if (!File::exists(storage_path($root))) {
-                File::makeDirectory(storage_path($root), 0755, true, true);
+                File::makeDirectory(storage_path($root), 0777, true, true);
             }
             $filesrclerk = storage_path($root . 'srclerk.txt');
             file_put_contents($filesrclerk, $request->signsrclerk);

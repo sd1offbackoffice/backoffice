@@ -1,28 +1,28 @@
 @extends('navbar')
 
-@section('title','PB | Upload dan Monitoring KKEI Toko IGR')
+@section('title',(__('PB | Upload dan Monitoring KKEI Toko IGR')))
 @section('content')
     <div class="container-fluid mt-3">
         <div class="row">
             <div class="col-sm-2"></div>
             <div class="col-sm-8">
                 <fieldset class="card border-secondary">
-                    <legend  class="w-auto ml-5">Upload dan Monitoring KKEI Toko IGR</legend>
+                    <legend  class="w-auto ml-5">@lang('Upload dan Monitoring KKEI Toko IGR')</legend>
                     <div class="card-body shadow-lg cardForm">
                         <div class="row">
                             <div class="col-sm-4">
                                 <fieldset class="card border-secondary">
-                                    <legend class="w-auto ml-4"><small>Upload Data KKEI ke GI</small></legend>
+                                    <legend class="w-auto ml-4"><small>@lang('Upload Data KKEI ke GI')</small></legend>
 
                                     <div class="col-sm-12 m-1">
                                         <fieldset class="card border-secondary">
-                                            <legend class="w-auto ml-3"><h6>Periode KKEI yang belum diupload</h6></legend>
+                                            <legend class="w-auto ml-3"><h6>@lang('Periode KKEI yang belum diupload')</h6></legend>
                                             <div class="table-wrapper-scroll-y my-custom-scrollbar m-1">
                                                 <table id="table-upload" class="table table-sm table-bordered">
                                                     <thead>
                                                     <tr class="d-flex text-center">
                                                         <th class="col-sm-2"></th>
-                                                        <th class="col-sm-10">Periode</th>
+                                                        <th class="col-sm-10">@lang('Periode')</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -59,23 +59,23 @@
                                     </div>
 
                                     <div class="col-sm-12 mb-1 text-center">
-                                        <button id="btn-upload" class="btn btn-primary" onclick="upload()">UPLOAD DATA</button>
+                                        <button id="btn-upload" class="btn btn-primary" onclick="upload()">@lang('UPLOAD DATA')</button>
                                     </div>
                                 </fieldset>
                             </div>
 
                             <div class="col-sm-8">
                                 <fieldset class="card border-secondary">
-                                    <legend  class="w-auto ml-4"><small>Monitoring Data KKEI yang sudah diupload ke GI</small></legend>
+                                    <legend  class="w-auto ml-4"><small>@lang('Monitoring Data KKEI yang sudah diupload ke GI')</small></legend>
                                     <div class="table-wrapper-scroll-y my-custom-scrollbar-monitoring">
                                         <table id="table-monitoring" class="table table-sm text-center">
                                             <thead>
                                             <tr class="d-flex">
-                                                <th class="col-sm-2">Periode</th>
-                                                <th class="col-sm-2">Data Diterima GI</th>
-                                                <th class="col-sm-3">Proses PB GI</th>
-                                                <th class="col-sm-3">Proses PO GI</th>
-                                                <th class="col-sm-2">Proses BPB GI</th>
+                                                <th class="col-sm-2">@lang('Periode')</th>
+                                                <th class="col-sm-2">@lang('Data Diterima GI')</th>
+                                                <th class="col-sm-3">@lang('Proses PB GI')</th>
+                                                <th class="col-sm-3">@lang('Proses PO GI')</th>
+                                                <th class="col-sm-2">@lang('Proses BPB GI')</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -179,7 +179,7 @@
 
             if(periode.length == 0){
                 swal({
-                    title: 'Tidak ada periode yang dipilih!',
+                    title: "{{__('Tidak ada periode yang dipilih!')}}",
                     icon: 'warning'
                 });
             }

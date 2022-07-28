@@ -33,7 +33,7 @@ class maxpaletUntukPBController extends Controller
         $search = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')->where('prd_prdcd', $plu)->get()->toArray();
 
         if (!$search){
-            return response()->json(['kode' => '0', 'return' => "Data PLU Tidak ada di Master Produk !!"]);
+            return response()->json(['kode' => '0', 'return' => (__('Data PLU Tidak ada di Master Produk !!'))]);
         }
 
         $getdata    = DB::connection(Session::get('connection'))->table('tbmaster_prodmast')->select('prd_prdcd', 'prd_deskripsipanjang', 'prd_unit', 'prd_frac', "prd_kodeigr as maxpalet")
@@ -65,14 +65,14 @@ class maxpaletUntukPBController extends Controller
             ->get()->toArray();
 
         if (!$search){
-            return response()->json(['kode' => '0', 'return' => "Data PLU Tidak Ada !!"]);
+            return response()->json(['kode' => '0', 'return' => (__('Data PLU Tidak Ada !!'))]);
         } else {
             if ($search2){
-                return response()->json(['kode' => '0', 'return' => "Data PLU Sudah Ada !!"]);
+                return response()->json(['kode' => '0', 'return' => (__('Data PLU Sudah Ada !!'))]);
             } else {
                 DB::connection(Session::get('connection'))->table('tbmaster_pb_maxpalet')->insert(['pmp_kodeigr' => $kodeigr, 'pmp_prdcd' => $kodePlu, 'pmp_create_by' => $user, 'pmp_create_dt' => $date]);
 
-                return response()->json(['kode' => '1', 'return' => "Data PLU Berhasil di Simpan !!"]);
+                return response()->json(['kode' => '1', 'return' => (__('Data PLU Berhasil di Simpan !!'))]);
             }
         }
     }
@@ -84,11 +84,11 @@ class maxpaletUntukPBController extends Controller
         $search     = DB::connection(Session::get('connection'))->table('tbmaster_pb_maxpalet')->where('pmp_prdcd', $kodePlu)->where('pmp_recordid', null)->get()->toArray();
 
         if (!$search){
-            return response()->json(['kode' => '0', 'return' => "Data PLU Tidak Ada !!"]);
+            return response()->json(['kode' => '0', 'return' => (__('Data PLU Tidak Ada !!'))]);
         } else {
            DB::connection(Session::get('connection'))->table('tbmaster_pb_maxpalet')->where('pmp_prdcd', $kodePlu)->update(['pmp_recordid' => 1]);
 
-            return response()->json(['kode' => '1', 'return' => "Data PLU Berhasil di Hapus !!"]);
+            return response()->json(['kode' => '1', 'return' => (__('Data PLU Berhasil di Hapus !!'))]);
         }
     }
 

@@ -468,7 +468,7 @@ class CetakTolakanPBController extends Controller
 
         // Render the HTML as PDF
 
-        return $dompdf->stream('Laporan Tolakan PB.pdf');
+        return $dompdf->stream((__('Laporan Tolakan PB.pdf')));
     }
 
     public function search_supplier(Request $request){
@@ -843,6 +843,6 @@ class CetakTolakanPBController extends Controller
 
         // Render the HTML as PDF
 
-        return $dompdf->stream('Laporan Tolakan PB.pdf');
+        return $dompdf->stream((__('Laporan Tolakan PB.pdf')));
     }
 }

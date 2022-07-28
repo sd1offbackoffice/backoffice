@@ -5,47 +5,47 @@
 @section('paper_width','842pt')
 
 @section('page_title')
-    LAPORAN PB MANUAL DI TOKO IGR
+    @lang('LAPORAN PB MANUAL DI TOKO IGR')
 @endsection
 
 @section('title')
-    LAPORAN PB MANUAL DI TOKO IGR
+    @lang('LAPORAN PB MANUAL DI TOKO IGR')
 @endsection
 
 @section('subtitle')
-    Tgl : {{ $tgl1 }} s/d {{ $tgl2 }}
+    @lang('Tgl : '){{ $tgl1 }} @lang('s/d') {{ $tgl2 }}
 @endsection
 
 @section('content')
     <table class="table">
         <thead style="border-top: 1px solid black;border-bottom: 1px solid black;">
         <tr>
-            <th rowspan="3" class="bawah center">No.</th>
-            <th rowspan="3" class="bawah center">Div</th>
-            <th rowspan="3" class="bawah center">Dep</th>
-            <th rowspan="3" class="bawah center">Kat</th>
-            <th rowspan="3" class="bawah center">PLU</th>
-            <th rowspan="3" class="bawah center">Deskripsi</th>
-            <th rowspan="3" class="bawah center">Nama Supplier</th>
-            <th rowspan="3" class="bawah center">Frac</th>
-            <th rowspan="3" class="bawah center">PKM</th>
-            <th rowspan="3" class="bawah center">SOH</th>
-            <th colspan="4" class="center">Draft PB Manual</th>
-            <th colspan="4" class="center">PB Manual</th>
+            <th rowspan="3" class="bawah center">@lang('No.')</th>
+            <th rowspan="3" class="bawah center">@lang('Div')</th>
+            <th rowspan="3" class="bawah center">@lang('Dep')</th>
+            <th rowspan="3" class="bawah center">@lang('Kat')</th>
+            <th rowspan="3" class="bawah center">@lang('PLU')</th>
+            <th rowspan="3" class="bawah center">@lang('Deskripsi')</th>
+            <th rowspan="3" class="bawah center">@lang('Nama Supplier')</th>
+            <th rowspan="3" class="bawah center">@lang('Frac')</th>
+            <th rowspan="3" class="bawah center">@lang('PKM')</th>
+            <th rowspan="3" class="bawah center">@lang('SOH')</th>
+            <th colspan="4" class="center">@lang('Draft PB Manual')</th>
+            <th colspan="4" class="center">@lang('PB Manual')</th>
         </tr>
         <tr>
-            <th rowspan="2" class="bawah center">No.</th>
-            <th rowspan="2" class="bawah center">Tgl Input</th>
-            <th colspan="2" class="center">Qty</th>
-            <th rowspan="2" class="bawah center">User ID</th>
-            <th rowspan="2" class="bawah center">No.</th>
-            <th rowspan="2" class="bawah center">Tgl Input</th>
-            <th rowspan="2" class="bawah center">Qty</th>
-            <th rowspan="2" class="bawah center">User ID</th>
+            <th rowspan="2" class="bawah center">@lang('No.')</th>
+            <th rowspan="2" class="bawah center">@lang('Tgl Input')</th>
+            <th colspan="2" class="center">@lang('Qty')</th>
+            <th rowspan="2" class="bawah center">@lang('User ID')</th>
+            <th rowspan="2" class="bawah center">@lang('No.')</th>
+            <th rowspan="2" class="bawah center">@lang('Tgl Input')</th>
+            <th rowspan="2" class="bawah center">@lang('Qty')</th>
+            <th rowspan="2" class="bawah center">@lang('User ID')</th>
         </tr>
         <tr>
-            <th class="bawah center">Input</th>
-            <th class="bawah center">Real</th>
+            <th class="bawah center">@lang('Input')</th>
+            <th class="bawah center">@lang('Real')</th>
         </tr>
         </thead>
         <tbody>

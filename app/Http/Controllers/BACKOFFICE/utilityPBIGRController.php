@@ -45,7 +45,7 @@ class utilityPBIGRController extends Controller
         $v_errtxt   = '';
 
         if (!$search){
-             return response()->json(['kode' => '0', 'return' => "Data Service Level Kosong !!"]);
+             return response()->json(['kode' => '0', 'return' => (__('Data Service Level Kosong !!'))]);
         }
 
         $connection = loginController::getConnectionProcedure();
@@ -60,7 +60,7 @@ class utilityPBIGRController extends Controller
             if (!$v_sukses){
                 return response()->json(['kode' => '0', 'return' => $v_errtxt]);
             } else {
-                $msg = 'Data M PLUS.I Periode '.date('m-Y'). ' Sudah di Proses !!';
+                $msg = (__('Data M PLUS.I Periode ')).date('m-Y').(__(' Sudah di Proses !!'));
                 return response()->json(['kode' => '1', 'return' => $msg]);
             }
         } catch (\Exception $catch){
@@ -79,7 +79,7 @@ class utilityPBIGRController extends Controller
 
             $msg = '';
             if (!$v_errtxt){
-                $msg = 'Tarikan Data Bulan Seasonal Sudah di Proses !!';
+                $msg = (__('Tarikan Data Bulan Seasonal Sudah di Proses !!'));
             } else {
                 $msg = $v_errtxt;
             }
@@ -95,7 +95,7 @@ class utilityPBIGRController extends Controller
 //                return response()->json(['kode' => '1', 'return' => $msg]);
 //            }
         } catch (\Exception $catch){
-            return response()->json(['kode' => '0', 'return' => "Call Procedure Failed"]);
+            return response()->json(['kode' => '0', 'return' => (__('Call Procedure Failed'))]);
         }
     }
 
@@ -106,7 +106,7 @@ class utilityPBIGRController extends Controller
         $connection = loginController::getConnectionProcedure();
 
         if (!$search){
-            return response()->json(['kode' => '0', 'return' => "Data Service Level Kosong !!"]);
+            return response()->json(['kode' => '0', 'return' => (__('Data Service Level Kosong !!'))]);
         }
 
         try{
@@ -119,7 +119,7 @@ class utilityPBIGRController extends Controller
             if (!$v_sukses){
                 return response()->json(['kode' => '0', 'return' => $v_errtxt]);
             } else {
-                $msg = 'Data M PLUS.O Periode '.date('m-Y'). ' Sudah di Proses !!';
+                $msg = (__('Data M PLUS.O Periode ')).date('m-Y').(__(' Sudah di Proses !!'));
                 return response()->json(['kode' => '1', 'return' => $msg]);
             }
         } catch (\Exception $catch){
@@ -137,9 +137,9 @@ class utilityPBIGRController extends Controller
         $search = DB::connection(Session::get('connection'))->table('tbtr_hitung_pb')->where('thp_periode', $date)->get()->toArray();
 
         if (!$search){
-            return response()->json(['kode' => '0', 'return' => 'Data MPLUS-I Tidak Ada !!']);
+            return response()->json(['kode' => '0', 'return' => (__('Data MPLUS-I Tidak Ada !!'))]);
         } else {
-            return response()->json(['kode' => '1', 'return' => 'Cetak !!']);
+            return response()->json(['kode' => '1', 'return' => (__('Cetak !!'))]);
         }
     }
 
@@ -151,7 +151,7 @@ class utilityPBIGRController extends Controller
         $search = DB::connection(Session::get('connection'))->table('tbtr_hitung_pb')->where('thp_periode', $periode)->get()->toArray();
 
         if (!$search){
-            return response()->json(['kode' => '0', 'return' => 'Data MPLUS-I Tidak Ada !!']);
+            return response()->json(['kode' => '0', 'return' => (__('Data MPLUS-I Tidak Ada !!'))]);
         }
 
 

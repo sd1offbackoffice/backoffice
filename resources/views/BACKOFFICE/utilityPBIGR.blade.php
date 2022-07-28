@@ -1,5 +1,5 @@
 @extends('navbar')
-@section('title','PB | UTILITY PB IGR')
+@section('title',(__('PB | UTILITY PB IGR')))
 @section('content')
 
     <div class="container mt-4">
@@ -10,26 +10,26 @@
                         <div class="row">
                            <div class="col-sm-12">
                                <form>
-                                   <p class="float-right">*Proses M PLUS.I dan M PLUS.O dilakukan tiap tanggal 5</p>
+                                   <p class="float-right">@lang('*Proses M PLUS.I dan M PLUS.O dilakukan tiap tanggal 5')</p>
                                    <div class="form-group">
-                                       <label for="">1. M PLUS.I</label>
-                                       <button type="button" id="#" class="form-control btn btn-primary" onclick="callProc1()">PROSES HITUNG NILAI M PLUS.I</button>
+                                       <label for="">@lang('1. M PLUS.I')</label>
+                                       <button type="button" id="#" class="form-control btn btn-primary" onclick="callProc1()">@lang('PROSES HITUNG NILAI M PLUS.I')</button>
                                    </div>
                                    <div class="form-group">
-                                       <label for="">2. BULAN SEASONAL</label>
-                                       <button type="button" id="#" class="form-control btn btn-primary" onclick="callProc2()">TARIK DATA BULAN SEASONAL DARI OMI HO</button>
+                                       <label for="">@lang('2. BULAN SEASONAL')</label>
+                                       <button type="button" id="#" class="form-control btn btn-primary" onclick="callProc2()">@lang('TARIK DATA BULAN SEASONAL DARI OMI HO')</button>
                                    </div>
                                    <div class="form-group">
-                                       <label for="">3. M PLUS.O</label>
-                                       <button type="button" id="#" class="form-control btn btn-primary " onclick="callProc3()">PROSES HITUNG NILAI M PLUS.O</button>
+                                       <label for="">@lang('3. M PLUS.O')</label>
+                                       <button type="button" id="#" class="form-control btn btn-primary " onclick="callProc3()">@lang('PROSES HITUNG NILAI M PLUS.O')</button>
                                    </div>
                                    <div class="form-group">
-                                       <label for="">4. Laporan Pembentukan  M PLUS.I dan M PLUS.O</label> <br>
+                                       <label for="">@lang('4. Laporan Pembentukan  M PLUS.I dan M PLUS.O')</label> <br>
                                        <div class="form-row ml-2">
-                                           <label class="col-sm-3 text-right">Periode Proses Data</label>
+                                           <label class="col-sm-3 text-right">@lang('Periode Proses Data')</label>
                                            <input type="text" class="form-control mb-2 ml-2 text-right" style="width: 200px !important;" id="dateLaporan" value="{{\Carbon\Carbon::today()->format('m/Y')}}">
                                        </div>
-                                       <button type="button" id="#" class="form-control btn btn-primary " onclick="callProc4()">PROSES LAPORAN</button>
+                                       <button type="button" id="#" class="form-control btn btn-primary " onclick="callProc4()">@lang('PROSES LAPORAN')</button>
                                    </div>
                                </form>
                            </div>
@@ -120,7 +120,7 @@
             let date = $("#dateLaporan").datepicker("getDate");
 
             if (!date){
-                swal('Error','Periode 1 Tidak Boleh Kosong !!', 'error')
+                swal('Error',"{{__('Periode 1 Tidak Boleh Kosong !!')}}", 'error')
                 return false;
             }
 
